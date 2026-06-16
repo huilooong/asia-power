@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#0a1628">
+
+  <meta name="description" content="Register as a verified AsiaPower supplier. Join our network of engine and gearbox suppliers in Japan, Korea and China.">
+  <title>Supplier Portal | AsiaPower</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/styles.css">
+  <link rel="icon" href="assets/favicon.png" type="image/png">
+  <link rel="apple-touch-icon" href="assets/favicon.png">
+</head>
+<body data-page="supplier">
+
+  <div id="site-topbar"></div>
+  <div id="site-header"></div>
+
+  <main id="main-content">
+    <section class="page-hero">
+      <div class="container">
+        <div class="page-hero__breadcrumb"><a href="index.html">Home</a> / <span>Supplier Portal</span></div>
+        <h1>Supplier Portal</h1>
+        <p>Join our verified supplier network. Connect your inventory with growing demand across 25+ African markets.</p>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="container">
+        <div class="section-header section-header--center">
+          <span class="section-eyebrow">Partner Program</span>
+          <h2 class="section-title">Why Supply Through AsiaPower?</h2>
+        </div>
+        <div class="features-row">
+          <div class="feature-box">
+            <div class="feature-box__icon"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M2 12h20"/></svg></div>
+            <h3>African Market Access</h3>
+            <p>Direct demand from Nigeria, Ghana, Kenya, Tanzania, South Africa, and 20+ more markets.</p>
+          </div>
+          <div class="feature-box">
+            <div class="feature-box__icon"><svg viewBox="0 0 24 24"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg></div>
+            <h3>Consistent Orders</h3>
+            <p>Regular volume from workshops, fleet operators, and container importers.</p>
+          </div>
+          <div class="feature-box">
+            <div class="feature-box__icon"><svg viewBox="0 0 24 24"><path d="M9 12l2 2 4-4"/><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></div>
+            <h3>Verified Network</h3>
+            <p>Quality standards protect every partner. Only approved suppliers listed.</p>
+          </div>
+          <div class="feature-box">
+            <div class="feature-box__icon"><svg viewBox="0 0 24 24"><rect x="1" y="3" width="15" height="13"/><polygon points="16 8 20 8 23 11 23 16 16 16 16 8"/></svg></div>
+            <h3>Logistics Handled</h3>
+            <p>We manage crating, export docs, customs, and ocean freight to Africa.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section section--gray">
+      <div class="container form-layout">
+        <div>
+          <span class="section-eyebrow">Registration</span>
+          <h2 class="section-title">Become a Verified Supplier</h2>
+          <p class="section-lead">Complete the form and our team will review your application within 3 business days.</p>
+
+          <div class="benefit-list">
+            <div class="benefit-item">
+              <div class="benefit-item__check">✓</div>
+              <div><h4>Free to Register</h4><p>No upfront fees. Commission on confirmed orders only.</p></div>
+            </div>
+            <div class="benefit-item">
+              <div class="benefit-item__check">✓</div>
+              <div><h4>Clear Quality Standards</h4><p>Defined inspection criteria so you know what buyers expect.</p></div>
+            </div>
+            <div class="benefit-item">
+              <div class="benefit-item__check">✓</div>
+              <div><h4>Dedicated Account Manager</h4><p>Single point of contact for orders and payment coordination.</p></div>
+            </div>
+            <div class="benefit-item">
+              <div class="benefit-item__check">✓</div>
+              <div><h4>Eligible Businesses</h4><p>Dismantling yards, auto recyclers, reconditioners, and export dealers in Japan, Korea, and China.</p></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="form-card">
+          <h3>Supplier Registration Form</h3>
+          <p>All fields marked with * are required.</p>
+
+          <form data-form="supplier-registration">
+            <div class="form-row">
+              <div class="form-group">
+                <label for="company-name">Company Name <span class="req">*</span></label>
+                <input type="text" id="company-name" name="company_name" required placeholder="Company legal name">
+              </div>
+              <div class="form-group">
+                <label for="business-type">Business Type <span class="req">*</span></label>
+                <select id="business-type" name="business_type" required>
+                  <option value="">Select type</option>
+                  <option value="dismantling-yard">Dismantling Yard</option>
+                  <option value="auto-recycler">Auto Recycler</option>
+                  <option value="reconditioner">Reconditioner</option>
+                  <option value="export-dealer">Export Dealer</option>
+                  <option value="other">Other</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="form-row">
+              <div class="form-group">
+                <label for="contact-person">Contact Person <span class="req">*</span></label>
+                <input type="text" id="contact-person" name="contact_person" required placeholder="Full name">
+              </div>
+              <div class="form-group">
+                <label for="supplier-country">Country <span class="req">*</span></label>
+                <select id="supplier-country" name="country" required>
+                  <option value="">Select country</option>
+                  <option value="japan">Japan</option>
+                  <option value="korea">Korea (South)</option>
+                  <option value="china">China</option>
+                  <option value="other">Other</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="form-row">
+              <div class="form-group">
+                <label for="supplier-email">Email <span class="req">*</span></label>
+                <input type="email" id="supplier-email" name="email" required placeholder="business@company.com">
+              </div>
+              <div class="form-group">
+                <label for="supplier-phone">Phone / WhatsApp <span class="req">*</span></label>
+                <input type="tel" id="supplier-phone" name="phone" required placeholder="+86 xxx xxxx xxxx">
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label for="supplier-address">Business Address <span class="req">*</span></label>
+              <input type="text" id="supplier-address" name="address" required placeholder="Full business address">
+            </div>
+
+            <div class="form-group">
+              <label for="specialization">Product Specialization <span class="req">*</span></label>
+              <select id="specialization" name="specialization" required>
+                <option value="">Select specialization</option>
+                <option value="engines">Engines Only</option>
+                <option value="gearboxes">Gearboxes Only</option>
+                <option value="both">Engines &amp; Gearboxes</option>
+                <option value="full-vehicle">Full Vehicle Dismantling</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label for="brands">Brands / Makes Handled</label>
+              <input type="text" id="brands" name="brands" placeholder="Toyota, Honda, Hyundai, BMW, etc.">
+            </div>
+
+            <div class="form-row">
+              <div class="form-group">
+                <label for="monthly-capacity">Monthly Capacity</label>
+                <select id="monthly-capacity" name="monthly_capacity">
+                  <option value="">Select range</option>
+                  <option value="1-10">1 – 10 units</option>
+                  <option value="11-50">11 – 50 units</option>
+                  <option value="51-100">51 – 100 units</option>
+                  <option value="100+">100+ units</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label for="years-operation">Years in Operation</label>
+                <select id="years-operation" name="years_operation">
+                  <option value="">Select range</option>
+                  <option value="1-3">1 – 3 years</option>
+                  <option value="4-7">4 – 7 years</option>
+                  <option value="8-15">8 – 15 years</option>
+                  <option value="15+">15+ years</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label for="supplier-message">Additional Information</label>
+              <textarea id="supplier-message" name="message" placeholder="Inventory details, certifications, export experience…"></textarea>
+            </div>
+
+            <div class="form-check">
+              <input type="checkbox" id="supplier-terms" name="terms" data-terms required>
+              <label for="supplier-terms">I confirm the information is accurate and agree to AsiaPower's supplier quality standards and terms of partnership.</label>
+            </div>
+
+            <button type="submit" class="btn btn-accent" style="width:100%;">Submit Registration</button>
+          </form>
+
+          <div class="form-success">
+            <svg viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+            <h4>Registration Submitted</h4>
+            <p>Thank you for applying. Our supplier relations team will contact you at the email provided within 3 business days.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <div id="site-footer"></div>
+  <div id="site-whatsapp"></div>
+
+  <script src="js/path-utils.js"></script>
+  <script src="js/config.js"></script>
+  <script src="js/seo.js"></script>
+  <script src="js/components.js" defer></script>
+  <script src="js/main.js" defer></script>
+</body>
+</html>

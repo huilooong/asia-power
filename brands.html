@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#0a1628">
+
+  <meta name="description" content="AsiaPower brand directory — engines, gearboxes, chassis parts and half-cuts for Japanese, Korean, Chinese, American and European vehicle applications. 50+ brands supported globally.">
+  <title>Brands We Support | AsiaPower</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/styles.css">
+  <link rel="icon" href="assets/favicon.png" type="image/png">
+  <link rel="apple-touch-icon" href="assets/favicon.png">
+</head>
+<body data-page="brands">
+
+  <div id="site-topbar"></div>
+  <div id="site-header"></div>
+
+  <main id="main-content">
+    <section class="brands-hero">
+      <div class="container brands-hero__inner">
+        <div class="brands-hero__content">
+          <span class="brands-hero__label">Primary Entry Point</span>
+          <h1>Brand Directory</h1>
+          <p class="brands-hero__lead">Select a vehicle brand to access engines, gearboxes, chassis parts and half-cuts. AsiaPower sources Japanese, Korean, Chinese, American and European applications through a verified China-based supplier network.</p>
+        </div>
+        <div class="brands-hero__metrics">
+          <div class="brands-metric">
+            <span class="brands-metric__value" id="brand-count-metric">50</span>
+            <span class="brands-metric__label">Vehicle Brands</span>
+          </div>
+          <div class="brands-metric">
+            <span class="brands-metric__value">4</span>
+            <span class="brands-metric__label">Product Lines</span>
+          </div>
+          <div class="brands-metric">
+            <span class="brands-metric__value">FOB/CIF</span>
+            <span class="brands-metric__label">Global Export</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="brands-toolbar-section">
+      <div class="container">
+        <div class="brands-toolbar">
+          <div class="brands-toolbar__search">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+            <input type="search" id="brand-search" placeholder="Search brands or engine models (e.g. G4KD, 2TR, K24A)…" aria-label="Search brands and engine models">
+          </div>
+          <div class="brands-toolbar__meta">
+            Showing <strong id="brand-visible-count">50</strong> of <strong id="brand-total-count">50</strong> brands
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section brands-section brands-section--featured">
+      <div class="container">
+        <div class="brands-directory-header">
+          <span class="section-eyebrow">Priority Channels</span>
+          <h2 class="section-title">Featured Brands</h2>
+          <p class="section-lead">High-volume sourcing channels with dedicated supplier access, faster quotation and export programs.</p>
+        </div>
+        <div class="brand-featured-matrix" id="brand-featured-matrix" aria-live="polite"></div>
+      </div>
+    </section>
+
+    <section class="section brands-section brands-section--all">
+      <div class="container">
+        <div class="brands-directory-header">
+          <span class="section-eyebrow">Full Coverage</span>
+          <h2 class="section-title">All Supported Brands</h2>
+          <p class="section-lead">Complete brand index for global powertrain sourcing — select any make to request engines, gearboxes, chassis parts or half-cuts.</p>
+        </div>
+        <div class="brand-tiles" id="brand-matrix" aria-live="polite"></div>
+        <div class="brands-empty hidden" id="brands-empty" aria-live="polite"></div>
+      </div>
+    </section>
+
+    <section class="brands-platform">
+      <div class="container brands-platform__inner">
+        <div class="brands-platform__text">
+          <span class="section-eyebrow">B2B Sourcing</span>
+          <h2>One Platform. Global Vehicle Applications.</h2>
+          <p>AsiaPower consolidates China-based supply channels for Japanese, Korean, Chinese, American and European vehicle applications — delivering inspected engines, gearboxes, chassis parts and half-cuts to importers, workshops and fleet operators worldwide.</p>
+          <ul class="brands-platform__list">
+            <li>Compression-tested engines with export documentation</li>
+            <li>Automatic, manual, CVT and 4WD gearbox supply</li>
+            <li>Chassis parts — suspension, steering, brakes and axles</li>
+            <li>Half-cut vehicles for parts extraction and rebuild programs</li>
+            <li>Container and LCL shipment to global destinations</li>
+          </ul>
+        </div>
+        <div class="brands-platform__actions">
+          <a href="contact.html" class="btn btn-accent">Request a Quote</a>
+          <a href="engines/index.html" class="btn btn-outline-navy">Browse Engines</a>
+          <a href="chassis-parts/index.html" class="btn btn-outline-navy">Chassis Parts</a>
+          <a href="half-cuts/index.html" class="btn btn-outline-navy">Half-Cuts</a>
+        </div>
+      </div>
+    </section>
+
+    <section class="section section--gray">
+      <div class="container">
+        <div class="section-header section-header--center">
+          <span class="section-eyebrow">Customer Journey</span>
+          <h2 class="section-title">Brand → Product Category → Quote</h2>
+          <p class="section-lead">Select a brand such as Toyota, then browse engines, gearboxes, chassis parts or half-cuts for that make. Brands with dedicated pages link directly to their full product directory.</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="cta-block">
+      <div class="container cta-block__inner">
+        <div>
+          <h2>Don't See Your Brand?</h2>
+          <p>Our supplier network covers additional makes and models. Send your requirements — we source globally.</p>
+        </div>
+        <a href="contact.html" class="btn btn-accent">Contact Sourcing Team</a>
+      </div>
+    </section>
+  </main>
+
+  <div id="site-footer"></div>
+  <div id="site-whatsapp"></div>
+
+  <script src="js/path-utils.js"></script>
+  <script src="js/config.js"></script>
+  <script src="js/seo.js"></script>
+  <script src="js/components.js" defer></script>
+  <script src="js/main.js" defer></script>
+</body>
+</html>

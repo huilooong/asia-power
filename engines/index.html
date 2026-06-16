@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#0a1628">
+
+  <meta name="description" content="AsiaPower engine model catalog — petrol, diesel and hybrid engines grouped by brand for global export.">
+  <title>Engine Model Catalog | AsiaPower</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../css/styles.css">
+  <link rel="icon" href="../assets/favicon.png" type="image/png">
+</head>
+<body data-page="engines">
+  <div id="site-topbar"></div>
+  <div id="site-header"></div>
+  <main id="main-content">
+    <section class="page-hero page-hero--catalog">
+      <div class="container">
+        <div class="page-hero__breadcrumb"><a href="../index.html">Home</a> / <a href="../brands.html">Brands</a> / <span>Engines</span></div>
+        <h1>Engine Model Catalog</h1>
+        <p>Public directory of supported engine models grouped by brand. Available for global export — request FOB/CIF pricing.</p>
+      </div>
+    </section>
+    <section class="section section--gray">
+      <div class="container">
+        <div class="catalog-toolbar">
+          <div class="catalog-toolbar__count"><strong id="engine-catalog-count">0</strong> engine models listed</div>
+          <div class="filter-group">
+            <button class="filter-btn active" data-filter="all">All Brands</button>
+            <button class="filter-btn" data-filter="petrol">Petrol</button>
+            <button class="filter-btn" data-filter="diesel">Diesel</button>
+            <button class="filter-btn" data-filter="hybrid">Hybrid</button>
+          </div>
+        </div>
+        <div id="engine-catalog-root"></div>
+      </div>
+    </section>
+    <section class="cta-block">
+      <div class="container cta-block__inner">
+        <div><h2>Browse by Brand</h2><p>Start from our brand directory for engines, gearboxes, chassis parts and half-cuts.</p></div>
+        <a href="../brands.html" class="btn btn-accent">View Brands</a>
+      </div>
+    </section>
+  </main>
+  <div id="site-footer"></div>
+  <div id="site-whatsapp"></div>
+  <script src="../js/path-utils.js"></script>
+  <script src="../js/config.js"></script>
+  <script src="../js/seo.js"></script>
+  <script src="../js/components.js" defer></script>
+  <script src="../js/seo-engines.js" defer></script>
+  <script src="../js/engine-directory.js" defer></script>
+  <script src="../js/engine-catalog.js" defer></script>
+  <script src="../js/main.js" defer></script>
+</body>
+</html>

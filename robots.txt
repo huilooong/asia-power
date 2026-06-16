@@ -1,0 +1,5 @@
+User-agent: *
+Allow: /
+
+# Add absolute Sitemap URL when deploying to production, e.g.:
+# Sitemap: https://yourdomain.com/sitemap.xml
