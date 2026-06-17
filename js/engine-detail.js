@@ -29,7 +29,7 @@
             <a href="${base()}index.html">Home</a> /
             <a href="${base()}brands.html">Brands</a> /
             <a href="${base()}brands/${engine.brandSlug}.html">${engine.brand}</a> /
-            <a href="${base()}engines/index.html">Engines</a> /
+            <a href="${base()}engines/">Engines</a> /
             <span>${engine.code}</span>
           </div>
           <h1>${engine.brand} ${engine.code} Engine</h1>
@@ -67,10 +67,10 @@
               </ul>
               <h3>Product Catalog</h3>
               <ul class="engine-detail__links">
-                <li><a href="${base()}engines/index.html">All Engine Models</a></li>
-                <li><a href="${base()}gearboxes/index.html">Gearboxes</a></li>
-                <li><a href="${base()}half-cuts/index.html">Half-Cuts</a></li>
-                <li><a href="${base()}chassis-parts/index.html">Chassis Parts</a></li>
+                <li><a href="${base()}engines/">All Engine Models</a></li>
+                <li><a href="${base()}gearboxes/">Gearboxes</a></li>
+                <li><a href="${base()}half-cuts/">Half-Cuts</a></li>
+                <li><a href="${base()}chassis-parts/">Chassis Parts</a></li>
               </ul>
             </aside>
           </div>

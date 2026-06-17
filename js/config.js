@@ -30,10 +30,10 @@ const ASIAPOWER = {
     { href: 'contact.html', label: 'Contact', id: 'contact' },
   ],
   seoProducts: [
-    { label: 'Engines', href: 'engines/index.html' },
-    { label: 'Gearboxes', href: 'gearboxes/index.html' },
-    { label: 'Chassis Parts', href: 'chassis-parts/index.html' },
-    { label: 'Half-Cuts', href: 'half-cuts/index.html' },
+    { label: 'Engines', href: 'engines/' },
+    { label: 'Gearboxes', href: 'gearboxes/' },
+    { label: 'Chassis Parts', href: 'chassis-parts/' },
+    { label: 'Half-Cuts', href: 'half-cuts/' },
   ],
   seoEngines: [
     { code: '1NZ-FE', slug: 'toyota-1nz-fe' },
@@ -71,10 +71,10 @@ const ASIAPOWER = {
   ],
   categories: [
     { href: 'brands.html', title: 'Brand Directory', count: '50+', desc: 'Start by vehicle brand', icon: 'network' },
-    { href: 'engines/index.html', title: 'Used Engines', count: '5000+', desc: 'Petrol, diesel & hybrid', icon: 'engine' },
-    { href: 'gearboxes/index.html', title: 'Used Gearboxes', count: '1000+', desc: 'Auto, manual & 4WD', icon: 'gearbox' },
-    { href: 'chassis-parts/index.html', title: 'Chassis Parts', count: '500+', desc: 'Suspension & steering', icon: 'diesel' },
-    { href: 'half-cuts/index.html', title: 'Half-Cuts', count: '500+', desc: 'Front, rear & nose cuts', icon: '4wd' },
+    { href: 'engines/', title: 'Used Engines', count: '5000+', desc: 'Petrol, diesel & hybrid', icon: 'engine' },
+    { href: 'gearboxes/', title: 'Used Gearboxes', count: '1000+', desc: 'Auto, manual & 4WD', icon: 'gearbox' },
+    { href: 'chassis-parts/', title: 'Chassis Parts', count: '500+', desc: 'Suspension & steering', icon: 'diesel' },
+    { href: 'half-cuts/', title: 'Half-Cuts', count: '500+', desc: 'Front, rear & nose cuts', icon: '4wd' },
     { href: 'contact.html', title: 'Bulk Orders', count: 'FOB/CIF', desc: 'Container shipments', icon: 'shipping' },
   ],
   featuredBrandSlugs: [

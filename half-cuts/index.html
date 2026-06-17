@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="theme-color" content="#0a1628">
 
-  <meta name="description" content="AsiaPower half-cut catalog — front cuts, rear cuts, nose cuts and complete half-cuts for global export.">
+  <meta name="description" content="AsiaPower half-cut inventory — front cuts, nose cuts and complete half-cuts with engine and transmission. Search by brand, model and stock ID.">
   <title>Half-Cuts Catalog | AsiaPower</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -21,71 +21,12 @@
       <div class="container">
         <div class="page-hero__breadcrumb"><a href="../index.html">Home</a> / <a href="../brands.html">Brands</a> / <span>Half-Cuts</span></div>
         <h1>Half-Cuts Catalog</h1>
-        <p>Front cuts, rear cuts, nose cuts and complete half-cuts for rebuild and extraction programs worldwide.</p>
+        <p>Search half-cut inventory by brand, model, engine code, transmission code or stock ID. Request price, photos and export shipping.</p>
       </div>
     </section>
     <section class="section section--gray">
       <div class="container">
-        <div class="catalog-toolbar">
-          <div class="catalog-toolbar__count">Public half-cut catalog</div>
-          <div class="filter-group">
-            <button class="filter-btn active" data-filter="all">All</button>
-            <button class="filter-btn" data-filter="front">Front Cut</button>
-            <button class="filter-btn" data-filter="rear">Rear Cut</button>
-            <button class="filter-btn" data-filter="nose">Nose Cut</button>
-            <button class="filter-btn" data-filter="complete">Complete</button>
-          </div>
-        </div>
-        <div class="product-grid">
-          <article class="product-item" data-filter-tags="front">
-            <div class="product-item__body">
-              <div class="product-item__brand">Multi-Brand</div>
-              <h3 class="product-item__title">Front Half-Cut</h3>
-              <p class="product-item__desc">Engine, gearbox, front suspension and wiring.</p>
-              <div class="product-item__footer"><a href="../contact.html?product=halfcut-front" class="product-item__action">Request Quote →</a></div>
-            </div>
-          </article>
-          <article class="product-item" data-filter-tags="rear">
-            <div class="product-item__body">
-              <div class="product-item__brand">Multi-Brand</div>
-              <h3 class="product-item__title">Rear Half-Cut</h3>
-              <p class="product-item__desc">Rear axle, differential and suspension section.</p>
-              <div class="product-item__footer"><a href="../contact.html?product=halfcut-rear" class="product-item__action">Request Quote →</a></div>
-            </div>
-          </article>
-          <article class="product-item" data-filter-tags="nose">
-            <div class="product-item__body">
-              <div class="product-item__brand">Multi-Brand</div>
-              <h3 class="product-item__title">Nose Cut</h3>
-              <p class="product-item__desc">Engine bay with ECU and wiring loom.</p>
-              <div class="product-item__footer"><a href="../contact.html?product=halfcut-nose" class="product-item__action">Request Quote →</a></div>
-            </div>
-          </article>
-          <article class="product-item" data-filter-tags="complete">
-            <div class="product-item__body">
-              <div class="product-item__brand">Multi-Brand</div>
-              <h3 class="product-item__title">Complete Half-Cut</h3>
-              <p class="product-item__desc">Full front or rear section with all major components.</p>
-              <div class="product-item__footer"><a href="../contact.html?product=halfcut-complete" class="product-item__action">Request Quote →</a></div>
-            </div>
-          </article>
-          <article class="product-item" data-filter-tags="front">
-            <div class="product-item__body">
-              <div class="product-item__brand">Toyota</div>
-              <h3 class="product-item__title">Toyota Hilux Front Cut</h3>
-              <p class="product-item__desc">1KD/2KD diesel front cut with 4WD options.</p>
-              <div class="product-item__footer"><a href="../brands/toyota.html#halfcuts" class="product-item__action">Toyota Half-Cuts →</a></div>
-            </div>
-          </article>
-          <article class="product-item" data-filter-tags="front">
-            <div class="product-item__body">
-              <div class="product-item__brand">Hyundai</div>
-              <h3 class="product-item__title">Hyundai Tucson Complete Cut</h3>
-              <p class="product-item__desc">Full front section for SUV rebuild programs.</p>
-              <div class="product-item__footer"><a href="../brands/hyundai.html#halfcuts" class="product-item__action">Hyundai Half-Cuts →</a></div>
-            </div>
-          </article>
-        </div>
+        <div id="half-cut-catalog-root"></div>
       </div>
     </section>
     <section class="cta-block">
@@ -100,6 +41,9 @@
   <script src="../js/path-utils.js"></script>
   <script src="../js/config.js"></script>
   <script src="../js/seo.js"></script>
+  <script src="../js/seo-engines.js"></script>
+  <script src="../js/half-cut-directory.js"></script>
+  <script src="../js/half-cut-catalog.js"></script>
   <script src="../js/components.js" defer></script>
   <script src="../js/main.js" defer></script>
 </body>

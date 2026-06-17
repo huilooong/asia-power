@@ -73,28 +73,28 @@
         title: 'Engines',
         desc: `Petrol, diesel and hybrid ${brand.name} engine units — compression tested with export documentation available on request.`,
         product: 'engines',
-        catalog: `${base()}engines/index.html`,
+        catalog: `${base()}engines/`,
       },
       {
         id: 'gearboxes',
         title: 'Gearboxes',
         desc: `Automatic, manual, CVT and 4WD ${brand.name} transmissions — shift-tested and export crated.`,
         product: 'gearboxes',
-        catalog: `${base()}gearboxes/index.html`,
+        catalog: `${base()}gearboxes/`,
       },
       {
         id: 'chassis',
         title: 'Chassis Parts',
         desc: `${brand.name} suspension, steering, brake and drivetrain components for repair and fleet programs.`,
         product: 'chassis-parts',
-        catalog: `${base()}chassis-parts/index.html`,
+        catalog: `${base()}chassis-parts/`,
       },
       {
         id: 'halfcuts',
         title: 'Half-Cuts',
         desc: `${brand.name} front cuts, rear cuts, nose cuts and complete half-cuts for rebuild and extraction.`,
         product: 'half-cuts',
-        catalog: `${base()}half-cuts/index.html`,
+        catalog: `${base()}half-cuts/`,
       },
     ];
 
@@ -137,6 +137,39 @@
           <a href="${whatsappUrl(brand.name, code)}" class="brand-engine-card__wa" target="_blank" rel="noopener">WhatsApp</a>
         </div>
       </article>`;
+  }
+
+  function renderAvailableHalfCuts(brand) {
+    const items = window.getHalfCutsByBrandSlug?.(brand.slug) || [];
+    if (!items.length) {
+      return `
+      <section class="brand-detail-section brand-detail-section--alt" id="halfcuts-inventory">
+        <div class="container">
+          <div class="brand-detail-section__header">
+            <span class="section-eyebrow">Half-Cut Inventory</span>
+            <h2>${brand.name} Half-Cut Listings</h2>
+          </div>
+          <p class="brand-halfcut-empty">No half cuts listed yet. Send us your request.</p>
+          <p><a href="${base()}contact.html?brand=${encodeURIComponent(brand.slug)}&product=half-cuts" class="btn btn-navy btn-sm">Request Half Cut</a></p>
+        </div>
+      </section>`;
+    }
+
+    const cards = items.map(item => window.renderHalfCutCard?.(item) || '').join('');
+    const disclaimer = window.HalfCutUtils?.INVENTORY_DISCLAIMER || '';
+    return `
+      <section class="brand-detail-section brand-detail-section--alt" id="halfcuts-inventory">
+        <div class="container">
+          <div class="brand-detail-section__header">
+            <span class="section-eyebrow">Half-Cut Inventory</span>
+            <h2>${brand.name} Half-Cut Listings</h2>
+            <p>Reference listings for ${brand.name} half-cut export — availability is confirmed on enquiry before quotation.</p>
+            <p class="half-cut-disclaimer">${disclaimer}</p>
+          </div>
+          <div class="half-cut-grid brand-halfcut-grid engine-catalog__grid">${cards}</div>
+          <p class="brand-halfcut-more"><a href="${base()}half-cuts/">View all half-cut inventory →</a></p>
+        </div>
+      </section>`;
   }
 
   function renderPopularEngines(brand) {
@@ -226,12 +259,14 @@
           <a href="#overview" class="brand-detail-nav__link">Overview</a>
           <a href="#categories" class="brand-detail-nav__link">Categories</a>
           <a href="#engines" class="brand-detail-nav__link">Engines</a>
+          <a href="#halfcuts-inventory" class="brand-detail-nav__link">Half Cuts</a>
           <a href="#quote" class="brand-detail-nav__link">Request Quote</a>
         </div>
       </nav>
       ${renderOverview(brand)}
       ${renderProductCategories(brand)}
       ${renderPopularEngines(brand)}
+      ${renderAvailableHalfCuts(brand)}
       ${renderQuoteSection(brand)}`;
 
     initBrandDetailNav();

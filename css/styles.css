@@ -3242,6 +3242,250 @@ a:focus-visible {
 
 .engine-model__quote-link:hover { color: var(--accent-dark); }
 
+/* Half-Cut Inventory */
+.half-cut-toolbar {
+  flex-direction: column;
+  align-items: stretch;
+  gap: 16px;
+  margin-bottom: 20px;
+}
+
+.half-cut-toolbar__search {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 14px;
+  background: var(--white);
+  border: 1px solid var(--steel-200);
+  border-radius: var(--radius-sm);
+}
+
+.half-cut-toolbar__search svg {
+  width: 18px;
+  height: 18px;
+  color: var(--steel-500);
+  flex-shrink: 0;
+}
+
+.half-cut-toolbar__search input {
+  flex: 1;
+  border: 0;
+  background: transparent;
+  font-size: 1rem;
+  min-width: 0;
+}
+
+.half-cut-toolbar__search input:focus { outline: none; }
+
+.half-cut-toolbar__filters {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.half-cut-toolbar__label {
+  font-size: .78rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: .06em;
+  color: var(--steel-500);
+}
+
+.half-cut-toolbar__select {
+  min-height: 44px;
+  padding: 8px 12px;
+  border: 1px solid var(--steel-200);
+  border-radius: var(--radius-sm);
+  background: var(--white);
+  font-size: .92rem;
+}
+
+.half-cut-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20px;
+}
+
+.half-cut-card.hidden { display: none; }
+
+.half-cut-disclaimer {
+  font-size: .88rem;
+  color: var(--steel-500);
+  line-height: 1.55;
+  margin: 0 0 20px;
+  padding: 12px 14px;
+  background: var(--steel-100);
+  border-left: 3px solid var(--navy-600);
+  border-radius: var(--radius-sm);
+}
+
+.half-cut-disclaimer--hero {
+  margin-top: 12px;
+  margin-bottom: 0;
+}
+
+.half-cut-card__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 10px;
+}
+
+.half-cut-card__stock-id {
+  font-family: ui-monospace, 'SF Mono', Menlo, monospace;
+  font-size: .95rem;
+  font-weight: 700;
+  letter-spacing: .04em;
+  color: var(--navy-900);
+}
+
+.half-cut-card__title {
+  font-family: var(--font-body);
+  font-size: 1.05rem;
+  font-weight: 600;
+  line-height: 1.35;
+  color: var(--navy-900);
+  margin: 0 0 12px;
+  text-transform: none;
+  letter-spacing: normal;
+}
+
+.half-cut-card__title a {
+  color: inherit;
+  text-decoration: none;
+}
+
+.half-cut-card__title a:hover {
+  color: var(--navy-700);
+}
+
+.half-cut-card__photos-note {
+  font-size: .78rem;
+  font-weight: 600;
+  color: var(--steel-500);
+  margin: 0 0 8px;
+}
+
+.half-cut-detail__stock-id {
+  font-family: ui-monospace, 'SF Mono', Menlo, monospace;
+  font-size: 1.75rem;
+  font-weight: 700;
+  letter-spacing: .04em;
+  color: var(--navy-900);
+  margin: 0 0 12px;
+  text-transform: none;
+}
+
+.half-cut-card__specs {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 8px 16px;
+  margin: 12px 0;
+  font-size: .82rem;
+}
+
+.half-cut-card__specs div {
+  display: grid;
+  gap: 2px;
+}
+
+.half-cut-card__specs dt {
+  font-size: .68rem;
+  font-weight: 700;
+  letter-spacing: .06em;
+  text-transform: uppercase;
+  color: var(--steel-500);
+}
+
+.half-cut-card__specs dd {
+  margin: 0;
+  color: var(--navy-900);
+  font-weight: 500;
+}
+
+.half-cut-card__specs a {
+  color: var(--navy-700);
+  font-weight: 600;
+}
+
+.half-cut-card__specs a:hover { color: var(--accent-dark); }
+
+.half-cut-card__status {
+  font-size: .68rem;
+  font-weight: 700;
+  letter-spacing: .06em;
+  text-transform: uppercase;
+  padding: 4px 8px;
+  border-radius: 4px;
+}
+
+.half-cut-card__status--available {
+  background: rgba(34, 197, 94, .12);
+  color: #15803d;
+}
+
+.half-cut-card__status--reserved {
+  background: rgba(234, 179, 8, .15);
+  color: #a16207;
+}
+
+.half-cut-card__status--sold {
+  background: rgba(100, 116, 139, .15);
+  color: var(--steel-500);
+}
+
+.half-cut-card__footer {
+  flex-direction: row;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.half-cut-detail__parts-title {
+  font-size: .95rem;
+  text-transform: uppercase;
+  color: var(--navy-900);
+  margin: 24px 0 12px;
+}
+
+.half-cut-detail__parts {
+  margin: 0 0 24px;
+  padding-left: 18px;
+  color: var(--steel-500);
+  line-height: 1.65;
+}
+
+.half-cut-detail__actions {
+  flex-wrap: wrap;
+}
+
+.brand-halfcut-grid { margin-bottom: 20px; }
+
+.brand-halfcut-empty {
+  color: var(--steel-500);
+  margin-bottom: 16px;
+}
+
+.brand-halfcut-more {
+  margin-top: 8px;
+  font-size: .88rem;
+  font-weight: 600;
+}
+
+.brand-halfcut-more a { color: var(--navy-700); }
+.brand-halfcut-more a:hover { color: var(--accent-dark); }
+
+@media (max-width: 1024px) {
+  .half-cut-grid { grid-template-columns: repeat(2, 1fr); }
+}
+
+@media (max-width: 768px) {
+  .half-cut-grid { grid-template-columns: 1fr; }
+  .half-cut-card__specs { grid-template-columns: 1fr; }
+  .half-cut-card__footer { flex-direction: column; align-items: stretch; }
+}
+
 /* Footer SEO */
 .footer__seo {
   padding: 40px 0 36px;

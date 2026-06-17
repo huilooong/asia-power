@@ -92,7 +92,7 @@
           <div class="brand-detail-section__header">
             <span class="section-eyebrow">Category 01</span>
             <h2>${brandName} Engines</h2>
-            <p>Engine model catalog for ${brandName} — available for global export. <a href="${base()}engines/index.html#engines-${brandSlug}">View full ${brandName} engine list</a>.</p>
+            <p>Engine model catalog for ${brandName} — available for global export. <a href="${base()}engines/#engines-${brandSlug}">View full ${brandName} engine list</a>.</p>
           </div>
           <div class="engine-catalog__grid">
             ${cards}
