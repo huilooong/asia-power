@@ -86,7 +86,7 @@
       : '';
     const sizes = c.logoSizes ? ` sizes="${c.logoSizes}"` : '';
     const srcsetAttr = srcset ? ` srcset="${srcset}"${sizes}` : '';
-    return `<img src="${href(c.logo)}"${srcsetAttr} alt="AsiaPower" class="${className}" width="256" height="45" decoding="async"${extra}>`;
+    return `<img src="${href(c.logo)}"${srcsetAttr} alt="AsiaPower" class="${className}" width="256" height="48" decoding="async"${extra}>`;
   }
 
   function renderHeader(activeId) {

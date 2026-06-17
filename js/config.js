@@ -6,7 +6,7 @@ const ASIAPOWER = {
   siteUrl: '',
   tagline: 'Global Powertrain Sourcing Platform',
   logo: 'assets/logo.png',
-  logoSrcSet: 'assets/logo.png 256w, assets/logo@2x.png 512w, assets/logo-hd.png 1024w',
+  logoSrcSet: 'assets/logo.png 256w, assets/logo@2x.png 512w, assets/logo@3x.png 768w',
   logoSizes: '(max-width: 768px) 46vw, 320px',
   whatsapp: '8618603773077',
   whatsappDisplay: '+86 186 0377 3077',

@@ -1,0 +1,44 @@
+{
+  "source": "/Users/longhui/.cursor/projects/Users-longhui-Desktop-AsiaPower/assets/logo-d7967094-b641-4040-9c3b-cefa23156b2b.png",
+  "source_size": {
+    "width": 1024,
+    "height": 682
+  },
+  "cropped_size": {
+    "width": 685,
+    "height": 128
+  },
+  "aspect": 5.3516,
+  "svg": {
+    "created": true,
+    "method": "embedded-raster",
+    "color_trace": "not-available (potrace monochrome only)"
+  },
+  "files": {
+    "logo.png": {
+      "width": 256,
+      "height": 48,
+      "bytes": 14155
+    },
+    "logo@2x.png": {
+      "width": 512,
+      "height": 96,
+      "bytes": 36842
+    },
+    "logo@3x.png": {
+      "width": 768,
+      "height": 144,
+      "bytes": 66826
+    },
+    "logo.webp": {
+      "width": 512,
+      "height": 96,
+      "bytes": 28348
+    },
+    "logo.svg": {
+      "bytes": 49764,
+      "method": "embedded-raster"
+    }
+  },
+  "removed": "logo-hd.png"
+}

@@ -15,12 +15,12 @@ function pass(name) { checks.push({ name, ok: true }); }
 function fail(name, detail) { checks.push({ name, ok: false, detail }); }
 
 // Logo assets
-for (const file of ['assets/logo.png', 'assets/logo@2x.png', 'assets/logo-hd.png']) {
+for (const file of ['assets/logo.png', 'assets/logo@2x.png', 'assets/logo@3x.png']) {
   existsSync(join(root, file)) ? pass(`asset exists: ${file}`) : fail(`asset exists: ${file}`);
 }
 
 const config = read('js/config.js');
-if (config.includes('logoSrcSet') && config.includes('logo@2x.png') && config.includes('logo-hd.png')) {
+if (config.includes('logoSrcSet') && config.includes('logo@2x.png') && config.includes('logo@3x.png')) {
   pass('config logoSrcSet includes 2x and HD');
 } else {
   fail('config logoSrcSet includes 2x and HD');
