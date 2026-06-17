@@ -88,6 +88,12 @@
           return `<figure class="half-cut-gallery__item" role="listitem"><img src="${url}" alt="${label}" loading="lazy"><figcaption>${label}</figcaption></figure>`;
         }).join('')}</div>`
       : '<p class="half-cut-card__photos-note">Photos on request</p>';
+    const videoSection = u.hasVideo(item)
+      ? `<section class="half-cut-detail__video">
+          <h3 class="half-cut-detail__video-title">Vehicle Video</h3>
+          ${u.renderVideoPlayer(item, { className: 'half-cut-detail__video-player', title: `${item.brand} ${item.model} video` })}
+        </section>`
+      : '';
     const supplierNotice = item.supplierVerified
       ? '<p class="half-cut-supplier-notice">Supplier verified listing — inventory confirmed by AsiaPower supplier network before publication.</p>'
       : '';
@@ -136,6 +142,7 @@
               <span class="section-eyebrow">${item.origin} · Half Cut · ${item.status}</span>
               <h2 class="half-cut-detail__stock-id">${item.stockId}</h2>
               ${gallery}
+              ${videoSection}
               <dl class="engine-detail__specs half-cut-detail__specs">
                 <div><dt>Brand</dt><dd><a href="${brandUrl}">${item.brand}</a></dd></div>
                 <div><dt>Model</dt><dd>${item.model}</dd></div>

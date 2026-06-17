@@ -171,6 +171,42 @@
     return Array.isArray(item.photos) && item.photos.length > 0;
   }
 
+  function videoSource(item) {
+    if (!item) return '';
+    if (item.video?.dataUrl) return item.video.dataUrl;
+    if (item.videoUrl) return item.videoUrl;
+    return '';
+  }
+
+  function videoMimeType(item) {
+    if (item?.video?.mimeType) return item.video.mimeType;
+    const src = videoSource(item);
+    if (/\.webm(\?|$)/i.test(src)) return 'video/webm';
+    if (/\.mov(\?|$)/i.test(src)) return 'video/quicktime';
+    return 'video/mp4';
+  }
+
+  function hasVideo(item) {
+    return !!videoSource(item);
+  }
+
+  function renderVideoPlayer(item, options) {
+    const src = videoSource(item);
+    if (!src) return '';
+    const opts = options || {};
+    const className = opts.className || 'half-cut-video';
+    const title = opts.title || 'Vehicle walkthrough video';
+    const mime = videoMimeType(item);
+    const typeAttr = mime ? ` type="${mime}"` : '';
+    return `
+      <div class="${className}">
+        <video class="${className}__player" controls playsinline preload="metadata" aria-label="${title.replace(/"/g, '&quot;')}">
+          <source src="${src}"${typeAttr}>
+          Your browser does not support embedded video.
+        </video>
+      </div>`;
+  }
+
   const INVENTORY_DISCLAIMER = 'Inventory is subject to final confirmation. Photos, price and shipping cost are confirmed on request before export.';
 
   function whatsappMessage(item) {
@@ -370,6 +406,10 @@
     hasPhotos,
     photoUrl,
     firstPhotoUrl,
+    hasVideo,
+    videoSource,
+    videoMimeType,
+    renderVideoPlayer,
     maskVin: (vin) => window.HalfCutVin?.maskVin(vin) || '',
     toPublicItem: (item) => {
       if (item?.vin && window.HalfCutInventoryLayer?.toPublicItem) {

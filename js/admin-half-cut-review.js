@@ -66,6 +66,27 @@
       </div>`;
   }
 
+  function renderVideoBlock(submission) {
+    const u = window.HalfCutUtils;
+    const item = {
+      video: submission.video,
+      videoUrl: submission.videoUrl,
+    };
+    if (!u?.hasVideo?.(item)) {
+      return `<p class="admin-review-empty">${tBtn('noVideo')}</p>`;
+    }
+    const fileName = submission.video?.fileName || 'vehicle-video';
+    const player = u.renderVideoPlayer(item, {
+      className: 'admin-review-video',
+      title: fileName,
+    });
+    return `
+      <div class="admin-review-video-wrap">
+        ${player}
+        <p class="admin-review-video-meta">${escapeHtml(fileName)}</p>
+      </div>`;
+  }
+
   function renderDecodedBlock(submission) {
     if (!submission.decodedData) return '';
     const d = submission.decodedData;
@@ -132,7 +153,12 @@
         <button type="button" class="btn btn-outline-navy btn-sm btn-bilingual" data-reject="${escapeHtml(submission.submissionId)}">${tBtn('reject')}</button>
       </div>` : '';
 
-    const decodeKey = submission.decodeMethod === 'Auto Decoded' ? 'autoDecoded' : 'manualEntry';
+    const decodeKey = submission.decodeMethod === 'Auto Decoded'
+      ? (submission.decodeConfidence === 'partial' ? 'partialDecoded' : 'autoDecoded')
+      : 'manualEntry';
+    const confidenceBadge = submission.decodeConfidence
+      ? `<span class="admin-review-confidence admin-review-confidence--${escapeHtml(submission.decodeConfidence)}">${escapeHtml(submission.decodeConfidence)}</span>`
+      : '';
     const approvedMeta = submission.approvedStockId
       ? `<p class="admin-review-meta"><strong>${tBtn('stockId')}:</strong> ${escapeHtml(submission.approvedStockId)} · <strong>${tBtn('slug')}:</strong> ${escapeHtml(submission.approvedSlug || '')}</p>`
       : '';
@@ -144,6 +170,7 @@
             <span class="admin-review-card__id">${escapeHtml(submission.submissionId)}</span>
             <span class="admin-review-card__status admin-review-card__status--${escapeHtml(submission.reviewStatus)}">${statusLabel(submission.reviewStatus)}</span>
             <span class="admin-review-decode-badge">${tBtn(decodeKey)}</span>
+            ${confidenceBadge}
           </div>
           <time datetime="${escapeHtml(submission.createdAt)}">${formatDate(submission.createdAt)}</time>
         </header>
@@ -175,10 +202,11 @@
         </div>
         ${renderDecodedBlock(submission)}
         ${submission.notes ? `<p><strong>${tBtn('notesLabel')}:</strong> ${escapeHtml(submission.notes)}</p>` : ''}
-        ${submission.videoUrl ? `<p><strong>${tBtn('videoLabel')}:</strong> <a href="${escapeHtml(submission.videoUrl)}" target="_blank" rel="noopener noreferrer">${escapeHtml(submission.videoUrl)}</a></p>` : ''}
-        ${approvedMeta}
         <h3>${t('photos')} (${submission.photos?.length || 0})</h3>
         ${renderPhotos(submission.photos)}
+        <h3>${t('videoLabel')}</h3>
+        ${renderVideoBlock(submission)}
+        ${approvedMeta}
         ${actions}
       </article>`;
   }

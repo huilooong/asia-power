@@ -143,7 +143,7 @@
     }
 
     const submission = Upload().buildSubmissionRecord(
-      { ...data, photos: validation.photos },
+      { ...data, photos: validation.photos, video: validation.video },
       generateSubmissionId
     );
 

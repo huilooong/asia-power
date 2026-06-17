@@ -12,6 +12,39 @@
 
   const Vin = () => window.HalfCutVin;
 
+  function normalizeVideo(video, legacyUrl) {
+    if (video && (video.dataUrl || video.url)) {
+      return {
+        dataUrl: video.dataUrl || video.url,
+        fileName: String(video.fileName || 'vehicle-video').trim(),
+        mimeType: String(video.mimeType || 'video/mp4').trim(),
+        size: Number(video.size) || 0,
+      };
+    }
+    const url = String(legacyUrl || '').trim();
+    if (url && /^https?:\/\//i.test(url)) {
+      return {
+        dataUrl: url,
+        fileName: 'external-link',
+        mimeType: '',
+        external: true,
+      };
+    }
+    return null;
+  }
+
+  function validateVideoFile(file) {
+    const v = Vin();
+    if (!file) return { valid: true, video: null };
+    if (!v.ALLOWED_VIDEO_MIMES.includes(file.type)) {
+      return { valid: false, error: 'Video must be MP4, WebM, or MOV.' };
+    }
+    if (file.size > v.MAX_VIDEO_BYTES) {
+      return { valid: false, error: `Video must be ${Math.round(v.MAX_VIDEO_BYTES / (1024 * 1024))} MB or smaller.` };
+    }
+    return { valid: true, video: file };
+  }
+
   function validateSubmission(data) {
     const v = Vin();
     const errors = [];
@@ -47,7 +80,12 @@
       errors.push('Invalid inventory status for supplier submission.');
     }
 
-    return { valid: errors.length === 0, errors, photos };
+    const video = normalizeVideo(data.video, data.videoUrl);
+    if (data.video && !video) {
+      errors.push('Invalid video upload.');
+    }
+
+    return { valid: errors.length === 0, errors, photos, video };
   }
 
   function buildSubmissionRecord(data, generateId) {
@@ -62,6 +100,7 @@
 
       vin: vinNorm,
       decodeMethod: data.decodeMethod || 'Manual Entry',
+      decodeConfidence: data.decodeConfidence || null,
       decodedData: data.decodedData || null,
 
       supplierName: String(data.supplierName || '').trim(),
@@ -82,7 +121,8 @@
       inventoryStatus: data.inventoryStatus,
 
       photos: data.photos || [],
-      videoUrl: String(data.videoUrl || '').trim(),
+      video: normalizeVideo(data.video, data.videoUrl),
+      videoUrl: normalizeVideo(data.video, data.videoUrl)?.dataUrl || '',
       notes: String(data.notes || '').trim(),
     };
   }
@@ -90,5 +130,7 @@
   window.HalfCutUploadLayer = {
     validateSubmission,
     buildSubmissionRecord,
+    normalizeVideo,
+    validateVideoFile,
   };
 })();

@@ -38,6 +38,10 @@
     stepVin: bi('Step 1 — VIN', '第1步 — VIN底盘号'),
     stepVehicle: bi('Step 2 — Vehicle Details', '第2步 — 车辆信息'),
     stepListing: bi('Step 3 — Listing Details', '第3步 — 库存信息'),
+    stepPhotos: bi('Step 4 — Photos', '第4步 — 上传照片'),
+    nextStep: bi('Next', '下一步'),
+    prevStep: bi('Back', '上一步'),
+    stepProgressLabel: bi('Upload progress', '上传进度'),
     photosLegend: bi('Photos', '照片'),
 
     vin: bi('VIN', 'VIN底盘号'),
@@ -52,10 +56,17 @@
     year: bi('Year', '年份'),
     engineCode: bi('Engine Code', '发动机型号'),
     transmission: bi('Transmission', '变速箱'),
+    drivetrain: bi('Drivetrain', '驱动形式'),
     vehicleCondition: bi('Vehicle Condition', '车辆状态'),
     inventoryStatus: bi('Inventory Status', '库存状态'),
     notes: bi('Notes', '备注'),
     videoLink: bi('Video Link', '视频链接'),
+    videoUpload: bi('Upload Video', '上传视频'),
+    videoOptional: bi('Optional — MP4, WebM or MOV up to 8 MB.', '选填 — 支持 MP4、WebM、MOV，最大 8 MB。'),
+    videoOnly: bi('Please upload a video file (MP4, WebM, or MOV).', '请上传视频文件（MP4、WebM 或 MOV）。'),
+    videoTooLarge: bi('Video must be 8 MB or smaller.', '视频文件不能超过 8 MB。'),
+    removeVideo: bi('Remove Video', '删除视频'),
+    noVideo: bi('No video attached.', '未上传视频。'),
     selectBrand: bi('Select brand', '选择品牌'),
     selectStatus: bi('Select status', '选择状态'),
 
@@ -64,6 +75,29 @@
       'VIN无法自动识别，请手动填写车辆信息。'
     ),
     decodeConfirm: bi('VIN decoded — please confirm the details below.', 'VIN识别成功，请确认以下信息。'),
+    confidenceFull: bi('Full decode', '完整识别'),
+    confidencePartial: bi('Partial decode', '部分识别'),
+    confidenceManual: bi('Manual entry', '手动填写'),
+    confidenceFullHint: bi(
+      'All key vehicle fields were detected. Review and continue.',
+      '已识别全部关键车辆信息，请确认后继续。'
+    ),
+    confidencePartialHint: bi(
+      'Some fields were detected. Only fill in what is missing below.',
+      '已识别部分信息，请仅补充缺失字段。'
+    ),
+    confidenceManualHint: bi(
+      'VIN could not be decoded. Please enter vehicle details manually.',
+      'VIN无法自动识别，请手动填写车辆信息。'
+    ),
+    vinCounter: bi('characters', '字符'),
+    vinReady: bi('Ready to decode', '可以识别'),
+    decodePreviewTitle: bi('Detected from VIN', 'VIN识别结果'),
+    autoFilled: bi('Auto-filled', '自动填写'),
+    needsInput: bi('Needs input', '需手动填写'),
+    editField: bi('Edit', '修改'),
+    fieldsAutoFilled: bi('fields auto-filled', '个字段已自动填写'),
+    onlyFillMissing: bi('Only complete the highlighted fields.', '只需填写高亮字段。'),
     phoneOrWechat: bi('Phone or WeChat is required.', '电话或微信至少填写一项。'),
     photosMin: bi('Upload at least 3 photos. 5+ recommended.', '至少上传3张照片，建议5张以上。'),
     required: bi('Required', '必填'),
@@ -88,6 +122,7 @@
     fullVin: bi('Full VIN', '完整VIN'),
     decodeMethod: bi('Decode Method', '识别方式'),
     autoDecoded: bi('Auto Decoded', '自动识别'),
+    partialDecoded: bi('Partial Decode', '部分识别'),
     manualEntry: bi('Manual Entry', '手动填写'),
     supplier: bi('Supplier', '供应商'),
     submittedVehicle: bi('Submitted Vehicle', '提交车辆信息'),

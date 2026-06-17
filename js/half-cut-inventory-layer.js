@@ -12,6 +12,7 @@
   'use strict';
 
   const Vin = () => window.HalfCutVin;
+  const Upload = () => window.HalfCutUploadLayer;
 
   function stripVin(item) {
     if (!item) return null;
@@ -57,7 +58,8 @@
       title: '',
       slug: '',
       photos,
-      videoUrl: submission.videoUrl || '',
+      video: Upload()?.normalizeVideo?.(submission.video, submission.videoUrl) || null,
+      videoUrl: submission.videoUrl || submission.video?.dataUrl || '',
       includedParts: helpers.parseIncludedParts(submission.notes),
       shortDescription: helpers.buildShortDescription(submission),
       supplierVerified: true,
