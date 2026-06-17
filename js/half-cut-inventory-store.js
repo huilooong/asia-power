@@ -1,6 +1,5 @@
 /**
- * AsiaPower — Half-Cut Store Facade (localStorage persistence)
- * Orchestrates Upload / Review / Inventory layers.
+ * AsiaPower — Half-Cut Store Facade (server JSON or URL-only local fallback)
  */
 (function () {
   'use strict';
@@ -12,6 +11,12 @@
   const Upload = () => window.HalfCutUploadLayer;
   const Review = () => window.HalfCutReviewLayer;
   const Inventory = () => window.HalfCutInventoryLayer;
+  const MediaApi = () => window.HalfCutMediaApi;
+
+  let serverMode = false;
+  let readyPromise = null;
+  let submissionsCache = [];
+  let approvedCache = [];
 
   function readJson(key, fallback) {
     try {
@@ -26,20 +31,74 @@
     localStorage.setItem(key, JSON.stringify(value));
   }
 
+  function stripEmbeddedMediaFromState() {
+    submissionsCache = submissionsCache.map((item) => sanitizeRecord(item));
+    approvedCache = approvedCache.map((item) => sanitizeRecord(item));
+  }
+
+  function sanitizeRecord(record) {
+    if (!record || typeof record !== 'object') return record;
+    const copy = { ...record };
+    if (Array.isArray(copy.photos)) {
+      copy.photos = Upload().normalizePhotos(copy.photos);
+    }
+    copy.video = Upload().normalizeVideo(copy.video, copy.videoUrl);
+    copy.videoUrl = copy.video?.url || '';
+    return copy;
+  }
+
+  async function persistState() {
+    stripEmbeddedMediaFromState();
+    if (serverMode) {
+      await MediaApi().saveState({ submissions: submissionsCache, approved: approvedCache });
+      return;
+    }
+    writeJson(SUBMISSIONS_KEY, submissionsCache);
+    writeJson(APPROVED_KEY, approvedCache);
+  }
+
+  function loadLocalFallback() {
+    submissionsCache = readJson(SUBMISSIONS_KEY, []);
+    approvedCache = readJson(APPROVED_KEY, []);
+    stripEmbeddedMediaFromState();
+  }
+
+  async function initStore() {
+    if (MediaApi()?.init) await MediaApi().init();
+    serverMode = !!MediaApi()?.isServerMode?.();
+    if (serverMode) {
+      const state = await MediaApi().fetchState();
+      submissionsCache = Array.isArray(state.submissions) ? state.submissions : [];
+      approvedCache = Array.isArray(state.approved) ? state.approved : [];
+      stripEmbeddedMediaFromState();
+    } else {
+      loadLocalFallback();
+    }
+    syncLiveInventory();
+    return serverMode;
+  }
+
+  function whenReady() {
+    if (!readyPromise) readyPromise = initStore();
+    return readyPromise;
+  }
+
   function getSubmissions() {
-    return readJson(SUBMISSIONS_KEY, []);
+    return submissionsCache.slice();
   }
 
   function saveSubmissions(list) {
-    writeJson(SUBMISSIONS_KEY, list);
+    submissionsCache = list.slice();
+    return persistState();
   }
 
   function getApprovedInventory() {
-    return readJson(APPROVED_KEY, []);
+    return approvedCache.slice();
   }
 
   function saveApprovedInventory(list) {
-    writeJson(APPROVED_KEY, list);
+    approvedCache = list.slice();
+    return persistState();
   }
 
   function generateSubmissionId() {
@@ -74,8 +133,7 @@
 
   function nextStockId() {
     const seed = window.SEED_HALF_CUT_LIST || window.HALF_CUT_LIST || [];
-    const approved = getApprovedInventory();
-    const all = [...seed, ...approved];
+    const all = [...seed, ...approvedCache];
     let max = 250000;
     all.forEach(item => {
       const m = String(item.stockId || '').match(/HC(\d+)/i);
@@ -107,19 +165,7 @@
   }
 
   function normalizePhotos(photos) {
-    const labels = Vin()?.PHOTO_LABELS || [];
-    if (!Array.isArray(photos)) return [];
-    return photos
-      .map((photo, index) => {
-        if (typeof photo === 'string') {
-          return { label: labels[index] || `Photo ${index + 1}`, dataUrl: photo };
-        }
-        return {
-          label: photo.label || labels[index] || `Photo ${index + 1}`,
-          dataUrl: photo.dataUrl || photo.url || '',
-        };
-      })
-      .filter(p => p.dataUrl);
+    return Upload().normalizePhotos(photos);
   }
 
   const inventoryHelpers = {
@@ -133,13 +179,21 @@
   };
 
   function syncLiveInventory() {
-    Inventory().syncToCatalog(window.SEED_HALF_CUT_LIST || [], getApprovedInventory());
+    Inventory().syncToCatalog(window.SEED_HALF_CUT_LIST || [], approvedCache);
   }
 
-  function addSubmission(data) {
+  async function addSubmission(data) {
     const validation = Upload().validateSubmission(data);
     if (!validation.valid) {
       throw new Error(validation.errors.join(' '));
+    }
+
+    if (!serverMode) {
+      const hasOnlyUrls = validation.photos.every((p) => p.url && !Upload().isDataUrl(p.url));
+      const videoOk = !validation.video || (validation.video.url && !Upload().isDataUrl(validation.video.url));
+      if (!hasOnlyUrls || !videoOk) {
+        throw new Error('Media uploads require the local half-cut server. Run: node server/half-cut-local-server.js');
+      }
     }
 
     const submission = Upload().buildSubmissionRecord(
@@ -147,31 +201,28 @@
       generateSubmissionId
     );
 
-    const list = getSubmissions();
-    list.unshift(submission);
-    saveSubmissions(list);
+    submissionsCache.unshift(submission);
+    await persistState();
     return submission;
   }
 
-  function updateSubmission(submissionId, edits) {
-    const list = getSubmissions();
-    const index = list.findIndex(s => s.submissionId === submissionId);
+  async function updateSubmission(submissionId, edits) {
+    const index = submissionsCache.findIndex(s => s.submissionId === submissionId);
     if (index === -1) return null;
-    list[index] = Review().applyEdits(list[index], edits);
-    saveSubmissions(list);
-    return list[index];
+    submissionsCache[index] = Review().applyEdits(submissionsCache[index], edits);
+    await persistState();
+    return submissionsCache[index];
   }
 
-  function approveSubmission(submissionId, edits) {
-    const list = getSubmissions();
-    const index = list.findIndex(s => s.submissionId === submissionId);
+  async function approveSubmission(submissionId, edits) {
+    const index = submissionsCache.findIndex(s => s.submissionId === submissionId);
     if (index === -1) return null;
 
-    let submission = list[index];
+    let submission = submissionsCache[index];
     if (edits) submission = Review().applyEdits(submission, edits);
 
     if (submission.reviewStatus === 'approved') {
-      return getApprovedInventory().find(i => i.submissionId === submissionId) || null;
+      return approvedCache.find(i => i.submissionId === submissionId) || null;
     }
 
     const approvalCheck = Review().validateForApproval(submission);
@@ -181,51 +232,46 @@
 
     const inventoryItem = Inventory().submissionToInventory(submission, inventoryHelpers);
     submission = Review().markApproved(submission, inventoryItem);
-    list[index] = submission;
-    saveSubmissions(list);
-
-    const approved = getApprovedInventory();
-    approved.unshift(inventoryItem);
-    saveApprovedInventory(approved);
+    submissionsCache[index] = submission;
+    approvedCache.unshift(inventoryItem);
+    await persistState();
     syncLiveInventory();
     return inventoryItem;
   }
 
-  function rejectSubmission(submissionId, reason) {
-    const list = getSubmissions();
-    const index = list.findIndex(s => s.submissionId === submissionId);
+  async function rejectSubmission(submissionId, reason) {
+    const index = submissionsCache.findIndex(s => s.submissionId === submissionId);
     if (index === -1) return false;
-    list[index] = Review().markRejected(list[index], reason);
-    saveSubmissions(list);
+    submissionsCache[index] = Review().markRejected(submissionsCache[index], reason);
+    await persistState();
     return true;
   }
 
-  function updateInventoryStatus(stockId, status) {
+  async function updateInventoryStatus(stockId, status) {
     const allowed = Vin().ADMIN_STATUSES;
     if (!allowed.includes(status)) throw new Error('Invalid status');
-    const approved = getApprovedInventory();
-    const item = approved.find(i => i.stockId === stockId);
+    const item = approvedCache.find(i => i.stockId === stockId);
     if (!item) return null;
     item.status = status;
-    saveApprovedInventory(approved);
+    await persistState();
     syncLiveInventory();
     return item;
   }
 
   function getSubmissionsByStatus(status) {
-    return getSubmissions().filter(s => s.reviewStatus === status);
+    return submissionsCache.filter(s => s.reviewStatus === status);
   }
 
   function getSubmissionById(submissionId) {
-    return getSubmissions().find(s => s.submissionId === submissionId) || null;
+    return submissionsCache.find(s => s.submissionId === submissionId) || null;
   }
 
   function getPublicInventory() {
-    return Inventory().toPublicList(getApprovedInventory());
+    return Inventory().toPublicList(approvedCache);
   }
 
   function getPublicItemBySlug(slug) {
-    const item = getApprovedInventory().find(i => i.slug === slug);
+    const item = approvedCache.find(i => i.slug === slug);
     return item ? Inventory().toPublicItem(item) : null;
   }
 
@@ -236,6 +282,8 @@
     PHOTO_LABELS: Vin()?.PHOTO_LABELS || [],
     brandToSlug: (b) => Vin().brandToSlug(b),
     formatMileage,
+    whenReady,
+    isServerMode: () => serverMode,
     getSubmissions,
     getSubmissionById,
     getSubmissionsByStatus,
@@ -250,6 +298,4 @@
     syncLiveInventory,
     toPublicItem: (item) => Inventory().toPublicItem(item),
   };
-
-  syncLiveInventory();
 })();

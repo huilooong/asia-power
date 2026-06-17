@@ -1,5 +1,11 @@
 .DS_Store
 .venv/
+.venv-logo/
 *.log
 *.tmp
 Thumbs.db
+uploads/photos/*
+uploads/videos/*
+!uploads/photos/.gitkeep
+!uploads/videos/.gitkeep
+data/half-cut-*.json

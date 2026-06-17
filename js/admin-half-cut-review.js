@@ -55,7 +55,7 @@
     return `
       <div class="admin-review-photos">
         ${photos.map((photo, index) => {
-          const url = typeof photo === 'string' ? photo : (photo.dataUrl || photo.url || '');
+          const url = typeof photo === 'string' ? photo : (photo.url || '');
           const label = typeof photo === 'object' && photo.label ? photo.label : `Photo ${index + 1}`;
           return `
             <figure class="admin-review-photo">
@@ -223,6 +223,7 @@
     const s = store();
     if (!root || !s || !I18n()) return;
 
+    s.whenReady().then(() => {
     function render() {
       const pending = s.getSubmissionsByStatus('pending');
       const approved = s.getSubmissionsByStatus('approved');
@@ -267,31 +268,35 @@
           const id = approveBtn.dataset.approve;
           const card = approveBtn.closest('.admin-review-card');
           const edits = card ? collectEdits(card) : null;
-          try {
-            const item = s.approveSubmission(id, edits);
+          s.approveSubmission(id, edits).then((item) => {
             if (item) {
               feedback.innerHTML = `${tBtn('approvalSuccess')} ${escapeHtml(id)} → ${tBtn('stockId')} ${escapeHtml(item.stockId)}. VIN: ${escapeHtml(Vin().maskVin(item.vin))}`;
               feedback.className = 'supplier-upload-feedback supplier-upload-feedback--success';
               render();
             }
-          } catch (err) {
+          }).catch((err) => {
             feedback.innerHTML = `${tBtn('approvalFailed')} ${escapeHtml(err.message || '')}`;
             feedback.className = 'supplier-upload-feedback supplier-upload-feedback--error';
-          }
+          });
           return;
         }
         if (rejectBtn) {
           const id = rejectBtn.dataset.reject;
-          if (s.rejectSubmission(id)) {
-            feedback.textContent = `${tBtn('rejectSuccess')} (${id})`;
-            feedback.className = 'supplier-upload-feedback supplier-upload-feedback--error';
-            render();
-          }
+          s.rejectSubmission(id).then((ok) => {
+            if (ok) {
+              feedback.textContent = `${tBtn('rejectSuccess')} (${id})`;
+              feedback.className = 'supplier-upload-feedback supplier-upload-feedback--error';
+              render();
+            }
+          });
         }
       });
     }
 
     render();
+    }).catch((err) => {
+      root.innerHTML = `<p class="admin-review-empty">${escapeHtml(err.message || 'Failed to load review data')}</p>`;
+    });
   }
 
   document.addEventListener('DOMContentLoaded', initAdminHalfCutReview);

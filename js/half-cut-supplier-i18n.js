@@ -62,9 +62,9 @@
     notes: bi('Notes', '备注'),
     videoLink: bi('Video Link', '视频链接'),
     videoUpload: bi('Upload Video', '上传视频'),
-    videoOptional: bi('Optional — MP4, WebM or MOV up to 8 MB.', '选填 — 支持 MP4、WebM、MOV，最大 8 MB。'),
+    videoOptional: bi('Optional — MP4, WebM or MOV up to 50 MB.', '选填 — 支持 MP4、WebM、MOV，最大 50 MB。'),
     videoOnly: bi('Please upload a video file (MP4, WebM, or MOV).', '请上传视频文件（MP4、WebM 或 MOV）。'),
-    videoTooLarge: bi('Video must be 8 MB or smaller.', '视频文件不能超过 8 MB。'),
+    videoTooLarge: bi('Video must be 50 MB or smaller.', '视频文件不能超过 50 MB。'),
     removeVideo: bi('Remove Video', '删除视频'),
     noVideo: bi('No video attached.', '未上传视频。'),
     selectBrand: bi('Select brand', '选择品牌'),
@@ -143,8 +143,8 @@
     approvalFailed: bi('Approval failed.', '审核失败。'),
     rejectSuccess: bi('Submission rejected.', '已拒绝该提交。'),
     adminReviewLead: bi(
-      'Approve verified supplier inventory before it appears on the catalog. Local demo only.',
-      '审核通过后库存才会出现在目录页。当前为本地演示模式。'
+      'Approve verified supplier inventory before it appears on the catalog.',
+      '审核通过后库存才会出现在目录页。'
     ),
 
     portalHalfCutBtn: bi('Submit Half-Cut Inventory', '上传半车库存'),
@@ -158,6 +158,8 @@
       'VIN识别成功，提交前请确认信息。'
     ),
     imagesOnly: bi('Please upload image files only.', '请仅上传图片文件。'),
+    uploadingMedia: bi('Uploading…', '正在上传…'),
+    uploadFailed: bi('Upload failed.', '上传失败。'),
     submissionFailed: bi('Submission failed.', '提交失败。'),
 
     photoLabels: [

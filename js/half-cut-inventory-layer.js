@@ -59,7 +59,7 @@
       slug: '',
       photos,
       video: Upload()?.normalizeVideo?.(submission.video, submission.videoUrl) || null,
-      videoUrl: submission.videoUrl || submission.video?.dataUrl || '',
+      videoUrl: submission.video?.url || submission.videoUrl || '',
       includedParts: helpers.parseIncludedParts(submission.notes),
       shortDescription: helpers.buildShortDescription(submission),
       supplierVerified: true,

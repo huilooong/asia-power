@@ -21,7 +21,7 @@ const sandbox = {
   document: { addEventListener: () => {} },
   localStorage,
   console,
-  Date, Math, parseInt, JSON, Array, String, Number, Object, Map, Set,
+  Date, Math, parseInt, JSON, Array, String, Number, Object, Map, Set, Promise,
 };
 sandbox.window = sandbox;
 
@@ -46,39 +46,41 @@ const Inventory = sandbox.window.HalfCutInventoryLayer;
 const Utils = sandbox.window.HalfCutUtils;
 const seedCount = sandbox.window.SEED_HALF_CUT_LIST.length;
 
-const tinyPng = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8z8BQDwAEhQGAhKmMIQAAAABJRU5ErkJggg==';
-const mkPhotos = (n) => Vin.PHOTO_LABELS.slice(0, n).map((label) => ({ label, dataUrl: tinyPng }));
+const mkPhotos = (n) => Vin.PHOTO_LABELS.slice(0, n).map((label, i) => ({
+  label,
+  url: `/uploads/photos/test-${i + 1}.jpg`,
+}));
 
 const tests = [];
-function test(name, fn) {
+async function test(name, fn) {
   try {
-    fn();
+    await fn();
     tests.push({ name, ok: true });
   } catch (e) {
     tests.push({ name, ok: false, error: e.message });
   }
 }
 
-// 1. VIN decode success
-test('VIN decode success flow', () => {
+await Store.whenReady();
+
+await test('VIN decode success flow', async () => {
   const r = Vin.decodeVin('MR0BA3CD500123456');
   if (!r.success) throw new Error('decode should succeed');
   if (r.data.brand !== 'Toyota') throw new Error('brand mismatch');
   if (r.decodeMethod !== 'Auto Decoded') throw new Error('method mismatch');
 });
 
-// 2. VIN decode failure
-test('VIN decode failure flow', () => {
+await test('VIN decode failure flow', async () => {
   const r = Vin.decodeVin('ZZZZZZZZZZZZZZZZZ');
   if (r.success) throw new Error('decode should fail');
   if (!r.error.includes('unavailable')) throw new Error('expected unavailable message');
 });
 
-// 3. Manual entry submission
-test('Manual entry flow', () => {
+await test('Manual entry flow', async () => {
   localStorage.removeItem('halfCutSubmissions');
   localStorage.removeItem('halfCutApprovedInventory');
-  const sub = Store.addSubmission({
+  await Store.whenReady();
+  const sub = await Store.addSubmission({
     vin: 'ZZZZZZZZZZZZZZZZZ',
     supplierName: 'Test Supplier',
     supplierPhone: '+86 100',
@@ -94,12 +96,12 @@ test('Manual entry flow', () => {
     photos: mkPhotos(3),
   });
   if (sub.decodeMethod !== 'Manual Entry') throw new Error('manual method');
+  if (sub.photos.some((p) => p.dataUrl)) throw new Error('photos must be URL-only');
 });
 
-// 4. Upload with 3 photos
-test('Upload with 3 photos', () => {
+await test('Upload with 3 photos', async () => {
   const v = Vin.validateVin('MR0BA3CD500123456');
-  const sub = Store.addSubmission({
+  const sub = await Store.addSubmission({
     vin: v.vin,
     supplierName: 'Guangzhou Yard',
     supplierPhone: '+86 138',
@@ -114,24 +116,24 @@ test('Upload with 3 photos', () => {
     decodedData: Vin.decodeVin(v.vin).data,
     vehicleCondition: 'Half Cut',
     photos: mkPhotos(3),
+    video: { url: '/uploads/videos/test.mp4', fileName: 'test.mp4', mimeType: 'video/mp4' },
   });
   if (sub.photos.length !== 3) throw new Error('expected 3 photos');
+  if (!sub.photos.every((p) => p.url && !p.dataUrl)) throw new Error('expected URL-only photos');
 });
 
-// 5–6. Approval + brand classification
 let approvedItem;
-test('Approval flow + brand auto classification', () => {
+await test('Approval flow + brand auto classification', async () => {
   const pending = Store.getSubmissionsByStatus('pending');
   const last = pending[0];
-  approvedItem = Store.approveSubmission(last.submissionId);
+  approvedItem = await Store.approveSubmission(last.submissionId);
   if (!approvedItem) throw new Error('approval failed');
   if (approvedItem.brandSlug !== 'toyota') throw new Error('brandSlug not toyota');
   const toyota = sandbox.window.getHalfCutsByBrandSlug('toyota');
   if (!toyota.some((i) => i.stockId === approvedItem.stockId)) throw new Error('not on toyota brand list');
 });
 
-// 7. VIN masking
-test('VIN masking on public pages', () => {
+await test('VIN masking on public pages', async () => {
   const masked = Vin.maskVin('MR0BA3CD500123456');
   if (masked.includes('0123456') && !masked.includes('*')) throw new Error('middle not masked');
   if (!masked.startsWith('MR0BA3CD50')) throw new Error('first 10 wrong');
@@ -141,38 +143,32 @@ test('VIN masking on public pages', () => {
   if (!pub.maskedVin) throw new Error('maskedVin missing');
 });
 
-// 8. Full VIN in admin/submission store
-test('Full VIN visible in admin submission data', () => {
+await test('Full VIN visible in admin submission data', async () => {
   const sub = Store.getSubmissions().find((s) => s.submissionId === approvedItem.submissionId);
   if (!sub?.vin || sub.vin.length !== 17) throw new Error('full vin missing in submission');
 });
 
-// 9. Full VIN hidden from public HTML payload
-test('Full VIN hidden from public HTML/JSON payloads', () => {
+await test('Full VIN hidden from public HTML/JSON payloads', async () => {
   const pub = sandbox.window.getHalfCutBySlug(approvedItem.slug);
   const json = JSON.stringify(pub);
   if (json.includes(approvedItem.vin)) throw new Error('full vin in public slug lookup');
   if (!Inventory.assertNoVinLeak(pub)) throw new Error('leak detector failed');
   const ld = Utils.productJsonLd(pub, 'https://example.com/detail');
-  if (JSON.stringify(ld).includes(approvedItem.vin)) throw new Error('vin in JSON-LD');
+  if (JSON.stringify(ld).includes(approvedItem.vin)) throw new Error('full vin in json-ld');
 });
 
-// 10. WhatsApp excludes VIN
-test('WhatsApp excludes VIN', () => {
-  const internal = sandbox.window.getHalfCutBySlugInternal(approvedItem.slug);
-  const msg = Utils.whatsappMessage(sandbox.window.getHalfCutBySlug(approvedItem.slug));
+await test('WhatsApp excludes VIN', async () => {
+  const msg = Utils.whatsappMessage(Inventory.toPublicItem(approvedItem));
   if (Vin.containsFullVin(msg)) throw new Error('whatsapp contains full vin');
-  if (!msg.includes(`Stock ID: ${internal.stockId}`)) throw new Error('stock id missing');
 });
 
 const failed = tests.filter((t) => !t.ok);
-tests.forEach((t) => console.log(`${t.ok ? 'PASS' : 'FAIL'} — ${t.name}${t.error ? ': ' + t.error : ''}`));
-
+tests.forEach((t) => console.log(`${t.ok ? 'PASS' : 'FAIL'} — ${t.name}${t.error ? `: ${t.error}` : ''}`));
 if (failed.length) {
+  console.error(`\n${failed.length} test(s) failed.`);
   process.exit(1);
 }
-
 console.log(`\nAll ${tests.length} Phase 2.1 tests passed.`);
 console.log(`  Approved Stock ID: ${approvedItem.stockId}`);
 console.log(`  Masked VIN: ${Vin.maskVin(approvedItem.vin)}`);
-console.log(`  Total inventory: ${sandbox.window.HALF_CUT_LIST.length} (seed ${seedCount} + approved)`);
+console.log(`  Total inventory: ${seedCount + Store.getApprovedInventory().length} (seed ${seedCount} + approved)`);

@@ -9,6 +9,7 @@
   const store = () => window.HalfCutInventoryStore;
   const Vin = () => window.HalfCutVin;
   const I18n = () => window.HalfCutSupplierI18n;
+  const MediaApi = () => window.HalfCutMediaApi;
   const t = (key) => I18n()?.labelHtml(key) || key;
   const tBtn = (key) => I18n()?.labelInline(key) || key;
   const tBi = (key) => {
@@ -27,15 +28,6 @@
       .replace(/</g, '&lt;')
       .replace(/>/g, '&gt;')
       .replace(/"/g, '&quot;');
-  }
-
-  function readFileAsDataUrl(file) {
-    return new Promise((resolve, reject) => {
-      const reader = new FileReader();
-      reader.onload = () => resolve(reader.result);
-      reader.onerror = reject;
-      reader.readAsDataURL(file);
-    });
   }
 
   function initSupplierHalfCutUpload() {
@@ -669,6 +661,7 @@
       const index = Number(input.id.replace('photo-', ''));
       const preview = document.getElementById(`photo-preview-${index}`);
       const img = preview?.querySelector('img');
+      const slot = input.closest('.supplier-photo-slot');
 
       input.addEventListener('change', async () => {
         const file = input.files?.[0];
@@ -678,13 +671,25 @@
           input.value = '';
           return;
         }
-        const dataUrl = await readFileAsDataUrl(file);
-        photoData.set(index, { label: input.dataset.label || v.PHOTO_LABELS[index], dataUrl });
-        if (preview && img) {
-          img.src = dataUrl;
-          preview.hidden = false;
+
+        slot?.classList.add('is-uploading');
+        showFeedback(tBi('uploadingMedia'), 'info');
+        try {
+          const label = input.dataset.label || v.PHOTO_LABELS[index];
+          const uploaded = await MediaApi().uploadPhoto(file, label);
+          photoData.set(index, { label: uploaded.label || label, url: uploaded.url });
+          if (preview && img) {
+            img.src = uploaded.url;
+            preview.hidden = false;
+          }
+          slot?.classList.add('has-photo');
+          showFeedback('', 'info');
+        } catch (err) {
+          showFeedback(err.message || tBi('uploadFailed'), 'error');
+          input.value = '';
+        } finally {
+          slot?.classList.remove('is-uploading');
         }
-        input.closest('.supplier-photo-slot')?.classList.add('has-photo');
       });
     }
 
@@ -713,8 +718,8 @@
     }
 
     function showVideoPreview(data) {
-      if (!videoPlayer || !videoPreview || !data?.dataUrl) return;
-      videoPlayer.src = data.dataUrl;
+      if (!videoPlayer || !videoPreview || !data?.url) return;
+      videoPlayer.src = data.url;
       if (videoMeta) {
         videoMeta.textContent = `${data.fileName} · ${formatFileSize(data.size)}`;
       }
@@ -722,7 +727,7 @@
       videoSlot?.classList.add('has-video');
     }
 
-    videoInput?.addEventListener('change', async () => {
+      videoInput?.addEventListener('change', async () => {
       const file = videoInput.files?.[0];
       if (!file) return;
 
@@ -737,14 +742,24 @@
         return;
       }
 
-      const dataUrl = await readFileAsDataUrl(file);
-      videoData = {
-        dataUrl,
-        fileName: file.name,
-        mimeType: file.type || 'video/mp4',
-        size: file.size,
-      };
-      showVideoPreview(videoData);
+      videoSlot?.classList.add('is-uploading');
+      showFeedback(tBi('uploadingMedia'), 'info');
+      try {
+        const uploaded = await MediaApi().uploadVideo(file);
+        videoData = {
+          url: uploaded.url,
+          fileName: uploaded.fileName || file.name,
+          mimeType: uploaded.mimeType || file.type || 'video/mp4',
+          size: uploaded.size || file.size,
+        };
+        showVideoPreview(videoData);
+        showFeedback('', 'info');
+      } catch (err) {
+        showFeedback(err.message || tBi('uploadFailed'), 'error');
+        videoInput.value = '';
+      } finally {
+        videoSlot?.classList.remove('is-uploading');
+      }
     });
 
     document.getElementById('video-remove-btn')?.addEventListener('click', clearVideoPreview);
@@ -764,7 +779,7 @@
     form.addEventListener('submit', (event) => {
       event.preventDefault();
       if (!validateStep(4)) return;
-      showFeedback('', 'info');
+      showFeedback(tBi('uploadingMedia'), 'info');
 
       const photos = [];
       for (let i = 0; i < v.PHOTO_LABELS.length; i++) {
@@ -793,8 +808,7 @@
         photos,
       };
 
-      try {
-        const submission = s.addSubmission(payload);
+      s.addSubmission(payload).then((submission) => {
         form.reset();
         photoData.clear();
         clearVideoPreview();
@@ -820,14 +834,34 @@
           `${I18n().labelEn('pendingReview')} / ${I18n().labelZh('pendingReview')}: ${submission.submissionId}\nVIN: ${submission.vin}`,
           'success'
         );
-      } catch (err) {
+      }).catch((err) => {
         showFeedback(`${err.message}\n${I18n().labelZh('submissionFailed')}`, 'error');
-      }
+      });
     });
 
     goToStep(1);
     updateVinCounter();
   }
 
-  document.addEventListener('DOMContentLoaded', initSupplierHalfCutUpload);
+  async function bootSupplierUpload() {
+    const s = store();
+    const Media = MediaApi();
+    if (!s || !Media) return;
+    try {
+      await s.whenReady();
+      if (!Media.isServerMode()) {
+        const root = document.getElementById('supplier-half-cut-upload-root');
+        if (root) {
+          root.innerHTML = `<div class="supplier-upload-warning"><strong>Server required / 需要本地服务器：</strong> Run <code>node server/half-cut-local-server.js</code> then open this page at <code>http://localhost:8787/supplier-portal/half-cut-upload.html</code></div>`;
+        }
+        return;
+      }
+      initSupplierHalfCutUpload();
+    } catch (err) {
+      const root = document.getElementById('supplier-half-cut-upload-root');
+      if (root) root.innerHTML = `<div class="supplier-upload-feedback supplier-upload-feedback--error">${err.message}</div>`;
+    }
+  }
+
+  document.addEventListener('DOMContentLoaded', bootSupplierUpload);
 })();

@@ -74,7 +74,10 @@
 
   function initHalfCutCatalog() {
     const root = document.getElementById('half-cut-catalog-root');
-    if (!root || !window.HALF_CUT_LIST) return;
+    if (!root) return;
+
+    const boot = () => {
+    if (!window.HALF_CUT_LIST) return;
 
     const u = window.HalfCutUtils;
     const brands = window.getHalfCutBrands();
@@ -158,6 +161,14 @@
     });
 
     applyFilters();
+  };
+
+    const Store = window.HalfCutInventoryStore;
+    if (Store?.whenReady) {
+      Store.whenReady().then(boot).catch(boot);
+    } else {
+      boot();
+    }
   }
 
   window.renderHalfCutCard = renderHalfCutCard;

@@ -269,7 +269,7 @@
     BRAND_SLUG_MAP,
     containsFullVin,
     MIN_PHOTOS: 3,
-    MAX_VIDEO_BYTES: 8 * 1024 * 1024,
+    MAX_VIDEO_BYTES: 50 * 1024 * 1024,
     ALLOWED_VIDEO_MIMES: ['video/mp4', 'video/webm', 'video/quicktime', 'video/x-msvideo'],
     SUPPLIER_STATUSES: ['Available', 'Reserved'],
     ADMIN_STATUSES: ['Available', 'Reserved', 'In Transit', 'Sold'],

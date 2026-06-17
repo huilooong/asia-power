@@ -1,33 +1,57 @@
 /**
- * Upload Layer — supplier submission intake (local demo)
- *
- * Future DB mapping:
- *   localStorage.halfCutSubmissions → data/half-cut-submissions.json
- *                                  → Supabase table `half_cut_submissions`
- *   photo blobs                   → uploads/half-cuts/{id}/
- *                                  → Supabase Storage `half-cut-photos`
+ * Upload Layer — supplier submission intake (URL-only media)
  */
 (function () {
   'use strict';
 
   const Vin = () => window.HalfCutVin;
 
+  function isDataUrl(value) {
+    return /^data:(image|video)\//i.test(String(value || ''));
+  }
+
+  function normalizePhoto(photo, index) {
+    const labels = Vin()?.PHOTO_LABELS || [];
+    if (!photo) return null;
+    const url = typeof photo === 'string' ? photo : (photo.url || '');
+    if (!url || isDataUrl(url)) return null;
+    return {
+      label: (typeof photo === 'object' && photo.label) || labels[index] || `Photo ${index + 1}`,
+      url,
+    };
+  }
+
+  function normalizePhotos(photos) {
+    if (!Array.isArray(photos)) return [];
+    return photos
+      .map((photo, index) => normalizePhoto(photo, index))
+      .filter(Boolean);
+  }
+
   function normalizeVideo(video, legacyUrl) {
-    if (video && (video.dataUrl || video.url)) {
+    if (video?.url && !isDataUrl(video.url)) {
       return {
-        dataUrl: video.dataUrl || video.url,
+        url: video.url,
         fileName: String(video.fileName || 'vehicle-video').trim(),
         mimeType: String(video.mimeType || 'video/mp4').trim(),
         size: Number(video.size) || 0,
       };
     }
-    const url = String(legacyUrl || '').trim();
-    if (url && /^https?:\/\//i.test(url)) {
+    const url = String(legacyUrl || video?.videoUrl || '').trim();
+    if (url && !isDataUrl(url) && /^https?:\/\//i.test(url)) {
       return {
-        dataUrl: url,
+        url,
         fileName: 'external-link',
         mimeType: '',
         external: true,
+      };
+    }
+    if (url && url.startsWith('/uploads/')) {
+      return {
+        url,
+        fileName: video?.fileName || 'vehicle-video',
+        mimeType: video?.mimeType || 'video/mp4',
+        size: Number(video?.size) || 0,
       };
     }
     return null;
@@ -58,7 +82,7 @@
     }
     if (!String(data.mileage || '').trim()) errors.push('Mileage is required.');
 
-    const photos = Array.isArray(data.photos) ? data.photos.filter(p => p?.dataUrl || p?.url) : [];
+    const photos = normalizePhotos(data.photos);
     if (photos.length < v.MIN_PHOTOS) {
       errors.push(`At least ${v.MIN_PHOTOS} photos are required (you have ${photos.length}).`);
     }
@@ -92,6 +116,7 @@
     const v = Vin();
     const vinNorm = v.normalizeVin(data.vin);
     const brandSlug = v.brandToSlug(data.brand);
+    const video = normalizeVideo(data.video, data.videoUrl);
 
     return {
       submissionId: generateId(),
@@ -121,8 +146,8 @@
       inventoryStatus: data.inventoryStatus,
 
       photos: data.photos || [],
-      video: normalizeVideo(data.video, data.videoUrl),
-      videoUrl: normalizeVideo(data.video, data.videoUrl)?.dataUrl || '',
+      video,
+      videoUrl: video?.url || '',
       notes: String(data.notes || '').trim(),
     };
   }
@@ -130,7 +155,10 @@
   window.HalfCutUploadLayer = {
     validateSubmission,
     buildSubmissionRecord,
+    normalizePhoto,
+    normalizePhotos,
     normalizeVideo,
     validateVideoFile,
+    isDataUrl,
   };
 })();

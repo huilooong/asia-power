@@ -98,8 +98,9 @@
 
   function photoUrl(photo) {
     if (!photo) return '';
-    if (typeof photo === 'string') return photo;
-    return photo.url || photo.dataUrl || '';
+    const url = typeof photo === 'string' ? photo : (photo.url || '');
+    if (!url || /^data:(image|video)\//i.test(url)) return '';
+    return url;
   }
 
   function firstPhotoUrl(item) {
@@ -173,9 +174,9 @@
 
   function videoSource(item) {
     if (!item) return '';
-    if (item.video?.dataUrl) return item.video.dataUrl;
-    if (item.videoUrl) return item.videoUrl;
-    return '';
+    const url = item.video?.url || item.videoUrl || '';
+    if (!url || /^data:(image|video)\//i.test(url)) return '';
+    return url;
   }
 
   function videoMimeType(item) {

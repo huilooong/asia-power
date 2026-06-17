@@ -195,6 +195,12 @@
   document.addEventListener('DOMContentLoaded', () => {
     const params = new URLSearchParams(window.location.search);
     const slug = params.get('slug');
-    if (slug) renderHalfCutDetail(slug);
+    const boot = () => { if (slug) renderHalfCutDetail(slug); };
+    const Store = window.HalfCutInventoryStore;
+    if (Store?.whenReady) {
+      Store.whenReady().then(boot).catch(boot);
+    } else {
+      boot();
+    }
   });
 })();
