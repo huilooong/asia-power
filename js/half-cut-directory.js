@@ -42,7 +42,7 @@
     };
   }
 
-  const HALF_CUT_LIST = [
+  const SEED_HALF_CUT_LIST = [
     hc({ stockId: 'HC250001', brand: 'Toyota', brandSlug: 'toyota', model: 'Hilux Revo', year: 2022, engineCode: '2GD-FTV', transmissionCode: '6AT', drivetrain: '4WD', mileage: '68,000 km', status: 'Available', title: 'Toyota Hilux Revo 2GD-FTV Half Cut', slug: 'toyota-hilux-revo-2022-2gd-ftv-half-cut-hc250001', shortDescription: 'Complete front half cut with 2GD-FTV diesel and 6-speed automatic — Hilux Revo rebuild reference.' }),
     hc({ stockId: 'HC250002', brand: 'Toyota', brandSlug: 'toyota', model: 'Land Cruiser Prado', year: 2021, engineCode: '1GD-FTV', transmissionCode: '6AT', drivetrain: '4WD', mileage: '72,000 km', status: 'Available', title: 'Toyota Prado 1GD-FTV Half Cut', slug: 'toyota-prado-2021-1gd-ftv-half-cut-hc250002' }),
     hc({ stockId: 'HC250003', brand: 'Toyota', brandSlug: 'toyota', model: 'Hiace', year: 2020, engineCode: '2TR-FE', transmissionCode: '5MT', drivetrain: '2WD', mileage: '95,000 km', status: 'Available', title: 'Toyota Hiace 2TR-FE Half Cut', slug: 'toyota-hiace-2020-2tr-fe-half-cut-hc250003' }),
@@ -87,18 +87,46 @@
     hc({ stockId: 'HC250034', brand: 'Mercedes-Benz', brandSlug: 'mercedes-benz', model: 'GLC250', year: 2020, engineCode: 'M274', transmissionCode: '9AT', drivetrain: '4MATIC', mileage: '59,000 km', status: 'Available', title: 'Mercedes-Benz GLC M274 Half Cut', slug: 'mercedes-glc-2020-m274-half-cut-hc250034', origin: 'Germany' }),
   ];
 
-  const bySlug = Object.fromEntries(HALF_CUT_LIST.map(item => [item.slug, item]));
+  const HALF_CUT_LIST = SEED_HALF_CUT_LIST.slice();
+  let bySlug = Object.fromEntries(HALF_CUT_LIST.map(item => [item.slug, item]));
 
-  const STATUS_ORDER = { Available: 0, Reserved: 1, Sold: 2 };
+  function rebuildHalfCutList(list) {
+    HALF_CUT_LIST.splice(0, HALF_CUT_LIST.length, ...list);
+    bySlug = Object.fromEntries(HALF_CUT_LIST.map(item => [item.slug, item]));
+    window.HALF_CUT_BY_SLUG = bySlug;
+  }
+
+  function photoUrl(photo) {
+    if (!photo) return '';
+    if (typeof photo === 'string') return photo;
+    return photo.url || photo.dataUrl || '';
+  }
+
+  function firstPhotoUrl(item) {
+    if (!hasPhotos(item)) return '';
+    return photoUrl(item.photos[0]);
+  }
+
+  const STATUS_ORDER = { Available: 0, Reserved: 1, 'In Transit': 2, Sold: 3 };
 
   function getHalfCutBySlug(slug) {
+    const item = bySlug[slug] || null;
+    if (!item) return null;
+    if (window.HalfCutInventoryLayer?.toPublicItem && item.vin) {
+      return window.HalfCutInventoryLayer.toPublicItem(item);
+    }
+    return item;
+  }
+
+  function getHalfCutBySlugInternal(slug) {
     return bySlug[slug] || null;
   }
 
   function getHalfCutsByBrandSlug(brandSlug) {
     return HALF_CUT_LIST
       .filter(item => item.brandSlug === brandSlug)
-      .sort((a, b) => (STATUS_ORDER[a.status] ?? 9) - (STATUS_ORDER[b.status] ?? 9));
+      .sort((a, b) => (STATUS_ORDER[a.status] ?? 9) - (STATUS_ORDER[b.status] ?? 9))
+      .map(item => getHalfCutBySlug(item.slug) || item);
   }
 
   function getHalfCutBrands() {
@@ -120,7 +148,7 @@
   }
 
   function statusSlug(status) {
-    return String(status || '').toLowerCase();
+    return String(status || '').toLowerCase().replace(/\s+/g, '-');
   }
 
   function isAvailable(item) {
@@ -133,6 +161,10 @@
 
   function isSold(item) {
     return item.status === 'Sold';
+  }
+
+  function isInTransit(item) {
+    return item.status === 'In Transit';
   }
 
   function hasPhotos(item) {
@@ -284,6 +316,12 @@
         <a href="${checkAvailabilityUrl(item)}" class="btn btn-accent btn-sm" target="_blank" rel="noopener noreferrer">Check Availability</a>
         <a href="${similarUnitUrl(item)}" class="btn btn-outline-navy btn-sm" target="_blank" rel="noopener noreferrer">Request Similar Unit</a>`;
     }
+    if (isInTransit(item)) {
+      return `
+        <a href="${detail}" class="btn btn-navy btn-sm">View Details</a>
+        <a href="${checkAvailabilityUrl(item)}" class="btn btn-accent btn-sm" target="_blank" rel="noopener noreferrer">Check Availability</a>
+        <a href="${similarUnitUrl(item)}" class="btn btn-outline-navy btn-sm" target="_blank" rel="noopener noreferrer">Request Similar Unit</a>`;
+    }
     return `
       <a href="${detail}" class="btn btn-navy btn-sm">View Details</a>
       <a href="${similarUnitUrl(item)}" class="btn btn-accent btn-sm" target="_blank" rel="noopener noreferrer">Request Similar Unit</a>`;
@@ -301,13 +339,21 @@
         <a href="${checkAvailabilityUrl(item)}" class="btn btn-accent" target="_blank" rel="noopener noreferrer">Check Availability</a>
         <a href="${similarUnitUrl(item)}" class="btn btn-outline-navy" target="_blank" rel="noopener noreferrer">Request Similar Unit</a>`;
     }
+    if (isInTransit(item)) {
+      return `
+        <a href="${checkAvailabilityUrl(item)}" class="btn btn-accent" target="_blank" rel="noopener noreferrer">Check Availability</a>
+        <a href="${similarUnitUrl(item)}" class="btn btn-outline-navy" target="_blank" rel="noopener noreferrer">Request Similar Unit</a>`;
+    }
     return `
       <a href="${similarUnitUrl(item)}" class="btn btn-accent" target="_blank" rel="noopener noreferrer">Request Similar Unit</a>`;
   }
 
+  window.SEED_HALF_CUT_LIST = SEED_HALF_CUT_LIST;
   window.HALF_CUT_LIST = HALF_CUT_LIST;
   window.HALF_CUT_BY_SLUG = bySlug;
+  window.HalfCutDirectory = { SEED_HALF_CUT_LIST, rebuildHalfCutList };
   window.getHalfCutBySlug = getHalfCutBySlug;
+  window.getHalfCutBySlugInternal = getHalfCutBySlugInternal;
   window.getHalfCutsByBrandSlug = getHalfCutsByBrandSlug;
   window.getHalfCutBrands = getHalfCutBrands;
   window.HalfCutUtils = {
@@ -322,6 +368,15 @@
     enginePageUrl,
     statusSlug,
     hasPhotos,
+    photoUrl,
+    firstPhotoUrl,
+    maskVin: (vin) => window.HalfCutVin?.maskVin(vin) || '',
+    toPublicItem: (item) => {
+      if (item?.vin && window.HalfCutInventoryLayer?.toPublicItem) {
+        return window.HalfCutInventoryLayer.toPublicItem(item);
+      }
+      return item;
+    },
     INVENTORY_DISCLAIMER,
     seoTitle,
     seoDescription,

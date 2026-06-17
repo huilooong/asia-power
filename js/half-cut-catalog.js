@@ -31,33 +31,43 @@
   function renderHalfCutCard(item) {
     const b = base();
     const u = window.HalfCutUtils;
-    const detail = u.detailUrl(b, item.slug);
-    const brandUrl = `${b}brands/${item.brandSlug}.html#halfcuts-inventory`;
-    const engineUrl = u.enginePageUrl(b, item);
-    const statusClass = `half-cut-card__status--${u.statusSlug(item.status)}`;
-    const photosNote = u.hasPhotos(item)
+    const display = u.toPublicItem(item);
+    const detail = u.detailUrl(b, display.slug);
+    const brandUrl = `${b}brands/${display.brandSlug}.html#halfcuts-inventory`;
+    const engineUrl = u.enginePageUrl(b, display);
+    const statusClass = `half-cut-card__status--${u.statusSlug(display.status)}`;
+    const thumbUrl = u.firstPhotoUrl(display);
+    const thumb = thumbUrl
+      ? `<div class="half-cut-card__thumb"><img src="${thumbUrl}" alt="${display.title} thumbnail" loading="lazy"></div>`
+      : '';
+    const photosNote = u.hasPhotos(display)
       ? ''
       : '<p class="half-cut-card__photos-note">Photos on request</p>';
+    const vinRow = display.maskedVin
+      ? `<div><dt>VIN</dt><dd class="half-cut-card__vin">${display.maskedVin}</dd></div>`
+      : '';
 
     return `
-      <article class="half-cut-card engine-model" data-slug="${item.slug}" data-brand="${item.brandSlug}" data-status="${u.statusSlug(item.status)}">
+      <article class="half-cut-card engine-model" data-slug="${display.slug}" data-brand="${display.brandSlug}" data-status="${u.statusSlug(display.status)}">
+        ${thumb}
         <div class="half-cut-card__header">
-          <span class="half-cut-card__stock-id">${item.stockId}</span>
-          <span class="half-cut-card__status ${statusClass}">${item.status}</span>
+          <span class="half-cut-card__stock-id">${display.stockId}</span>
+          <span class="half-cut-card__status ${statusClass}">${display.status}</span>
         </div>
-        <h3 class="half-cut-card__title"><a href="${detail}">${item.title}</a></h3>
+        <h3 class="half-cut-card__title"><a href="${detail}">${display.title}</a></h3>
         <dl class="half-cut-card__specs">
-          <div><dt>Brand</dt><dd><a href="${brandUrl}">${item.brand}</a></dd></div>
-          <div><dt>Model</dt><dd>${item.model}</dd></div>
-          <div><dt>Year</dt><dd>${item.year}</dd></div>
-          <div><dt>Engine</dt><dd>${engineUrl ? `<a href="${engineUrl}">${item.engineCode}</a>` : item.engineCode}</dd></div>
-          <div><dt>Transmission</dt><dd>${item.transmissionCode}</dd></div>
-          <div><dt>Mileage</dt><dd>${item.mileage}</dd></div>
+          <div><dt>Brand</dt><dd><a href="${brandUrl}">${display.brand}</a></dd></div>
+          <div><dt>Model</dt><dd>${display.model}</dd></div>
+          <div><dt>Year</dt><dd>${display.year}</dd></div>
+          <div><dt>Engine</dt><dd>${engineUrl ? `<a href="${engineUrl}">${display.engineCode}</a>` : display.engineCode}</dd></div>
+          <div><dt>Transmission</dt><dd>${display.transmissionCode}</dd></div>
+          <div><dt>Mileage</dt><dd>${display.mileage}</dd></div>
+          ${vinRow}
         </dl>
         ${photosNote}
-        <p class="engine-model__apps">${item.shortDescription}</p>
+        <p class="engine-model__apps">${display.shortDescription}</p>
         <div class="engine-model__footer half-cut-card__footer">
-          ${u.renderCardActions(item, b)}
+          ${u.renderCardActions(display, b)}
         </div>
       </article>`;
   }
@@ -91,6 +101,7 @@
           <button class="filter-btn" data-status="all" type="button">All</button>
           <button class="filter-btn active" data-status="available" type="button">Available</button>
           <button class="filter-btn" data-status="reserved" type="button">Reserved</button>
+          <button class="filter-btn" data-status="in-transit" type="button">In Transit</button>
           <button class="filter-btn" data-status="sold" type="button">Sold</button>
         </div>
       </div>
@@ -120,7 +131,7 @@
       cards().forEach(card => {
         const slug = card.dataset.brand;
         const status = card.dataset.status;
-        const item = window.getHalfCutBySlug(card.dataset.slug);
+        const item = window.getHalfCutBySlugInternal?.(card.dataset.slug) || window.getHalfCutBySlug(card.dataset.slug);
         const matchBrand = brand === 'all' || slug === brand;
         const matchStatus = activeStatus === 'all' || status === activeStatus;
         const matchQuery = item ? matchesSearch(item, query) : true;

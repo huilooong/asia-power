@@ -74,6 +74,21 @@
       </div>`;
   }
 
+  function logoImg(className, attrs) {
+    const c = getConfig();
+    if (!c) return '';
+    const extra = attrs || '';
+    const srcset = c.logoSrcSet
+      ? c.logoSrcSet.split(',').map(part => {
+          const [file, width] = part.trim().split(/\s+/);
+          return `${href(file)} ${width || ''}`.trim();
+        }).join(', ')
+      : '';
+    const sizes = c.logoSizes ? ` sizes="${c.logoSizes}"` : '';
+    const srcsetAttr = srcset ? ` srcset="${srcset}"${sizes}` : '';
+    return `<img src="${href(c.logo)}"${srcsetAttr} alt="AsiaPower" class="${className}" width="256" height="45" decoding="async"${extra}>`;
+  }
+
   function renderHeader(activeId) {
     const c = getConfig();
     if (!c) return '';
@@ -85,14 +100,14 @@
       <header class="header">
         <div class="container header__inner">
           <a href="${href('index.html')}" class="logo header__logo" aria-label="AsiaPower Home">
-            <img src="${href(c.logo)}" alt="AsiaPower" class="logo__img" width="256" height="45" decoding="async" fetchpriority="high">
+            ${logoImg('logo__img', ' fetchpriority="high"')}
           </a>
           <button class="menu-toggle" type="button" aria-label="Open menu" aria-expanded="false" aria-controls="main-nav">
             <span></span><span></span><span></span>
           </button>
           <nav class="nav" id="main-nav" aria-label="Main navigation">
             <div class="nav__logo">
-              <img src="${href(c.logo)}" alt="" width="739" height="130" decoding="async">
+              ${logoImg('logo__img', '')}
             </div>
             ${links}
             <a href="${href('contact.html')}" class="btn btn-accent nav__cta">Request Quote</a>
@@ -157,7 +172,7 @@
           <div class="footer__grid">
             <div class="footer__col footer__col--brand">
               <a href="${href('index.html')}" class="logo logo--footer">
-                <img src="${href(c.logo)}" alt="AsiaPower" class="logo__img" width="256" height="45" decoding="async" loading="lazy">
+                ${logoImg('logo__img', ' loading="lazy"')}
               </a>
               <p class="footer__about">AsiaPower is a global powertrain sourcing platform — connecting importers, workshops and fleet operators to a verified China-based supply network for Japanese, Korean and Chinese vehicle applications.</p>
             </div>

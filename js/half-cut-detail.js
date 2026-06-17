@@ -80,9 +80,24 @@
 
     const engineUrl = u.enginePageUrl(b, item);
     const brandUrl = `${b}brands/${item.brandSlug}.html#halfcuts-inventory`;
-    const photosNote = u.hasPhotos(item)
-      ? ''
+    const thumbUrl = u.firstPhotoUrl(item);
+    const gallery = u.hasPhotos(item)
+      ? `<div class="half-cut-gallery" role="list">${item.photos.map((photo, index) => {
+          const url = u.photoUrl(photo);
+          const label = typeof photo === 'object' && photo.label ? photo.label : `Photo ${index + 1}`;
+          return `<figure class="half-cut-gallery__item" role="listitem"><img src="${url}" alt="${label}" loading="lazy"><figcaption>${label}</figcaption></figure>`;
+        }).join('')}</div>`
       : '<p class="half-cut-card__photos-note">Photos on request</p>';
+    const supplierNotice = item.supplierVerified
+      ? '<p class="half-cut-supplier-notice">Supplier verified listing — inventory confirmed by AsiaPower supplier network before publication.</p>'
+      : '';
+
+    const vinRow = item.maskedVin
+      ? `<div><dt>VIN</dt><dd class="half-cut-detail__vin">${item.maskedVin}</dd></div>`
+      : '';
+    const conditionRow = item.vehicleCondition
+      ? `<div><dt>Condition</dt><dd>${item.vehicleCondition}</dd></div>`
+      : '';
 
     const ctaHeading = item.status === 'Sold'
       ? `Similar ${item.brand} ${item.model} Half Cut`
@@ -90,8 +105,8 @@
 
     const ctaText = item.status === 'Sold'
       ? `Stock ID <strong>${item.stockId}</strong> is sold. Reference this listing when requesting a similar unit.`
-      : item.status === 'Reserved'
-        ? `Stock ID <strong>${item.stockId}</strong> is reserved. Confirm availability or request a similar unit before export.`
+      : item.status === 'Reserved' || item.status === 'In Transit'
+        ? `Stock ID <strong>${item.stockId}</strong> is ${item.status.toLowerCase()}. Confirm availability or request a similar unit before export.`
         : `Reference Stock ID <strong>${item.stockId}</strong> for FOB/CIF quotation — availability confirmed on enquiry.`;
 
     const ctaButton = item.status === 'Available'
@@ -110,6 +125,7 @@
           <h1>${item.title}</h1>
           <p>${u.heroIntro(item)}</p>
           <p class="half-cut-disclaimer half-cut-disclaimer--hero">${u.INVENTORY_DISCLAIMER}</p>
+          ${supplierNotice}
         </div>
       </section>
 
@@ -119,7 +135,7 @@
             <div class="engine-detail__main">
               <span class="section-eyebrow">${item.origin} · Half Cut · ${item.status}</span>
               <h2 class="half-cut-detail__stock-id">${item.stockId}</h2>
-              ${photosNote}
+              ${gallery}
               <dl class="engine-detail__specs half-cut-detail__specs">
                 <div><dt>Brand</dt><dd><a href="${brandUrl}">${item.brand}</a></dd></div>
                 <div><dt>Model</dt><dd>${item.model}</dd></div>
@@ -128,6 +144,8 @@
                 <div><dt>Transmission</dt><dd>${item.transmissionCode}</dd></div>
                 <div><dt>Drivetrain</dt><dd>${item.drivetrain}</dd></div>
                 <div><dt>Mileage</dt><dd>${item.mileage}</dd></div>
+                ${vinRow}
+                ${conditionRow}
                 <div><dt>Origin</dt><dd>${item.origin}</dd></div>
                 <div><dt>Status</dt><dd><span class="half-cut-card__status half-cut-card__status--${u.statusSlug(item.status)}">${item.status}</span></dd></div>
               </dl>
