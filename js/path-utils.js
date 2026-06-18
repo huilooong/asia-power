@@ -31,4 +31,8 @@
   }
 
   window.SitePaths = { base, href, engineSlug, enginePagePath };
+
+  if (!window.PublicI18n) {
+    document.write(`<script src="${base()}js/public-i18n.js"><\/script>`);
+  }
 })();

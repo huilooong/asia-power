@@ -4,6 +4,10 @@
 (function () {
   'use strict';
 
+  function t(key, fallback) {
+    return window.PublicI18n?.t(key, fallback) ?? fallback;
+  }
+
   function base() {
     return window.SitePaths?.base?.() || '../';
   }
@@ -42,9 +46,9 @@
       : '';
     const photosNote = u.hasPhotos(display)
       ? ''
-      : '<p class="half-cut-card__photos-note">Photos on request</p>';
+      : `<p class="half-cut-card__photos-note">${t('hc.photosOnRequest', 'Photos on request')}</p>`;
     const vinRow = display.maskedVin
-      ? `<div><dt>VIN</dt><dd class="half-cut-card__vin">${display.maskedVin}</dd></div>`
+      ? `<div><dt>${t('spec.vin', 'VIN')}</dt><dd class="half-cut-card__vin">${display.maskedVin}</dd></div>`
       : '';
 
     return `
@@ -56,12 +60,12 @@
         </div>
         <h3 class="half-cut-card__title"><a href="${detail}">${display.title}</a></h3>
         <dl class="half-cut-card__specs">
-          <div><dt>Brand</dt><dd><a href="${brandUrl}">${display.brand}</a></dd></div>
-          <div><dt>Model</dt><dd>${display.model}</dd></div>
-          <div><dt>Year</dt><dd>${display.year}</dd></div>
-          <div><dt>Engine</dt><dd>${engineUrl ? `<a href="${engineUrl}">${display.engineCode}</a>` : display.engineCode}</dd></div>
-          <div><dt>Transmission</dt><dd>${display.transmissionCode}</dd></div>
-          <div><dt>Mileage</dt><dd>${display.mileage}</dd></div>
+          <div><dt>${t('spec.brand', 'Brand')}</dt><dd><a href="${brandUrl}">${display.brand}</a></dd></div>
+          <div><dt>${t('spec.model', 'Model')}</dt><dd>${display.model}</dd></div>
+          <div><dt>${t('spec.year', 'Year')}</dt><dd>${display.year}</dd></div>
+          <div><dt>${t('spec.engine', 'Engine')}</dt><dd>${engineUrl ? `<a href="${engineUrl}">${display.engineCode}</a>` : display.engineCode}</dd></div>
+          <div><dt>${t('spec.transmission', 'Transmission')}</dt><dd>${display.transmissionCode}</dd></div>
+          <div><dt>${t('spec.mileage', 'Mileage')}</dt><dd>${display.mileage}</dd></div>
           ${vinRow}
         </dl>
         ${photosNote}
@@ -91,31 +95,31 @@
       <div class="half-cut-toolbar catalog-toolbar">
         <div class="half-cut-toolbar__search brands-toolbar__search">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-          <input type="search" id="half-cut-search" placeholder="Search stock ID, brand, model, engine or transmission…" aria-label="Search half-cut inventory">
+          <input type="search" id="half-cut-search" placeholder="${t('hc.searchPlaceholder', 'Search stock ID, brand, model, engine or transmission…')}" aria-label="Search half-cut inventory" data-i18n-placeholder="hc.searchPlaceholder">
         </div>
         <div class="half-cut-toolbar__filters">
-          <label class="half-cut-toolbar__label" for="half-cut-brand-filter">Brand</label>
+          <label class="half-cut-toolbar__label" for="half-cut-brand-filter">${t('hc.brand', 'Brand')}</label>
           <select id="half-cut-brand-filter" class="half-cut-toolbar__select" aria-label="Filter by brand">
-            <option value="all">All Brands</option>
+            <option value="all">${t('hc.allBrands', 'All Brands')}</option>
             ${brandOptions}
           </select>
         </div>
         <div class="filter-group" id="half-cut-status-filter" role="group" aria-label="Filter by status">
-          <button class="filter-btn" data-status="all" type="button">All</button>
-          <button class="filter-btn active" data-status="available" type="button">Available</button>
-          <button class="filter-btn" data-status="reserved" type="button">Reserved</button>
-          <button class="filter-btn" data-status="in-transit" type="button">In Transit</button>
-          <button class="filter-btn" data-status="sold" type="button">Sold</button>
+          <button class="filter-btn" data-status="all" type="button">${t('hc.all', 'All')}</button>
+          <button class="filter-btn active" data-status="available" type="button">${t('hc.available', 'Available')}</button>
+          <button class="filter-btn" data-status="reserved" type="button">${t('hc.reserved', 'Reserved')}</button>
+          <button class="filter-btn" data-status="in-transit" type="button">${t('hc.inTransit', 'In Transit')}</button>
+          <button class="filter-btn" data-status="sold" type="button">${t('hc.sold', 'Sold')}</button>
         </div>
       </div>
       <div class="catalog-toolbar">
-        <div class="catalog-toolbar__count">Showing <strong id="half-cut-visible-count">${availableCount}</strong> of <strong id="half-cut-total-count">${window.HALF_CUT_LIST.length}</strong> half cuts</div>
+        <div class="catalog-toolbar__count">${t('hc.showing', 'Showing')} <strong id="half-cut-visible-count">${availableCount}</strong> ${t('hc.of', 'of')} <strong id="half-cut-total-count">${window.HALF_CUT_LIST.length}</strong> ${t('hc.halfCuts', 'half cuts')}</div>
       </div>
       <div class="half-cut-grid engine-catalog__grid" id="half-cut-grid" aria-live="polite">
         ${window.HALF_CUT_LIST.map(renderHalfCutCard).join('')}
       </div>
       <div class="brands-empty hidden" id="half-cut-empty">
-        <p>No half cuts match your search. <a href="${base()}contact.html">Send us your request</a>.</p>
+        <p>${t('hc.noMatch', 'No half cuts match your search.')} <a href="${base()}contact.html">${t('hc.sendRequest', 'Send us your request')}</a>.</p>
       </div>`;
 
     const searchInput = document.getElementById('half-cut-search');
@@ -174,4 +178,8 @@
   window.renderHalfCutCard = renderHalfCutCard;
 
   document.addEventListener('DOMContentLoaded', initHalfCutCatalog);
+  window.addEventListener('asiapower:langchange', () => {
+    const root = document.getElementById('half-cut-catalog-root');
+    if (root) initHalfCutCatalog();
+  });
 })();

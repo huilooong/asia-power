@@ -34,7 +34,7 @@
       toggle.setAttribute('aria-label', open ? 'Close menu' : 'Open menu');
     });
 
-    nav.querySelectorAll('.nav__link, .nav__cta').forEach(el => {
+    nav.querySelectorAll('.nav__link, .nav__cta, .lang-switcher__btn').forEach(el => {
       el.addEventListener('click', () => setNavOpen(false));
     });
 
@@ -143,6 +143,46 @@
     return ok;
   }
 
+  function fieldValue(form, name) {
+    const field = form.elements[name];
+    return field?.value?.trim() || '';
+  }
+
+  function optionText(form, name) {
+    const field = form.elements[name];
+    if (!field) return '';
+    const selected = field.options?.[field.selectedIndex];
+    return selected?.text?.trim() || field.value?.trim() || '';
+  }
+
+  function buildContactWhatsAppMessage(form) {
+    const lines = [
+      'Hello AsiaPower, I would like to request a quote.',
+      '',
+      `Name: ${fieldValue(form, 'name')}`,
+      `Company: ${fieldValue(form, 'company') || '-'}`,
+      `Email: ${fieldValue(form, 'email')}`,
+      `Phone / WhatsApp: ${fieldValue(form, 'phone')}`,
+      `Country: ${optionText(form, 'country')}`,
+      `Enquiry Type: ${optionText(form, 'enquiry_type')}`,
+      '',
+      `Vehicle / Part Details: ${fieldValue(form, 'vehicle_details')}`,
+      `Additional Message: ${fieldValue(form, 'message') || '-'}`,
+      '',
+      'Please quote availability, price, shipping option, and lead time.',
+    ];
+    return lines.join('\n');
+  }
+
+  function openContactWhatsApp(form) {
+    const config = window.ASIAPOWER || {};
+    const whatsapp = config.whatsapp || '8618603773077';
+    const message = buildContactWhatsAppMessage(form);
+    const url = `https://wa.me/${whatsapp}?text=${encodeURIComponent(message)}`;
+    const opened = window.open(url, '_blank', 'noopener,noreferrer');
+    if (!opened) window.location.href = url;
+  }
+
   function initForms() {
     document.querySelectorAll('form[data-form]').forEach(form => {
       form.addEventListener('submit', e => {
@@ -151,6 +191,9 @@
 
         const card = form.closest('.form-card');
         const success = card?.querySelector('.form-success');
+        if (form.dataset.form === 'contact-enquiry') {
+          openContactWhatsApp(form);
+        }
         if (success) {
           form.classList.add('hidden');
           success.classList.add('show');
@@ -600,4 +643,6 @@
       initBrandDirectory();
     }
   });
+
+  window.addEventListener('asiapower:layoutrefresh', initMobileNav);
 })();

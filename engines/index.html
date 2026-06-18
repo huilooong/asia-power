@@ -19,20 +19,20 @@
   <main id="main-content">
     <section class="page-hero page-hero--catalog">
       <div class="container">
-        <div class="page-hero__breadcrumb"><a href="../index.html">Home</a> / <a href="../brands.html">Brands</a> / <span>Engines</span></div>
-        <h1>Engine Model Catalog</h1>
-        <p>Public directory of supported engine models grouped by brand. Available for global export — request FOB/CIF pricing.</p>
+        <div class="page-hero__breadcrumb"><a href="../index.html" data-i18n="catalog.home">Home</a> / <a href="../brands.html" data-i18n="catalog.brands">Brands</a> / <span data-i18n="catalog.engines">Engines</span></div>
+        <h1 data-i18n="engines.title">Engine Model Catalog</h1>
+        <p data-i18n="engines.lead">Public directory of supported engine models grouped by brand. Available for global export — request FOB/CIF pricing.</p>
       </div>
     </section>
     <section class="section section--gray">
       <div class="container">
         <div class="catalog-toolbar">
-          <div class="catalog-toolbar__count"><strong id="engine-catalog-count">0</strong> engine models listed</div>
+          <div class="catalog-toolbar__count"><strong id="engine-catalog-count">0</strong> <span data-i18n="engines.countLabel">engine models listed</span></div>
           <div class="filter-group">
-            <button class="filter-btn active" data-filter="all">All Brands</button>
-            <button class="filter-btn" data-filter="petrol">Petrol</button>
-            <button class="filter-btn" data-filter="diesel">Diesel</button>
-            <button class="filter-btn" data-filter="hybrid">Hybrid</button>
+            <button class="filter-btn active" data-filter="all" data-i18n="engines.allBrands">All Brands</button>
+            <button class="filter-btn" data-filter="petrol" data-i18n="engines.petrol">Petrol</button>
+            <button class="filter-btn" data-filter="diesel" data-i18n="engines.diesel">Diesel</button>
+            <button class="filter-btn" data-filter="hybrid" data-i18n="engines.hybrid">Hybrid</button>
           </div>
         </div>
         <div id="engine-catalog-root"></div>
@@ -40,8 +40,8 @@
     </section>
     <section class="cta-block">
       <div class="container cta-block__inner">
-        <div><h2>Browse by Brand</h2><p>Start from our brand directory for engines, gearboxes, chassis parts and half-cuts.</p></div>
-        <a href="../brands.html" class="btn btn-accent">View Brands</a>
+        <div><h2 data-i18n="catalog.browseByBrand">Browse by Brand</h2><p>Start from our brand directory for engines, gearboxes, chassis parts and half-cuts.</p></div>
+        <a href="../brands.html" class="btn btn-accent" data-i18n="catalog.viewBrands">View Brands</a>
       </div>
     </section>
   </main>

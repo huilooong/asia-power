@@ -287,6 +287,36 @@ h1, h2, h3, h4 {
 .nav__link.active { box-shadow: inset 0 -2px 0 var(--accent); background: rgba(212,160,23,.08); }
 .nav__cta { margin-left: 10px; padding: 10px 18px; font-size: .82rem; }
 
+.lang-switcher {
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+  margin-left: 8px;
+  padding: 3px;
+  border: 1px solid var(--border, rgba(255, 255, 255, .18));
+  border-radius: 999px;
+  background: rgba(255, 255, 255, .04);
+}
+
+.lang-switcher__btn {
+  border: 0;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  font-size: .72rem;
+  font-weight: 600;
+  letter-spacing: .04em;
+  padding: 6px 10px;
+  border-radius: 999px;
+  cursor: pointer;
+  min-height: 32px;
+}
+
+.lang-switcher__btn.is-active {
+  background: var(--accent, #e8a020);
+  color: #0a1628;
+}
+
 .menu-toggle {
   display: none;
   flex-direction: column;
@@ -1577,6 +1607,7 @@ a:focus-visible {
     justify-content: center;
   }
   .nav__cta { margin: 8px 0 0; width: 100%; justify-content: center; }
+  .lang-switcher { margin: 12px 0 0; width: 100%; justify-content: center; }
 
   body.nav-open { overflow: hidden; }
 

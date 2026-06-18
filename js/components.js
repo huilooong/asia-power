@@ -50,24 +50,39 @@
     return window.ASIAPOWER || (typeof ASIAPOWER !== 'undefined' ? ASIAPOWER : null);
   }
 
+  function i18n() {
+    return window.PublicI18n;
+  }
+
+  function t(key, fallback) {
+    const pub = i18n();
+    return pub ? pub.t(key, fallback) : fallback;
+  }
+
+  function navLabel(item) {
+    const pub = i18n();
+    return pub ? pub.translateNavLabel(item) : item.label;
+  }
+
   function renderSkipLink() {
-    return `<a class="skip-link" href="#main-content">Skip to main content</a>`;
+    return `<a class="skip-link" href="#main-content">${t('skipLink', 'Skip to main content')}</a>`;
   }
 
   function renderTopBar() {
     const c = getConfig();
     if (!c) return '';
+    const hidePhone = currentPageId() === 'home';
     return `
       <div class="top-bar">
         <div class="container top-bar__inner">
           <div class="top-bar__left">
-            <span class="top-bar__badge">Global Powertrain Sourcing</span>
-            <span>China Supply Network → Global Buyers</span>
+            <span class="top-bar__badge">${t('topbar.badge', 'Global Powertrain Sourcing')}</span>
+            <span>${t('topbar.tagline', 'China Supply Network → Global Buyers')}</span>
           </div>
           <div class="top-bar__right">
-            <a href="https://wa.me/${c.whatsapp}" target="_blank" rel="noopener noreferrer" class="top-bar__link">
+            ${hidePhone ? '' : `<a href="https://wa.me/${c.whatsapp}" target="_blank" rel="noopener noreferrer" class="top-bar__link">
               ${iconSvg('whatsapp')} ${c.whatsappDisplay}
-            </a>
+            </a>`}
             <a href="mailto:${c.email}" class="top-bar__link">${iconSvg('mail')} ${c.email}</a>
           </div>
         </div>
@@ -92,9 +107,11 @@
   function renderHeader(activeId) {
     const c = getConfig();
     if (!c) return '';
+    const pub = i18n();
     const links = c.nav.map(item =>
-      `<a href="${href(item.href)}" class="nav__link${item.id === activeId ? ' active' : ''}">${item.label}</a>`
+      `<a href="${href(item.href)}" class="nav__link${item.id === activeId ? ' active' : ''}">${navLabel(item)}</a>`
     ).join('');
+    const switcher = pub ? pub.renderLangSwitcher() : '';
 
     return `
       <header class="header">
@@ -102,7 +119,7 @@
           <a href="${href('index.html')}" class="logo header__logo" aria-label="AsiaPower Home">
             ${logoImg('logo__img', ' fetchpriority="high"')}
           </a>
-          <button class="menu-toggle" type="button" aria-label="Open menu" aria-expanded="false" aria-controls="main-nav">
+          <button class="menu-toggle" type="button" aria-label="${t('nav.openMenu', 'Open menu')}" aria-expanded="false" aria-controls="main-nav">
             <span></span><span></span><span></span>
           </button>
           <nav class="nav" id="main-nav" aria-label="Main navigation">
@@ -110,7 +127,8 @@
               ${logoImg('logo__img', '')}
             </div>
             ${links}
-            <a href="${href('contact.html')}" class="btn btn-accent nav__cta">Request Quote</a>
+            ${switcher}
+            <a href="${href('contact.html')}" class="btn btn-accent nav__cta">${t('nav.requestQuote', 'Request Quote')}</a>
           </nav>
         </div>
       </header>`;
@@ -131,15 +149,15 @@
       <div class="footer__seo">
         <div class="footer__seo-grid">
           <div class="footer__seo-col">
-            <h4>Popular Engine Models</h4>
+            <h4>${t('footer.popularEngines', 'Popular Engine Models')}</h4>
             <ul class="footer__seo-links">${engines}</ul>
           </div>
           <div class="footer__seo-col">
-            <h4>Popular Brands</h4>
+            <h4>${t('footer.popularBrands', 'Popular Brands')}</h4>
             <ul class="footer__seo-links">${brands}</ul>
           </div>
           <div class="footer__seo-col">
-            <h4>Product Catalog</h4>
+            <h4>${t('footer.productCatalog', 'Product Catalog')}</h4>
             <ul class="footer__seo-links">${products}</ul>
           </div>
         </div>
@@ -149,20 +167,21 @@
   function renderFooter() {
     const c = getConfig();
     if (!c) return '';
-    const navLinks = c.nav.map(item => `<li><a href="${href(item.href)}">${item.label}</a></li>`).join('');
+    const hidePhone = currentPageId() === 'home';
+    const navLinks = c.nav.map(item => `<li><a href="${href(item.href)}">${navLabel(item)}</a></li>`).join('');
 
     return `
       <footer class="footer">
         <div class="footer__cta">
           <div class="container footer__cta-inner">
             <div>
-              <h3>Need Powertrain Parts Shipped Globally?</h3>
-              <p>Send your vehicle details — we respond within 24 hours with FOB/CIF pricing.</p>
+              <h3>${t('footer.ctaTitle', 'Need Powertrain Parts Shipped Globally?')}</h3>
+              <p>${t('footer.ctaLead', 'Send your vehicle details — we respond within 24 hours with FOB/CIF pricing.')}</p>
             </div>
             <div class="footer__cta-actions">
-              <a href="${href('contact.html')}" class="btn btn-accent">Request Quote</a>
+              <a href="${href('contact.html')}" class="btn btn-accent">${t('nav.requestQuote', 'Request Quote')}</a>
               <a href="https://wa.me/${c.whatsapp}?text=${encodeURIComponent(c.whatsappMessage)}" target="_blank" rel="noopener noreferrer" class="btn btn-outline-light">
-                ${iconSvg('whatsapp')} WhatsApp Us
+                ${iconSvg('whatsapp')} ${t('footer.whatsapp', 'WhatsApp Us')}
               </a>
             </div>
           </div>
@@ -174,22 +193,22 @@
               <a href="${href('index.html')}" class="logo logo--footer">
                 ${logoImg('logo__img', ' loading="lazy"')}
               </a>
-              <p class="footer__about">AsiaPower is a global powertrain sourcing platform — connecting importers, workshops and fleet operators to a verified China-based supply network for Japanese, Korean and Chinese vehicle applications.</p>
+              <p class="footer__about">${t('footer.about', 'AsiaPower is a global powertrain sourcing platform — connecting importers, workshops and fleet operators to a verified China-based supply network for Japanese, Korean and Chinese vehicle applications.')}</p>
             </div>
             <div class="footer__col">
-              <h4>Navigation</h4>
+              <h4>${t('footer.nav', 'Navigation')}</h4>
               <ul>${navLinks}</ul>
             </div>
             <div class="footer__col">
-              <h4>Start Here</h4>
+              <h4>${t('footer.startHere', 'Start Here')}</h4>
               <ul>
-                <li><a href="${href('brands.html')}">Brand Directory</a></li>
-                <li><a href="${href('supplier-portal.html')}">Supplier Portal</a></li>
-                <li><a href="${href('contact.html')}">Request a Quote</a></li>
+                <li><a href="${href('brands.html')}">${t('footer.brandDirectory', 'Brand Directory')}</a></li>
+                <li><a href="${href('supplier-portal.html')}">${t('footer.supplierPortal', 'Supplier Portal')}</a></li>
+                <li><a href="${href('contact.html')}">${t('footer.requestQuote', 'Request a Quote')}</a></li>
               </ul>
             </div>
             <div class="footer__col">
-              <h4>Our Offices</h4>
+              <h4>${t('footer.offices', 'Our Offices')}</h4>
               <div class="footer__office">
                 <strong>${c.offices.china.flag} ${c.offices.china.label}</strong>
                 <p>${c.offices.china.address}</p>
@@ -199,14 +218,14 @@
                 <p>${c.offices.ghana.address}</p>
               </div>
               <div class="footer__contact">
-                <a href="https://wa.me/${c.whatsapp}" target="_blank" rel="noopener noreferrer">${iconSvg('whatsapp')} ${c.whatsappDisplay}</a>
+                ${hidePhone ? '' : `<a href="https://wa.me/${c.whatsapp}" target="_blank" rel="noopener noreferrer">${iconSvg('whatsapp')} ${c.whatsappDisplay}</a>`}
                 <a href="mailto:${c.email}">${iconSvg('mail')} ${c.email}</a>
               </div>
             </div>
           </div>
           <div class="footer__bottom">
-            <span>&copy; ${new Date().getFullYear()} ${c.company}. All rights reserved.</span>
-            <span><a href="${href('supplier-portal.html')}">Supplier Registration</a></span>
+            <span>&copy; ${new Date().getFullYear()} ${c.company}. ${t('footer.rights', 'All rights reserved.')}</span>
+            <span><a href="${href('supplier-portal.html')}">${t('footer.supplierReg', 'Supplier Registration')}</a></span>
           </div>
         </div>
       </footer>`;
@@ -217,7 +236,7 @@
     if (!c) return '';
     return `
       <div class="whatsapp-float">
-        <span class="whatsapp-float__label">Chat on WhatsApp</span>
+        <span class="whatsapp-float__label">${t('whatsapp.label', 'Chat on WhatsApp')}</span>
         <a href="https://wa.me/${c.whatsapp}?text=${encodeURIComponent(c.whatsappMessage)}" target="_blank" rel="noopener noreferrer" class="whatsapp-float__btn" aria-label="WhatsApp ${c.whatsappDisplay}">
           ${iconSvg('whatsapp')}
         </a>
@@ -238,6 +257,14 @@
     if (header) header.innerHTML = renderHeader(activeId);
     if (footer) footer.innerHTML = renderFooter();
     if (wa) wa.innerHTML = renderWhatsApp();
+
+    const pub = i18n();
+    if (pub) {
+      pub.bindLangSwitcher(header);
+      pub.applyDataI18n(document.getElementById('main-content'));
+    }
+
+    window.dispatchEvent(new CustomEvent('asiapower:layoutrefresh'));
   }
 
   if (document.readyState === 'loading') {
@@ -245,4 +272,6 @@
   } else {
     injectLayout();
   }
+
+  window.addEventListener('asiapower:langchange', injectLayout);
 })();
