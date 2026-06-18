@@ -7,7 +7,10 @@
   function siteBase() {
     if (window.SitePaths) return window.SitePaths.base();
     const segments = window.location.pathname.split('/').filter(Boolean);
-    const depth = Math.max(0, segments.length - 1);
+    if (!segments.length) return '';
+    const last = segments[segments.length - 1];
+    const isPageFile = last.includes('.');
+    const depth = isPageFile ? segments.length - 1 : segments.length;
     return depth ? '../'.repeat(depth) : '';
   }
 

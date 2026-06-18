@@ -6,7 +6,10 @@
 
   function base() {
     const segments = window.location.pathname.split('/').filter(Boolean);
-    const depth = Math.max(0, segments.length - 1);
+    if (!segments.length) return '';
+    const last = segments[segments.length - 1];
+    const isPageFile = last.includes('.');
+    const depth = isPageFile ? segments.length - 1 : segments.length;
     return depth ? '../'.repeat(depth) : '';
   }
 
@@ -33,7 +36,7 @@
   window.SitePaths = { base, href, engineSlug, enginePagePath };
 
   if (!window.PublicI18n) {
-    const src = `${base()}js/public-i18n.js?v=lang8a41e6f`;
+    const src = `${base()}js/public-i18n.js?v=langtrailfix1`;
     try {
       const xhr = new XMLHttpRequest();
       xhr.open('GET', src, false);
