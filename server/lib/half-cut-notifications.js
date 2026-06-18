@@ -1,0 +1,121 @@
+'use strict';
+
+const { notifyAsync } = require('./telegram-notify');
+
+function maskVin(vin) {
+  const v = String(vin || '');
+  if (v.length < 8) return v || '—';
+  return `${v.slice(0, 8)}****${v.slice(-3)}`;
+}
+
+function submissionSummary(sub) {
+  return [
+    `ID: ${sub.submissionId || '—'}`,
+    `Supplier: ${sub.supplierName || '—'}`,
+    `Vehicle: ${sub.brand || '—'} ${sub.model || ''} (${sub.year || '—'})`.trim(),
+    `VIN: ${maskVin(sub.vin)}`,
+    `Status: ${sub.reviewStatus || 'pending'}`,
+  ].join('\n');
+}
+
+function inventorySummary(item) {
+  return [
+    `Stock: ${item.stockId || '—'}`,
+    `Vehicle: ${item.brand || '—'} ${item.model || ''}`.trim(),
+    `Slug: ${item.slug || '—'}`,
+  ].join('\n');
+}
+
+function diffHalfCutState(previous, next) {
+  const prevSubs = new Map((previous.submissions || []).map((s) => [s.submissionId, s]));
+  const nextSubs = new Map((next.submissions || []).map((s) => [s.submissionId, s]));
+  const events = [];
+
+  for (const [id, sub] of nextSubs) {
+    const old = prevSubs.get(id);
+    if (!old) {
+      if ((sub.reviewStatus || 'pending') === 'pending') {
+        events.push({ type: 'submission_new', submission: sub });
+      }
+      continue;
+    }
+    if (old.reviewStatus !== sub.reviewStatus) {
+      if (sub.reviewStatus === 'approved') {
+        events.push({ type: 'submission_approved', submission: sub });
+      } else if (sub.reviewStatus === 'rejected') {
+        events.push({ type: 'submission_rejected', submission: sub });
+      }
+    }
+  }
+
+  const prevApprovedIds = new Set((previous.approved || []).map((a) => a.stockId));
+  for (const item of next.approved || []) {
+    if (!prevApprovedIds.has(item.stockId)) {
+      events.push({ type: 'inventory_approved', item });
+    }
+  }
+
+  return events;
+}
+
+function notifyNewSubmission(submission) {
+  notifyAsync(`🔔 新半车待审核\n${submissionSummary(submission)}`);
+}
+
+function notifyHalfCutEvents(events) {
+  for (const event of events) {
+    if (event.type === 'submission_new') {
+      notifyNewSubmission(event.submission);
+    } else if (event.type === 'submission_approved') {
+      notifyAsync(`✅ Half-cut approved\n${submissionSummary(event.submission)}`);
+    } else if (event.type === 'submission_rejected') {
+      notifyAsync(`❌ Half-cut rejected\n${submissionSummary(event.submission)}`);
+    } else if (event.type === 'inventory_approved') {
+      notifyAsync(`📦 Inventory published\n${inventorySummary(event.item)}`);
+    }
+  }
+}
+
+function notifyUploadFailure(kind, errorMessage) {
+  notifyAsync(`⚠️ Upload API failure (${kind})\n${errorMessage}`);
+}
+
+function notifyWhatsAppInquiry(row) {
+  const preview = String(row.text || row.message || '').replace(/\s+/g, ' ').slice(0, 220);
+  notifyAsync([
+    '💬 WhatsApp inquiry',
+    `Sender: ${row.senderName || row.senderId || row.conversationId || 'unknown'}`,
+    preview ? `Message: ${preview}` : '',
+  ].filter(Boolean).join('\n'));
+}
+
+function notifyWhatsappClick(event) {
+  const page = event.page || event.pageUrl || '—';
+  const label = String(event.label || '').trim();
+  let preview = '';
+  try {
+    const href = String(event.href || '');
+    if (href) {
+      const text = new URL(href).searchParams.get('text');
+      if (text) preview = decodeURIComponent(text).replace(/\s+/g, ' ').slice(0, 220);
+    }
+  } catch {
+    // ignore malformed href
+  }
+  notifyAsync([
+    '📩 新WhatsApp询盘',
+    `页面: ${page}`,
+    label ? `按钮: ${label}` : '',
+    preview ? `消息: ${preview}` : '',
+  ].filter(Boolean).join('\n'));
+}
+
+module.exports = {
+  diffHalfCutState,
+  notifyHalfCutEvents,
+  notifyNewSubmission,
+  notifyUploadFailure,
+  notifyWhatsAppInquiry,
+  notifyWhatsappClick,
+  maskVin,
+};

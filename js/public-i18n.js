@@ -259,6 +259,23 @@
     'brand.quoteTitle': { zh: '索取采购报价' },
     'brand.quoteLead': { zh: '发送发动机代号、VIN、车型或整柜需求。采购团队 24 小时内回复 FOB/CIF 报价。' },
     'brand.globalSourcing': { zh: '全球动力总成采购' },
+
+    'supplier.title': { zh: '供应商门户' },
+    'supplier.lead': { zh: '加入我们的验证供应商网络。对接非洲 25+ 市场的强劲需求。' },
+    'supplier.submitHalfCut': { zh: '上传半车库存' },
+    'supplier.eyebrow': { zh: '合作伙伴计划' },
+    'supplier.whyTitle': { zh: '为何通过 AsiaPower 供货？' },
+    'supplier.africaTitle': { zh: '非洲市场准入' },
+    'supplier.africaLead': { zh: '尼日利亚、加纳、肯尼亚、坦桑尼亚、南非等 20+ 市场需求。' },
+    'supplier.ordersTitle': { zh: '稳定订单' },
+    'supplier.ordersLead': { zh: '维修厂、车队运营商及整柜进口商的持续采购量。' },
+    'supplier.networkTitle': { zh: '验证网络' },
+    'supplier.networkLead': { zh: '质量标准保护每位合作伙伴。仅列出已批准供应商。' },
+    'supplier.logisticsTitle': { zh: '物流托管' },
+    'supplier.logisticsLead': { zh: '我们负责包装、出口单证、清关及海运至非洲。' },
+    'supplier.regEyebrow': { zh: '注册' },
+    'supplier.regTitle': { zh: '成为验证供应商' },
+    'supplier.regLead': { zh: '填写表格，我们的团队将在 3 个工作日内审核您的申请。' },
   };
 
   const NAV_ID_KEYS = {
@@ -279,13 +296,14 @@
     const map = {
       'index.html': 'home',
       'brands.html': 'brands',
+      'supplier-portal.html': 'supplier',
     };
     return map[file] || '';
   }
 
   function isInternalPage() {
     const page = document.body?.dataset?.page || '';
-    if (page === 'supplier-upload' || page === 'admin-review' || page === 'supplier') return true;
+    if (page === 'supplier-upload' || page === 'admin-review') return true;
     const path = window.location.pathname;
     return path.includes('/admin/') || path.includes('/supplier-portal/half-cut-upload');
   }
@@ -294,6 +312,8 @@
     if (isInternalPage()) return false;
     const page = document.body?.dataset?.page || '';
     const path = window.location.pathname;
+    if (page === 'supplier') return true;
+    if (path.endsWith('/supplier-portal.html')) return true;
     if (page === 'home') return true;
     if (page === 'brands' || page.startsWith('brand-')) return true;
     if (page === 'engines' || page === 'engine-detail') return true;

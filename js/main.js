@@ -623,6 +623,35 @@
     setActive();
   }
 
+  function initWhatsAppAnalytics() {
+    document.addEventListener('click', (e) => {
+      const link = e.target.closest('a[href*="wa.me"]');
+      if (!link) return;
+      const payload = {
+        eventType: 'whatsapp_click',
+        page: window.location.pathname + window.location.search,
+        href: link.href,
+        label: (link.getAttribute('aria-label') || link.textContent || '').replace(/\s+/g, ' ').trim().slice(0, 120),
+        timestamp: new Date().toISOString(),
+      };
+      const body = JSON.stringify(payload);
+      try {
+        if (navigator.sendBeacon) {
+          navigator.sendBeacon('/api/analytics/event', new Blob([body], { type: 'application/json' }));
+        } else {
+          fetch('/api/analytics/event', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body,
+            keepalive: true,
+          }).catch(() => {});
+        }
+      } catch {
+        // analytics must not block navigation
+      }
+    }, true);
+  }
+
   document.addEventListener('DOMContentLoaded', () => {
     initMobileNav();
     initFAQ();
@@ -638,6 +667,7 @@
     initPlatformOffices();
     initHomepageBrands();
     initEngineCatalogPage();
+    initWhatsAppAnalytics();
   });
 
   window.addEventListener('load', () => {
