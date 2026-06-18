@@ -71,10 +71,14 @@
     return `<a class="skip-link" href="#main-content">${t('skipLink', 'Skip to main content')}</a>`;
   }
 
+  function isPublicCustomerSite() {
+    return window.PublicI18n?.isSwitchablePublicPage?.() === true;
+  }
+
   function renderTopBar() {
+    if (isPublicCustomerSite()) return '';
     const c = getConfig();
     if (!c) return '';
-    const hidePhone = currentPageId() === 'home';
     return `
       <div class="top-bar">
         <div class="container top-bar__inner">
@@ -83,9 +87,9 @@
             <span>${t('topbar.tagline', 'China Supply Network → Global Buyers')}</span>
           </div>
           <div class="top-bar__right">
-            ${hidePhone ? '' : `<a href="https://wa.me/${c.whatsapp}" target="_blank" rel="noopener noreferrer" class="top-bar__link">
+            <a href="https://wa.me/${c.whatsapp}" target="_blank" rel="noopener noreferrer" class="top-bar__link">
               ${iconSvg('whatsapp')} ${c.whatsappDisplay}
-            </a>`}
+            </a>
             <a href="mailto:${c.email}" class="top-bar__link">${iconSvg('mail')} ${c.email}</a>
           </div>
         </div>
@@ -104,7 +108,7 @@
       : '';
     const sizes = c.logoSizes ? ` sizes="${c.logoSizes}"` : '';
     const srcsetAttr = srcset ? ` srcset="${srcset}"${sizes}` : '';
-    return `<img src="${href(c.logo)}"${srcsetAttr} alt="AsiaPower" class="${className}" width="256" height="48" decoding="async"${extra}>`;
+    return `<img src="${href(c.logo)}"${srcsetAttr} alt="AsiaPower" class="${className}" width="220" height="41" decoding="async"${extra}>`;
   }
 
   function renderHeader(activeId) {
@@ -170,7 +174,7 @@
   function renderFooter() {
     const c = getConfig();
     if (!c) return '';
-    const hidePhone = currentPageId() === 'home';
+    const showFooterContact = !isPublicCustomerSite();
     const navLinks = c.nav.map(item => `<li><a href="${href(item.href)}">${navLabel(item)}</a></li>`).join('');
 
     return `
@@ -220,10 +224,10 @@
                 <strong>${c.offices.ghana.flag} ${c.offices.ghana.label}</strong>
                 <p>${c.offices.ghana.address}</p>
               </div>
-              <div class="footer__contact">
-                ${hidePhone ? '' : `<a href="https://wa.me/${c.whatsapp}" target="_blank" rel="noopener noreferrer">${iconSvg('whatsapp')} ${c.whatsappDisplay}</a>`}
+              ${showFooterContact ? `<div class="footer__contact">
+                <a href="https://wa.me/${c.whatsapp}" target="_blank" rel="noopener noreferrer">${iconSvg('whatsapp')} ${c.whatsappDisplay}</a>
                 <a href="mailto:${c.email}">${iconSvg('mail')} ${c.email}</a>
-              </div>
+              </div>` : ''}
             </div>
           </div>
           <div class="footer__bottom">
@@ -253,7 +257,10 @@
     const footer = document.getElementById('site-footer');
     const wa = document.getElementById('site-whatsapp');
 
-    if (topBar) topBar.innerHTML = renderTopBar();
+    if (topBar) {
+      topBar.innerHTML = renderTopBar();
+      topBar.classList.toggle('site-topbar--hidden', !topBar.innerHTML.trim());
+    }
     if (!document.querySelector('.skip-link')) {
       document.body.insertAdjacentHTML('afterbegin', renderSkipLink());
     }

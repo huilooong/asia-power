@@ -4,6 +4,10 @@
 (function () {
   'use strict';
 
+  function t(key, fallback) {
+    return window.PublicI18n?.t(key, fallback) ?? fallback;
+  }
+
   const PARTS_SETS = [
     ['Engine & gearbox assembly', 'ECU & wiring harness', 'Front suspension & steering', 'Radiator & cooling pack'],
     ['Engine & transmission', 'Engine wiring loom', 'Radiator & intercooler pack', 'Steering column & rack'],
@@ -342,47 +346,47 @@
     const detail = detailUrl(base, item.slug);
     if (isAvailable(item)) {
       return `
-        <a href="${detail}" class="btn btn-navy btn-sm">View Details</a>
-        <a href="${requestPriceUrl(base, item)}" class="btn btn-outline-navy btn-sm">Request Price</a>
-        <a href="${requestPhotosUrl(item)}" class="btn btn-outline-navy btn-sm" target="_blank" rel="noopener noreferrer">Request Photos</a>
+        <a href="${detail}" class="btn btn-navy btn-sm">${t('hc.viewDetails', 'View Details')}</a>
+        <a href="${requestPriceUrl(base, item)}" class="btn btn-outline-navy btn-sm">${t('hc.requestPrice', 'Request Price')}</a>
+        <a href="${requestPhotosUrl(item)}" class="btn btn-outline-navy btn-sm" target="_blank" rel="noopener noreferrer">${t('hc.requestPhotos', 'Request Photos')}</a>
         <a href="${whatsappUrl(item)}" class="btn btn-whatsapp btn-sm" target="_blank" rel="noopener noreferrer">WhatsApp</a>`;
     }
     if (isReserved(item)) {
       return `
-        <a href="${detail}" class="btn btn-navy btn-sm">View Details</a>
-        <a href="${checkAvailabilityUrl(item)}" class="btn btn-accent btn-sm" target="_blank" rel="noopener noreferrer">Check Availability</a>
-        <a href="${similarUnitUrl(item)}" class="btn btn-outline-navy btn-sm" target="_blank" rel="noopener noreferrer">Request Similar Unit</a>`;
+        <a href="${detail}" class="btn btn-navy btn-sm">${t('hc.viewDetails', 'View Details')}</a>
+        <a href="${checkAvailabilityUrl(item)}" class="btn btn-accent btn-sm" target="_blank" rel="noopener noreferrer">${t('hc.checkAvailability', 'Check Availability')}</a>
+        <a href="${similarUnitUrl(item)}" class="btn btn-outline-navy btn-sm" target="_blank" rel="noopener noreferrer">${t('hc.requestSimilar', 'Request Similar Unit')}</a>`;
     }
     if (isInTransit(item)) {
       return `
-        <a href="${detail}" class="btn btn-navy btn-sm">View Details</a>
-        <a href="${checkAvailabilityUrl(item)}" class="btn btn-accent btn-sm" target="_blank" rel="noopener noreferrer">Check Availability</a>
-        <a href="${similarUnitUrl(item)}" class="btn btn-outline-navy btn-sm" target="_blank" rel="noopener noreferrer">Request Similar Unit</a>`;
+        <a href="${detail}" class="btn btn-navy btn-sm">${t('hc.viewDetails', 'View Details')}</a>
+        <a href="${checkAvailabilityUrl(item)}" class="btn btn-accent btn-sm" target="_blank" rel="noopener noreferrer">${t('hc.checkAvailability', 'Check Availability')}</a>
+        <a href="${similarUnitUrl(item)}" class="btn btn-outline-navy btn-sm" target="_blank" rel="noopener noreferrer">${t('hc.requestSimilar', 'Request Similar Unit')}</a>`;
     }
     return `
-      <a href="${detail}" class="btn btn-navy btn-sm">View Details</a>
-      <a href="${similarUnitUrl(item)}" class="btn btn-accent btn-sm" target="_blank" rel="noopener noreferrer">Request Similar Unit</a>`;
+      <a href="${detail}" class="btn btn-navy btn-sm">${t('hc.viewDetails', 'View Details')}</a>
+      <a href="${similarUnitUrl(item)}" class="btn btn-accent btn-sm" target="_blank" rel="noopener noreferrer">${t('hc.requestSimilar', 'Request Similar Unit')}</a>`;
   }
 
   function renderDetailActions(item, base) {
     if (isAvailable(item)) {
       return `
-        <a href="${requestPriceUrl(base, item)}" class="btn btn-accent">Request Price</a>
-        <a href="${requestPhotosUrl(item)}" class="btn btn-outline-navy" target="_blank" rel="noopener noreferrer">Request Photos</a>
+        <a href="${requestPriceUrl(base, item)}" class="btn btn-accent">${t('hc.requestPrice', 'Request Price')}</a>
+        <a href="${requestPhotosUrl(item)}" class="btn btn-outline-navy" target="_blank" rel="noopener noreferrer">${t('hc.requestPhotos', 'Request Photos')}</a>
         <a href="${whatsappUrl(item)}" class="btn btn-whatsapp" target="_blank" rel="noopener noreferrer">WhatsApp</a>`;
     }
     if (isReserved(item)) {
       return `
-        <a href="${checkAvailabilityUrl(item)}" class="btn btn-accent" target="_blank" rel="noopener noreferrer">Check Availability</a>
-        <a href="${similarUnitUrl(item)}" class="btn btn-outline-navy" target="_blank" rel="noopener noreferrer">Request Similar Unit</a>`;
+        <a href="${checkAvailabilityUrl(item)}" class="btn btn-accent" target="_blank" rel="noopener noreferrer">${t('hc.checkAvailability', 'Check Availability')}</a>
+        <a href="${similarUnitUrl(item)}" class="btn btn-outline-navy" target="_blank" rel="noopener noreferrer">${t('hc.requestSimilar', 'Request Similar Unit')}</a>`;
     }
     if (isInTransit(item)) {
       return `
-        <a href="${checkAvailabilityUrl(item)}" class="btn btn-accent" target="_blank" rel="noopener noreferrer">Check Availability</a>
-        <a href="${similarUnitUrl(item)}" class="btn btn-outline-navy" target="_blank" rel="noopener noreferrer">Request Similar Unit</a>`;
+        <a href="${checkAvailabilityUrl(item)}" class="btn btn-accent" target="_blank" rel="noopener noreferrer">${t('hc.checkAvailability', 'Check Availability')}</a>
+        <a href="${similarUnitUrl(item)}" class="btn btn-outline-navy" target="_blank" rel="noopener noreferrer">${t('hc.requestSimilar', 'Request Similar Unit')}</a>`;
     }
     return `
-      <a href="${similarUnitUrl(item)}" class="btn btn-accent" target="_blank" rel="noopener noreferrer">Request Similar Unit</a>`;
+      <a href="${similarUnitUrl(item)}" class="btn btn-accent" target="_blank" rel="noopener noreferrer">${t('hc.requestSimilar', 'Request Similar Unit')}</a>`;
   }
 
   window.SEED_HALF_CUT_LIST = SEED_HALF_CUT_LIST;
@@ -419,6 +423,9 @@
       return item;
     },
     INVENTORY_DISCLAIMER,
+    get inventoryDisclaimer() {
+      return window.PublicI18n?.inventoryDisclaimer?.() || INVENTORY_DISCLAIMER;
+    },
     seoTitle,
     seoDescription,
     heroIntro,

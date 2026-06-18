@@ -10,7 +10,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="css/styles.css">
+  <link rel="stylesheet" href="css/styles.css?v=public-ui-v1">
   <link rel="icon" href="assets/favicon.png" type="image/png">
   <link rel="apple-touch-icon" href="assets/favicon.png">
 </head>
@@ -49,10 +49,10 @@
         <div class="brands-toolbar">
           <div class="brands-toolbar__search">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-            <input type="search" id="brand-search" placeholder="Search brands or engine models (e.g. G4KD, 2TR, K24A)…" aria-label="Search brands and engine models">
+            <input type="search" id="brand-search" placeholder="Search brands or engine models (e.g. G4KD, 2TR, K24A)…" aria-label="Search brands and engine models" data-i18n-placeholder="brands.searchPlaceholder">
           </div>
           <div class="brands-toolbar__meta">
-            Showing <strong id="brand-visible-count">50</strong> of <strong id="brand-total-count">50</strong> brands
+            <span data-i18n="brands.showing">Showing</span> <strong id="brand-visible-count">50</strong> <span data-i18n="brands.of">of</span> <strong id="brand-total-count">50</strong> <span data-i18n="brands.brandsWord">brands</span>
           </div>
         </div>
       </div>
@@ -61,9 +61,9 @@
     <section class="section brands-section brands-section--featured">
       <div class="container">
         <div class="brands-directory-header">
-          <span class="section-eyebrow">Priority Channels</span>
-          <h2 class="section-title">Featured Brands</h2>
-          <p class="section-lead">High-volume sourcing channels with dedicated supplier access, faster quotation and export programs.</p>
+          <span class="section-eyebrow" data-i18n="brands.featuredEyebrow">Priority Channels</span>
+          <h2 class="section-title" data-i18n="brands.featuredTitle">Featured Brands</h2>
+          <p class="section-lead" data-i18n="brands.featuredLead">High-volume sourcing channels with dedicated supplier access, faster quotation and export programs.</p>
         </div>
         <div class="brand-featured-matrix" id="brand-featured-matrix" aria-live="polite"></div>
       </div>
@@ -72,9 +72,9 @@
     <section class="section brands-section brands-section--all">
       <div class="container">
         <div class="brands-directory-header">
-          <span class="section-eyebrow">Full Coverage</span>
-          <h2 class="section-title">All Supported Brands</h2>
-          <p class="section-lead">Complete brand index for global powertrain sourcing — select any make to request engines, gearboxes, chassis parts or half-cuts.</p>
+          <span class="section-eyebrow" data-i18n="brands.allEyebrow">Full Coverage</span>
+          <h2 class="section-title" data-i18n="brands.allTitle">All Supported Brands</h2>
+          <p class="section-lead" data-i18n="brands.allLead">Complete brand index for global powertrain sourcing — select any make to request engines, gearboxes, chassis parts or half-cuts.</p>
         </div>
         <div class="brand-tiles" id="brand-matrix" aria-live="polite"></div>
         <div class="brands-empty hidden" id="brands-empty" aria-live="polite"></div>
@@ -128,10 +128,10 @@
   <div id="site-footer"></div>
   <div id="site-whatsapp"></div>
 
-  <script src="js/path-utils.js?v=langtrailfix1"></script>
+  <script src="js/path-utils.js?v=public-ui-v1"></script>
   <script src="js/config.js"></script>
   <script src="js/seo.js"></script>
-  <script src="js/components.js?v=langtrailfix1" defer></script>
-  <script src="js/main.js?v=langtrailfix1" defer></script>
+  <script src="js/components.js?v=public-ui-v1" defer></script>
+  <script src="js/main.js?v=public-ui-v1" defer></script>
 </body>
 </html>

@@ -39,11 +39,18 @@
     const detail = u.detailUrl(b, display.slug);
     const brandUrl = `${b}brands/${display.brandSlug}.html#halfcuts-inventory`;
     const engineUrl = u.enginePageUrl(b, display);
+    const statusLabel = window.PublicI18n?.translateStatus?.(display.status) || display.status;
     const statusClass = `half-cut-card__status--${u.statusSlug(display.status)}`;
     const thumbUrl = u.firstPhotoUrl(display);
+    const photoCount = (display.photos || []).filter(Boolean).length;
+    const hasVideo = u.hasVideo(display);
+    const mediaBadges = [
+      photoCount ? `<span class="half-cut-card__media-badge">${photoCount} ${t('hc.photos', 'Photos')}</span>` : '',
+      hasVideo ? `<span class="half-cut-card__media-badge half-cut-card__media-badge--video">${t('hc.video', 'Video')}</span>` : '',
+    ].filter(Boolean).join('');
     const thumb = thumbUrl
-      ? `<div class="half-cut-card__thumb"><img src="${thumbUrl}" alt="${display.title} thumbnail" loading="lazy"></div>`
-      : '';
+      ? `<div class="half-cut-card__thumb">${mediaBadges ? `<div class="half-cut-card__media">${mediaBadges}</div>` : ''}<img src="${thumbUrl}" alt="${display.title} thumbnail" loading="lazy"></div>`
+      : (mediaBadges ? `<div class="half-cut-card__thumb half-cut-card__thumb--placeholder"><div class="half-cut-card__media">${mediaBadges}</div></div>` : '');
     const photosNote = u.hasPhotos(display)
       ? ''
       : `<p class="half-cut-card__photos-note">${t('hc.photosOnRequest', 'Photos on request')}</p>`;
@@ -56,7 +63,7 @@
         ${thumb}
         <div class="half-cut-card__header">
           <span class="half-cut-card__stock-id">${display.stockId}</span>
-          <span class="half-cut-card__status ${statusClass}">${display.status}</span>
+          <span class="half-cut-card__status ${statusClass}">${statusLabel}</span>
         </div>
         <h3 class="half-cut-card__title"><a href="${detail}">${display.title}</a></h3>
         <dl class="half-cut-card__specs">
@@ -91,7 +98,7 @@
     const availableCount = window.HALF_CUT_LIST.filter(i => i.status === 'Available').length;
 
     root.innerHTML = `
-      <p class="half-cut-disclaimer">${u.INVENTORY_DISCLAIMER}</p>
+      <p class="half-cut-disclaimer">${window.PublicI18n?.inventoryDisclaimer?.() || u.INVENTORY_DISCLAIMER}</p>
       <div class="half-cut-toolbar catalog-toolbar">
         <div class="half-cut-toolbar__search brands-toolbar__search">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>

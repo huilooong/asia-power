@@ -11,9 +11,12 @@
     if (!toggle || !nav) return;
 
     function updateSiteHeaderHeight() {
-      const topBar = document.querySelector('.top-bar');
-      const height = (topBar?.offsetHeight || 0) + (header?.offsetHeight || 0);
+      const topBar = document.querySelector('.top-bar:not(.site-topbar--hidden)');
+      const topBarEl = document.getElementById('site-topbar');
+      const hasTopBar = topBar && topBar.offsetHeight > 0 && !topBarEl?.classList.contains('site-topbar--hidden');
+      const height = (hasTopBar ? topBar.offsetHeight : 0) + (header?.offsetHeight || 0);
       document.documentElement.style.setProperty('--site-header-height', `${height}px`);
+      document.documentElement.style.setProperty('--header-offset', `${height}px`);
     }
 
     function setNavOpen(open) {

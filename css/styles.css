@@ -30,7 +30,7 @@
   --radius-sm: 4px;
   --radius: 6px;
   --radius-lg: 10px;
-  --header-offset: 122px;
+  --header-offset: 68px;
   --topbar-h: 40px;
   --transition: .22s ease;
   --container: 1240px;
@@ -225,10 +225,10 @@ h1, h2, h3, h4 {
 
 .header .logo__img {
   display: block;
-  height: 88px;
+  height: 44px;
   width: auto;
-  max-height: 88px;
-  max-width: min(320px, 52vw);
+  max-height: 44px;
+  max-width: min(220px, 46vw);
   flex-shrink: 1;
   object-fit: contain;
   object-position: left center;
@@ -258,7 +258,7 @@ h1, h2, h3, h4 {
 
 .nav__logo img {
   display: inline-block;
-  height: 88px;
+  height: 44px;
   width: auto;
   object-fit: contain;
 }
@@ -293,15 +293,15 @@ h1, h2, h3, h4 {
   gap: 2px;
   margin-left: 8px;
   padding: 3px;
-  border: 1px solid var(--border, rgba(255, 255, 255, .18));
+  border: 1px solid var(--steel-200);
   border-radius: 999px;
-  background: rgba(255, 255, 255, .04);
+  background: var(--steel-50);
 }
 
 .lang-switcher__btn {
   border: 0;
   background: transparent;
-  color: inherit;
+  color: var(--navy-700);
   font: inherit;
   font-size: .72rem;
   font-weight: 600;
@@ -1565,7 +1565,7 @@ a:focus-visible {
   .menu-toggle { display: flex; }
   .nav {
     position: fixed;
-    top: var(--site-header-height, 88px);
+    top: var(--site-header-height, 68px);
     left: 0;
     right: 0;
     bottom: 0;
@@ -4746,4 +4746,262 @@ h3 .bi-zh,
 @media (max-width: 900px) {
   .footer__seo-grid { grid-template-columns: 1fr; }
   .engine-detail { grid-template-columns: 1fr; }
+}
+
+/* ============================================================
+   Public UI upgrade — header, catalog heroes, inventory cards
+   ============================================================ */
+
+#site-topbar.site-topbar--hidden:empty {
+  display: none;
+}
+
+.header__inner {
+  min-height: 64px;
+  padding: 10px 0;
+}
+
+.page-hero--catalog-dark {
+  position: relative;
+  background: linear-gradient(135deg, var(--navy-950) 0%, var(--navy-800) 55%, var(--navy-700) 100%);
+  color: var(--white);
+  border-bottom: 3px solid var(--accent);
+  padding: 72px 0 64px;
+  overflow: hidden;
+}
+
+.page-hero--catalog-dark::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  opacity: .12;
+  background:
+    radial-gradient(circle at 85% 20%, var(--accent) 0%, transparent 45%),
+    repeating-linear-gradient(90deg, rgba(255,255,255,.03) 0 1px, transparent 1px 72px);
+  pointer-events: none;
+}
+
+.page-hero--catalog-dark .container {
+  position: relative;
+  z-index: 1;
+}
+
+.page-hero--catalog-dark .page-hero__breadcrumb,
+.page-hero--catalog-dark .page-hero__breadcrumb a {
+  color: rgba(255,255,255,.72);
+}
+
+.page-hero--catalog-dark .page-hero__breadcrumb span {
+  color: var(--accent);
+}
+
+.page-hero--catalog-dark h1 {
+  color: var(--white);
+  font-size: clamp(2rem, 4vw, 2.75rem);
+  max-width: 780px;
+}
+
+.page-hero--catalog-dark p {
+  color: rgba(255,255,255,.82);
+  max-width: 680px;
+  font-size: 1.08rem;
+}
+
+.page-hero--engines::after,
+.page-hero--gearboxes::after,
+.page-hero--chassis::after,
+.page-hero--halfcuts::after,
+.page-hero--contact::after {
+  content: '';
+  position: absolute;
+  right: 4%;
+  top: 50%;
+  transform: translateY(-50%);
+  width: min(180px, 28vw);
+  height: min(180px, 28vw);
+  opacity: .18;
+  background: center / contain no-repeat;
+  pointer-events: none;
+}
+
+.page-hero--engines::after {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64' fill='none' stroke='%23d4a017' stroke-width='2'%3E%3Crect x='12' y='22' width='40' height='22' rx='2'/%3E%3Ccircle cx='20' cy='46' r='4'/%3E%3Ccircle cx='44' cy='46' r='4'/%3E%3Cpath d='M24 22V14h16v8'/%3E%3C/svg%3E");
+}
+
+.page-hero--gearboxes::after {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64' fill='none' stroke='%23d4a017' stroke-width='2'%3E%3Ccircle cx='32' cy='32' r='18'/%3E%3Ccircle cx='32' cy='32' r='6'/%3E%3Cpath d='M32 14v6M32 44v6M14 32h6M44 32h6'/%3E%3C/svg%3E");
+}
+
+.page-hero--chassis::after {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64' fill='none' stroke='%23d4a017' stroke-width='2'%3E%3Cpath d='M10 38h44M16 38l6-14h20l6 14'/%3E%3Ccircle cx='18' cy='42' r='4'/%3E%3Ccircle cx='46' cy='42' r='4'/%3E%3C/svg%3E");
+}
+
+.page-hero--halfcuts::after {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64' fill='none' stroke='%23d4a017' stroke-width='2'%3E%3Cpath d='M8 42h20l8-18h20v18'/%3E%3Ccircle cx='18' cy='44' r='4'/%3E%3Ccircle cx='46' cy='44' r='4'/%3E%3Cpath d='M28 24h8'/%3E%3C/svg%3E");
+}
+
+.page-hero--contact::after {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64' fill='none' stroke='%23d4a017' stroke-width='2'%3E%3Cpath d='M12 16h40v32H12z'/%3E%3Cpath d='M12 20l20 14 20-14'/%3E%3C/svg%3E");
+}
+
+.hero-capability {
+  background: rgba(255,255,255,.06);
+  border: 1px solid rgba(255,255,255,.12);
+  border-radius: var(--radius-lg);
+  padding: 24px 28px;
+  margin: 28px 0;
+  backdrop-filter: blur(4px);
+}
+
+.hero-capability__value {
+  color: var(--accent-light);
+}
+
+.platform-supply__item {
+  border-top: 3px solid var(--accent);
+  box-shadow: var(--shadow-sm);
+}
+
+.platform-supply__item:hover {
+  transform: translateY(-3px);
+  box-shadow: var(--shadow-md);
+}
+
+.half-cut-card {
+  border: 1px solid var(--steel-200);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  background: var(--white);
+  box-shadow: var(--shadow-xs);
+}
+
+.half-cut-card__thumb {
+  position: relative;
+  aspect-ratio: 16 / 10;
+  background: var(--navy-900);
+  overflow: hidden;
+}
+
+.half-cut-card__thumb img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.half-cut-card__thumb--placeholder {
+  background: linear-gradient(135deg, var(--navy-800), var(--navy-950));
+  min-height: 160px;
+}
+
+.half-cut-card__media {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  display: flex;
+  gap: 6px;
+  z-index: 2;
+}
+
+.half-cut-card__media-badge {
+  font-size: .68rem;
+  font-weight: 700;
+  letter-spacing: .04em;
+  text-transform: uppercase;
+  padding: 4px 8px;
+  border-radius: 999px;
+  background: rgba(6,16,24,.78);
+  color: var(--white);
+}
+
+.half-cut-card__media-badge--video {
+  background: rgba(212,160,23,.92);
+  color: var(--navy-900);
+}
+
+.half-cut-card__stock-id {
+  font-size: .82rem;
+  font-weight: 800;
+  letter-spacing: .08em;
+  color: var(--accent-text);
+}
+
+.half-cut-card__header {
+  padding: 16px 20px 0;
+}
+
+.half-cut-card__title,
+.half-cut-card__specs,
+.half-cut-card__footer,
+.engine-model__apps {
+  padding-left: 20px;
+  padding-right: 20px;
+}
+
+.half-cut-card__footer {
+  padding-bottom: 20px;
+  gap: 8px;
+}
+
+.half-cut-card__status {
+  font-size: .72rem;
+  font-weight: 700;
+  letter-spacing: .06em;
+  text-transform: uppercase;
+  padding: 5px 10px;
+  border-radius: 999px;
+}
+
+.brand-detail-hero {
+  padding-top: 48px;
+  padding-bottom: 48px;
+}
+
+.contact-info-stack .info-card {
+  border-left: 3px solid var(--accent);
+}
+
+@media (max-width: 768px) {
+  .header .logo__img {
+    height: 38px;
+    max-height: 38px;
+    max-width: min(180px, 52vw);
+  }
+
+  .nav__logo img {
+    height: 40px;
+  }
+
+  .lang-switcher {
+    margin: 16px 0 8px;
+    width: 100%;
+    max-width: 220px;
+    justify-content: center;
+    align-self: center;
+  }
+
+  .lang-switcher__btn {
+    flex: 1;
+    min-height: 44px;
+    font-size: .82rem;
+  }
+
+  .page-hero--catalog-dark {
+    padding: 48px 0 40px;
+  }
+
+  .page-hero--engines::after,
+  .page-hero--gearboxes::after,
+  .page-hero--chassis::after,
+  .page-hero--halfcuts::after,
+  .page-hero--contact::after {
+    display: none;
+  }
+
+  .half-cut-card__footer {
+    flex-direction: column;
+  }
+
+  .half-cut-card__footer .btn {
+    width: 100%;
+  }
 }
