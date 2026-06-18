@@ -33,6 +33,16 @@
   window.SitePaths = { base, href, engineSlug, enginePagePath };
 
   if (!window.PublicI18n) {
-    document.write(`<script src="${base()}js/public-i18n.js"><\/script>`);
+    const src = `${base()}js/public-i18n.js`;
+    try {
+      const xhr = new XMLHttpRequest();
+      xhr.open('GET', src, false);
+      xhr.send(null);
+      if (xhr.status >= 200 && xhr.status < 300 && xhr.responseText) {
+        Function(`${xhr.responseText}\n//# sourceURL=${src}`)();
+      }
+    } catch {
+      // public-i18n optional fallback: English-only layout
+    }
   }
 })();
