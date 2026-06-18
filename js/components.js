@@ -75,8 +75,20 @@
     return window.PublicI18n?.isSwitchablePublicPage?.() === true;
   }
 
+  /** Supplier landing page only — not upload/admin internal tools. */
+  function isSupplierPortalLanding() {
+    const page = document.body?.dataset?.page || '';
+    if (page === 'supplier') return true;
+    const file = window.location.pathname.split('/').pop() || '';
+    return file === 'supplier-portal.html';
+  }
+
+  function shouldHideTopContactBar() {
+    return isPublicCustomerSite() || isSupplierPortalLanding();
+  }
+
   function renderTopBar() {
-    if (isPublicCustomerSite()) return '';
+    if (shouldHideTopContactBar()) return '';
     const c = getConfig();
     if (!c) return '';
     return `
