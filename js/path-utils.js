@@ -33,7 +33,7 @@
   window.SitePaths = { base, href, engineSlug, enginePagePath };
 
   if (!window.PublicI18n) {
-    const src = `${base()}js/public-i18n.js`;
+    const src = `${base()}js/public-i18n.js?v=lang8a41e6f`;
     try {
       const xhr = new XMLHttpRequest();
       xhr.open('GET', src, false);
