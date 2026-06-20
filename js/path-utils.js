@@ -36,7 +36,7 @@
   window.SitePaths = { base, href, engineSlug, enginePagePath };
 
   if (!window.PublicI18n) {
-    const src = `${base()}js/public-i18n.js?v=public-ui-v2`;
+    const src = `${base()}js/public-i18n.js?v=home-markets-v1`;
     try {
       const xhr = new XMLHttpRequest();
       xhr.open('GET', src, false);

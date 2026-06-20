@@ -134,12 +134,24 @@
       .map(item => getHalfCutBySlug(item.slug) || item);
   }
 
+  function getCatalogBrands() {
+    if (window.VehicleCatalog?.getBrands) {
+      return window.VehicleCatalog.getBrands();
+    }
+    const dir = window.ASIAPOWER?.brandsDirectory || [];
+    return dir.map((b) => ({ name: b.name, slug: b.slug }));
+  }
+
   function getHalfCutBrands() {
     const seen = new Map();
-    HALF_CUT_LIST.forEach(item => {
+    getCatalogBrands().forEach(({ name, slug }) => {
+      seen.set(slug, name);
+    });
+    HALF_CUT_LIST.forEach((item) => {
       if (!seen.has(item.brandSlug)) seen.set(item.brandSlug, item.brand);
     });
-    return Array.from(seen, ([slug, name]) => ({ slug, name })).sort((a, b) => a.name.localeCompare(b.name));
+    return Array.from(seen, ([slug, name]) => ({ slug, name }))
+      .sort((a, b) => a.name.localeCompare(b.name, undefined, { sensitivity: 'base' }));
   }
 
   function detailUrl(base, slug) {
@@ -223,6 +235,8 @@
       `Engine: ${item.engineCode}`,
       `Transmission: ${item.transmissionCode}`,
     ];
+    const priceLabel = formatFobPrice(item);
+    if (priceLabel) lines.push(`FOB Price: ${priceLabel} USD`);
     if (isAvailable(item)) {
       lines.push('Destination country: [please advise]');
       lines.push('Please send price, photos and shipping options.');
@@ -284,8 +298,12 @@
     return waUrl(photosMessage(item));
   }
 
+  function leadLink(item, intent, className, label) {
+    return `<a href="#" class="${className}" data-half-cut-lead data-slug="${String(item.slug || '').replace(/"/g, '&quot;')}" data-intent="${String(intent || 'price').replace(/"/g, '&quot;')}">${label}</a>`;
+  }
+
   function requestPriceUrl(base, item) {
-    return `${base}contact.html?brand=${encodeURIComponent(item.brandSlug)}&product=${encodeURIComponent(item.stockId)}`;
+    return `#half-cut-lead-${item.slug}`;
   }
 
   function seoTitle(item) {
@@ -315,30 +333,109 @@
     return `${item.shortDescription} Availability is confirmed on enquiry before quotation.`;
   }
 
+  function absoluteUrl(path) {
+    if (window.AsiaPowerSEO?.absoluteUrl) return window.AsiaPowerSEO.absoluteUrl(path);
+    if (!path) return window.location.href;
+    if (path.startsWith('http')) return path;
+    const base = window.location.origin + (window.SitePaths?.base?.() || '/');
+    try {
+      return new URL(path, base).href;
+    } catch {
+      return window.location.href;
+    }
+  }
+
+  function productImages(item, base) {
+    const images = [];
+    if (hasPhotos(item)) {
+      item.photos.forEach(photo => {
+        const url = photoUrl(photo);
+        if (url) images.push(absoluteUrl(url));
+      });
+    }
+    if (!images.length) {
+      const fallback = window.ASIAPOWER?.merchantListing?.defaultProductImage
+        || `${base}assets/images/supply-halfcut.jpg?v=img-v3`;
+      images.push(absoluteUrl(fallback));
+    }
+    return images;
+  }
+
+  function parsePriceUsd(item) {
+    const candidates = [item?.priceUsd, item?.priceUSD, item?.fobPriceUsd, item?.fobPrice, item?.price];
+    for (const value of candidates) {
+      const amount = Number(value);
+      if (Number.isFinite(amount) && amount > 0) return amount;
+    }
+    return null;
+  }
+
+  function formatFobPrice(item) {
+    const amount = parsePriceUsd(item);
+    if (amount == null) return '';
+    return new Intl.NumberFormat('en-US', {
+      style: 'currency',
+      currency: 'USD',
+      maximumFractionDigits: 0,
+    }).format(amount);
+  }
+
+  function resolveOfferPrice(item) {
+    const amount = parsePriceUsd(item);
+    return amount != null ? amount.toFixed(2) : null;
+  }
+
+  function offerAvailability(item) {
+    if (isAvailable(item)) return 'https://schema.org/InStock';
+    if (isReserved(item)) return 'https://schema.org/LimitedAvailability';
+    if (isInTransit(item)) return 'https://schema.org/LimitedAvailability';
+    return 'https://schema.org/OutOfStock';
+  }
+
+  function buildProductOffer(item, canonical) {
+    const price = resolveOfferPrice(item);
+    if (!price || isSold(item)) return null;
+
+    const listing = window.ASIAPOWER?.merchantListing || {};
+    const offer = {
+      '@type': 'Offer',
+      url: canonical,
+      priceCurrency: 'USD',
+      price,
+      availability: offerAvailability(item),
+      itemCondition: 'https://schema.org/UsedCondition',
+      seller: {
+        '@type': 'Organization',
+        name: window.ASIAPOWER?.company || 'AsiaPower',
+        url: (window.ASIAPOWER?.siteUrl || window.location.origin).replace(/\/$/, ''),
+      },
+    };
+
+    if (listing.returnPolicy) {
+      offer.hasMerchantReturnPolicy = { '@id': listing.returnPolicy['@id'] || listing.returnPolicy };
+    }
+    if (listing.shippingDetails) {
+      offer.shippingDetails = { '@id': listing.shippingDetails['@id'] || listing.shippingDetails };
+    }
+
+    return offer;
+  }
+
   function productJsonLd(item, canonical) {
+    const base = window.SitePaths?.base?.() || '../';
     const product = {
       '@context': 'https://schema.org',
       '@type': 'Product',
       name: item.title,
       description: item.shortDescription,
       sku: item.stockId,
+      image: productImages(item, base),
       brand: { '@type': 'Brand', name: item.brand },
     };
-    if (isAvailable(item)) {
-      product.offers = {
-        '@type': 'Offer',
-        availability: 'https://schema.org/InStock',
-        priceCurrency: 'USD',
-        url: canonical,
-      };
-    } else if (isReserved(item)) {
-      product.offers = {
-        '@type': 'Offer',
-        availability: 'https://schema.org/LimitedAvailability',
-        priceCurrency: 'USD',
-        url: canonical,
-      };
-    }
+
+    const offer = buildProductOffer(item, canonical);
+    if (offer) product.offers = offer;
+
     return product;
   }
 
@@ -347,46 +444,46 @@
     if (isAvailable(item)) {
       return `
         <a href="${detail}" class="btn btn-navy btn-sm">${t('hc.viewDetails', 'View Details')}</a>
-        <a href="${requestPriceUrl(base, item)}" class="btn btn-outline-navy btn-sm">${t('hc.requestPrice', 'Request Price')}</a>
-        <a href="${requestPhotosUrl(item)}" class="btn btn-outline-navy btn-sm" target="_blank" rel="noopener noreferrer">${t('hc.requestPhotos', 'Request Photos')}</a>
-        <a href="${whatsappUrl(item)}" class="btn btn-whatsapp btn-sm" target="_blank" rel="noopener noreferrer">WhatsApp</a>`;
+        ${leadLink(item, 'price', 'btn btn-outline-navy btn-sm', t('hc.requestPrice', 'Request Price'))}
+        ${leadLink(item, 'photos', 'btn btn-outline-navy btn-sm', t('hc.requestPhotos', 'Request Photos'))}
+        ${leadLink(item, 'whatsapp', 'btn btn-whatsapp btn-sm', 'WhatsApp')}`;
     }
     if (isReserved(item)) {
       return `
         <a href="${detail}" class="btn btn-navy btn-sm">${t('hc.viewDetails', 'View Details')}</a>
         <a href="${checkAvailabilityUrl(item)}" class="btn btn-accent btn-sm" target="_blank" rel="noopener noreferrer">${t('hc.checkAvailability', 'Check Availability')}</a>
-        <a href="${similarUnitUrl(item)}" class="btn btn-outline-navy btn-sm" target="_blank" rel="noopener noreferrer">${t('hc.requestSimilar', 'Request Similar Unit')}</a>`;
+        ${leadLink(item, 'similar', 'btn btn-outline-navy btn-sm', t('hc.requestSimilar', 'Request Similar Unit'))}`;
     }
     if (isInTransit(item)) {
       return `
         <a href="${detail}" class="btn btn-navy btn-sm">${t('hc.viewDetails', 'View Details')}</a>
         <a href="${checkAvailabilityUrl(item)}" class="btn btn-accent btn-sm" target="_blank" rel="noopener noreferrer">${t('hc.checkAvailability', 'Check Availability')}</a>
-        <a href="${similarUnitUrl(item)}" class="btn btn-outline-navy btn-sm" target="_blank" rel="noopener noreferrer">${t('hc.requestSimilar', 'Request Similar Unit')}</a>`;
+        ${leadLink(item, 'similar', 'btn btn-outline-navy btn-sm', t('hc.requestSimilar', 'Request Similar Unit'))}`;
     }
     return `
       <a href="${detail}" class="btn btn-navy btn-sm">${t('hc.viewDetails', 'View Details')}</a>
-      <a href="${similarUnitUrl(item)}" class="btn btn-accent btn-sm" target="_blank" rel="noopener noreferrer">${t('hc.requestSimilar', 'Request Similar Unit')}</a>`;
+      ${leadLink(item, 'similar', 'btn btn-accent btn-sm', t('hc.requestSimilar', 'Request Similar Unit'))}`;
   }
 
   function renderDetailActions(item, base) {
     if (isAvailable(item)) {
       return `
-        <a href="${requestPriceUrl(base, item)}" class="btn btn-accent">${t('hc.requestPrice', 'Request Price')}</a>
-        <a href="${requestPhotosUrl(item)}" class="btn btn-outline-navy" target="_blank" rel="noopener noreferrer">${t('hc.requestPhotos', 'Request Photos')}</a>
-        <a href="${whatsappUrl(item)}" class="btn btn-whatsapp" target="_blank" rel="noopener noreferrer">WhatsApp</a>`;
+        ${leadLink(item, 'price', 'btn btn-accent', t('hc.requestPrice', 'Request Price'))}
+        ${leadLink(item, 'photos', 'btn btn-outline-navy', t('hc.requestPhotos', 'Request Photos'))}
+        ${leadLink(item, 'whatsapp', 'btn btn-whatsapp', 'WhatsApp')}`;
     }
     if (isReserved(item)) {
       return `
-        <a href="${checkAvailabilityUrl(item)}" class="btn btn-accent" target="_blank" rel="noopener noreferrer">${t('hc.checkAvailability', 'Check Availability')}</a>
-        <a href="${similarUnitUrl(item)}" class="btn btn-outline-navy" target="_blank" rel="noopener noreferrer">${t('hc.requestSimilar', 'Request Similar Unit')}</a>`;
+        ${leadLink(item, 'availability', 'btn btn-accent', t('hc.checkAvailability', 'Check Availability'))}
+        ${leadLink(item, 'similar', 'btn btn-outline-navy', t('hc.requestSimilar', 'Request Similar Unit'))}`;
     }
     if (isInTransit(item)) {
       return `
-        <a href="${checkAvailabilityUrl(item)}" class="btn btn-accent" target="_blank" rel="noopener noreferrer">${t('hc.checkAvailability', 'Check Availability')}</a>
-        <a href="${similarUnitUrl(item)}" class="btn btn-outline-navy" target="_blank" rel="noopener noreferrer">${t('hc.requestSimilar', 'Request Similar Unit')}</a>`;
+        ${leadLink(item, 'availability', 'btn btn-accent', t('hc.checkAvailability', 'Check Availability'))}
+        ${leadLink(item, 'similar', 'btn btn-outline-navy', t('hc.requestSimilar', 'Request Similar Unit'))}`;
     }
     return `
-      <a href="${similarUnitUrl(item)}" class="btn btn-accent" target="_blank" rel="noopener noreferrer">${t('hc.requestSimilar', 'Request Similar Unit')}</a>`;
+      ${leadLink(item, 'similar', 'btn btn-accent', t('hc.requestSimilar', 'Request Similar Unit'))}`;
   }
 
   window.SEED_HALF_CUT_LIST = SEED_HALF_CUT_LIST;
@@ -394,15 +491,16 @@
   window.HALF_CUT_BY_SLUG = bySlug;
   window.HalfCutDirectory = { SEED_HALF_CUT_LIST, rebuildHalfCutList };
   window.getHalfCutBySlug = getHalfCutBySlug;
-  window.getHalfCutBySlugInternal = getHalfCutBySlugInternal;
   window.getHalfCutsByBrandSlug = getHalfCutsByBrandSlug;
   window.getHalfCutBrands = getHalfCutBrands;
   window.HalfCutUtils = {
     detailUrl,
     whatsappUrl,
     whatsappMessage,
+    photosMessage,
     similarUnitUrl,
     similarUnitMessage,
+    leadLink,
     checkAvailabilityUrl,
     requestPhotosUrl,
     requestPriceUrl,
@@ -430,7 +528,24 @@
     seoDescription,
     heroIntro,
     productJsonLd,
+    parsePriceUsd,
+    formatFobPrice,
     renderCardActions,
     renderDetailActions,
   };
+
+  (function loadHalfCutLeadsScript() {
+    if (window.HalfCutLeads) return;
+    const base = window.SitePaths?.base?.() || (
+      window.location.pathname.includes('/brands/') || window.location.pathname.includes('/half-cuts/')
+        ? '../'
+        : ''
+    );
+    const src = `${base}js/half-cut-leads.js?v=leads-v1`;
+    if (document.querySelector('script[src*="half-cut-leads.js"]')) return;
+    const script = document.createElement('script');
+    script.src = src;
+    script.defer = true;
+    document.head.appendChild(script);
+  })();
 })();

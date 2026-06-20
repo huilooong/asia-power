@@ -259,6 +259,10 @@
     return /\b[A-HJ-NPR-Z0-9]{17}\b/i.test(String(text));
   }
 
+  if (window.VehicleCatalog?.BRAND_SLUG) {
+    Object.assign(BRAND_SLUG_MAP, window.VehicleCatalog.BRAND_SLUG);
+  }
+
   window.HalfCutVin = {
     normalizeVin,
     validateVin,

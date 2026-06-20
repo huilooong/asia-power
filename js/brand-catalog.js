@@ -29,6 +29,7 @@
     byd: ['BYD371QA', 'BYD473QB', 'BYD476ZQA', 'BYD483QA', 'BYD487ZQA'],
     geely: ['JL4G15', 'JL4G18', 'JLB-4G13T', 'JLE-4G18TD'],
     chery: ['SQR372', 'SQR472', 'SQR477', 'E4G15', 'E4G16', 'SQRE4T15C'],
+    changan: ['JL478QEP', 'JL476ZQCF', 'JL486ZQD', 'H15T', 'H16T', 'NE15TG-AA'],
     gwm: ['GW4G15', 'GW4G15T', 'GW4B15A', 'GW4C20', 'GW4N20'],
     ford: ['Duratec 1.5', 'Duratec 2.0', 'EcoBoost 1.5', 'EcoBoost 2.0', 'EcoBoost 2.3'],
     gm: ['L2B', 'F16D3', 'F18D4', 'LE5', 'LAF', 'LUJ'],
@@ -242,6 +243,12 @@
       E.chineseOem,
       'AsiaPower sources GAC petrol and turbo engines, transmissions, chassis components and half-cuts for GS4, GS8 and Trumpchi export programs.'
     ),
+    changan: brand(
+      'Changan', 'changan', 'C', 'China',
+      'Changan Blue Core engines, gearboxes, chassis parts and half-cuts — CS, Eado and UNI series export supply.',
+      E.changan,
+      'AsiaPower supplies Changan JL-series petrol and turbo engines, transmissions, chassis components and half-cuts for CS75, CS55, Eado, UNI and commercial pickup export programs.'
+    ),
     jac: brand(
       'JAC', 'jac', 'J', 'China',
       'JAC commercial and passenger powertrain supply — engines, gearboxes and chassis parts.',
@@ -355,6 +362,18 @@
       'MINI BMW-platform engines, gearboxes and chassis components.',
       E.bmw,
       'MINI models use BMW Group engine architecture. AsiaPower supplies MINI-compatible N and B engine units, gearboxes and chassis parts for Cooper, Countryman and Clubman programs.'
+    ),
+    ssangyong: brand(
+      'Ssangyong', 'ssangyong', 'S', 'South Korea',
+      'Ssangyong diesel engines, gearboxes, chassis parts and half-cuts — Rexton, Korando and Musso applications.',
+      ['D20DTF', 'D22DT', 'G20DT', '671960', '672960', 'G16D', 'G18K'],
+      'AsiaPower supplies Ssangyong diesel engines, automatic gearboxes, chassis components and half-cuts for Rexton, Korando, Musso and Actyon export programs through verified supplier channels.'
+    ),
+    isuzu: brand(
+      'Isuzu', 'isuzu', 'I', 'Japan',
+      'Isuzu diesel engines, gearboxes, chassis parts and half-cuts — D-Max, MU-X and N-Series commercial applications.',
+      ['4JJ1', '4JK1', '4HL1', '4HE1', '6HH1', '6HK1', '4LE1', '4LE2'],
+      'AsiaPower sources Isuzu diesel engines, transmissions, chassis parts and half-cuts for D-Max, MU-X and commercial vehicle rebuild programs serving Africa, Asia and Middle East export markets.'
     ),
   };
 

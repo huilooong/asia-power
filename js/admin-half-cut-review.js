@@ -6,6 +6,7 @@
 
   const store = () => window.HalfCutInventoryStore;
   const Vin = () => window.HalfCutVin;
+  const Catalog = () => window.VehicleCatalog;
   const I18n = () => window.HalfCutSupplierI18n;
   const t = (key) => I18n()?.labelHtml(key) || key;
   const tBtn = (key) => I18n()?.labelInline(key) || key;
@@ -105,9 +106,10 @@
 
   function renderEditForm(submission) {
     const v = Vin();
-    const brandOptions = (store().SUPPORTED_BRANDS || []).map(brand =>
-      `<option value="${escapeHtml(brand)}" ${submission.brand === brand ? 'selected' : ''}>${escapeHtml(brand)}</option>`
-    ).join('');
+    const brandOptions = (store().SUPPORTED_BRANDS || []).map(brand => {
+      const label = Catalog()?.getBrandLabel?.(brand) || brand;
+      return `<option value="${escapeHtml(brand)}" ${submission.brand === brand ? 'selected' : ''}>${escapeHtml(label)}</option>`;
+    }).join('');
     const statusOptions = v.ADMIN_STATUSES.map(st =>
       `<option value="${escapeHtml(st)}" ${submission.inventoryStatus === st ? 'selected' : ''}>${escapeHtml(inventoryStatusLabel(st))}</option>`
     ).join('');
@@ -126,6 +128,7 @@
           <label>${t('engineCode')} <input type="text" data-edit="engineCode" value="${escapeHtml(submission.engineCode || '')}"></label>
           <label>${t('transmission')} <input type="text" data-edit="transmissionCode" value="${escapeHtml(submission.transmissionCode || '')}"></label>
           <label>${t('mileage')} <input type="text" data-edit="mileage" value="${escapeHtml(submission.mileage || '')}"></label>
+          <label>${t('fobPriceUsd')} <input type="number" data-edit="priceUsd" min="0" step="0.01" value="${escapeHtml(submission.priceUsd ?? '')}"></label>
           <label>${t('vehicleCondition')} <select data-edit="vehicleCondition">${conditionOptions}</select></label>
           <label>${t('inventoryStatus')} <select data-edit="inventoryStatus">${statusOptions}</select></label>
         </div>
@@ -140,6 +143,9 @@
     });
     if (edits.vin) edits.vin = Vin().normalizeVin(edits.vin);
     if (edits.year) edits.year = Number(edits.year);
+    if (edits.priceUsd !== undefined && edits.priceUsd !== '') {
+      edits.priceUsd = Number(Number(edits.priceUsd).toFixed(2));
+    }
     if (edits.brand) edits.brandSlug = Vin().brandToSlug(edits.brand);
     return edits;
   }
@@ -193,6 +199,7 @@
               <div><dt>${t('model')}</dt><dd>${escapeHtml(submission.model)}</dd></div>
               <div><dt>${t('year')}</dt><dd>${escapeHtml(submission.year)}</dd></div>
               <div><dt>${t('mileage')}</dt><dd>${escapeHtml(submission.mileage)}</dd></div>
+              <div><dt>${t('fobPriceUsd')}</dt><dd>${submission.priceUsd ? `$${Number(submission.priceUsd).toLocaleString('en-US')} FOB` : '—'}</dd></div>
               <div><dt>${t('engineCode')}</dt><dd>${escapeHtml(submission.engineCode || '—')}</dd></div>
               <div><dt>${t('transmission')}</dt><dd>${escapeHtml(submission.transmissionCode || '—')}</dd></div>
               <div><dt>${t('vehicleCondition')}</dt><dd>${escapeHtml(conditionOptionLabel(submission.vehicleCondition) || submission.vehicleCondition || '—')}</dd></div>
@@ -223,6 +230,61 @@
     const s = store();
     if (!root || !s || !I18n()) return;
 
+    async function ensureAdminSession() {
+      try {
+        const res = await fetch('/api/me', { credentials: 'include' });
+        const data = await res.json();
+        return data.user?.role === 'admin' ? data.user : null;
+      } catch {
+        return null;
+      }
+    }
+
+    function renderLogin() {
+      root.innerHTML = `
+        <div class="admin-review-login supplier-bilingual">
+          <h2>Admin sign in</h2>
+          <p class="admin-review-login__hint">Half-cut review requires administrator authentication.</p>
+          <form id="admin-login-form" class="admin-review-login__form">
+            <label>
+              <span>Username</span>
+              <input type="text" name="username" autocomplete="username" required>
+            </label>
+            <label>
+              <span>Password</span>
+              <input type="password" name="password" autocomplete="current-password" required>
+            </label>
+            <button type="submit" class="btn btn--primary">Sign in</button>
+          </form>
+          <div id="admin-login-feedback" class="supplier-upload-feedback" role="status"></div>
+        </div>`;
+
+      const form = document.getElementById('admin-login-form');
+      const feedback = document.getElementById('admin-login-feedback');
+      form.addEventListener('submit', async (event) => {
+        event.preventDefault();
+        feedback.textContent = '';
+        feedback.className = 'supplier-upload-feedback';
+        const body = Object.fromEntries(new FormData(form));
+        try {
+          const res = await fetch('/api/login', {
+            method: 'POST',
+            credentials: 'include',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(body),
+          });
+          const data = await res.json().catch(() => ({}));
+          if (!res.ok) throw new Error(data.error || 'Login failed');
+          if (data.role !== 'admin') throw new Error('Admin access required');
+          bootReview();
+        } catch (err) {
+          feedback.textContent = err.message || 'Login failed';
+          feedback.className = 'supplier-upload-feedback supplier-upload-feedback--error';
+        }
+      });
+    }
+
+    function bootReview() {
     s.whenReady().then(() => {
     function render() {
       const pending = s.getSubmissionsByStatus('pending');
@@ -296,6 +358,12 @@
     render();
     }).catch((err) => {
       root.innerHTML = `<p class="admin-review-empty">${escapeHtml(err.message || 'Failed to load review data')}</p>`;
+    });
+    }
+
+    ensureAdminSession().then((user) => {
+      if (user) bootReview();
+      else renderLogin();
     });
   }
 

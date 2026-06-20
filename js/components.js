@@ -108,19 +108,25 @@
       </div>`;
   }
 
-  function logoImg(className, attrs) {
+  function logoImg(className, attrs, variant) {
     const c = getConfig();
     if (!c) return '';
     const extra = attrs || '';
-    const srcset = c.logoSrcSet
-      ? c.logoSrcSet.split(',').map(part => {
+    const isFooter = variant === 'footer';
+    const logo = isFooter && c.logoFooter ? c.logoFooter : c.logo;
+    const srcSetRaw = isFooter && c.logoFooterSrcSet ? c.logoFooterSrcSet : c.logoSrcSet;
+    const srcset = srcSetRaw
+      ? srcSetRaw.split(',').map(part => {
           const [file, width] = part.trim().split(/\s+/);
           return `${href(file)} ${width || ''}`.trim();
         }).join(', ')
       : '';
-    const sizes = c.logoSizes ? ` sizes="${c.logoSizes}"` : '';
+    const sizesRaw = isFooter && c.footerLogoSizes ? c.footerLogoSizes : c.logoSizes;
+    const sizes = sizesRaw ? ` sizes="${sizesRaw}"` : '';
     const srcsetAttr = srcset ? ` srcset="${srcset}"${sizes}` : '';
-    return `<img src="${href(c.logo)}"${srcsetAttr} alt="AsiaPower" class="${className}" width="220" height="41" decoding="async"${extra}>`;
+    const width = isFooter && c.logoFooterWidth ? c.logoFooterWidth : 320;
+    const height = isFooter && c.logoFooterHeight ? c.logoFooterHeight : 39;
+    return `<img src="${href(logo)}"${srcsetAttr} alt="AsiaPower" class="${className}" width="${width}" height="${height}" decoding="async"${extra}>`;
   }
 
   function renderHeader(activeId) {
@@ -202,6 +208,9 @@
               <a href="https://wa.me/${c.whatsapp}?text=${encodeURIComponent(c.whatsappMessage)}" target="_blank" rel="noopener noreferrer" class="btn btn-outline-light">
                 ${iconSvg('whatsapp')} ${t('footer.whatsapp', 'WhatsApp Us')}
               </a>
+              <a href="mailto:${c.email}?subject=${encodeURIComponent('AsiaPower enquiry')}" class="btn btn-outline-light">
+                ${iconSvg('mail')} ${t('footer.emailUs', 'Email Us')}
+              </a>
             </div>
           </div>
         </div>
@@ -210,7 +219,7 @@
           <div class="footer__grid">
             <div class="footer__col footer__col--brand">
               <a href="${href('index.html')}" class="logo logo--footer">
-                ${logoImg('logo__img', ' loading="lazy"')}
+                ${logoImg('logo__img', ' loading="lazy"', 'footer')}
               </a>
               <p class="footer__about">${t('footer.about', 'AsiaPower is a global powertrain sourcing platform — connecting importers, workshops and fleet operators to a verified China-based supply network for Japanese, Korean and Chinese vehicle applications.')}</p>
             </div>
@@ -256,7 +265,7 @@
     return `
       <div class="whatsapp-float">
         <span class="whatsapp-float__label">${t('whatsapp.label', 'Chat on WhatsApp')}</span>
-        <a href="https://wa.me/${c.whatsapp}?text=${encodeURIComponent(c.whatsappMessage)}" target="_blank" rel="noopener noreferrer" class="whatsapp-float__btn" aria-label="WhatsApp ${c.whatsappDisplay}">
+        <a href="https://wa.me/${c.whatsapp}?text=${encodeURIComponent(c.whatsappMessage)}" target="_blank" rel="noopener noreferrer" class="whatsapp-float__btn" aria-label="${t('whatsapp.label', 'Chat on WhatsApp')}">
           ${iconSvg('whatsapp')}
         </a>
       </div>`;

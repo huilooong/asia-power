@@ -8,6 +8,7 @@
 
   const store = () => window.HalfCutInventoryStore;
   const Vin = () => window.HalfCutVin;
+  const Catalog = () => window.VehicleCatalog;
   const I18n = () => window.HalfCutSupplierI18n;
   const MediaApi = () => window.HalfCutMediaApi;
   const t = (key) => I18n()?.labelHtml(key) || key;
@@ -30,15 +31,46 @@
       .replace(/"/g, '&quot;');
   }
 
+  const MODEL_OTHER = '__OTHER__';
+
+  async function loadLearnedModels(cat) {
+    if (!cat?.mergeLearnedModels) return;
+    try {
+      const res = await fetch('/api/vehicle-catalog/learned-models');
+      if (!res.ok) return;
+      const data = await res.json();
+      cat.mergeLearnedModels(data.models || {});
+    } catch (err) {
+      console.warn('[supplier-upload] learned models unavailable', err);
+    }
+  }
+
+  function renderBrandSelectOptions(cat) {
+    const label = (brand) => escapeHtml(cat.getBrandLabel?.(brand) || brand);
+    const option = (brand) => `<option value="${escapeHtml(brand)}">${label(brand)}</option>`;
+    const groups = cat.getBrandOptionGroups?.();
+    if (groups) {
+      return `
+        <optgroup label="Chinese brands · 中国品牌">
+          ${groups.chinese.map(option).join('')}
+        </optgroup>
+        <optgroup label="Japanese · Korean · Western · 其他品牌">
+          ${groups.other.map(option).join('')}
+        </optgroup>`;
+    }
+    return cat.getBrandNames().map(option).join('');
+  }
+
   function initSupplierHalfCutUpload() {
     const root = document.getElementById('supplier-half-cut-upload-root');
     const s = store();
     const v = Vin();
-    if (!root || !s || !v || !I18n()) return;
+    const cat = Catalog();
+    if (!root || !s || !v || !I18n() || !cat) return;
 
-    const brandOptions = s.SUPPORTED_BRANDS.map(brand =>
-      `<option value="${escapeHtml(brand)}">${escapeHtml(brand)}</option>`
-    ).join('');
+    let rememberTimer = null;
+
+    const brandOptions = renderBrandSelectOptions(cat);
 
     const conditionOptions = [
       ['Running Vehicle', 'conditionRunning'],
@@ -135,6 +167,7 @@
                   <span class="supplier-field-tag hidden" data-tag="brand"></span>
                   <button type="button" class="supplier-field-unlock hidden" data-unlock="brand">${tBtn('editField')}</button>
                 </div>
+                <input type="search" id="brand-filter" class="supplier-brand-filter" placeholder="Search brand · 搜索品牌（Changan / 长安）" aria-label="Search brand" autocomplete="off">
                 <select id="brand" name="brand" class="supplier-input-lg">
                   <option value="">${I18n().labelInline('selectBrand')}</option>
                   ${brandOptions}
@@ -146,7 +179,10 @@
                   <span class="supplier-field-tag hidden" data-tag="model"></span>
                   <button type="button" class="supplier-field-unlock hidden" data-unlock="model">${tBtn('editField')}</button>
                 </div>
-                <input type="text" id="model" name="model" class="supplier-input-lg" placeholder="Hilux Revo">
+                <select id="model" name="model" class="supplier-input-lg">
+                  <option value="">${I18n().labelInline('selectModel')}</option>
+                </select>
+                <input type="text" id="model-other" name="modelOther" class="supplier-input-lg supplier-model-other hidden" placeholder="${escapeHtml(I18n().labelEn('modelOtherPlaceholder'))}">
               </div>
               <div class="form-row form-row--2">
                 <div class="supplier-field-row" data-field="year">
@@ -186,6 +222,11 @@
               <div class="form-row">
                 <label for="mileage">${t('mileage')} <span class="req">*</span></label>
                 <input type="text" id="mileage" name="mileage" required class="supplier-input-lg" placeholder="43000 or 43,000 km">
+              </div>
+              <div class="form-row">
+                <label for="priceUsd">${t('fobPriceUsd')} <span class="req">*</span></label>
+                <input type="number" id="priceUsd" name="priceUsd" required min="1" step="0.01" class="supplier-input-lg" placeholder="8500">
+                <p class="form-hint">${I18n().labelEn('fobPriceHint')}<span class="bi-zh-inline">${I18n().labelZh('fobPriceHint')}</span></p>
               </div>
               <div class="form-row form-row--2">
                 <div>
@@ -288,8 +329,10 @@
       decodeNotice: document.getElementById('decode-success-notice'),
       decodeMethod: document.getElementById('decodeMethod'),
       decodeConfidence: document.getElementById('decodeConfidence'),
+      brandFilter: document.getElementById('brand-filter'),
       brand: document.getElementById('brand'),
       model: document.getElementById('model'),
+      modelOther: document.getElementById('model-other'),
       year: document.getElementById('year'),
       engineCode: document.getElementById('engineCode'),
       transmissionCode: document.getElementById('transmissionCode'),
@@ -297,6 +340,111 @@
     };
 
     if (els.vehicleCondition) els.vehicleCondition.value = 'Half Cut';
+
+    function filterBrandOptions(query) {
+      if (!els.brand) return;
+      const q = String(query || '').trim().toLowerCase();
+      Array.from(els.brand.options).forEach((opt) => {
+        if (!opt.value) {
+          opt.hidden = false;
+          return;
+        }
+        const haystack = `${opt.value} ${opt.textContent}`.toLowerCase();
+        opt.hidden = Boolean(q) && !haystack.includes(q);
+      });
+    }
+
+    function hideModelOther() {
+      els.modelOther?.classList.add('hidden');
+      if (els.modelOther) els.modelOther.value = '';
+    }
+
+    function showModelOther(value) {
+      if (!els.modelOther) return;
+      els.modelOther.classList.remove('hidden');
+      if (value) els.modelOther.value = value;
+    }
+
+    function populateModelSelect(brand, selectedModel) {
+      if (!els.model) return;
+      let models = brand ? cat.getModels(brand) : [];
+      if (brand && selectedModel) {
+        cat.ensureModelOption(brand, selectedModel);
+        models = cat.getModels(brand);
+      }
+      const selectLabel = I18n().labelInline('selectModel');
+      const otherLabel = I18n().labelInline('modelOther');
+      let options = `<option value="">${escapeHtml(selectLabel)}</option>`;
+      models.forEach((m) => {
+        options += `<option value="${escapeHtml(m)}">${escapeHtml(m)}</option>`;
+      });
+      options += `<option value="${MODEL_OTHER}">${escapeHtml(otherLabel)}</option>`;
+      els.model.innerHTML = options;
+
+      if (!selectedModel) {
+        hideModelOther();
+        return;
+      }
+
+      const normalized = String(selectedModel).trim();
+      const match = models.find((m) => m.toLowerCase() === normalized.toLowerCase());
+      if (match) {
+        els.model.value = match;
+        hideModelOther();
+      } else {
+        els.model.value = MODEL_OTHER;
+        showModelOther(normalized);
+      }
+    }
+
+    function getModelValue() {
+      if (!els.model) return '';
+      if (els.model.value === MODEL_OTHER) {
+        return String(els.modelOther?.value || '').trim();
+      }
+      return String(els.model.value || '').trim();
+    }
+
+    async function rememberCustomModel(options = {}) {
+      const brand = String(els.brand?.value || '').trim();
+      const model = getModelValue();
+      if (!brand || !model || model.length < 2) return;
+
+      const known = cat.getModels(brand).some((entry) => entry.toLowerCase() === model.toLowerCase());
+      cat.ensureModelOption(brand, model);
+
+      try {
+        const res = await fetch('/api/vehicle-catalog/remember-model', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ brand, model }),
+        });
+        if (!res.ok) return;
+        const data = await res.json();
+        if (data.added || !known) {
+          populateModelSelect(brand, model);
+        }
+        if (data.added && options.toast) {
+          showFeedback('Model saved for next time · 车型已记住，下次可直接选择', 'success');
+        }
+      } catch (err) {
+        console.warn('[supplier-upload] remember model failed', err);
+      }
+    }
+
+    function scheduleRememberCustomModel() {
+      clearTimeout(rememberTimer);
+      rememberTimer = setTimeout(() => {
+        rememberCustomModel();
+      }, 500);
+    }
+
+    function getFieldValue(key) {
+      if (key === 'model') return getModelValue();
+      return String(els[key]?.value || '').trim();
+    }
+
+    populateModelSelect('', '');
 
     const panels = root.querySelectorAll('.supplier-step-panel');
     const progressItems = root.querySelectorAll('.supplier-step-progress__item');
@@ -351,6 +499,9 @@
         } else {
           input.readOnly = true;
         }
+        if (fieldKey === 'model' && els.modelOther && els.model.value === MODEL_OTHER) {
+          els.modelOther.readOnly = true;
+        }
         row.classList.add('is-autofilled');
         row.classList.remove('needs-input');
         if (tag) {
@@ -364,6 +515,9 @@
         input.readOnly = false;
         delete input.dataset.locked;
         input.tabIndex = 0;
+        if (fieldKey === 'model' && els.modelOther) {
+          els.modelOther.readOnly = false;
+        }
         row.classList.remove('is-autofilled');
         if (tag) tag.classList.add('hidden');
         if (unlock) unlock.classList.add('hidden');
@@ -375,7 +529,8 @@
       Object.keys(FIELD_ELS).forEach((key) => {
         const row = root.querySelector(`.supplier-field-row[data-field="${key}"]`);
         if (!row || autoFilledFields.has(key)) return;
-        const needs = requiredMissing.includes(key) || (!els[key]?.value && ['brand', 'model', 'year'].includes(key));
+        const needs = requiredMissing.includes(key)
+          || (!getFieldValue(key) && ['brand', 'model', 'year'].includes(key));
         row.classList.toggle('needs-input', needs);
         const tag = root.querySelector(`[data-tag="${key}"]`);
         if (tag && needs && !autoFilledFields.has(key)) {
@@ -399,7 +554,7 @@
     function applyFieldLocking(result) {
       Object.keys(FIELD_ELS).forEach((key) => setFieldLocked(key, false));
       (result?.filledFields || []).forEach((key) => {
-        if (els[key]?.value) setFieldLocked(key, true);
+        if (getFieldValue(key)) setFieldLocked(key, true);
       });
       markMissingFields(result?.missingFields || []);
     }
@@ -456,8 +611,12 @@
     }
 
     function setVehicleFields(data, method) {
-      if (data.brand) els.brand.value = data.brand;
-      if (data.model) els.model.value = data.model;
+      if (data.brand) {
+        els.brand.value = data.brand;
+        populateModelSelect(data.brand, data.model || '');
+      } else if (data.model) {
+        populateModelSelect('', data.model);
+      }
       if (data.year) els.year.value = data.year;
       if (data.engineCode) els.engineCode.value = data.engineCode;
       if (data.transmissionCode) els.transmissionCode.value = data.transmissionCode;
@@ -468,7 +627,7 @@
     function clearVehicleFields() {
       Object.keys(FIELD_ELS).forEach((key) => setFieldLocked(key, false));
       els.brand.value = '';
-      els.model.value = '';
+      populateModelSelect('', '');
       els.year.value = '';
       els.engineCode.value = '';
       els.transmissionCode.value = '';
@@ -526,12 +685,16 @@
       const order = ['brand', 'model', 'year', 'engineCode', 'transmissionCode'];
       const target = order.find((key) => {
         if (autoFilledFields.has(key)) return false;
-        if (['brand', 'model', 'year'].includes(key)) return !els[key]?.value;
+        if (['brand', 'model', 'year'].includes(key)) return !getFieldValue(key);
         return false;
       });
       if (target && els[target]) {
         if (els[target].dataset?.locked === 'true') root.querySelector(`[data-unlock="${target}"]`)?.click();
-        els[target].focus();
+        if (target === 'model' && els.model.value === MODEL_OTHER && els.modelOther) {
+          els.modelOther.focus();
+        } else {
+          els[target].focus();
+        }
       }
     }
 
@@ -552,9 +715,10 @@
           els.brand.focus();
           return false;
         }
-        if (!els.model.value.trim()) {
+        if (!getModelValue()) {
           showFeedback(`${I18n().labelEn('model')} required / ${I18n().labelZh('model')}必填`, 'error');
-          els.model.focus();
+          if (els.model.value === MODEL_OTHER && els.modelOther) els.modelOther.focus();
+          else els.model.focus();
           return false;
         }
         if (!els.year.value) {
@@ -573,6 +737,12 @@
         if (!form.mileage.value.trim()) {
           showFeedback(`${I18n().labelEn('mileage')} required / ${I18n().labelZh('mileage')}必填`, 'error');
           form.mileage.focus();
+          return false;
+        }
+        const priceUsd = Number(form.priceUsd.value);
+        if (!Number.isFinite(priceUsd) || priceUsd <= 0) {
+          showFeedback(tBi('fobPriceRequired'), 'error');
+          form.priceUsd.focus();
           return false;
         }
         if (!form.supplierPhone.value.trim() && !form.supplierWechat.value.trim()) {
@@ -617,6 +787,32 @@
     }
 
     document.getElementById('decode-vin-btn')?.addEventListener('click', runVinDecode);
+
+    els.brandFilter?.addEventListener('input', () => filterBrandOptions(els.brandFilter.value));
+    els.brandFilter?.addEventListener('search', () => filterBrandOptions(els.brandFilter.value));
+
+    els.brand?.addEventListener('change', () => {
+      if (autoFilledFields.has('brand')) return;
+      populateModelSelect(els.brand.value, '');
+      setFieldLocked('model', false);
+    });
+
+    els.model?.addEventListener('change', () => {
+      if (autoFilledFields.has('model')) return;
+      if (els.model.value === MODEL_OTHER) {
+        showModelOther('');
+        els.modelOther?.focus();
+      } else {
+        hideModelOther();
+      }
+    });
+
+    els.modelOther?.addEventListener('input', () => {
+      if (els.model.value === MODEL_OTHER) scheduleRememberCustomModel();
+    });
+    els.modelOther?.addEventListener('blur', () => {
+      if (els.model.value === MODEL_OTHER) rememberCustomModel();
+    });
 
     els.vin?.addEventListener('input', () => {
       const vinNorm = v.normalizeVin(els.vin.value);
@@ -793,9 +989,10 @@
         supplierWechat: String(form.supplierWechat.value || '').trim(),
         supplierCity: String(form.supplierCity.value || '').trim(),
         brand: String(form.brand.value || '').trim(),
-        model: String(form.model.value || '').trim(),
+        model: getModelValue(),
         year: form.year.value,
         mileage: String(form.mileage.value || '').trim(),
+        priceUsd: Number(Number(form.priceUsd.value).toFixed(2)),
         engineCode: String(form.engineCode.value || '').trim(),
         transmissionCode: String(form.transmissionCode.value || '').trim(),
         vehicleCondition: form.vehicleCondition.value,
@@ -808,7 +1005,8 @@
         photos,
       };
 
-      s.addSubmission(payload).then((submission) => {
+      s.addSubmission(payload).then(async (submission) => {
+        await rememberCustomModel();
         form.reset();
         photoData.clear();
         clearVideoPreview();
@@ -843,22 +1041,43 @@
     updateVinCounter();
   }
 
+  function showBootState(root, message) {
+    if (!root) return;
+    root.innerHTML = `
+      <div class="supplier-upload-layout supplier-upload-boot">
+        <p class="supplier-upload-boot__text" role="status" aria-live="polite">${message}</p>
+        <div class="supplier-upload-boot__bar" aria-hidden="true"><span></span></div>
+      </div>`;
+  }
+
   async function bootSupplierUpload() {
+    const root = document.getElementById('supplier-half-cut-upload-root');
     const s = store();
     const Media = MediaApi();
     if (!s || !Media) return;
+    showBootState(root, `${I18n()?.labelEn?.('supplierUploadTitle') || 'Half-Cut Upload'} — loading form… / 正在加载表单…`);
     try {
       await s.whenReady();
       if (!Media.isServerMode()) {
-        const root = document.getElementById('supplier-half-cut-upload-root');
         if (root) {
           root.innerHTML = `<div class="supplier-upload-warning"><strong>Server required / 需要本地服务器：</strong> Run <code>node server/half-cut-local-server.js</code> then open this page at <code>http://localhost:8787/supplier-portal/half-cut-upload.html</code></div>`;
         }
         return;
       }
+      if (!window.SUPPLIER_UPLOAD_KEY) {
+        if (root) {
+          root.innerHTML = '<div class="supplier-upload-feedback supplier-upload-feedback--error"><strong>Upload key not loaded / 上传密钥未加载</strong><br>Please refresh the page. If this continues, contact AsiaPower support.<br>请刷新页面重试，若仍失败请联系 AsiaPower。</div>';
+        }
+        return;
+      }
       initSupplierHalfCutUpload();
+      Promise.all([
+        Media.ensureUploadToken().catch((err) => {
+          console.warn('[supplier-upload] upload token prefetch failed', err);
+        }),
+        loadLearnedModels(Catalog()),
+      ]);
     } catch (err) {
-      const root = document.getElementById('supplier-half-cut-upload-root');
       if (root) root.innerHTML = `<div class="supplier-upload-feedback supplier-upload-feedback--error">${err.message}</div>`;
     }
   }

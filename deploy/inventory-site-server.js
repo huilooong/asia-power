@@ -5,6 +5,7 @@ const crypto = require('crypto');
 const { URL } = require('url');
 
 const PORT = process.env.PORT || 8080;
+const BIND_HOST = process.env.BIND_HOST || '127.0.0.1';
 const ROOT = process.env.INVENTORY_SITE_ROOT || __dirname;
 const loadEnvPath = [
   path.join(__dirname, 'lib', 'load-env.js'),
@@ -29,21 +30,67 @@ if (!halfCutApiPath) {
   throw new Error('half-cut-api module not found');
 }
 const { createHalfCutApi } = require(halfCutApiPath);
+const { assertProductionEnv, isProduction } = require(
+  [path.join(__dirname, 'lib', 'startup-checks.js'), path.join(__dirname, '..', 'server', 'lib', 'startup-checks.js')]
+    .find((candidate) => fs.existsSync(candidate)) || path.join(__dirname, '..', 'server', 'lib', 'startup-checks.js')
+);
+assertProductionEnv();
+const { createRateLimiter } = require(
+  [path.join(__dirname, 'lib', 'rate-limit.js'), path.join(__dirname, '..', 'server', 'lib', 'rate-limit.js')]
+    .find((candidate) => fs.existsSync(candidate)) || path.join(__dirname, '..', 'server', 'lib', 'rate-limit.js')
+);
+const { isBlockedStaticPath, applySecurityHeaders } = require(
+  [path.join(__dirname, 'lib', 'security-paths.js'), path.join(__dirname, '..', 'server', 'lib', 'security-paths.js')]
+    .find((candidate) => fs.existsSync(candidate)) || path.join(__dirname, '..', 'server', 'lib', 'security-paths.js')
+);
 const halfCutNotificationsPath = [
   path.join(__dirname, 'lib', 'half-cut-notifications.js'),
   path.join(__dirname, '..', 'server', 'lib', 'half-cut-notifications.js'),
 ].find((candidate) => fs.existsSync(candidate));
-const { notifyWhatsappClick } = halfCutNotificationsPath
+const { notifyWhatsappClick, notifyContactLead, notifyHalfCutLead } = halfCutNotificationsPath
   ? require(halfCutNotificationsPath)
-  : { notifyWhatsappClick: () => {} };
+  : { notifyWhatsappClick: () => {}, notifyContactLead: () => {}, notifyHalfCutLead: () => {} };
+const contactLeadsPath = [
+  path.join(__dirname, 'lib', 'contact-leads.js'),
+  path.join(__dirname, '..', 'server', 'lib', 'contact-leads.js'),
+].find((candidate) => fs.existsSync(candidate));
+const { createContactLeadStore } = require(contactLeadsPath || path.join(__dirname, '..', 'server', 'lib', 'contact-leads.js'));
+const siteAnalyticsPath = [
+  path.join(__dirname, 'lib', 'site-analytics.js'),
+  path.join(__dirname, '..', 'server', 'lib', 'site-analytics.js'),
+].find((candidate) => fs.existsSync(candidate));
+const { createSiteAnalytics } = require(siteAnalyticsPath || path.join(__dirname, '..', 'server', 'lib', 'site-analytics.js'));
+const ipGeoPath = [
+  path.join(__dirname, 'lib', 'ip-geo.js'),
+  path.join(__dirname, '..', 'server', 'lib', 'ip-geo.js'),
+].find((candidate) => fs.existsSync(candidate));
+const { resolveClientGeo } = require(ipGeoPath || path.join(__dirname, '..', 'server', 'lib', 'ip-geo.js'));
+const leadSpamPath = [
+  path.join(__dirname, 'lib', 'lead-spam.js'),
+  path.join(__dirname, '..', 'server', 'lib', 'lead-spam.js'),
+].find((candidate) => fs.existsSync(candidate));
+const { isContactSpam } = require(leadSpamPath || path.join(__dirname, '..', 'server', 'lib', 'lead-spam.js'));
+const sitemapPath = [
+  path.join(__dirname, 'lib', 'sitemap.js'),
+  path.join(__dirname, '..', 'server', 'lib', 'sitemap.js'),
+].find((candidate) => fs.existsSync(candidate));
+const { buildSitemapXml, sendSitemap } = require(sitemapPath || path.join(__dirname, '..', 'server', 'lib', 'sitemap.js'));
+const halfCutPrerenderPath = [
+  path.join(__dirname, 'lib', 'half-cut-prerender.js'),
+  path.join(__dirname, '..', 'server', 'lib', 'half-cut-prerender.js'),
+].find((candidate) => fs.existsSync(candidate));
+const { renderHalfCutDetailPage, sendPrerenderedHtml } = require(
+  halfCutPrerenderPath || path.join(__dirname, '..', 'server', 'lib', 'half-cut-prerender.js')
+);
 const DATA_DIR = path.join(ROOT, 'data');
 const PUBLIC_DIR = path.join(ROOT, 'public');
-const halfCut = createHalfCutApi(ROOT);
-halfCut.ensureDirs();
 const USERS_FILE = path.join(DATA_DIR, 'users.json');
 const ITEMS_FILE = path.join(DATA_DIR, 'items.json');
 const INBOUND_FILE = path.join(DATA_DIR, 'inbound-intake.json');
 const POSTS_FILE = path.join(DATA_DIR, 'posts.json');
+const CONTACT_LEADS_FILE = path.join(DATA_DIR, 'contact-leads.json');
+const contactLeads = createContactLeadStore(CONTACT_LEADS_FILE);
+const siteAnalytics = createSiteAnalytics(DATA_DIR);
 
 // Base currency: 1 USD = x currency
 const FX_USD = {
@@ -98,12 +145,14 @@ function hashPassword(password, salt = crypto.randomBytes(16).toString('hex')) {
 }
 
 if (users[0]?.hash === 'seed-change-me') {
-  const defaultPass = process.env.ADMIN_PASSWORD || 'admin1234';
-  const { salt, hash } = hashPassword(defaultPass);
+  if (!process.env.ADMIN_PASSWORD) {
+    throw new Error('ADMIN_PASSWORD environment variable is required for initial admin setup');
+  }
+  const { salt, hash } = hashPassword(process.env.ADMIN_PASSWORD);
   users[0].salt = salt;
   users[0].hash = hash;
   saveJson(USERS_FILE, users);
-  console.log(`[init] admin login: admin / ${defaultPass}`);
+  console.log('[init] Admin password initialized from ADMIN_PASSWORD');
 }
 
 let items = loadJson(ITEMS_FILE, [
@@ -114,6 +163,55 @@ let items = loadJson(ITEMS_FILE, [
 let posts = loadJson(POSTS_FILE, []);
 
 const sessions = new Map();
+const limitLogin = createRateLimiter({ windowMs: 15 * 60 * 1000, max: 20 });
+const limitRegister = createRateLimiter({ windowMs: 60 * 60 * 1000, max: 10 });
+const limitAnalytics = createRateLimiter({ windowMs: 60 * 1000, max: 30 });
+const limitContactLead = createRateLimiter({ windowMs: 60 * 60 * 1000, max: 12 });
+const limitRememberModel = createRateLimiter({ windowMs: 60 * 60 * 1000, max: 60 });
+const REGISTRATION_ENABLED = process.env.REGISTRATION_ENABLED === '1';
+const MAX_AUTH_BODY = 64 * 1024;
+const MAX_API_BODY = 1024 * 1024;
+const ITEM_PATCH_FIELDS = new Set([
+  'model', 'description', 'price', 'currency', 'qty', 'status',
+  'ownerType', 'supplierId', 'imageUrl', 'approved',
+]);
+
+const ITEM_SUPPLIER_FIELDS = ['supplierPhone', 'supplierCountryCode', 'supplierWa', 'supplierId'];
+
+function sanitizePublicItem(item, viewer) {
+  if (viewer?.role === 'admin') return item;
+  const copy = { ...item };
+  for (const key of ITEM_SUPPLIER_FIELDS) delete copy[key];
+  return copy;
+}
+
+function sessionCookie(sid, maxAgeSec) {
+  const secure = process.env.NODE_ENV === 'production' || process.env.COOKIE_SECURE === '1';
+  const parts = [`sid=${sid}`, 'HttpOnly', 'Path=/', 'SameSite=Lax'];
+  if (maxAgeSec !== undefined) parts.push(`Max-Age=${maxAgeSec}`);
+  if (secure) parts.push('Secure');
+  return parts.join('; ');
+}
+
+function requireAdmin(req, res) {
+  const u = authUser(req);
+  if (!u || u.role !== 'admin') {
+    json(res, 401, { error: 'Admin authentication required' });
+    return false;
+  }
+  return true;
+}
+
+const halfCut = createHalfCutApi(ROOT, {
+  auth: {
+    requireAdmin: (req, res) => requireAdmin(req, res),
+    allowUpload: (req) => {
+      const u = authUser(req);
+      return !!(u && (u.role === 'admin' || u.role === 'supplier'));
+    },
+  },
+});
+halfCut.ensureDirs();
 
 function parseCookies(cookieHeader = '') {
   return Object.fromEntries(cookieHeader.split(';').map(v => v.trim()).filter(Boolean).map(c => {
@@ -122,18 +220,36 @@ function parseCookies(cookieHeader = '') {
   }));
 }
 function json(res, code, payload) {
+  applySecurityHeaders(res);
   res.writeHead(code, { 'Content-Type': 'application/json; charset=utf-8' });
   res.end(JSON.stringify(payload));
 }
-function readBody(req) {
+function readBody(req, maxBytes = MAX_AUTH_BODY) {
   return new Promise((resolve, reject) => {
     let raw = '';
-    req.on('data', c => raw += c);
+    let total = 0;
+    req.on('data', (chunk) => {
+      total += chunk.length;
+      if (total > maxBytes) {
+        reject(new Error('Request body too large'));
+        req.destroy();
+        return;
+      }
+      raw += chunk;
+    });
     req.on('end', () => {
       try { resolve(raw ? JSON.parse(raw) : {}); } catch (e) { reject(e); }
     });
     req.on('error', reject);
   });
+}
+
+function serverError(res, err) {
+  if (isProduction()) {
+    console.error('[server]', err);
+    return json(res, 500, { error: 'Internal server error' });
+  }
+  return json(res, 500, { error: err.message || 'Internal server error' });
 }
 function authUser(req) {
   const sid = parseCookies(req.headers.cookie).sid;
@@ -187,8 +303,15 @@ function streamUploadFile(req, res, filePath) {
   fs.createReadStream(filePath).pipe(res);
 }
 
-function serveStatic(req, res, pathname) {
+function serveStatic(req, res, pathname, search = '') {
+  if (isBlockedStaticPath(pathname)) return sendNotFound(req, res);
+
   if (halfCut.isUploadPath(pathname)) {
+    const u = authUser(req);
+    const isAdmin = u?.role === 'admin';
+    if (!halfCut.canServeUpload(req, pathname, isAdmin)) {
+      return sendNotFound(req, res);
+    }
     const filePath = halfCut.resolveUploadFile(pathname);
     if (!filePath) return sendNotFound(req, res);
     return streamUploadFile(req, res, filePath);
@@ -248,6 +371,7 @@ function serveStatic(req, res, pathname) {
     '.jpg': 'image/jpeg',
     '.jpeg': 'image/jpeg',
     '.webp': 'image/webp',
+    '.xml': 'application/xml',
     '.svg': 'image/svg+xml',
     '.gif': 'image/gif',
     '.ico': 'image/x-icon',
@@ -259,6 +383,10 @@ function serveStatic(req, res, pathname) {
   const mime = mimeMap[ext] || 'application/octet-stream';
   const isText = mime.startsWith('text/') || mime === 'application/javascript' || mime === 'application/json' || mime === 'image/svg+xml';
   const isAsset = !['.html', '.xml', '.txt', '.json'].includes(ext);
+  if (ext === '.html') {
+    siteAnalytics.recordPageView(req, `${pathname}${search || ''}`);
+  }
+  applySecurityHeaders(res);
   res.writeHead(200, {
     'Content-Type': isText ? `${mime}; charset=utf-8` : mime,
     'Cache-Control': isAsset ? 'public, max-age=31536000, immutable' : 'no-cache',
@@ -274,15 +402,118 @@ const server = http.createServer(async (req, res) => {
   const p = url.pathname;
 
   if (p.startsWith('/api/')) {
+    if (req.method === 'OPTIONS') {
+      res.writeHead(204, {
+        'Access-Control-Allow-Methods': 'GET, POST, PUT, PATCH, DELETE, OPTIONS',
+        'Access-Control-Allow-Headers': 'Content-Type, X-Upload-Token, X-Supplier-Key',
+        'Access-Control-Max-Age': '86400',
+      });
+      return res.end();
+    }
     try {
+      if (req.method === 'POST' && p === '/api/leads/contact') {
+        if (!limitContactLead(req)) return json(res, 429, { error: 'Too many requests' });
+        const body = await readBody(req, MAX_AUTH_BODY);
+        if (isContactSpam(body)) return json(res, 400, { error: 'Invalid enquiry' });
+        try {
+          const geo = await resolveClientGeo(req);
+          const lead = contactLeads.appendContactLead(body, {
+            page: body.page,
+            ...geo,
+          });
+          notifyContactLead(lead);
+          return json(res, 201, { ok: true, id: lead.id });
+        } catch (err) {
+          const code = err.statusCode || 400;
+          return json(res, code, { error: err.message || 'Invalid enquiry' });
+        }
+      }
+
+      if (req.method === 'POST' && p === '/api/leads/half-cut') {
+        if (!limitContactLead(req)) return json(res, 429, { error: 'Too many requests' });
+        const body = await readBody(req, MAX_AUTH_BODY);
+        try {
+          const geo = await resolveClientGeo(req);
+          const lead = contactLeads.appendHalfCutLead(body, {
+            page: body.page,
+            ...geo,
+          });
+          notifyHalfCutLead(lead);
+          return json(res, 201, { ok: true, id: lead.id });
+        } catch (err) {
+          const code = err.statusCode || 400;
+          return json(res, code, { error: err.message || 'Invalid enquiry' });
+        }
+      }
+
+      if (req.method === 'GET' && p === '/api/leads') {
+        if (!requireAdmin(req, res)) return;
+        return json(res, 200, { leads: contactLeads.listLeads() });
+      }
+
+      if (req.method === 'PATCH' && p.startsWith('/api/leads/')) {
+        if (!requireAdmin(req, res)) return;
+        const leadId = decodeURIComponent(p.slice('/api/leads/'.length));
+        const body = await readBody(req, MAX_AUTH_BODY);
+        try {
+          const lead = contactLeads.updateLead(leadId, body);
+          return json(res, 200, { ok: true, lead });
+        } catch (err) {
+          const code = err.statusCode || 400;
+          return json(res, code, { error: err.message || 'Update failed' });
+        }
+      }
+
+      if (req.method === 'DELETE' && p.startsWith('/api/leads/')) {
+        if (!requireAdmin(req, res)) return;
+        const leadId = decodeURIComponent(p.slice('/api/leads/'.length));
+        try {
+          contactLeads.deleteLead(leadId);
+          return json(res, 200, { ok: true });
+        } catch (err) {
+          const code = err.statusCode || 404;
+          return json(res, code, { error: err.message || 'Delete failed' });
+        }
+      }
+
       if (req.method === 'POST' && p === '/api/analytics/event') {
+        if (!limitAnalytics(req)) return json(res, 429, { error: 'Too many requests' });
         const body = await readBody(req);
         const eventType = String(body.eventType || '').trim();
         if (eventType === 'whatsapp_click') {
+          siteAnalytics.recordEvent(req, eventType, body);
           notifyWhatsappClick(body);
           return json(res, 200, { ok: true });
         }
         return json(res, 400, { error: 'unsupported eventType' });
+      }
+
+      if (req.method === 'GET' && p === '/api/analytics/summary') {
+        if (!requireAdmin(req, res)) return;
+        const days = Math.min(90, Math.max(1, Number(url.searchParams.get('days') || 7)));
+        const day = url.searchParams.get('day');
+        if (day) return json(res, 200, siteAnalytics.getSummary({ day }));
+        return json(res, 200, siteAnalytics.getSummary({ days }));
+      }
+
+      if (req.method === 'GET' && p === '/api/vehicle-catalog/learned-models') {
+        return json(res, 200, { models: halfCut.modelMemory.getAll() });
+      }
+
+      if (req.method === 'POST' && p === '/api/vehicle-catalog/remember-model') {
+        if (!limitRememberModel(req)) return json(res, 429, { error: 'Too many requests' });
+        const body = await readBody(req, MAX_AUTH_BODY);
+        const brand = String(body.brand || '').trim();
+        const model = String(body.model || '').trim();
+        if (!brand || !model) return json(res, 400, { error: 'brand and model required' });
+        const added = halfCut.modelMemory.remember(brand, model);
+        return json(res, 200, {
+          ok: true,
+          added,
+          brand,
+          model,
+          models: halfCut.modelMemory.getForBrand(brand),
+        });
       }
 
       if (p.startsWith('/api/half-cuts/')) {
@@ -295,6 +526,8 @@ const server = http.createServer(async (req, res) => {
       }
 
       if (req.method === 'POST' && p === '/api/register') {
+        if (!REGISTRATION_ENABLED) return json(res, 403, { error: 'Registration disabled' });
+        if (!limitRegister(req)) return json(res, 429, { error: 'Too many requests' });
         const body = await readBody(req);
         const { username, password, supplierName, countryCode, phone } = body;
         if (!username || !password || !countryCode || !phone) return json(res, 400, { error: 'username/password/countryCode/phone required' });
@@ -316,6 +549,7 @@ const server = http.createServer(async (req, res) => {
       }
 
       if (req.method === 'POST' && p === '/api/login') {
+        if (!limitLogin(req)) return json(res, 429, { error: 'Too many requests' });
         const { username, password } = await readBody(req);
         const u = users.find(x => x.username === username);
         if (!u) return json(res, 401, { error: 'invalid credentials' });
@@ -323,14 +557,14 @@ const server = http.createServer(async (req, res) => {
         if (test.hash !== u.hash) return json(res, 401, { error: 'invalid credentials' });
         const sid = id('sess');
         sessions.set(sid, u.id);
-        res.writeHead(200, { 'Set-Cookie': `sid=${sid}; HttpOnly; Path=/; Max-Age=604800`, 'Content-Type': 'application/json; charset=utf-8' });
+        res.writeHead(200, { 'Set-Cookie': sessionCookie(sid, 604800), 'Content-Type': 'application/json; charset=utf-8' });
         return res.end(JSON.stringify({ ok: true, role: u.role, supplierName: u.supplierName }));
       }
 
       if (req.method === 'POST' && p === '/api/logout') {
         const sid = parseCookies(req.headers.cookie).sid;
         if (sid) sessions.delete(sid);
-        res.writeHead(200, { 'Set-Cookie': 'sid=; HttpOnly; Path=/; Max-Age=0', 'Content-Type': 'application/json; charset=utf-8' });
+        res.writeHead(200, { 'Set-Cookie': sessionCookie('', 0), 'Content-Type': 'application/json; charset=utf-8' });
         return res.end(JSON.stringify({ ok: true }));
       }
 
@@ -345,19 +579,25 @@ const server = http.createServer(async (req, res) => {
         const u = authUser(req);
         let out = items.slice();
         if (status) out = out.filter(i => i.status === status);
-        if (!includePending) out = out.filter(i => i.approved);
+        if (includePending) {
+          if (!u || u.role !== 'admin') return json(res, 403, { error: 'admin only' });
+        } else {
+          out = out.filter(i => i.approved);
+        }
         if (u?.role === 'supplier') out = out.filter(i => i.approved || i.supplierId === u.id);
-        out = out.map(i => ({
+        out = out.map(i => sanitizePublicItem({
           ...i,
           originalPrice: i.price,
           originalCurrency: i.currency,
           priceUsd: Number(toUSD(i.price, i.currency).toFixed(2)),
           currency: 'USD'
-        }));
+        }, u));
         return json(res, 200, { items: out, fxBase: 'USD' });
       }
 
       if (req.method === 'GET' && p === '/api/inbound-intake') {
+        const u = requireAuth(req, res); if (!u) return;
+        if (u.role !== 'admin') return json(res, 403, { error: 'admin only' });
         const inbound = loadJson(INBOUND_FILE, { meta: {}, rows: [] });
         return json(res, 200, inbound);
       }
@@ -373,7 +613,7 @@ const server = http.createServer(async (req, res) => {
       if (req.method === 'POST' && p === '/api/posts') {
         const u = requireAuth(req, res); if (!u) return;
         if (u.role !== 'admin') return json(res, 403, { error: 'admin only' });
-        const b = await readBody(req);
+        const b = await readBody(req, MAX_API_BODY);
         const title = String(b.title || '').trim();
         const excerpt = String(b.excerpt || '').trim();
         const content = String(b.content || '').trim();
@@ -400,7 +640,7 @@ const server = http.createServer(async (req, res) => {
 
       if (req.method === 'POST' && p === '/api/items') {
         const u = requireAuth(req, res); if (!u) return;
-        const b = await readBody(req);
+        const b = await readBody(req, MAX_API_BODY);
         const required = ['model', 'description', 'price', 'currency', 'qty', 'status'];
         for (const k of required) if (b[k] === undefined || b[k] === '') return json(res, 400, { error: `${k} required` });
         const item = {
@@ -429,10 +669,14 @@ const server = http.createServer(async (req, res) => {
         const u = requireAuth(req, res); if (!u) return;
         if (u.role !== 'admin') return json(res, 403, { error: 'admin only' });
         const itemId = p.split('/').pop();
-        const b = await readBody(req);
+        const b = await readBody(req, MAX_API_BODY);
         const idx = items.findIndex(i => i.id === itemId);
         if (idx < 0) return json(res, 404, { error: 'not found' });
-        items[idx] = { ...items[idx], ...b };
+        const patch = {};
+        Object.entries(b || {}).forEach(([key, value]) => {
+          if (ITEM_PATCH_FIELDS.has(key)) patch[key] = value;
+        });
+        items[idx] = { ...items[idx], ...patch };
         saveJson(ITEMS_FILE, items);
         return json(res, 200, { ok: true, item: items[idx] });
       }
@@ -467,15 +711,52 @@ const server = http.createServer(async (req, res) => {
 
       return json(res, 404, { error: 'api not found' });
     } catch (e) {
-      return json(res, 500, { error: e.message });
+      if (e.message === 'Request body too large') return json(res, 413, { error: e.message });
+      return serverError(res, e);
     }
   }
 
-  return serveStatic(req, res, p);
+  if (req.method === 'GET' && p === '/half-cuts/detail.html') {
+    const slug = url.searchParams.get('slug');
+    if (slug) {
+      try {
+        const catalog = halfCut.getPublicCatalog();
+        const siteUrl = process.env.SITE_URL || 'https://asia-power.com';
+        const rendered = renderHalfCutDetailPage({
+          publicDir: PUBLIC_DIR,
+          slug,
+          catalog,
+          siteUrl,
+        });
+        if (rendered?.html) {
+          siteAnalytics.recordPageView(req, `${p}${url.search || ''}`);
+          return sendPrerenderedHtml(res, rendered.html, rendered.redirectSlug);
+        }
+      } catch (err) {
+        console.error('[prerender]', err);
+      }
+    }
+  }
+
+  if (req.method === 'GET' && p === '/sitemap.xml') {
+    try {
+      const catalog = halfCut.getPublicCatalog();
+      const xml = buildSitemapXml({
+        siteUrl: process.env.SITE_URL || 'https://asia-power.com',
+        publicDir: PUBLIC_DIR,
+        approved: catalog.approved || [],
+      });
+      return sendSitemap(res, xml);
+    } catch (err) {
+      return serverError(res, err);
+    }
+  }
+
+  return serveStatic(req, res, p, url.search || '');
 });
 
-server.listen(PORT, () => {
-  console.log(`Inventory site running on http://localhost:${PORT}`);
+server.listen(PORT, BIND_HOST, () => {
+  console.log(`Inventory site running on http://${BIND_HOST}:${PORT}`);
   console.log(`Half-cut uploads: ${halfCut.UPLOADS_DIR}`);
   console.log(`Half-cut state: ${halfCut.DATA_DIR}`);
 });

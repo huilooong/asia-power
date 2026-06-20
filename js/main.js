@@ -158,7 +158,7 @@
     return selected?.text?.trim() || field.value?.trim() || '';
   }
 
-  function buildContactWhatsAppMessage(form) {
+  function buildContactWhatsAppMessage(form, leadId) {
     const lines = [
       'Hello AsiaPower, I would like to request a quote.',
       '',
@@ -174,13 +174,70 @@
       '',
       'Please quote availability, price, shipping option, and lead time.',
     ];
+    if (leadId) lines.push('', `Reference: ${leadId}`);
     return lines.join('\n');
   }
 
-  function openContactWhatsApp(form) {
+  function buildContactLeadPayload(form) {
+    const preferEmail = !!form.querySelector('[name="prefer_email_reply"]')?.checked;
+    return {
+      name: fieldValue(form, 'name'),
+      company: fieldValue(form, 'company'),
+      email: fieldValue(form, 'email'),
+      phone: fieldValue(form, 'phone'),
+      country: fieldValue(form, 'country'),
+      enquiry_type: fieldValue(form, 'enquiry_type'),
+      vehicle_details: fieldValue(form, 'vehicle_details'),
+      message: fieldValue(form, 'message'),
+      prefer_email_reply: preferEmail,
+      company_website: fieldValue(form, 'company_website'),
+      page: `${window.location.pathname}${window.location.search}`,
+    };
+  }
+
+  function prefersEmailReply(form) {
+    return !!form.querySelector('[name="prefer_email_reply"]')?.checked;
+  }
+
+  function syncContactFormMode(form) {
+    const preferEmail = prefersEmailReply(form);
+    const emailInput = form.querySelector('[name="email"]');
+    const submitBtn = form.querySelector('[type="submit"]');
+    const emailLabel = form.querySelector('[data-contact-email-label]');
+    if (emailInput) {
+      emailInput.required = preferEmail;
+      emailInput.setAttribute('aria-required', preferEmail ? 'true' : 'false');
+    }
+    if (emailLabel) {
+      emailLabel.innerHTML = preferEmail
+        ? 'Email <span class="req">*</span>'
+        : 'Email';
+    }
+    if (submitBtn) {
+      submitBtn.textContent = preferEmail ? 'Submit Enquiry' : 'Continue on WhatsApp';
+      submitBtn.classList.toggle('btn-whatsapp', !preferEmail);
+      submitBtn.classList.toggle('btn-accent', preferEmail);
+    }
+  }
+
+  async function saveContactLead(form) {
+    const payload = buildContactLeadPayload(form);
+    const res = await fetch('/api/leads/contact', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload),
+    });
+    const data = await res.json().catch(() => ({}));
+    if (!res.ok) {
+      throw new Error(data.error || 'Could not save enquiry');
+    }
+    return data;
+  }
+
+  function openContactWhatsApp(form, leadId) {
     const config = window.ASIAPOWER || {};
     const whatsapp = config.whatsapp || '8618603773077';
-    const message = buildContactWhatsAppMessage(form);
+    const message = buildContactWhatsAppMessage(form, leadId);
     const url = `https://wa.me/${whatsapp}?text=${encodeURIComponent(message)}`;
     const opened = window.open(url, '_blank', 'noopener,noreferrer');
     if (!opened) window.location.href = url;
@@ -188,15 +245,72 @@
 
   function initForms() {
     document.querySelectorAll('form[data-form]').forEach(form => {
-      form.addEventListener('submit', e => {
+      form.addEventListener('submit', async (e) => {
         e.preventDefault();
         if (!validateForm(form)) return;
 
         const card = form.closest('.form-card');
         const success = card?.querySelector('.form-success');
+        const submitBtn = form.querySelector('[type="submit"]');
+
         if (form.dataset.form === 'contact-enquiry') {
-          openContactWhatsApp(form);
+          syncContactFormMode(form);
+          if (prefersEmailReply(form) && !fieldValue(form, 'email')) {
+            showToast('Please enter your email — we will reply by email.');
+            form.querySelector('[name="email"]')?.focus();
+            return;
+          }
+
+          const preferEmail = prefersEmailReply(form);
+          const originalLabel = submitBtn?.textContent;
+          if (submitBtn) {
+            submitBtn.disabled = true;
+            submitBtn.textContent = 'Saving enquiry…';
+          }
+          let saved = false;
+          let leadId = null;
+          try {
+            const result = await saveContactLead(form);
+            saved = true;
+            leadId = result?.id || null;
+          } catch (err) {
+            console.warn('[contact-lead]', err);
+            showToast(preferEmail
+              ? 'Could not save enquiry. Please email us directly.'
+              : 'Could not save on server. Please still send the WhatsApp message.');
+          } finally {
+            if (submitBtn) {
+              submitBtn.disabled = false;
+              syncContactFormMode(form);
+              if (!submitBtn.textContent || submitBtn.textContent === 'Saving enquiry…') {
+                submitBtn.textContent = originalLabel || (preferEmail ? 'Submit Enquiry' : 'Continue on WhatsApp');
+              }
+            }
+          }
+
+          if (!preferEmail) {
+            openContactWhatsApp(form, leadId);
+          }
+
+          const successWhatsapp = card?.querySelector('.form-success--whatsapp');
+          const successEmail = card?.querySelector('.form-success--email');
+          if (success) success.classList.remove('show');
+          if (successWhatsapp) successWhatsapp.classList.remove('show');
+          if (successEmail) successEmail.classList.remove('show');
+
+          if (saved) {
+            form.classList.add('hidden');
+            if (preferEmail && successEmail) {
+              successEmail.classList.add('show');
+            } else if (successWhatsapp) {
+              successWhatsapp.classList.add('show');
+            } else if (success) {
+              success.classList.add('show');
+            }
+          }
+          return;
         }
+
         if (success) {
           form.classList.add('hidden');
           success.classList.add('show');
@@ -239,7 +353,9 @@
     };
 
     grid.innerHTML = config.categories.map(cat => `
-      <a href="${cat.href}" class="category-card">
+      <a href="${cat.href}" class="category-card${cat.image ? ' category-card--photo' : ''}">
+        ${cat.image ? `<div class="category-card__media"><picture><source srcset="${cat.image.replace('.jpg', '.webp')}" type="image/webp"><img src="${cat.image}" alt="${cat.imageAlt || cat.title}" loading="lazy" decoding="async"></picture></div>` : ''}
+        <div class="category-card__body">
         <div class="category-card__icon">${iconMap[cat.icon] || iconMap.engine}</div>
         <div>
           <div class="category-card__count">${cat.count}</div>
@@ -247,6 +363,7 @@
           <div class="category-card__desc">${cat.desc}</div>
         </div>
         <span class="category-card__arrow">→</span>
+        </div>
       </a>
     `).join('');
   }
@@ -658,6 +775,10 @@
     initFilters();
     initURLFilters();
     initForms();
+    document.querySelectorAll('form[data-form="contact-enquiry"]').forEach((form) => {
+      syncContactFormMode(form);
+      form.querySelector('[name="prefer_email_reply"]')?.addEventListener('change', () => syncContactFormMode(form));
+    });
     initHeaderShadow();
     initCategoryGrid();
     initStatsStrip();

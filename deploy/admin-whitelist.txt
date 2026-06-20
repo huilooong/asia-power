@@ -1,0 +1,3 @@
+# AsiaPower — admin IP whitelist (DEPRECATED)
+# IP restrictions removed 2026-06-19 — admin access is protected by login + session only.
+# This file is kept for reference; nginx no longer reads it.

@@ -82,6 +82,11 @@
     }
     if (!String(data.mileage || '').trim()) errors.push('Mileage is required.');
 
+    const priceUsd = Number(data.priceUsd);
+    if (!Number.isFinite(priceUsd) || priceUsd <= 0) {
+      errors.push('FOB price (USD) is required and must be greater than zero.');
+    }
+
     const photos = normalizePhotos(data.photos);
     if (photos.length < v.MIN_PHOTOS) {
       errors.push(`At least ${v.MIN_PHOTOS} photos are required (you have ${photos.length}).`);
@@ -115,10 +120,13 @@
   function buildSubmissionRecord(data, generateId) {
     const v = Vin();
     const vinNorm = v.normalizeVin(data.vin);
-    const brandSlug = v.brandToSlug(data.brand);
+    const norm = window.VehicleNameNormalize?.normalizeVehicleNames?.(data.brand, data.model);
+    const brand = norm?.brand || data.brand;
+    const model = norm?.model || String(data.model || '').trim();
+    const brandSlug = norm?.brandSlug || v.brandToSlug(brand);
     const video = normalizeVideo(data.video, data.videoUrl);
 
-    return {
+    const record = {
       submissionId: generateId(),
       createdAt: new Date().toISOString(),
       reviewStatus: 'pending',
@@ -133,11 +141,12 @@
       supplierWechat: String(data.supplierWechat || '').trim(),
       supplierCity: String(data.supplierCity || '').trim(),
 
-      brand: data.brand,
+      brand,
       brandSlug,
-      model: String(data.model || '').trim(),
+      model,
       year: Number(data.year) || null,
       mileage: data.mileage,
+      priceUsd: Number(Number(data.priceUsd).toFixed(2)),
       engineCode: String(data.engineCode || '').trim(),
       transmissionCode: String(data.transmissionCode || '').trim(),
       drivetrain: String(data.drivetrain || '2WD').trim(),
@@ -150,6 +159,16 @@
       videoUrl: video?.url || '',
       notes: String(data.notes || '').trim(),
     };
+
+    if (norm?.corrected) {
+      record.nameCorrections = {
+        ...(norm.originalBrand ? { brand: norm.originalBrand } : {}),
+        ...(norm.originalModel ? { model: norm.originalModel } : {}),
+        correctedAt: new Date().toISOString(),
+      };
+    }
+
+    return record;
   }
 
   window.HalfCutUploadLayer = {

@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Quotation Template | AsiaPower</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700;800&family=Inter:wght@400;500;600&display=swap" media="print" onload="this.media='all'">
+  <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700;800&family=Inter:wght@400;500;600&display=swap"></noscript>
+  <link rel="stylesheet" href="css/document.css">
+  <link rel="icon" href="../assets/favicon.png" type="image/png">
+</head>
+<body>
+
+  <div class="doc-toolbar no-print">
+    <span class="doc-toolbar__brand">BSB Motors · AsiaPower Documents</span>
+    <span class="doc-toolbar__hint">Click any grey field to edit · Print saves as PDF</span>
+    <button type="button" class="doc-btn" id="btn-add-row">+ Add line</button>
+    <button type="button" class="doc-btn" id="btn-reset">Reset</button>
+    <button type="button" class="doc-btn doc-btn--primary" id="btn-print">Print / Save PDF</button>
+  </div>
+
+  <div class="doc-workspace">
+    <article class="doc-sheet" id="quote-document">
+
+      <header class="doc-header">
+        <div class="doc-header-top">
+          <div class="doc-logo">
+            <img src="../assets/logo-source-white.png" alt="AsiaPower" width="360" height="68">
+          </div>
+          <div class="doc-meta">
+            <div class="doc-meta__title">QUOTATION</div>
+            <div class="doc-meta__subtitle">报价单</div>
+            <dl>
+              <dt>Quote No.<em>报价编号</em></dt>
+              <dd contenteditable="true" data-doc-no data-placeholder="QT-20260101-1200"></dd>
+              <dt>Date<em>日期</em></dt>
+              <dd contenteditable="true" data-doc-date data-placeholder="YYYY-MM-DD"></dd>
+              <dt>Valid Until<em>有效期至</em></dt>
+              <dd contenteditable="true" data-doc-valid data-placeholder="YYYY-MM-DD"></dd>
+            </dl>
+          </div>
+        </div>
+      </header>
+
+      <div class="doc-parties">
+        <div class="doc-party">
+          <div class="doc-party__head">Seller · 卖方</div>
+          <div class="doc-party__body">
+            <div class="doc-party__identity">
+              <strong class="doc-party__company" data-seller-name contenteditable="true" data-placeholder="BSB Motors">BSB Motors</strong>
+              <span class="doc-party__platform" data-brand-line contenteditable="true" data-placeholder="AsiaPower · asia-power.com">AsiaPower · asia-power.com</span>
+            </div>
+            <dl class="doc-kv">
+              <div class="doc-kv__row">
+                <dt>Contact<em>联系人</em></dt>
+                <dd><span class="doc-field" contenteditable="true" data-placeholder="Sales representative"></span></dd>
+              </div>
+              <div class="doc-kv__row">
+                <dt>Phone<em>电话</em></dt>
+                <dd><span class="doc-field" data-seller-phone contenteditable="true" data-placeholder="+86 …"></span></dd>
+              </div>
+              <div class="doc-kv__row">
+                <dt>Email<em>邮箱</em></dt>
+                <dd><span class="doc-field" data-seller-email contenteditable="true" data-placeholder="sales@…"></span></dd>
+              </div>
+            </dl>
+          </div>
+        </div>
+        <div class="doc-party">
+          <div class="doc-party__head">Buyer · 买方</div>
+          <div class="doc-party__body">
+            <dl class="doc-kv">
+              <div class="doc-kv__row">
+                <dt>Company<em>公司名称</em></dt>
+                <dd><span class="doc-field" contenteditable="true" data-placeholder="Client company name"></span></dd>
+              </div>
+              <div class="doc-kv__row">
+                <dt>Contact<em>联系人</em></dt>
+                <dd><span class="doc-field" contenteditable="true" data-placeholder="Contact person"></span></dd>
+              </div>
+              <div class="doc-kv__row">
+                <dt>Country<em>国家</em></dt>
+                <dd><span class="doc-field" contenteditable="true" data-placeholder="Ghana / Nigeria / …"></span></dd>
+              </div>
+              <div class="doc-kv__row">
+                <dt>Email<em>邮箱</em></dt>
+                <dd><span class="doc-field" contenteditable="true" data-placeholder="client@…"></span></dd>
+              </div>
+            </dl>
+          </div>
+        </div>
+      </div>
+
+      <div class="doc-ref-strip">
+        <div class="doc-ref-item">
+          <span class="doc-ref-en">Reference</span>
+          <span class="doc-ref-zh">参考号</span>
+          <div class="doc-field" contenteditable="true" data-placeholder="Inquiry ref, VIN, stock ID"></div>
+        </div>
+        <div class="doc-ref-item">
+          <span class="doc-ref-en">Incoterms</span>
+          <span class="doc-ref-zh">贸易术语</span>
+          <div class="doc-field" contenteditable="true" data-placeholder="FOB Qingdao / CIF Tema"></div>
+        </div>
+        <div class="doc-ref-item">
+          <span class="doc-ref-en">Currency</span>
+          <span class="doc-ref-zh">币种</span>
+          <div class="doc-field" contenteditable="true" data-placeholder="USD"></div>
+        </div>
+      </div>
+
+      <div class="doc-table-wrap">
+        <table class="doc-table" id="quote-items">
+          <thead>
+            <tr>
+              <th style="width:28px">#</th>
+              <th><span class="doc-th-en">Description</span><span class="doc-th-zh">品名规格</span></th>
+              <th style="width:72px"><span class="doc-th-en">Qty</span><span class="doc-th-zh">数量</span></th>
+              <th class="num" style="width:88px"><span class="doc-th-en">Unit (USD)</span><span class="doc-th-zh">单价</span></th>
+              <th class="num" style="width:88px"><span class="doc-th-en">Amount (USD)</span><span class="doc-th-zh">金额</span></th>
+              <th class="row-actions no-print"></th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td data-line-no>1</td>
+              <td contenteditable="true" data-placeholder="Toyota 1KD-FTV engine, compression tested, export crated">Toyota 1KD-FTV Diesel Engine — compression tested, export crated</td>
+              <td class="num" contenteditable="true" data-qty data-placeholder="1">1</td>
+              <td class="num" contenteditable="true" data-unit data-placeholder="0.00">2,800.00</td>
+              <td class="num" data-amount>2,800.00</td>
+              <td class="row-actions no-print"><button type="button" class="doc-row-remove" title="Remove row">×</button></td>
+            </tr>
+            <tr>
+              <td data-line-no>2</td>
+              <td contenteditable="true" data-placeholder="Freight / documentation"></td>
+              <td class="num" contenteditable="true" data-qty data-placeholder="1">1</td>
+              <td class="num" contenteditable="true" data-unit data-placeholder="0.00"></td>
+              <td class="num" data-amount></td>
+              <td class="row-actions no-print"><button type="button" class="doc-row-remove" title="Remove row">×</button></td>
+            </tr>
+          </tbody>
+          <tfoot>
+            <tr>
+              <td colspan="4" class="num">Subtotal / 小计</td>
+              <td class="num" data-subtotal>2,800.00</td>
+              <td class="no-print"></td>
+            </tr>
+            <tr>
+              <td colspan="4" class="num">Freight &amp; Insurance / 运费保险</td>
+              <td class="num" contenteditable="true" data-freight data-placeholder="0.00">0.00</td>
+              <td class="no-print"></td>
+            </tr>
+            <tr>
+              <td colspan="4" class="num"><strong>Total / 合计 (USD)</strong></td>
+              <td class="num" data-total><strong>2,800.00</strong></td>
+              <td class="no-print"></td>
+            </tr>
+          </tfoot>
+        </table>
+      </div>
+
+      <section class="doc-section">
+        <div class="doc-section__title">Commercial Terms<em>商务条款</em></div>
+        <p><span class="doc-label">Payment<em>付款方式</em></span> <span class="doc-field" contenteditable="true" data-placeholder="30% deposit, 70% before shipment">30% deposit by T/T; balance 70% before shipment</span></p>
+        <p><span class="doc-label">Delivery<em>交货期</em></span> <span class="doc-field" contenteditable="true" data-placeholder="15–25 days after deposit">15–25 working days after deposit confirmation</span></p>
+        <p><span class="doc-label">Port of Loading<em>装运港</em></span> <span class="doc-field" contenteditable="true" data-placeholder="Qingdao / Shanghai">Qingdao, China</span></p>
+        <p><span class="doc-label">Port of Discharge<em>目的港</em></span> <span class="doc-field" contenteditable="true" data-placeholder="Tema / Lagos / client port">As per buyer instruction</span></p>
+        <p><span class="doc-label">Packing<em>包装</em></span> <span class="doc-field" contenteditable="true" data-placeholder="Export wooden crate / container load">Export-standard wooden crate, fumigation certificate available</span></p>
+      </section>
+
+      <section class="doc-section">
+        <div class="doc-section__title">Notes<em>备注</em></div>
+        <div class="doc-notes" contenteditable="true">
+          <p><span class="doc-bi-en">1. Prices are subject to final inspection and stock confirmation.</span><span class="doc-bi-zh">价格以最终验货及库存确认为准。</span></p>
+          <p><span class="doc-bi-en">2. Photos, video and compression test report available on request.</span><span class="doc-bi-zh">可提供照片、视频及缸压检测报告。</span></p>
+          <p><span class="doc-bi-en">3. This quotation is valid until the date stated above. Terms may change if currency or freight rates fluctuate significantly.</span><span class="doc-bi-zh">本报价有效期至上述日期；若汇率或运费大幅波动，条款可能调整。</span></p>
+          <p><span class="doc-bi-en">4. Warranty: 30 days from arrival at destination port (engine internal parts, subject to proper installation).</span><span class="doc-bi-zh">质保：到目的港后 30 天（发动机内部件，须正确安装）。</span></p>
+        </div>
+      </section>
+
+      <div class="doc-signatures">
+        <div class="doc-sig-block">
+          <div class="doc-sig-block__label">For and on behalf of Seller<br>卖方签章</div>
+          <div class="doc-sig-line">
+            Authorised Signature<em>授权签字</em>
+            <span>Name / 姓名: <span class="doc-field" contenteditable="true" data-placeholder=""></span></span>
+            <span>Date / 日期: <span class="doc-field" contenteditable="true" data-placeholder=""></span></span>
+          </div>
+        </div>
+        <div class="doc-sig-block">
+          <div class="doc-sig-block__label">Accepted by Buyer<br>买方确认</div>
+          <div class="doc-sig-line">
+            Authorised Signature<em>授权签字</em>
+            <span>Name / 姓名: <span class="doc-field" contenteditable="true" data-placeholder=""></span></span>
+            <span>Date / 日期: <span class="doc-field" contenteditable="true" data-placeholder=""></span></span>
+          </div>
+        </div>
+      </div>
+
+      <footer class="doc-footer">
+        <div class="doc-footer__bank">
+          <strong>Bank Details (USD · Wise)<em>美元收款账户</em></strong>
+          Bank / 开户行: <span class="doc-field" data-bank-name contenteditable="true">Wise US Inc</span><br>
+          Bank Address / 银行地址: <span class="doc-field" data-bank-address contenteditable="true">30 W. 26th Street, Sixth Floor, New York, NY 10010, United States</span><br>
+          Account Name / 户名: <span class="doc-field" data-account-name contenteditable="true">Long Hui (龙 惠)</span><br>
+          Account No. / 账号: <span class="doc-field" data-account-no contenteditable="true">661461099964457</span><br>
+          Routing / 汇款路径: <span class="doc-field" data-routing contenteditable="true">084009519</span><br>
+          SWIFT / BIC: <span class="doc-field" data-swift contenteditable="true">TRWIUS35XXX</span>
+        </div>
+        <div class="doc-footer__page">BSB Motors · Quotation · AsiaPower</div>
+      </footer>
+
+    </article>
+  </div>
+
+  <script src="../js/config.js?v=logo-zh-v3"></script>
+  <script src="js/document.js"></script>
+  <script>AsiaPowerDoc.initQuote();</script>
+</body>
+</html>

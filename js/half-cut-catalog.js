@@ -43,20 +43,37 @@
     const statusClass = `half-cut-card__status--${u.statusSlug(display.status)}`;
     const thumbUrl = u.firstPhotoUrl(display);
     const photoCount = (display.photos || []).filter(Boolean).length;
+    const hasPhotos = u.hasPhotos(display);
     const hasVideo = u.hasVideo(display);
     const mediaBadges = [
       photoCount ? `<span class="half-cut-card__media-badge">${photoCount} ${t('hc.photos', 'Photos')}</span>` : '',
       hasVideo ? `<span class="half-cut-card__media-badge half-cut-card__media-badge--video">${t('hc.video', 'Video')}</span>` : '',
     ].filter(Boolean).join('');
-    const thumb = thumbUrl
-      ? `<div class="half-cut-card__thumb">${mediaBadges ? `<div class="half-cut-card__media">${mediaBadges}</div>` : ''}<img src="${thumbUrl}" alt="${display.title} thumbnail" loading="lazy"></div>`
-      : (mediaBadges ? `<div class="half-cut-card__thumb half-cut-card__thumb--placeholder"><div class="half-cut-card__media">${mediaBadges}</div></div>` : '');
-    const photosNote = u.hasPhotos(display)
-      ? ''
-      : `<p class="half-cut-card__photos-note">${t('hc.photosOnRequest', 'Photos on request')}</p>`;
+    const safeTitle = String(display.title || '')
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;');
+    const thumbInner = thumbUrl && hasPhotos
+      ? `<button type="button" class="half-cut-card__zoom" aria-label="${t('hc.viewPhotos', 'View photos')} — ${display.stockId}">
+          <img src="${thumbUrl}" alt="${safeTitle}" loading="lazy" decoding="async">
+          <span class="half-cut-gallery__zoom-hint">${t('hc.zoom', 'Zoom')}</span>
+        </button>`
+      : thumbUrl
+        ? `<img src="${thumbUrl}" alt="${safeTitle}" loading="lazy" decoding="async">`
+        : `<div class="half-cut-card__placeholder" aria-hidden="true">
+          <svg class="half-cut-card__placeholder-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="5" width="18" height="14" rx="2"/><circle cx="8.5" cy="10.5" r="2"/><path d="M21 17l-5-5-4 4-2-2-4 4"/></svg>
+          <span class="half-cut-card__placeholder-text">${t('hc.photosOnRequest', 'Photos on request')}</span>
+        </div>`;
+    const thumb = `<div class="half-cut-card__thumb${thumbUrl ? '' : ' half-cut-card__thumb--placeholder'}">${mediaBadges ? `<div class="half-cut-card__media">${mediaBadges}</div>` : ''}${thumbInner}</div>`;
+    const photosNote = '';
     const vinRow = display.maskedVin
       ? `<div><dt>${t('spec.vin', 'VIN')}</dt><dd class="half-cut-card__vin">${display.maskedVin}</dd></div>`
       : '';
+    const priceLabel = u.formatFobPrice(display);
+    const priceRow = priceLabel
+      ? `<p class="half-cut-card__price"><span class="half-cut-card__price-label">${t('hc.fobPrice', 'FOB Price')}</span> ${priceLabel}</p>`
+      : `<p class="half-cut-card__price half-cut-card__price--enquiry">${t('hc.priceOnEnquiry', 'FOB price on enquiry')}</p>`;
 
     return `
       <article class="half-cut-card engine-model" data-slug="${display.slug}" data-brand="${display.brandSlug}" data-status="${u.statusSlug(display.status)}">
@@ -66,6 +83,7 @@
           <span class="half-cut-card__status ${statusClass}">${statusLabel}</span>
         </div>
         <h3 class="half-cut-card__title"><a href="${detail}">${display.title}</a></h3>
+        ${priceRow}
         <dl class="half-cut-card__specs">
           <div><dt>${t('spec.brand', 'Brand')}</dt><dd><a href="${brandUrl}">${display.brand}</a></dd></div>
           <div><dt>${t('spec.model', 'Model')}</dt><dd>${display.model}</dd></div>
@@ -145,7 +163,7 @@
       cards().forEach(card => {
         const slug = card.dataset.brand;
         const status = card.dataset.status;
-        const item = window.getHalfCutBySlugInternal?.(card.dataset.slug) || window.getHalfCutBySlug(card.dataset.slug);
+        const item = window.getHalfCutBySlug(card.dataset.slug);
         const matchBrand = brand === 'all' || slug === brand;
         const matchStatus = activeStatus === 'all' || status === activeStatus;
         const matchQuery = item ? matchesSearch(item, query) : true;

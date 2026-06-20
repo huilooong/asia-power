@@ -83,13 +83,80 @@ function notifyUploadFailure(kind, errorMessage) {
 function notifyWhatsAppInquiry(row) {
   const preview = String(row.text || row.message || '').replace(/\s+/g, ' ').slice(0, 220);
   notifyAsync([
-    '💬 WhatsApp inquiry',
+    '💬 WhatsApp 消息（已收到）',
     `Sender: ${row.senderName || row.senderId || row.conversationId || 'unknown'}`,
     preview ? `Message: ${preview}` : '',
   ].filter(Boolean).join('\n'));
 }
 
+function leadIpLine(lead) {
+  const { formatIpLocation } = require('./ip-geo');
+  const location = formatIpLocation(lead);
+  if (location && lead.clientIp) return `IP: ${lead.clientIp} (${location})`;
+  if (lead.clientIp) return `IP: ${lead.clientIp}`;
+  return '';
+}
+
+function leadSummary(lead) {
+  if (lead.source === 'half-cut') {
+    return [
+      `Stock: ${lead.stockId || '—'}`,
+      `Vehicle: ${lead.brand || '—'} ${lead.model || ''}`.trim(),
+      `Engine: ${lead.engineCode || '—'} / ${lead.transmissionCode || '—'}`,
+      `Intent: ${lead.intent || '—'}`,
+      leadIpLine(lead),
+    ].filter(Boolean).join('\n');
+  }
+  return [
+    `Name: ${lead.name || '—'}`,
+    lead.company ? `Company: ${lead.company}` : '',
+    `Phone: ${lead.phone || '—'}`,
+    lead.email ? `Email: ${lead.email}` : '',
+    `Country: ${lead.country || '—'}`,
+    `Type: ${lead.enquiryType || '—'}`,
+    `Vehicle: ${String(lead.vehicleDetails || '').replace(/\s+/g, ' ').slice(0, 180)}`,
+    leadIpLine(lead),
+  ].filter(Boolean).join('\n');
+}
+
+function notifyContactLead(lead) {
+  const emailOnly = lead.replyChannel === 'email';
+  notifyAsync([
+    emailOnly ? '✅ 新询价单（邮件回复）' : '✅ 新询价单（已保存到服务器）',
+    `ID: ${lead.id}`,
+    leadSummary(lead),
+    emailOnly ? `Email: ${lead.email}` : '',
+    lead.page ? `Page: ${lead.page}` : '',
+    emailOnly
+      ? '客户选择邮件回复 — 请直接回复邮箱，勿等待 WhatsApp。'
+      : '客户还需在 WhatsApp 点 Send；即使未发送，以上信息已留存。',
+  ].filter(Boolean).join('\n'));
+}
+
+function notifyHalfCutLead(lead) {
+  notifyAsync([
+    '✅ 半车询价（已保存到服务器）',
+    `ID: ${lead.id}`,
+    leadSummary(lead),
+    lead.page ? `Page: ${lead.page}` : '',
+    '客户还需在 WhatsApp 点 Send；即使未发送，以上信息已留存。',
+  ].filter(Boolean).join('\n'));
+}
+
+function notifyLeadReminder(lead) {
+  notifyAsync([
+    '⏰ 询价待跟进（超过 2 小时未回复）',
+    `ID: ${lead.id}`,
+    `Source: ${lead.source || '—'} · ${lead.intent || '—'}`,
+    leadSummary(lead),
+    lead.page ? `Page: ${lead.page}` : '',
+    '请在 admin/leads.html 标记已回复。',
+  ].filter(Boolean).join('\n'));
+}
+
 function notifyWhatsappClick(event) {
+  if (process.env.WHATSAPP_CLICK_TELEGRAM !== '1') return;
+
   const page = event.page || event.pageUrl || '—';
   const label = String(event.label || '').trim();
   let preview = '';
@@ -103,10 +170,10 @@ function notifyWhatsappClick(event) {
     // ignore malformed href
   }
   notifyAsync([
-    '📩 新WhatsApp询盘',
+    '⚠️ WhatsApp 按钮点击（尚未确认发送）',
     `页面: ${page}`,
     label ? `按钮: ${label}` : '',
-    preview ? `消息: ${preview}` : '',
+    preview ? `预填消息: ${preview}` : '',
   ].filter(Boolean).join('\n'));
 }
 
@@ -116,6 +183,9 @@ module.exports = {
   notifyNewSubmission,
   notifyUploadFailure,
   notifyWhatsAppInquiry,
+  notifyContactLead,
+  notifyHalfCutLead,
+  notifyLeadReminder,
   notifyWhatsappClick,
   maskVin,
 };

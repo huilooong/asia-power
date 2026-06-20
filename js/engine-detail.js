@@ -8,6 +8,33 @@
     return window.SitePaths ? window.SitePaths.base() : '../';
   }
 
+  function absoluteUrl(path) {
+    if (window.AsiaPowerSEO?.absoluteUrl) return window.AsiaPowerSEO.absoluteUrl(path);
+    return new URL(path, window.location.href).href;
+  }
+
+  function upsertMeta(attr, key, content) {
+    if (!content) return;
+    let el = document.querySelector(`meta[${attr}="${key}"]`);
+    if (!el) {
+      el = document.createElement('meta');
+      el.setAttribute(attr, key);
+      document.head.appendChild(el);
+    }
+    el.content = content;
+  }
+
+  function upsertJsonLd(id, data) {
+    let el = document.getElementById(id);
+    if (!el) {
+      el = document.createElement('script');
+      el.type = 'application/ld+json';
+      el.id = id;
+      document.head.appendChild(el);
+    }
+    el.textContent = JSON.stringify(data);
+  }
+
   function renderEngineDetail(slug) {
     const engine = window.SEO_ENGINES?.[slug];
     const root = document.getElementById('engine-detail-root');
@@ -17,6 +44,35 @@
     const meta = document.querySelector('meta[name="description"]');
     if (meta) meta.content = engine.description;
     window.AsiaPowerSEO?.refresh?.();
+
+    const canonical = absoluteUrl(`${base()}engines/${engine.slug}.html`);
+    let canonicalLink = document.querySelector('link[rel="canonical"]');
+    if (!canonicalLink) {
+      canonicalLink = document.createElement('link');
+      canonicalLink.rel = 'canonical';
+      document.head.appendChild(canonicalLink);
+    }
+    canonicalLink.href = canonical;
+
+    upsertMeta('property', 'og:url', canonical);
+    upsertMeta('property', 'og:title', engine.title);
+    upsertMeta('property', 'og:description', engine.description);
+
+    upsertJsonLd('schema-engine-product', {
+      '@context': 'https://schema.org',
+      '@type': 'Product',
+      name: `${engine.brand} ${engine.code} Engine`,
+      description: engine.description,
+      brand: { '@type': 'Brand', name: engine.brand },
+      category: 'Used Automotive Engine',
+      url: canonical,
+      offers: {
+        '@type': 'Offer',
+        availability: 'https://schema.org/InStock',
+        priceCurrency: 'USD',
+        seller: { '@type': 'Organization', name: 'AsiaPower' },
+      },
+    });
 
     const status = window.ENGINE_EXPORT_STATUS || [
       'Available', 'Ready for Export', 'FOB Available', 'CIF Available',

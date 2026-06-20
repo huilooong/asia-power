@@ -35,6 +35,19 @@
     el.content = content;
   }
 
+  function escapeHtml(value) {
+    return window.HalfCutGalleryLightbox?.escapeHtml?.(value) ?? String(value)
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;');
+  }
+
+  function photoLabel(photo, index) {
+    return window.HalfCutGalleryLightbox?.photoLabel?.(photo, index)
+      ?? (typeof photo === 'object' && photo.label ? photo.label : `Photo ${index + 1}`);
+  }
+
   function renderHalfCutDetail(slug) {
     const item = window.getHalfCutBySlug?.(slug);
     const root = document.getElementById('half-cut-detail-root');
@@ -84,8 +97,14 @@
     const gallery = u.hasPhotos(item)
       ? `<div class="half-cut-gallery" role="list">${item.photos.map((photo, index) => {
           const url = u.photoUrl(photo);
-          const label = typeof photo === 'object' && photo.label ? photo.label : `Photo ${index + 1}`;
-          return `<figure class="half-cut-gallery__item" role="listitem"><img src="${url}" alt="${label}" loading="lazy"><figcaption>${label}</figcaption></figure>`;
+          const label = escapeHtml(photoLabel(photo, index));
+          return `<figure class="half-cut-gallery__item" role="listitem" data-gallery-index="${index}">
+            <button type="button" class="half-cut-gallery__zoom" aria-label="View ${label} full size">
+              <img src="${url}" alt="${label}" loading="lazy">
+              <span class="half-cut-gallery__zoom-hint">Zoom</span>
+            </button>
+            <figcaption>${label}</figcaption>
+          </figure>`;
         }).join('')}</div>`
       : '<p class="half-cut-card__photos-note">Photos on request</p>';
     const videoSection = u.hasVideo(item)
@@ -104,6 +123,13 @@
     const conditionRow = item.vehicleCondition
       ? `<div><dt>Condition</dt><dd>${item.vehicleCondition}</dd></div>`
       : '';
+    const priceLabel = u.formatFobPrice(item);
+    const priceRow = priceLabel
+      ? `<div><dt>FOB Price (USD)</dt><dd class="half-cut-detail__price">${priceLabel}</dd></div>`
+      : `<div><dt>FOB Price (USD)</dt><dd class="half-cut-detail__price half-cut-detail__price--enquiry">On enquiry</dd></div>`;
+    const priceHero = priceLabel
+      ? `<p class="half-cut-detail__price-hero">${priceLabel} <span class="half-cut-detail__price-note">FOB</span></p>`
+      : '';
 
     const ctaHeading = item.status === 'Sold'
       ? `Similar ${item.brand} ${item.model} Half Cut`
@@ -116,8 +142,8 @@
         : `Reference Stock ID <strong>${item.stockId}</strong> for FOB/CIF quotation — availability confirmed on enquiry.`;
 
     const ctaButton = item.status === 'Available'
-      ? `<a href="${u.requestPriceUrl(b, item)}" class="btn btn-accent">Contact Sourcing Team</a>`
-      : `<a href="${u.similarUnitUrl(item)}" class="btn btn-accent" target="_blank" rel="noopener noreferrer">Request Similar Unit</a>`;
+      ? u.leadLink(item, 'price', 'btn btn-accent', 'Contact Sourcing Team')
+      : u.leadLink(item, 'similar', 'btn btn-accent', 'Request Similar Unit');
 
     root.innerHTML = `
       <section class="page-hero page-hero--catalog">
@@ -129,6 +155,7 @@
             <span>${item.stockId}</span>
           </div>
           <h1>${item.title}</h1>
+          ${priceHero}
           <p>${u.heroIntro(item)}</p>
           <p class="half-cut-disclaimer half-cut-disclaimer--hero">${u.INVENTORY_DISCLAIMER}</p>
           ${supplierNotice}
@@ -144,6 +171,7 @@
               ${gallery}
               ${videoSection}
               <dl class="engine-detail__specs half-cut-detail__specs">
+                ${priceRow}
                 <div><dt>Brand</dt><dd><a href="${brandUrl}">${item.brand}</a></dd></div>
                 <div><dt>Model</dt><dd>${item.model}</dd></div>
                 <div><dt>Year</dt><dd>${item.year}</dd></div>
@@ -190,6 +218,12 @@
           ${ctaButton}
         </div>
       </section>`;
+
+    bindGalleryLightbox(root, item, u);
+  }
+
+  function bindGalleryLightbox(root, item, u) {
+    window.HalfCutGalleryLightbox?.bindDetailGallery?.(root, item, u);
   }
 
   document.addEventListener('DOMContentLoaded', () => {

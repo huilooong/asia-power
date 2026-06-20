@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Export Sales Contract Template | AsiaPower</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700;800&family=Inter:wght@400;500;600&display=swap" media="print" onload="this.media='all'">
+  <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700;800&family=Inter:wght@400;500;600&display=swap"></noscript>
+  <link rel="stylesheet" href="css/document.css">
+  <link rel="icon" href="../assets/favicon.png" type="image/png">
+</head>
+<body>
+
+  <div class="doc-toolbar no-print">
+    <span class="doc-toolbar__brand">BSB Motors · AsiaPower Documents</span>
+    <span class="doc-toolbar__hint">Click any grey field to edit · Print saves as PDF</span>
+    <button type="button" class="doc-btn" id="btn-add-row">+ Add line</button>
+    <button type="button" class="doc-btn" id="btn-reset">Reset</button>
+    <button type="button" class="doc-btn doc-btn--primary" id="btn-print">Print / Save PDF</button>
+  </div>
+
+  <div class="doc-workspace">
+    <article class="doc-sheet" id="contract-document">
+
+      <header class="doc-header">
+        <div class="doc-header-top">
+          <div class="doc-logo">
+            <img src="../assets/logo-source-white.png" alt="AsiaPower" width="360" height="68">
+          </div>
+          <div class="doc-meta">
+            <div class="doc-meta__title">SALES CONTRACT</div>
+            <div class="doc-meta__subtitle">出口销售合同</div>
+            <dl>
+              <dt>Contract No.<em>合同编号</em></dt>
+              <dd contenteditable="true" data-doc-no data-placeholder="SC-20260101-1200"></dd>
+              <dt>Date<em>签订日期</em></dt>
+              <dd contenteditable="true" data-doc-date data-placeholder="YYYY-MM-DD"></dd>
+              <dt>Place<em>签订地点</em></dt>
+              <dd contenteditable="true" data-placeholder="Zhengzhou, China">Zhengzhou, China</dd>
+            </dl>
+          </div>
+        </div>
+      </header>
+
+      <div class="doc-parties">
+        <div class="doc-party">
+          <div class="doc-party__head">Party A (Seller) · 甲方（卖方）</div>
+          <div class="doc-party__body">
+            <div class="doc-party__identity">
+              <strong class="doc-party__company" data-seller-name contenteditable="true" data-placeholder="BSB Motors">BSB Motors</strong>
+              <span class="doc-party__platform" data-brand-line contenteditable="true" data-placeholder="AsiaPower · asia-power.com">AsiaPower · asia-power.com</span>
+            </div>
+            <dl class="doc-kv">
+              <div class="doc-kv__row">
+                <dt>Contact<em>联系人</em></dt>
+                <dd><span class="doc-field" contenteditable="true" data-placeholder="Representative name"></span></dd>
+              </div>
+              <div class="doc-kv__row">
+                <dt>Phone<em>电话</em></dt>
+                <dd><span class="doc-field" data-seller-phone contenteditable="true" data-placeholder="+86 …"></span></dd>
+              </div>
+              <div class="doc-kv__row">
+                <dt>Email<em>邮箱</em></dt>
+                <dd><span class="doc-field" data-seller-email contenteditable="true" data-placeholder="sales@…"></span></dd>
+              </div>
+            </dl>
+          </div>
+        </div>
+        <div class="doc-party">
+          <div class="doc-party__head">Party B (Buyer) · 乙方（买方）</div>
+          <div class="doc-party__body">
+            <dl class="doc-kv">
+              <div class="doc-kv__row">
+                <dt>Company<em>公司名称</em></dt>
+                <dd><span class="doc-field" contenteditable="true" data-placeholder="Buyer company name"></span></dd>
+              </div>
+              <div class="doc-kv__row">
+                <dt>Address<em>地址</em></dt>
+                <dd><span class="doc-field" contenteditable="true" data-placeholder="Buyer registered address"></span></dd>
+              </div>
+              <div class="doc-kv__row">
+                <dt>Contact<em>联系人</em></dt>
+                <dd><span class="doc-field" contenteditable="true" data-placeholder="Authorised representative"></span></dd>
+              </div>
+              <div class="doc-kv__row">
+                <dt>Email<em>邮箱</em></dt>
+                <dd><span class="doc-field" contenteditable="true" data-placeholder="buyer@…"></span></dd>
+              </div>
+            </dl>
+          </div>
+        </div>
+      </div>
+
+      <p style="font-size:.82rem;margin-bottom:14px;line-height:1.65;">
+        <span class="doc-bi-en">Party A and Party B (collectively the <strong>"Parties"</strong>) agree to enter into this Export Sales Contract (<strong>"Contract"</strong>) under the following terms.</span>
+        <span class="doc-bi-zh">甲乙双方（合称<strong>「双方」</strong>）经友好协商，就下列货物买卖事宜签订本出口销售合同（<strong>「本合同」</strong>），条款如下：</span>
+      </p>
+
+      <div class="doc-article">
+        <div class="doc-article__head">Article 1 — Subject Matter <em>第一条 · 货物描述</em></div>
+        <div class="doc-table-wrap">
+          <table class="doc-table" id="contract-items">
+            <thead>
+              <tr>
+                <th style="width:28px">#</th>
+                <th><span class="doc-th-en">Description</span><span class="doc-th-zh">品名及规格</span></th>
+                <th style="width:64px"><span class="doc-th-en">Qty</span><span class="doc-th-zh">数量</span></th>
+                <th class="num" style="width:80px"><span class="doc-th-en">Unit (USD)</span><span class="doc-th-zh">单价</span></th>
+                <th class="num" style="width:80px"><span class="doc-th-en">Amount (USD)</span><span class="doc-th-zh">金额</span></th>
+                <th class="row-actions no-print"></th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td data-line-no>1</td>
+                <td contenteditable="true" data-placeholder="Used engine / gearbox / half-cut — model, code, condition grade">Used Toyota 1KD-FTV diesel engine, compression tested, Grade A, export crated</td>
+                <td class="num" contenteditable="true" data-qty>1</td>
+                <td class="num" contenteditable="true" data-unit>2,800.00</td>
+                <td class="num" data-amount>2,800.00</td>
+                <td class="row-actions no-print"><button type="button" class="doc-row-remove" title="Remove row">×</button></td>
+              </tr>
+            </tbody>
+            <tfoot>
+              <tr>
+                <td colspan="4" class="num">Total Contract Value / 合同总金额 (USD)</td>
+                <td class="num" data-total>2,800.00</td>
+                <td class="no-print"></td>
+              </tr>
+            </tfoot>
+          </table>
+        </div>
+        <p style="font-size:.76rem;color:var(--doc-steel);margin-top:6px;">
+          Incoterms® 2020 / 国际贸易术语: <span class="doc-field" contenteditable="true" data-placeholder="FOB Qingdao / CIF Tema">FOB Qingdao, China</span>
+        </p>
+      </div>
+
+      <div class="doc-article">
+        <div class="doc-article__head">Article 2 — Price &amp; Payment <em>第二条 · 价格与付款</em></div>
+        <ol>
+          <li><span class="doc-bi-en">Total contract value as per Article 1, currency <span class="doc-field" contenteditable="true">USD</span>.</span><span class="doc-bi-zh">合同总金额见第一条，币种为 <span class="doc-field" contenteditable="true">USD</span>。</span></li>
+          <li><span class="doc-bi-en">Payment terms: <span class="doc-field" contenteditable="true" data-placeholder="30% deposit, 70% before shipment">30% deposit by telegraphic transfer (T/T) upon contract signing; balance 70% before shipment</span>.</span><span class="doc-bi-zh">付款方式：<span class="doc-field" contenteditable="true">合同签订后电汇（T/T）支付 30% 定金；发货前付清余款 70%</span>。</span></li>
+          <li><span class="doc-bi-en">All bank charges on buyer's side shall be borne by Party B; charges on seller's side by Party A.</span><span class="doc-bi-zh">买方侧银行费用由乙方承担；卖方侧银行费用由甲方承担。</span></li>
+        </ol>
+      </div>
+
+      <div class="doc-article">
+        <div class="doc-article__head">Article 3 — Delivery &amp; Shipping <em>第三条 · 交货与运输</em></div>
+        <ol>
+          <li><span class="doc-bi-en">Delivery time: <span class="doc-field" contenteditable="true" data-placeholder="15–25 days after deposit">within 15–25 working days after receipt of deposit and confirmation of specifications</span>.</span><span class="doc-bi-zh">交货期：收到定金并确认规格后 <span class="doc-field" contenteditable="true">15–25</span> 个工作日内。</span></li>
+          <li><span class="doc-bi-en">Port of loading: <span class="doc-field" contenteditable="true">Qingdao, China</span>; Port of discharge: <span class="doc-field" contenteditable="true" data-placeholder="As per buyer">as designated by Party B</span>.</span><span class="doc-bi-zh">装运港：<span class="doc-field" contenteditable="true">中国青岛</span>；目的港：<span class="doc-field" contenteditable="true">由乙方指定</span>。</span></li>
+          <li><span class="doc-bi-en">Party A shall provide commercial invoice, packing list, and bill of lading (or equivalent shipping documents).</span><span class="doc-bi-zh">甲方须提供商业发票、装箱单及提单（或等效运输单据）。</span></li>
+          <li><span class="doc-bi-en">Risk transfers to Party B according to the agreed Incoterms.</span><span class="doc-bi-zh">货物风险按约定的贸易术语转移至乙方。</span></li>
+        </ol>
+      </div>
+
+      <div class="doc-article">
+        <div class="doc-article__head">Article 4 — Inspection &amp; Quality <em>第四条 · 检验与质量</em></div>
+        <ol>
+          <li><span class="doc-bi-en">Goods shall match the description in Article 1. Party A provides inspection photos/video and compression test report where applicable.</span><span class="doc-bi-zh">货物须符合第一条描述。甲方提供验货照片/视频及缸压检测报告（如适用）。</span></li>
+          <li><span class="doc-bi-en">Party B shall inspect goods within <span class="doc-field" contenteditable="true">7</span> days of arrival at destination port and notify Party A in writing of any claim supported by evidence.</span><span class="doc-bi-zh">乙方须于货物到港后 <span class="doc-field" contenteditable="true">7</span> 日内检验，如有异议须书面通知甲方并提供证据。</span></li>
+          <li><span class="doc-bi-en">Warranty: <span class="doc-field" contenteditable="true" data-placeholder="30 days engine internal parts">30 days from arrival for internal engine components, subject to professional installation and normal use</span>. Excludes external accessories, electrical items, and damage caused by improper installation or operation.</span><span class="doc-bi-zh">质保：<span class="doc-field" contenteditable="true">到港后 30 天（发动机内部件，须专业安装及正常使用）</span>。不含外部附件、电器件及因安装或操作不当造成的损坏。</span></li>
+        </ol>
+      </div>
+
+      <div class="doc-article">
+        <div class="doc-article__head">Article 5 — Force Majeure <em>第五条 · 不可抗力</em></div>
+        <p><span class="doc-bi-en">Neither Party shall be liable for failure to perform due to events beyond reasonable control, including natural disasters, war, government restrictions, or port congestion. The affected Party shall notify the other within 7 days and resume performance when possible.</span><span class="doc-bi-zh">因不可抗力（含自然灾害、战争、政府限制、港口拥堵等）导致无法履约的，受影响方不承担违约责任，但须在 7 日内通知对方，并在可能时恢复履行。</span></p>
+      </div>
+
+      <div class="doc-article">
+        <div class="doc-article__head">Article 6 — Dispute Resolution <em>第六条 · 争议解决</em></div>
+        <p><span class="doc-bi-en">Disputes shall first be resolved through friendly negotiation. If unresolved within 30 days, either Party may submit the dispute to <span class="doc-field" contenteditable="true" data-placeholder="CIETAC">China International Economic and Trade Arbitration Commission (CIETAC)</span>, with arbitration seat in <span class="doc-field" contenteditable="true">Beijing, China</span>. The award shall be final and binding.</span><span class="doc-bi-zh">争议应首先友好协商；30 日内未解决的，任何一方可提交 <span class="doc-field" contenteditable="true">中国国际经济贸易仲裁委员会（CIETAC）</span> 仲裁，仲裁地 <span class="doc-field" contenteditable="true">中国北京</span>，裁决为终局裁决。</span></p>
+      </div>
+
+      <div class="doc-article">
+        <div class="doc-article__head">Article 7 — General <em>第七条 · 其他</em></div>
+        <ol>
+          <li><span class="doc-bi-en">This Contract is executed in English and Chinese. In case of discrepancy, the English version prevails unless otherwise agreed.</span><span class="doc-bi-zh">本合同以中英文书写；如有歧义，除非另有约定，以英文版本为准。</span></li>
+          <li><span class="doc-bi-en">Amendments must be in writing and signed by both Parties.</span><span class="doc-bi-zh">任何修改须书面形式并经双方签字确认。</span></li>
+          <li><span class="doc-bi-en">This Contract becomes effective upon signature by both Parties.</span><span class="doc-bi-zh">本合同自双方签字之日起生效。</span></li>
+        </ol>
+      </div>
+
+      <div class="doc-signatures">
+        <div class="doc-sig-block">
+          <div class="doc-sig-block__label">Party A (Seller)<br>甲方（卖方）</div>
+          <div class="doc-sig-line">
+            Authorised Signature<em>授权签字</em>
+            <span>Company stamp / 公司盖章</span>
+            <span>Name / 姓名: <span class="doc-field" contenteditable="true" data-placeholder=""></span></span>
+            <span>Date / 日期: <span class="doc-field" contenteditable="true" data-placeholder=""></span></span>
+          </div>
+        </div>
+        <div class="doc-sig-block">
+          <div class="doc-sig-block__label">Party B (Buyer)<br>乙方（买方）</div>
+          <div class="doc-sig-line">
+            Authorised Signature<em>授权签字</em>
+            <span>Company stamp / 公司盖章</span>
+            <span>Name / 姓名: <span class="doc-field" contenteditable="true" data-placeholder=""></span></span>
+            <span>Date / 日期: <span class="doc-field" contenteditable="true" data-placeholder=""></span></span>
+          </div>
+        </div>
+      </div>
+
+      <footer class="doc-footer">
+        <div class="doc-footer__bank">
+          <strong>Party A Bank Details (USD · Wise)<em>甲方美元收款账户</em></strong>
+          Bank / 开户行: <span class="doc-field" data-bank-name contenteditable="true">Wise US Inc</span><br>
+          Bank Address / 银行地址: <span class="doc-field" data-bank-address contenteditable="true">30 W. 26th Street, Sixth Floor, New York, NY 10010, United States</span><br>
+          Account Name / 户名: <span class="doc-field" data-account-name contenteditable="true">Long Hui (龙 惠)</span><br>
+          Account No. / 账号: <span class="doc-field" data-account-no contenteditable="true">661461099964457</span><br>
+          Routing / 汇款路径: <span class="doc-field" data-routing contenteditable="true">084009519</span> ·
+          SWIFT / BIC: <span class="doc-field" data-swift contenteditable="true">TRWIUS35XXX</span>
+        </div>
+        <div class="doc-footer__page">BSB Motors · Sales Contract · AsiaPower</div>
+      </footer>
+
+    </article>
+  </div>
+
+  <script src="../js/config.js?v=logo-zh-v3"></script>
+  <script src="js/document.js"></script>
+  <script>AsiaPowerDoc.initContract();</script>
+</body>
+</html>

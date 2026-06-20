@@ -1,44 +1,72 @@
 {
-  "source": "/Users/longhui/.cursor/projects/Users-longhui-Desktop-AsiaPower/assets/logo-d7967094-b641-4040-9c3b-cefa23156b2b.png",
-  "source_size": {
-    "width": 1024,
-    "height": 682
-  },
-  "cropped_size": {
-    "width": 685,
-    "height": 128
-  },
-  "aspect": 5.3516,
-  "svg": {
-    "created": true,
-    "method": "embedded-raster",
-    "color_trace": "not-available (potrace monochrome only)"
-  },
   "files": {
     "logo.png": {
       "width": 256,
-      "height": 48,
-      "bytes": 14155
+      "height": 30,
+      "bytes": 11738
     },
     "logo@2x.png": {
       "width": 512,
-      "height": 96,
-      "bytes": 36842
+      "height": 59,
+      "bytes": 28420
     },
     "logo@3x.png": {
       "width": 768,
-      "height": 144,
-      "bytes": 66826
+      "height": 89,
+      "bytes": 49615
     },
     "logo.webp": {
       "width": 512,
-      "height": 96,
-      "bytes": 28348
+      "height": 59,
+      "bytes": 19464
     },
     "logo.svg": {
-      "bytes": 49764,
+      "bytes": 85551,
       "method": "embedded-raster"
+    },
+    "logo-footer.png": {
+      "width": 480,
+      "height": 56,
+      "bytes": 25245
+    },
+    "logo-footer@2x.png": {
+      "width": 960,
+      "height": 112,
+      "bytes": 63517
+    },
+    "logo-footer@3x.png": {
+      "width": 1440,
+      "height": 169,
+      "bytes": 115114
+    },
+    "logo-footer.webp": {
+      "width": 960,
+      "height": 112,
+      "bytes": 36346
     }
   },
-  "removed": "logo-hd.png"
+  "header": {
+    "source": "/Users/longhui/Desktop/AsiaPower/assets/logo-source-white.png",
+    "pipeline": "white+zh",
+    "source_size": {
+      "width": 1024,
+      "height": 682
+    },
+    "cropped_size": {
+      "width": 1264,
+      "height": 146
+    }
+  },
+  "footer": {
+    "source": "/Users/longhui/Desktop/AsiaPower/assets/logo-source-white.png",
+    "pipeline": "transparent-light+zh",
+    "source_size": {
+      "width": 1024,
+      "height": 682
+    },
+    "cropped_size": {
+      "width": 1247,
+      "height": 146
+    }
+  }
 }

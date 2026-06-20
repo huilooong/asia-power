@@ -14,6 +14,7 @@
   const MediaApi = () => window.HalfCutMediaApi;
 
   let serverMode = false;
+  let adminMode = false;
   let readyPromise = null;
   let submissionsCache = [];
   let approvedCache = [];
@@ -63,18 +64,70 @@
     stripEmbeddedMediaFromState();
   }
 
+  function isAdminContext() {
+    return document.body?.dataset?.page === 'admin-review'
+      || /\/admin\//i.test(window.location.pathname);
+  }
+
+  function isSupplierUploadContext() {
+    return document.body?.dataset?.page === 'supplier-upload'
+      || /\/supplier-portal\/half-cut-upload\.html/i.test(window.location.pathname);
+  }
+
+  async function probeServerMode() {
+    const api = MediaApi();
+    if (api?.init) {
+      await api.init();
+      return !!api.isServerMode?.();
+    }
+    try {
+      const res = await fetch(`${window.location.origin}/api/half-cuts/health`);
+      if (!res.ok) return false;
+      const data = await res.json();
+      return !!data.ok;
+    } catch {
+      return false;
+    }
+  }
+
+  async function loadPublicCatalog() {
+    const api = MediaApi();
+    if (api?.fetchPublic) {
+      const data = await api.fetchPublic();
+      return Array.isArray(data.approved) ? data.approved : [];
+    }
+    const res = await fetch(`${window.location.origin}/api/half-cuts/public`);
+    const data = await res.json().catch(() => ({}));
+    if (!res.ok) throw new Error(data.error || 'Failed to load catalog');
+    return Array.isArray(data.approved) ? data.approved : [];
+  }
+
+  async function loadAdminState() {
+    const api = MediaApi();
+    if (!api?.fetchState) throw new Error('Admin review requires server API');
+    return api.fetchState();
+  }
   async function initStore() {
-    if (MediaApi()?.init) await MediaApi().init();
-    serverMode = !!MediaApi()?.isServerMode?.();
+    adminMode = isAdminContext();
+    const supplierUpload = isSupplierUploadContext();
+    serverMode = await probeServerMode();
     if (serverMode) {
-      const state = await MediaApi().fetchState();
-      submissionsCache = Array.isArray(state.submissions) ? state.submissions : [];
-      approvedCache = Array.isArray(state.approved) ? state.approved : [];
+      if (adminMode) {
+        const state = await loadAdminState();
+        submissionsCache = Array.isArray(state.submissions) ? state.submissions : [];
+        approvedCache = Array.isArray(state.approved) ? state.approved : [];
+      } else if (supplierUpload) {
+        approvedCache = [];
+        submissionsCache = [];
+      } else {
+        approvedCache = await loadPublicCatalog();
+        submissionsCache = [];
+      }
       stripEmbeddedMediaFromState();
     } else {
       loadLocalFallback();
     }
-    syncLiveInventory();
+    if (!supplierUpload) syncLiveInventory();
     return serverMode;
   }
 
@@ -179,7 +232,8 @@
   };
 
   function syncLiveInventory() {
-    Inventory().syncToCatalog(window.SEED_HALF_CUT_LIST || [], approvedCache);
+    const seedList = serverMode ? [] : (window.SEED_HALF_CUT_LIST || []);
+    Inventory().syncToCatalog(seedList, approvedCache);
   }
 
   async function addSubmission(data) {
@@ -200,6 +254,27 @@
       { ...data, photos: validation.photos, video: validation.video },
       generateSubmissionId
     );
+
+    if (serverMode) {
+      const api = MediaApi();
+      if (api?.postSubmission) {
+        await api.postSubmission(submission);
+      } else {
+        const token = await MediaApi().ensureUploadToken?.();
+        const headers = { 'Content-Type': 'application/json' };
+        if (token) headers['X-Upload-Token'] = token;
+        if (window.SUPPLIER_UPLOAD_KEY) headers['X-Supplier-Key'] = window.SUPPLIER_UPLOAD_KEY;
+        const res = await fetch(`${window.location.origin}/api/half-cuts/submissions`, {
+          method: 'POST',
+          headers,
+          body: JSON.stringify(submission),
+        });
+        const payload = await res.json().catch(() => ({}));
+        if (!res.ok) throw new Error(payload.error || 'Submission failed');
+      }
+      if (adminMode) submissionsCache.unshift(submission);
+      return submission;
+    }
 
     submissionsCache.unshift(submission);
     await persistState();
@@ -278,12 +353,14 @@
   window.HalfCutInventoryStore = {
     SUBMISSIONS_KEY,
     APPROVED_KEY,
-    SUPPORTED_BRANDS: Object.keys(Vin()?.BRAND_SLUG_MAP || {}),
+    SUPPORTED_BRANDS: window.VehicleCatalog?.getBrandNames?.()
+      || Object.keys(Vin()?.BRAND_SLUG_MAP || {}),
     PHOTO_LABELS: Vin()?.PHOTO_LABELS || [],
     brandToSlug: (b) => Vin().brandToSlug(b),
     formatMileage,
     whenReady,
     isServerMode: () => serverMode,
+    isAdminMode: () => adminMode,
     getSubmissions,
     getSubmissionById,
     getSubmissionsByStatus,

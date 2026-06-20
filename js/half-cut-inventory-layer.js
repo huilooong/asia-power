@@ -14,11 +14,28 @@
   const Vin = () => window.HalfCutVin;
   const Upload = () => window.HalfCutUploadLayer;
 
+  const SUPPLIER_FIELDS = [
+    'vin',
+    'decodedData',
+    'decodeMethod',
+    'decodeConfidence',
+    'submissionId',
+    'supplierName',
+    'supplierPhone',
+    'supplierWechat',
+    'supplierCity',
+    'approvedAt',
+    'reviewStatus',
+    'rejectReason',
+    'reviewedAt',
+    'approvedStockId',
+    'approvedSlug',
+  ];
+
   function stripVin(item) {
     if (!item) return null;
     const copy = { ...item };
-    delete copy.vin;
-    delete copy.decodedData;
+    for (const key of SUPPLIER_FIELDS) delete copy[key];
     return copy;
   }
 
@@ -26,6 +43,7 @@
     if (!item) return null;
     const pub = stripVin(item);
     if (item.vin) pub.maskedVin = Vin().maskVin(item.vin);
+    else if (item.maskedVin) pub.maskedVin = item.maskedVin;
     return pub;
   }
 
@@ -34,8 +52,11 @@
   }
 
   function submissionToInventory(submission, helpers) {
+    const norm = window.VehicleNameNormalize?.normalizeVehicleNames?.(submission.brand, submission.model);
+    const brand = norm?.brand || submission.brand;
+    const model = norm?.model || submission.model;
+    const brandSlug = norm?.brandSlug || submission.brandSlug || Vin().brandToSlug(brand);
     const stockId = helpers.nextStockId();
-    const brandSlug = submission.brandSlug || Vin().brandToSlug(submission.brand);
     const mileage = helpers.formatMileage(submission.mileage);
     const photos = helpers.normalizePhotos(submission.photos);
     const status = submission.inventoryStatus || 'Available';
@@ -45,14 +66,15 @@
       vin: submission.vin,
       decodeMethod: submission.decodeMethod,
       vehicleCondition: submission.vehicleCondition || 'Half Cut',
-      brand: submission.brand,
+      brand,
       brandSlug,
-      model: submission.model,
+      model,
       year: Number(submission.year),
       engineCode: submission.engineCode,
       transmissionCode: submission.transmissionCode,
       drivetrain: submission.drivetrain || '2WD',
       mileage,
+      priceUsd: Number(submission.priceUsd) > 0 ? Number(Number(submission.priceUsd).toFixed(2)) : null,
       origin: submission.originCountry || 'China',
       status,
       title: '',
@@ -61,20 +83,31 @@
       video: Upload()?.normalizeVideo?.(submission.video, submission.videoUrl) || null,
       videoUrl: submission.video?.url || submission.videoUrl || '',
       includedParts: helpers.parseIncludedParts(submission.notes),
-      shortDescription: helpers.buildShortDescription(submission),
+      shortDescription: '',
       supplierVerified: true,
       submissionId: submission.submissionId,
       approvedAt: new Date().toISOString(),
     };
 
+    if (norm?.corrected) {
+      record.nameCorrections = {
+        ...(submission.nameCorrections || {}),
+        ...(norm.originalBrand ? { brand: norm.originalBrand } : {}),
+        ...(norm.originalModel ? { model: norm.originalModel } : {}),
+        correctedAt: new Date().toISOString(),
+      };
+    }
+
     record.title = helpers.buildTitle(record);
     record.slug = helpers.buildSlug(record);
+    record.shortDescription = helpers.buildShortDescription({ ...submission, brand, model });
     return record;
   }
 
   function syncToCatalog(seedList, approvedList) {
     if (!window.HalfCutDirectory?.rebuildHalfCutList) return;
-    window.HalfCutDirectory.rebuildHalfCutList([...(seedList || []), ...(approvedList || [])]);
+    const publicApproved = toPublicList(approvedList || []);
+    window.HalfCutDirectory.rebuildHalfCutList([...(seedList || []), ...publicApproved]);
   }
 
   function assertNoVinLeak(payload) {

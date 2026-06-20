@@ -52,7 +52,16 @@
     el.textContent = JSON.stringify(data);
   }
 
+  function isInternalPage() {
+    const p = window.location.pathname || '';
+    return /\/admin\//i.test(p) || /\/supplier-portal\/half-cut-upload/i.test(p);
+  }
+
   function pageMeta() {
+    if (isInternalPage()) {
+      upsertMeta('name', 'robots', 'noindex, nofollow');
+      return;
+    }
     const title = document.title || 'AsiaPower';
     const desc = document.querySelector('meta[name="description"]')?.content
       || 'Global powertrain sourcing platform for engines, gearboxes, chassis parts and half-cuts.';
@@ -85,10 +94,12 @@
       description: desc,
       contactPoint: [{
         '@type': 'ContactPoint',
-        telephone: c.whatsappDisplay,
         contactType: 'sales',
         availableLanguage: ['English', 'Chinese'],
+        url: `https://wa.me/${c.whatsapp || ''}`,
       }],
+      ...(c.merchantListing?.returnPolicy ? { hasMerchantReturnPolicy: c.merchantListing.returnPolicy } : {}),
+      ...(c.merchantListing?.shippingDetails ? { shippingDetails: c.merchantListing.shippingDetails } : {}),
     });
 
     upsertJsonLd('schema-website', {

@@ -1,5 +1,10 @@
 User-agent: *
 Allow: /
 
-# Add absolute Sitemap URL when deploying to production, e.g.:
-# Sitemap: https://yourdomain.com/sitemap.xml
+Disallow: /admin/
+Disallow: /supplier-portal/half-cut-upload.html
+Disallow: /api/
+Disallow: /uploads/pending/
+Disallow: /data/
+
+Sitemap: https://asia-power.com/sitemap.xml

@@ -12,6 +12,33 @@
     return window.SitePaths?.base?.() || (window.location.pathname.includes('/brands/') ? '../' : '');
   }
 
+  function absoluteUrl(path) {
+    if (window.AsiaPowerSEO?.absoluteUrl) return window.AsiaPowerSEO.absoluteUrl(path);
+    return new URL(path, window.location.href).href;
+  }
+
+  function upsertMeta(attr, key, content) {
+    if (!content) return;
+    let el = document.querySelector(`meta[${attr}="${key}"]`);
+    if (!el) {
+      el = document.createElement('meta');
+      el.setAttribute(attr, key);
+      document.head.appendChild(el);
+    }
+    el.content = content;
+  }
+
+  function upsertJsonLd(id, data) {
+    let el = document.getElementById(id);
+    if (!el) {
+      el = document.createElement('script');
+      el.type = 'application/ld+json';
+      el.id = id;
+      document.head.appendChild(el);
+    }
+    el.textContent = JSON.stringify(data);
+  }
+
   function config() {
     return window.ASIAPOWER || null;
   }
@@ -232,8 +259,31 @@
 
     document.title = `${brand.name} — Engines, Gearboxes & Half-Cuts | AsiaPower`;
     const meta = document.querySelector('meta[name="description"]');
-    if (meta) meta.content = `AsiaPower supplies ${brand.name} engines, gearboxes, chassis parts and half-cuts for global export. Request a B2B sourcing quote.`;
+    const description = brand.lead || `AsiaPower supplies ${brand.name} engines, gearboxes, chassis parts and half-cuts for global export. Request a B2B sourcing quote.`;
+    if (meta) meta.content = description;
     window.AsiaPowerSEO?.refresh?.();
+
+    const canonical = absoluteUrl(`${base()}brands/${brand.slug}.html`);
+    let canonicalLink = document.querySelector('link[rel="canonical"]');
+    if (!canonicalLink) {
+      canonicalLink = document.createElement('link');
+      canonicalLink.rel = 'canonical';
+      document.head.appendChild(canonicalLink);
+    }
+    canonicalLink.href = canonical;
+    upsertMeta('property', 'og:url', canonical);
+    upsertMeta('property', 'og:title', document.title);
+    upsertMeta('property', 'og:description', description);
+
+    upsertJsonLd('schema-brand-breadcrumb', {
+      '@context': 'https://schema.org',
+      '@type': 'BreadcrumbList',
+      itemListElement: [
+        { '@type': 'ListItem', position: 1, name: 'Home', item: absoluteUrl(`${base()}index.html`) },
+        { '@type': 'ListItem', position: 2, name: 'Brands', item: absoluteUrl(`${base()}brands.html`) },
+        { '@type': 'ListItem', position: 3, name: brand.name, item: canonical },
+      ],
+    });
 
     root.innerHTML = `
       <section class="brand-detail-hero">
@@ -302,13 +352,25 @@
     setActive();
   }
 
+  async function bootBrandPage(slug) {
+    const store = window.HalfCutInventoryStore;
+    if (store?.whenReady) {
+      try {
+        await store.whenReady();
+      } catch (err) {
+        console.warn('[brand-page] inventory store unavailable:', err);
+      }
+    }
+    renderBrandPage(slug);
+  }
+
   document.addEventListener('DOMContentLoaded', () => {
     const slug = document.body.dataset.brand;
-    if (slug) renderBrandPage(slug);
+    if (slug) bootBrandPage(slug);
   });
 
   window.addEventListener('asiapower:langchange', () => {
     const slug = document.body.dataset.brand;
-    if (slug) renderBrandPage(slug);
+    if (slug) bootBrandPage(slug);
   });
 })();

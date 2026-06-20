@@ -9,8 +9,9 @@
   <title>Supplier Portal | AsiaPower</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="css/styles.css">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700;800&family=Inter:wght@400;500;600&display=swap" media="print" onload="this.media='all'">
+  <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700;800&family=Inter:wght@400;500;600&display=swap"></noscript>
+  <link rel="stylesheet" href="css/styles.css?v=fix20260620">
   <link rel="icon" href="assets/favicon.png" type="image/png">
   <link rel="apple-touch-icon" href="assets/favicon.png">
 </head>
@@ -24,8 +25,42 @@
       <div class="container">
         <div class="page-hero__breadcrumb"><a href="index.html" data-i18n="catalog.home">Home</a> / <span data-i18n="supplier.title">Supplier Portal</span></div>
         <h1 data-i18n="supplier.title">Supplier Portal</h1>
-        <p data-i18n="supplier.lead">Join our verified supplier network. Connect your inventory with growing demand across 25+ African markets.</p>
-        <p style="margin-top:16px"><a href="supplier-portal/half-cut-upload.html" class="btn btn-accent btn-bilingual" data-i18n="supplier.submitHalfCut">Submit Half-Cut Inventory / 上传半车库存</a></p>
+        <p data-i18n="supplier.lead">Join our verified supplier network. Connect your inventory with export demand across Africa, the Americas, Caribbean, Middle East, Southeast Asia and Australia.</p>
+        <p class="supplier-market-scope" data-i18n="supplier.marketScope">Six export regions — every African country plus the Americas, Caribbean, Middle East, Southeast Asia and Australia — forming one of the world&apos;s largest import and rebuild buyer footprints.</p>
+        <div class="supplier-upload-cta">
+          <p class="supplier-upload-cta__eyebrow">Supplier action · 供应商操作</p>
+          <p class="supplier-upload-cta__hint">Already a verified supplier? Upload half-cut photos and vehicle details for AsiaPower review.<br>已是合作供应商？上传半车照片和车辆信息，提交 AsiaPower 审核。</p>
+          <a href="supplier-portal/half-cut-upload.html" class="btn btn-accent btn-lg supplier-upload-cta__btn" data-i18n="supplier.submitHalfCut">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 16V4m0 0 4 4m-4-4-4 4M4 17v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-2" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            <span class="supplier-upload-cta__label">Submit Half-Cut Inventory<br><span class="supplier-upload-cta__label-zh">上传半车库存</span></span>
+            <svg class="supplier-upload-cta__arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14m0 0-5-5m5 5-5 5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <section class="stats-strip supplier-market-stats" aria-label="Export market scale">
+      <div class="container">
+        <p class="supplier-market-stats__intro" data-i18n="supplier.marketIntro">The buyer network AsiaPower serves spans:</p>
+        <div class="stats-strip__grid">
+          <div class="stats-strip__item">
+            <div class="stats-strip__num"><span>110</span>+</div>
+            <div class="stats-strip__label" data-i18n="supplier.statCountries">Countries &amp; territories</div>
+          </div>
+          <div class="stats-strip__item">
+            <div class="stats-strip__num"><span>3.5</span>B+</div>
+            <div class="stats-strip__label" data-i18n="supplier.statPopulation">Combined population</div>
+          </div>
+          <div class="stats-strip__item">
+            <div class="stats-strip__num"><span>700</span>M+</div>
+            <div class="stats-strip__label" data-i18n="supplier.statVehicles">Registered motor vehicles</div>
+          </div>
+          <div class="stats-strip__item">
+            <div class="stats-strip__num">$<span>100</span>B+</div>
+            <div class="stats-strip__label" data-i18n="supplier.statMarket">Est. annual aftermarket demand</div>
+          </div>
+        </div>
+        <p class="supplier-market-stats__note" data-i18n="supplier.marketNote">Approximate regional totals from public population, vehicle-registration and automotive aftermarket industry data. Demand covers used engines, gearboxes, chassis parts and half-cuts for rebuild and fleet replacement programs.</p>
       </div>
     </section>
 
@@ -38,8 +73,8 @@
         <div class="features-row">
           <div class="feature-box">
             <div class="feature-box__icon"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M2 12h20"/></svg></div>
-            <h3 data-i18n="supplier.africaTitle">African Market Access</h3>
-            <p data-i18n="supplier.africaLead">Direct demand from Nigeria, Ghana, Kenya, Tanzania, South Africa, and 20+ more markets.</p>
+            <h3 data-i18n="supplier.marketsTitle">Global Export Markets</h3>
+            <p data-i18n="supplier.marketsLead">Buyer demand from importers, workshops and fleet operators across every African country, plus the Americas, Caribbean, Middle East, Southeast Asia and Australia.</p>
           </div>
           <div class="feature-box">
             <div class="feature-box__icon"><svg viewBox="0 0 24 24"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg></div>
@@ -54,7 +89,7 @@
           <div class="feature-box">
             <div class="feature-box__icon"><svg viewBox="0 0 24 24"><rect x="1" y="3" width="15" height="13"/><polygon points="16 8 20 8 23 11 23 16 16 16 16 8"/></svg></div>
             <h3 data-i18n="supplier.logisticsTitle">Logistics Handled</h3>
-            <p data-i18n="supplier.logisticsLead">We manage crating, export docs, customs, and ocean freight to Africa.</p>
+            <p data-i18n="supplier.logisticsLead">We manage crating, export documentation, customs clearance and ocean freight to ports worldwide.</p>
           </div>
         </div>
       </div>
@@ -209,9 +244,9 @@
   <div id="site-whatsapp"></div>
 
   <script src="js/path-utils.js?v=public-ui-v2"></script>
-  <script src="js/config.js"></script>
+  <script src="js/config.js?v=logo-zh-v3"></script>
   <script src="js/seo.js"></script>
-  <script src="js/components.js?v=supplier-topbar-v2" defer></script>
+  <script src="js/components.js?v=logo-zh-v2" defer></script>
   <script src="js/main.js?v=whatsapp-analytics-v1" defer></script>
 </body>
 </html>

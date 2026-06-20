@@ -9,3 +9,13 @@ uploads/videos/*
 !uploads/photos/.gitkeep
 !uploads/videos/.gitkeep
 data/half-cut-*.json
+data/contact-leads.json
+data/users.json
+data/vehicle-model-memory.json
+data/site-analytics-daily.json
+deploy/test-run/data/
+deploy/test-run/data/**
+.env
+.env.*
+!.env.example
+supplier-portal/upload-key.js

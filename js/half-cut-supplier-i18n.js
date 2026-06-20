@@ -47,6 +47,12 @@
     vin: bi('VIN', 'VIN底盘号'),
     vinFullSupplier: bi('Full VIN (supplier view)', '完整VIN（供应商可见）'),
     mileage: bi('Mileage', '里程'),
+    fobPriceUsd: bi('FOB Price (USD)', '离岸价（美元）'),
+    fobPriceHint: bi(
+      'Export FOB price in US dollars — China port basis, excluding freight and import duties.',
+      '出口离岸价（美元），中国港口交货，不含国际运费及进口关税。'
+    ),
+    fobPriceRequired: bi('FOB price (USD) is required and must be greater than zero.', '离岸价（美元）必填，且必须大于零。'),
     supplierName: bi('Supplier Name', '供应商名称'),
     supplierPhone: bi('Supplier Phone', '联系电话'),
     supplierWechat: bi('Supplier WeChat', '微信号'),
@@ -68,6 +74,9 @@
     removeVideo: bi('Remove Video', '删除视频'),
     noVideo: bi('No video attached.', '未上传视频。'),
     selectBrand: bi('Select brand', '选择品牌'),
+    selectModel: bi('Select model', '选择车型'),
+    modelOther: bi('Other model (type below)', '其他车型（下方填写）'),
+    modelOtherPlaceholder: bi('Enter model name', '请输入车型名称'),
     selectStatus: bi('Select status', '选择状态'),
 
     decodeUnavailable: bi(
