@@ -34,6 +34,34 @@
       'Submission does not guarantee publication. Asia Power will verify inventory before listing.',
       '提交不代表一定上架。亚洲动力会在上架前核实库存真实性。'
     ),
+    truckUploadTitle: bi('Submit Truck Listing', '提交卡车库存'),
+    truckUploadLead: bi(
+      'Upload light, medium or heavy-duty truck half-cuts, driver cabs and dismantled units. Choose listing type on step 2. VIN and engine are optional for driver cabs.',
+      '上传轻卡、中卡、重卡半车、驾驶室及拆车件。请在第2步选择库存类型。驾驶室上传时VIN和发动机为选填。'
+    ),
+    passengerUploadOnlyHint: bi(
+      'Trucks and driver cabs must use the Truck Upload page in the Supplier Portal.',
+      '卡车和驾驶室请使用供应商门户中的「卡车库存上传」入口。'
+    ),
+    conditionTruckHalfCut: bi('Truck Half Cut', '卡车半车'),
+    conditionDriverCab: bi('Driver Cab', '驾驶室'),
+    truckPartType: bi('Listing Type', '库存类型'),
+    truckPartVehicle: bi('Truck / Half Cut', '整车 / 半车'),
+    truckPartCab: bi('Driver Cab', '驾驶室'),
+    truckPartVehicleHint: bi(
+      'Complete truck or half-cut with VIN, engine and transmission.',
+      '整车或半车，需填写VIN、发动机和变速箱。'
+    ),
+    truckPartCabHint: bi(
+      'Driver cab only — VIN and engine are optional.',
+      '仅驾驶室 — VIN和发动机为选填。'
+    ),
+    stepVinOptional: bi('Step 1 — VIN (optional)', '第1步 — VIN（选填）'),
+    stepTruckStart: bi('Step 1 — Listing Type', '第1步 — 选择库存类型'),
+    vinCabSkipHint: bi(
+      'No VIN for this cab? Tap Next — you will enter brand, model and photos on the following steps.',
+      '没有底盘号？直接点「下一步」，在后续步骤填写品牌、车型和照片即可。'
+    ),
 
     stepVin: bi('Step 1 — VIN', '第1步 — VIN底盘号'),
     stepVehicle: bi('Step 2 — Vehicle Details', '第2步 — 车辆信息'),
@@ -64,11 +92,14 @@
     transmission: bi('Transmission', '变速箱'),
     drivetrain: bi('Drivetrain', '驱动形式'),
     vehicleCondition: bi('Vehicle Condition', '车辆状态'),
+    vehicleCategory: bi('Vehicle Type', '车辆类型'),
+    categoryPassenger: bi('Passenger vehicle', '乘用车'),
+    categoryTruck: bi('Truck / commercial', '卡车 / 商用车'),
     inventoryStatus: bi('Inventory Status', '库存状态'),
     notes: bi('Notes', '备注'),
     videoLink: bi('Video Link', '视频链接'),
     videoUpload: bi('Upload Video', '上传视频'),
-    videoOptional: bi('Optional — MP4, WebM or MOV up to 50 MB.', '选填 — 支持 MP4、WebM、MOV，最大 50 MB。'),
+    videoOptional: bi('Optional — MP4 recommended for web playback (WebM also OK). MOV may not play in all browsers. Max 50 MB.', '选填 — 建议上传 MP4（WebM 亦可）；MOV 在部分浏览器无法播放。最大 50 MB。'),
     videoOnly: bi('Please upload a video file (MP4, WebM, or MOV).', '请上传视频文件（MP4、WebM 或 MOV）。'),
     videoTooLarge: bi('Video must be 50 MB or smaller.', '视频文件不能超过 50 MB。'),
     removeVideo: bi('Remove Video', '删除视频'),
@@ -109,6 +140,7 @@
     onlyFillMissing: bi('Only complete the highlighted fields.', '只需填写高亮字段。'),
     phoneOrWechat: bi('Phone or WeChat is required.', '电话或微信至少填写一项。'),
     photosMin: bi('Upload at least 3 photos. 5+ recommended.', '至少上传3张照片，建议5张以上。'),
+    photosCabHint: bi('Upload at least 3 photos (up to 10 for driver cabs).', '至少上传3张照片；驾驶室最多可上传10张。'),
     required: bi('Required', '必填'),
     recommended: bi('Recommended', '建议'),
     optional: bi('Optional', '选填'),
@@ -167,6 +199,11 @@
       'VIN识别成功，提交前请确认信息。'
     ),
     imagesOnly: bi('Please upload image files only.', '请仅上传图片文件。'),
+    heicNotSupported: bi(
+      'HEIC/HEIF photos are not supported. On iPhone: Settings → Camera → Formats → Most Compatible, then take new photos as JPG.',
+      '不支持 HEIC/HEIF 格式。iPhone 用户请前往：设置 → 相机 → 格式 → 最兼容，然后重新拍摄 JPG 照片。'
+    ),
+    photoTooLarge: bi('Photo must be 8 MB or smaller. Try a lower resolution or JPG format.', '单张照片不能超过 8 MB，请降低分辨率或使用 JPG 格式。'),
     uploadingMedia: bi('Uploading…', '正在上传…'),
     uploadFailed: bi('Upload failed.', '上传失败。'),
     submissionFailed: bi('Submission failed.', '提交失败。'),
@@ -177,6 +214,18 @@
       bi('Engine', '发动机'),
       bi('VIN Plate', 'VIN铭牌'),
       bi('Interior', '内饰'),
+    ],
+    cabPhotoLabels: [
+      bi('Cab Front', '驾驶室正面'),
+      bi('Cab Rear', '驾驶室后部'),
+      bi('Left Side', '左侧外观'),
+      bi('Right Side', '右侧外观'),
+      bi('Dashboard', '仪表盘'),
+      bi('Driver Seat', '驾驶座椅'),
+      bi('Door Interior', '车门内饰'),
+      bi('VIN Plate', 'VIN铭牌'),
+      bi('Cab Overview', '驾驶室全景'),
+      bi('Detail', '细节特写'),
     ],
   };
 

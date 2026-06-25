@@ -85,6 +85,13 @@ async function main() {
     lines.push('', `🌐 Website traffic: unavailable (${err.message})`);
   }
 
+  try {
+    const { formatMetricsSummary, collectSystemMetrics } = requireServerLib('system-metrics');
+    lines.push('', '🖥 Server health:', formatMetricsSummary(collectSystemMetrics()));
+  } catch (err) {
+    lines.push('', `🖥 Server health: unavailable (${err.message})`);
+  }
+
   if (newToday.length) {
     lines.push('');
     lines.push('Today\'s submissions:');

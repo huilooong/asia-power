@@ -249,9 +249,46 @@
     return Object.values(ENGINE_DIRECTORY).reduce((n, b) => n + b.models.length, 0);
   }
 
+  function normCode(value) {
+    return String(value || '').trim().toUpperCase().replace(/[\s-]+/g, '');
+  }
+
+  function ensureBrand(slug) {
+    if (ENGINE_DIRECTORY[slug]) return ENGINE_DIRECTORY[slug];
+    const brand = window.BRAND_CATALOG?.[slug];
+    ENGINE_DIRECTORY[slug] = {
+      name: brand?.name || slug,
+      slug,
+      origin: brand?.origin || '',
+      landingPage: brand ? `brands/${slug}.html` : 'brands.html',
+      models: [],
+    };
+    return ENGINE_DIRECTORY[slug];
+  }
+
+  function mergeLearnedEngines(map) {
+    if (!map || typeof map !== 'object') return;
+    Object.entries(map).forEach(([slug, entries]) => {
+      if (!Array.isArray(entries) || !entries.length) return;
+      const brand = ensureBrand(slug);
+      const known = new Set(brand.models.map((item) => normCode(item.code)));
+      entries.forEach((entry) => {
+        const code = String(entry.code || entry).trim();
+        if (!code || known.has(normCode(code))) return;
+        known.add(normCode(code));
+        const apps = entry.model
+          ? `${entry.model}${entry.year ? ` (${entry.year})` : ''} applications`
+          : 'Half-cut inventory reference';
+        brand.models.push(m(code, '—', 'Petrol', apps, 'petrol'));
+      });
+      brand.models.sort((a, b) => a.code.localeCompare(b.code, undefined, { sensitivity: 'base' }));
+    });
+  }
+
   window.ENGINE_DIRECTORY = ENGINE_DIRECTORY;
   window.ENGINE_EXPORT_STATUS = EXPORT_STATUS;
   window.getBrandEngines = getBrandEngines;
   window.getAllEngineBrands = getAllBrands;
   window.getEngineModelCount = totalModelCount;
+  window.mergeLearnedEngines = mergeLearnedEngines;
 })();

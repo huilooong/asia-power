@@ -10,6 +10,14 @@
   <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700;800&family=Inter:wght@400;500;600&display=swap"></noscript>
   <link rel="stylesheet" href="css/document.css">
   <link rel="icon" href="../assets/favicon.png" type="image/png">
+  <!-- Google tag (gtag.js) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-PB2J3VRX5J"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-PB2J3VRX5J');
+  </script>
 </head>
 <body>
 
@@ -126,7 +134,7 @@
           <tbody>
             <tr>
               <td data-line-no>1</td>
-              <td contenteditable="true" data-placeholder="Toyota 1KD-FTV engine, compression tested, export crated">Toyota 1KD-FTV Diesel Engine — compression tested, export crated</td>
+              <td contenteditable="true" data-placeholder="[A] Product — brand, model, engine code, qty">[A] Product — Toyota 1KD-FTV diesel engine, whole-vehicle sourced, export crated</td>
               <td class="num" contenteditable="true" data-qty data-placeholder="1">1</td>
               <td class="num" contenteditable="true" data-unit data-placeholder="0.00">2,800.00</td>
               <td class="num" data-amount>2,800.00</td>
@@ -134,7 +142,39 @@
             </tr>
             <tr>
               <td data-line-no>2</td>
-              <td contenteditable="true" data-placeholder="Freight / documentation"></td>
+              <td contenteditable="true" data-placeholder="[B] Pre-shipment verification — startup video, nameplate check, photos">[B] Pre-shipment verification service (startup video, nameplate / engine code check, basic inspection)</td>
+              <td class="num" contenteditable="true" data-qty data-placeholder="1">1</td>
+              <td class="num" contenteditable="true" data-unit data-placeholder="0.00">50.00</td>
+              <td class="num" data-amount>50.00</td>
+              <td class="row-actions no-print"><button type="button" class="doc-row-remove" title="Remove row">×</button></td>
+            </tr>
+            <tr>
+              <td data-line-no>3</td>
+              <td contenteditable="true" data-placeholder="[C] Domestic trucking — pickup, yard handling, port delivery">[C] Domestic trucking — supplier pickup, yard handling, port delivery</td>
+              <td class="num" contenteditable="true" data-qty data-placeholder="1">1</td>
+              <td class="num" contenteditable="true" data-unit data-placeholder="0.00"></td>
+              <td class="num" data-amount></td>
+              <td class="row-actions no-print"><button type="button" class="doc-row-remove" title="Remove row">×</button></td>
+            </tr>
+            <tr>
+              <td data-line-no>4</td>
+              <td contenteditable="true" data-placeholder="[D] Port &amp; warehouse — inspection, storage, stuffing">[D] Port &amp; warehouse — port inspection, storage, container stuffing, handling</td>
+              <td class="num" contenteditable="true" data-qty data-placeholder="1">1</td>
+              <td class="num" contenteditable="true" data-unit data-placeholder="0.00"></td>
+              <td class="num" data-amount></td>
+              <td class="row-actions no-print"><button type="button" class="doc-row-remove" title="Remove row">×</button></td>
+            </tr>
+            <tr>
+              <td data-line-no>5</td>
+              <td contenteditable="true" data-placeholder="[E] Export docs — customs declaration, invoice, packing list">[E] Export &amp; documentation — customs declaration, commercial invoice, packing list</td>
+              <td class="num" contenteditable="true" data-qty data-placeholder="1">1</td>
+              <td class="num" contenteditable="true" data-unit data-placeholder="0.00"></td>
+              <td class="num" data-amount></td>
+              <td class="row-actions no-print"><button type="button" class="doc-row-remove" title="Remove row">×</button></td>
+            </tr>
+            <tr>
+              <td data-line-no>6</td>
+              <td contenteditable="true" data-placeholder="[G] Optional — extra dismantling, packing, third-party inspection">[G] Optional — extra dismantling, special packing, third-party inspection (if required)</td>
               <td class="num" contenteditable="true" data-qty data-placeholder="1">1</td>
               <td class="num" contenteditable="true" data-unit data-placeholder="0.00"></td>
               <td class="num" data-amount></td>
@@ -144,17 +184,17 @@
           <tfoot>
             <tr>
               <td colspan="4" class="num">Subtotal / 小计</td>
-              <td class="num" data-subtotal>2,800.00</td>
+              <td class="num" data-subtotal>2,850.00</td>
               <td class="no-print"></td>
             </tr>
             <tr>
-              <td colspan="4" class="num">Freight &amp; Insurance / 运费保险</td>
+              <td colspan="4" class="num">[F] Freight &amp; Insurance / 运费保险 (CIF or as quoted)</td>
               <td class="num" contenteditable="true" data-freight data-placeholder="0.00">0.00</td>
               <td class="no-print"></td>
             </tr>
             <tr>
               <td colspan="4" class="num"><strong>Total / 合计 (USD)</strong></td>
-              <td class="num" data-total><strong>2,800.00</strong></td>
+              <td class="num" data-total><strong>2,850.00</strong></td>
               <td class="no-print"></td>
             </tr>
           </tfoot>
@@ -173,10 +213,11 @@
       <section class="doc-section">
         <div class="doc-section__title">Notes<em>备注</em></div>
         <div class="doc-notes" contenteditable="true">
-          <p><span class="doc-bi-en">1. Prices are subject to final inspection and stock confirmation.</span><span class="doc-bi-zh">价格以最终验货及库存确认为准。</span></p>
-          <p><span class="doc-bi-en">2. Photos, video and compression test report available on request.</span><span class="doc-bi-zh">可提供照片、视频及缸压检测报告。</span></p>
-          <p><span class="doc-bi-en">3. This quotation is valid until the date stated above. Terms may change if currency or freight rates fluctuate significantly.</span><span class="doc-bi-zh">本报价有效期至上述日期；若汇率或运费大幅波动，条款可能调整。</span></p>
-          <p><span class="doc-bi-en">4. Warranty: 30 days from arrival at destination port (engine internal parts, subject to proper installation).</span><span class="doc-bi-zh">质保：到目的港后 30 天（发动机内部件，须正确安装）。</span></p>
+          <p><span class="doc-bi-en">1. Prices, stock and shipping costs are subject to final confirmation before payment.</span><span class="doc-bi-zh">价格、库存及运费在付款前须最终确认。</span></p>
+          <p><span class="doc-bi-en">2. Whole-vehicle startup video available before dismantling when applicable. Parts can be dismantled according to buyer requirements after confirmation. Photos and video do not constitute a quality guarantee.</span><span class="doc-bi-zh">适用时可提供拆解前整车启动视频；客户确认后可按需拆解部件。照片及视频不构成质量保证承诺。</span></p>
+          <p><span class="doc-bi-en">3. Destination customs duty, taxes and local port charges are not included unless specifically stated. Extra dismantling, packing or third-party inspection quoted separately.</span><span class="doc-bi-zh">除非另有说明，目的港关税、税费及当地港杂费不含在内。额外拆解、包装或第三方检测费用另计。</span></p>
+          <p><span class="doc-bi-en">4. This quotation is valid until the date stated above. Terms may change if currency or freight rates fluctuate significantly.</span><span class="doc-bi-zh">本报价有效期至上述日期；若汇率或运费大幅波动，条款可能调整。</span></p>
+          <p><span class="doc-bi-en">5. Warranty: 30 days from arrival at destination port (engine internal parts, subject to proper installation).</span><span class="doc-bi-zh">质保：到目的港后 30 天（发动机内部件，须正确安装）。</span></p>
         </div>
       </section>
 
@@ -215,7 +256,7 @@
     </article>
   </div>
 
-  <script src="../js/config.js?v=logo-zh-v3"></script>
+  <script src="../js/config.js?v=nav-v4"></script>
   <script src="js/document.js"></script>
   <script>AsiaPowerDoc.initQuote();</script>
 </body>

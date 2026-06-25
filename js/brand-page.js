@@ -102,7 +102,7 @@
       {
         id: 'engines',
         title: t('brand.enginesTitle', 'Engines'),
-        desc: `Petrol, diesel and hybrid ${brand.name} engine units — compression tested with export documentation available on request.`,
+        desc: `Petrol, diesel and hybrid ${brand.name} engine units — whole-vehicle startup video available before dismantling, with export documentation on request.`,
         product: 'engines',
         catalog: `${base()}engines/`,
       },
@@ -168,6 +168,65 @@
           <a href="${whatsappUrl(brand.name, code)}" class="brand-engine-card__wa" target="_blank" rel="noopener">WhatsApp</a>
         </div>
       </article>`;
+  }
+
+  function renderPartCard(brand, title, productType) {
+    return `
+      <article class="brand-engine-card">
+        <div class="brand-engine-card__header">
+          <h3 class="brand-engine-card__code">${title}</h3>
+          <span class="brand-engine-card__status">${t('brand.availableOnRequest', 'Available on Request')}</span>
+        </div>
+        <p class="brand-engine-card__note">${t('brand.availabilityNote', 'Availability depends on supplier network and current stock.')}</p>
+        <div class="brand-engine-card__actions">
+          <a href="${quoteUrl(brand.slug, productType)}" class="btn btn-navy btn-sm">${t('brand.requestQuote', 'Request Quote')}</a>
+          <a href="${whatsappUrl(brand.name, title)}" class="brand-engine-card__wa" target="_blank" rel="noopener">WhatsApp</a>
+        </div>
+      </article>`;
+  }
+
+  function renderPopularGearboxes(brand) {
+    const data = window.getBrandGearboxes?.(brand.slug, { inventoryOnly: true });
+    const models = data?.models || [];
+    if (!models.length) return '';
+
+    const cards = models.map((item) => {
+      const title = window.PowertrainLabels?.gearboxCatalogTitle?.(item) || item.code;
+      return renderPartCard(brand, title, `gearbox-${encodeURIComponent(title)}`);
+    }).join('');
+    return `
+      <section class="brand-detail-section brand-detail-section--alt" id="gearboxes-list">
+        <div class="container">
+          <div class="brand-detail-section__header">
+            <span class="section-eyebrow">${t('brand.halfCutEyebrow', 'Half-Cut Inventory')}</span>
+            <h2>${brand.name} ${t('brand.gearboxesTitle', 'Gearboxes')}</h2>
+            <p>${t('brand.inventoryGearboxLead', 'Transmission units referenced from approved half-cut inventory — named by model year when no factory code is listed.')}</p>
+          </div>
+          <div class="brand-engine-grid">${cards}</div>
+        </div>
+      </section>`;
+  }
+
+  function renderPopularChassis(brand) {
+    const data = window.getBrandChassis?.(brand.slug, { inventoryOnly: true });
+    const models = data?.models || [];
+    if (!models.length) return '';
+
+    const cards = models.map((item) => {
+      const title = window.PowertrainLabels?.chassisCatalogTitle?.(item) || item.model;
+      return renderPartCard(brand, title, `chassis-${encodeURIComponent(title)}`);
+    }).join('');
+    return `
+      <section class="brand-detail-section" id="chassis-list">
+        <div class="container">
+          <div class="brand-detail-section__header">
+            <span class="section-eyebrow">${t('brand.halfCutEyebrow', 'Half-Cut Inventory')}</span>
+            <h2>${brand.name} ${t('brand.chassisTitle', 'Chassis Parts')}</h2>
+            <p>${t('brand.inventoryChassisLead', 'Full chassis sets referenced from approved half-cut inventory — listed by model year and vehicle name.')}</p>
+          </div>
+          <div class="brand-engine-grid">${cards}</div>
+        </div>
+      </section>`;
   }
 
   function renderAvailableHalfCuts(brand) {
@@ -285,6 +344,9 @@
       ],
     });
 
+    const hasInventoryGearboxes = (window.getBrandGearboxes?.(brand.slug, { inventoryOnly: true })?.models?.length || 0) > 0;
+    const hasInventoryChassis = (window.getBrandChassis?.(brand.slug, { inventoryOnly: true })?.models?.length || 0) > 0;
+
     root.innerHTML = `
       <section class="brand-detail-hero">
         <div class="container">
@@ -313,6 +375,8 @@
           <a href="#overview" class="brand-detail-nav__link">${t('brand.navOverview', 'Overview')}</a>
           <a href="#categories" class="brand-detail-nav__link">${t('brand.navCategories', 'Categories')}</a>
           <a href="#engines" class="brand-detail-nav__link">${t('brand.navEngines', 'Engines')}</a>
+          ${hasInventoryGearboxes ? `<a href="#gearboxes-list" class="brand-detail-nav__link">${t('brand.navGearboxes', 'Gearboxes')}</a>` : ''}
+          ${hasInventoryChassis ? `<a href="#chassis-list" class="brand-detail-nav__link">${t('brand.navChassis', 'Chassis')}</a>` : ''}
           <a href="#halfcuts-inventory" class="brand-detail-nav__link">${t('brand.navHalfCuts', 'Half Cuts')}</a>
           <a href="#quote" class="brand-detail-nav__link">${t('brand.navQuote', 'Request Quote')}</a>
         </div>
@@ -320,6 +384,8 @@
       ${renderOverview(brand)}
       ${renderProductCategories(brand)}
       ${renderPopularEngines(brand)}
+      ${renderPopularGearboxes(brand)}
+      ${renderPopularChassis(brand)}
       ${renderAvailableHalfCuts(brand)}
       ${renderQuoteSection(brand)}`;
 
@@ -360,6 +426,11 @@
       } catch (err) {
         console.warn('[brand-page] inventory store unavailable:', err);
       }
+    }
+    try {
+      await window.PowertrainCatalog?.loadLearnedPowertrain?.();
+    } catch (err) {
+      console.warn('[brand-page] powertrain catalog unavailable:', err);
     }
     renderBrandPage(slug);
   }

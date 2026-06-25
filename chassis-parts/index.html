@@ -11,8 +11,16 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700;800&family=Inter:wght@400;500;600&display=swap" media="print" onload="this.media='all'">
   <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700;800&family=Inter:wght@400;500;600&display=swap"></noscript>
-  <link rel="stylesheet" href="../css/styles.css?v=fix20260620">
+  <link rel="stylesheet" href="../css/styles.css?v=mobile-rtl-fix-v1">
   <link rel="icon" href="../assets/favicon.png" type="image/png">
+  <!-- Google tag (gtag.js) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-PB2J3VRX5J"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-PB2J3VRX5J');
+  </script>
 </head>
 <body data-page="chassis">
   <div id="site-topbar"></div>
@@ -27,58 +35,8 @@
     </section>
     <section class="section section--gray">
       <div class="container">
-        <div class="catalog-toolbar">
-          <div class="catalog-toolbar__count" data-i18n="chassis.catalogLabel">Public chassis catalog</div>
-          <div class="filter-group">
-            <button class="filter-btn active" data-filter="all" data-i18n="gearboxes.all">All</button>
-            <button class="filter-btn" data-filter="suspension" data-i18n="chassis.suspension">Suspension</button>
-            <button class="filter-btn" data-filter="steering" data-i18n="chassis.steering">Steering</button>
-            <button class="filter-btn" data-filter="brakes" data-i18n="chassis.brakes">Brakes</button>
-            <button class="filter-btn" data-filter="drivetrain">Drivetrain</button>
-          </div>
-        </div>
-        <div class="product-grid">
-          <article class="product-item" data-filter-tags="suspension">
-            <div class="product-item__body">
-              <div class="product-item__brand">Multi-Brand</div>
-              <h3 class="product-item__title">Suspension Assemblies</h3>
-              <p class="product-item__desc">Struts, control arms, bushings and springs.</p>
-              <div class="product-item__footer"><a href="../contact.html?product=chassis-suspension" class="product-item__action">Request Quote →</a></div>
-            </div>
-          </article>
-          <article class="product-item" data-filter-tags="steering">
-            <div class="product-item__body">
-              <div class="product-item__brand">Multi-Brand</div>
-              <h3 class="product-item__title">Steering Components</h3>
-              <p class="product-item__desc">Rack &amp; pinion, columns, tie rods and pumps.</p>
-              <div class="product-item__footer"><a href="../contact.html?product=chassis-steering" class="product-item__action">Request Quote →</a></div>
-            </div>
-          </article>
-          <article class="product-item" data-filter-tags="brakes">
-            <div class="product-item__body">
-              <div class="product-item__brand">Multi-Brand</div>
-              <h3 class="product-item__title">Brake Systems</h3>
-              <p class="product-item__desc">Calipers, master cylinders, ABS modules.</p>
-              <div class="product-item__footer"><a href="../contact.html?product=chassis-brakes" class="product-item__action">Request Quote →</a></div>
-            </div>
-          </article>
-          <article class="product-item" data-filter-tags="drivetrain">
-            <div class="product-item__body">
-              <div class="product-item__brand">Toyota</div>
-              <h3 class="product-item__title">Toyota Hilux / Prado Chassis</h3>
-              <p class="product-item__desc">Suspension, steering and axle sets.</p>
-              <div class="product-item__footer"><a href="../brands/toyota.html#chassis" class="product-item__action">Toyota Chassis →</a></div>
-            </div>
-          </article>
-          <article class="product-item" data-filter-tags="drivetrain">
-            <div class="product-item__body">
-              <div class="product-item__brand">Hyundai</div>
-              <h3 class="product-item__title">Hyundai Tucson / Santa Fe</h3>
-              <p class="product-item__desc">Front subframe and suspension assemblies.</p>
-              <div class="product-item__footer"><a href="../brands/hyundai.html#chassis" class="product-item__action">Hyundai Chassis →</a></div>
-            </div>
-          </article>
-        </div>
+        <div id="powertrain-catalog-toolbar"></div>
+        <div id="chassis-catalog-root"></div>
       </div>
     </section>
     <section class="cta-block">
@@ -90,10 +48,21 @@
   </main>
   <div id="site-footer"></div>
   <div id="site-whatsapp"></div>
-  <script src="../js/path-utils.js?v=public-ui-v1"></script>
-  <script src="../js/config.js?v=logo-zh-v3"></script>
+  <div id="catalog-lead-status" class="half-cut-lead-status catalog-lead-status" role="alert" aria-live="assertive" hidden></div>
+  <script src="../js/path-utils.js?v=catalog-leads-v1"></script>
+  <script src="../js/country-options.js?v=1"></script>
+  <script src="../js/phone-utils.js?v=2"></script>
+  <script src="../js/site-feedback.js?v=feedback-v14"></script>
+  <script src="../js/catalog-lead-utils.js?v=1"></script>
+  <script src="../js/config.js?v=nav-v4"></script>
   <script src="../js/seo.js"></script>
-  <script src="../js/components.js?v=logo-zh-v2" defer></script>
-  <script src="../js/main.js?v=public-ui-v1" defer></script>
+  <script src="../js/components.js?v=seo-v1" defer></script>
+  <script src="../js/powertrain-labels.js?v=powertrain-v5"></script>
+  <script src="../js/brand-catalog.js?v=powertrain-v5" defer></script>
+  <script src="../js/chassis-directory.js?v=powertrain-v5" defer></script>
+  <script src="../js/powertrain-catalog.js?v=powertrain-v5" defer></script>
+  <script src="../js/chassis-catalog.js?v=catalog-leads-v1" defer></script>
+  <script src="../js/catalog-toolbar.js?v=1" defer></script>
+  <script src="../js/main.js?v=wa-lead-v1" defer></script>
 </body>
 </html>

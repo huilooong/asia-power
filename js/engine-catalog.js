@@ -4,6 +4,10 @@
 (function () {
   'use strict';
 
+  function t(key, fallback) {
+    return window.PublicI18n?.t(key, fallback) ?? fallback;
+  }
+
   function base() {
     return window.SitePaths ? window.SitePaths.base() : '';
   }
@@ -12,29 +16,63 @@
     return `${base()}contact.html?brand=${encodeURIComponent(slug)}&product=${encodeURIComponent(code)}`;
   }
 
+  function quoteLink(brandSlug, brandName, code) {
+    window.CatalogLeadUtils?.ensureCatalogLeadScripts?.();
+    const lead = window.CatalogLeadUtils?.leadLink?.({
+      category: 'engine',
+      brand: brandName,
+      brandSlug,
+      product: code,
+      intent: 'price',
+      className: 'engine-model__quote-link',
+      label: t('engine.requestQuote', 'Request Quote'),
+    });
+    if (lead) return lead;
+    return `<a href="${quoteUrl(brandSlug, code)}" class="engine-model__quote-link">${t('engine.requestQuote', 'Request Quote')}</a>`;
+  }
+
+  function quoteButton(brandSlug, brandName, code, className) {
+    window.CatalogLeadUtils?.ensureCatalogLeadScripts?.();
+    const lead = window.CatalogLeadUtils?.leadLink?.({
+      category: 'engine',
+      brand: brandName,
+      brandSlug,
+      product: code,
+      intent: 'price',
+      className: className || 'btn btn-navy btn-sm',
+      label: t('engine.requestQuote', 'Request Quote'),
+    });
+    if (lead) return lead;
+    return `<a href="${quoteUrl(brandSlug, code)}" class="${className || 'btn btn-navy btn-sm'}">${t('engine.requestQuote', 'Request Quote')}</a>`;
+  }
+
   function modelUrl(brandSlug, code) {
     const page = window.SitePaths?.enginePagePath?.(brandSlug, code);
     if (page) return base() + page;
     return quoteUrl(brandSlug, code);
   }
 
-  function renderExportStatus() {
+  function exportStatusLabels() {
     const labels = window.ENGINE_EXPORT_STATUS || [
       'Available',
       'Ready for Export',
       'FOB Available',
       'CIF Available',
     ];
+    return labels.map(label => window.PublicI18n?.translateExportStatus?.(label) || label);
+  }
+
+  function renderExportStatus() {
     return `
-      <ul class="engine-model__status" aria-label="Export availability">
-        ${labels.map(label => `<li class="engine-model__status-item">${label}</li>`).join('')}
+      <ul class="engine-model__status" aria-label="${t('engine.exportAvailability', 'Export availability')}">
+        ${exportStatusLabels().map(label => `<li class="engine-model__status-item">${label}</li>`).join('')}
       </ul>`;
   }
 
   function renderEngineModelCard(brandSlug, brandName, model) {
     const url = modelUrl(brandSlug, model.code);
     const hasPage = window.SitePaths?.enginePagePath?.(brandSlug, model.code);
-    const ctaLabel = hasPage ? 'View Model →' : 'Request Quote';
+    const ctaLabel = hasPage ? t('engine.viewModel', 'View Model →') : t('engine.requestQuote', 'Request Quote');
     return `
       <article class="engine-model" data-filter-tags="${model.type} ${brandSlug}">
         <div class="engine-model__header">
@@ -47,7 +85,7 @@
         ${renderExportStatus()}
         <div class="engine-model__footer">
           <a href="${url}" class="btn btn-navy btn-sm">${ctaLabel}</a>
-          <a href="${quoteUrl(brandSlug, model.code)}" class="engine-model__quote-link">Request Quote</a>
+          ${quoteLink(brandSlug, brandName, model.code)}
         </div>
       </article>`;
   }
@@ -64,9 +102,9 @@
       <div class="engine-catalog__brand-header">
         <div>
           <h2 class="engine-catalog__brand-name">${brandData.name}</h2>
-          <p class="engine-catalog__brand-meta">${brandData.origin} · ${brandData.models.length} engine models listed</p>
+          <p class="engine-catalog__brand-meta">${brandData.origin} · ${brandData.models.length} ${t('engine.modelsListed', 'engine models listed')}</p>
         </div>
-        <a href="${base()}${brandData.landingPage || 'brands.html'}" class="engine-catalog__brand-link">View ${brandData.name} →</a>
+        <a href="${base()}${brandData.landingPage || 'brands.html'}" class="engine-catalog__brand-link">${t('engine.viewBrand', 'View')} ${brandData.name} →</a>
       </div>` : '';
 
     return `
@@ -91,8 +129,8 @@
         <div class="container">
           <div class="brand-detail-section__header">
             <span class="section-eyebrow">Category 01</span>
-            <h2>${brandName} Engines</h2>
-            <p>Engine model catalog for ${brandName} — available for global export. <a href="${base()}engines/#engines-${brandSlug}">View full ${brandName} engine list</a>.</p>
+            <h2>${brandName} ${t('engine.categoryEngines', 'Engines')}</h2>
+            <p>${t('engine.catalogFor', 'Engine model catalog — available for global export.')} <a href="${base()}engines/#engines-${brandSlug}">${t('engine.viewFullList', 'View full')} ${brandName} ${t('engine.categoryEngines', 'Engines').toLowerCase()}</a>.</p>
           </div>
           <div class="engine-catalog__grid">
             ${cards}
@@ -106,6 +144,8 @@
     renderEngineCatalogSection,
     renderBrandEngineSection,
     renderExportStatus,
+    quoteLink,
+    quoteButton,
     quoteUrl,
     modelUrl,
     base,

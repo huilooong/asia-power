@@ -96,7 +96,14 @@
 
   function rebuildHalfCutList(list) {
     HALF_CUT_LIST.splice(0, HALF_CUT_LIST.length, ...list);
-    bySlug = Object.fromEntries(HALF_CUT_LIST.map(item => [item.slug, item]));
+    bySlug = {};
+    HALF_CUT_LIST.forEach((item) => {
+      if (!item?.slug) return;
+      bySlug[item.slug] = item;
+      (item.slugAliases || []).forEach((alias) => {
+        if (alias) bySlug[alias] = item;
+      });
+    });
     window.HALF_CUT_BY_SLUG = bySlug;
   }
 
@@ -107,15 +114,34 @@
     return url;
   }
 
+  function thumbPhotoUrl(photo) {
+    if (!photo) return '';
+    if (typeof photo === 'object' && photo.thumbUrl) return photo.thumbUrl;
+    return photoUrl(photo);
+  }
+
   function firstPhotoUrl(item) {
     if (!hasPhotos(item)) return '';
     return photoUrl(item.photos[0]);
   }
 
+  function firstPhotoThumbUrl(item) {
+    if (!hasPhotos(item)) return '';
+    return thumbPhotoUrl(item.photos[0]);
+  }
+
   const STATUS_ORDER = { Available: 0, Reserved: 1, 'In Transit': 2, Sold: 3 };
 
   function getHalfCutBySlug(slug) {
-    const item = bySlug[slug] || null;
+    if (!slug) return null;
+    let item = bySlug[slug] || null;
+    if (!item) {
+      const stockMatch = String(slug).match(/(hc\d+)/i);
+      if (stockMatch) {
+        const stockId = stockMatch[0].toUpperCase();
+        item = HALF_CUT_LIST.find((entry) => String(entry.stockId || '').toUpperCase() === stockId) || null;
+      }
+    }
     if (!item) return null;
     if (window.HalfCutInventoryLayer?.toPublicItem && item.vin) {
       return window.HalfCutInventoryLayer.toPublicItem(item);
@@ -127,8 +153,51 @@
     return bySlug[slug] || null;
   }
 
-  function getHalfCutsByBrandSlug(brandSlug) {
-    return HALF_CUT_LIST
+  function isMachineryLike(item) {
+    if (!item) return false;
+    if (item.vehicleCategory === 'machinery') return true;
+    if (String(item.machineryType || '').trim()) return true;
+    const slug = String(item.slug || '');
+    if (slug.includes('-machinery-')) return true;
+    const condition = String(item.vehicleCondition || '');
+    if (/wheel loader|excavator|bulldozer|motor grader|backhoe|forklift|roller|compactor|mobile crane|construction equipment/i.test(condition)) {
+      return true;
+    }
+    return false;
+  }
+
+  function inventorySegment(item) {
+    const meta = window.HalfCutUploadLayer?.resolveListingMeta?.(item);
+    if (meta?.vehicleCategory === 'machinery') return 'machinery';
+    if (isMachineryLike(item)) return 'machinery';
+    if (meta?.vehicleCategory === 'truck') return 'truck';
+    if (item?.vehicleCategory === 'truck') return 'truck';
+    const slug = String(item?.slug || '');
+    if (slug.includes('-truck-cab-') || slug.includes('-truck-half-cut-')) return 'truck';
+    if (String(item?.title || '').includes('Driver Cab')) return 'truck';
+    return item?.vehicleCategory || 'passenger';
+  }
+
+  function isTruckItem(item) {
+    return inventorySegment(item) === 'truck';
+  }
+
+  function isMachineryItem(item) {
+    return inventorySegment(item) === 'machinery';
+  }
+
+  function filterInventoryBySegment(list, segment) {
+    const items = list || HALF_CUT_LIST;
+    if (segment === 'truck') return items.filter(isTruckItem);
+    if (segment === 'machinery') return items.filter(isMachineryItem);
+    if (segment === 'passenger') {
+      return items.filter((item) => !isTruckItem(item) && !isMachineryItem(item));
+    }
+    return items.slice();
+  }
+
+  function getHalfCutsByBrandSlug(brandSlug, segment = 'passenger') {
+    return filterInventoryBySegment(HALF_CUT_LIST, segment)
       .filter(item => item.brandSlug === brandSlug)
       .sort((a, b) => (STATUS_ORDER[a.status] ?? 9) - (STATUS_ORDER[b.status] ?? 9))
       .map(item => getHalfCutBySlug(item.slug) || item);
@@ -142,12 +211,22 @@
     return dir.map((b) => ({ name: b.name, slug: b.slug }));
   }
 
-  function getHalfCutBrands() {
+  function getHalfCutBrands(segment = 'passenger') {
     const seen = new Map();
-    getCatalogBrands().forEach(({ name, slug }) => {
-      seen.set(slug, name);
-    });
-    HALF_CUT_LIST.forEach((item) => {
+    if (segment === 'truck' && window.TruckBrandCatalog?.getBrands) {
+      window.TruckBrandCatalog.getBrands().forEach(({ name, slug }) => {
+        seen.set(slug, name);
+      });
+    } else if (segment === 'machinery' && window.MachineryBrandCatalog?.getBrands) {
+      window.MachineryBrandCatalog.getBrands().forEach(({ name, slug }) => {
+        seen.set(slug, name);
+      });
+    } else {
+      getCatalogBrands().forEach(({ name, slug }) => {
+        seen.set(slug, name);
+      });
+    }
+    filterInventoryBySegment(HALF_CUT_LIST, segment).forEach((item) => {
       if (!seen.has(item.brandSlug)) seen.set(item.brandSlug, item.brand);
     });
     return Array.from(seen, ([slug, name]) => ({ slug, name }))
@@ -196,11 +275,18 @@
   }
 
   function videoMimeType(item) {
-    if (item?.video?.mimeType) return item.video.mimeType;
+    if (item?.video?.mimeType === 'video/mp4') return 'video/mp4';
+    if (item?.video?.mimeType === 'video/webm') return 'video/webm';
     const src = videoSource(item);
+    if (/\.mp4(\?|$)/i.test(src)) return 'video/mp4';
     if (/\.webm(\?|$)/i.test(src)) return 'video/webm';
-    if (/\.mov(\?|$)/i.test(src)) return 'video/quicktime';
-    return 'video/mp4';
+    if (/\.mov(\?|$)/i.test(src) || item?.video?.mimeType === 'video/quicktime') return '';
+    return item?.video?.mimeType || 'video/mp4';
+  }
+
+  function isQuickTimeVideo(item) {
+    const src = videoSource(item);
+    return /\.mov(\?|$)/i.test(src) || item?.video?.mimeType === 'video/quicktime';
   }
 
   function hasVideo(item) {
@@ -215,16 +301,30 @@
     const title = opts.title || 'Vehicle walkthrough video';
     const mime = videoMimeType(item);
     const typeAttr = mime ? ` type="${mime}"` : '';
+    const quickTime = isQuickTimeVideo(item);
+    const fallbackText = window.PublicI18n?.t?.('hc.videoMovFallback', 'QuickTime (.mov) may not play in this browser.')
+      || 'QuickTime (.mov) may not play in this browser.';
+    const downloadText = window.PublicI18n?.t?.('hc.videoDownload', 'Download video')
+      || 'Download video';
+    const mp4Hint = window.PublicI18n?.t?.('hc.videoMp4Hint', 'Suppliers: upload MP4 for best compatibility.')
+      || 'Suppliers: upload MP4 for best compatibility.';
+    const fallback = quickTime
+      ? `<p class="half-cut-video__fallback">${fallbackText} <a href="${src}" download>${downloadText}</a><span class="half-cut-video__fallback-hint">${mp4Hint}</span></p>`
+      : '';
+    const posterUrl = firstPhotoThumbUrl(item) || firstPhotoUrl(item);
+    const posterAttr = posterUrl ? ` poster="${posterUrl.replace(/"/g, '&quot;')}"` : '';
     return `
       <div class="${className}">
-        <video class="${className}__player" controls playsinline preload="metadata" aria-label="${title.replace(/"/g, '&quot;')}">
+        <video class="${className}__player" controls playsinline preload="none"${posterAttr} aria-label="${title.replace(/"/g, '&quot;')}">
           <source src="${src}"${typeAttr}>
           Your browser does not support embedded video.
         </video>
+        ${fallback}
       </div>`;
   }
 
-  const INVENTORY_DISCLAIMER = 'Inventory is subject to final confirmation. Photos, price and shipping cost are confirmed on request before export.';
+  const TRUST_COPY = 'Whole-vehicle startup video available before dismantling. Parts can be dismantled according to buyer requirements after confirmation.';
+  const INVENTORY_DISCLAIMER = `${TRUST_COPY} Inventory is subject to final confirmation. Photos, price and shipping cost are confirmed on request before export.`;
 
   function whatsappMessage(item) {
     const lines = [
@@ -302,18 +402,57 @@
     return `<a href="#" class="${className}" data-half-cut-lead data-slug="${String(item.slug || '').replace(/"/g, '&quot;')}" data-intent="${String(intent || 'price').replace(/"/g, '&quot;')}">${label}</a>`;
   }
 
+  function waCaptureLink(item, url, className, label, intent) {
+    const safeUrl = String(url || '#').replace(/"/g, '&quot;');
+    const slug = String(item?.slug || '').replace(/"/g, '&quot;');
+    const safeIntent = String(intent || 'whatsapp').replace(/"/g, '&quot;');
+    return `<a href="${safeUrl}" class="${className}" data-half-cut-wa data-slug="${slug}" data-intent="${safeIntent}" target="_blank" rel="noopener noreferrer">${label}</a>`;
+  }
+
+  function whatsappLink(item, className, label) {
+    return waCaptureLink(item, whatsappUrl(item), className, label, 'whatsapp');
+  }
+
+  function checkAvailabilityLink(item, className, label) {
+    return waCaptureLink(item, checkAvailabilityUrl(item), className, label, 'availability');
+  }
+
   function requestPriceUrl(base, item) {
     return `#half-cut-lead-${item.slug}`;
   }
 
+  function listingTypeLabel(item) {
+    if (item?.vehicleCategory === 'machinery') {
+      return item.vehicleCondition || window.MachineryBrandCatalog?.typeLabel?.(item.machineryType) || 'Construction Equipment';
+    }
+    if (item?.truckPartType === 'cab') return 'Driver Cab';
+    if (item?.vehicleCategory === 'truck') return 'Truck Half Cut';
+    return 'Half Cut';
+  }
+
   function seoTitle(item) {
-    const core = `${item.year} ${item.brand} ${item.model} Half Cut ${item.engineCode} ${item.transmissionCode}`;
+    const typeLabel = listingTypeLabel(item);
+    const enginePart = item.engineCode ? ` ${item.engineCode}` : '';
+    const transPart = item.transmissionCode && item.vehicleCategory !== 'machinery' ? ` ${item.transmissionCode}` : '';
+    const core = `${item.year} ${item.brand} ${item.model} ${typeLabel}${enginePart}${transPart}`.replace(/\s+/g, ' ').trim();
     if (isReserved(item)) return `${core} — Reserved | AsiaPower`;
     if (isSold(item)) return `${core} — Sold | AsiaPower`;
     return `${core} | AsiaPower`;
   }
 
   function seoDescription(item) {
+    const typeLabel = listingTypeLabel(item).toLowerCase();
+    if (item?.vehicleCategory === 'machinery') {
+      const engineHint = item.engineCode ? ` — ${item.engineCode} engine` : '';
+      const videoHint = hasVideo(item) ? ' Whole-vehicle startup video available before dismantling.' : '';
+      if (isAvailable(item)) {
+        return `${item.brand} ${item.model} ${typeLabel} export from China${engineHint}.${videoHint} Request FOB price and shipping from AsiaPower. Stock ${item.stockId}.`;
+      }
+      if (isReserved(item)) {
+        return `Reserved ${item.brand} ${item.model} ${typeLabel}${engineHint}. Confirm availability or request similar units. Stock ${item.stockId}.`;
+      }
+      return `Sold ${item.brand} ${item.model} ${typeLabel} reference${engineHint}. Request similar available units. Stock ${item.stockId}.`;
+    }
     if (isAvailable(item)) {
       return `${item.brand} ${item.model} half cut listing with ${item.engineCode} engine and ${item.transmissionCode} transmission. Request price, photos and shipping from AsiaPower. Stock ID ${item.stockId}.`;
     }
@@ -446,18 +585,18 @@
         <a href="${detail}" class="btn btn-navy btn-sm">${t('hc.viewDetails', 'View Details')}</a>
         ${leadLink(item, 'price', 'btn btn-outline-navy btn-sm', t('hc.requestPrice', 'Request Price'))}
         ${leadLink(item, 'photos', 'btn btn-outline-navy btn-sm', t('hc.requestPhotos', 'Request Photos'))}
-        ${leadLink(item, 'whatsapp', 'btn btn-whatsapp btn-sm', 'WhatsApp')}`;
+        ${whatsappLink(item, 'btn btn-whatsapp btn-sm', 'WhatsApp')}`;
     }
     if (isReserved(item)) {
       return `
         <a href="${detail}" class="btn btn-navy btn-sm">${t('hc.viewDetails', 'View Details')}</a>
-        <a href="${checkAvailabilityUrl(item)}" class="btn btn-accent btn-sm" target="_blank" rel="noopener noreferrer">${t('hc.checkAvailability', 'Check Availability')}</a>
+        ${checkAvailabilityLink(item, 'btn btn-accent btn-sm', t('hc.checkAvailability', 'Check Availability'))}
         ${leadLink(item, 'similar', 'btn btn-outline-navy btn-sm', t('hc.requestSimilar', 'Request Similar Unit'))}`;
     }
     if (isInTransit(item)) {
       return `
         <a href="${detail}" class="btn btn-navy btn-sm">${t('hc.viewDetails', 'View Details')}</a>
-        <a href="${checkAvailabilityUrl(item)}" class="btn btn-accent btn-sm" target="_blank" rel="noopener noreferrer">${t('hc.checkAvailability', 'Check Availability')}</a>
+        ${checkAvailabilityLink(item, 'btn btn-accent btn-sm', t('hc.checkAvailability', 'Check Availability'))}
         ${leadLink(item, 'similar', 'btn btn-outline-navy btn-sm', t('hc.requestSimilar', 'Request Similar Unit'))}`;
     }
     return `
@@ -470,7 +609,7 @@
       return `
         ${leadLink(item, 'price', 'btn btn-accent', t('hc.requestPrice', 'Request Price'))}
         ${leadLink(item, 'photos', 'btn btn-outline-navy', t('hc.requestPhotos', 'Request Photos'))}
-        ${leadLink(item, 'whatsapp', 'btn btn-whatsapp', 'WhatsApp')}`;
+        ${whatsappLink(item, 'btn btn-whatsapp', 'WhatsApp')}`;
     }
     if (isReserved(item)) {
       return `
@@ -493,7 +632,16 @@
   window.getHalfCutBySlug = getHalfCutBySlug;
   window.getHalfCutsByBrandSlug = getHalfCutsByBrandSlug;
   window.getHalfCutBrands = getHalfCutBrands;
+  window.getTruckInventory = () => filterInventoryBySegment(HALF_CUT_LIST, 'truck');
+  window.getMachineryInventory = () => filterInventoryBySegment(HALF_CUT_LIST, 'machinery');
+  window.getPassengerHalfCutInventory = () => filterInventoryBySegment(HALF_CUT_LIST, 'passenger');
   window.HalfCutUtils = {
+    inventorySegment,
+    isTruckItem,
+    isMachineryItem,
+    isMachineryLike,
+    filterInventoryBySegment,
+    listingTypeLabel,
     detailUrl,
     whatsappUrl,
     whatsappMessage,
@@ -501,14 +649,19 @@
     similarUnitUrl,
     similarUnitMessage,
     leadLink,
+    whatsappLink,
     checkAvailabilityUrl,
+    checkAvailabilityLink,
+    waCaptureLink,
     requestPhotosUrl,
     requestPriceUrl,
     enginePageUrl,
     statusSlug,
     hasPhotos,
     photoUrl,
+    thumbPhotoUrl,
     firstPhotoUrl,
+    firstPhotoThumbUrl,
     hasVideo,
     videoSource,
     videoMimeType,
@@ -534,18 +687,37 @@
     renderDetailActions,
   };
 
-  (function loadHalfCutLeadsScript() {
-    if (window.HalfCutLeads) return;
+  (function ensureHalfCutLeadCapture() {
+    if (window.__HALF_CUT_LEADS_INIT__ && window.HalfCutLeads) return;
+
     const base = window.SitePaths?.base?.() || (
       window.location.pathname.includes('/brands/') || window.location.pathname.includes('/half-cuts/')
         ? '../'
         : ''
     );
-    const src = `${base}js/half-cut-leads.js?v=leads-v1`;
-    if (document.querySelector('script[src*="half-cut-leads.js"]')) return;
-    const script = document.createElement('script');
-    script.src = src;
-    script.defer = true;
-    document.head.appendChild(script);
+
+    function loadSyncScript(src) {
+      if (!src) return false;
+      try {
+        const xhr = new XMLHttpRequest();
+        xhr.open('GET', src, false);
+        xhr.send(null);
+        if (xhr.status >= 200 && xhr.status < 300 && xhr.responseText) {
+          Function(`${xhr.responseText}\n//# sourceURL=${src}`)();
+          return true;
+        }
+      } catch {
+        // ignore load failures
+      }
+      return false;
+    }
+
+    if (!window.AsiaCountryOptions) loadSyncScript(`${base}js/country-options.js?v=1`);
+    if (!window.AsiaPhone) loadSyncScript(`${base}js/phone-utils.js?v=2`);
+    if (!window.SiteFeedback) loadSyncScript(`${base}js/site-feedback.js?v=feedback-v14`);
+
+    if (!window.__HALF_CUT_LEADS_INIT__) {
+      loadSyncScript(`${base}js/half-cut-leads.js?v=leads-v10`);
+    }
   })();
 })();

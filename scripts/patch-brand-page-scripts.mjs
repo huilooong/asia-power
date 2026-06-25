@@ -18,8 +18,12 @@ const HALF_CUT_BLOCK = `  <script src="../js/half-cut-vin.js?v=inventory-v1"></s
   <script src="../js/half-cut-inventory-store.js?v=inventory-v1"></script>
   <script src="../js/half-cut-gallery-lightbox.js?v=gallery-v2"></script>
   <script src="../js/half-cut-catalog.js?v=gallery-v2"></script>
-  <script src="../js/brand-catalog.js" defer></script>
-  <script src="../js/brand-page.js?v=inventory-v1" defer></script>
+  <script src="../js/powertrain-labels.js?v=powertrain-v5"></script>
+  <script src="../js/brand-catalog.js?v=powertrain-v5" defer></script>
+  <script src="../js/gearbox-directory.js?v=powertrain-v5" defer></script>
+  <script src="../js/chassis-directory.js?v=powertrain-v5" defer></script>
+  <script src="../js/powertrain-catalog.js?v=powertrain-v5" defer></script>
+  <script src="../js/brand-page.js?v=powertrain-v5" defer></script>
 `;
 
 const halfCutPattern = /[\s]*<script src="\.\.\/js\/half-cut-vin\.js[^"]*"><\/script>[\s\S]*?<script src="\.\.\/js\/brand-page\.js[^"]*" defer><\/script>\s*/;

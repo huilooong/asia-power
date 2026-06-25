@@ -49,6 +49,7 @@ function assertSubmissionMediaUrls(submission) {
 module.exports = {
   isProduction,
   supplierUploadKey,
+  hasValidSupplierKey,
   isAuthorizedSupplierRequest,
   assertSubmissionMediaUrls,
 };

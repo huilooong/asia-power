@@ -8,6 +8,7 @@ const { lookupIpGeo } = require('./ip-geo');
 const MAX_PATH_LENGTH = 240;
 const MAX_DAILY_IPS = 5000;
 const RETAIN_DAYS = 90;
+const FLUSH_MS = 15000;
 const BOT_UA = /bot|crawl|spider|slurp|bingpreview|facebookexternalhit|telegrambot|whatsapp|preview|headless/i;
 
 function dayKey(date = new Date(), timeZone = process.env.TZ || 'Africa/Accra') {
@@ -23,8 +24,11 @@ function createSiteAnalytics(dataDir, options = {}) {
   const timeZone = options.timeZone || process.env.TZ || 'Africa/Accra';
   const dailyFile = path.join(dataDir, 'site-analytics-daily.json');
   const geoPending = new Set();
+  let store = null;
+  let dirty = false;
+  let flushTimer = null;
 
-  function loadDaily() {
+  function loadDailyFromDisk() {
     if (!fs.existsSync(dailyFile)) return {};
     try {
       const data = JSON.parse(fs.readFileSync(dailyFile, 'utf8'));
@@ -34,15 +38,30 @@ function createSiteAnalytics(dataDir, options = {}) {
     }
   }
 
-  function saveDaily(data) {
-    fs.mkdirSync(path.dirname(dailyFile), { recursive: true });
-    fs.writeFileSync(dailyFile, JSON.stringify(data, null, 2));
+  function getStore() {
+    if (!store) store = loadDailyFromDisk();
+    return store;
   }
 
-  function pruneOldDays(store) {
-    const keys = Object.keys(store).sort();
+  function flushDaily() {
+    flushTimer = null;
+    if (!dirty || !store) return;
+    dirty = false;
+    fs.mkdirSync(path.dirname(dailyFile), { recursive: true });
+    fs.writeFileSync(dailyFile, JSON.stringify(store, null, 2));
+  }
+
+  function scheduleFlush() {
+    dirty = true;
+    if (flushTimer) return;
+    flushTimer = setTimeout(flushDaily, FLUSH_MS);
+    if (typeof flushTimer.unref === 'function') flushTimer.unref();
+  }
+
+  function pruneOldDays(data) {
+    const keys = Object.keys(data).sort();
     if (keys.length <= RETAIN_DAYS) return;
-    keys.slice(0, keys.length - RETAIN_DAYS).forEach((key) => delete store[key]);
+    keys.slice(0, keys.length - RETAIN_DAYS).forEach((key) => delete data[key]);
   }
 
   function isBot(userAgent) {
@@ -53,14 +72,14 @@ function createSiteAnalytics(dataDir, options = {}) {
     const p = String(pagePath || '').split('?')[0];
     if (!p || p.startsWith('/api/') || p.startsWith('/uploads/')) return false;
     if (p.startsWith('/admin/')) return false;
-    if (p.includes('/supplier-portal/half-cut-upload')) return false;
+    if (p.includes('/supplier-portal/half-cut-upload') || p.includes('/supplier-portal/truck-upload')) return false;
     if (p.endsWith('.js') || p.endsWith('.css') || p.endsWith('.png') || p.endsWith('.webp')) return false;
     return p.endsWith('.html') || p === '/' || p.endsWith('/') || !path.extname(p.replace(/\/$/, ''));
   }
 
-  function ensureDayBucket(store, day) {
-    if (!store[day]) {
-      store[day] = {
+  function ensureDayBucket(data, day) {
+    if (!data[day]) {
+      data[day] = {
         pageviews: 0,
         whatsappClicks: 0,
         uniqueIps: {},
@@ -69,7 +88,7 @@ function createSiteAnalytics(dataDir, options = {}) {
         updatedAt: new Date().toISOString(),
       };
     }
-    return store[day];
+    return data[day];
   }
 
   function bumpMapCounter(map, key, amount = 1) {
@@ -89,8 +108,8 @@ function createSiteAnalytics(dataDir, options = {}) {
     try {
       const geo = await lookupIpGeo(ip);
       if (!geo?.country) return;
-      const store = loadDaily();
-      const bucket = store[day];
+      const data = getStore();
+      const bucket = data[day];
       const entry = bucket?.uniqueIps?.[ip];
       if (!entry) return;
       entry.country = geo.country;
@@ -98,7 +117,7 @@ function createSiteAnalytics(dataDir, options = {}) {
       entry.region = geo.region || null;
       bumpMapCounter(bucket.countries, geo.country);
       bucket.updatedAt = new Date().toISOString();
-      saveDaily(store);
+      scheduleFlush();
     } catch {
       // ignore geo failures
     } finally {
@@ -116,8 +135,8 @@ function createSiteAnalytics(dataDir, options = {}) {
 
     const ip = clientIp(req) || 'unknown';
     const day = dayKey(new Date(), timeZone);
-    const store = loadDaily();
-    const bucket = ensureDayBucket(store, day);
+    const data = getStore();
+    const bucket = ensureDayBucket(data, day);
     const now = new Date().toISOString();
 
     bucket.pageviews += 1;
@@ -142,8 +161,8 @@ function createSiteAnalytics(dataDir, options = {}) {
     entry.lastSeen = now;
     bucket.updatedAt = now;
 
-    pruneOldDays(store);
-    saveDaily(store);
+    pruneOldDays(data);
+    scheduleFlush();
 
     if (ip !== 'unknown' && !entry.country) {
       enrichIpGeo(day, ip).catch(() => {});
@@ -153,13 +172,13 @@ function createSiteAnalytics(dataDir, options = {}) {
   function recordEvent(req, eventType, meta = {}) {
     if (eventType !== 'whatsapp_click') return;
     const day = dayKey(new Date(), timeZone);
-    const store = loadDaily();
-    const bucket = ensureDayBucket(store, day);
+    const data = getStore();
+    const bucket = ensureDayBucket(data, day);
     bucket.whatsappClicks += 1;
     if (meta.page) bumpMapCounter(bucket.paths, String(meta.page).slice(0, MAX_PATH_LENGTH));
     bucket.updatedAt = new Date().toISOString();
-    pruneOldDays(store);
-    saveDaily(store);
+    pruneOldDays(data);
+    scheduleFlush();
 
     if (req) recordPageView(req, meta.page || '/');
   }
@@ -203,18 +222,20 @@ function createSiteAnalytics(dataDir, options = {}) {
   }
 
   function getSummary({ days = 7, day = null } = {}) {
-    const store = loadDaily();
-    if (day) return summarizeDay(day, store[day]);
+    flushDaily();
+    const data = getStore();
+    if (day) return summarizeDay(day, data[day]);
 
-    const keys = Object.keys(store).sort().reverse().slice(0, Math.max(1, Number(days) || 7));
+    const keys = Object.keys(data).sort().reverse().slice(0, Math.max(1, Number(days) || 7));
     return {
       timeZone,
-      days: keys.map((key) => summarizeDay(key, store[key])),
+      days: keys.map((key) => summarizeDay(key, data[key])),
     };
   }
 
   function buildDailyReportText(day = dayKey(new Date(), timeZone)) {
-    const summary = summarizeDay(day, loadDaily()[day]);
+    flushDaily();
+    const summary = summarizeDay(day, getStore()[day]);
     const lines = [
       `🌐 Website traffic (${day}, ${timeZone})`,
       `Page views: ${summary.pageviews}`,
@@ -243,6 +264,8 @@ function createSiteAnalytics(dataDir, options = {}) {
     return lines.join('\n');
   }
 
+  process.on('exit', flushDaily);
+
   return {
     dailyFile,
     dayKey: (date) => dayKey(date, timeZone),
@@ -251,6 +274,7 @@ function createSiteAnalytics(dataDir, options = {}) {
     getSummary,
     buildDailyReportText,
     shouldTrackPage,
+    flushDaily,
   };
 }
 

@@ -41,7 +41,7 @@
     const engineUrl = u.enginePageUrl(b, display);
     const statusLabel = window.PublicI18n?.translateStatus?.(display.status) || display.status;
     const statusClass = `half-cut-card__status--${u.statusSlug(display.status)}`;
-    const thumbUrl = u.firstPhotoUrl(display);
+    const thumbUrl = u.firstPhotoThumbUrl(display);
     const photoCount = (display.photos || []).filter(Boolean).length;
     const hasPhotos = u.hasPhotos(display);
     const hasVideo = u.hasVideo(display);
@@ -88,8 +88,10 @@
           <div><dt>${t('spec.brand', 'Brand')}</dt><dd><a href="${brandUrl}">${display.brand}</a></dd></div>
           <div><dt>${t('spec.model', 'Model')}</dt><dd>${display.model}</dd></div>
           <div><dt>${t('spec.year', 'Year')}</dt><dd>${display.year}</dd></div>
-          <div><dt>${t('spec.engine', 'Engine')}</dt><dd>${engineUrl ? `<a href="${engineUrl}">${display.engineCode}</a>` : display.engineCode}</dd></div>
-          <div><dt>${t('spec.transmission', 'Transmission')}</dt><dd>${display.transmissionCode}</dd></div>
+          <div><dt>${t('spec.engine', 'Engine')}</dt><dd>${display.engineCode
+      ? (engineUrl ? `<a href="${engineUrl}">${display.engineCode}</a>` : display.engineCode)
+      : (display.truckPartType === 'cab' ? '—' : '')}</dd></div>
+          <div><dt>${t('spec.transmission', 'Transmission')}</dt><dd>${window.PowertrainLabels?.formatTransmissionDisplay?.(display) || display.transmissionCode || (display.truckPartType === 'cab' ? '—' : '')}</dd></div>
           <div><dt>${t('spec.mileage', 'Mileage')}</dt><dd>${display.mileage}</dd></div>
           ${vinRow}
         </dl>
@@ -108,12 +110,18 @@
     const boot = () => {
     if (!window.HALF_CUT_LIST) return;
 
+    const inventory = window.getPassengerHalfCutInventory?.()
+      || window.HALF_CUT_LIST.filter((item) => {
+        if (window.HalfCutUtils?.isMachineryItem?.(item)) return false;
+        if (window.HalfCutUtils?.isTruckItem?.(item)) return false;
+        return item.vehicleCategory !== 'truck' && item.vehicleCategory !== 'machinery';
+      });
     const u = window.HalfCutUtils;
-    const brands = window.getHalfCutBrands();
+    const brands = window.getHalfCutBrands('passenger');
     const brandOptions = brands.map(b =>
       `<option value="${b.slug}">${b.name}</option>`
     ).join('');
-    const availableCount = window.HALF_CUT_LIST.filter(i => i.status === 'Available').length;
+    const availableCount = inventory.filter(i => i.status === 'Available').length;
 
     root.innerHTML = `
       <p class="half-cut-disclaimer">${window.PublicI18n?.inventoryDisclaimer?.() || u.INVENTORY_DISCLAIMER}</p>
@@ -138,10 +146,10 @@
         </div>
       </div>
       <div class="catalog-toolbar">
-        <div class="catalog-toolbar__count">${t('hc.showing', 'Showing')} <strong id="half-cut-visible-count">${availableCount}</strong> ${t('hc.of', 'of')} <strong id="half-cut-total-count">${window.HALF_CUT_LIST.length}</strong> ${t('hc.halfCuts', 'half cuts')}</div>
+        <div class="catalog-toolbar__count">${t('hc.showing', 'Showing')} <strong id="half-cut-visible-count">${availableCount}</strong> ${t('hc.of', 'of')} <strong id="half-cut-total-count">${inventory.length}</strong> ${t('hc.halfCuts', 'half cuts')}</div>
       </div>
       <div class="half-cut-grid engine-catalog__grid" id="half-cut-grid" aria-live="polite">
-        ${window.HALF_CUT_LIST.map(renderHalfCutCard).join('')}
+        ${inventory.map(renderHalfCutCard).join('')}
       </div>
       <div class="brands-empty hidden" id="half-cut-empty">
         <p>${t('hc.noMatch', 'No half cuts match your search.')} <a href="${base()}contact.html">${t('hc.sendRequest', 'Send us your request')}</a>.</p>

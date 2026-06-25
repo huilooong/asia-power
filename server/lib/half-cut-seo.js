@@ -14,14 +14,39 @@ function isSold(item) {
   return item?.status === 'Sold';
 }
 
+function listingTypeLabel(item) {
+  if (item?.vehicleCategory === 'machinery') {
+    return item.vehicleCondition || require('./machinery-brand-catalog').typeLabel(item?.machineryType);
+  }
+  if (item?.truckPartType === 'cab') return 'Driver Cab';
+  if (item?.vehicleCategory === 'truck') return 'Truck Half Cut';
+  return 'Half Cut';
+}
+
 function seoTitle(item) {
-  const core = `${item.year} ${item.brand} ${item.model} Half Cut ${item.engineCode} ${item.transmissionCode}`;
+  const typeLabel = listingTypeLabel(item);
+  const enginePart = item.engineCode ? ` ${item.engineCode}` : '';
+  const transPart = item.transmissionCode && item.vehicleCategory !== 'machinery' ? ` ${item.transmissionCode}` : '';
+  const core = `${item.year} ${item.brand} ${item.model} ${typeLabel}${enginePart}${transPart}`.replace(/\s+/g, ' ').trim();
   if (isReserved(item)) return `${core} — Reserved | AsiaPower`;
   if (isSold(item)) return `${core} — Sold | AsiaPower`;
   return `${core} | AsiaPower`;
 }
 
 function seoDescription(item) {
+  const typeLabel = listingTypeLabel(item).toLowerCase();
+  if (item?.vehicleCategory === 'machinery') {
+    const engineHint = item.engineCode ? ` — ${item.engineCode} engine` : '';
+    const hasVideo = !!(item?.video?.url || item?.videoUrl);
+    const videoHint = hasVideo ? ' Whole-vehicle startup video available before dismantling.' : '';
+    if (isAvailable(item)) {
+      return `${item.brand} ${item.model} ${typeLabel} export from China${engineHint}.${videoHint} Request FOB price and shipping from AsiaPower. Stock ${item.stockId}.`;
+    }
+    if (isReserved(item)) {
+      return `Reserved ${item.brand} ${item.model} ${typeLabel}${engineHint}. Confirm availability or request similar units. Stock ${item.stockId}.`;
+    }
+    return `Sold ${item.brand} ${item.model} ${typeLabel} reference${engineHint}. Request similar available units. Stock ${item.stockId}.`;
+  }
   if (isAvailable(item)) {
     return `${item.brand} ${item.model} half cut listing with ${item.engineCode} engine and ${item.transmissionCode} transmission. Request price, photos and shipping from AsiaPower. Stock ID ${item.stockId}.`;
   }
@@ -98,6 +123,58 @@ function productJsonLd(item, siteUrl) {
   return product;
 }
 
+function buildDetailRootHtml(item, siteUrl) {
+  const canonical = canonicalUrl(siteUrl, item.slug);
+  const price = parsePriceUsd(item);
+  const priceHtml = price
+    ? `<p class="half-cut-detail__price-hero">$${price.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} <span class="half-cut-detail__price-note">FOB</span></p>`
+    : '';
+  const photos = Array.isArray(item.photos) ? item.photos.filter(Boolean) : [];
+  const gallery = photos.length
+    ? `<div class="half-cut-gallery" role="list">${photos.map((photo, index) => {
+        const url = typeof photo === 'string' ? photo : (photo?.url || '');
+        const abs = url.startsWith('http') ? url : `${String(siteUrl || SITE_DEFAULT).replace(/\/$/, '')}${url.startsWith('/') ? '' : '/'}${url}`;
+        const label = escapeHtml(typeof photo === 'object' && photo.label ? photo.label : `Photo ${index + 1}`);
+        return `<figure class="half-cut-gallery__item" role="listitem"><img src="${escapeAttr(abs)}" alt="${label}" loading="lazy"><figcaption>${label}</figcaption></figure>`;
+      }).join('')}</div>`
+    : '';
+  const parts = Array.isArray(item.includedParts) ? item.includedParts : [];
+  return `
+<section class="page-hero page-hero--catalog">
+  <div class="container">
+    <div class="page-hero__breadcrumb">
+      <a href="../index.html">Home</a> /
+      <a href="../half-cuts/">Half-Cuts</a> /
+      <a href="../brands/${escapeAttr(item.brandSlug)}.html#halfcuts-inventory">${escapeHtml(item.brand)}</a> /
+      <span>${escapeHtml(item.stockId)}</span>
+    </div>
+    <h1>${escapeHtml(item.title)}</h1>
+    ${priceHtml}
+    <p>${escapeHtml(item.shortDescription || seoDescription(item))}</p>
+  </div>
+</section>
+<section class="section">
+  <div class="container">
+    <div class="engine-detail half-cut-detail">
+      <div class="engine-detail__main">
+        <span class="section-eyebrow">${escapeHtml(item.origin || 'China')} · Half Cut · ${escapeHtml(item.status || 'Available')}</span>
+        <h2 class="half-cut-detail__stock-id">${escapeHtml(item.stockId)}</h2>
+        ${gallery}
+        <dl class="engine-detail__specs half-cut-detail__specs">
+          <div><dt>Brand</dt><dd>${escapeHtml(item.brand)}</dd></div>
+          <div><dt>Model</dt><dd>${escapeHtml(item.model)}</dd></div>
+          <div><dt>Year</dt><dd>${escapeHtml(String(item.year || ''))}</dd></div>
+          <div><dt>Engine Code</dt><dd>${escapeHtml(item.engineCode || '')}</dd></div>
+          <div><dt>Transmission</dt><dd>${escapeHtml(item.transmissionCode || '')}</dd></div>
+          <div><dt>Status</dt><dd>${escapeHtml(item.status || '')}</dd></div>
+        </dl>
+        ${parts.length ? `<h3 class="half-cut-detail__parts-title">Included Parts</h3><ul class="half-cut-detail__parts">${parts.map((part) => `<li>${escapeHtml(part)}</li>`).join('')}</ul>` : ''}
+      </div>
+    </div>
+  </div>
+</section>`;
+}
+
 function noscriptSummary(item) {
   const lines = [
     `<h1>${escapeHtml(item.title)}</h1>`,
@@ -132,6 +209,7 @@ module.exports = {
   seoDescription,
   canonicalUrl,
   productJsonLd,
+  buildDetailRootHtml,
   noscriptSummary,
   escapeHtml,
   escapeAttr,

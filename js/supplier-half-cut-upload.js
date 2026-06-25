@@ -31,6 +31,72 @@
       .replace(/"/g, '&quot;');
   }
 
+  const MAX_PHOTO_BYTES = 8 * 1024 * 1024;
+  const PHOTO_COMPRESS_MIN_BYTES = 1024 * 1024;
+  const PHOTO_MAX_DIM = 1600;
+  const HEIC_RE = /\.(heic|heif)$/i;
+
+  function isHeicPhoto(file) {
+    const type = String(file?.type || '').toLowerCase();
+    const name = String(file?.name || '');
+    return type.includes('heic') || type.includes('heif') || HEIC_RE.test(name);
+  }
+
+  async function preparePhotoForUpload(file) {
+    if (isHeicPhoto(file)) {
+      throw new Error(tBi('heicNotSupported'));
+    }
+    if (file.size > MAX_PHOTO_BYTES) {
+      throw new Error(tBi('photoTooLarge'));
+    }
+
+    const type = String(file.type || '').toLowerCase();
+    if (!/^image\/(jpeg|png|webp)$/.test(type) || typeof createImageBitmap !== 'function') return file;
+
+    try {
+      const bitmap = await createImageBitmap(file);
+      const needsResize = bitmap.width > PHOTO_MAX_DIM || bitmap.height > PHOTO_MAX_DIM;
+      const needsCompress = file.size > PHOTO_COMPRESS_MIN_BYTES || needsResize;
+      if (!needsCompress) {
+        bitmap.close?.();
+        return file;
+      }
+      const maxDim = PHOTO_MAX_DIM;
+      let { width, height } = bitmap;
+      if (width > maxDim || height > maxDim) {
+        const scale = maxDim / Math.max(width, height);
+        width = Math.round(width * scale);
+        height = Math.round(height * scale);
+      }
+      const canvas = document.createElement('canvas');
+      canvas.width = width;
+      canvas.height = height;
+      canvas.getContext('2d').drawImage(bitmap, 0, 0, width, height);
+      bitmap.close?.();
+      const outputType = 'image/webp';
+      const blob = await new Promise((resolve, reject) => {
+        canvas.toBlob((result) => {
+          if (result) resolve(result);
+          else {
+            canvas.toBlob((jpeg) => {
+              if (jpeg) resolve(jpeg);
+              else reject(new Error('Could not compress photo'));
+            }, 'image/jpeg', 0.85);
+          }
+        }, outputType, 0.82);
+      });
+      if (blob.size > MAX_PHOTO_BYTES) {
+        throw new Error(tBi('photoTooLarge'));
+      }
+      const baseName = String(file.name || 'photo.jpg').replace(/\.[^.]+$/, '') || 'photo';
+      const ext = blob.type === 'image/webp' ? '.webp' : '.jpg';
+      return new File([blob], `${baseName}${ext}`, { type: blob.type });
+    } catch (err) {
+      if (String(err.message || '').includes('\n')) throw err;
+      return file;
+    }
+  }
+
   const MODEL_OTHER = '__OTHER__';
 
   async function loadLearnedModels(cat) {
@@ -45,10 +111,20 @@
     }
   }
 
-  function renderBrandSelectOptions(cat) {
+  function renderBrandSelectOptions(cat, options = {}) {
     const label = (brand) => escapeHtml(cat.getBrandLabel?.(brand) || brand);
     const option = (brand) => `<option value="${escapeHtml(brand)}">${label(brand)}</option>`;
     const groups = cat.getBrandOptionGroups?.();
+    if (groups && options.truckGroups && window.TruckBrandCatalog?.GROUP_LABELS) {
+      const labels = window.TruckBrandCatalog.GROUP_LABELS;
+      return Object.keys(labels)
+        .filter((key) => Array.isArray(groups[key]) && groups[key].length)
+        .map((key) => `
+        <optgroup label="${escapeHtml(labels[key])}">
+          ${groups[key].map(option).join('')}
+        </optgroup>`)
+        .join('');
+    }
     if (groups) {
       return `
         <optgroup label="Chinese brands · 中国品牌">
@@ -70,14 +146,82 @@
 
     let rememberTimer = null;
 
-    const brandOptions = renderBrandSelectOptions(cat);
+    function uploadCategory() {
+      const fromBody = document.body?.dataset?.uploadCategory;
+      if (fromBody) return fromBody;
+      const params = new URLSearchParams(window.location.search);
+      return params.get('category') === 'truck' ? 'truck' : 'passenger';
+    }
+
+    function uploadPartType() {
+      const fromBody = document.body?.dataset?.uploadPart;
+      if (fromBody) return fromBody;
+      const params = new URLSearchParams(window.location.search);
+      return params.get('part') === 'cab' ? 'cab' : 'vehicle';
+    }
+
+    const defaultCategory = uploadCategory();
+    const isTruckUpload = defaultCategory === 'truck';
+    const defaultPartType = isTruckUpload ? uploadPartType() : 'vehicle';
+    let isCabUpload = isTruckUpload && defaultPartType === 'cab';
+
+    const brandCatalog = isTruckUpload && window.TruckBrandCatalog ? window.TruckBrandCatalog : cat;
+    if (isTruckUpload && !window.TruckBrandCatalog) return;
+    const brandOptions = renderBrandSelectOptions(brandCatalog, { truckGroups: isTruckUpload });
 
     const conditionOptions = [
       ['Running Vehicle', 'conditionRunning'],
       ['Half Cut', 'conditionHalfCut'],
+      ...(isTruckUpload ? [
+        ['Truck Half Cut', 'conditionTruckHalfCut'],
+        ['Driver Cab', 'conditionDriverCab'],
+      ] : []),
       ['Dismantled', 'conditionDismantled'],
       ['Engine Removed', 'conditionEngineRemoved'],
     ].map(([val, key]) => `<option value="${val}">${I18n().labelInline(key)}</option>`).join('');
+
+    function getActivePhotoLabels() {
+      if (isCabUpload && Array.isArray(v.CAB_PHOTO_LABELS)) return v.CAB_PHOTO_LABELS;
+      return v.PHOTO_LABELS;
+    }
+
+    function photosStepLegend() {
+      const maxNote = isCabUpload ? `, max ${v.MAX_PHOTOS_CAB || 10}` : '';
+      return `${t('stepPhotos')} <span class="req">*</span> (min ${v.MIN_PHOTOS}${maxNote})`;
+    }
+
+    function photosStepHint() {
+      if (isCabUpload) {
+        return `${I18n().labelEn('photosCabHint')}<span class="bi-zh-inline">${I18n().labelZh('photosCabHint')}</span>`;
+      }
+      return `${I18n().labelEn('photosMin')}<span class="bi-zh-inline">${I18n().labelZh('photosMin')}</span>`;
+    }
+
+    // Do NOT add capture= on photo inputs — mobile browsers then skip the gallery and open the camera only.
+    function buildPhotoSlotsHtml(labels) {
+      const cabMode = labels.length > (v.PHOTO_LABELS?.length || 0);
+      const photoLabelBi = cabMode ? (I18n().L.cabPhotoLabels || []) : (I18n().L.photoLabels || []);
+      return labels.map((label, index) => {
+        const bi = photoLabelBi[index];
+        const labelText = bi ? `${bi.en} / ${bi.zh}` : label;
+        const reqTag = index < v.MIN_PHOTOS
+          ? `<span class="supplier-photo-slot__req">${I18n().labelInline('required')}</span>`
+          : `<span class="supplier-photo-slot__opt">${I18n().labelInline('recommended')}</span>`;
+        return `
+      <div class="supplier-photo-slot" data-slot="${index}">
+        <label class="supplier-photo-slot__label" for="photo-${index}">
+          <span class="supplier-photo-slot__num">${index + 1}</span>
+          ${escapeHtml(labelText)}
+          ${reqTag}
+        </label>
+        <input type="file" id="photo-${index}" class="supplier-photo-slot__input" accept="image/jpeg,image/png,image/webp,image/gif" data-label="${escapeHtml(label)}">
+        <div class="supplier-photo-slot__preview" id="photo-preview-${index}" hidden>
+          <img alt="">
+          <button type="button" class="supplier-photo-slot__remove btn-bilingual" data-remove="${index}">${tBtn('remove')}</button>
+        </div>
+      </div>`;
+      }).join('');
+    }
 
     const stepLabels = [
       { key: 'stepVin', num: 1 },
@@ -92,35 +236,15 @@
         <span class="supplier-step-progress__label">${tBtn(key)}</span>
       </li>`).join('');
 
-    const photoLabelBi = I18n().L.photoLabels || [];
-    const photoSlots = v.PHOTO_LABELS.map((label, index) => {
-      const bi = photoLabelBi[index];
-      const labelText = bi ? `${bi.en} / ${bi.zh}` : label;
-      const reqTag = index < v.MIN_PHOTOS
-        ? `<span class="supplier-photo-slot__req">${I18n().labelInline('required')}</span>`
-        : `<span class="supplier-photo-slot__opt">${I18n().labelInline('recommended')}</span>`;
-      return `
-      <div class="supplier-photo-slot" data-slot="${index}">
-        <label class="supplier-photo-slot__label" for="photo-${index}">
-          <span class="supplier-photo-slot__num">${index + 1}</span>
-          ${escapeHtml(labelText)}
-          ${reqTag}
-        </label>
-        <input type="file" id="photo-${index}" class="supplier-photo-slot__input" accept="image/*" data-label="${escapeHtml(label)}">
-        <div class="supplier-photo-slot__preview" id="photo-preview-${index}" hidden>
-          <img alt="">
-          <button type="button" class="supplier-photo-slot__remove btn-bilingual" data-remove="${index}">${tBtn('remove')}</button>
-        </div>
-      </div>`;
-    }).join('');
+    const photoSlots = buildPhotoSlotsHtml(getActivePhotoLabels());
 
     root.innerHTML = `
       <div class="supplier-upload-layout supplier-bilingual supplier-upload-wizard">
         <div class="supplier-upload-intro">
-          <span class="section-eyebrow">Supplier Inventory / 供应商库存</span>
-          <h2>${t('supplierUploadTitle')}</h2>
-          <p class="section-lead supplier-instruction-en">${I18n().labelEn('supplierUploadLead')}</p>
-          <p class="section-lead supplier-instruction-zh">${I18n().labelZh('supplierUploadLead')}</p>
+          <span class="section-eyebrow">${isTruckUpload ? 'Truck Inventory / 卡车库存' : 'Supplier Inventory / 供应商库存'}</span>
+          <h2>${isTruckUpload ? t('truckUploadTitle') : t('supplierUploadTitle')}</h2>
+          <p class="section-lead supplier-instruction-en">${I18n().labelEn(isTruckUpload ? 'truckUploadLead' : 'supplierUploadLead')}</p>
+          <p class="section-lead supplier-instruction-zh">${I18n().labelZh(isTruckUpload ? 'truckUploadLead' : 'supplierUploadLead')}</p>
           <div class="supplier-upload-warning">
             <strong>Important / 重要提示：</strong> ${I18n().labelEn('supplierWarning')}<br>
             <span class="bi-zh-block">${I18n().labelZh('supplierWarning')}</span>
@@ -134,11 +258,22 @@
 
           <div class="supplier-step-panels">
             <fieldset class="supplier-form-section supplier-step-panel supplier-vin-step is-active" data-step="1">
-              <legend>${t('stepVin')} <span class="req">*</span></legend>
-              <p class="form-hint supplier-vin-lead">${I18n().labelEn('supplierUploadLead')}<span class="bi-zh-block">${I18n().labelZh('supplierUploadLead')}</span></p>
+              <legend id="vin-step-legend">${isTruckUpload ? t('stepTruckStart') : `${t('stepVin')} <span class="req" id="vin-step-required">*</span>`}</legend>
+              ${isTruckUpload ? `
+              <div class="form-row supplier-truck-part-step" id="truck-part-type-row">
+                <label for="truckPartType">${t('truckPartType')} <span class="req">*</span></label>
+                <select id="truckPartType" name="truckPartType" class="supplier-input-lg">
+                  <option value="vehicle"${defaultPartType === 'vehicle' ? ' selected' : ''}>${I18n().labelInline('truckPartVehicle')}</option>
+                  <option value="cab"${defaultPartType === 'cab' ? ' selected' : ''}>${I18n().labelInline('truckPartCab')}</option>
+                </select>
+                <p class="form-hint" id="truck-part-hint">${I18n().labelEn(defaultPartType === 'cab' ? 'truckPartCabHint' : 'truckPartVehicleHint')}<span class="bi-zh-block">${I18n().labelZh(defaultPartType === 'cab' ? 'truckPartCabHint' : 'truckPartVehicleHint')}</span></p>
+              </div>
+              <p class="supplier-cab-skip-hint${defaultPartType === 'cab' ? '' : ' hidden'}" id="vin-cab-skip-hint">${I18n().labelEn('vinCabSkipHint')}<span class="bi-zh-block">${I18n().labelZh('vinCabSkipHint')}</span></p>` : `
+              <p class="form-hint supplier-vin-lead" id="vin-step-lead">${I18n().labelEn('supplierUploadLead')}<span class="bi-zh-block">${I18n().labelZh('supplierUploadLead')}</span></p>`}
+              <div id="vin-step-block"${isTruckUpload && defaultPartType === 'cab' ? ' class="hidden"' : ''}>
               <div class="supplier-vin-block">
-                <label for="vin">${t('vin')}</label>
-                <input type="text" id="vin" name="vin" required maxlength="17" placeholder="17-character VIN" autocomplete="off" class="supplier-input-lg supplier-vin-input" inputmode="text" autocapitalize="characters" spellcheck="false">
+                <label for="vin">${t('vin')} <span class="req hidden" id="vin-label-required">*</span><span class="supplier-optional-tag hidden" id="vin-optional-tag">${I18n().labelInline('optional')}</span></label>
+                <input type="text" id="vin" name="vin" maxlength="17" placeholder="17-character VIN" autocomplete="off" class="supplier-input-lg supplier-vin-input" inputmode="text" autocapitalize="characters" spellcheck="false">
                 <div class="supplier-vin-meta">
                   <span id="vin-char-count" class="supplier-vin-counter" aria-live="polite">0/17 ${I18n().labelEn('vinCounter')}</span>
                   <span id="vin-confidence-badge" class="supplier-vin-confidence hidden" aria-live="polite"></span>
@@ -148,6 +283,7 @@
               <p id="vin-decode-status" class="form-hint supplier-vin-status" aria-live="polite"></p>
               <p class="form-hint supplier-vin-display">${t('vinFullSupplier')}: <strong id="vin-full-display">—</strong></p>
               <div id="vin-decode-preview" class="supplier-decode-preview hidden" aria-live="polite"></div>
+              </div>
               <input type="hidden" id="decodeConfidence" name="decodeConfidence" value="manual">
             </fieldset>
 
@@ -161,6 +297,15 @@
                 ${I18n().labelEn('decodeConfirm')}<br><span class="bi-zh-block">${I18n().labelZh('decodeConfirm')}</span>
               </div>
               <p id="vehicle-missing-hint" class="form-hint supplier-missing-hint hidden"></p>
+              ${isTruckUpload ? `
+              <input type="hidden" id="vehicleCategory" name="vehicleCategory" value="truck">` : `
+              <div class="form-row">
+                <label for="vehicleCategory">${t('vehicleCategory')}</label>
+                <select id="vehicleCategory" name="vehicleCategory" class="supplier-input-lg">
+                  <option value="passenger" selected>${I18n().labelInline('categoryPassenger')}</option>
+                </select>
+                <p class="form-hint">${I18n().labelEn('passengerUploadOnlyHint')}<span class="bi-zh-block">${I18n().labelZh('passengerUploadOnlyHint')}</span></p>
+              </div>`}
               <div class="form-row supplier-field-row" data-field="brand">
                 <div class="supplier-field-row__head">
                   <label for="brand">${t('brand')} <span class="req">*</span></label>
@@ -193,18 +338,18 @@
                   </div>
                   <input type="number" id="year" name="year" class="supplier-input-lg" min="1990" max="2030" placeholder="2022">
                 </div>
-                <div class="supplier-field-row" data-field="engineCode">
+                <div class="supplier-field-row" data-field="engineCode" id="engine-code-row">
                   <div class="supplier-field-row__head">
-                    <label for="engineCode">${t('engineCode')}</label>
+                    <label for="engineCode" id="engine-code-label">${t('engineCode')} <span class="req" id="engine-code-required">*</span></label>
                     <span class="supplier-field-tag hidden" data-tag="engineCode"></span>
                     <button type="button" class="supplier-field-unlock hidden" data-unlock="engineCode">${tBtn('editField')}</button>
                   </div>
                   <input type="text" id="engineCode" name="engineCode" class="supplier-input-lg" placeholder="2GD-FTV">
                 </div>
               </div>
-              <div class="form-row supplier-field-row" data-field="transmissionCode">
+              <div class="form-row supplier-field-row" data-field="transmissionCode" id="transmission-code-row">
                 <div class="supplier-field-row__head">
-                  <label for="transmissionCode">${t('transmission')}</label>
+                  <label for="transmissionCode" id="transmission-code-label">${t('transmission')} <span class="req" id="transmission-code-required">*</span></label>
                   <span class="supplier-field-tag hidden" data-tag="transmissionCode"></span>
                   <button type="button" class="supplier-field-unlock hidden" data-unlock="transmissionCode">${tBtn('editField')}</button>
                 </div>
@@ -220,7 +365,7 @@
                 <input type="text" id="supplierName" name="supplierName" required autocomplete="organization" class="supplier-input-lg">
               </div>
               <div class="form-row">
-                <label for="mileage">${t('mileage')} <span class="req">*</span></label>
+                <label for="mileage">${t('mileage')} <span class="req" id="mileage-required">*</span></label>
                 <input type="text" id="mileage" name="mileage" required class="supplier-input-lg" placeholder="43000 or 43,000 km">
               </div>
               <div class="form-row">
@@ -276,9 +421,9 @@
             </fieldset>
 
             <fieldset class="supplier-form-section supplier-step-panel" data-step="4">
-              <legend>${t('stepPhotos')} <span class="req">*</span> (min ${v.MIN_PHOTOS})</legend>
-              <p class="form-hint">${I18n().labelEn('photosMin')}<span class="bi-zh-inline">${I18n().labelZh('photosMin')}</span></p>
-              <div class="supplier-photo-grid">${photoSlots}</div>
+              <legend id="supplier-photos-legend">${photosStepLegend()}</legend>
+              <p class="form-hint" id="supplier-photos-hint">${photosStepHint()}</p>
+              <div class="supplier-photo-grid" id="supplier-photo-grid">${photoSlots}</div>
             </fieldset>
           </div>
 
@@ -299,6 +444,7 @@
     const form = document.getElementById('supplier-half-cut-form');
     const feedback = document.getElementById('supplier-upload-feedback');
     const photoData = new Map();
+    let refreshPhotoGrid = null;
     let videoData = null;
     let decodedSnapshot = null;
     let decodeMethod = 'Manual Entry';
@@ -337,9 +483,100 @@
       engineCode: document.getElementById('engineCode'),
       transmissionCode: document.getElementById('transmissionCode'),
       vehicleCondition: document.getElementById('vehicleCondition'),
+      vehicleCategory: document.getElementById('vehicleCategory'),
+      truckPartType: document.getElementById('truckPartType'),
+      truckPartHint: document.getElementById('truck-part-hint'),
+      vinStepBlock: document.getElementById('vin-step-block'),
+      vinCabSkipHint: document.getElementById('vin-cab-skip-hint'),
+      vinStepLegend: document.getElementById('vin-step-legend'),
+      vinStepRequired: document.getElementById('vin-step-required'),
+      vinOptionalTag: document.getElementById('vin-optional-tag'),
+      vinLabelRequired: document.getElementById('vin-label-required'),
+      engineCodeRow: document.getElementById('engine-code-row'),
+      transmissionCodeRow: document.getElementById('transmission-code-row'),
+      engineCodeRequired: document.getElementById('engine-code-required'),
+      transmissionCodeRequired: document.getElementById('transmission-code-required'),
+      mileage: document.getElementById('mileage'),
+      mileageRequired: document.getElementById('mileage-required'),
     };
 
-    if (els.vehicleCondition) els.vehicleCondition.value = 'Half Cut';
+    function activeBrandCatalog() {
+      return isTruckUpload && window.TruckBrandCatalog ? window.TruckBrandCatalog : cat;
+    }
+
+    function syncCabMode() {
+      isCabUpload = isTruckUpload && els.truckPartType?.value === 'cab';
+      const optional = isCabUpload;
+      const showPowertrainRequired = isTruckUpload && !optional;
+
+      els.vinStepBlock?.classList.toggle('hidden', isTruckUpload && optional);
+      els.vinCabSkipHint?.classList.toggle('hidden', !optional);
+      els.vin?.toggleAttribute('required', isTruckUpload ? !optional : true);
+      els.vinStepRequired?.classList.toggle('hidden', optional || isTruckUpload);
+      els.vinLabelRequired?.classList.toggle('hidden', optional);
+      els.vinOptionalTag?.classList.toggle('hidden', !optional);
+      if (els.vinStepLegend && isTruckUpload) {
+        els.vinStepLegend.textContent = I18n().labelEn('stepTruckStart');
+      } else if (els.vinStepLegend) {
+        els.vinStepLegend.innerHTML = optional
+          ? `${t('stepVinOptional')} <span class="supplier-optional-tag">${I18n().labelInline('optional')}</span>`
+          : `${t('stepVin')} <span class="req" id="vin-step-required">*</span>`;
+      }
+      els.engineCodeRequired?.classList.toggle('hidden', !showPowertrainRequired);
+      els.transmissionCodeRequired?.classList.toggle('hidden', !showPowertrainRequired);
+      els.engineCodeRow?.classList.toggle('supplier-field-row--optional', optional);
+      els.transmissionCodeRow?.classList.toggle('supplier-field-row--optional', optional);
+      els.mileage?.toggleAttribute('required', !optional);
+      els.mileageRequired?.classList.toggle('hidden', optional);
+
+      if (els.truckPartHint) {
+        const hintKey = optional ? 'truckPartCabHint' : 'truckPartVehicleHint';
+        els.truckPartHint.innerHTML = `${I18n().labelEn(hintKey)}<span class="bi-zh-block">${I18n().labelZh(hintKey)}</span>`;
+      }
+
+      if (els.vehicleCondition && isTruckUpload) {
+        if (optional) {
+          els.vehicleCondition.value = 'Driver Cab';
+          const vinNorm = v.normalizeVin(els.vin?.value || '');
+          if (vinNorm.length !== 17) {
+            els.vin.value = '';
+            lastDecodedVin = '';
+            els.decodePreview?.classList.add('hidden');
+            els.confidenceBadge?.classList.add('hidden');
+            if (els.vinStatus) els.vinStatus.textContent = '';
+          }
+        } else if (els.vehicleCondition.value === 'Driver Cab') {
+          els.vehicleCondition.value = 'Truck Half Cut';
+        }
+      }
+
+      refreshPhotoGrid?.();
+    }
+
+    if (els.vehicleCondition) {
+      els.vehicleCondition.value = isTruckUpload ? 'Truck Half Cut' : 'Half Cut';
+    }
+
+    function syncTruckCondition() {
+      const category = els.vehicleCategory?.value || 'passenger';
+      if (category === 'truck' && els.vehicleCondition) {
+        const hasTruckOption = Array.from(els.vehicleCondition.options).some((opt) => opt.value === 'Truck Half Cut');
+        if (!hasTruckOption) {
+          const opt = document.createElement('option');
+          opt.value = 'Truck Half Cut';
+          opt.textContent = I18n().labelInline('conditionTruckHalfCut');
+          els.vehicleCondition.insertBefore(opt, els.vehicleCondition.options[1] || null);
+        }
+        if (els.vehicleCondition.value === 'Half Cut') {
+          els.vehicleCondition.value = 'Truck Half Cut';
+        }
+      }
+    }
+
+    els.vehicleCategory?.addEventListener('change', syncTruckCondition);
+    els.truckPartType?.addEventListener('change', syncCabMode);
+    syncTruckCondition();
+    syncCabMode();
 
     function filterBrandOptions(query) {
       if (!els.brand) return;
@@ -367,10 +604,11 @@
 
     function populateModelSelect(brand, selectedModel) {
       if (!els.model) return;
-      let models = brand ? cat.getModels(brand) : [];
+      const catalog = activeBrandCatalog();
+      let models = brand ? catalog.getModels(brand) : [];
       if (brand && selectedModel) {
-        cat.ensureModelOption(brand, selectedModel);
-        models = cat.getModels(brand);
+        catalog.ensureModelOption(brand, selectedModel);
+        models = catalog.getModels(brand);
       }
       const selectLabel = I18n().labelInline('selectModel');
       const otherLabel = I18n().labelInline('modelOther');
@@ -410,8 +648,16 @@
       const model = getModelValue();
       if (!brand || !model || model.length < 2) return;
 
-      const known = cat.getModels(brand).some((entry) => entry.toLowerCase() === model.toLowerCase());
-      cat.ensureModelOption(brand, model);
+      const known = activeBrandCatalog().getModels(brand).some((entry) => entry.toLowerCase() === model.toLowerCase());
+      activeBrandCatalog().ensureModelOption(brand, model);
+
+      const editingModelOther = els.modelOther && document.activeElement === els.modelOther;
+      if (editingModelOther) return;
+
+      if (isTruckUpload) {
+        populateModelSelect(brand, model);
+        return;
+      }
 
       try {
         const res = await fetch('/api/vehicle-catalog/remember-model', {
@@ -456,6 +702,22 @@
       if (!feedback) return;
       feedback.textContent = message;
       feedback.className = `supplier-upload-feedback supplier-upload-feedback--${type || 'info'}`;
+    }
+
+    function showUploadModal(options) {
+      if (window.SiteFeedback?.modal) {
+        return window.SiteFeedback.modal(options);
+      }
+      window.alert(`${options?.title || ''}\n\n${options?.message || ''}${options?.details ? `\n\n${options.details}` : ''}`);
+      return { close: () => {} };
+    }
+
+    function showUploadToast(message, type) {
+      if (window.SiteFeedback?.toast) {
+        window.SiteFeedback.toast(message, type);
+        return;
+      }
+      showFeedback(message, type);
     }
 
     function confidenceLabel(confidence) {
@@ -698,15 +960,67 @@
       }
     }
 
+    function getSubmissionTruckPartType() {
+      if (!isTruckUpload) return '';
+      return els.truckPartType?.value === 'cab' ? 'cab' : 'vehicle';
+    }
+
+    function getSubmissionVehicleCategory() {
+      if (isTruckUpload) return 'truck';
+      return els.vehicleCategory?.value === 'truck' ? 'truck' : 'passenger';
+    }
+
+    function getSubmissionVin() {
+      const raw = String(els.vin?.value || '').trim();
+      if (!raw) return '';
+      const check = v.validateVin(raw);
+      if (isCabUpload) return check.valid ? check.vin : '';
+      return check.valid ? check.vin : v.normalizeVin(raw);
+    }
+
+    function validateAllSteps() {
+      syncCabMode();
+      for (let step = 1; step <= TOTAL_STEPS; step++) {
+        if (!validateStep(step)) {
+          goToStep(step);
+          return false;
+        }
+      }
+      return true;
+    }
+
     function validateStep(step) {
       if (step === 1) {
-        const check = v.validateVin(els.vin.value);
+        if (isTruckUpload) {
+          syncCabMode();
+        }
+        let rawVin = String(els.vin.value || '').trim();
+        if (isCabUpload && rawVin) {
+          const cabVinCheck = v.validateVin(rawVin);
+          if (!cabVinCheck.valid) {
+            els.vin.value = '';
+            lastDecodedVin = '';
+            rawVin = '';
+          }
+        }
+        if (!rawVin) {
+          if (isCabUpload) return true;
+          if (isTruckUpload && !isCabUpload) {
+            showFeedback(`${I18n().labelEn('vin')} required / ${I18n().labelZh('vin')}必填`, 'error');
+            els.vin?.focus();
+            return false;
+          }
+          showFeedback(`${I18n().labelEn('vin')} required / ${I18n().labelZh('vin')}必填`, 'error');
+          els.vin.focus();
+          return false;
+        }
+        const check = v.validateVin(rawVin);
         if (!check.valid) {
           showFeedback(check.error || tBi('decodeUnavailable'), 'error');
           els.vin.focus();
           return false;
         }
-        if (v.normalizeVin(els.vin.value) !== lastDecodedVin) runVinDecode();
+        if (v.normalizeVin(rawVin) !== lastDecodedVin) runVinDecode();
         return true;
       }
       if (step === 2) {
@@ -734,7 +1048,7 @@
           form.supplierName.focus();
           return false;
         }
-        if (!form.mileage.value.trim()) {
+        if (!isCabUpload && !form.mileage.value.trim()) {
           showFeedback(`${I18n().labelEn('mileage')} required / ${I18n().labelZh('mileage')}必填`, 'error');
           form.mileage.focus();
           return false;
@@ -808,7 +1122,8 @@
     });
 
     els.modelOther?.addEventListener('input', () => {
-      if (els.model.value === MODEL_OTHER) scheduleRememberCustomModel();
+      if (els.model.value !== MODEL_OTHER || isTruckUpload) return;
+      scheduleRememberCustomModel();
     });
     els.modelOther?.addEventListener('blur', () => {
       if (els.model.value === MODEL_OTHER) rememberCustomModel();
@@ -862,7 +1177,7 @@
       input.addEventListener('change', async () => {
         const file = input.files?.[0];
         if (!file) return;
-        if (!file.type.startsWith('image/')) {
+        if (!file.type.startsWith('image/') && !/\.(jpe?g|png|webp|gif)$/i.test(file.name || '')) {
           showFeedback(tBi('imagesOnly'), 'error');
           input.value = '';
           return;
@@ -871,23 +1186,65 @@
         slot?.classList.add('is-uploading');
         showFeedback(tBi('uploadingMedia'), 'info');
         try {
-          const label = input.dataset.label || v.PHOTO_LABELS[index];
-          const uploaded = await MediaApi().uploadPhoto(file, label);
-          photoData.set(index, { label: uploaded.label || label, url: uploaded.url });
+          const prepared = await preparePhotoForUpload(file);
+          const labels = getActivePhotoLabels();
+          const label = input.dataset.label || labels[index];
+          const uploaded = await MediaApi().uploadPhoto(prepared, label);
+          photoData.set(index, {
+            label: uploaded.label || label,
+            url: uploaded.url,
+            thumbUrl: uploaded.thumbUrl || '',
+          });
           if (preview && img) {
             img.src = uploaded.url;
             preview.hidden = false;
           }
           slot?.classList.add('has-photo');
+          showUploadToast(`${I18n().labelEn('photoUploaded') || 'Photo uploaded'} / ${I18n().labelZh('photoUploaded') || '照片已上传'}`, 'success');
           showFeedback('', 'info');
         } catch (err) {
           showFeedback(err.message || tBi('uploadFailed'), 'error');
+          showUploadModal({
+            type: 'error',
+            title: `${I18n().labelEn('uploadFailed') || 'Upload failed'} / ${I18n().labelZh('uploadFailed') || '上传失败'}`,
+            message: err.message || tBi('uploadFailed'),
+          });
           input.value = '';
         } finally {
           slot?.classList.remove('is-uploading');
         }
       });
     }
+
+    refreshPhotoGrid = function refreshPhotoGridImpl() {
+      const grid = document.getElementById('supplier-photo-grid');
+      const legend = document.getElementById('supplier-photos-legend');
+      const hint = document.getElementById('supplier-photos-hint');
+      if (!grid) return;
+
+      const labels = getActivePhotoLabels();
+      const prevSlots = grid.querySelectorAll('.supplier-photo-slot').length;
+      if (labels.length < prevSlots) {
+        for (let i = labels.length; i < prevSlots; i++) photoData.delete(i);
+      }
+
+      if (legend) legend.innerHTML = photosStepLegend();
+      if (hint) hint.innerHTML = photosStepHint();
+      grid.innerHTML = buildPhotoSlotsHtml(labels);
+      grid.querySelectorAll('.supplier-photo-slot__input').forEach(bindPhotoInput);
+
+      photoData.forEach((data, index) => {
+        if (index >= labels.length) return;
+        const preview = document.getElementById(`photo-preview-${index}`);
+        const img = preview?.querySelector('img');
+        const slot = document.getElementById(`photo-${index}`)?.closest('.supplier-photo-slot');
+        if (preview && img && data.url) {
+          img.src = data.url;
+          preview.hidden = false;
+          slot?.classList.add('has-photo');
+        }
+      });
+    };
 
     root.querySelectorAll('.supplier-photo-slot__input').forEach(bindPhotoInput);
 
@@ -949,9 +1306,15 @@
           size: uploaded.size || file.size,
         };
         showVideoPreview(videoData);
+        showUploadToast(`${I18n().labelEn('videoUploaded') || 'Video uploaded'} / ${I18n().labelZh('videoUploaded') || '视频已上传'}`, 'success');
         showFeedback('', 'info');
       } catch (err) {
         showFeedback(err.message || tBi('uploadFailed'), 'error');
+        showUploadModal({
+          type: 'error',
+          title: `${I18n().labelEn('uploadFailed') || 'Upload failed'} / ${I18n().labelZh('uploadFailed') || '上传失败'}`,
+          message: err.message || tBi('uploadFailed'),
+        });
         videoInput.value = '';
       } finally {
         videoSlot?.classList.remove('is-uploading');
@@ -972,18 +1335,27 @@
       input?.closest('.supplier-photo-slot')?.classList.remove('has-photo');
     });
 
+    form.addEventListener('keydown', (event) => {
+      if (event.key !== 'Enter' || currentStep >= TOTAL_STEPS) return;
+      const tag = event.target?.tagName;
+      if (tag === 'INPUT' || tag === 'TEXTAREA' || tag === 'SELECT') {
+        event.preventDefault();
+      }
+    });
+
     form.addEventListener('submit', (event) => {
       event.preventDefault();
-      if (!validateStep(4)) return;
-      showFeedback(tBi('uploadingMedia'), 'info');
+      syncCabMode();
+      if (!validateAllSteps()) return;
 
       const photos = [];
-      for (let i = 0; i < v.PHOTO_LABELS.length; i++) {
+      const activePhotoLabels = getActivePhotoLabels();
+      for (let i = 0; i < activePhotoLabels.length; i++) {
         if (photoData.has(i)) photos.push(photoData.get(i));
       }
 
       const payload = {
-        vin: els.vin.value,
+        vin: getSubmissionVin(),
         supplierName: String(form.supplierName.value || '').trim(),
         supplierPhone: String(form.supplierPhone.value || '').trim(),
         supplierWechat: String(form.supplierWechat.value || '').trim(),
@@ -996,6 +1368,8 @@
         engineCode: String(form.engineCode.value || '').trim(),
         transmissionCode: String(form.transmissionCode.value || '').trim(),
         vehicleCondition: form.vehicleCondition.value,
+        vehicleCategory: getSubmissionVehicleCategory(),
+        truckPartType: getSubmissionTruckPartType(),
         inventoryStatus: String(form.inventoryStatus.value || '').trim(),
         decodeMethod: els.decodeMethod.value || decodeMethod,
         decodeConfidence: els.decodeConfidence?.value || decodeConfidence,
@@ -1004,6 +1378,21 @@
         video: videoData,
         photos,
       };
+
+      const uploadLayer = window.HalfCutUploadLayer;
+      const precheck = uploadLayer?.validateSubmission?.(payload);
+      if (precheck && !precheck.valid) {
+        const errorText = precheck.errors.join(' ');
+        showFeedback(errorText, 'error');
+        showUploadModal({
+          type: 'error',
+          title: `${I18n().labelEn('uploadFailed') || 'Upload failed'} / ${I18n().labelZh('uploadFailed') || '上传失败'}`,
+          message: errorText,
+        });
+        return;
+      }
+
+      showFeedback(tBi('uploadingMedia'), 'info');
 
       s.addSubmission(payload).then(async (submission) => {
         await rememberCustomModel();
@@ -1028,12 +1417,24 @@
         clearVehicleFields();
         updateVinCounter();
         goToStep(1);
-        showFeedback(
-          `${I18n().labelEn('pendingReview')} / ${I18n().labelZh('pendingReview')}: ${submission.submissionId}\nVIN: ${submission.vin}`,
-          'success'
-        );
+        const successVin = submission.vin ? `\nVIN: ${submission.vin}` : '';
+        const successText = `${I18n().labelEn('pendingReview')} / ${I18n().labelZh('pendingReview')}: ${submission.submissionId}${successVin}`;
+        showFeedback(successText, 'success');
+        showUploadModal({
+          type: 'success',
+          title: `${I18n().labelEn('uploadSuccess') || 'Upload successful'} / ${I18n().labelZh('uploadSuccess') || '上传成功'}`,
+          message: `${I18n().labelEn('pendingReview')}\n${I18n().labelZh('pendingReview')}`,
+          details: `ID: ${submission.submissionId}${successVin}`,
+        });
       }).catch((err) => {
-        showFeedback(`${err.message}\n${I18n().labelZh('submissionFailed')}`, 'error');
+        const errorText = `${err.message}\n${I18n().labelZh('submissionFailed')}`;
+        showFeedback(errorText, 'error');
+        showUploadModal({
+          type: 'error',
+          title: `${I18n().labelEn('uploadFailed') || 'Upload failed'} / ${I18n().labelZh('uploadFailed') || '上传失败'}`,
+          message: err.message || I18n().labelEn('submissionFailed'),
+          details: I18n().labelZh('submissionFailed'),
+        });
       });
     });
 
@@ -1070,13 +1471,18 @@
         }
         return;
       }
+      try {
+        await Media.checkUploadReady();
+      } catch (err) {
+        if (root) {
+          root.innerHTML = `<div class="supplier-upload-feedback supplier-upload-feedback--error"><strong>Upload unavailable / 上传不可用</strong><br>${String(err.message || err).replace(/\n/g, '<br>')}</div>`;
+        }
+        return;
+      }
       initSupplierHalfCutUpload();
-      Promise.all([
-        Media.ensureUploadToken().catch((err) => {
-          console.warn('[supplier-upload] upload token prefetch failed', err);
-        }),
-        loadLearnedModels(Catalog()),
-      ]);
+      loadLearnedModels(Catalog()).catch((err) => {
+        console.warn('[supplier-upload] learned models unavailable', err);
+      });
     } catch (err) {
       if (root) root.innerHTML = `<div class="supplier-upload-feedback supplier-upload-feedback--error">${err.message}</div>`;
     }

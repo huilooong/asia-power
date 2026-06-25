@@ -1,17 +1,24 @@
 #!/usr/bin/env bash
 # Asia-Power — scheduled inventory-site backup
-# Backs up server.js, public/, data/, uploads/, lib/, and nginx site config.
+# Full: server.js, public/ (excluding venvs), data/, uploads/, lib/, nginx config.
+# Light (--data-only): data/, uploads/, lib/, server.js only — for pre-deploy (fast).
 set -euo pipefail
 
 SITE="/root/.openclaw/workspace/inventory-site"
 BACKUP_DIR="${SITE}/backups/scheduled"
 NGINX_SITE="/etc/nginx/sites-available/asia-power.com"
 STAMP="$(date +%Y%m%d-%H%M%S)"
-ARCHIVE_NAME="asia-power-backup-${STAMP}.tar.gz"
-ARCHIVE_PATH="${BACKUP_DIR}/${ARCHIVE_NAME}"
-KEEP=14
+MODE="${1:-full}"
+KEEP=5
 TMPDIR="$(mktemp -d)"
 ALERT_SCRIPT="${SITE}/scripts/telegram-backup-alert.js"
+
+if [[ "${MODE}" == "--data-only" || "${MODE}" == "data-only" ]]; then
+  ARCHIVE_NAME="asia-power-data-${STAMP}.tar.gz"
+else
+  ARCHIVE_NAME="asia-power-backup-${STAMP}.tar.gz"
+fi
+ARCHIVE_PATH="${BACKUP_DIR}/${ARCHIVE_NAME}"
 
 cleanup() {
   rm -rf "${TMPDIR}"
@@ -43,41 +50,56 @@ copy_if_exists() {
   fi
 }
 
-log "Starting backup -> ${ARCHIVE_NAME}"
+log "Starting ${MODE} backup -> ${ARCHIVE_NAME}"
 
 copy_if_exists "${SITE}/server.js" "${TMPDIR}/backup-root/server.js"
-copy_if_exists "${SITE}/public" "${TMPDIR}/backup-root/public"
 copy_if_exists "${SITE}/data" "${TMPDIR}/backup-root/data"
 copy_if_exists "${SITE}/uploads" "${TMPDIR}/backup-root/uploads"
 copy_if_exists "${SITE}/lib" "${TMPDIR}/backup-root/lib"
-copy_if_exists "${NGINX_SITE}" "${TMPDIR}/backup-root/nginx-asia-power.com"
+
+if [[ "${MODE}" == "--data-only" || "${MODE}" == "data-only" ]]; then
+  MANIFEST_MODE="data-only (pre-deploy)"
+else
+  MANIFEST_MODE="full scheduled"
+  copy_if_exists "${SITE}/public" "${TMPDIR}/backup-root/public"
+  copy_if_exists "${NGINX_SITE}" "${TMPDIR}/backup-root/nginx-asia-power.com"
+  # Drop dev artifacts that should never live under public/
+  rm -rf "${TMPDIR}/backup-root/public/.venv"* \
+    "${TMPDIR}/backup-root/public/gfpgan" \
+    "${TMPDIR}/backup-root/public/.git" 2>/dev/null || true
+fi
 
 cat > "${TMPDIR}/backup-root/BACKUP-MANIFEST.txt" <<EOF
 Asia-Power inventory-site backup
+Mode: ${MANIFEST_MODE}
 Created: $(date -Iseconds)
 Host: $(hostname)
 Archive: ${ARCHIVE_NAME}
 Site root: ${SITE}
-Contents:
-  - server.js
-  - public/
-  - data/
-  - uploads/
-  - lib/
-  - nginx-asia-power.com
 EOF
 
 tar -C "${TMPDIR}/backup-root" -czf "${ARCHIVE_PATH}" .
 
 log "Created ${ARCHIVE_PATH} ($(du -h "${ARCHIVE_PATH}" | awk '{print $1}'))"
 
-mapfile -t OLD_BACKUPS < <(ls -1t "${BACKUP_DIR}"/asia-power-backup-*.tar.gz 2>/dev/null || true)
-if ((${#OLD_BACKUPS[@]} > KEEP)); then
-  for old in "${OLD_BACKUPS[@]:KEEP}"; do
-    log "Removing old backup ${old}"
-    rm -f "${old}"
-  done
+if [[ "${MODE}" == "--data-only" || "${MODE}" == "data-only" ]]; then
+  mapfile -t OLD_BACKUPS < <(ls -1t "${BACKUP_DIR}"/asia-power-data-*.tar.gz 2>/dev/null || true)
+  DATA_KEEP=20
+  if ((${#OLD_BACKUPS[@]} > DATA_KEEP)); then
+    for old in "${OLD_BACKUPS[@]:DATA_KEEP}"; do
+      log "Removing old data backup ${old}"
+      rm -f "${old}"
+    done
+  fi
+else
+  mapfile -t OLD_BACKUPS < <(ls -1t "${BACKUP_DIR}"/asia-power-backup-*.tar.gz 2>/dev/null || true)
+  if ((${#OLD_BACKUPS[@]} > KEEP)); then
+    for old in "${OLD_BACKUPS[@]:KEEP}"; do
+      log "Removing old backup ${old}"
+      rm -f "${old}"
+    done
+  fi
+  log "Retention: keeping newest ${KEEP} full backups"
 fi
 
-log "Retention: keeping newest ${KEEP} scheduled backups"
 log "Done"

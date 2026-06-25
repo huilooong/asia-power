@@ -15,7 +15,7 @@ const pat = /styles\.css(\?v=[^"']+)?/g;
 const replacement = `styles.css?v=${VERSION}`;
 
 let count = 0;
-for (const dir of [ROOT, path.join(ROOT, 'brands'), path.join(ROOT, 'engines'), path.join(ROOT, 'half-cuts'), path.join(ROOT, 'admin'), path.join(ROOT, 'supplier-portal'), path.join(ROOT, 'gearboxes'), path.join(ROOT, 'chassis-parts'), path.join(ROOT, 'pages')]) {
+for (const dir of [ROOT, path.join(ROOT, 'brands'), path.join(ROOT, 'engines'), path.join(ROOT, 'half-cuts'), path.join(ROOT, 'admin'), path.join(ROOT, 'supplier-portal'), path.join(ROOT, 'gearboxes'), path.join(ROOT, 'chassis-parts'), path.join(ROOT, 'trucks'), path.join(ROOT, 'motorcycles'), path.join(ROOT, 'machinery'), path.join(ROOT, 'pages')]) {
   if (!fs.existsSync(dir)) continue;
   for (const name of fs.readdirSync(dir)) {
     if (!name.endsWith('.html')) continue;

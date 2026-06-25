@@ -4,6 +4,12 @@
 (function () {
   'use strict';
 
+  let currentSlug = '';
+
+  function t(key, fallback) {
+    return window.PublicI18n?.t(key, fallback) ?? fallback;
+  }
+
   function base() {
     return window.SitePaths ? window.SitePaths.base() : '../';
   }
@@ -35,17 +41,41 @@
     el.textContent = JSON.stringify(data);
   }
 
+  function quoteButton(engine, className, label) {
+    window.CatalogLeadUtils?.ensureCatalogLeadScripts?.();
+    const text = label || t('engine.requestQuote', 'Request Quote');
+    return window.CatalogLeadUtils?.leadLink?.({
+      category: 'engine',
+      brand: engine.brand,
+      brandSlug: engine.brandSlug,
+      product: engine.code,
+      intent: 'price',
+      className: className || 'btn btn-accent',
+      label: text,
+    }) || `<a href="${base()}contact.html?brand=${engine.brandSlug}&product=${encodeURIComponent(engine.code)}" class="${className || 'btn btn-accent'}">${text}</a>`;
+  }
+
+  function exportStatusLabels() {
+    const labels = window.ENGINE_EXPORT_STATUS || [
+      'Available', 'Ready for Export', 'FOB Available', 'CIF Available',
+    ];
+    return labels.map(label => window.PublicI18n?.translateExportStatus?.(label) || label);
+  }
+
   function renderEngineDetail(slug) {
+    window.CatalogLeadUtils?.ensureCatalogLeadScripts?.();
     const engine = window.SEO_ENGINES?.[slug];
     const root = document.getElementById('engine-detail-root');
     if (!engine || !root) return;
 
+    currentSlug = slug;
     document.title = engine.title;
     const meta = document.querySelector('meta[name="description"]');
     if (meta) meta.content = engine.description;
     window.AsiaPowerSEO?.refresh?.();
 
-    const canonical = absoluteUrl(`${base()}engines/${engine.slug}.html`);
+    const b = base();
+    const canonical = absoluteUrl(`${b}engines/${engine.slug}.html`);
     let canonicalLink = document.querySelector('link[rel="canonical"]');
     if (!canonicalLink) {
       canonicalLink = document.createElement('link');
@@ -74,22 +104,18 @@
       },
     });
 
-    const status = window.ENGINE_EXPORT_STATUS || [
-      'Available', 'Ready for Export', 'FOB Available', 'CIF Available',
-    ];
-
     root.innerHTML = `
       <section class="page-hero page-hero--catalog">
         <div class="container">
           <div class="page-hero__breadcrumb">
-            <a href="${base()}index.html">Home</a> /
-            <a href="${base()}brands.html">Brands</a> /
-            <a href="${base()}brands/${engine.brandSlug}.html">${engine.brand}</a> /
-            <a href="${base()}engines/">Engines</a> /
+            <a href="${b}index.html">${t('engine.home', 'Home')}</a> /
+            <a href="${b}brands.html">${t('engine.brands', 'Brands')}</a> /
+            <a href="${b}brands/${engine.brandSlug}.html">${engine.brand}</a> /
+            <a href="${b}engines/">${t('engine.engines', 'Engines')}</a> /
             <span>${engine.code}</span>
           </div>
-          <h1>${engine.brand} ${engine.code} Engine</h1>
-          <p>${engine.displacement} ${engine.fuel} — ${engine.applications}. Sourced for global export through AsiaPower's China-based supply network.</p>
+          <h1>${engine.brand} ${engine.code} ${t('engine.categoryEngines', 'Engine')}</h1>
+          <p>${engine.displacement} ${engine.fuel} — ${engine.applications}. ${t('engine.sourcedFor', "Sourced for global export through AsiaPower's China-based supply network.")}</p>
         </div>
       </section>
 
@@ -97,36 +123,36 @@
         <div class="container">
           <div class="engine-detail">
             <div class="engine-detail__main">
-              <span class="section-eyebrow">${engine.origin} · Engine Model</span>
+              <span class="section-eyebrow">${engine.origin} · ${t('engine.engineModel', 'Engine Model')}</span>
               <h2 class="engine-detail__code">${engine.code}</h2>
               <dl class="engine-detail__specs">
-                <div><dt>Brand</dt><dd><a href="${base()}brands/${engine.brandSlug}.html">${engine.brand}</a></dd></div>
-                <div><dt>Displacement</dt><dd>${engine.displacement}</dd></div>
-                <div><dt>Fuel Type</dt><dd>${engine.fuel}</dd></div>
-                <div><dt>Applications</dt><dd>${engine.applications}</dd></div>
+                <div><dt>${t('spec.brand', 'Brand')}</dt><dd><a href="${b}brands/${engine.brandSlug}.html">${engine.brand}</a></dd></div>
+                <div><dt>${t('engine.displacement', 'Displacement')}</dt><dd>${engine.displacement}</dd></div>
+                <div><dt>${t('engine.fuelType', 'Fuel Type')}</dt><dd>${engine.fuel}</dd></div>
+                <div><dt>${t('engine.applications', 'Applications')}</dt><dd>${engine.applications}</dd></div>
               </dl>
-              <ul class="engine-model__status engine-detail__status" aria-label="Export availability">
-                ${status.map(s => `<li class="engine-model__status-item">${s}</li>`).join('')}
+              <ul class="engine-model__status engine-detail__status" aria-label="${t('engine.exportAvailability', 'Export availability')}">
+                ${exportStatusLabels().map(s => `<li class="engine-model__status-item">${s}</li>`).join('')}
               </ul>
               <div class="engine-detail__actions">
-                <a href="${base()}contact.html?brand=${engine.brandSlug}&product=${encodeURIComponent(engine.code)}" class="btn btn-accent">Request Quote</a>
-                <a href="${base()}brands/${engine.brandSlug}.html#engines" class="btn btn-outline-navy">All ${engine.brand} Engines</a>
+                ${quoteButton(engine, 'btn btn-accent')}
+                <a href="${b}brands/${engine.brandSlug}.html#engines" class="btn btn-outline-navy">${t('engine.allBrandEngines', 'All')} ${engine.brand} ${t('engine.categoryEngines', 'Engines')}</a>
               </div>
             </div>
             <aside class="engine-detail__aside">
-              <h3>Browse ${engine.brand}</h3>
+              <h3>${t('engine.browseBrand', 'Browse')} ${engine.brand}</h3>
               <ul class="engine-detail__links">
-                <li><a href="${base()}brands/${engine.brandSlug}.html#engines">${engine.brand} Engines</a></li>
-                <li><a href="${base()}brands/${engine.brandSlug}.html#gearboxes">${engine.brand} Gearboxes</a></li>
-                <li><a href="${base()}brands/${engine.brandSlug}.html#chassis">${engine.brand} Chassis Parts</a></li>
-                <li><a href="${base()}brands/${engine.brandSlug}.html#halfcuts">${engine.brand} Half-Cuts</a></li>
+                <li><a href="${b}brands/${engine.brandSlug}.html#engines">${engine.brand} ${t('engine.brandEngines', 'Engines')}</a></li>
+                <li><a href="${b}brands/${engine.brandSlug}.html#gearboxes">${engine.brand} ${t('engine.brandGearboxes', 'Gearboxes')}</a></li>
+                <li><a href="${b}brands/${engine.brandSlug}.html#chassis">${engine.brand} ${t('engine.brandChassis', 'Chassis Parts')}</a></li>
+                <li><a href="${b}brands/${engine.brandSlug}.html#halfcuts">${engine.brand} ${t('engine.brandHalfCuts', 'Half-Cuts')}</a></li>
               </ul>
-              <h3>Product Catalog</h3>
+              <h3>${t('engine.productCatalog', 'Product Catalog')}</h3>
               <ul class="engine-detail__links">
-                <li><a href="${base()}engines/">All Engine Models</a></li>
-                <li><a href="${base()}gearboxes/">Gearboxes</a></li>
-                <li><a href="${base()}half-cuts/">Half-Cuts</a></li>
-                <li><a href="${base()}chassis-parts/">Chassis Parts</a></li>
+                <li><a href="${b}engines/">${t('engine.allEngineModels', 'All Engine Models')}</a></li>
+                <li><a href="${b}gearboxes/">${t('engine.gearboxes', 'Gearboxes')}</a></li>
+                <li><a href="${b}half-cuts/">${t('engine.halfCuts', 'Half-Cuts')}</a></li>
+                <li><a href="${b}chassis-parts/">${t('engine.chassisParts', 'Chassis Parts')}</a></li>
               </ul>
             </aside>
           </div>
@@ -136,10 +162,10 @@
       <section class="cta-block">
         <div class="container cta-block__inner">
           <div>
-            <h2>Need ${engine.brand} ${engine.code} for Export?</h2>
-            <p>Send your requirements — FOB/CIF quotation within 24 hours.</p>
+            <h2>${t('engine.needExportPrefix', 'Need')} ${engine.brand} ${engine.code} ${t('engine.needExportSuffix', 'for Export?')}</h2>
+            <p>${t('engine.quoteLead', 'Send your requirements — FOB/CIF quotation within 24 hours.')}</p>
           </div>
-          <a href="${base()}contact.html?brand=${engine.brandSlug}&product=${encodeURIComponent(engine.code)}" class="btn btn-accent">Contact Sourcing Team</a>
+          ${quoteButton(engine, 'btn btn-accent', t('engine.contactTeam', 'Contact Sourcing Team'))}
         </div>
       </section>`;
   }
@@ -147,5 +173,9 @@
   document.addEventListener('DOMContentLoaded', () => {
     const slug = document.body.dataset.engine;
     if (slug) renderEngineDetail(slug);
+  });
+
+  window.addEventListener('asiapower:langchange', () => {
+    if (currentSlug) renderEngineDetail(currentSlug);
   });
 })();

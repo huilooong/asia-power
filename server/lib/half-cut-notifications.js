@@ -100,9 +100,26 @@ function leadIpLine(lead) {
 function leadSummary(lead) {
   if (lead.source === 'half-cut') {
     return [
+      `Phone: ${lead.phone || '—'}`,
+      lead.name ? `Name: ${lead.name}` : '',
+      lead.email ? `Email: ${lead.email}` : '',
+      lead.country ? `Country: ${lead.country}` : '',
       `Stock: ${lead.stockId || '—'}`,
       `Vehicle: ${lead.brand || '—'} ${lead.model || ''}`.trim(),
       `Engine: ${lead.engineCode || '—'} / ${lead.transmissionCode || '—'}`,
+      `Intent: ${lead.intent || '—'}`,
+      leadIpLine(lead),
+    ].filter(Boolean).join('\n');
+  }
+  if (lead.source === 'product-catalog') {
+    return [
+      `Phone: ${lead.phone || '—'}`,
+      lead.name ? `Name: ${lead.name}` : '',
+      lead.email ? `Email: ${lead.email}` : '',
+      lead.country ? `Country: ${lead.country}` : '',
+      `Category: ${lead.enquiryType || '—'}`,
+      `Brand: ${lead.brand || '—'}`,
+      `Product: ${lead.model || '—'}`,
       `Intent: ${lead.intent || '—'}`,
       leadIpLine(lead),
     ].filter(Boolean).join('\n');
@@ -122,24 +139,38 @@ function leadSummary(lead) {
 function notifyContactLead(lead) {
   const emailOnly = lead.replyChannel === 'email';
   notifyAsync([
-    emailOnly ? '✅ 新询价单（邮件回复）' : '✅ 新询价单（已保存到服务器）',
+    emailOnly ? '✅ 新询价单（邮件回复）' : '📝 表单询价已保存（WhatsApp 待确认发送）',
     `ID: ${lead.id}`,
     leadSummary(lead),
-    emailOnly ? `Email: ${lead.email}` : '',
+    emailOnly ? `Reply to: ${lead.email}` : '',
     lead.page ? `Page: ${lead.page}` : '',
     emailOnly
-      ? '客户选择邮件回复 — 请直接回复邮箱，勿等待 WhatsApp。'
-      : '客户还需在 WhatsApp 点 Send；即使未发送，以上信息已留存。',
+      ? (lead.phone
+        ? '客户选择邮件回复 — 请直接回复邮箱；电话为选填补充。'
+        : '客户选择邮件回复且无电话 — 请直接回复邮箱，勿等待 WhatsApp。')
+      : '客户已提交表单；WhatsApp 可能尚未点 Send。请用表单中的电话/邮箱跟进，或在 WhatsApp 收到 Reference 后标记已回复。',
   ].filter(Boolean).join('\n'));
 }
 
 function notifyHalfCutLead(lead) {
+  if (!lead.phone && !lead.email) return;
   notifyAsync([
-    '✅ 半车询价（已保存到服务器）',
+    '📝 半车询价已保存（含联系方式）',
     `ID: ${lead.id}`,
     leadSummary(lead),
     lead.page ? `Page: ${lead.page}` : '',
-    '客户还需在 WhatsApp 点 Send；即使未发送，以上信息已留存。',
+    '客户已留电话 — 可直接 WhatsApp/电话跟进；若 WhatsApp 未 Send，仍可用表单电话联系。',
+  ].filter(Boolean).join('\n'));
+}
+
+function notifyProductLead(lead) {
+  if (!lead.phone && !lead.email) return;
+  notifyAsync([
+    '📝 产品目录询价已保存（发动机/变速箱/底盘）',
+    `ID: ${lead.id}`,
+    leadSummary(lead),
+    lead.page ? `Page: ${lead.page}` : '',
+    '客户已留联系方式 — 请 24 小时内回复 FOB/CIF 报价。',
   ].filter(Boolean).join('\n'));
 }
 
@@ -185,6 +216,7 @@ module.exports = {
   notifyWhatsAppInquiry,
   notifyContactLead,
   notifyHalfCutLead,
+  notifyProductLead,
   notifyLeadReminder,
   notifyWhatsappClick,
   maskVin,

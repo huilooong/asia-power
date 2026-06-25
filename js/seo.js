@@ -54,7 +54,7 @@
 
   function isInternalPage() {
     const p = window.location.pathname || '';
-    return /\/admin\//i.test(p) || /\/supplier-portal\/half-cut-upload/i.test(p);
+    return /\/admin\//i.test(p) || /\/supplier-portal\/(?:half-cut|truck)-upload/i.test(p);
   }
 
   function pageMeta() {
@@ -79,7 +79,9 @@
     upsertMeta('property', 'og:description', desc);
     upsertMeta('property', 'og:url', canonical);
     upsertMeta('property', 'og:image', image);
-    upsertMeta('property', 'og:locale', 'en_US');
+    const lang = window.PublicI18n?.getLang?.() || 'en';
+    const locale = { en: 'en_US', zh: 'zh_CN', fr: 'fr_FR', ar: 'ar_SA' }[lang] || 'en_US';
+    upsertMeta('property', 'og:locale', locale);
     upsertMeta('name', 'twitter:card', 'summary');
     upsertMeta('name', 'twitter:title', title);
     upsertMeta('name', 'twitter:description', desc);
@@ -95,7 +97,7 @@
       contactPoint: [{
         '@type': 'ContactPoint',
         contactType: 'sales',
-        availableLanguage: ['English', 'Chinese'],
+        availableLanguage: ['English', 'Chinese', 'French', 'Arabic'],
         url: `https://wa.me/${c.whatsapp || ''}`,
       }],
       ...(c.merchantListing?.returnPolicy ? { hasMerchantReturnPolicy: c.merchantListing.returnPolicy } : {}),
@@ -112,6 +114,7 @@
   }
 
   window.AsiaPowerSEO = { refresh: pageMeta, absoluteUrl };
+  window.addEventListener('asiapower:langchange', pageMeta);
 
   if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', pageMeta);

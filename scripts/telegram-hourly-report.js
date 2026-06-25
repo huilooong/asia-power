@@ -45,16 +45,32 @@ async function main() {
 
   const submissions = loadJson(path.join(DATA_DIR, 'half-cut-submissions.json'), []);
   const approved = loadJson(path.join(DATA_DIR, 'half-cut-approved.json'), []);
+  const leads = loadJson(path.join(DATA_DIR, 'contact-leads.json'), []);
   const pending = submissions.filter((s) => s.reviewStatus === 'pending');
   const backup = latestBackup();
   const hour = localHour();
+  const backupStaleHours = backup
+    ? (Date.now() - backup.mtime.getTime()) / (60 * 60 * 1000)
+    : Infinity;
 
   const lines = [
     `⏱ Asia-Power hourly report (${TZ})`,
     `Pending half-cuts: ${pending.length}`,
     `Approved inventory: ${approved.length}`,
+    `User leads (contact + half-cut): ${Array.isArray(leads) ? leads.length : 0}`,
     `Latest backup: ${backup ? `${backup.name} (${backup.mtime.toISOString()})` : 'none found'}`,
   ];
+
+  if (backupStaleHours > 36) {
+    lines.push(`⚠️ Backup stale: ${backup ? `${Math.round(backupStaleHours)}h old` : 'never run'} — check cron /var/log/asiapower-backup.log`);
+  }
+
+  try {
+    const { formatMetricsSummary, collectSystemMetrics } = requireServerLib('system-metrics');
+    lines.push('', '🖥 Server:', formatMetricsSummary(collectSystemMetrics()));
+  } catch (err) {
+    lines.push('', `🖥 Server: unavailable (${err.message})`);
+  }
 
   if (pending.length) {
     lines.push('');

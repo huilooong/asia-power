@@ -113,6 +113,10 @@
   }
 
   function brandToSlug(brand) {
+    if (window.VehicleCatalog?.brandToSlug) {
+      const slug = window.VehicleCatalog.brandToSlug(brand);
+      if (slug) return slug;
+    }
     if (BRAND_SLUG_MAP[brand]) return BRAND_SLUG_MAP[brand];
     return String(brand || '').trim().toLowerCase().replace(/\s+/g, '-');
   }
@@ -273,17 +277,30 @@
     BRAND_SLUG_MAP,
     containsFullVin,
     MIN_PHOTOS: 3,
+    MAX_PHOTOS_CAB: 10,
     MAX_VIDEO_BYTES: 50 * 1024 * 1024,
     ALLOWED_VIDEO_MIMES: ['video/mp4', 'video/webm', 'video/quicktime', 'video/x-msvideo'],
     SUPPLIER_STATUSES: ['Available', 'Reserved'],
     ADMIN_STATUSES: ['Available', 'Reserved', 'In Transit', 'Sold'],
-    VEHICLE_CONDITIONS: ['Running Vehicle', 'Half Cut', 'Dismantled', 'Engine Removed'],
+    VEHICLE_CONDITIONS: ['Running Vehicle', 'Half Cut', 'Truck Half Cut', 'Driver Cab', 'Dismantled', 'Engine Removed'],
     PHOTO_LABELS: [
       'Vehicle Front',
       'Vehicle Rear',
       'Engine',
       'VIN Plate',
       'Interior',
+    ],
+    CAB_PHOTO_LABELS: [
+      'Cab Front',
+      'Cab Rear',
+      'Left Side',
+      'Right Side',
+      'Dashboard',
+      'Driver Seat',
+      'Door Interior',
+      'VIN Plate',
+      'Cab Overview',
+      'Detail',
     ],
   };
 })();

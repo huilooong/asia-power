@@ -11,13 +11,21 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700;800&family=Inter:wght@400;500;600&display=swap" media="print" onload="this.media='all'">
   <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700;800&family=Inter:wght@400;500;600&display=swap"></noscript>
-  <link rel="stylesheet" href="css/styles.css?v=fix20260620">
+  <link rel="stylesheet" href="css/styles.css?v=mobile-rtl-fix-v1">
   <link rel="icon" href="assets/favicon.png" type="image/png">
   <link rel="apple-touch-icon" href="assets/favicon.png">
   <link rel="canonical" href="https://asia-power.com/contact.html">
   <meta property="og:title" content="Contact Us | AsiaPower">
   <meta property="og:description" content="Contact AsiaPower for engine and gearbox quotes. Offices in Zhengzhou, China and Accra, Ghana. Message us on WhatsApp for the fastest response.">
   <meta property="og:url" content="https://asia-power.com/contact.html">
+  <!-- Google tag (gtag.js) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-PB2J3VRX5J"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-PB2J3VRX5J');
+  </script>
 </head>
 <body data-page="contact">
 
@@ -54,7 +62,8 @@
               <div class="info-card__icon"><svg viewBox="0 0 24 24"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg></div>
               <div>
                 <h4 data-i18n="contact.email">Email</h4>
-                <a href="mailto:${c.email}?subject=${encodeURIComponent('AsiaPower enquiry')}" class="btn btn-outline-navy btn-sm">${iconSvg('mail')} ${t('contact.emailUs', 'Email Us')}</a>
+                <a href="mailto:weylonhui@gmail.com?subject=AsiaPower%20enquiry" class="btn btn-outline-navy btn-sm" id="contact-email-btn" data-i18n="contact.emailUs">Email Us</a>
+                <p><a href="mailto:weylonhui@gmail.com" id="contact-email-address" class="contact-info-stack__email">weylonhui@gmail.com</a></p>
                 <p data-i18n="contact.emailNote">For quotes, partnerships, and general enquiries</p>
               </div>
             </div>
@@ -77,101 +86,270 @@
           </div>
         </div>
 
-        <div class="form-card">
-          <h3 data-i18n="contact.formTitle">Send an Enquiry</h3>
-          <p data-i18n="contact.formLead">Provide vehicle details. Continue on WhatsApp for the fastest quote, or choose email reply if you don't use WhatsApp.</p>
+        <div class="form-card form-card--quote">
+          <p class="quote-eyebrow" data-i18n="quote.eyebrow">AsiaPower structured quote request</p>
+          <h3 data-i18n="quote.title">Request a Truck Head, Engine or Gearbox Quote</h3>
+          <p class="quote-subtitle" data-i18n="quote.lead">Send the details we need once. Our team can reply on WhatsApp with whole-vehicle startup video available before dismantling, photos, matching advice and FOB/CIF options.</p>
+          <div class="quote-trust-row">
+            <span class="quote-trust" data-i18n="quote.trustGhana">Ghana office support</span>
+            <span class="quote-trust" data-i18n="quote.trustZhengzhou">Zhengzhou supply network</span>
+            <span class="quote-trust" data-i18n="quote.trustVideo">Whole-vehicle startup video available before dismantling</span>
+            <span class="quote-trust" data-i18n="quote.trustDismantle">Buyer-specific dismantling after confirmation</span>
+            <span class="quote-trust" data-i18n="quote.trustLcl">LCL or container sourcing</span>
+          </div>
 
-          <form data-form="contact-enquiry">
-            <div class="form-row">
+          <form data-form="contact-enquiry" novalidate>
+            <input type="hidden" name="enquiry_type" value="truck-head">
+            <input type="hidden" name="vehicle_details" value="">
+
+            <div class="quote-step"><span class="quote-step-num">1</span><span class="quote-step-title" data-i18n="quote.stepCategory">Product category</span></div>
+            <div class="quote-category-grid" role="listbox" aria-label="Product category">
+              <button type="button" class="quote-cat selected" data-cat="truck-heads" role="option" aria-selected="true">
+                <span class="quote-cat-name" data-i18n="quote.catTruckHeads">Truck Heads / Cabs</span>
+                <span class="quote-cat-sub">Hino · Isuzu · Fuso · UD · HOWO · Sinotruk</span>
+              </button>
+              <button type="button" class="quote-cat" data-cat="engines" role="option">
+                <span class="quote-cat-name" data-i18n="contact.typeEngine">Engines</span>
+                <span class="quote-cat-sub" data-i18n="quote.catEnginesSub">Diesel · petrol · hybrid · truck engines</span>
+              </button>
+              <button type="button" class="quote-cat" data-cat="gearboxes" role="option">
+                <span class="quote-cat-name" data-i18n="contact.typeGearbox">Gearboxes</span>
+                <span class="quote-cat-sub">AT · MT · CVT · transfer case</span>
+              </button>
+              <button type="button" class="quote-cat" data-cat="truck-parts" role="option">
+                <span class="quote-cat-name" data-i18n="quote.catTruckParts">Truck Parts</span>
+                <span class="quote-cat-sub" data-i18n="quote.catTruckPartsSub">Cab · axle · differential · suspension</span>
+              </button>
+              <button type="button" class="quote-cat" data-cat="half-cuts" role="option">
+                <span class="quote-cat-name" data-i18n="quote.catHalfCuts">Half-cuts</span>
+                <span class="quote-cat-sub" data-i18n="quote.catHalfCutsSub">Front · rear · nose cuts</span>
+              </button>
+              <button type="button" class="quote-cat" data-cat="chassis" role="option">
+                <span class="quote-cat-name" data-i18n="quote.catChassis">Chassis Parts</span>
+                <span class="quote-cat-sub" data-i18n="quote.catChassisSub">Subframe · axle · suspension sets</span>
+              </button>
+            </div>
+
+            <hr class="quote-divider">
+
+            <div class="quote-step"><span class="quote-step-num">2</span><span class="quote-step-title" data-i18n="quote.stepDetails">Vehicle or part details</span></div>
+            <div class="form-row form-row--3">
               <div class="form-group">
-                <label for="contact-name">Full Name <span class="req">*</span></label>
-                <input type="text" id="contact-name" name="name" required placeholder="Your name">
+                <label for="quote-brand"><span data-i18n="spec.brand">Brand</span> <span class="req">*</span></label>
+                <select id="quote-brand" name="brand" required><option value="" data-i18n="quote.selectBrand">Select brand</option></select>
               </div>
               <div class="form-group">
-                <label for="contact-company">Company</label>
-                <input type="text" id="contact-company" name="company" placeholder="Business name">
+                <label for="quote-model"><span data-i18n="spec.model">Model</span> <span class="req">*</span></label>
+                <input type="text" id="quote-model" name="model" required placeholder="e.g. Hino Ranger, Isuzu Elf, HOWO T7H">
+              </div>
+              <div class="form-group">
+                <label for="quote-year" data-i18n="spec.year">Year / year range</label>
+                <input type="text" id="quote-year" name="year" placeholder="e.g. 2012-2018">
+              </div>
+            </div>
+            <div class="form-row form-row--3">
+              <div class="form-group">
+                <label for="quote-engine" data-i18n="quote.engineCode">Engine code / displacement</label>
+                <input type="text" id="quote-engine" name="engine_code" placeholder="e.g. 4HK1, 6D16, J08E, WP10">
+                <p class="form-hint" data-i18n="quote.engineHint">Leave blank if unknown. We can help confirm matching.</p>
+              </div>
+              <div class="form-group">
+                <label for="quote-chassis" data-i18n="quote.chassisVin">Chassis number / VIN</label>
+                <input type="text" id="quote-chassis" name="chassis" placeholder="Optional, useful for exact matching">
+              </div>
+              <div class="form-group">
+                <label for="quote-spec" data-i18n="quote.cabSpec">Cab / drive / spec</label>
+                <input type="text" id="quote-spec" name="spec" placeholder="e.g. single cab, 4x2, 6x4, RHD/LHD">
               </div>
             </div>
 
-            <div class="form-row">
+            <div id="quote-panel-truck-heads" class="quote-panel active">
               <div class="form-group">
-                <label for="contact-email" data-contact-email-label>Email</label>
-                <input type="email" id="contact-email" name="email" placeholder="you@company.com">
+                <span class="form-label-block" data-i18n="quote.truckReq">Truck head requirement</span>
+                <div class="quote-pill-group">
+                  <label class="quote-pill"><input type="radio" name="truck_req" value="Complete truck head"> <span data-i18n="quote.truckHeadComplete">Complete truck head</span></label>
+                  <label class="quote-pill"><input type="radio" name="truck_req" value="Truck cab only"> <span data-i18n="quote.truckCabOnly">Truck cab only</span></label>
+                  <label class="quote-pill"><input type="radio" name="truck_req" value="Cab with engine and gearbox"> <span data-i18n="quote.truckCabPowertrain">Cab + engine + gearbox</span></label>
+                  <label class="quote-pill"><input type="radio" name="truck_req" value="Not sure"> <span data-i18n="quote.notSure">Not sure</span></label>
+                </div>
               </div>
+            </div>
+            <div id="quote-panel-engines" class="quote-panel">
               <div class="form-group">
-                <label for="contact-phone">Phone / WhatsApp <span class="req">*</span></label>
-                <input type="tel" id="contact-phone" name="phone" required placeholder="+234 xxx xxx xxxx">
+                <span class="form-label-block" data-i18n="quote.enginePref">Engine preference</span>
+                <div class="quote-pill-group">
+                  <label class="quote-pill"><input type="radio" name="engine_pref" value="Low mileage"> <span data-i18n="quote.lowMileage">Low mileage</span></label>
+                  <label class="quote-pill"><input type="radio" name="engine_pref" value="Complete with accessories"> <span data-i18n="quote.withAccessories">Complete with accessories</span></label>
+                  <label class="quote-pill"><input type="radio" name="engine_pref" value="Bare engine"> <span data-i18n="quote.bareEngine">Bare engine</span></label>
+                  <label class="quote-pill"><input type="radio" name="engine_pref" value="Any good condition"> <span data-i18n="quote.anyCondition">Any good condition</span></label>
+                </div>
+              </div>
+            </div>
+            <div id="quote-panel-gearboxes" class="quote-panel">
+              <div class="form-group">
+                <span class="form-label-block" data-i18n="quote.transType">Transmission type</span>
+                <div class="quote-pill-group">
+                  <label class="quote-pill"><input type="radio" name="gearbox_type" value="Automatic"> <span data-i18n="quote.auto">Automatic</span></label>
+                  <label class="quote-pill"><input type="radio" name="gearbox_type" value="Manual"> <span data-i18n="quote.manual">Manual</span></label>
+                  <label class="quote-pill"><input type="radio" name="gearbox_type" value="CVT"> CVT</label>
+                  <label class="quote-pill"><input type="radio" name="gearbox_type" value="4WD transfer"> <span data-i18n="quote.transfer4wd">4WD transfer</span></label>
+                </div>
+              </div>
+            </div>
+            <div id="quote-panel-truck-parts" class="quote-panel">
+              <div class="form-group">
+                <span class="form-label-block" data-i18n="quote.truckPartReq">Truck part requirement</span>
+                <div class="quote-pill-group">
+                  <label class="quote-pill"><input type="radio" name="truck_part_req" value="Driver cab"> <span data-i18n="trucks.driverCab">Driver Cab</span></label>
+                  <label class="quote-pill"><input type="radio" name="truck_part_req" value="Axle / differential"> <span data-i18n="quote.axleDiff">Axle / differential</span></label>
+                  <label class="quote-pill"><input type="radio" name="truck_part_req" value="Suspension / steering"> <span data-i18n="quote.suspension">Suspension / steering</span></label>
+                  <label class="quote-pill"><input type="radio" name="truck_part_req" value="Not sure"> <span data-i18n="quote.notSure">Not sure</span></label>
+                </div>
+              </div>
+            </div>
+            <div id="quote-panel-half-cuts" class="quote-panel">
+              <div class="form-group">
+                <span class="form-label-block" data-i18n="quote.halfcutReq">Half-cut requirement</span>
+                <div class="quote-pill-group">
+                  <label class="quote-pill"><input type="radio" name="halfcut_req" value="Front half cut"> <span data-i18n="quote.frontHalf">Front half cut</span></label>
+                  <label class="quote-pill"><input type="radio" name="halfcut_req" value="Rear half cut"> <span data-i18n="quote.rearHalf">Rear half cut</span></label>
+                  <label class="quote-pill"><input type="radio" name="halfcut_req" value="Nose cut"> <span data-i18n="quote.noseCut">Nose cut</span></label>
+                  <label class="quote-pill"><input type="radio" name="halfcut_req" value="Not sure"> <span data-i18n="quote.notSure">Not sure</span></label>
+                </div>
+              </div>
+            </div>
+            <div id="quote-panel-chassis" class="quote-panel">
+              <div class="form-group">
+                <span class="form-label-block" data-i18n="quote.chassisReq">Chassis requirement</span>
+                <div class="quote-pill-group">
+                  <label class="quote-pill"><input type="radio" name="chassis_req" value="Full chassis set"> <span data-i18n="quote.fullChassis">Full chassis set</span></label>
+                  <label class="quote-pill"><input type="radio" name="chassis_req" value="Subframe only"> <span data-i18n="quote.subframe">Subframe only</span></label>
+                  <label class="quote-pill"><input type="radio" name="chassis_req" value="Axle assembly"> <span data-i18n="quote.axleAssembly">Axle assembly</span></label>
+                  <label class="quote-pill"><input type="radio" name="chassis_req" value="Not sure"> <span data-i18n="quote.notSure">Not sure</span></label>
+                </div>
               </div>
             </div>
 
-            <div class="form-row">
+            <hr class="quote-divider">
+
+            <div class="quote-step"><span class="quote-step-num">3</span><span class="quote-step-title" data-i18n="quote.stepLogistics">Order and logistics</span></div>
+            <div class="form-row form-row--3">
               <div class="form-group">
-                <label for="contact-country">Your Country <span class="req">*</span></label>
-                <select id="contact-country" name="country" required>
-                  <option value="">Select country</option>
-                  <option value="nigeria">Nigeria</option>
-                  <option value="ghana">Ghana</option>
-                  <option value="kenya">Kenya</option>
-                  <option value="tanzania">Tanzania</option>
-                  <option value="uganda">Uganda</option>
-                  <option value="south-africa">South Africa</option>
-                  <option value="zambia">Zambia</option>
-                  <option value="zimbabwe">Zimbabwe</option>
-                  <option value="mozambique">Mozambique</option>
-                  <option value="cameroon">Cameroon</option>
-                  <option value="other">Other</option>
-                </select>
+                <label for="quote-qty"><span data-i18n="quote.quantity">Quantity</span> <span class="req">*</span></label>
+                <input type="number" id="quote-qty" name="qty" min="1" required placeholder="Units">
+                <p class="form-hint" id="quote-ship-hint" data-i18n="quote.shipLcl">LCL available from 1 unit.</p>
               </div>
               <div class="form-group">
-                <label for="enquiry-type">Enquiry Type <span class="req">*</span></label>
-                <select id="enquiry-type" name="enquiry_type" required>
-                  <option value="">Select type</option>
-                  <option value="engine">Engine Quote</option>
-                  <option value="gearbox">Gearbox Quote</option>
-                  <option value="powertrain">Engine + Gearbox Set</option>
-                  <option value="bulk">Bulk / Container Order</option>
-                  <option value="partnership">B2B Partnership</option>
-                  <option value="other">Other</option>
-                </select>
+                <label for="contact-country"><span data-i18n="contact.labelCountry">Destination country</span> <span class="req">*</span></label>
+                <select id="contact-country" name="country" required><option value="" data-i18n="contact.selectCountry">Select country</option></select>
+              </div>
+              <div class="form-group">
+                <label for="quote-port" data-i18n="quote.destPort">Destination port</label>
+                <input type="text" id="quote-port" name="port" placeholder="e.g. Tema, Lagos, Mombasa">
+              </div>
+            </div>
+            <div class="form-row">
+              <div class="form-group">
+                <span class="form-label-block" data-i18n="quote.shipping">Preferred shipping</span>
+                <div class="quote-pill-group">
+                  <label class="quote-pill"><input type="radio" name="shipping" value="LCL"> LCL</label>
+                  <label class="quote-pill"><input type="radio" name="shipping" value="20ft container"> 20ft</label>
+                  <label class="quote-pill"><input type="radio" name="shipping" value="40ft container"> 40ft</label>
+                  <label class="quote-pill"><input type="radio" name="shipping" value="Not sure"> <span data-i18n="quote.notSure">Not sure</span></label>
+                </div>
+              </div>
+              <div class="form-group">
+                <span class="form-label-block" data-i18n="quote.terms">Preferred terms</span>
+                <div class="quote-pill-group">
+                  <label class="quote-pill"><input type="radio" name="terms" value="FOB" checked> FOB</label>
+                  <label class="quote-pill"><input type="radio" name="terms" value="CIF"> CIF</label>
+                  <label class="quote-pill"><input type="radio" name="terms" value="Both FOB and CIF"> <span data-i18n="quote.bothTerms">Both</span></label>
+                  <label class="quote-pill"><input type="radio" name="terms" value="Not sure"> <span data-i18n="quote.notSure">Not sure</span></label>
+                </div>
+                <p class="form-hint quote-terms-hint" id="quote-terms-hint" role="status" aria-live="polite"></p>
               </div>
             </div>
 
+            <hr class="quote-divider">
+
+            <div class="quote-step"><span class="quote-step-num">4</span><span class="quote-step-title" data-i18n="quote.stepBuyer">Buyer details</span></div>
+            <div class="form-row">
+              <div class="form-group">
+                <label for="contact-name"><span data-i18n="contact.labelName">Full Name</span> <span class="req">*</span></label>
+                <input type="text" id="contact-name" name="name" required data-i18n-placeholder="contact.placeholderName" placeholder="Your name">
+              </div>
+              <div class="form-group">
+                <label for="contact-company" data-i18n="contact.labelCompany">Company</label>
+                <input type="text" id="contact-company" name="company" data-i18n-placeholder="contact.placeholderCompany" placeholder="Importer, dealer, workshop or fleet">
+              </div>
+            </div>
+            <div class="form-row">
+              <div class="form-group">
+                <label for="contact-phone"><span data-i18n="quote.whatsapp">WhatsApp number</span> <span class="req">*</span></label>
+                <div class="phone-input">
+                  <span class="phone-input__plus" aria-hidden="true">+</span>
+                  <input type="tel" id="contact-phone" name="phone" class="phone-input__control" required inputmode="numeric" autocomplete="tel-national" data-i18n-placeholder="contact.placeholderPhone" placeholder="801 234 5678" data-phone-input>
+                </div>
+                <p class="form-hint" data-i18n="quote.waHint">We reply with matching questions, photos, whole-vehicle startup video when available and pricing.</p>
+              </div>
+              <div class="form-group">
+                <label for="contact-email"><span data-i18n="contact.labelEmail">Email</span> <span class="req">*</span></label>
+                <input type="email" id="contact-email" name="email" required data-i18n-placeholder="contact.placeholderEmail" placeholder="For formal quotation PDF">
+              </div>
+            </div>
             <div class="form-group">
-              <label for="vehicle-details">Vehicle / Part Details <span class="req">*</span></label>
-              <textarea id="vehicle-details" name="vehicle_details" required placeholder="Make, model, year, engine code, VIN/chassis, gearbox type (auto/manual, 2WD/4WD)"></textarea>
+              <span class="form-label-block" data-i18n="quote.buyerType">Buyer type</span>
+              <div class="quote-pill-group">
+                <label class="quote-pill"><input type="radio" name="buyer_type" value="Importer / dealer"> <span data-i18n="quote.buyerImporter">Importer / dealer</span></label>
+                <label class="quote-pill"><input type="radio" name="buyer_type" value="Workshop / garage"> <span data-i18n="quote.buyerWorkshop">Workshop / garage</span></label>
+                <label class="quote-pill"><input type="radio" name="buyer_type" value="Fleet operator"> <span data-i18n="quote.buyerFleet">Fleet operator</span></label>
+                <label class="quote-pill"><input type="radio" name="buyer_type" value="Freight forwarder"> <span data-i18n="quote.buyerForwarder">Freight forwarder</span></label>
+                <label class="quote-pill"><input type="radio" name="buyer_type" value="Other"> <span data-i18n="contact.typeOther">Other</span></label>
+              </div>
+            </div>
+            <div class="form-group">
+              <label for="contact-message" data-i18n="contact.labelMessage">Additional notes</label>
+              <textarea id="contact-message" name="message" data-i18n-placeholder="quote.notesPlaceholder" placeholder="Special requirements, grade preference, RHD/LHD, delivery timing…"></textarea>
             </div>
 
-            <div class="form-group">
-              <label for="contact-message">Additional Message</label>
-              <textarea id="contact-message" name="message" placeholder="Quantity, destination port, timeline, FOB or CIF preference…"></textarea>
+            <div class="quote-step"><span class="quote-step-num">5</span><span class="quote-step-title" data-i18n="quote.stepProof">Trust proof requested</span></div>
+            <div class="quote-proof-box">
+              <label class="quote-proof"><input type="checkbox" name="proof" value="Whole-vehicle startup video available before dismantling" checked> <strong data-i18n="quote.proofVideo">Startup video</strong><span data-i18n="quote.proofVideoDesc">Whole-vehicle startup video available before dismantling when applicable.</span></label>
+              <label class="quote-proof"><input type="checkbox" name="proof" value="Dismantling photos"> <strong data-i18n="quote.proofDismantle">Dismantling photos</strong><span data-i18n="quote.proofDismantleDesc">Photos during dismantling per your parts list.</span></label>
+              <label class="quote-proof"><input type="checkbox" name="proof" value="Loading photos" checked> <strong data-i18n="quote.proofLoading">Loading photos</strong><span data-i18n="quote.proofLoadingDesc">Photos before packing or container loading.</span></label>
+              <label class="quote-proof"><input type="checkbox" name="proof" value="Inspection checklist"> <strong data-i18n="quote.proofInspect">Inspection checklist</strong><span data-i18n="quote.proofInspectDesc">Nameplate, engine code, leak and damage fields when available.</span></label>
+              <label class="quote-proof"><input type="checkbox" name="proof" value="Third-party inspection"> <strong data-i18n="quote.proofThirdParty">Third-party inspection</strong><span data-i18n="quote.proofThirdPartyDesc">Independent inspection at cost — quoted separately.</span></label>
             </div>
+
+            <p class="quote-boundary" data-i18n="quote.boundary">Formal quotations itemize product cost, verification, domestic trucking, port charges, stuffing, customs declaration and freight when applicable. CIF quotations include ocean freight and insurance to the named destination port. FOB covers goods to port of loading in China. All stock, price and shipping costs are subject to final confirmation before payment. Destination customs duty, taxes and local port charges are not included unless specifically stated.</p>
 
             <div class="form-group" aria-hidden="true" style="position:absolute;left:-9999px;width:1px;height:1px;overflow:hidden;">
               <label for="contact-website">Company website</label>
-              <input type="text" id="contact-website" name="company_website" tabindex="-1" autocomplete="off">
+              <input type="text" id="contact-website" name="company_website" tabindex="-1" autocomplete="new-password">
             </div>
 
-            <div class="form-group form-group--checkbox">
-              <label class="checkbox-row">
-                <input type="checkbox" id="contact-prefer-email" name="prefer_email_reply" value="1">
-                <span data-i18n="contact.preferEmail">I prefer email reply — I don't use WhatsApp</span>
-              </label>
-              <p class="form-hint" data-i18n="contact.preferEmailHint">We will reply to your email within 24 hours. WhatsApp will not open.</p>
+            <div class="form-status" data-form-status role="status" aria-live="polite" hidden></div>
+
+            <div class="quote-actions">
+              <button type="button" class="btn btn-outline-navy" id="quote-preview-btn" data-i18n="quote.preview">Preview message</button>
+              <button type="button" class="btn btn-navy" id="quote-copy-btn" data-i18n="quote.copy">Copy details</button>
+              <button type="button" class="btn btn-whatsapp" id="quote-wa-btn" data-i18n="quote.sendWhatsapp">Send via WhatsApp</button>
+              <button type="submit" class="btn btn-accent" data-i18n="contact.submitEnquiry">Submit Enquiry</button>
             </div>
 
-            <button type="submit" class="btn btn-whatsapp" style="width:100%;">Continue on WhatsApp</button>
+            <pre class="quote-preview" id="quote-preview" hidden></pre>
           </form>
 
           <div class="form-success form-success--whatsapp">
             <svg viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
-            <h4>Enquiry saved</h4>
-            <p>Your enquiry is saved on our server. WhatsApp has opened — please tap <strong>Send</strong> so we can reply quickly.</p>
+            <h4 data-i18n="contact.successSaved">Enquiry saved</h4>
+            <p data-i18n="contact.successWhatsapp" data-i18n-html="true">Your enquiry was submitted successfully. We will contact you within 24 hours.</p>
           </div>
 
           <div class="form-success form-success--email">
             <svg viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
-            <h4>Enquiry received</h4>
-            <p>Your enquiry is saved. We will reply to your email within 24 hours — no WhatsApp needed.</p>
+            <h4 data-i18n="contact.successReceived">Enquiry received</h4>
+            <p data-i18n="contact.successEmail">Your enquiry is saved. We will reply to your email within 24 hours — no WhatsApp needed.</p>
           </div>
         </div>
       </div>
@@ -185,16 +363,16 @@
         </div>
         <div class="faq-list">
           <div class="faq-item">
-            <button class="faq-q">What should I include in my enquiry?<svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg></button>
-            <div class="faq-a"><p>Vehicle make, model, year, engine code or gearbox type, and destination port. Include VIN/chassis number if available. State quantity and whether you need FOB or CIF pricing.</p></div>
+            <button class="faq-q"><span data-i18n="contact.faq1Q">What should I include in my enquiry?</span><svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg></button>
+            <div class="faq-a"><p data-i18n="contact.faq1A">Vehicle make, model, year, engine code or gearbox type, and destination port. Include VIN/chassis number if available. State quantity and whether you need FOB or CIF pricing.</p></div>
           </div>
           <div class="faq-item">
-            <button class="faq-q">How fast will I get a quote?<svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg></button>
-            <div class="faq-a"><p>Standard enquiries within 24 hours. In-stock units may be quoted same-day. Custom sourcing takes 48–72 hours while we check supplier availability.</p></div>
+            <button class="faq-q"><span data-i18n="contact.faq2Q">How fast will I get a quote?</span><svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg></button>
+            <div class="faq-a"><p data-i18n="contact.faq2A">Standard enquiries within 24 hours. In-stock units may be quoted same-day. Custom sourcing takes 48–72 hours while we check supplier availability.</p></div>
           </div>
           <div class="faq-item">
-            <button class="faq-q">Do you handle small orders?<svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg></button>
-            <div class="faq-a"><p>Yes — single units via LCL and full containers for bulk buyers. Repeat clients receive preferential pricing and dedicated account management.</p></div>
+            <button class="faq-q"><span data-i18n="contact.faq3Q">Do you handle small orders?</span><svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg></button>
+            <div class="faq-a"><p data-i18n="contact.faq3A">Yes — single units via LCL and full containers for bulk buyers. Repeat clients receive preferential pricing and dedicated account management.</p></div>
           </div>
         </div>
       </div>
@@ -204,10 +382,34 @@
   <div id="site-footer"></div>
   <div id="site-whatsapp"></div>
 
-  <script src="js/path-utils.js?v=public-ui-v1"></script>
-  <script src="js/config.js?v=logo-zh-v3"></script>
+  <script src="js/path-utils.js?v=feedback-v14"></script>
+  <script src="js/country-options.js?v=1"></script>
+  <script>
+    (function () {
+      function fillContactCountrySelect() {
+        var sel = document.getElementById('contact-country');
+        if (!sel || !window.AsiaCountryOptions) return;
+        var label = sel.querySelector('option[value=""]');
+        window.AsiaCountryOptions.populateSelect(sel, label ? label.textContent : 'Select country');
+      }
+      if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', fillContactCountrySelect);
+      } else {
+        fillContactCountrySelect();
+      }
+      window.addEventListener('asiapower:langchange', fillContactCountrySelect);
+    })();
+  </script>
+  <script src="js/phone-utils.js?v=2"></script>
+  <script src="js/site-feedback.js?v=feedback-v14"></script>
+  <script src="js/config.js?v=nav-v4"></script>
+  <script src="js/whatsapp-crm.js?v=1"></script>
+  <script src="js/trust-copy.js?v=1"></script>
+  <script src="js/vehicle-catalog.js?v=1"></script>
+  <script src="js/truck-brand-catalog.js?v=howo-v1"></script>
+  <script src="js/quote-request-form.js?v=quote-form-v3"></script>
   <script src="js/seo.js"></script>
-  <script src="js/components.js?v=logo-zh-v2" defer></script>
-  <script src="js/main.js?v=contact-spam-v1" defer></script>
+  <script src="js/components.js?v=seo-v1" defer></script>
+  <script src="js/main.js?v=wa-lead-v1" defer></script>
 </body>
 </html>

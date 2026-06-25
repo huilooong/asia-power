@@ -80,5 +80,7 @@ if (FULL_VINS.some(v => vinJs.includes(v))) {
   console.log('ℹ Demo full VINs exist in js/half-cut-vin.js decode table (client-side demo only; not rendered in public DOM)');
 }
 
+// Upload + lead guards live in scripts/test-critical-paths.mjs (also run by deploy-production.mjs)
+
 console.log(`\n${issues.length ? issues.length + ' issue(s)' : 'All HTTP/static checks passed'}\n`);
 process.exit(issues.length ? 1 : 0);

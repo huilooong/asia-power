@@ -227,24 +227,135 @@ function slugifyPart(value) {
     .replace(/^-+|-+$/g, '');
 }
 
+function normalizeListingMeta(record) {
+  if (!record || typeof record !== 'object') return record;
+  const condition = String(record.vehicleCondition || '').trim();
+  let vehicleCategory = String(record.vehicleCategory || '').trim();
+  let truckPartType = String(record.truckPartType || '').trim();
+  const slug = String(record.slug || record.approvedSlug || '');
+
+  if (condition === 'Driver Cab' || truckPartType === 'cab') {
+    return {
+      ...record,
+      vehicleCategory: 'truck',
+      truckPartType: 'cab',
+      vehicleCondition: 'Driver Cab',
+    };
+  }
+  if (condition === 'Truck Half Cut' || (vehicleCategory === 'truck' && truckPartType === 'vehicle')) {
+    return {
+      ...record,
+      vehicleCategory: 'truck',
+      truckPartType: 'vehicle',
+      vehicleCondition: 'Truck Half Cut',
+    };
+  }
+  if (vehicleCategory === 'truck') {
+    return {
+      ...record,
+      vehicleCategory: 'truck',
+      truckPartType: truckPartType === 'cab' ? 'cab' : 'vehicle',
+      vehicleCondition: condition || (truckPartType === 'cab' ? 'Driver Cab' : 'Truck Half Cut'),
+    };
+  }
+  if (vehicleCategory === 'machinery' || String(record.machineryType || '').trim()) {
+    const machineryCatalog = require('./machinery-brand-catalog');
+    const machineryType = String(record.machineryType || 'other').trim() || 'other';
+    return {
+      ...record,
+      vehicleCategory: 'machinery',
+      truckPartType: '',
+      machineryType,
+      vehicleCondition: condition || machineryCatalog.typeLabel(machineryType),
+    };
+  }
+  if (slug.includes('-machinery-')) {
+    const machineryCatalog = require('./machinery-brand-catalog');
+    const match = slug.match(/-machinery-([a-z0-9-]+)-hc/i);
+    const machineryType = String(record.machineryType || match?.[1] || 'other').replace(/-hc.*$/i, '');
+    return {
+      ...record,
+      vehicleCategory: 'machinery',
+      truckPartType: '',
+      machineryType,
+      vehicleCondition: condition || machineryCatalog.typeLabel(machineryType),
+    };
+  }
+  if (slug.includes('-truck-cab-')) {
+    return {
+      ...record,
+      vehicleCategory: 'truck',
+      truckPartType: 'cab',
+      vehicleCondition: 'Driver Cab',
+    };
+  }
+  if (slug.includes('-truck-half-cut-')) {
+    return {
+      ...record,
+      vehicleCategory: 'truck',
+      truckPartType: 'vehicle',
+      vehicleCondition: 'Truck Half Cut',
+    };
+  }
+  return {
+    ...record,
+    vehicleCategory: vehicleCategory === 'truck'
+      ? 'truck'
+      : (vehicleCategory === 'machinery' ? 'machinery' : 'passenger'),
+    truckPartType: vehicleCategory === 'truck' ? (truckPartType === 'cab' ? 'cab' : 'vehicle') : '',
+    vehicleCondition: condition || record.vehicleCondition || (vehicleCategory === 'machinery' ? 'Construction Equipment' : 'Half Cut'),
+  };
+}
+
+function catalogCutLabel(item) {
+  if (item?.truckPartType === 'cab') return 'Driver Cab';
+  if (item?.vehicleCategory === 'truck') return 'Truck Half Cut';
+  if (item?.vehicleCategory === 'machinery') {
+    return item?.vehicleCondition || require('./machinery-brand-catalog').typeLabel(item?.machineryType);
+  }
+  return item?.vehicleCondition || 'Half Cut';
+}
+
+function catalogSlugCutSegment(item) {
+  if (item?.vehicleCategory === 'truck') {
+    return item?.truckPartType === 'cab' ? 'truck-cab' : 'truck-half-cut';
+  }
+  if (item?.vehicleCategory === 'machinery') {
+    const type = String(item?.machineryType || 'equipment').trim() || 'equipment';
+    return `machinery-${type}`;
+  }
+  return 'half-cut';
+}
+
 function rebuildInventoryDerivedFields(item) {
   if (!item || !item.stockId) return item;
   const next = { ...item };
   if (next.brand && next.model && next.engineCode) {
-    next.title = `${next.brand} ${next.model} ${next.engineCode} Half Cut`;
+    next.title = `${next.brand} ${next.model} ${next.engineCode} ${catalogCutLabel(next)}`;
+  } else if (next.brand && next.model) {
+    next.title = `${next.brand} ${next.model} ${catalogCutLabel(next)}`;
   }
-  if (next.brandSlug && next.model && next.year && next.engineCode) {
+  if (next.brandSlug && next.model && next.year) {
+    const enginePart = slugifyPart(next.engineCode) || (next.truckPartType === 'cab' ? 'cab' : '');
     next.slug = [
       next.brandSlug,
       slugifyPart(next.model),
       next.year,
-      slugifyPart(next.engineCode),
-      'half-cut',
+      enginePart,
+      catalogSlugCutSegment(next),
       String(next.stockId).toLowerCase(),
     ].filter(Boolean).join('-');
   }
-  if (next.brand && next.model && next.year && next.engineCode) {
-    const autoDesc = `${next.year} ${next.brand} ${next.model} with ${next.engineCode} — supplier-verified listing via AsiaPower.`;
+  if (next.brand && next.model && next.year) {
+    const vehicleHint = next.truckPartType === 'cab'
+      ? 'driver cab'
+      : (next.vehicleCategory === 'truck'
+        ? 'light truck'
+        : (next.vehicleCategory === 'machinery'
+          ? (next.vehicleCondition || 'construction equipment').toLowerCase()
+          : 'vehicle'));
+    const engineHint = next.engineCode ? ` with ${next.engineCode}` : '';
+    const autoDesc = `${next.year} ${next.brand} ${next.model} ${vehicleHint}${engineHint} — supplier-verified listing via AsiaPower.`;
     if (!next.shortDescription || /supplier-verified listing via AsiaPower/i.test(next.shortDescription)) {
       next.shortDescription = autoDesc;
     }
@@ -273,13 +384,55 @@ function applyNameCorrection(record, catalog) {
 }
 
 function normalizeSubmissionRecord(submission, rootDir) {
+  let next = normalizeListingMeta(submission);
+  if (next?.vehicleCategory === 'truck') {
+    const truckCatalog = require('./truck-brand-catalog');
+    return truckCatalog.normalizeTruckRecord(next, rootDir);
+  }
   const catalog = loadCatalog(rootDir);
-  return applyNameCorrection(submission, catalog).record;
+  return applyNameCorrection(next, catalog).record;
 }
 
 function normalizeInventoryRecord(item, rootDir) {
+  let next = normalizeListingMeta(item);
+  if (next?.vehicleCategory === 'truck') {
+    const truckCatalog = require('./truck-brand-catalog');
+    const normalized = truckCatalog.normalizeTruckRecord(next, rootDir);
+    return rebuildInventoryDerivedFields(normalized);
+  }
+  if (next?.vehicleCategory === 'machinery') {
+    const machineryCatalog = require('./machinery-brand-catalog');
+    const normalized = machineryCatalog.normalizeMachineryRecord(next, rootDir);
+    return rebuildInventoryDerivedFields(normalized);
+  }
   const catalog = loadCatalog(rootDir);
-  return applyNameCorrection(item, catalog).record;
+  return applyNameCorrection(next, catalog).record;
+}
+
+function findLinkedSubmission(approvedItem, submissions) {
+  if (!approvedItem || !Array.isArray(submissions)) return null;
+  const stockId = String(approvedItem.stockId || '').toUpperCase();
+  const submissionId = String(approvedItem.submissionId || '');
+  return submissions.find((sub) => {
+    if (submissionId && sub.submissionId === submissionId) return true;
+    return stockId && String(sub.approvedStockId || '').toUpperCase() === stockId;
+  }) || null;
+}
+
+function syncApprovedFromSubmission(approvedItem, submissions) {
+  const submission = findLinkedSubmission(approvedItem, submissions);
+  if (!submission) return approvedItem;
+  const subMeta = normalizeListingMeta(submission);
+  if (subMeta.vehicleCategory === 'truck' || subMeta.vehicleCategory === 'machinery') {
+    return {
+      ...approvedItem,
+      vehicleCategory: subMeta.vehicleCategory,
+      truckPartType: subMeta.truckPartType || '',
+      machineryType: subMeta.machineryType || approvedItem.machineryType || '',
+      vehicleCondition: subMeta.vehicleCondition,
+    };
+  }
+  return approvedItem;
 }
 
 function normalizeState(state, rootDir) {
@@ -288,14 +441,41 @@ function normalizeState(state, rootDir) {
 
   let changed = false;
   const submissions = (state.submissions || []).map((item) => {
-    const { record, changed: itemChanged } = applyNameCorrection(item, catalog);
-    if (itemChanged) changed = true;
-    return record;
+    let next = normalizeListingMeta(item);
+    if (next?.vehicleCategory === 'truck') {
+      const truckCatalog = require('./truck-brand-catalog');
+      next = truckCatalog.normalizeTruckRecord(next, rootDir);
+    } else if (next?.vehicleCategory === 'machinery') {
+      const machineryCatalog = require('./machinery-brand-catalog');
+      next = machineryCatalog.normalizeMachineryRecord(next, rootDir);
+    } else {
+      const { record, changed: itemChanged } = applyNameCorrection(next, catalog);
+      next = record;
+      if (itemChanged) changed = true;
+    }
+    if (JSON.stringify(next) !== JSON.stringify(item)) changed = true;
+    return next;
   });
   const approved = (state.approved || []).map((item) => {
-    const { record, changed: itemChanged } = applyNameCorrection(item, catalog);
-    if (itemChanged) changed = true;
-    return record;
+    let next = syncApprovedFromSubmission(item, submissions);
+    next = normalizeListingMeta(next);
+    if (next?.vehicleCategory === 'truck') {
+      const truckCatalog = require('./truck-brand-catalog');
+      next = rebuildInventoryDerivedFields(truckCatalog.normalizeTruckRecord(next, rootDir));
+    } else if (next?.vehicleCategory === 'machinery') {
+      const machineryCatalog = require('./machinery-brand-catalog');
+      next = rebuildInventoryDerivedFields(machineryCatalog.normalizeMachineryRecord(next, rootDir));
+    } else {
+      const { record, changed: itemChanged } = applyNameCorrection(next, catalog);
+      next = record;
+      if (itemChanged) changed = true;
+    }
+    if (item.slug && next.slug && item.slug !== next.slug) {
+      next.slugAliases = [...new Set([...(Array.isArray(next.slugAliases) ? next.slugAliases : []), item.slug])];
+      changed = true;
+    }
+    if (JSON.stringify(next) !== JSON.stringify(item)) changed = true;
+    return next;
   });
   return { state: { submissions, approved }, changed };
 }
@@ -303,6 +483,7 @@ function normalizeState(state, rootDir) {
 module.exports = {
   loadCatalog,
   normalizeVehicleNames,
+  normalizeListingMeta,
   normalizeSubmissionRecord,
   normalizeInventoryRecord,
   normalizeState,

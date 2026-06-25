@@ -20,6 +20,8 @@
     const map = {
       'Running Vehicle': 'conditionRunning',
       'Half Cut': 'conditionHalfCut',
+      'Truck Half Cut': 'conditionTruckHalfCut',
+      'Driver Cab': 'conditionDriverCab',
       'Dismantled': 'conditionDismantled',
       'Engine Removed': 'conditionEngineRemoved',
     };
@@ -106,10 +108,42 @@
 
   function renderEditForm(submission) {
     const v = Vin();
-    const brandOptions = (store().SUPPORTED_BRANDS || []).map(brand => {
-      const label = Catalog()?.getBrandLabel?.(brand) || brand;
-      return `<option value="${escapeHtml(brand)}" ${submission.brand === brand ? 'selected' : ''}>${escapeHtml(label)}</option>`;
-    }).join('');
+    const brandOptions = (() => {
+      const catalog = Catalog();
+      const names = catalog?.getBrandNames?.() || store().getSupportedBrands?.() || store().SUPPORTED_BRANDS || [];
+      const raw = submission.brand;
+      const resolved = (() => {
+        const r = String(raw || '').trim();
+        if (!r) return '';
+        const exact = names.find((n) => n.toLowerCase() === r.toLowerCase());
+        if (exact) return exact;
+        const norm = window.VehicleNameNormalize?.normalizeVehicleNames?.(r, '');
+        if (norm?.brand && names.includes(norm.brand)) return norm.brand;
+        return r;
+      })();
+      const label = (name) => catalog?.getBrandLabel?.(name) || name;
+      const groups = catalog?.getBrandOptionGroups?.();
+      if (!groups) {
+        return names.map((brand) =>
+          `<option value="${escapeHtml(brand)}" ${brand === resolved ? 'selected' : ''}>${escapeHtml(label(brand))}</option>`
+        ).join('');
+      }
+      const renderGroup = (title, list) => {
+        const items = list.filter((name) => names.includes(name));
+        if (!items.length) return '';
+        return `<optgroup label="${escapeHtml(title)}">${items.map((brand) =>
+          `<option value="${escapeHtml(brand)}" ${brand === resolved ? 'selected' : ''}>${escapeHtml(label(brand))}</option>`
+        ).join('')}</optgroup>`;
+      };
+      const extra = resolved && !names.includes(resolved) ? [resolved] : [];
+      return [
+        extra.length ? `<optgroup label="Current">${extra.map((brand) =>
+          `<option value="${escapeHtml(brand)}" selected>${escapeHtml(label(brand))}</option>`
+        ).join('')}</optgroup>` : '',
+        renderGroup('Chinese brands · 中国品牌', groups.chinese),
+        renderGroup('Other brands · 其他品牌', groups.other),
+      ].join('');
+    })();
     const statusOptions = v.ADMIN_STATUSES.map(st =>
       `<option value="${escapeHtml(st)}" ${submission.inventoryStatus === st ? 'selected' : ''}>${escapeHtml(inventoryStatusLabel(st))}</option>`
     ).join('');
@@ -130,6 +164,10 @@
           <label>${t('mileage')} <input type="text" data-edit="mileage" value="${escapeHtml(submission.mileage || '')}"></label>
           <label>${t('fobPriceUsd')} <input type="number" data-edit="priceUsd" min="0" step="0.01" value="${escapeHtml(submission.priceUsd ?? '')}"></label>
           <label>${t('vehicleCondition')} <select data-edit="vehicleCondition">${conditionOptions}</select></label>
+          <label>${t('vehicleCategory')} <select data-edit="vehicleCategory">
+            <option value="passenger" ${submission.vehicleCategory !== 'truck' ? 'selected' : ''}>${I18n().labelInline('categoryPassenger')}</option>
+            <option value="truck" ${submission.vehicleCategory === 'truck' ? 'selected' : ''}>${I18n().labelInline('categoryTruck')}</option>
+          </select></label>
           <label>${t('inventoryStatus')} <select data-edit="inventoryStatus">${statusOptions}</select></label>
         </div>
       </details>`;
@@ -203,6 +241,7 @@
               <div><dt>${t('engineCode')}</dt><dd>${escapeHtml(submission.engineCode || '—')}</dd></div>
               <div><dt>${t('transmission')}</dt><dd>${escapeHtml(submission.transmissionCode || '—')}</dd></div>
               <div><dt>${t('vehicleCondition')}</dt><dd>${escapeHtml(conditionOptionLabel(submission.vehicleCondition) || submission.vehicleCondition || '—')}</dd></div>
+              <div><dt>${t('vehicleCategory')}</dt><dd>${submission.vehicleCategory === 'truck' ? I18n().labelInline('categoryTruck') : I18n().labelInline('categoryPassenger')}</dd></div>
               <div><dt>${t('inventoryStatus')}</dt><dd>${escapeHtml(inventoryStatusLabel(submission.inventoryStatus) || submission.inventoryStatus)}</dd></div>
             </dl>
           </section>
@@ -292,11 +331,17 @@
       const rejected = s.getSubmissionsByStatus('rejected');
 
       root.innerHTML = `
+        <div id="admin-review-feedback" class="admin-page-feedback" role="status" aria-live="polite" hidden></div>
         <div class="admin-review-toolbar supplier-bilingual">
           <div class="admin-review-counts">
             <span><strong>${pending.length}</strong> ${tBtn('adminPending')}</span>
             <span><strong>${approved.length}</strong> ${tBtn('adminApproved')}</span>
             <span><strong>${rejected.length}</strong> ${tBtn('adminRejected')}</span>
+          </div>
+          <div class="admin-leads-toolbar__links">
+            <a href="inventory.html" class="btn btn-outline-navy btn-sm">Inventory Editor</a>
+            <a href="leads.html" class="btn btn-outline-navy btn-sm">Lead Inbox</a>
+            <a href="analytics.html" class="btn btn-outline-navy btn-sm">Analytics</a>
           </div>
         </div>
         <div class="admin-review-tabs supplier-bilingual" role="tablist">
@@ -308,12 +353,12 @@
           <div class="admin-review-panel" data-panel="pending">${renderPanel('pending', pending)}</div>
           <div class="admin-review-panel hidden" data-panel="approved">${renderPanel('approved', approved)}</div>
           <div class="admin-review-panel hidden" data-panel="rejected">${renderPanel('rejected', rejected)}</div>
-        </div>
-        <div id="admin-review-feedback" class="supplier-upload-feedback" role="status" aria-live="polite"></div>`;
+        </div>`;
 
       const tabs = root.querySelectorAll('.admin-review-tab');
       const panels = root.querySelectorAll('.admin-review-panel');
       const feedback = document.getElementById('admin-review-feedback');
+      if (feedback) feedback.className = 'admin-page-feedback';
 
       tabs.forEach(tab => {
         tab.addEventListener('click', () => {
@@ -332,13 +377,17 @@
           const edits = card ? collectEdits(card) : null;
           s.approveSubmission(id, edits).then((item) => {
             if (item) {
+              feedback.hidden = false;
               feedback.innerHTML = `${tBtn('approvalSuccess')} ${escapeHtml(id)} → ${tBtn('stockId')} ${escapeHtml(item.stockId)}. VIN: ${escapeHtml(Vin().maskVin(item.vin))}`;
-              feedback.className = 'supplier-upload-feedback supplier-upload-feedback--success';
+              feedback.className = 'admin-page-feedback admin-page-feedback--success';
+              feedback.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
               render();
             }
           }).catch((err) => {
+            feedback.hidden = false;
             feedback.innerHTML = `${tBtn('approvalFailed')} ${escapeHtml(err.message || '')}`;
-            feedback.className = 'supplier-upload-feedback supplier-upload-feedback--error';
+            feedback.className = 'admin-page-feedback admin-page-feedback--error';
+            feedback.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
           });
           return;
         }
@@ -346,8 +395,10 @@
           const id = rejectBtn.dataset.reject;
           s.rejectSubmission(id).then((ok) => {
             if (ok) {
+              feedback.hidden = false;
               feedback.textContent = `${tBtn('rejectSuccess')} (${id})`;
-              feedback.className = 'supplier-upload-feedback supplier-upload-feedback--error';
+              feedback.className = 'admin-page-feedback admin-page-feedback--error';
+              feedback.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
               render();
             }
           });

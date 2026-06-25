@@ -16,6 +16,13 @@ const CORE_PAGES = [
   { loc: '/gearboxes/', changefreq: 'weekly', priority: '0.7' },
   { loc: '/chassis-parts/', changefreq: 'weekly', priority: '0.7' },
   { loc: '/half-cuts/', changefreq: 'daily', priority: '0.8' },
+  { loc: '/truck-heads/', changefreq: 'weekly', priority: '0.85' },
+  { loc: '/trucks/', changefreq: 'weekly', priority: '0.7' },
+  { loc: '/motorcycles/', changefreq: 'weekly', priority: '0.7' },
+  { loc: '/machinery/', changefreq: 'weekly', priority: '0.7' },
+  { loc: '/guides/', changefreq: 'monthly', priority: '0.6' },
+  { loc: '/guides/buying-used-engines-from-china.html', changefreq: 'monthly', priority: '0.6' },
+  { loc: '/guides/fob-vs-cif-shipping-guide.html', changefreq: 'monthly', priority: '0.6' },
 ];
 
 function escapeXml(value) {

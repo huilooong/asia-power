@@ -40,11 +40,14 @@
   function sanitizeRecord(record) {
     if (!record || typeof record !== 'object') return record;
     const copy = { ...record };
-    if (Array.isArray(copy.photos)) {
-      copy.photos = Upload().normalizePhotos(copy.photos);
+    const upload = Upload();
+    if (upload?.normalizePhotos && Array.isArray(copy.photos)) {
+      copy.photos = upload.normalizePhotos(copy.photos);
     }
-    copy.video = Upload().normalizeVideo(copy.video, copy.videoUrl);
-    copy.videoUrl = copy.video?.url || '';
+    if (upload?.normalizeVideo) {
+      copy.video = upload.normalizeVideo(copy.video, copy.videoUrl);
+      copy.videoUrl = copy.video?.url || '';
+    }
     return copy;
   }
 
@@ -66,12 +69,13 @@
 
   function isAdminContext() {
     return document.body?.dataset?.page === 'admin-review'
+      || document.body?.dataset?.page === 'admin-inventory'
       || /\/admin\//i.test(window.location.pathname);
   }
 
   function isSupplierUploadContext() {
     return document.body?.dataset?.page === 'supplier-upload'
-      || /\/supplier-portal\/half-cut-upload\.html/i.test(window.location.pathname);
+      || /\/supplier-portal\/(?:half-cut|truck)-upload\.html/i.test(window.location.pathname);
   }
 
   async function probeServerMode() {
@@ -105,7 +109,14 @@
   async function loadAdminState() {
     const api = MediaApi();
     if (!api?.fetchState) throw new Error('Admin review requires server API');
-    return api.fetchState();
+    try {
+      return await api.fetchState();
+    } catch (err) {
+      if (/authentication required|unauthorized/i.test(String(err?.message || ''))) {
+        resetReady();
+      }
+      throw err;
+    }
   }
   async function initStore() {
     adminMode = isAdminContext();
@@ -196,25 +207,48 @@
   }
 
   function buildSlug(record) {
+    let cutSegment = 'half-cut';
+    if (record.vehicleCategory === 'truck') {
+      cutSegment = record.truckPartType === 'cab' ? 'truck-cab' : 'truck-half-cut';
+    } else if (record.vehicleCategory === 'machinery') {
+      const type = String(record.machineryType || 'equipment').trim() || 'equipment';
+      cutSegment = `machinery-${type}`;
+    }
+    const enginePart = slugifyPart(record.engineCode) || (record.truckPartType === 'cab' ? 'cab' : '');
     const parts = [
       record.brandSlug,
       slugifyPart(record.model),
       record.year,
-      slugifyPart(record.engineCode),
-      'half-cut',
+      enginePart,
+      cutSegment,
       String(record.stockId).toLowerCase(),
     ];
     return parts.filter(Boolean).join('-');
   }
 
   function buildTitle(record) {
-    return `${record.brand} ${record.model} ${record.engineCode} Half Cut`;
+    if (record.truckPartType === 'cab') {
+      return `${record.brand} ${record.model} Driver Cab`;
+    }
+    const cutLabel = record.vehicleCategory === 'truck'
+      ? 'Truck Half Cut'
+      : (record.vehicleCategory === 'machinery'
+        ? (record.vehicleCondition || window.MachineryBrandCatalog?.typeLabel?.(record.machineryType) || 'Construction Equipment')
+        : (record.vehicleCondition || 'Half Cut'));
+    if (record.engineCode) {
+      return `${record.brand} ${record.model} ${record.engineCode} ${cutLabel}`;
+    }
+    return `${record.brand} ${record.model} ${cutLabel}`;
   }
 
   function buildShortDescription(submission) {
     const notes = String(submission.notes || '').trim();
     if (notes) return notes.split('\n')[0].slice(0, 220);
-    return `${submission.year} ${submission.brand} ${submission.model} with ${submission.engineCode} — supplier-verified listing via AsiaPower.`;
+    if (submission.truckPartType === 'cab') {
+      return `${submission.year} ${submission.brand} ${submission.model} driver cab — supplier-verified listing via AsiaPower.`;
+    }
+    const engineHint = submission.engineCode ? ` with ${submission.engineCode}` : '';
+    return `${submission.year} ${submission.brand} ${submission.model}${engineHint} — supplier-verified listing via AsiaPower.`;
   }
 
   function normalizePhotos(photos) {
@@ -311,6 +345,7 @@
     approvedCache.unshift(inventoryItem);
     await persistState();
     syncLiveInventory();
+    await window.PowertrainCatalog?.rememberFromHalfCut?.(inventoryItem);
     return inventoryItem;
   }
 
@@ -333,6 +368,94 @@
     return item;
   }
 
+  function resetReady() {
+    readyPromise = null;
+    adminMode = isAdminContext();
+  }
+
+  async function updateApprovedInventory(stockId, edits) {
+    const stockUpper = String(stockId || '').trim().toUpperCase();
+    const index = approvedCache.findIndex(
+      (item) => String(item.stockId || '').toUpperCase() === stockUpper
+    );
+    if (index === -1) return null;
+
+    if (serverMode) {
+      const res = await fetch(`${window.location.origin}/api/half-cuts/inventory/${encodeURIComponent(stockId)}`, {
+        method: 'PATCH',
+        credentials: 'include',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(edits || {}),
+      });
+      const data = await res.json().catch(() => ({}));
+      if (res.status === 401) {
+        resetReady();
+        throw new Error(data.error || 'Admin authentication required');
+      }
+      if (!res.ok) throw new Error(data.error || 'Failed to update inventory');
+      approvedCache[index] = data.item;
+      if (data.item?.submissionId) {
+        const subIndex = submissionsCache.findIndex((s) => s.submissionId === data.item.submissionId);
+        if (subIndex !== -1) {
+          submissionsCache[subIndex] = Review().applyEdits(submissionsCache[subIndex], {
+            brand: data.item.brand,
+            brandSlug: data.item.brandSlug,
+            model: data.item.model,
+            year: data.item.year,
+            engineCode: data.item.engineCode,
+            transmissionCode: data.item.transmissionCode,
+            drivetrain: data.item.drivetrain,
+            mileage: data.item.mileage,
+            priceUsd: data.item.priceUsd,
+            vehicleCondition: data.item.vehicleCondition,
+            approvedSlug: data.item.slug,
+          });
+        }
+      }
+    } else {
+      const oldSlug = approvedCache[index].slug;
+      let item = Review().applyEdits(approvedCache[index], edits);
+      if (edits?.year !== undefined && edits.year !== '') item.year = Number(edits.year);
+      if (edits?.priceUsd !== undefined && edits.priceUsd !== '') {
+        item.priceUsd = Number(Number(edits.priceUsd).toFixed(2));
+      }
+      if (edits?.engineCode) item.engineCode = String(edits.engineCode).trim();
+      if (edits?.transmissionCode) item.transmissionCode = String(edits.transmissionCode).trim();
+      if (edits?.status) item.status = edits.status;
+      item.title = inventoryHelpers.buildTitle(item);
+      const newSlug = inventoryHelpers.buildSlug(item);
+      if (oldSlug && newSlug && oldSlug !== newSlug) {
+        item.slugAliases = [...new Set([...(item.slugAliases || []), oldSlug])];
+      }
+      item.slug = newSlug;
+      item.updatedAt = new Date().toISOString();
+      approvedCache[index] = item;
+      if (item.submissionId) {
+        const subIndex = submissionsCache.findIndex((s) => s.submissionId === item.submissionId);
+        if (subIndex !== -1) {
+          submissionsCache[subIndex] = Review().applyEdits(submissionsCache[subIndex], {
+            brand: item.brand,
+            brandSlug: item.brandSlug,
+            model: item.model,
+            year: item.year,
+            engineCode: item.engineCode,
+            transmissionCode: item.transmissionCode,
+            drivetrain: item.drivetrain,
+            mileage: item.mileage,
+            priceUsd: item.priceUsd,
+            vehicleCondition: item.vehicleCondition,
+            approvedSlug: item.slug,
+          });
+        }
+      }
+      await persistState();
+    }
+
+    syncLiveInventory();
+    await window.PowertrainCatalog?.loadLearnedPowertrain?.({ force: true });
+    return approvedCache[index];
+  }
+
   function getSubmissionsByStatus(status) {
     return submissionsCache.filter(s => s.reviewStatus === status);
   }
@@ -346,15 +469,32 @@
   }
 
   function getPublicItemBySlug(slug) {
-    const item = approvedCache.find(i => i.slug === slug);
+    if (!slug) return null;
+    let item = approvedCache.find(i => i.slug === slug);
+    if (!item) {
+      item = approvedCache.find(i => Array.isArray(i.slugAliases) && i.slugAliases.includes(slug));
+    }
+    if (!item) {
+      const stockMatch = String(slug).match(/(hc\d+)/i);
+      if (stockMatch) {
+        const stockId = stockMatch[0].toUpperCase();
+        item = approvedCache.find(i => String(i.stockId || '').toUpperCase() === stockId);
+      }
+    }
     return item ? Inventory().toPublicItem(item) : null;
   }
 
   window.HalfCutInventoryStore = {
     SUBMISSIONS_KEY,
     APPROVED_KEY,
-    SUPPORTED_BRANDS: window.VehicleCatalog?.getBrandNames?.()
-      || Object.keys(Vin()?.BRAND_SLUG_MAP || {}),
+    getSupportedBrands() {
+      return window.VehicleCatalog?.getBrandNames?.()
+        || Object.keys(Vin()?.BRAND_SLUG_MAP || {});
+    },
+    get SUPPORTED_BRANDS() {
+      return window.VehicleCatalog?.getBrandNames?.()
+        || Object.keys(Vin()?.BRAND_SLUG_MAP || {});
+    },
     PHOTO_LABELS: Vin()?.PHOTO_LABELS || [],
     brandToSlug: (b) => Vin().brandToSlug(b),
     formatMileage,
@@ -372,7 +512,9 @@
     approveSubmission,
     rejectSubmission,
     updateInventoryStatus,
+    updateApprovedInventory,
     syncLiveInventory,
+    resetReady,
     toPublicItem: (item) => Inventory().toPublicItem(item),
   };
 })();

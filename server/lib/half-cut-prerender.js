@@ -7,6 +7,7 @@ const {
   seoDescription,
   canonicalUrl,
   productJsonLd,
+  buildDetailRootHtml,
   noscriptSummary,
   escapeAttr,
 } = require('./half-cut-seo');
@@ -50,8 +51,11 @@ function injectHalfCutPrerender(html, item, siteUrl) {
   ${ogImage ? `<meta property="og:image" content="${escapeAttr(ogImage)}">` : ''}
   <script type="application/ld+json" id="schema-halfcut-product">${jsonLd}</script>`;
 
+  const prerenderJson = JSON.stringify(item).replace(/<\//g, '<\\/');
   const bodyBlock = `
 <!-- HALF_CUT_PRERENDER -->
+<script>window.__HALF_CUT_PRERENDER_ITEM__=${prerenderJson};</script>
+<script type="application/json" id="half-cut-prerender-item">${prerenderJson}</script>
 <noscript id="half-cut-prerender-fallback" class="half-cut-prerender">
   <div class="container" style="padding:24px 0">
     ${noscriptSummary(item)}
@@ -63,7 +67,7 @@ function injectHalfCutPrerender(html, item, siteUrl) {
   out = out.replace('</head>', `${headBlock}\n</head>`);
   out = out.replace(
     '<div id="half-cut-detail-root"></div>',
-    `${bodyBlock}\n      <div id="half-cut-detail-root"></div>`
+    `${bodyBlock}\n      <div id="half-cut-detail-root" data-prerender-slug="${escapeAttr(item.slug)}">${buildDetailRootHtml(item, siteUrl)}</div>`
   );
   return out;
 }

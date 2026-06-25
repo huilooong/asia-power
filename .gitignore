@@ -11,6 +11,7 @@ uploads/videos/*
 data/half-cut-*.json
 data/contact-leads.json
 data/users.json
+data/auth-sessions.json
 data/vehicle-model-memory.json
 data/site-analytics-daily.json
 deploy/test-run/data/

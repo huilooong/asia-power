@@ -35,8 +35,29 @@
 
   window.SitePaths = { base, href, engineSlug, enginePagePath };
 
+  if (!window.SiteFeedback) {
+    const feedbackBase = base();
+    function loadSyncScript(src) {
+      try {
+        const xhr = new XMLHttpRequest();
+        xhr.open('GET', src, false);
+        xhr.send(null);
+        if (xhr.status >= 200 && xhr.status < 300 && xhr.responseText) {
+          Function(`${xhr.responseText}\n//# sourceURL=${src}`)();
+          return true;
+        }
+      } catch {
+        // optional feedback helper
+      }
+      return false;
+    }
+    if (!window.AsiaCountryOptions) loadSyncScript(`${feedbackBase}js/country-options.js?v=1`);
+    if (!window.AsiaPhone) loadSyncScript(`${feedbackBase}js/phone-utils.js?v=2`);
+    loadSyncScript(`${feedbackBase}js/site-feedback.js?v=feedback-v14`);
+  }
+
   if (!window.PublicI18n) {
-    const src = `${base()}js/public-i18n.js?v=home-markets-v1`;
+    const src = `${base()}js/public-i18n.js?v=i18n-market-v1`;
     try {
       const xhr = new XMLHttpRequest();
       xhr.open('GET', src, false);

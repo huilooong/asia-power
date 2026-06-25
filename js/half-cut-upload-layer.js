@@ -18,6 +18,7 @@
     return {
       label: (typeof photo === 'object' && photo.label) || labels[index] || `Photo ${index + 1}`,
       url,
+      thumbUrl: (typeof photo === 'object' && photo.thumbUrl) || '',
     };
   }
 
@@ -69,18 +70,91 @@
     return { valid: true, video: file };
   }
 
+  function resolveListingMeta(data) {
+    const record = data && typeof data === 'object' ? data : {};
+    const condition = String(record.vehicleCondition || '').trim();
+    let vehicleCategory = String(record.vehicleCategory || '').trim();
+    let truckPartType = String(record.truckPartType || '').trim();
+    const slug = String(record.slug || record.approvedSlug || '');
+
+    if (condition === 'Driver Cab' || truckPartType === 'cab') {
+      return {
+        vehicleCategory: 'truck',
+        truckPartType: 'cab',
+        vehicleCondition: 'Driver Cab',
+      };
+    }
+    if (condition === 'Truck Half Cut' || (vehicleCategory === 'truck' && truckPartType === 'vehicle')) {
+      return {
+        vehicleCategory: 'truck',
+        truckPartType: 'vehicle',
+        vehicleCondition: 'Truck Half Cut',
+      };
+    }
+    if (vehicleCategory === 'truck') {
+      return {
+        vehicleCategory: 'truck',
+        truckPartType: truckPartType === 'cab' ? 'cab' : 'vehicle',
+        vehicleCondition: condition || (truckPartType === 'cab' ? 'Driver Cab' : 'Truck Half Cut'),
+      };
+    }
+    if (vehicleCategory === 'machinery' || String(record.machineryType || '').trim()) {
+      const machineryType = String(record.machineryType || 'other').trim() || 'other';
+      const typeLabel = window.MachineryBrandCatalog?.typeLabel?.(machineryType) || condition || 'Construction Equipment';
+      return {
+        vehicleCategory: 'machinery',
+        truckPartType: '',
+        machineryType,
+        vehicleCondition: condition || typeLabel,
+      };
+    }
+    if (slug.includes('-machinery-')) {
+      const machineryType = String(record.machineryType || slug.match(/-machinery-([a-z0-9-]+)-hc/i)?.[1] || 'other').replace(/-hc.*$/i, '');
+      return {
+        vehicleCategory: 'machinery',
+        truckPartType: '',
+        machineryType,
+        vehicleCondition: condition || window.MachineryBrandCatalog?.typeLabel?.(machineryType) || 'Construction Equipment',
+      };
+    }
+    if (slug.includes('-truck-cab-')) {
+      return { vehicleCategory: 'truck', truckPartType: 'cab', vehicleCondition: 'Driver Cab' };
+    }
+    if (slug.includes('-truck-half-cut-')) {
+      return { vehicleCategory: 'truck', truckPartType: 'vehicle', vehicleCondition: 'Truck Half Cut' };
+    }
+    return {
+      vehicleCategory: 'passenger',
+      truckPartType: '',
+      vehicleCondition: condition || 'Half Cut',
+    };
+  }
+
+  function isTruckCab(data) {
+    return resolveListingMeta(data).truckPartType === 'cab';
+  }
+
   function validateSubmission(data) {
     const v = Vin();
     const errors = [];
+    const meta = resolveListingMeta(data);
+    const cabListing = meta.truckPartType === 'cab';
+    const isMachinery = meta.vehicleCategory === 'machinery';
+    const vinRaw = String(data.vin || '').trim();
 
-    const vinCheck = v.validateVin(data.vin);
-    if (!vinCheck.valid) errors.push(vinCheck.error);
+    if (!cabListing && !isMachinery) {
+      const vinCheck = v.validateVin(vinRaw);
+      if (!vinCheck.valid) errors.push(vinCheck.error);
+    } else if (vinRaw) {
+      const vinCheck = v.validateVin(vinRaw);
+      if (!vinCheck.valid) errors.push('VIN must be 17 characters when provided.');
+    }
 
     if (!String(data.supplierName || '').trim()) errors.push('Supplier Name is required.');
     if (!String(data.supplierPhone || '').trim() && !String(data.supplierWechat || '').trim()) {
       errors.push('Supplier Phone or WeChat is required.');
     }
-    if (!String(data.mileage || '').trim()) errors.push('Mileage is required.');
+    if (!cabListing && !String(data.mileage || '').trim() && !isMachinery) errors.push('Mileage is required.');
 
     const priceUsd = Number(data.priceUsd);
     if (!Number.isFinite(priceUsd) || priceUsd <= 0) {
@@ -91,13 +165,19 @@
     if (photos.length < v.MIN_PHOTOS) {
       errors.push(`At least ${v.MIN_PHOTOS} photos are required (you have ${photos.length}).`);
     }
+    if (isMachinery && photos.length < 4) {
+      errors.push(`At least 4 photos are required for machinery (you have ${photos.length}).`);
+    }
 
     if (!data.decodeMethod || data.decodeMethod === 'Manual Entry') {
       if (!data.brand) errors.push('Brand is required.');
       if (!data.model) errors.push('Model is required.');
       if (!data.year) errors.push('Year is required.');
-      if (!data.engineCode) errors.push('Engine Code is required.');
-      if (!data.transmissionCode) errors.push('Transmission Code is required.');
+      if (!cabListing && !isMachinery) {
+        if (!data.engineCode) errors.push('Engine Code is required.');
+        if (!data.transmissionCode) errors.push('Transmission Code is required.');
+      }
+      if (isMachinery && !data.engineCode) errors.push('Engine Code is required.');
     } else {
       if (!data.brand) errors.push('Confirm brand from VIN decode.');
       if (!data.model) errors.push('Confirm model from VIN decode.');
@@ -119,11 +199,28 @@
 
   function buildSubmissionRecord(data, generateId) {
     const v = Vin();
-    const vinNorm = v.normalizeVin(data.vin);
-    const norm = window.VehicleNameNormalize?.normalizeVehicleNames?.(data.brand, data.model);
-    const brand = norm?.brand || data.brand;
-    const model = norm?.model || String(data.model || '').trim();
-    const brandSlug = norm?.brandSlug || v.brandToSlug(brand);
+    const meta = resolveListingMeta(data);
+    const isTruck = meta.vehicleCategory === 'truck';
+    const cabListing = meta.truckPartType === 'cab';
+    let vinNorm = v.normalizeVin(data.vin);
+    if (cabListing && vinNorm.length !== 17) vinNorm = '';
+    let brand = String(data.brand || '').trim();
+    let model = String(data.model || '').trim();
+    let brandSlug = '';
+    let norm = null;
+
+    if (isTruck && window.TruckBrandCatalog) {
+      brand = window.TruckBrandCatalog.resolveBrand(brand) || brand;
+      brandSlug = window.TruckBrandCatalog.brandToSlug(brand);
+    } else if (meta.vehicleCategory === 'machinery' && window.MachineryBrandCatalog) {
+      brand = window.MachineryBrandCatalog.resolveBrand(brand) || brand;
+      brandSlug = window.MachineryBrandCatalog.brandToSlug(brand);
+    } else {
+      norm = window.VehicleNameNormalize?.normalizeVehicleNames?.(data.brand, data.model);
+      brand = norm?.brand || brand;
+      model = norm?.model || model;
+      brandSlug = norm?.brandSlug || v.brandToSlug(brand);
+    }
     const video = normalizeVideo(data.video, data.videoUrl);
 
     const record = {
@@ -151,7 +248,10 @@
       transmissionCode: String(data.transmissionCode || '').trim(),
       drivetrain: String(data.drivetrain || '2WD').trim(),
       originCountry: String(data.originCountry || 'China').trim(),
-      vehicleCondition: data.vehicleCondition || 'Half Cut',
+      vehicleCondition: meta.vehicleCondition,
+      vehicleCategory: meta.vehicleCategory,
+      truckPartType: meta.truckPartType,
+      machineryType: meta.machineryType || '',
       inventoryStatus: data.inventoryStatus,
 
       photos: data.photos || [],
@@ -174,6 +274,7 @@
   window.HalfCutUploadLayer = {
     validateSubmission,
     buildSubmissionRecord,
+    resolveListingMeta,
     normalizePhoto,
     normalizePhotos,
     normalizeVideo,

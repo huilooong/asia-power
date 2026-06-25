@@ -47,9 +47,9 @@ const halfCutNotificationsPath = [
   path.join(__dirname, 'lib', 'half-cut-notifications.js'),
   path.join(__dirname, '..', 'server', 'lib', 'half-cut-notifications.js'),
 ].find((candidate) => fs.existsSync(candidate));
-const { notifyWhatsappClick, notifyContactLead, notifyHalfCutLead } = halfCutNotificationsPath
+const { notifyWhatsappClick, notifyContactLead, notifyHalfCutLead, notifyProductLead } = halfCutNotificationsPath
   ? require(halfCutNotificationsPath)
-  : { notifyWhatsappClick: () => {}, notifyContactLead: () => {}, notifyHalfCutLead: () => {} };
+  : { notifyWhatsappClick: () => {}, notifyContactLead: () => {}, notifyHalfCutLead: () => {}, notifyProductLead: () => {} };
 const contactLeadsPath = [
   path.join(__dirname, 'lib', 'contact-leads.js'),
   path.join(__dirname, '..', 'server', 'lib', 'contact-leads.js'),
@@ -69,7 +69,7 @@ const leadSpamPath = [
   path.join(__dirname, 'lib', 'lead-spam.js'),
   path.join(__dirname, '..', 'server', 'lib', 'lead-spam.js'),
 ].find((candidate) => fs.existsSync(candidate));
-const { isContactSpam } = require(leadSpamPath || path.join(__dirname, '..', 'server', 'lib', 'lead-spam.js'));
+const { isContactSpam, isHalfCutSpam, isProductSpam, contactSpamReason, halfCutSpamReason, productSpamReason } = require(leadSpamPath || path.join(__dirname, '..', 'server', 'lib', 'lead-spam.js'));
 const sitemapPath = [
   path.join(__dirname, 'lib', 'sitemap.js'),
   path.join(__dirname, '..', 'server', 'lib', 'sitemap.js'),
@@ -163,6 +163,68 @@ let items = loadJson(ITEMS_FILE, [
 let posts = loadJson(POSTS_FILE, []);
 
 const sessions = new Map();
+const SESSIONS_FILE = path.join(DATA_DIR, 'auth-sessions.json');
+const SESSION_MAX_AGE_SEC = 604800;
+
+function loadSessionsFromDisk() {
+  if (!fs.existsSync(SESSIONS_FILE)) return;
+  try {
+    const store = JSON.parse(fs.readFileSync(SESSIONS_FILE, 'utf8'));
+    const now = Date.now();
+    let changed = false;
+    Object.entries(store || {}).forEach(([sid, entry]) => {
+      if (!entry || entry.expiresAt <= now) {
+        delete store[sid];
+        changed = true;
+        return;
+      }
+      sessions.set(sid, entry.userId);
+    });
+    if (changed) fs.writeFileSync(SESSIONS_FILE, JSON.stringify(store, null, 2));
+  } catch (err) {
+    console.warn('[auth] failed to load sessions:', err.message);
+  }
+}
+
+function persistSessionsToDisk() {
+  const now = Date.now();
+  const store = {};
+  sessions.forEach((userId, sid) => {
+    store[sid] = { userId, expiresAt: now + SESSION_MAX_AGE_SEC * 1000 };
+  });
+  fs.writeFileSync(SESSIONS_FILE, JSON.stringify(store, null, 2));
+}
+
+function addSession(sid, userId) {
+  sessions.set(sid, userId);
+  let store = {};
+  if (fs.existsSync(SESSIONS_FILE)) {
+    try { store = JSON.parse(fs.readFileSync(SESSIONS_FILE, 'utf8')); } catch { store = {}; }
+  }
+  const now = Date.now();
+  Object.keys(store).forEach((key) => {
+    if (!store[key] || store[key].expiresAt <= now) delete store[key];
+  });
+  store[sid] = { userId, expiresAt: now + SESSION_MAX_AGE_SEC * 1000 };
+  fs.writeFileSync(SESSIONS_FILE, JSON.stringify(store, null, 2));
+}
+
+function removeSession(sid) {
+  if (!sid) return;
+  sessions.delete(sid);
+  if (!fs.existsSync(SESSIONS_FILE)) return;
+  try {
+    const store = JSON.parse(fs.readFileSync(SESSIONS_FILE, 'utf8'));
+    if (store[sid]) {
+      delete store[sid];
+      fs.writeFileSync(SESSIONS_FILE, JSON.stringify(store, null, 2));
+    }
+  } catch {
+    // ignore
+  }
+}
+
+loadSessionsFromDisk();
 const limitLogin = createRateLimiter({ windowMs: 15 * 60 * 1000, max: 20 });
 const limitRegister = createRateLimiter({ windowMs: 60 * 60 * 1000, max: 10 });
 const limitAnalytics = createRateLimiter({ windowMs: 60 * 1000, max: 30 });
@@ -291,30 +353,41 @@ function sendNotFound(req, res) {
   res.end('<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="robots" content="noindex"><title>404 | AsiaPower</title></head><body><h1>Page not found</h1><p><a href="/">Return to AsiaPower</a></p></body></html>');
 }
 
-function streamUploadFile(req, res, filePath) {
-  const mime = halfCut.getUploadMime(filePath);
-  const isAsset = true;
+function streamUploadFile(req, res, filePath, uploadObject = null, privateCache = false) {
+  const mime = uploadObject?.mime || halfCut.getUploadMime(filePath);
   res.writeHead(200, {
     'Content-Type': mime,
-    'Cache-Control': isAsset ? 'public, max-age=86400' : 'no-cache',
+    'Cache-Control': privateCache ? 'private, max-age=3600' : 'public, max-age=86400',
     'X-Content-Type-Options': 'nosniff',
   });
   if (req.method === 'HEAD') return res.end();
+  if (uploadObject?.buffer) {
+    return res.end(uploadObject.buffer);
+  }
   fs.createReadStream(filePath).pipe(res);
 }
 
-function serveStatic(req, res, pathname, search = '') {
+async function serveStatic(req, res, pathname, search = '') {
   if (isBlockedStaticPath(pathname)) return sendNotFound(req, res);
 
   if (halfCut.isUploadPath(pathname)) {
     const u = authUser(req);
     const isAdmin = u?.role === 'admin';
+    const isPendingUpload = String(pathname || '').startsWith('/uploads/pending/');
     if (!halfCut.canServeUpload(req, pathname, isAdmin)) {
       return sendNotFound(req, res);
     }
     const filePath = halfCut.resolveUploadFile(pathname);
-    if (!filePath) return sendNotFound(req, res);
-    return streamUploadFile(req, res, filePath);
+    if (!filePath) {
+      try {
+        const uploadObject = await halfCut.readUploadObject?.(pathname);
+        if (uploadObject?.buffer) return streamUploadFile(req, res, null, uploadObject, isPendingUpload);
+      } catch (err) {
+        console.warn('[uploads] failed to read upload object:', err.message);
+      }
+      return sendNotFound(req, res);
+    }
+    return streamUploadFile(req, res, filePath, null, isPendingUpload);
   }
 
   const redirectMap = {
@@ -412,9 +485,10 @@ const server = http.createServer(async (req, res) => {
     }
     try {
       if (req.method === 'POST' && p === '/api/leads/contact') {
-        if (!limitContactLead(req)) return json(res, 429, { error: 'Too many requests' });
+        if (!limitContactLead(req)) return json(res, 429, { error: 'Too many enquiries from this connection. Please wait an hour or contact us on WhatsApp.' });
         const body = await readBody(req, MAX_AUTH_BODY);
-        if (isContactSpam(body)) return json(res, 400, { error: 'Invalid enquiry' });
+        const spamReason = contactSpamReason(body);
+        if (spamReason) return json(res, 400, { error: spamReason });
         try {
           const geo = await resolveClientGeo(req);
           const lead = contactLeads.appendContactLead(body, {
@@ -422,7 +496,13 @@ const server = http.createServer(async (req, res) => {
             ...geo,
           });
           notifyContactLead(lead);
-          return json(res, 201, { ok: true, id: lead.id });
+          return json(res, 201, {
+            ok: true,
+            id: lead.id,
+            email: lead.email,
+            phone: lead.phone || '',
+            replyChannel: lead.replyChannel,
+          });
         } catch (err) {
           const code = err.statusCode || 400;
           return json(res, code, { error: err.message || 'Invalid enquiry' });
@@ -430,8 +510,10 @@ const server = http.createServer(async (req, res) => {
       }
 
       if (req.method === 'POST' && p === '/api/leads/half-cut') {
-        if (!limitContactLead(req)) return json(res, 429, { error: 'Too many requests' });
+        if (!limitContactLead(req)) return json(res, 429, { error: 'Too many enquiries from this connection. Please wait an hour or contact us on WhatsApp.' });
         const body = await readBody(req, MAX_AUTH_BODY);
+        const spamReason = halfCutSpamReason(body);
+        if (spamReason) return json(res, 400, { error: spamReason });
         try {
           const geo = await resolveClientGeo(req);
           const lead = contactLeads.appendHalfCutLead(body, {
@@ -439,7 +521,45 @@ const server = http.createServer(async (req, res) => {
             ...geo,
           });
           notifyHalfCutLead(lead);
-          return json(res, 201, { ok: true, id: lead.id });
+          return json(res, 201, { ok: true, id: lead.id, email: lead.email || '', phone: lead.phone || '' });
+        } catch (err) {
+          const code = err.statusCode || 400;
+          return json(res, code, { error: err.message || 'Invalid enquiry' });
+        }
+      }
+
+      if (req.method === 'POST' && p === '/api/leads/product') {
+        if (!limitContactLead(req)) return json(res, 429, { error: 'Too many enquiries from this connection. Please wait an hour or contact us on WhatsApp.' });
+        const body = await readBody(req, MAX_AUTH_BODY);
+        const spamReason = productSpamReason(body);
+        if (spamReason) return json(res, 400, { error: spamReason });
+        try {
+          const geo = await resolveClientGeo(req);
+          const lead = contactLeads.appendProductLead(body, {
+            page: body.page,
+            ...geo,
+          });
+          notifyProductLead(lead);
+          return json(res, 201, { ok: true, id: lead.id, email: lead.email || '', phone: lead.phone || '' });
+        } catch (err) {
+          const code = err.statusCode || 400;
+          return json(res, code, { error: err.message || 'Invalid enquiry' });
+        }
+      }
+
+      if (req.method === 'POST' && p === '/api/leads/whatsapp') {
+        if (!limitContactLead(req)) return json(res, 429, { error: 'Too many enquiries from this connection. Please wait an hour or contact us on WhatsApp.' });
+        const body = await readBody(req, MAX_AUTH_BODY);
+        const spamReason = contactSpamReason(body);
+        if (spamReason) return json(res, 400, { error: spamReason });
+        try {
+          const geo = await resolveClientGeo(req);
+          const lead = contactLeads.appendGeneralWhatsappLead(body, {
+            page: body.page,
+            ...geo,
+          });
+          notifyContactLead(lead);
+          return json(res, 201, { ok: true, id: lead.id, email: lead.email || '', phone: lead.phone || '' });
         } catch (err) {
           const code = err.statusCode || 400;
           return json(res, code, { error: err.message || 'Invalid enquiry' });
@@ -500,6 +620,10 @@ const server = http.createServer(async (req, res) => {
         return json(res, 200, { models: halfCut.modelMemory.getAll() });
       }
 
+      if (req.method === 'GET' && p === '/api/vehicle-catalog/learned-powertrain') {
+        return json(res, 200, halfCut.powertrainMemory.getAll());
+      }
+
       if (req.method === 'POST' && p === '/api/vehicle-catalog/remember-model') {
         if (!limitRememberModel(req)) return json(res, 429, { error: 'Too many requests' });
         const body = await readBody(req, MAX_AUTH_BODY);
@@ -556,14 +680,14 @@ const server = http.createServer(async (req, res) => {
         const test = hashPassword(password, u.salt);
         if (test.hash !== u.hash) return json(res, 401, { error: 'invalid credentials' });
         const sid = id('sess');
-        sessions.set(sid, u.id);
+        addSession(sid, u.id);
         res.writeHead(200, { 'Set-Cookie': sessionCookie(sid, 604800), 'Content-Type': 'application/json; charset=utf-8' });
         return res.end(JSON.stringify({ ok: true, role: u.role, supplierName: u.supplierName }));
       }
 
       if (req.method === 'POST' && p === '/api/logout') {
         const sid = parseCookies(req.headers.cookie).sid;
-        if (sid) sessions.delete(sid);
+        if (sid) removeSession(sid);
         res.writeHead(200, { 'Set-Cookie': sessionCookie('', 0), 'Content-Type': 'application/json; charset=utf-8' });
         return res.end(JSON.stringify({ ok: true }));
       }
@@ -720,7 +844,7 @@ const server = http.createServer(async (req, res) => {
     const slug = url.searchParams.get('slug');
     if (slug) {
       try {
-        const catalog = halfCut.getPublicCatalog();
+        const catalog = await halfCut.getPublicCatalog();
         const siteUrl = process.env.SITE_URL || 'https://asia-power.com';
         const rendered = renderHalfCutDetailPage({
           publicDir: PUBLIC_DIR,
@@ -740,7 +864,7 @@ const server = http.createServer(async (req, res) => {
 
   if (req.method === 'GET' && p === '/sitemap.xml') {
     try {
-      const catalog = halfCut.getPublicCatalog();
+      const catalog = await halfCut.getPublicCatalog();
       const xml = buildSitemapXml({
         siteUrl: process.env.SITE_URL || 'https://asia-power.com',
         publicDir: PUBLIC_DIR,
@@ -752,7 +876,7 @@ const server = http.createServer(async (req, res) => {
     }
   }
 
-  return serveStatic(req, res, p, url.search || '');
+  return await serveStatic(req, res, p, url.search || '');
 });
 
 server.listen(PORT, BIND_HOST, () => {

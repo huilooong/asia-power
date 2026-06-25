@@ -26,6 +26,8 @@
     if (page) {
       if (page.startsWith('brand-')) return 'brands';
       if (page.startsWith('engine-')) return '';
+      if (page === 'truckheads') return 'trucks';
+      if (page === 'halfcuts') return 'brands';
       return page;
     }
     const file = window.location.pathname.split('/').pop() || 'index.html';
@@ -71,41 +73,19 @@
     return `<a class="skip-link" href="#main-content">${t('skipLink', 'Skip to main content')}</a>`;
   }
 
-  function isPublicCustomerSite() {
-    return window.PublicI18n?.isSwitchablePublicPage?.() === true;
-  }
-
-  /** Supplier landing page only — not upload/admin internal tools. */
-  function isSupplierPortalLanding() {
+  /** Admin / supplier upload tools — not public marketing pages. */
+  function isInternalToolPage() {
     const page = document.body?.dataset?.page || '';
-    if (page === 'supplier') return true;
-    const file = window.location.pathname.split('/').pop() || '';
-    return file === 'supplier-portal.html';
-  }
-
-  function shouldHideTopContactBar() {
-    return isPublicCustomerSite() || isSupplierPortalLanding();
+    if (page === 'supplier-upload' || page === 'admin-review' || page === 'admin-inventory' || page === 'admin-leads' || page === 'admin-analytics') {
+      return true;
+    }
+    const path = window.location.pathname;
+    return path.includes('/admin/') || path.includes('/supplier-portal/half-cut-upload') || path.includes('/supplier-portal/truck-upload');
   }
 
   function renderTopBar() {
-    if (shouldHideTopContactBar()) return '';
-    const c = getConfig();
-    if (!c) return '';
-    return `
-      <div class="top-bar">
-        <div class="container top-bar__inner">
-          <div class="top-bar__left">
-            <span class="top-bar__badge">${t('topbar.badge', 'Global Powertrain Sourcing')}</span>
-            <span>${t('topbar.tagline', 'China Supply Network → Global Buyers')}</span>
-          </div>
-          <div class="top-bar__right">
-            <a href="https://wa.me/${c.whatsapp}" target="_blank" rel="noopener noreferrer" class="top-bar__link">
-              ${iconSvg('whatsapp')} ${c.whatsappDisplay}
-            </a>
-            <a href="mailto:${c.email}" class="top-bar__link">${iconSvg('mail')} ${c.email}</a>
-          </div>
-        </div>
-      </div>`;
+    // Top bar disabled sitewide (public + internal) — minimal header via #site-header only.
+    return '';
   }
 
   function logoImg(className, attrs, variant) {
@@ -153,7 +133,6 @@
             </div>
             ${links}
             ${switcher}
-            <a href="${href('contact.html')}" class="btn btn-accent nav__cta">${t('nav.requestQuote', 'Request Quote')}</a>
           </nav>
         </div>
       </header>`;
@@ -192,7 +171,7 @@
   function renderFooter() {
     const c = getConfig();
     if (!c) return '';
-    const showFooterContact = !isPublicCustomerSite();
+    const showFooterContact = isInternalToolPage();
     const navLinks = c.nav.map(item => `<li><a href="${href(item.href)}">${navLabel(item)}</a></li>`).join('');
 
     return `
@@ -204,12 +183,9 @@
               <p>${t('footer.ctaLead', 'Send your vehicle details — we respond within 24 hours with FOB/CIF pricing.')}</p>
             </div>
             <div class="footer__cta-actions">
-              <a href="${href('contact.html')}" class="btn btn-accent">${t('nav.requestQuote', 'Request Quote')}</a>
-              <a href="https://wa.me/${c.whatsapp}?text=${encodeURIComponent(c.whatsappMessage)}" target="_blank" rel="noopener noreferrer" class="btn btn-outline-light">
+              <a href="contact.html?product=truck" class="btn btn-accent">${t('footer.requestQuote', 'Request Truck Quote')}</a>
+              <a href="https://wa.me/${c.whatsapp}?text=${encodeURIComponent(c.whatsappTruckMessage || c.whatsappMessage)}" target="_blank" rel="noopener noreferrer" class="btn btn-outline-light">
                 ${iconSvg('whatsapp')} ${t('footer.whatsapp', 'WhatsApp Us')}
-              </a>
-              <a href="mailto:${c.email}?subject=${encodeURIComponent('AsiaPower enquiry')}" class="btn btn-outline-light">
-                ${iconSvg('mail')} ${t('footer.emailUs', 'Email Us')}
               </a>
             </div>
           </div>
@@ -231,8 +207,9 @@
               <h4>${t('footer.startHere', 'Start Here')}</h4>
               <ul>
                 <li><a href="${href('brands.html')}">${t('footer.brandDirectory', 'Brand Directory')}</a></li>
+                <li><a href="${href('guides/')}">${t('footer.buyerGuides', 'Buyer Guides')}</a></li>
                 <li><a href="${href('supplier-portal.html')}">${t('footer.supplierPortal', 'Supplier Portal')}</a></li>
-                <li><a href="${href('contact.html')}">${t('footer.requestQuote', 'Request a Quote')}</a></li>
+                <li><a href="${href('contact.html')}">${t('footer.contactUs', 'Contact Us')}</a></li>
               </ul>
             </div>
             <div class="footer__col">
@@ -265,7 +242,7 @@
     return `
       <div class="whatsapp-float">
         <span class="whatsapp-float__label">${t('whatsapp.label', 'Chat on WhatsApp')}</span>
-        <a href="https://wa.me/${c.whatsapp}?text=${encodeURIComponent(c.whatsappMessage)}" target="_blank" rel="noopener noreferrer" class="whatsapp-float__btn" aria-label="${t('whatsapp.label', 'Chat on WhatsApp')}">
+        <a href="https://wa.me/${c.whatsapp}?text=${encodeURIComponent(c.whatsappTruckMessage || c.whatsappMessage)}" target="_blank" rel="noopener noreferrer" class="whatsapp-float__btn" aria-label="${t('whatsapp.label', 'Chat on WhatsApp')}">
           ${iconSvg('whatsapp')}
         </a>
       </div>`;

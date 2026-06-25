@@ -192,6 +192,9 @@ const server = http.createServer(async (req, res) => {
       if (req.method === 'GET' && p === '/api/vehicle-catalog/learned-models') {
         return json(res, 200, { models: halfCut.modelMemory.getAll() });
       }
+      if (req.method === 'GET' && p === '/api/vehicle-catalog/learned-powertrain') {
+        return json(res, 200, halfCut.powertrainMemory.getAll());
+      }
       if (req.method === 'POST' && p === '/api/vehicle-catalog/remember-model') {
         if (!limitRememberModel(req)) return json(res, 429, { error: 'Too many requests' });
         const body = await readBody(req);

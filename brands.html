@@ -11,9 +11,17 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700;800&family=Inter:wght@400;500;600&display=swap" media="print" onload="this.media='all'">
   <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700;800&family=Inter:wght@400;500;600&display=swap"></noscript>
-  <link rel="stylesheet" href="css/styles.css?v=fix20260620">
+  <link rel="stylesheet" href="css/styles.css?v=mobile-rtl-fix-v1">
   <link rel="icon" href="assets/favicon.png" type="image/png">
   <link rel="apple-touch-icon" href="assets/favicon.png">
+  <!-- Google tag (gtag.js) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-PB2J3VRX5J"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-PB2J3VRX5J');
+  </script>
 </head>
 <body data-page="brands">
 
@@ -85,22 +93,21 @@
     <section class="brands-platform">
       <div class="container brands-platform__inner">
         <div class="brands-platform__text">
-          <span class="section-eyebrow">B2B Sourcing</span>
-          <h2>One Platform. Global Vehicle Applications.</h2>
-          <p>AsiaPower consolidates China-based supply channels for Japanese, Korean, Chinese, American and European vehicle applications — delivering inspected engines, gearboxes, chassis parts and half-cuts to importers, workshops and fleet operators worldwide.</p>
+          <span class="section-eyebrow" data-i18n="brands.platformEyebrow">B2B Sourcing</span>
+          <h2 data-i18n="brands.platformTitle">One Platform. Global Vehicle Applications.</h2>
+          <p data-i18n="brands.platformLead">AsiaPower consolidates China-based supply channels for Japanese, Korean, Chinese, American and European vehicle applications — delivering inspected engines, gearboxes, chassis parts and half-cuts to importers, workshops and fleet operators worldwide.</p>
           <ul class="brands-platform__list">
-            <li>Compression-tested engines with export documentation</li>
-            <li>Automatic, manual, CVT and 4WD gearbox supply</li>
-            <li>Chassis parts — suspension, steering, brakes and axles</li>
-            <li>Half-cut vehicles for parts extraction and rebuild programs</li>
-            <li>Container and LCL shipment to global destinations</li>
+            <li data-i18n="brands.platformLi1">Whole-vehicle startup video available before dismantling, with export documentation</li>
+            <li data-i18n="brands.platformLi2">Automatic, manual, CVT and 4WD gearbox supply</li>
+            <li data-i18n="brands.platformLi3">Chassis parts — suspension, steering, brakes and axles</li>
+            <li data-i18n="brands.platformLi4">Half-cut vehicles for parts extraction and rebuild programs</li>
+            <li data-i18n="brands.platformLi5">Container and LCL shipment to global destinations</li>
           </ul>
         </div>
         <div class="brands-platform__actions">
-          <a href="contact.html" class="btn btn-accent">Request a Quote</a>
-          <a href="engines/" class="btn btn-outline-navy">Browse Engines</a>
-          <a href="chassis-parts/" class="btn btn-outline-navy">Chassis Parts</a>
-          <a href="half-cuts/" class="btn btn-outline-navy">Half-Cuts</a>
+          <a href="engines/" class="btn btn-accent" data-i18n="brands.browseEngines">Browse Engines</a>
+          <a href="chassis-parts/" class="btn btn-outline-navy" data-i18n="brands.browseChassis">Chassis Parts</a>
+          <a href="half-cuts/" class="btn btn-outline-navy" data-i18n="nav.halfcuts">Half-Cuts</a>
         </div>
       </div>
     </section>
@@ -108,9 +115,9 @@
     <section class="section section--gray">
       <div class="container">
         <div class="section-header section-header--center">
-          <span class="section-eyebrow">Customer Journey</span>
-          <h2 class="section-title">Brand → Product Category → Quote</h2>
-          <p class="section-lead">Select a brand such as Toyota, then browse engines, gearboxes, chassis parts or half-cuts for that make. Brands with dedicated pages link directly to their full product directory.</p>
+          <span class="section-eyebrow" data-i18n="brands.journeyEyebrow">Customer Journey</span>
+          <h2 class="section-title" data-i18n="brands.journeyTitle">Brand → Product Category → Quote</h2>
+          <p class="section-lead" data-i18n="brands.journeyLead">Select a brand such as Toyota, then browse engines, gearboxes, chassis parts or half-cuts for that make. Brands with dedicated pages link directly to their full product directory.</p>
         </div>
       </div>
     </section>
@@ -118,10 +125,10 @@
     <section class="cta-block">
       <div class="container cta-block__inner">
         <div>
-          <h2>Don't See Your Brand?</h2>
-          <p>Our supplier network covers additional makes and models. Send your requirements — we source globally.</p>
+          <h2 data-i18n="brands.ctaTitle">Don't See Your Brand?</h2>
+          <p data-i18n="brands.ctaLead">Our supplier network covers additional makes and models. Send your requirements — we source globally.</p>
         </div>
-        <a href="contact.html" class="btn btn-accent">Contact Sourcing Team</a>
+        <a href="contact.html" class="btn btn-accent" data-i18n="brands.contactTeam">Contact Sourcing Team</a>
       </div>
     </section>
   </main>
@@ -129,10 +136,10 @@
   <div id="site-footer"></div>
   <div id="site-whatsapp"></div>
 
-  <script src="js/path-utils.js?v=public-ui-v1"></script>
-  <script src="js/config.js?v=logo-zh-v3"></script>
+  <script src="js/path-utils.js?v=i18n-v2"></script>
+  <script src="js/config.js?v=nav-v4"></script>
   <script src="js/seo.js"></script>
-  <script src="js/components.js?v=logo-zh-v2" defer></script>
-  <script src="js/main.js?v=public-ui-v1" defer></script>
+  <script src="js/components.js?v=seo-v1" defer></script>
+  <script src="js/main.js?v=wa-lead-v1" defer></script>
 </body>
 </html>

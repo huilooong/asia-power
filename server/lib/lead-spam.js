@@ -17,7 +17,32 @@ function isGibberishBlob(text) {
   return false;
 }
 
+const PLACEHOLDER_EMAIL_DOMAINS = new Set([
+  'example.com',
+  'example.org',
+  'example.net',
+  'example',
+  'test.com',
+  'test.test',
+  'localhost',
+  'invalid',
+]);
+
+function isPlaceholderOrTestEmail(email) {
+  const value = String(email || '').trim().toLowerCase();
+  if (!value.includes('@')) return false;
+
+  const [, domain] = value.split('@');
+  if (!domain) return false;
+
+  if (PLACEHOLDER_EMAIL_DOMAINS.has(domain)) return true;
+  if (domain.endsWith('.example') || domain.endsWith('.test') || domain.endsWith('.invalid')) return true;
+  return false;
+}
+
 function isSuspiciousEmail(email) {
+  if (isPlaceholderOrTestEmail(email)) return true;
+
   const value = String(email || '').trim().toLowerCase();
   if (!value.includes('@')) return false;
 
@@ -48,23 +73,71 @@ function gibberishFieldCount(body) {
     .length;
 }
 
-function isContactSpam(body) {
-  if (isHoneypotTriggered(body)) return true;
-  if (body.email && isSuspiciousEmail(body.email)) return true;
+function contactSpamReason(body) {
+  if (isHoneypotTriggered(body)) {
+    return 'Submission blocked. Please clear hidden autofill fields and try again, or contact us on WhatsApp.';
+  }
+  if (body.email && isPlaceholderOrTestEmail(body.email)) {
+    return 'Please use a real email address you can receive mail at.';
+  }
+  if (body.email && isSuspiciousEmail(body.email)) {
+    return 'Please check your email address and try again.';
+  }
 
   const gibberishCount = gibberishFieldCount(body);
-  if (gibberishCount >= 2) return true;
+  if (gibberishCount >= 2) {
+    return 'Please enter readable enquiry details and try again.';
+  }
 
   const name = String(body.name || '').trim();
   const vehicle = String(body.vehicle_details || body.vehicleDetails || '').trim();
-  if (isGibberishBlob(name) && isGibberishBlob(vehicle)) return true;
+  if (isGibberishBlob(name) && isGibberishBlob(vehicle)) {
+    return 'Please enter readable name and vehicle details.';
+  }
 
-  return false;
+  return '';
+}
+
+function halfCutSpamReason(body) {
+  if (isHoneypotTriggered(body)) {
+    return 'Submission blocked. Please try again or use the contact form.';
+  }
+  if (body.email && isPlaceholderOrTestEmail(body.email)) {
+    return 'Please use a real email address you can receive mail at.';
+  }
+  return '';
+}
+
+function productSpamReason(body) {
+  return halfCutSpamReason(body);
+}
+
+function isContactSpam(body) {
+  return Boolean(contactSpamReason(body));
+}
+
+function isHalfCutSpam(body) {
+  return Boolean(halfCutSpamReason(body));
+}
+
+function isProductSpam(body) {
+  return Boolean(productSpamReason(body));
+}
+
+function isLeadSpam(body) {
+  return isContactSpam(body);
 }
 
 module.exports = {
   isContactSpam,
+  isHalfCutSpam,
+  isLeadSpam,
+  contactSpamReason,
+  halfCutSpamReason,
+  productSpamReason,
+  isProductSpam,
   isGibberishBlob,
   isSuspiciousEmail,
+  isPlaceholderOrTestEmail,
   isHoneypotTriggered,
 };

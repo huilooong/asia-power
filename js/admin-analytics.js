@@ -1,54 +1,82 @@
 /**
- * AsiaPower — Admin traffic analytics
+ * AsiaPower — Admin traffic analytics + inventory review
  */
 (function () {
   'use strict';
 
+  const Admin = () => window.AdminCommon;
+  const Hub = () => window.AdminInventoryHub;
+
+  const FEEDBACK_ID = 'admin-analytics-feedback';
+  const REVIEW_TABS = new Set(['pending', 'approved', 'rejected']);
+
   function escapeHtml(str) {
-    return String(str || '')
+    return Admin()?.escapeHtml?.(str) ?? String(str || '')
       .replace(/&/g, '&amp;')
       .replace(/</g, '&lt;')
       .replace(/>/g, '&gt;')
       .replace(/"/g, '&quot;');
   }
 
-  async function ensureAdminSession() {
-    const res = await fetch('/api/me', { credentials: 'include' });
-    if (!res.ok) return null;
-    const data = await res.json();
-    return data?.role === 'admin' ? data : null;
+  function parseView() {
+    const view = new URLSearchParams(window.location.search).get('view');
+    if (view === 'traffic' || REVIEW_TABS.has(view)) return view;
+    const legacyTab = new URLSearchParams(window.location.search).get('tab');
+    if (REVIEW_TABS.has(legacyTab)) return legacyTab;
+    return 'traffic';
+  }
+
+  function setView(view, replace) {
+    const url = new URL(window.location.href);
+    url.searchParams.set('view', view);
+    url.searchParams.delete('tab');
+    url.hash = '';
+    const method = replace ? 'replaceState' : 'pushState';
+    window.history[method]({ view }, '', url.pathname + url.search);
+  }
+
+  function adminNav() {
+    return [
+      ['leads.html', 'Lead Inbox'],
+      ['inventory.html?tab=pending', 'Inventory Hub (standalone)'],
+    ].map(([href, label]) =>
+      `<a href="${href}" class="btn btn-outline-navy btn-sm">${label}</a>`
+    ).join('\n');
   }
 
   function renderLogin(root) {
     root.innerHTML = `
       <div class="admin-review-login">
         <h2>Admin Login</h2>
-        <p class="admin-review-login__hint">Traffic analytics requires administrator authentication.</p>
+        <p class="admin-review-login__hint">Analytics and inventory review require administrator authentication.</p>
         <form id="admin-login-form" class="admin-review-login__form">
           <label>Username<input type="text" name="username" required autocomplete="username"></label>
           <label>Password<input type="password" name="password" required autocomplete="current-password"></label>
           <button type="submit" class="btn btn-accent">Sign In</button>
         </form>
-        <div id="admin-login-feedback" class="supplier-upload-feedback" role="status"></div>
       </div>`;
+    Admin().ensureFeedbackBar(root, FEEDBACK_ID);
 
     document.getElementById('admin-login-form').addEventListener('submit', async (event) => {
       event.preventDefault();
-      const feedback = document.getElementById('admin-login-feedback');
-      feedback.textContent = 'Signing in…';
+      const bar = Admin().ensureFeedbackBar(root, FEEDBACK_ID);
+      Admin().showFeedback(bar, 'Signing in…', 'info');
       const body = Object.fromEntries(new FormData(event.target));
-      const res = await fetch('/api/login', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        credentials: 'include',
-        body: JSON.stringify(body),
-      });
-      if (!res.ok) {
-        feedback.textContent = 'Login failed.';
-        feedback.className = 'supplier-upload-feedback supplier-upload-feedback--error';
-        return;
+      try {
+        const res = await fetch('/api/login', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          credentials: 'include',
+          body: JSON.stringify(body),
+        });
+        const data = await res.json().catch(() => ({}));
+        if (!res.ok) throw new Error(data.error || 'Login failed');
+        if (data.role !== 'admin') throw new Error('Admin access required');
+        window.HalfCutInventoryStore?.resetReady?.();
+        boot();
+      } catch (err) {
+        Admin().showFeedback(bar, err.message || 'Login failed', 'error');
       }
-      boot();
     });
   }
 
@@ -99,58 +127,191 @@
       </section>`;
   }
 
-  async function boot() {
+  function renderTabs(activeView, counts) {
+    const pending = counts?.pending?.length ?? 0;
+    const live = counts?.inventory?.length ?? 0;
+    const rejected = counts?.rejected?.length ?? 0;
+    return `
+      <div class="admin-review-tabs supplier-bilingual" role="tablist">
+        <button type="button" class="admin-review-tab ${activeView === 'traffic' ? 'active' : ''}" data-view="traffic">
+          Traffic Analytics / 访问统计
+        </button>
+        <button type="button" class="admin-review-tab ${activeView === 'pending' ? 'active' : ''}" data-view="pending">
+          Pending Review / 待审核 ${pending ? `<span class="admin-review-tab__count">${pending}</span>` : ''}
+        </button>
+        <button type="button" class="admin-review-tab ${activeView === 'approved' ? 'active' : ''}" data-view="approved">
+          Live Inventory / 已上架 (${live})
+        </button>
+        <button type="button" class="admin-review-tab ${activeView === 'rejected' ? 'active' : ''}" data-view="rejected">
+          Rejected / 已拒绝 (${rejected})
+        </button>
+      </div>`;
+  }
+
+  let hubApi = null;
+  let activeView = 'traffic';
+  let sessionUser = null;
+
+  async function renderTrafficPane(pane) {
+    pane.innerHTML = '<p class="admin-review-empty">Loading analytics…</p>';
+    const res = await fetch('/api/analytics/summary?days=14', { credentials: 'include' });
+    if (!res.ok) throw new Error('Failed to load analytics');
+    const data = await res.json();
+    const days = Array.isArray(data.days) ? data.days : [];
+    const latest = days[0];
+
+    pane.innerHTML = `
+      <table class="admin-analytics-table">
+        <thead>
+          <tr><th>Date</th><th>Page views</th><th>Unique IPs</th><th>WhatsApp clicks</th></tr>
+        </thead>
+        <tbody>
+          ${days.length ? days.map((day) => `
+            <tr>
+              <td>${escapeHtml(day.day)}</td>
+              <td>${day.pageviews || 0}</td>
+              <td>${day.uniqueIpCount || 0}</td>
+              <td>${day.whatsappClicks || 0}</td>
+            </tr>`).join('') : '<tr><td colspan="4">No traffic recorded yet.</td></tr>'}
+        </tbody>
+      </table>
+      ${renderDayDetail(latest)}
+      <p class="admin-analytics-note">Timezone: ${escapeHtml(data.timeZone || '—')} · Bots excluded. Daily summary also sent via Telegram when scheduled.</p>`;
+  }
+
+  async function renderReviewPane(pane, tab) {
+    pane.innerHTML = '<p class="admin-review-empty">Loading inventory…</p>';
+    const hub = Hub();
+    if (!hub) throw new Error('Review module failed to load');
+    hubApi = await hub.mount(pane, {
+      activeTab: tab,
+      embedded: true,
+      feedbackId: FEEDBACK_ID,
+      feedbackRoot: document.getElementById('admin-analytics-root'),
+      onTabChange: (next) => {
+        activeView = next;
+        setView(next);
+        renderShell();
+      },
+      onAuthRequired: () => renderLogin(document.getElementById('admin-analytics-root')),
+      onCountsChange: () => renderShell(),
+    });
+  }
+
+  async function renderPane() {
+    const pane = document.getElementById('admin-analytics-pane');
+    if (!pane) return;
+    try {
+      if (activeView === 'traffic') {
+        hubApi = null;
+        await renderTrafficPane(pane);
+      } else {
+        await renderReviewPane(pane, activeView);
+      }
+    } catch (err) {
+      pane.innerHTML = `<p class="admin-review-empty">${escapeHtml(err.message || 'Failed to load')}</p>`;
+    }
+  }
+
+  function bindTabs(root) {
+    root.querySelectorAll('[data-view]').forEach((btn) => {
+      btn.addEventListener('click', () => {
+        const next = btn.dataset.view;
+        if (!next || next === activeView) return;
+        activeView = next;
+        setView(next);
+        renderShell();
+      });
+    });
+  }
+
+  async function renderShell() {
     const root = document.getElementById('admin-analytics-root');
     if (!root) return;
-    root.innerHTML = '<p class="admin-review-empty">Loading analytics…</p>';
 
-    try {
-      const res = await fetch('/api/analytics/summary?days=14', { credentials: 'include' });
-      if (!res.ok) throw new Error('Failed to load analytics');
-      const data = await res.json();
-      const days = Array.isArray(data.days) ? data.days : [];
-      const latest = days[0];
-
-      root.innerHTML = `
-        <div class="admin-leads-toolbar">
-          <div>
-            <h2>Traffic Analytics</h2>
-            <p>Timezone: ${escapeHtml(data.timeZone || '—')} · Daily page views and IP stats (bots filtered)</p>
-          </div>
-          <div class="admin-leads-toolbar__links">
-            <a href="leads.html" class="btn btn-outline-navy btn-sm">Lead Inbox</a>
-            <a href="half-cut-review.html" class="btn btn-outline-navy btn-sm">Half-Cut Review</a>
-            <a href="analytics.html" class="btn btn-outline-navy btn-sm">Analytics</a>
-            <button type="button" class="btn btn-outline-navy btn-sm" id="admin-analytics-refresh">Refresh</button>
-          </div>
-        </div>
-        <table class="admin-analytics-table">
-          <thead>
-            <tr><th>Date</th><th>Page views</th><th>Unique IPs</th><th>WhatsApp clicks</th></tr>
-          </thead>
-          <tbody>
-            ${days.length ? days.map((day) => `
-              <tr>
-                <td>${escapeHtml(day.day)}</td>
-                <td>${day.pageviews || 0}</td>
-                <td>${day.uniqueIpCount || 0}</td>
-                <td>${day.whatsappClicks || 0}</td>
-              </tr>`).join('') : '<tr><td colspan="4">No traffic recorded yet.</td></tr>'}
-          </tbody>
-        </table>
-        ${renderDayDetail(latest)}
-        <p class="admin-analytics-note">A daily summary is also sent via Telegram when <code>telegram-daily-report.js</code> is scheduled on the server.</p>`;
-
-      document.getElementById('admin-analytics-refresh')?.addEventListener('click', boot);
-    } catch (err) {
-      root.innerHTML = `<p class="admin-review-empty">${escapeHtml(err.message || 'Failed to load analytics')}</p>`;
+    let counts = { pending: [], inventory: [], rejected: [] };
+    if (window.HalfCutInventoryStore) {
+      try {
+        await window.HalfCutInventoryStore.whenReady();
+        counts = {
+          pending: window.HalfCutInventoryStore.getSubmissionsByStatus('pending'),
+          inventory: window.HalfCutInventoryStore.getApprovedInventory(),
+          rejected: window.HalfCutInventoryStore.getSubmissionsByStatus('rejected'),
+        };
+      } catch {
+        // counts stay empty until store loads in review pane
+      }
     }
+
+    const existingBar = root.querySelector(`#${FEEDBACK_ID}`);
+    root.innerHTML = `
+      <div class="admin-leads-toolbar supplier-bilingual">
+        <div>
+          <h2>Admin Dashboard · 管理后台</h2>
+          <p>
+            Traffic analytics and half-cut inventory review in one place.
+            ${sessionUser?.username ? `<span class="admin-review-meta">Signed in as <strong>${escapeHtml(sessionUser.username)}</strong></span>` : ''}
+          </p>
+          <p class="admin-review-counts">
+            <strong>${counts.pending.length}</strong> pending ·
+            <strong>${counts.inventory.length}</strong> live ·
+            <strong>${counts.rejected.length}</strong> rejected
+          </p>
+        </div>
+        <div class="admin-leads-toolbar__links">
+          ${adminNav()}
+          <button type="button" class="btn btn-outline-navy btn-sm" id="admin-analytics-refresh">Refresh</button>
+        </div>
+      </div>
+      ${renderTabs(activeView, counts)}
+      <div id="admin-analytics-pane" class="admin-review-panel"></div>`;
+
+    if (existingBar) root.prepend(existingBar);
+    else Admin().ensureFeedbackBar(root, FEEDBACK_ID);
+
+    bindTabs(root);
+    document.getElementById('admin-analytics-refresh')?.addEventListener('click', async () => {
+      window.HalfCutInventoryStore?.resetReady?.();
+      await renderShell();
+    });
+
+    await renderPane();
+  }
+
+  async function boot() {
+    const root = document.getElementById('admin-analytics-root');
+    const admin = Admin();
+    if (!root || !admin) return;
+
+    activeView = parseView();
+    sessionUser = await admin.ensureAdminSession();
+    if (!sessionUser) {
+      renderLogin(root);
+      return;
+    }
+
+    if (!window.__adminAnalyticsPopstate__) {
+      window.__adminAnalyticsPopstate__ = true;
+      window.addEventListener('popstate', () => {
+        const next = parseView();
+        if (next !== activeView) {
+          activeView = next;
+          renderShell();
+        }
+      });
+    }
+
+    await renderShell();
   }
 
   function initAdminAnalytics() {
     const root = document.getElementById('admin-analytics-root');
     if (!root) return;
-    ensureAdminSession().then((user) => {
+    if (!Admin()) {
+      root.innerHTML = '<p class="admin-review-empty">Admin scripts failed to load. Hard-refresh the page.</p>';
+      return;
+    }
+    Admin().ensureAdminSession().then((user) => {
       if (user) boot();
       else renderLogin(root);
     });

@@ -217,11 +217,31 @@
       .replace(/^-+|-+$/g, '');
   }
 
+  function catalogCutLabel(item) {
+    if (item?.truckPartType === 'cab') return 'Driver Cab';
+    if (item?.vehicleCategory === 'truck') return 'Truck Half Cut';
+    if (item?.vehicleCategory === 'machinery') {
+      return item?.vehicleCondition || window.MachineryBrandCatalog?.typeLabel?.(item?.machineryType) || 'Construction Equipment';
+    }
+    return item?.vehicleCondition || 'Half Cut';
+  }
+
+  function catalogSlugCutSegment(item) {
+    if (item?.vehicleCategory === 'truck') {
+      return item?.truckPartType === 'cab' ? 'truck-cab' : 'truck-half-cut';
+    }
+    if (item?.vehicleCategory === 'machinery') {
+      const type = String(item?.machineryType || 'equipment').trim() || 'equipment';
+      return `machinery-${type}`;
+    }
+    return 'half-cut';
+  }
+
   function rebuildInventoryDerivedFields(item) {
     if (!item || !item.stockId) return item;
     const next = { ...item };
     if (next.brand && next.model && next.engineCode) {
-      next.title = `${next.brand} ${next.model} ${next.engineCode} Half Cut`;
+      next.title = `${next.brand} ${next.model} ${next.engineCode} ${catalogCutLabel(next)}`;
     }
     if (next.brandSlug && next.model && next.year && next.engineCode) {
       next.slug = [
@@ -229,12 +249,17 @@
         slugifyPart(next.model),
         next.year,
         slugifyPart(next.engineCode),
-        'half-cut',
+        catalogSlugCutSegment(next),
         String(next.stockId).toLowerCase(),
       ].filter(Boolean).join('-');
     }
     if (next.brand && next.model && next.year && next.engineCode) {
-      const autoDesc = `${next.year} ${next.brand} ${next.model} with ${next.engineCode} — supplier-verified listing via AsiaPower.`;
+      const vehicleHint = next.vehicleCategory === 'truck'
+        ? 'light truck'
+        : (next.vehicleCategory === 'machinery'
+          ? (next.vehicleCondition || 'construction equipment').toLowerCase()
+          : 'vehicle');
+      const autoDesc = `${next.year} ${next.brand} ${next.model} ${vehicleHint} with ${next.engineCode} — supplier-verified listing via AsiaPower.`;
       if (!next.shortDescription || /supplier-verified listing via AsiaPower/i.test(next.shortDescription)) {
         next.shortDescription = autoDesc;
       }

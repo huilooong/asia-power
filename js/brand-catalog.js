@@ -35,6 +35,7 @@
     gm: ['L2B', 'F16D3', 'F18D4', 'LE5', 'LAF', 'LUJ'],
     vwGroup: ['EA111', 'EA211', 'EA113', 'EA888', 'CAYC', 'CBZ', 'CDA', 'BWA'],
     bmw: ['N42', 'N46', 'N52', 'N54', 'N55', 'B48', 'B58'],
+    porsche: ['M96', 'MA1', '9A1', '9A2', '9A3', 'MCT', 'PDK'],
     mercedes: ['M111', 'M112', 'M113', 'M271', 'M272', 'M274', 'M276'],
     lexus: ['2GR-FE', '1GR-FE', '1UR-FSE', '2UR-FSE', '3UR-FBE', '1NZ-FE', '2AR-FE', '8AR-FTS'],
     acura: ['K24A', 'J35A', 'R20A', 'L15B', 'J30A', 'K20A'],
@@ -363,6 +364,12 @@
       E.bmw,
       'MINI models use BMW Group engine architecture. AsiaPower supplies MINI-compatible N and B engine units, gearboxes and chassis parts for Cooper, Countryman and Clubman programs.'
     ),
+    porsche: brand(
+      'Porsche', 'porsche', 'P', 'Germany',
+      'Porsche flat-six and turbo engines, PDK gearboxes, chassis parts and half-cuts for global export.',
+      E.porsche,
+      'AsiaPower sources Porsche M96, MA1 and 9A engine families, PDK transmissions, chassis components and half-cuts for 911, Cayenne, Macan, Panamera and Taycan applications.'
+    ),
     ssangyong: brand(
       'Ssangyong', 'ssangyong', 'S', 'South Korea',
       'Ssangyong diesel engines, gearboxes, chassis parts and half-cuts — Rexton, Korando and Musso applications.',
@@ -377,5 +384,27 @@
     ),
   };
 
+  function normEngineCode(value) {
+    return String(value || '').trim().toUpperCase().replace(/[\s-]+/g, '');
+  }
+
+  function mergeLearnedPopularEngines(map) {
+    if (!map || typeof map !== 'object') return;
+    Object.entries(map).forEach(([slug, entries]) => {
+      if (!Array.isArray(entries) || !entries.length) return;
+      const brand = BRAND_CATALOG[slug];
+      if (!brand) return;
+      const known = new Set((brand.popularEngines || []).map(normEngineCode));
+      entries.forEach((entry) => {
+        const code = String(entry.code || entry).trim();
+        if (!code || known.has(normEngineCode(code))) return;
+        known.add(normEngineCode(code));
+        brand.popularEngines.push(code);
+      });
+      brand.popularEngines.sort((a, b) => a.localeCompare(b, undefined, { sensitivity: 'base' }));
+    });
+  }
+
   window.BRAND_CATALOG = BRAND_CATALOG;
+  window.mergeLearnedPopularEngines = mergeLearnedPopularEngines;
 })();

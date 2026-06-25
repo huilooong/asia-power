@@ -52,10 +52,33 @@
   }
 
   function submissionToInventory(submission, helpers) {
-    const norm = window.VehicleNameNormalize?.normalizeVehicleNames?.(submission.brand, submission.model);
-    const brand = norm?.brand || submission.brand;
-    const model = norm?.model || submission.model;
-    const brandSlug = norm?.brandSlug || submission.brandSlug || Vin().brandToSlug(brand);
+    const meta = Upload()?.resolveListingMeta?.(submission) || {
+      vehicleCategory: submission.vehicleCategory === 'truck' ? 'truck' : 'passenger',
+      truckPartType: submission.vehicleCategory === 'truck'
+        ? (submission.truckPartType === 'cab' ? 'cab' : 'vehicle')
+        : '',
+      vehicleCondition: submission.vehicleCondition || 'Half Cut',
+    };
+    const isTruck = meta.vehicleCategory === 'truck';
+    const isMachinery = meta.vehicleCategory === 'machinery';
+    let brand = submission.brand;
+    let model = submission.model;
+    let brandSlug = submission.brandSlug;
+    let norm = null;
+    if (isTruck && window.TruckBrandCatalog) {
+      brand = window.TruckBrandCatalog.resolveBrand(brand) || brand;
+      brandSlug = window.TruckBrandCatalog.brandToSlug(brand);
+      model = String(model || '').trim();
+    } else if (isMachinery && window.MachineryBrandCatalog) {
+      brand = window.MachineryBrandCatalog.resolveBrand(brand) || brand;
+      brandSlug = window.MachineryBrandCatalog.brandToSlug(brand);
+      model = String(model || '').trim();
+    } else {
+      norm = window.VehicleNameNormalize?.normalizeVehicleNames?.(submission.brand, submission.model);
+      brand = norm?.brand || submission.brand;
+      model = norm?.model || submission.model;
+      brandSlug = norm?.brandSlug || submission.brandSlug || Vin().brandToSlug(brand);
+    }
     const stockId = helpers.nextStockId();
     const mileage = helpers.formatMileage(submission.mileage);
     const photos = helpers.normalizePhotos(submission.photos);
@@ -65,7 +88,10 @@
       stockId,
       vin: submission.vin,
       decodeMethod: submission.decodeMethod,
-      vehicleCondition: submission.vehicleCondition || 'Half Cut',
+      vehicleCondition: meta.vehicleCondition,
+      vehicleCategory: meta.vehicleCategory,
+      truckPartType: meta.truckPartType,
+      machineryType: meta.machineryType || submission.machineryType || '',
       brand,
       brandSlug,
       model,

@@ -9,12 +9,18 @@
     photos: 'Request Photos',
     similar: 'Request Similar Unit',
     whatsapp: 'WhatsApp Enquiry',
+    'whatsapp-quote': 'WhatsApp Quote',
+    quote: 'Quote Request',
     availability: 'Check Availability',
   };
 
   const ENQUIRY_LABELS = {
+    'truck-head': 'Truck Head / Cab Quote',
     engine: 'Engine Quote',
     gearbox: 'Gearbox Quote',
+    'truck-parts': 'Truck Parts Quote',
+    'half-cut': 'Half-cut Quote',
+    chassis: 'Chassis Parts Quote',
     powertrain: 'Engine + Gearbox Set',
     bulk: 'Bulk / Container Order',
     partnership: 'B2B Partnership',
@@ -70,7 +76,7 @@
     const res = await fetch('/api/me', { credentials: 'include' });
     if (!res.ok) return null;
     const data = await res.json();
-    return data?.role === 'admin' ? data : null;
+    return data?.user?.role === 'admin' ? data.user : null;
   }
 
   function renderLogin(root) {
@@ -100,7 +106,7 @@
       });
       if (!res.ok) {
         feedback.textContent = 'Login failed.';
-        feedback.className = 'supplier-upload-feedback supplier-upload-feedback--error';
+        feedback.className = 'admin-page-feedback admin-page-feedback--error';
         return;
       }
       boot();
@@ -109,7 +115,16 @@
 
   function leadTitle(lead) {
     if (lead.source === 'half-cut') {
-      return `${lead.stockId || 'Half-cut'} · ${intentLabel(lead.intent)}`;
+      const contact = displayValue(lead.phone) !== '—'
+        ? displayValue(lead.phone)
+        : (displayValue(lead.email) !== '—' ? displayValue(lead.email) : 'No contact');
+      return `${contact} · ${lead.stockId || 'Half-cut'} · ${intentLabel(lead.intent)}`;
+    }
+    if (lead.source === 'product-catalog') {
+      const contact = displayValue(lead.phone) !== '—'
+        ? displayValue(lead.phone)
+        : (displayValue(lead.email) !== '—' ? displayValue(lead.email) : 'No contact');
+      return `${contact} · ${lead.enquiryType || 'Product'} · ${lead.model || lead.brand || 'Catalog'}`;
     }
     return `${lead.name || 'Contact lead'} · ${enquiryLabel(lead.enquiryType)}`;
   }
@@ -119,7 +134,20 @@
     if (lead.replyChannel === 'email') {
       return '<span class="admin-lead-card__status admin-lead-card__status--email">Email reply</span>';
     }
+    if (lead.whatsappStatus === 'sent') {
+      return '<span class="admin-lead-card__status admin-lead-card__status--replied">WhatsApp sent</span>';
+    }
+    if (lead.whatsappStatus === 'pending_send') {
+      return '<span class="admin-lead-card__status admin-lead-card__status--pending">WhatsApp pending</span>';
+    }
     return '<span class="admin-lead-card__status">Open</span>';
+  }
+
+  function whatsappStatusLabel(status) {
+    if (status === 'not_applicable') return 'Email reply only';
+    if (status === 'sent') return 'WhatsApp confirmed';
+    if (status === 'unknown') return 'WhatsApp unknown';
+    return 'WhatsApp not confirmed';
   }
 
   function specRow(label, valueHtml) {
@@ -158,24 +186,35 @@
     const email = displayValue(lead.email);
     const wa = whatsappUrl(lead.phone);
     const replyVia = lead.replyChannel === 'email' ? 'Email' : 'WhatsApp';
+    const phoneCell = phone !== '—' && wa
+      ? linkValue(wa, phone, 'admin-lead-card__link')
+      : escapeHtml(phone);
 
     return `
       <dl class="admin-review-specs admin-lead-card__specs">
         ${specRow('Name', escapeHtml(displayValue(lead.name)))}
         ${specRow('Company', escapeHtml(displayValue(lead.company)))}
-        ${specRow('Phone / WhatsApp', linkValue(wa, phone, 'admin-lead-card__link'))}
+        ${specRow('Phone / WhatsApp', phoneCell)}
         ${specRow('Email', linkValue(email && email !== '—' ? `mailto:${email}` : '', email, 'admin-lead-card__link'))}
         ${specRow('Country (form)', escapeHtml(displayValue(lead.country)))}
         ${renderVisitorLocationRows(lead)}
         ${specRow('Enquiry type', escapeHtml(enquiryLabel(lead.enquiryType)))}
         ${specRow('Reply via', escapeHtml(replyVia))}
+        ${lead.replyChannel !== 'email' ? specRow('WhatsApp status', escapeHtml(whatsappStatusLabel(lead.whatsappStatus))) : specRow('Follow-up', 'Reply by email')}
         ${specRow('Reference', `<code class="admin-lead-card__code">${escapeHtml(lead.id)}</code>`)}
       </dl>`;
   }
 
   function renderHalfCutSpecs(lead) {
+    const phone = displayValue(lead.phone);
+    const email = displayValue(lead.email);
+    const wa = whatsappUrl(lead.phone, lead);
     return `
       <dl class="admin-review-specs admin-lead-card__specs">
+        ${specRow('Name', escapeHtml(displayValue(lead.name)))}
+        ${specRow('Phone / WhatsApp', linkValue(wa, phone, 'admin-lead-card__link'))}
+        ${specRow('Email', linkValue(email && email !== '—' ? `mailto:${email}` : '', email, 'admin-lead-card__link'))}
+        ${specRow('Country', escapeHtml(displayValue(lead.country)))}
         ${specRow('Stock ID', escapeHtml(displayValue(lead.stockId)))}
         ${specRow('Intent', escapeHtml(intentLabel(lead.intent)))}
         ${specRow('Vehicle', escapeHtml(`${displayValue(lead.brand)} ${displayValue(lead.model)}`.trim()))}
@@ -184,6 +223,7 @@
         ${specRow('Listing status', escapeHtml(displayValue(lead.listingStatus)))}
         ${specRow('Slug', escapeHtml(displayValue(lead.slug)))}
         ${renderVisitorLocationRows(lead)}
+        ${specRow('WhatsApp status', escapeHtml(whatsappStatusLabel(lead.whatsappStatus)))}
         ${specRow('Reference', `<code class="admin-lead-card__code">${escapeHtml(lead.id)}</code>`)}
       </dl>`;
   }
@@ -197,12 +237,27 @@
     return `IP: ${lead.clientIp}`;
   }
 
+  function buildEmailReplyUrl(lead) {
+    const to = String(lead.email || '').trim();
+    if (!to) return '';
+    const subject = encodeURIComponent(`Re: AsiaPower enquiry — ${lead.id}`);
+    const greeting = lead.name ? `Hi ${lead.name},\n\n` : 'Hello,\n\n';
+    const body = encodeURIComponent(
+      `${greeting}Thank you for your enquiry with AsiaPower.\n\n${buildSummaryText(lead)}\n\nBest regards,\nAsiaPower Team`
+    );
+    return `mailto:${to}?subject=${subject}&body=${body}`;
+  }
+
   function buildSummaryText(lead) {
     if (lead.source === 'half-cut') {
       return [
         'Hello AsiaPower, following up on a half-cut enquiry.',
         '',
         `Reference: ${lead.id}`,
+        lead.name ? `Name: ${lead.name}` : '',
+        lead.phone ? `Phone: ${lead.phone}` : '',
+        lead.email ? `Email: ${lead.email}` : '',
+        lead.country ? `Country: ${lead.country}` : '',
         `Stock: ${lead.stockId || '—'}`,
         `Vehicle: ${lead.brand || '—'} ${lead.model || ''}`.trim(),
         `Engine: ${lead.engineCode || '—'} / ${lead.transmissionCode || '—'}`,
@@ -210,6 +265,35 @@
         ipSummaryLine(lead),
         lead.page ? `Page: ${lead.page}` : '',
       ].filter(Boolean).join('\n');
+    }
+
+    if (lead.source === 'product-catalog') {
+      return [
+        'Hello AsiaPower, following up on a product catalog enquiry.',
+        '',
+        `Reference: ${lead.id}`,
+        lead.name ? `Name: ${lead.name}` : '',
+        lead.phone ? `Phone: ${lead.phone}` : '',
+        lead.email ? `Email: ${lead.email}` : '',
+        lead.country ? `Country: ${lead.country}` : '',
+        `Category: ${lead.enquiryType || '—'}`,
+        `Brand: ${lead.brand || '—'}`,
+        `Product: ${lead.model || '—'}`,
+        ipSummaryLine(lead),
+        lead.page ? `Page: ${lead.page}` : '',
+      ].filter(Boolean).join('\n');
+    }
+
+    const structuredMessage = String(lead.message || '').trim();
+    if (structuredMessage.includes('Category:') && structuredMessage.includes('Destination country:')) {
+      const lines = [
+        structuredMessage,
+        '',
+        `Reference: ${lead.id}`,
+        lead.page ? `Page: ${lead.page}` : '',
+        ipSummaryLine(lead),
+      ].filter(Boolean);
+      return lines.join('\n');
     }
 
     return [
@@ -233,8 +317,13 @@
   function renderLeadCard(lead) {
     const replied = lead.replyStatus === 'replied';
     const isHalfCut = lead.source === 'half-cut';
-    const wa = !isHalfCut ? whatsappUrl(lead.phone, lead) : '';
-    const email = !isHalfCut && lead.email ? `mailto:${lead.email}` : '';
+    const isProductCatalog = lead.source === 'product-catalog';
+    const sourceLabel = isHalfCut
+      ? 'Half-cut'
+      : (isProductCatalog ? 'Product catalog' : (lead.source === 'quote-form' ? 'Quote form' : 'Contact form'));
+    const wa = whatsappUrl(lead.phone, lead);
+    const emailReply = buildEmailReplyUrl(lead);
+    const emailOnly = lead.replyChannel === 'email';
 
     return `
       <article class="admin-review-card admin-lead-card${replied ? ' admin-lead-card--replied' : ''}" data-lead-id="${escapeHtml(lead.id)}">
@@ -243,7 +332,7 @@
             <h3>${escapeHtml(leadTitle(lead))}</h3>
             <p class="admin-lead-card__meta">
               ${escapeHtml(formatDate(lead.createdAt))}
-              · ${escapeHtml(isHalfCut ? 'Half-cut' : 'Contact form')}
+              · ${escapeHtml(sourceLabel)}
               · ${escapeHtml(lead.id)}
             </p>
           </div>
@@ -252,7 +341,7 @@
 
         ${isHalfCut ? renderHalfCutSpecs(lead) : renderContactSpecs(lead)}
 
-        ${isHalfCut ? '' : `
+        ${isHalfCut || isProductCatalog ? '' : `
           <section class="admin-lead-card__block">
             <h4>Vehicle / Part Details</h4>
             ${multilineHtml(lead.vehicleDetails)}
@@ -266,9 +355,9 @@
 
         <div class="admin-lead-card__actions">
           ${replied ? '' : `<button type="button" class="btn btn-accent btn-sm" data-mark-replied="${escapeHtml(lead.id)}">Mark Replied</button>`}
+          ${emailReply && !replied ? `<a href="${escapeHtml(emailReply)}" class="btn ${emailOnly ? 'btn-accent' : 'btn-outline-navy'} btn-sm">Reply by Email</a>` : ''}
           <button type="button" class="btn btn-outline-navy btn-sm" data-copy-summary="${escapeHtml(lead.id)}">Copy Summary</button>
-          ${wa ? `<a href="${escapeHtml(wa)}" class="btn btn-whatsapp btn-sm" target="_blank" rel="noopener">WhatsApp</a>` : ''}
-          ${email ? `<a href="${escapeHtml(email)}" class="btn btn-outline-navy btn-sm">Email</a>` : ''}
+          ${wa && !emailOnly ? `<a href="${escapeHtml(wa)}" class="btn btn-whatsapp btn-sm" target="_blank" rel="noopener">WhatsApp</a>` : ''}
           ${lead.slug ? `<a href="../half-cuts/detail.html?slug=${encodeURIComponent(lead.slug)}" class="btn btn-outline-navy btn-sm" target="_blank" rel="noopener">View Listing</a>` : ''}
           <button type="button" class="btn btn-outline-navy btn-sm admin-lead-card__delete" data-delete-lead="${escapeHtml(lead.id)}">Delete</button>
         </div>
@@ -282,6 +371,7 @@
       if (filter === 'replied' && lead.replyStatus !== 'replied') return false;
       if (filter === 'contact' && lead.source !== 'contact-form') return false;
       if (filter === 'half-cut' && lead.source !== 'half-cut') return false;
+      if (filter === 'catalog' && lead.source !== 'product-catalog') return false;
       if (filter === 'email' && lead.replyChannel !== 'email') return false;
 
       if (!q) return true;
@@ -370,18 +460,20 @@
       const repliedCount = leads.filter((lead) => lead.replyStatus === 'replied').length;
       const contactCount = leads.filter((lead) => lead.source === 'contact-form').length;
       const halfCutCount = leads.filter((lead) => lead.source === 'half-cut').length;
+      const catalogCount = leads.filter((lead) => lead.source === 'product-catalog').length;
       const emailCount = leads.filter((lead) => lead.replyChannel === 'email').length;
 
       root.innerHTML = `
+        <div id="admin-leads-feedback" class="admin-page-feedback" role="status" aria-live="polite" hidden></div>
         <div class="admin-leads-toolbar">
           <div>
             <h2>Lead Inbox</h2>
             <p>${openCount} open · ${repliedCount} replied · ${leads.length} total</p>
           </div>
           <div class="admin-leads-toolbar__links">
-            <a href="half-cut-review.html" class="btn btn-outline-navy btn-sm">Half-Cut Review</a>
+            <a href="inventory.html?tab=pending" class="btn btn-outline-navy btn-sm">Inventory Hub</a>
+            <a href="inventory.html?tab=approved" class="btn btn-outline-navy btn-sm">Live Inventory</a>
             <a href="analytics.html" class="btn btn-outline-navy btn-sm">Analytics</a>
-            <a href="leads.html" class="btn btn-outline-navy btn-sm">Lead Inbox</a>
             <button type="button" class="btn btn-outline-navy btn-sm" id="admin-leads-refresh">Refresh</button>
           </div>
         </div>
@@ -391,6 +483,7 @@
             ${renderFilterButton('open', 'Open', openCount)}
             ${renderFilterButton('contact', 'Contact', contactCount)}
             ${renderFilterButton('half-cut', 'Half-cut', halfCutCount)}
+            ${renderFilterButton('catalog', 'Catalog', catalogCount)}
             ${renderFilterButton('email', 'Email reply', emailCount)}
             ${renderFilterButton('replied', 'Replied', repliedCount)}
             ${renderFilterButton('all', 'All', leads.length)}
@@ -404,8 +497,7 @@
           ${filtered.length
             ? filtered.map(renderLeadCard).join('')
             : `<p class="admin-review-empty">No leads match this filter${query ? ' or search' : ''}.</p>`}
-        </div>
-        <div id="admin-leads-feedback" class="supplier-upload-feedback" role="status" aria-live="polite"></div>`;
+        </div>`;
 
       const leadMap = new Map(leads.map((lead) => [lead.id, lead]));
 
@@ -432,14 +524,18 @@
           try {
             await markReplied(markBtn.dataset.markReplied);
             if (feedback) {
+              feedback.hidden = false;
               feedback.textContent = 'Lead marked as replied.';
-              feedback.className = 'supplier-upload-feedback supplier-upload-feedback--success';
+              feedback.className = 'admin-page-feedback admin-page-feedback--success';
+              feedback.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
             }
             boot();
           } catch (err) {
             if (feedback) {
+              feedback.hidden = false;
               feedback.textContent = err.message || 'Update failed';
-              feedback.className = 'supplier-upload-feedback supplier-upload-feedback--error';
+              feedback.className = 'admin-page-feedback admin-page-feedback--error';
+              feedback.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
             }
           }
           return;
@@ -451,14 +547,18 @@
           try {
             await deleteLead(deleteBtn.dataset.deleteLead);
             if (feedback) {
+              feedback.hidden = false;
               feedback.textContent = 'Lead deleted.';
-              feedback.className = 'supplier-upload-feedback supplier-upload-feedback--success';
+              feedback.className = 'admin-page-feedback admin-page-feedback--success';
+              feedback.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
             }
             boot();
           } catch (err) {
             if (feedback) {
+              feedback.hidden = false;
               feedback.textContent = err.message || 'Delete failed';
-              feedback.className = 'supplier-upload-feedback supplier-upload-feedback--error';
+              feedback.className = 'admin-page-feedback admin-page-feedback--error';
+              feedback.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
             }
           }
           return;
@@ -471,13 +571,17 @@
         try {
           await copySummary(lead);
           if (feedback) {
+            feedback.hidden = false;
             feedback.textContent = 'Summary copied to clipboard.';
-            feedback.className = 'supplier-upload-feedback supplier-upload-feedback--success';
+            feedback.className = 'admin-page-feedback admin-page-feedback--success';
+            feedback.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
           }
         } catch (err) {
           if (feedback) {
+            feedback.hidden = false;
             feedback.textContent = err.message || 'Copy failed';
-            feedback.className = 'supplier-upload-feedback supplier-upload-feedback--error';
+            feedback.className = 'admin-page-feedback admin-page-feedback--error';
+            feedback.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
           }
         }
       });

@@ -5,6 +5,7 @@ const { clientIp } = require('./rate-limit');
 
 const CACHE = new Map();
 const CACHE_TTL_MS = 24 * 60 * 60 * 1000;
+const CACHE_MAX = 3000;
 const LOOKUP_TIMEOUT_MS = 2500;
 
 function isPrivateIp(ip) {
@@ -27,6 +28,10 @@ function cacheGet(ip) {
 }
 
 function cacheSet(ip, value) {
+  if (CACHE.size >= CACHE_MAX) {
+    const first = CACHE.keys().next().value;
+    if (first) CACHE.delete(first);
+  }
   CACHE.set(ip, { value, expiresAt: Date.now() + CACHE_TTL_MS });
 }
 

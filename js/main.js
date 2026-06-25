@@ -4,6 +4,10 @@
 (function () {
   'use strict';
 
+  function t(key, fallback) {
+    return window.PublicI18n?.t(key, fallback) ?? fallback;
+  }
+
   function initMobileNav() {
     const toggle = document.querySelector('.menu-toggle');
     const nav = document.querySelector('.nav');
@@ -37,7 +41,7 @@
       toggle.setAttribute('aria-label', open ? 'Close menu' : 'Open menu');
     });
 
-    nav.querySelectorAll('.nav__link, .nav__cta, .lang-switcher__btn').forEach(el => {
+    nav.querySelectorAll('.nav__link, .lang-switcher__btn').forEach(el => {
       el.addEventListener('click', () => setNavOpen(false));
     });
 
@@ -119,12 +123,103 @@
     if (btn) btn.click();
   }
 
+  function contactPhoneE164(form) {
+    const raw = form.querySelector('[name="phone"]')?.value || '';
+    if (window.AsiaPhone?.toE164) return window.AsiaPhone.toE164(raw);
+    const digits = String(raw).replace(/\D/g, '');
+    return digits ? `+${digits}` : '';
+  }
+
+  function isValidPhone(value, country) {
+    if (window.AsiaPhone?.validatePhone) {
+      return window.AsiaPhone.validatePhone(value, country).ok;
+    }
+    if (window.SiteFeedback?.isValidPhoneWithCountryCode) {
+      return window.SiteFeedback.isValidPhoneWithCountryCode(value, country);
+    }
+    const raw = String(value || '').trim();
+    if (!raw.startsWith('+')) return false;
+    const digits = raw.replace(/[^\d]/g, '');
+    return digits.length >= 8 && digits.length <= 15;
+  }
+
+  function validateContactReachable(form) {
+    const country = fieldValue(form, 'country');
+    const email = fieldValue(form, 'email').trim();
+    const phoneRaw = form.querySelector('[name="phone"]')?.value || '';
+
+    if (!email) {
+      presentFeedback(form, {
+        type: 'error',
+        title: t('leadContact.title', 'Your contact details'),
+        message: t('leadContact.emailRequired', 'Please enter your email address so we can reply.'),
+      });
+      form.querySelector('[name="email"]')?.focus();
+      return false;
+    }
+
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+      presentFeedback(form, {
+        type: 'error',
+        title: t('leadContact.title', 'Your contact details'),
+        message: t('leadContact.emailInvalid', 'Please enter a valid email address.'),
+      });
+      form.querySelector('[name="email"]')?.focus();
+      return false;
+    }
+
+    if (window.SiteFeedback?.isPlaceholderOrTestEmail?.(email)) {
+      presentFeedback(form, {
+        type: 'error',
+        title: t('leadContact.title', 'Your contact details'),
+        message: t('leadContact.emailPlaceholder', 'Please use a real email address you can receive mail at. Test addresses such as test@example.com cannot be submitted.'),
+      });
+      form.querySelector('[name="email"]')?.focus();
+      return false;
+    }
+
+    if (!phoneRaw.trim()) return true;
+
+    const phone = contactPhoneE164(form);
+    const phoneCheck = window.AsiaPhone?.validatePhone
+      ? window.AsiaPhone.validatePhone(phoneRaw, country)
+      : null;
+    if (phoneCheck && !phoneCheck.ok) {
+      presentFeedback(form, {
+        type: 'error',
+        title: t('leadContact.title', 'Your contact details'),
+        message: phoneCheck.message,
+      });
+      form.querySelector('[name="phone"]')?.focus();
+      return false;
+    }
+    if (!phoneCheck && !isValidPhone(phone, country)) {
+      presentFeedback(form, {
+        type: 'error',
+        title: t('leadContact.title', 'Your contact details'),
+        message: t('leadContact.phoneInvalid', 'Enter a valid international phone number.'),
+      });
+      form.querySelector('[name="phone"]')?.focus();
+      return false;
+    }
+
+    const phoneField = form.querySelector('[name="phone"]');
+    if (phoneField && phoneCheck?.phone) phoneField.dataset.e164 = phoneCheck.phone;
+    return true;
+  }
+
+  function phoneFieldHost(field) {
+    return field.closest('.form-group') || field.closest('.site-modal__field') || field.parentElement;
+  }
+
   function validateForm(form) {
     let ok = true;
+    const country = form.querySelector('[name="country"]')?.value || '';
+    const isContactForm = form.dataset.form === 'contact-enquiry';
     form.querySelectorAll('[required]').forEach(field => {
       field.style.borderColor = '';
-      const err = field.parentElement.querySelector('.field-err');
-      if (err) err.remove();
+      const host = phoneFieldHost(field);
+      host?.querySelectorAll('.field-err').forEach((el) => el.remove());
 
       if (!field.value.trim()) {
         ok = false;
@@ -133,12 +228,90 @@
         span.className = 'field-err';
         span.style.cssText = 'color:var(--danger);font-size:.75rem;margin-top:4px;display:block;';
         span.textContent = 'Required';
-        field.parentElement.appendChild(span);
-      } else if (field.type === 'email' && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(field.value)) {
+        host?.appendChild(span);
+      } else if (field.type === 'email' && field.value.trim() && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(field.value)) {
         ok = false;
         field.style.borderColor = 'var(--danger)';
+        const span = document.createElement('span');
+        span.className = 'field-err';
+        span.style.cssText = 'color:var(--danger);font-size:.75rem;margin-top:4px;display:block;';
+        span.textContent = t('leadContact.emailInvalid', 'Please enter a valid email address.');
+        host?.appendChild(span);
       }
     });
+
+    if (isContactForm) {
+      const emailField = form.querySelector('[name="email"]');
+      const phoneField = form.querySelector('[name="phone"]');
+      if (phoneField?.value.trim()) {
+        phoneField.style.borderColor = '';
+        phoneField.removeAttribute('aria-invalid');
+        const host = phoneFieldHost(phoneField);
+        host?.querySelectorAll('.field-err').forEach((el) => el.remove());
+        const phoneCheck = window.AsiaPhone?.validatePhone
+          ? window.AsiaPhone.validatePhone(phoneField.value, country)
+          : null;
+        if (phoneCheck && !phoneCheck.ok) {
+          ok = false;
+          phoneField.style.borderColor = 'var(--danger)';
+          phoneField.setAttribute('aria-invalid', 'true');
+          const span = document.createElement('span');
+          span.className = 'field-err';
+          span.style.cssText = 'color:var(--danger);font-size:.75rem;margin-top:4px;display:block;';
+          span.textContent = phoneCheck.message;
+          host?.appendChild(span);
+        } else if (!phoneCheck && !isValidPhone(contactPhoneE164(form), country)) {
+          ok = false;
+          phoneField.style.borderColor = 'var(--danger)';
+          phoneField.setAttribute('aria-invalid', 'true');
+          const span = document.createElement('span');
+          span.className = 'field-err';
+          span.style.cssText = 'color:var(--danger);font-size:.75rem;margin-top:4px;display:block;';
+          span.textContent = t('leadContact.phoneInvalid', 'Enter a valid international phone number.');
+          host?.appendChild(span);
+        }
+      }
+      return ok && !!emailField?.value.trim();
+    }
+
+    const phoneField = form.querySelector('[name="phone"]');
+    if (phoneField && !isContactForm && phoneField.value.trim()) {
+      phoneField.style.borderColor = '';
+      phoneField.removeAttribute('aria-invalid');
+      const host = phoneFieldHost(phoneField);
+      host?.querySelectorAll('.field-err').forEach((el) => el.remove());
+
+      const phoneCheck = window.AsiaPhone?.validatePhone
+        ? window.AsiaPhone.validatePhone(phoneField.value, country)
+        : null;
+      if (!phoneField.value.trim()) {
+        ok = false;
+        phoneField.style.borderColor = 'var(--danger)';
+        const span = document.createElement('span');
+        span.className = 'field-err';
+        span.style.cssText = 'color:var(--danger);font-size:.75rem;margin-top:4px;display:block;';
+        span.textContent = t('leadContact.phoneRequired', 'Please enter your phone number.');
+        host?.appendChild(span);
+      } else if (phoneCheck && !phoneCheck.ok) {
+        ok = false;
+        phoneField.style.borderColor = 'var(--danger)';
+        phoneField.setAttribute('aria-invalid', 'true');
+        const span = document.createElement('span');
+        span.className = 'field-err';
+        span.style.cssText = 'color:var(--danger);font-size:.75rem;margin-top:4px;display:block;';
+        span.textContent = phoneCheck.message;
+        host?.appendChild(span);
+      } else if (!phoneCheck && !isValidPhone(contactPhoneE164(form), country)) {
+        ok = false;
+        phoneField.style.borderColor = 'var(--danger)';
+        phoneField.setAttribute('aria-invalid', 'true');
+        const span = document.createElement('span');
+        span.className = 'field-err';
+        span.style.cssText = 'color:var(--danger);font-size:.75rem;margin-top:4px;display:block;';
+        span.textContent = t('leadContact.phoneInvalid', 'Enter a valid international phone number.');
+        host?.appendChild(span);
+      }
+    }
 
     const terms = form.querySelector('[data-terms]');
     if (terms && !terms.checked) ok = false;
@@ -147,8 +320,12 @@
   }
 
   function fieldValue(form, name) {
+    if (name === 'email' && form.dataset.form === 'contact-enquiry') {
+      return form.querySelector('#contact-email, [name="email"]')?.value?.trim() || '';
+    }
     const field = form.elements[name];
-    return field?.value?.trim() || '';
+    if (field && typeof field.value === 'string') return field.value.trim();
+    return field?.value?.trim?.() || '';
   }
 
   function optionText(form, name) {
@@ -159,13 +336,16 @@
   }
 
   function buildContactWhatsAppMessage(form, leadId) {
+    if (window.QuoteRequestForm?.buildMessage) {
+      return window.QuoteRequestForm.buildMessage(form, leadId);
+    }
     const lines = [
       'Hello AsiaPower, I would like to request a quote.',
       '',
       `Name: ${fieldValue(form, 'name')}`,
       `Company: ${fieldValue(form, 'company') || '-'}`,
       `Email: ${fieldValue(form, 'email')}`,
-      `Phone / WhatsApp: ${fieldValue(form, 'phone')}`,
+      `Phone / WhatsApp: ${contactPhoneE164(form)}`,
       `Country: ${optionText(form, 'country')}`,
       `Enquiry Type: ${optionText(form, 'enquiry_type')}`,
       '',
@@ -178,50 +358,77 @@
     return lines.join('\n');
   }
 
-  function buildContactLeadPayload(form) {
-    const preferEmail = !!form.querySelector('[name="prefer_email_reply"]')?.checked;
+  function syncQuoteFormFields(form) {
+    if (!window.QuoteRequestForm) return;
+    if (window.QuoteRequestForm.syncHiddenFields) {
+      window.QuoteRequestForm.syncHiddenFields(form);
+      return;
+    }
+    const vd = form.querySelector('[name="vehicle_details"]');
+    if (vd) vd.value = window.QuoteRequestForm.buildVehicleDetails(form);
+  }
+
+  function buildContactLeadPayload(form, options = {}) {
+    syncQuoteFormFields(form);
+    const extras = window.QuoteRequestForm?.buildLeadExtras?.(form) || {};
+    const channel = options.channel || 'email';
+    const waMessage = extras.whatsapp_message || buildContactWhatsAppMessage(form);
     return {
       name: fieldValue(form, 'name'),
       company: fieldValue(form, 'company'),
       email: fieldValue(form, 'email'),
-      phone: fieldValue(form, 'phone'),
+      phone: contactPhoneE164(form),
       country: fieldValue(form, 'country'),
       enquiry_type: fieldValue(form, 'enquiry_type'),
-      vehicle_details: fieldValue(form, 'vehicle_details'),
-      message: fieldValue(form, 'message'),
-      prefer_email_reply: preferEmail,
+      vehicle_details: extras.vehicle_details || fieldValue(form, 'vehicle_details'),
+      message: waMessage || extras.message || fieldValue(form, 'message'),
+      brand: extras.brand || fieldValue(form, 'brand'),
+      model: extras.model || fieldValue(form, 'model'),
+      engine_code: extras.engine_code || fieldValue(form, 'engine_code'),
+      prefer_email_reply: channel === 'email',
+      source: options.source || 'quote-form',
+      intent: channel === 'whatsapp' ? 'whatsapp-quote' : (options.intent || 'quote'),
       company_website: fieldValue(form, 'company_website'),
       page: `${window.location.pathname}${window.location.search}`,
     };
   }
 
-  function prefersEmailReply(form) {
-    return !!form.querySelector('[name="prefer_email_reply"]')?.checked;
-  }
-
-  function syncContactFormMode(form) {
-    const preferEmail = prefersEmailReply(form);
-    const emailInput = form.querySelector('[name="email"]');
-    const submitBtn = form.querySelector('[type="submit"]');
-    const emailLabel = form.querySelector('[data-contact-email-label]');
-    if (emailInput) {
-      emailInput.required = preferEmail;
-      emailInput.setAttribute('aria-required', preferEmail ? 'true' : 'false');
-    }
-    if (emailLabel) {
-      emailLabel.innerHTML = preferEmail
-        ? 'Email <span class="req">*</span>'
-        : 'Email';
-    }
-    if (submitBtn) {
-      submitBtn.textContent = preferEmail ? 'Submit Enquiry' : 'Continue on WhatsApp';
-      submitBtn.classList.toggle('btn-whatsapp', !preferEmail);
-      submitBtn.classList.toggle('btn-accent', preferEmail);
+  function initContactInfo() {
+    const c = window.ASIAPOWER;
+    if (!c?.email) return;
+    const subject = encodeURIComponent('AsiaPower enquiry');
+    const btn = document.getElementById('contact-email-btn');
+    const addr = document.getElementById('contact-email-address');
+    if (btn) btn.href = `mailto:${c.email}?subject=${subject}`;
+    if (addr) {
+      addr.href = `mailto:${c.email}`;
+      addr.textContent = c.email;
     }
   }
 
-  async function saveContactLead(form) {
-    const payload = buildContactLeadPayload(form);
+  function initContactCountrySelect() {
+    const select = document.getElementById('contact-country');
+    if (!select || !window.AsiaCountryOptions?.populateSelect) return;
+    const current = select.value;
+    window.AsiaCountryOptions.populateSelect(select, t('contact.selectCountry', 'Select country'));
+    if (current) select.value = current;
+  }
+
+  function initPhoneInputs() {
+    document.querySelectorAll('form[data-form="contact-enquiry"]').forEach((form) => {
+      const phoneInput = form.querySelector('[name="phone"]');
+      const countrySelect = form.querySelector('[name="country"]');
+      window.AsiaPhone?.bindInput?.(phoneInput, countrySelect, {
+        onChange: () => {
+          phoneInput?.style.removeProperty('border-color');
+          phoneInput?.removeAttribute('aria-invalid');
+        },
+      });
+    });
+  }
+
+  async function saveContactLead(form, options = {}) {
+    const payload = buildContactLeadPayload(form, options);
     const res = await fetch('/api/leads/contact', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -234,62 +441,207 @@
     return data;
   }
 
-  function openContactWhatsApp(form, leadId) {
-    const config = window.ASIAPOWER || {};
-    const whatsapp = config.whatsapp || '8618603773077';
-    const message = buildContactWhatsAppMessage(form, leadId);
-    const url = `https://wa.me/${whatsapp}?text=${encodeURIComponent(message)}`;
-    const opened = window.open(url, '_blank', 'noopener,noreferrer');
-    if (!opened) window.location.href = url;
+  function showContactSuccess(form, { channel, leadId, email }) {
+    const card = form.closest('.form-card');
+    const success = card?.querySelector('.form-success');
+    const successWhatsapp = card?.querySelector('.form-success--whatsapp');
+    const successEmail = card?.querySelector('.form-success--email');
+    if (success) success.classList.remove('show');
+    if (successWhatsapp) successWhatsapp.classList.remove('show');
+    if (successEmail) successEmail.classList.remove('show');
+    form.classList.add('hidden');
+    if (channel === 'whatsapp' && successWhatsapp) {
+      successWhatsapp.classList.add('show');
+    } else if (successEmail) {
+      successEmail.classList.add('show');
+    } else if (success) {
+      success.classList.add('show');
+    }
+    scrollFormCardIntoView(form);
+    if (leadId && window.SiteFeedback?.toast) {
+      window.SiteFeedback.toast(
+        t('feedback.enquirySavedRef', `Enquiry saved — reference ${leadId}`),
+        'success',
+      );
+    }
+    void email;
   }
+
+  function initQuoteWhatsAppButton() {
+    document.querySelectorAll('form[data-form="contact-enquiry"]').forEach((form) => {
+      const btn = form.querySelector('#quote-wa-btn');
+      if (!btn || btn.dataset.waCrmBound) return;
+      btn.dataset.waCrmBound = '1';
+
+      btn.addEventListener('click', async () => {
+        syncQuoteFormFields(form);
+
+        if (!validateForm(form)) {
+          presentFeedback(form, {
+            type: 'error',
+            title: t('feedback.formIncomplete', 'Please complete the form'),
+            message: t('feedback.formIncompleteMsg', 'Fill in all required fields marked with *.'),
+          });
+          const missing = form.querySelector('[required]:invalid, [required][value=""]');
+          (missing || form.querySelector('[name="email"]'))?.focus();
+          scrollFormCardIntoView(form);
+          return;
+        }
+
+        if (!validateContactReachable(form)) return;
+
+        const originalLabel = btn.textContent;
+        btn.disabled = true;
+        btn.textContent = t('feedback.saving', 'Saving enquiry…');
+
+        presentFeedback(form, {
+          type: 'info',
+          title: t('feedback.saving', 'Saving enquiry…'),
+          message: t('leadContact.whatsappSaveHint', 'We will save your enquiry before opening WhatsApp.'),
+        });
+
+        try {
+          const result = await saveContactLead(form, { channel: 'whatsapp', source: 'quote-form' });
+          const leadId = result?.id || null;
+          const msg = buildContactWhatsAppMessage(form, leadId);
+
+          if (window.SiteFeedback?.rememberLeadContact) {
+            window.SiteFeedback.rememberLeadContact({
+              name: fieldValue(form, 'name'),
+              phone: contactPhoneE164(form),
+              email: fieldValue(form, 'email'),
+              country: fieldValue(form, 'country'),
+            });
+          }
+
+          if (window.WhatsAppCrm?.openWhatsApp) {
+            window.WhatsAppCrm.openWhatsApp(msg, leadId);
+          } else {
+            window.open(`https://wa.me/${String(window.ASIAPOWER?.whatsapp || '8618603773077').replace(/\D/g, '')}?text=${encodeURIComponent(msg)}`, '_blank', 'noopener,noreferrer');
+          }
+
+          showContactSuccess(form, { channel: 'whatsapp', leadId, email: result?.email });
+        } catch (err) {
+          console.warn('[quote-wa]', err);
+          presentFeedback(form, {
+            type: 'error',
+            title: t('feedback.enquiryFailed', 'Could not save enquiry'),
+            message: err?.message || t('feedback.enquiryFailedMsg', 'We could not save your enquiry on the server. Please try again later or contact us directly.'),
+          });
+          scrollFormCardIntoView(form);
+        } finally {
+          btn.disabled = false;
+          btn.textContent = originalLabel || t('quote.sendWhatsapp', 'Send via WhatsApp');
+        }
+      });
+    });
+  }
+
+  function initWhatsAppCtaLinks() {
+    const truckMsg = window.ASIAPOWER?.whatsappTruckMessage || window.WhatsAppCrm?.truckPrefill?.() || '';
+    document.querySelectorAll('[data-wa-truck]').forEach((link) => {
+      if (!truckMsg || !window.WhatsAppCrm?.buildUrl) return;
+      link.href = window.WhatsAppCrm.buildUrl(truckMsg);
+    });
+  }
+
+  window.AsiaPowerContact = {
+    buildPayload: buildContactLeadPayload,
+    saveLead: saveContactLead,
+    buildWhatsAppMessage: buildContactWhatsAppMessage,
+    validateForm,
+    validateReachable: validateContactReachable,
+    showSuccess: showContactSuccess,
+    syncFields: syncQuoteFormFields,
+  };
 
   function initForms() {
     document.querySelectorAll('form[data-form]').forEach(form => {
       form.addEventListener('submit', async (e) => {
         e.preventDefault();
-        if (!validateForm(form)) return;
-
-        const card = form.closest('.form-card');
-        const success = card?.querySelector('.form-success');
-        const submitBtn = form.querySelector('[type="submit"]');
-
-        if (form.dataset.form === 'contact-enquiry') {
-          syncContactFormMode(form);
-          if (prefersEmailReply(form) && !fieldValue(form, 'email')) {
-            showToast('Please enter your email — we will reply by email.');
-            form.querySelector('[name="email"]')?.focus();
+        try {
+          if (form.dataset.form !== 'contact-enquiry') {
+            if (!validateForm(form)) return;
+            const card = form.closest('.form-card');
+            const success = card?.querySelector('.form-success');
+            if (form.dataset.form === 'supplier-registration') {
+              if (success) success.classList.remove('show');
+              form.classList.add('hidden');
+              if (success) success.classList.add('show');
+              showModal({
+                type: 'success',
+                title: t('feedback.registrationSuccess', 'Registration submitted'),
+                message: t('feedback.registrationSuccessMsg', 'Thank you for applying. Our supplier relations team will contact you at the email provided within 3 business days.'),
+              });
+              return;
+            }
+            if (success) {
+              form.classList.add('hidden');
+              success.classList.add('show');
+            } else {
+              form.reset();
+              showToast('Message sent. We will respond within 24 hours.', 'success');
+            }
             return;
           }
 
-          const preferEmail = prefersEmailReply(form);
+          syncQuoteFormFields(form);
+
+          if (!validateForm(form)) {
+            presentFeedback(form, {
+              type: 'error',
+              title: t('feedback.formIncomplete', 'Please complete the form'),
+              message: t('feedback.formIncompleteMsg', 'Fill in all required fields marked with *.'),
+            });
+            const missing = form.querySelector('[required]:invalid, [required][value=""]');
+            (missing || form.querySelector('[name="email"]'))?.focus();
+            scrollFormCardIntoView(form);
+            return;
+          }
+
+          if (!validateContactReachable(form)) return;
+
+          const card = form.closest('.form-card');
+          const success = card?.querySelector('.form-success');
+          const submitBtn = form.querySelector('[type="submit"]');
           const originalLabel = submitBtn?.textContent;
+
+          presentFeedback(form, {
+            type: 'info',
+            title: t('feedback.saving', 'Saving enquiry…'),
+            message: t('feedback.savingMsg', 'Please wait while we submit your enquiry.'),
+          });
+
           if (submitBtn) {
             submitBtn.disabled = true;
-            submitBtn.textContent = 'Saving enquiry…';
+            submitBtn.textContent = t('feedback.saving', 'Saving enquiry…');
           }
+
           let saved = false;
           let leadId = null;
+          let savedEmail = '';
+          let saveError = null;
           try {
             const result = await saveContactLead(form);
             saved = true;
             leadId = result?.id || null;
+            savedEmail = result?.email || fieldValue(form, 'email');
+            if (window.SiteFeedback?.rememberLeadContact) {
+              window.SiteFeedback.rememberLeadContact({
+                name: fieldValue(form, 'name'),
+                phone: contactPhoneE164(form),
+                email: savedEmail,
+                country: fieldValue(form, 'country'),
+              });
+            }
           } catch (err) {
+            saveError = err;
             console.warn('[contact-lead]', err);
-            showToast(preferEmail
-              ? 'Could not save enquiry. Please email us directly.'
-              : 'Could not save on server. Please still send the WhatsApp message.');
           } finally {
             if (submitBtn) {
               submitBtn.disabled = false;
-              syncContactFormMode(form);
-              if (!submitBtn.textContent || submitBtn.textContent === 'Saving enquiry…') {
-                submitBtn.textContent = originalLabel || (preferEmail ? 'Submit Enquiry' : 'Continue on WhatsApp');
-              }
+              submitBtn.textContent = originalLabel || t('contact.submitEnquiry', 'Submit Enquiry');
             }
-          }
-
-          if (!preferEmail) {
-            openContactWhatsApp(form, leadId);
           }
 
           const successWhatsapp = card?.querySelector('.form-success--whatsapp');
@@ -299,35 +651,112 @@
           if (successEmail) successEmail.classList.remove('show');
 
           if (saved) {
-            form.classList.add('hidden');
-            if (preferEmail && successEmail) {
-              successEmail.classList.add('show');
-            } else if (successWhatsapp) {
-              successWhatsapp.classList.add('show');
-            } else if (success) {
-              success.classList.add('show');
-            }
+            presentFeedback(form, {
+              type: 'success',
+              title: t('feedback.enquirySaved', 'Enquiry saved'),
+              message: t('feedback.enquirySavedEmail', 'Your enquiry was submitted successfully. We will reply to your email within 24 hours.'),
+              details: [
+                leadId ? `Reference: ${leadId}` : '',
+                savedEmail ? `Email: ${savedEmail}` : '',
+              ].filter(Boolean).join(' — '),
+              onClose: () => {
+                showContactSuccess(form, { channel: 'email', leadId, email: savedEmail });
+              },
+            });
+            scrollFormCardIntoView(form);
+          } else {
+            presentFeedback(form, {
+              type: 'error',
+              title: t('feedback.enquiryFailed', 'Could not save enquiry'),
+              message: saveError?.message || t('feedback.enquiryFailedMsg', 'We could not save your enquiry on the server. Please try again later or contact us directly.'),
+            });
+            scrollFormCardIntoView(form);
           }
-          return;
-        }
-
-        if (success) {
-          form.classList.add('hidden');
-          success.classList.add('show');
-        } else {
-          form.reset();
-          showToast('Message sent. We will respond within 24 hours.');
+        } catch (err) {
+          console.error('[form-submit]', err);
+          presentFeedback(form, {
+            type: 'error',
+            title: t('feedback.enquiryFailed', 'Could not save enquiry'),
+            message: err?.message || t('feedback.enquiryFailedMsg', 'Something went wrong. Please try again or contact us directly.'),
+          });
         }
       });
     });
   }
 
-  function showToast(msg) {
+  function showToast(msg, type) {
+    if (window.SiteFeedback?.toast) {
+      window.SiteFeedback.toast(msg, type);
+      return;
+    }
     const el = document.createElement('div');
     el.textContent = msg;
     el.style.cssText = 'position:fixed;bottom:96px;right:24px;z-index:10001;background:var(--navy-800);color:#fff;padding:14px 20px;border-radius:6px;font-size:.88rem;box-shadow:0 8px 24px rgba(0,0,0,.2);border-left:4px solid var(--accent);max-width:320px;';
     document.body.appendChild(el);
     setTimeout(() => { el.style.opacity = '0'; el.style.transition = 'opacity .3s'; setTimeout(() => el.remove(), 300); }, 4000);
+  }
+
+  function showModal(options) {
+    if (window.SiteFeedback?.modal) {
+      return window.SiteFeedback.modal(options);
+    }
+    window.alert(`${options?.title || ''}\n\n${options?.message || ''}`);
+    if (typeof options?.onClose === 'function') options.onClose();
+    return { close: () => {} };
+  }
+
+  function notifyFeedback(options) {
+    if (window.SiteFeedback?.notify) {
+      return window.SiteFeedback.notify(options);
+    }
+    const toastText = [options?.title, options?.message].filter(Boolean).join(' — ');
+    if (toastText) showToast(toastText, options?.type || 'info');
+    const result = showModal(options);
+    if ((options?.type === 'error' || options?.type === 'success') && !window.SiteFeedback?.modal) {
+      return result;
+    }
+    return result;
+  }
+
+  function presentFeedback(form, options) {
+    if (window.SiteFeedback?.setFormStatus) {
+      window.SiteFeedback.setFormStatus(form, options);
+    }
+    return notifyFeedback(options);
+  }
+
+  function scrollFormCardIntoView(form) {
+    form?.closest('.form-card')?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  }
+
+  function initContactPrefill() {
+    document.querySelectorAll('form[data-form="contact-enquiry"]').forEach((form) => {
+      if (window.QuoteRequestForm) {
+        window.QuoteRequestForm.prefillFromUrl(form);
+        return;
+      }
+      const params = new URLSearchParams(window.location.search);
+      const brand = params.get('brand');
+      const product = params.get('product');
+      if (!brand && !product) return;
+
+      const detailsField = form.querySelector('[name="vehicle_details"]');
+      if (detailsField && !detailsField.value.trim()) {
+        const lines = [];
+        if (brand) lines.push(`Brand: ${brand}`);
+        if (product) lines.push(`Product / Engine code: ${product}`);
+        detailsField.value = lines.join('\n');
+      }
+
+      const typeField = form.querySelector('[name="enquiry_type"]');
+      if (typeField && !typeField.value && product) {
+        const p = product.toLowerCase();
+        if (p.includes('gearbox') || p.includes('transmission')) typeField.value = 'gearbox';
+        else if (p.includes('half-cut') || p.includes('halfcut')) typeField.value = 'other';
+        else if (p.includes('chassis')) typeField.value = 'other';
+        else typeField.value = 'engine';
+      }
+    });
   }
 
   function initHeaderShadow() {
@@ -388,52 +817,113 @@
     track.innerHTML = tags + tags;
   }
 
+
+  const ENGINE_TYPE_FILTERS = [
+    { filter: 'all', i18n: 'gearboxes.all', label: 'All' },
+    { filter: 'petrol', i18n: 'engines.petrol', label: 'Petrol' },
+    { filter: 'diesel', i18n: 'engines.diesel', label: 'Diesel' },
+    { filter: 'hybrid', i18n: 'engines.hybrid', label: 'Hybrid' },
+  ];
+
+  const GEARBOX_TYPE_FILTERS = [
+    { filter: 'all', i18n: 'gearboxes.all', label: 'All' },
+    { filter: 'automatic', i18n: 'gearboxes.automatic', label: 'Automatic' },
+    { filter: 'manual', i18n: 'gearboxes.manual', label: 'Manual' },
+    { filter: 'cvt', i18n: 'gearboxes.cvt', label: 'CVT' },
+    { filter: '4wd', i18n: 'gearboxes.4wd', label: '4WD' },
+  ];
+
+  const CHASSIS_TYPE_FILTERS = [
+    { filter: 'all', i18n: 'gearboxes.all', label: 'All' },
+    { filter: 'suspension', i18n: 'chassis.suspension', label: 'Suspension' },
+    { filter: 'steering', i18n: 'chassis.steering', label: 'Steering' },
+    { filter: 'brakes', i18n: 'chassis.brakes', label: 'Brakes' },
+    { filter: 'drivetrain', i18n: 'chassis.drivetrain', label: 'Drivetrain' },
+  ];
+
+  function bindPowertrainToolbar(catalogType, root, options) {
+    window.PowertrainCatalogToolbar?.bind({
+      catalogType,
+      root,
+      toolbarId: 'powertrain-catalog-toolbar',
+      getBrands: options.getBrands,
+      getTotalCount: options.getTotalCount,
+      countId: options.countId,
+      typeFilters: options.typeFilters,
+      emptyHref: options.emptyHref,
+    });
+  }
+
   function initEngineCatalogPage() {
     const root = document.getElementById('engine-catalog-root');
     if (!root || !window.getAllEngineBrands || !window.EngineCatalog) return;
 
-    const brands = window.getAllEngineBrands();
-    root.innerHTML = brands
-      .map(b => window.EngineCatalog.renderEngineCatalogSection(b, { showHeader: true }))
-      .join('');
+    const render = () => {
+      const brands = window.getAllEngineBrands();
+      root.innerHTML = brands
+        .map((b) => window.EngineCatalog.renderEngineCatalogSection(b, { showHeader: true }))
+        .join('');
 
-    const countEl = document.getElementById('engine-catalog-count');
-    if (countEl && window.getEngineModelCount) {
-      countEl.textContent = window.getEngineModelCount();
-    }
-
-    const bar = document.querySelector('.filter-group');
-    if (!bar) return;
-
-    const buttons = bar.querySelectorAll('.filter-btn');
-    const items = root.querySelectorAll('.engine-model');
-
-    function applyFilter(filter) {
-      let visible = 0;
-      items.forEach(item => {
-        const tags = (item.dataset.filterTags || '').split(/\s+/);
-        const show = filter === 'all' || tags.includes(filter);
-        item.classList.toggle('hidden', !show);
-        if (show) visible++;
+      bindPowertrainToolbar('engines', root, {
+        getBrands: () => window.getAllEngineBrands().filter((b) => (b.models || []).length > 0),
+        getTotalCount: () => window.getEngineModelCount?.() || 0,
+        countId: 'engine-catalog-count',
+        typeFilters: ENGINE_TYPE_FILTERS,
+        emptyHref: '../contact.html',
       });
-      if (countEl) {
-        countEl.textContent = filter === 'all'
-          ? window.getEngineModelCount()
-          : visible;
-      }
-      root.querySelectorAll('.engine-catalog').forEach(section => {
-        const sectionItems = section.querySelectorAll('.engine-model:not(.hidden)');
-        section.classList.toggle('hidden', sectionItems.length === 0);
-      });
-    }
+    };
 
-    buttons.forEach(btn => {
-      btn.addEventListener('click', () => {
-        buttons.forEach(b => b.classList.remove('active'));
-        btn.classList.add('active');
-        applyFilter(btn.dataset.filter);
+    window.PowertrainCatalog?.loadLearnedPowertrain?.()
+      .then(render)
+      .catch(render);
+  }
+
+  function initGearboxCatalogPage() {
+    const root = document.getElementById('gearbox-catalog-root');
+    if (!root || !window.getAllGearboxBrands || !window.GearboxCatalog) return;
+
+    const render = () => {
+      const brands = window.getAllGearboxBrands().filter((b) => (b.models || []).length > 0);
+      root.innerHTML = brands
+        .map((b) => window.GearboxCatalog.renderGearboxCatalogSection(b, { showHeader: true }))
+        .join('');
+
+      bindPowertrainToolbar('gearboxes', root, {
+        getBrands: () => window.getAllGearboxBrands().filter((b) => (b.models || []).length > 0),
+        getTotalCount: () => window.getGearboxModelCount?.() || 0,
+        countId: 'gearbox-catalog-count',
+        typeFilters: GEARBOX_TYPE_FILTERS,
+        emptyHref: '../contact.html',
       });
-    });
+    };
+
+    window.PowertrainCatalog?.loadLearnedPowertrain?.()
+      .then(render)
+      .catch(render);
+  }
+
+  function initChassisCatalogPage() {
+    const root = document.getElementById('chassis-catalog-root');
+    if (!root || !window.getAllChassisBrands || !window.ChassisCatalog) return;
+
+    const render = () => {
+      const brands = window.getAllChassisBrands().filter((b) => (b.models || []).length > 0);
+      root.innerHTML = brands
+        .map((b) => window.ChassisCatalog.renderChassisCatalogSection(b, { showHeader: true }))
+        .join('');
+
+      bindPowertrainToolbar('chassis', root, {
+        getBrands: () => window.getAllChassisBrands().filter((b) => (b.models || []).length > 0),
+        getTotalCount: () => window.getChassisModelCount?.() || 0,
+        countId: 'chassis-catalog-count',
+        typeFilters: CHASSIS_TYPE_FILTERS,
+        emptyHref: '../contact.html',
+      });
+    };
+
+    window.PowertrainCatalog?.loadLearnedPowertrain?.()
+      .then(render)
+      .catch(render);
   }
 
   function initPlatformOffices() {
@@ -559,7 +1049,7 @@
     const matchEl = el.querySelector('.brand-search-match');
     if (!matchEl) return;
     if (label) {
-      matchEl.textContent = `Matched: ${label}`;
+      matchEl.textContent = label ? `${t('brands.matched', 'Matched:')}${label}` : '';
       matchEl.classList.remove('hidden');
     } else {
       matchEl.textContent = '';
@@ -575,18 +1065,18 @@
   function renderFeaturedBrandCard(brand) {
     const initial = brand.name.charAt(0);
     const url = brandProductUrl(brand);
-    const cta = brand.landingPage ? 'View Brand Directory' : 'Request Quote';
+    const cta = brand.landingPage ? t('brands.viewDirectory', 'View Brand Directory') : t('brand.requestQuote', 'Request Quote');
 
     return `
       <article class="brand-card brand-card--featured-lg" data-brand-slug="${brand.slug}" id="brand-featured-${brand.slug}">
         <div class="brand-card__inner">
-          <span class="brand-card__badge">Featured</span>
+          <span class="brand-card__badge">${t('brands.featured', 'Featured')}</span>
           <div class="brand-card__header">
             <h2 class="brand-card__name">${brand.name}</h2>
             <span class="brand-card__initial" aria-hidden="true">${initial}</span>
           </div>
           <p class="brand-search-match hidden" aria-live="polite"></p>
-          <p class="brand-card__summary">Engines · Gearboxes · Chassis Parts · Half-Cuts</p>
+          <p class="brand-card__summary">${t('brands.productSummary', 'Engines · Gearboxes · Chassis Parts · Half-Cuts')}</p>
           <a href="${url}" class="brand-card__action brand-card__action--featured">${cta} →</a>
         </div>
       </article>`;
@@ -607,13 +1097,23 @@
       </a>`;
   }
 
+  function translateBrandProduct(label) {
+    const map = {
+      Engines: t('home.catEngines', 'Engines'),
+      Gearboxes: t('home.catGearboxes', 'Gearboxes'),
+      'Chassis Parts': t('home.catChassis', 'Chassis Parts'),
+      'Half-Cuts': t('home.catHalfCuts', 'Half-Cuts'),
+    };
+    return map[label] || label;
+  }
+
   function renderBrandCard(brand, config) {
     const products = config.brandProducts.map(p =>
-      `<li><span class="brand-card__check" aria-hidden="true">✓</span> ${p}</li>`
+      `<li><span class="brand-card__check" aria-hidden="true">✓</span> ${translateBrandProduct(p)}</li>`
     ).join('');
     const initial = brand.name.charAt(0);
     const featuredClass = brand.featured ? ' brand-card--featured' : '';
-    const badge = brand.featured ? '<span class="brand-card__badge">Priority</span>' : '';
+    const badge = brand.featured ? `<span class="brand-card__badge">${t('brands.priority', 'Priority')}</span>` : '';
     const url = brandProductUrl(brand);
     const searchName = brand.name.toLowerCase();
 
@@ -625,12 +1125,14 @@
             <h2 class="brand-card__name">${brand.name}</h2>
             <span class="brand-card__initial" aria-hidden="true">${initial}</span>
           </div>
-          <div class="brand-card__products-label">Available Products</div>
+          <div class="brand-card__products-label">${t('brands.availableProducts', 'Available Products')}</div>
           <ul class="brand-card__products">${products}</ul>
-          <a href="${url}" class="brand-card__action">${brand.landingPage ? 'View Brand' : 'View Products'}</a>
+          <a href="${url}" class="brand-card__action">${brand.landingPage ? t('brands.viewBrand', 'View Brand') : t('brands.viewProducts', 'View Products')}</a>
         </div>
       </article>`;
   }
+
+  let brandsDirectorySearchBound = false;
 
   function initBrandDirectory() {
     const matrix = document.getElementById('brand-matrix');
@@ -675,7 +1177,7 @@
     if (countMetric) countMetric.textContent = brands.length;
     if (emptyEl) {
       emptyEl.classList.add('hidden');
-      emptyEl.innerHTML = `<p>No matching brand or engine model found. Please <a href="${whatsappUrl}" target="_blank" rel="noopener noreferrer">send us a WhatsApp inquiry</a>.</p>`;
+      emptyEl.innerHTML = `<p>${t('brands.noResults', 'No matching brand or engine model found.')} ${t('brands.noResultsHint', 'Try another keyword or contact us on WhatsApp.')} <a href="${whatsappUrl}" target="_blank" rel="noopener noreferrer">WhatsApp</a>.</p>`;
     }
 
     function filterBrands() {
@@ -708,10 +1210,12 @@
       if (emptyEl) emptyEl.classList.toggle('hidden', visible > 0);
     }
 
-    if (searchInput) {
+    if (searchInput && !brandsDirectorySearchBound) {
+      brandsDirectorySearchBound = true;
       searchInput.addEventListener('input', filterBrands);
       searchInput.addEventListener('search', filterBrands);
     }
+    filterBrands();
   }
 
   function initBrandDetailNav() {
@@ -769,16 +1273,65 @@
     }, true);
   }
 
+  const WA_PROMPT_SKIP_SELECTOR = '[data-half-cut-wa], [data-half-cut-lead], [data-product-lead], #quote-wa-btn, [data-wa-no-prompt]';
+
+  function initGenericWhatsAppLeadCapture() {
+    document.addEventListener('click', async (e) => {
+      const link = e.target.closest('a[href*="wa.me"]');
+      if (!link || link.closest(WA_PROMPT_SKIP_SELECTOR)) return;
+      if (!window.SiteFeedback?.promptContact) return;
+
+      e.preventDefault();
+
+      const contact = await window.SiteFeedback.promptContact({
+        message: t('leadContact.whatsappSaveHint', 'We will save your enquiry before opening WhatsApp.'),
+      });
+      if (!contact) return;
+
+      presentFeedback(null, {
+        type: 'info',
+        title: t('feedback.saving', 'Saving enquiry…'),
+        message: t('feedback.savingMsg', 'Please wait while we submit your enquiry.'),
+      });
+
+      try {
+        const res = await fetch('/api/leads/whatsapp', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            ...contact,
+            intent: 'whatsapp',
+            source: 'whatsapp-intent',
+            page: window.location.pathname + window.location.search,
+          }),
+        });
+        const data = await res.json().catch(() => ({}));
+        if (!res.ok) throw new Error(data.error || 'Could not save enquiry');
+        window.SiteFeedback?.toast?.(t('feedback.enquirySaved', 'Enquiry saved'), 'success');
+        window.open(link.href, '_blank', 'noopener,noreferrer');
+      } catch (err) {
+        console.warn('[whatsapp-lead]', err);
+        notifyFeedback({
+          type: 'error',
+          title: t('feedback.enquiryFailed', 'Could not save enquiry'),
+          message: err?.message || t('feedback.enquiryFailedMsg', 'Something went wrong. Please try again or contact us directly.'),
+        });
+      }
+    }, true);
+  }
+
   document.addEventListener('DOMContentLoaded', () => {
     initMobileNav();
     initFAQ();
     initFilters();
     initURLFilters();
     initForms();
-    document.querySelectorAll('form[data-form="contact-enquiry"]').forEach((form) => {
-      syncContactFormMode(form);
-      form.querySelector('[name="prefer_email_reply"]')?.addEventListener('change', () => syncContactFormMode(form));
-    });
+    initQuoteWhatsAppButton();
+    initWhatsAppCtaLinks();
+    initContactPrefill();
+    initContactInfo();
+    initContactCountrySelect();
+    initPhoneInputs();
     initHeaderShadow();
     initCategoryGrid();
     initStatsStrip();
@@ -788,7 +1341,10 @@
     initPlatformOffices();
     initHomepageBrands();
     initEngineCatalogPage();
+    initGearboxCatalogPage();
+    initChassisCatalogPage();
     initWhatsAppAnalytics();
+    initGenericWhatsAppLeadCapture();
   });
 
   window.addEventListener('load', () => {
@@ -799,4 +1355,15 @@
   });
 
   window.addEventListener('asiapower:layoutrefresh', initMobileNav);
+
+  window.addEventListener('asiapower:langchange', () => {
+    initEngineCatalogPage();
+    initGearboxCatalogPage();
+    initChassisCatalogPage();
+    if (document.getElementById('brand-matrix') || document.getElementById('brand-featured-matrix')) {
+      initBrandDirectory();
+    }
+    initContactCountrySelect();
+    initPhoneInputs();
+  });
 })();
