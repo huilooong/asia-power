@@ -4171,6 +4171,1706 @@
         }
       },
       "note": "regenerated stale title/shortDescription text that still referenced the pre-correction brand/model (follow-up fix for a gap in the original batch script — model corrections from a separate manual pass were not reflected in these text fields at the time)"
+    },
+    {
+      "vin": "LRH17A4E490000497",
+      "stockId": "HC250163",
+      "submissionId": "SUB-MQVT3Y8P-LOZQ",
+      "correctedAt": "2026-06-27T22:17:36.957Z",
+      "changes": {
+        "brand": {
+          "before": "Hyundai",
+          "after": "Hawtai"
+        },
+        "brandSlug": {
+          "before": "hyundai",
+          "after": "hawtai"
+        },
+        "model": {
+          "before": "Terracan",
+          "after": "特拉卡"
+        },
+        "transmissionCode": {
+          "before": "MT",
+          "after": "5MT"
+        },
+        "title": {
+          "before": "Hyundai Terracan 4G64 Running Vehicle",
+          "after": "Hawtai 特拉卡 4G64 Running Vehicle"
+        }
+      }
+    },
+    {
+      "vin": "LZWADAGA4E1202318",
+      "stockId": "HC250155",
+      "submissionId": "SUB-MQUX525X-W7NM",
+      "correctedAt": "2026-06-27T22:17:36.963Z",
+      "changes": {
+        "transmissionCode": {
+          "before": "MT",
+          "after": "5MT"
+        }
+      }
+    },
+    {
+      "vin": "LVVDB11B3ED196667",
+      "stockId": "HC250156",
+      "submissionId": "SUB-MQUX1RA5-DJGX",
+      "correctedAt": "2026-06-27T22:17:36.964Z",
+      "changes": {
+        "model": {
+          "before": "Arrizo 3",
+          "after": "Tiggo 3"
+        },
+        "transmissionCode": {
+          "before": "MT",
+          "after": "5MT"
+        }
+      }
+    },
+    {
+      "vin": "LVFAB2ADXBG042330",
+      "stockId": "HC250157",
+      "submissionId": "SUB-MQUWWLN2-EYM7",
+      "correctedAt": "2026-06-27T22:17:36.969Z",
+      "changes": {
+        "transmissionCode": {
+          "before": "MT",
+          "after": "5MT"
+        }
+      }
+    },
+    {
+      "vin": "LVFAD1ACXAG006658",
+      "stockId": "HC250159",
+      "submissionId": "SUB-MQUWN75X-OJZQ",
+      "correctedAt": "2026-06-27T22:17:36.975Z",
+      "changes": {
+        "transmissionCode": {
+          "before": "MT",
+          "after": "5MT"
+        }
+      }
+    },
+    {
+      "vin": "LVGBE40KX7G118252",
+      "stockId": "HC250160",
+      "submissionId": "SUB-MQUWI7YU-TQD7",
+      "correctedAt": "2026-06-27T22:17:36.975Z",
+      "changes": {
+        "transmissionCode": {
+          "before": "AT",
+          "after": "5AT"
+        }
+      }
+    },
+    {
+      "vin": "LBESCCBH93X053146",
+      "stockId": "HC250161",
+      "submissionId": "SUB-MQUWCG18-8H6L",
+      "correctedAt": "2026-06-27T22:17:36.976Z",
+      "changes": {
+        "transmissionCode": {
+          "before": "MT",
+          "after": "5MT"
+        }
+      }
+    },
+    {
+      "vin": "LSCABN3R0JE247910",
+      "stockId": "HC250154",
+      "submissionId": "SUB-MQUW8XL9-M1OC",
+      "correctedAt": "2026-06-27T22:17:36.980Z",
+      "changes": {
+        "transmissionCode": {
+          "before": "MT",
+          "after": "5MT"
+        }
+      }
+    },
+    {
+      "vin": "LJ166A345D7104747",
+      "stockId": "HC250153",
+      "submissionId": "SUB-MQUW5GCE-IKGC",
+      "correctedAt": "2026-06-27T22:17:36.987Z",
+      "changes": {
+        "transmissionCode": {
+          "before": "MT",
+          "after": "6MT"
+        }
+      }
+    },
+    {
+      "vin": "LFMARE2C2C0368602",
+      "stockId": "HC250152",
+      "submissionId": "SUB-MQUW1PMN-LFQT",
+      "correctedAt": "2026-06-27T22:17:36.987Z",
+      "changes": {
+        "transmissionCode": {
+          "before": "MT",
+          "after": "6MT"
+        }
+      }
+    },
+    {
+      "vin": "LBEJMBKB48X114862",
+      "stockId": "HC250148",
+      "submissionId": "SUB-MQUVO1BH-F18Z",
+      "correctedAt": "2026-06-27T22:17:36.988Z",
+      "changes": {
+        "transmissionCode": {
+          "before": "AT",
+          "after": "4AT"
+        }
+      }
+    },
+    {
+      "vin": "LBEXDAEB09X742323",
+      "stockId": "HC250149",
+      "submissionId": "SUB-MQUVLSHG-SZBT",
+      "correctedAt": "2026-06-27T22:17:36.989Z",
+      "changes": {
+        "transmissionCode": {
+          "before": "MT",
+          "after": "5MT"
+        }
+      }
+    },
+    {
+      "vin": "LDC621P25C1004749",
+      "stockId": "HC250150",
+      "submissionId": "SUB-MQUVEYI4-USCN",
+      "correctedAt": "2026-06-27T22:17:36.994Z",
+      "changes": {
+        "transmissionCode": {
+          "before": "MT",
+          "after": "5MT"
+        }
+      }
+    },
+    {
+      "vin": "LJDLAA291C0108478",
+      "stockId": "HC250151",
+      "submissionId": "SUB-MQUV9ELW-SKXS",
+      "correctedAt": "2026-06-27T22:17:36.999Z",
+      "changes": {
+        "transmissionCode": {
+          "before": "MT",
+          "after": "5MT"
+        }
+      }
+    },
+    {
+      "vin": "LDCC13X2X90984267",
+      "stockId": "HC250162",
+      "submissionId": "SUB-MQUUK89V-CKEZ",
+      "correctedAt": "2026-06-27T22:17:37.005Z",
+      "changes": {
+        "transmissionCode": {
+          "before": "MT",
+          "after": "5MT"
+        }
+      }
+    },
+    {
+      "vin": "LSGSA52M8ED032198",
+      "stockId": "HC250143",
+      "submissionId": "SUB-MQUUH558-NAGN",
+      "correctedAt": "2026-06-27T22:17:37.009Z",
+      "changes": {
+        "transmissionCode": {
+          "before": "MT",
+          "after": "5MT"
+        }
+      }
+    },
+    {
+      "vin": "LBEHDAHB89Y220971",
+      "stockId": "HC250144",
+      "submissionId": "SUB-MQUUDBDF-5IOA",
+      "correctedAt": "2026-06-27T22:17:37.014Z",
+      "changes": {
+        "transmissionCode": {
+          "before": "AT",
+          "after": "4AT"
+        }
+      }
+    },
+    {
+      "vin": "5GAEV23DX9J162342",
+      "stockId": "HC250146",
+      "submissionId": "SUB-MQUU6W23-XHXR",
+      "correctedAt": "2026-06-27T22:17:37.020Z",
+      "changes": {
+        "transmissionCode": {
+          "before": "AT",
+          "after": "6AT"
+        }
+      }
+    },
+    {
+      "vin": "LSGGF53XXAH119541",
+      "stockId": "HC250147",
+      "submissionId": "SUB-MQUU4Q2J-24C4",
+      "correctedAt": "2026-06-27T22:17:37.025Z",
+      "changes": {
+        "transmissionCode": {
+          "before": "AT",
+          "after": "6AT"
+        }
+      }
+    },
+    {
+      "vin": "KL1DC53F19B299769",
+      "stockId": "HC250142",
+      "submissionId": "SUB-MQUTWDKT-W58T",
+      "correctedAt": "2026-06-27T22:17:37.030Z",
+      "changes": {
+        "transmissionCode": {
+          "before": "AT",
+          "after": "5AT"
+        }
+      }
+    },
+    {
+      "vin": "LBENFAKB87X016339",
+      "stockId": "HC250141",
+      "submissionId": "SUB-MQUTMVPM-JWU6",
+      "correctedAt": "2026-06-27T22:17:37.034Z",
+      "changes": {
+        "transmissionCode": {
+          "before": "AT",
+          "after": "4AT"
+        }
+      }
+    },
+    {
+      "vin": "LBENFAJB08X031226",
+      "stockId": "HC250140",
+      "submissionId": "SUB-MQUTJ0JU-3AE1",
+      "correctedAt": "2026-06-27T22:17:37.039Z",
+      "changes": {
+        "transmissionCode": {
+          "before": "MT",
+          "after": "5MT"
+        }
+      }
+    },
+    {
+      "vin": "LHGCP168488022808",
+      "stockId": "HC250139",
+      "submissionId": "SUB-MQUTGORO-10V9",
+      "correctedAt": "2026-06-27T22:17:37.039Z",
+      "changes": {
+        "transmissionCode": {
+          "before": "AT",
+          "after": "5AT"
+        }
+      }
+    },
+    {
+      "vin": "LJNMEW1J4AN016150",
+      "stockId": "HC250138",
+      "submissionId": "SUB-MQUT67NE-99T5",
+      "correctedAt": "2026-06-27T22:17:37.044Z",
+      "changes": {
+        "transmissionCode": {
+          "before": "AT",
+          "after": "4AT"
+        }
+      }
+    },
+    {
+      "vin": "LBENFAJB08X033851",
+      "stockId": "HC250137",
+      "submissionId": "SUB-MQUT1L3M-RUT9",
+      "correctedAt": "2026-06-27T22:17:37.049Z",
+      "changes": {
+        "transmissionCode": {
+          "before": "MT",
+          "after": "5MT"
+        }
+      }
+    },
+    {
+      "vin": "3D4PG6FD8AT267465",
+      "stockId": "HC250136",
+      "submissionId": "SUB-MQUSSVIB-BF64",
+      "correctedAt": "2026-06-27T22:17:37.053Z",
+      "changes": {
+        "transmissionCode": {
+          "before": "AT",
+          "after": "6AT"
+        }
+      }
+    },
+    {
+      "vin": "LVSHEFAC0BF917538",
+      "stockId": "HC250131",
+      "submissionId": "SUB-MQUSF9L8-0NKX",
+      "correctedAt": "2026-06-27T22:17:37.060Z",
+      "changes": {
+        "transmissionCode": {
+          "before": "DCT",
+          "after": "6DCT"
+        }
+      }
+    },
+    {
+      "vin": "LVSHCADB5CE044226",
+      "stockId": "HC250132",
+      "submissionId": "SUB-MQUS2L0B-3LMF",
+      "correctedAt": "2026-06-27T22:17:37.065Z",
+      "changes": {
+        "transmissionCode": {
+          "before": "DCT",
+          "after": "6DCT"
+        }
+      }
+    },
+    {
+      "vin": "LJDFAA14290050716",
+      "stockId": "HC250133",
+      "submissionId": "SUB-MQURX4II-LKIX",
+      "correctedAt": "2026-06-27T22:17:37.069Z",
+      "changes": {
+        "transmissionCode": {
+          "before": "AT",
+          "after": "4AT"
+        }
+      }
+    },
+    {
+      "vin": "LSVCD6A49BN249678",
+      "stockId": "HC250134",
+      "submissionId": "SUB-MQURN0AY-Y5CC",
+      "correctedAt": "2026-06-27T22:17:37.074Z",
+      "changes": {
+        "transmissionCode": {
+          "before": "DCT",
+          "after": "7DCT"
+        }
+      }
+    },
+    {
+      "vin": "LSKG4GC10HA097250",
+      "stockId": "HC250135",
+      "submissionId": "SUB-MQURHHKT-N8TF",
+      "correctedAt": "2026-06-27T22:17:37.082Z",
+      "changes": {
+        "transmissionCode": {
+          "before": "MT",
+          "after": "6MT"
+        }
+      }
+    },
+    {
+      "vin": "KMHSH81B0BU717098",
+      "stockId": "HC250128",
+      "submissionId": "SUB-MQT30VNN-2PKZ",
+      "correctedAt": "2026-06-27T22:17:37.087Z",
+      "changes": {
+        "transmissionCode": {
+          "before": "AMT",
+          "after": "6AMT"
+        }
+      }
+    },
+    {
+      "vin": "LBEDMBKD2GZ203573",
+      "stockId": "HC250129",
+      "submissionId": "SUB-MQT2M0A1-K55T",
+      "correctedAt": "2026-06-27T22:17:37.088Z",
+      "changes": {
+        "transmissionCode": {
+          "before": "AT",
+          "after": "6AT"
+        }
+      }
+    },
+    {
+      "vin": "LSVDF6C42MN098696",
+      "stockId": "HC250130",
+      "submissionId": "SUB-MQT2A0AQ-YCOV",
+      "correctedAt": "2026-06-27T22:17:37.092Z",
+      "changes": {
+        "transmissionCode": {
+          "before": "DCT",
+          "after": "7DCT"
+        }
+      }
+    },
+    {
+      "vin": "JTJHY00W6A4058024",
+      "stockId": "HC250127",
+      "submissionId": "SUB-MQT0MOWH-3OFW",
+      "correctedAt": "2026-06-27T22:17:37.096Z",
+      "changes": {
+        "transmissionCode": {
+          "before": "AT",
+          "after": "6AT"
+        }
+      }
+    },
+    {
+      "vin": "LJNMFE2K3EN051136",
+      "stockId": "HC250105",
+      "submissionId": "SUB-MQRHK6XE-TOML",
+      "correctedAt": "2026-06-27T22:17:37.101Z",
+      "changes": {
+        "transmissionCode": {
+          "before": "MT",
+          "after": "5MT"
+        }
+      }
+    },
+    {
+      "vin": "KMHSH81B9BU718556",
+      "stockId": "HC250097",
+      "submissionId": "SUB-MQRDULI0-3BUN",
+      "correctedAt": "2026-06-27T22:17:37.106Z",
+      "changes": {
+        "transmissionCode": {
+          "before": "AMT",
+          "after": "6AMT"
+        }
+      }
+    },
+    {
+      "vin": "LFV2A21K0C4002628",
+      "stockId": "",
+      "submissionId": "SUB-MQRC90FB-UMZ8",
+      "correctedAt": "2026-06-27T22:17:37.110Z",
+      "changes": {
+        "transmissionCode": {
+          "before": "DCT",
+          "after": "7DCT"
+        }
+      }
+    },
+    {
+      "vin": "LBENFAKC49X052962",
+      "stockId": "HC250086",
+      "submissionId": "SUB-MQQUCCFM-8EKS",
+      "correctedAt": "2026-06-27T22:17:37.116Z",
+      "changes": {
+        "transmissionCode": {
+          "before": "AT",
+          "after": "4AT"
+        }
+      }
+    },
+    {
+      "vin": "LBELMBND5AY022097",
+      "stockId": "HC250087",
+      "submissionId": "SUB-MQQU5FVE-Y8EF",
+      "correctedAt": "2026-06-27T22:17:37.121Z",
+      "changes": {
+        "transmissionCode": {
+          "before": "AT",
+          "after": "6AT"
+        }
+      }
+    },
+    {
+      "vin": "WVGEH35N1BW549299",
+      "stockId": "HC250088",
+      "submissionId": "SUB-MQQU0HV0-RZ2E",
+      "correctedAt": "2026-06-27T22:17:37.122Z",
+      "changes": {
+        "transmissionCode": {
+          "before": "AT",
+          "after": "6AT"
+        }
+      }
+    },
+    {
+      "vin": "LSGSA52S0CY032202",
+      "stockId": "HC250083",
+      "submissionId": "SUB-MQQTD0OG-GPAZ",
+      "correctedAt": "2026-06-27T22:17:37.131Z",
+      "changes": {
+        "transmissionCode": {
+          "before": "MT",
+          "after": "5MT"
+        }
+      }
+    },
+    {
+      "vin": "LDC943X36A1347417",
+      "stockId": "HC250084",
+      "submissionId": "SUB-MQQT9QZW-W8VN",
+      "correctedAt": "2026-06-27T22:17:37.136Z",
+      "changes": {
+        "transmissionCode": {
+          "before": "AT",
+          "after": "4AT"
+        }
+      }
+    },
+    {
+      "vin": "WVGAB97P1CD048539",
+      "stockId": "HC250065",
+      "submissionId": "SUB-MQQ07WJH-DQO9",
+      "correctedAt": "2026-06-27T22:17:37.154Z",
+      "changes": {
+        "transmissionCode": {
+          "before": "AT",
+          "after": "8AT"
+        }
+      }
+    },
+    {
+      "vin": "LVGBE40K99G467986",
+      "stockId": "HC250062",
+      "submissionId": "SUB-MQOP2EI4-F6RK",
+      "correctedAt": "2026-06-27T22:17:37.155Z",
+      "changes": {
+        "transmissionCode": {
+          "before": "AT",
+          "after": "5AT"
+        }
+      }
+    },
+    {
+      "vin": "LSGSA52M3CY271793",
+      "stockId": "HC250061",
+      "submissionId": "SUB-MQOOF79H-K8FG",
+      "correctedAt": "2026-06-27T22:17:37.159Z",
+      "changes": {
+        "transmissionCode": {
+          "before": "MT",
+          "after": "5MT"
+        }
+      }
+    },
+    {
+      "vin": "KNALD221965104627",
+      "stockId": "HC250060",
+      "submissionId": "SUB-MQOLPJ3A-A23S",
+      "correctedAt": "2026-06-27T22:17:37.164Z",
+      "changes": {
+        "transmissionCode": {
+          "before": "AT",
+          "after": "5AT"
+        }
+      }
+    },
+    {
+      "vin": "LFV2A1BS3E4611014",
+      "stockId": "HC250059",
+      "submissionId": "SUB-MQOJQZXE-OI3K",
+      "correctedAt": "2026-06-27T22:17:37.168Z",
+      "changes": {
+        "transmissionCode": {
+          "before": "MT",
+          "after": "5MT"
+        }
+      }
+    },
+    {
+      "vin": "LGBN22E28AY002810",
+      "stockId": "HC250057",
+      "submissionId": "SUB-MQNNA2KB-DVAM",
+      "correctedAt": "2026-06-27T22:17:37.169Z",
+      "changes": {
+        "transmissionCode": {
+          "before": "MT",
+          "after": "5MT"
+        }
+      }
+    },
+    {
+      "vin": "LFV3A21K9B3112473",
+      "stockId": "HC250056",
+      "submissionId": "SUB-MQN4S8X4-M58I",
+      "correctedAt": "2026-06-27T22:17:37.174Z",
+      "changes": {
+        "transmissionCode": {
+          "before": "AT",
+          "after": "6AT"
+        }
+      }
+    },
+    {
+      "vin": "LS5A3ABR4CA511669",
+      "stockId": "HC250055",
+      "submissionId": "SUB-MQMG9UYL-6CG3",
+      "correctedAt": "2026-06-27T22:17:37.178Z",
+      "changes": {
+        "transmissionCode": {
+          "before": "MT",
+          "after": "5MT"
+        }
+      }
+    },
+    {
+      "vin": "LBEHDAEB28Y022762",
+      "stockId": "HC250054",
+      "submissionId": "SUB-MQMEWCHL-IAK6",
+      "correctedAt": "2026-06-27T22:17:37.183Z",
+      "changes": {
+        "transmissionCode": {
+          "before": "MT",
+          "after": "5MT"
+        }
+      }
+    },
+    {
+      "vin": "LSGSA62S4CY110325",
+      "stockId": "HC250053",
+      "submissionId": "SUB-MQMEQMIB-Q19A",
+      "correctedAt": "2026-06-27T22:17:37.188Z",
+      "changes": {
+        "transmissionCode": {
+          "before": "MT",
+          "after": "5MT"
+        }
+      }
+    },
+    {
+      "vin": "LJDDAA223A0408415",
+      "stockId": "HC250043",
+      "submissionId": "SUB-MQME468R-THHD",
+      "correctedAt": "2026-06-27T22:17:37.192Z",
+      "changes": {
+        "transmissionCode": {
+          "before": "MT",
+          "after": "5MT"
+        }
+      }
+    },
+    {
+      "vin": "LSGPB64U3BS024118",
+      "stockId": "HC250044",
+      "submissionId": "SUB-MQMDWTFF-BQTI",
+      "correctedAt": "2026-06-27T22:17:37.197Z",
+      "changes": {
+        "transmissionCode": {
+          "before": "AT",
+          "after": "6AT"
+        }
+      }
+    },
+    {
+      "vin": "LBVVA96056SA63090",
+      "stockId": "HC250046",
+      "submissionId": "SUB-MQMD71TZ-CT89",
+      "correctedAt": "2026-06-27T22:17:37.204Z",
+      "changes": {
+        "transmissionCode": {
+          "before": "AT",
+          "after": "6AT"
+        }
+      }
+    },
+    {
+      "vin": "WDDFH3DB0BJ663359",
+      "stockId": "HC250047",
+      "submissionId": "SUB-MQMD188J-TO6A",
+      "correctedAt": "2026-06-27T22:17:37.209Z",
+      "changes": {
+        "transmissionCode": {
+          "before": "CVT",
+          "after": "7CVT"
+        }
+      }
+    },
+    {
+      "vin": "LHGCM567362046766",
+      "stockId": "HC250048",
+      "submissionId": "SUB-MQMCT4BY-0QBD",
+      "correctedAt": "2026-06-27T22:17:37.210Z",
+      "changes": {
+        "transmissionCode": {
+          "before": "AT",
+          "after": "5AT"
+        }
+      }
+    },
+    {
+      "vin": "LSGPC54U1AF058332",
+      "stockId": "HC250049",
+      "submissionId": "SUB-MQMCFFVE-1IX6",
+      "correctedAt": "2026-06-27T22:17:37.214Z",
+      "changes": {
+        "transmissionCode": {
+          "before": "MT",
+          "after": "5MT"
+        }
+      }
+    },
+    {
+      "vin": "LVGBH42K7BG515303",
+      "stockId": "HC250050",
+      "submissionId": "SUB-MQMBUDBS-QE6J",
+      "correctedAt": "2026-06-27T22:17:37.215Z",
+      "changes": {
+        "transmissionCode": {
+          "before": "AT",
+          "after": "4AT"
+        }
+      }
+    },
+    {
+      "vin": "LBVCU5103DSF91870",
+      "stockId": "",
+      "submissionId": "SUB-MQLZR2W3-WYOY",
+      "correctedAt": "2026-06-27T22:17:37.219Z",
+      "changes": {
+        "transmissionCode": {
+          "before": "AT",
+          "after": "8AT"
+        }
+      }
+    },
+    {
+      "vin": "LFV2B2F30L7713114",
+      "stockId": "HC250051",
+      "submissionId": "SUB-MQLZ9XYI-7YHB",
+      "correctedAt": "2026-06-27T22:17:37.224Z",
+      "changes": {
+        "transmissionCode": {
+          "before": "DCT",
+          "after": "7DCT"
+        }
+      }
+    },
+    {
+      "vin": "JTEBL29J095153996",
+      "stockId": "",
+      "submissionId": "SUB-MQLY6F3C-AR1A",
+      "correctedAt": "2026-06-27T22:17:37.229Z",
+      "changes": {
+        "transmissionCode": {
+          "before": "AT",
+          "after": "4AT"
+        }
+      }
+    },
+    {
+      "vin": "LBV5S3106ESJ48940",
+      "stockId": "HC250042",
+      "submissionId": "SUB-MQLQHRIK-NJ0W",
+      "correctedAt": "2026-06-27T22:17:37.235Z",
+      "changes": {
+        "transmissionCode": {
+          "before": "AT",
+          "after": "8AT"
+        }
+      }
+    },
+    {
+      "vin": "LB1RF4495E8002517",
+      "stockId": "HC250040",
+      "submissionId": "SUB-MQLP2UK1-HDUM",
+      "correctedAt": "2026-06-27T22:17:37.239Z",
+      "changes": {
+        "transmissionCode": {
+          "before": "MT",
+          "after": "6MT"
+        }
+      }
+    },
+    {
+      "vin": "LJDKAA249C0067257",
+      "stockId": "HC250041",
+      "submissionId": "SUB-MQLOO34J-OND8",
+      "correctedAt": "2026-06-27T22:17:37.244Z",
+      "changes": {
+        "transmissionCode": {
+          "before": "AT",
+          "after": "6AT"
+        }
+      }
+    },
+    {
+      "vin": "JN1TFSY61Z0535349",
+      "stockId": "HC250038",
+      "submissionId": "SUB-MQLNMU87-RADA",
+      "correctedAt": "2026-06-27T22:17:37.251Z",
+      "changes": {
+        "transmissionCode": {
+          "before": "AT",
+          "after": "5AT"
+        }
+      }
+    },
+    {
+      "vin": "4JGBB86E57A228810",
+      "stockId": "HC250039",
+      "submissionId": "SUB-MQLNG5FK-311H",
+      "correctedAt": "2026-06-27T22:17:37.256Z",
+      "changes": {
+        "transmissionCode": {
+          "before": "AMT",
+          "after": "7AMT"
+        }
+      }
+    },
+    {
+      "vin": "JTEBU25J030015169",
+      "stockId": "HC250037",
+      "submissionId": "SUB-MQKY982C-9XTI",
+      "correctedAt": "2026-06-27T22:17:37.261Z",
+      "changes": {
+        "transmissionCode": {
+          "before": "AT",
+          "after": "4AT"
+        }
+      }
+    },
+    {
+      "vin": "LCUBU29JX4S002552",
+      "stockId": "",
+      "submissionId": "SUB-MQJLTDD2-0SD3",
+      "correctedAt": "2026-06-27T22:17:37.262Z",
+      "changes": {
+        "transmissionCode": {
+          "before": "AT",
+          "after": "5AT"
+        }
+      }
+    },
+    {
+      "vin": "JTEBU25J140028398",
+      "stockId": "HC250036",
+      "submissionId": "SUB-MQILFSC2-PD6B",
+      "correctedAt": "2026-06-27T22:17:37.267Z",
+      "changes": {
+        "transmissionCode": {
+          "before": "AT",
+          "after": "4AT"
+        }
+      }
+    },
+    {
+      "vin": "LRH17A4E490000497",
+      "stockId": "HC250163",
+      "submissionId": "SUB-MQVT3Y8P-LOZQ",
+      "correctedAt": "2026-06-27T22:17:37.272Z",
+      "changes": {
+        "brand": {
+          "before": "Hyundai",
+          "after": "Hawtai"
+        },
+        "brandSlug": {
+          "before": "hyundai",
+          "after": "hawtai"
+        },
+        "model": {
+          "before": "Terracan",
+          "after": "特拉卡"
+        },
+        "transmissionCode": {
+          "before": "MT",
+          "after": "5MT"
+        },
+        "title": {
+          "before": "Hyundai Terracan 4G64 Running Vehicle",
+          "after": "Hawtai 特拉卡 4G64 Running Vehicle"
+        }
+      }
+    },
+    {
+      "vin": "LDCC13X2X90984267",
+      "stockId": "HC250162",
+      "submissionId": "SUB-MQUUK89V-CKEZ",
+      "correctedAt": "2026-06-27T22:17:37.276Z",
+      "changes": {
+        "transmissionCode": {
+          "before": "MT",
+          "after": "5MT"
+        }
+      }
+    },
+    {
+      "vin": "LBESCCBH93X053146",
+      "stockId": "HC250161",
+      "submissionId": "SUB-MQUWCG18-8H6L",
+      "correctedAt": "2026-06-27T22:17:37.277Z",
+      "changes": {
+        "transmissionCode": {
+          "before": "MT",
+          "after": "5MT"
+        }
+      }
+    },
+    {
+      "vin": "LVGBE40KX7G118252",
+      "stockId": "HC250160",
+      "submissionId": "SUB-MQUWI7YU-TQD7",
+      "correctedAt": "2026-06-27T22:17:37.277Z",
+      "changes": {
+        "transmissionCode": {
+          "before": "AT",
+          "after": "5AT"
+        }
+      }
+    },
+    {
+      "vin": "LVFAD1ACXAG006658",
+      "stockId": "HC250159",
+      "submissionId": "SUB-MQUWN75X-OJZQ",
+      "correctedAt": "2026-06-27T22:17:37.282Z",
+      "changes": {
+        "transmissionCode": {
+          "before": "MT",
+          "after": "5MT"
+        }
+      }
+    },
+    {
+      "vin": "LVFAB2ADXBG042330",
+      "stockId": "HC250157",
+      "submissionId": "SUB-MQUWWLN2-EYM7",
+      "correctedAt": "2026-06-27T22:17:37.287Z",
+      "changes": {
+        "transmissionCode": {
+          "before": "MT",
+          "after": "5MT"
+        }
+      }
+    },
+    {
+      "vin": "LVVDB11B3ED196667",
+      "stockId": "HC250156",
+      "submissionId": "SUB-MQUX1RA5-DJGX",
+      "correctedAt": "2026-06-27T22:17:37.288Z",
+      "changes": {
+        "model": {
+          "before": "Arrizo 3",
+          "after": "Tiggo 3"
+        },
+        "transmissionCode": {
+          "before": "MT",
+          "after": "5MT"
+        },
+        "title": {
+          "before": "Chery Arrizo 3 SQRE4G16 Half Cut",
+          "after": "Chery Tiggo 3 SQRE4G16 Half Cut"
+        }
+      }
+    },
+    {
+      "vin": "LZWADAGA4E1202318",
+      "stockId": "HC250155",
+      "submissionId": "SUB-MQUX525X-W7NM",
+      "correctedAt": "2026-06-27T22:17:37.292Z",
+      "changes": {
+        "transmissionCode": {
+          "before": "MT",
+          "after": "5MT"
+        }
+      }
+    },
+    {
+      "vin": "LSCABN3R0JE247910",
+      "stockId": "HC250154",
+      "submissionId": "SUB-MQUW8XL9-M1OC",
+      "correctedAt": "2026-06-27T22:17:37.297Z",
+      "changes": {
+        "transmissionCode": {
+          "before": "MT",
+          "after": "5MT"
+        }
+      }
+    },
+    {
+      "vin": "LJ166A345D7104747",
+      "stockId": "HC250153",
+      "submissionId": "SUB-MQUW5GCE-IKGC",
+      "correctedAt": "2026-06-27T22:17:37.302Z",
+      "changes": {
+        "transmissionCode": {
+          "before": "MT",
+          "after": "6MT"
+        }
+      }
+    },
+    {
+      "vin": "LFMARE2C2C0368602",
+      "stockId": "HC250152",
+      "submissionId": "SUB-MQUW1PMN-LFQT",
+      "correctedAt": "2026-06-27T22:17:37.302Z",
+      "changes": {
+        "transmissionCode": {
+          "before": "MT",
+          "after": "6MT"
+        }
+      }
+    },
+    {
+      "vin": "LJDLAA291C0108478",
+      "stockId": "HC250151",
+      "submissionId": "SUB-MQUV9ELW-SKXS",
+      "correctedAt": "2026-06-27T22:17:37.307Z",
+      "changes": {
+        "transmissionCode": {
+          "before": "MT",
+          "after": "5MT"
+        }
+      }
+    },
+    {
+      "vin": "LDC621P25C1004749",
+      "stockId": "HC250150",
+      "submissionId": "SUB-MQUVEYI4-USCN",
+      "correctedAt": "2026-06-27T22:17:37.311Z",
+      "changes": {
+        "transmissionCode": {
+          "before": "MT",
+          "after": "5MT"
+        }
+      }
+    },
+    {
+      "vin": "LBEXDAEB09X742323",
+      "stockId": "HC250149",
+      "submissionId": "SUB-MQUVLSHG-SZBT",
+      "correctedAt": "2026-06-27T22:17:37.312Z",
+      "changes": {
+        "transmissionCode": {
+          "before": "MT",
+          "after": "5MT"
+        }
+      }
+    },
+    {
+      "vin": "LBEJMBKB48X114862",
+      "stockId": "HC250148",
+      "submissionId": "SUB-MQUVO1BH-F18Z",
+      "correctedAt": "2026-06-27T22:17:37.312Z",
+      "changes": {
+        "transmissionCode": {
+          "before": "AT",
+          "after": "4AT"
+        }
+      }
+    },
+    {
+      "vin": "LSGGF53XXAH119541",
+      "stockId": "HC250147",
+      "submissionId": "SUB-MQUU4Q2J-24C4",
+      "correctedAt": "2026-06-27T22:17:37.317Z",
+      "changes": {
+        "transmissionCode": {
+          "before": "AT",
+          "after": "6AT"
+        }
+      }
+    },
+    {
+      "vin": "5GAEV23DX9J162342",
+      "stockId": "HC250146",
+      "submissionId": "SUB-MQUU6W23-XHXR",
+      "correctedAt": "2026-06-27T22:17:37.322Z",
+      "changes": {
+        "transmissionCode": {
+          "before": "AT",
+          "after": "6AT"
+        }
+      }
+    },
+    {
+      "vin": "LBEHDAHB89Y220971",
+      "stockId": "HC250144",
+      "submissionId": "SUB-MQUUDBDF-5IOA",
+      "correctedAt": "2026-06-27T22:17:37.327Z",
+      "changes": {
+        "transmissionCode": {
+          "before": "AT",
+          "after": "4AT"
+        }
+      }
+    },
+    {
+      "vin": "LSGSA52M8ED032198",
+      "stockId": "HC250143",
+      "submissionId": "SUB-MQUUH558-NAGN",
+      "correctedAt": "2026-06-27T22:17:37.332Z",
+      "changes": {
+        "transmissionCode": {
+          "before": "MT",
+          "after": "5MT"
+        }
+      }
+    },
+    {
+      "vin": "KL1DC53F19B299769",
+      "stockId": "HC250142",
+      "submissionId": "SUB-MQUTWDKT-W58T",
+      "correctedAt": "2026-06-27T22:17:37.336Z",
+      "changes": {
+        "transmissionCode": {
+          "before": "AT",
+          "after": "5AT"
+        }
+      }
+    },
+    {
+      "vin": "LBENFAKB87X016339",
+      "stockId": "HC250141",
+      "submissionId": "SUB-MQUTMVPM-JWU6",
+      "correctedAt": "2026-06-27T22:17:37.341Z",
+      "changes": {
+        "transmissionCode": {
+          "before": "AT",
+          "after": "4AT"
+        }
+      }
+    },
+    {
+      "vin": "LBENFAJB08X031226",
+      "stockId": "HC250140",
+      "submissionId": "SUB-MQUTJ0JU-3AE1",
+      "correctedAt": "2026-06-27T22:17:37.346Z",
+      "changes": {
+        "transmissionCode": {
+          "before": "MT",
+          "after": "5MT"
+        }
+      }
+    },
+    {
+      "vin": "LHGCP168488022808",
+      "stockId": "HC250139",
+      "submissionId": "SUB-MQUTGORO-10V9",
+      "correctedAt": "2026-06-27T22:17:37.347Z",
+      "changes": {
+        "transmissionCode": {
+          "before": "AT",
+          "after": "5AT"
+        }
+      }
+    },
+    {
+      "vin": "LJNMEW1J4AN016150",
+      "stockId": "HC250138",
+      "submissionId": "SUB-MQUT67NE-99T5",
+      "correctedAt": "2026-06-27T22:17:37.351Z",
+      "changes": {
+        "transmissionCode": {
+          "before": "AT",
+          "after": "4AT"
+        }
+      }
+    },
+    {
+      "vin": "LBENFAJB08X033851",
+      "stockId": "HC250137",
+      "submissionId": "SUB-MQUT1L3M-RUT9",
+      "correctedAt": "2026-06-27T22:17:37.356Z",
+      "changes": {
+        "transmissionCode": {
+          "before": "MT",
+          "after": "5MT"
+        }
+      }
+    },
+    {
+      "vin": "3D4PG6FD8AT267465",
+      "stockId": "HC250136",
+      "submissionId": "SUB-MQUSSVIB-BF64",
+      "correctedAt": "2026-06-27T22:17:37.360Z",
+      "changes": {
+        "transmissionCode": {
+          "before": "AT",
+          "after": "6AT"
+        }
+      }
+    },
+    {
+      "vin": "LSKG4GC10HA097250",
+      "stockId": "HC250135",
+      "submissionId": "SUB-MQURHHKT-N8TF",
+      "correctedAt": "2026-06-27T22:17:37.365Z",
+      "changes": {
+        "transmissionCode": {
+          "before": "MT",
+          "after": "6MT"
+        }
+      }
+    },
+    {
+      "vin": "LSVCD6A49BN249678",
+      "stockId": "HC250134",
+      "submissionId": "SUB-MQURN0AY-Y5CC",
+      "correctedAt": "2026-06-27T22:17:37.370Z",
+      "changes": {
+        "transmissionCode": {
+          "before": "DCT",
+          "after": "7DCT"
+        }
+      }
+    },
+    {
+      "vin": "LJDFAA14290050716",
+      "stockId": "HC250133",
+      "submissionId": "SUB-MQURX4II-LKIX",
+      "correctedAt": "2026-06-27T22:17:37.374Z",
+      "changes": {
+        "transmissionCode": {
+          "before": "AT",
+          "after": "4AT"
+        }
+      }
+    },
+    {
+      "vin": "LVSHCADB5CE044226",
+      "stockId": "HC250132",
+      "submissionId": "SUB-MQUS2L0B-3LMF",
+      "correctedAt": "2026-06-27T22:17:37.379Z",
+      "changes": {
+        "transmissionCode": {
+          "before": "DCT",
+          "after": "6DCT"
+        }
+      }
+    },
+    {
+      "vin": "LVSHEFAC0BF917538",
+      "stockId": "HC250131",
+      "submissionId": "SUB-MQUSF9L8-0NKX",
+      "correctedAt": "2026-06-27T22:17:37.384Z",
+      "changes": {
+        "transmissionCode": {
+          "before": "DCT",
+          "after": "6DCT"
+        }
+      }
+    },
+    {
+      "vin": "LSVDF6C42MN098696",
+      "stockId": "HC250130",
+      "submissionId": "SUB-MQT2A0AQ-YCOV",
+      "correctedAt": "2026-06-27T22:17:37.389Z",
+      "changes": {
+        "transmissionCode": {
+          "before": "DCT",
+          "after": "7DCT"
+        }
+      }
+    },
+    {
+      "vin": "LBEDMBKD2GZ203573",
+      "stockId": "HC250129",
+      "submissionId": "SUB-MQT2M0A1-K55T",
+      "correctedAt": "2026-06-27T22:17:37.390Z",
+      "changes": {
+        "transmissionCode": {
+          "before": "AT",
+          "after": "6AT"
+        }
+      }
+    },
+    {
+      "vin": "KMHSH81B0BU717098",
+      "stockId": "HC250128",
+      "submissionId": "SUB-MQT30VNN-2PKZ",
+      "correctedAt": "2026-06-27T22:17:37.394Z",
+      "changes": {
+        "transmissionCode": {
+          "before": "AMT",
+          "after": "6AMT"
+        }
+      }
+    },
+    {
+      "vin": "JTJHY00W6A4058024",
+      "stockId": "HC250127",
+      "submissionId": "SUB-MQT0MOWH-3OFW",
+      "correctedAt": "2026-06-27T22:17:37.399Z",
+      "changes": {
+        "transmissionCode": {
+          "before": "AT",
+          "after": "6AT"
+        }
+      }
+    },
+    {
+      "vin": "LJNMFE2K3EN051136",
+      "stockId": "HC250105",
+      "submissionId": "SUB-MQRHK6XE-TOML",
+      "correctedAt": "2026-06-27T22:17:37.404Z",
+      "changes": {
+        "transmissionCode": {
+          "before": "MT",
+          "after": "5MT"
+        }
+      }
+    },
+    {
+      "vin": "KMHSH81B9BU718556",
+      "stockId": "HC250097",
+      "submissionId": "SUB-MQRDULI0-3BUN",
+      "correctedAt": "2026-06-27T22:17:37.409Z",
+      "changes": {
+        "transmissionCode": {
+          "before": "AMT",
+          "after": "6AMT"
+        }
+      }
+    },
+    {
+      "vin": "WVGEH35N1BW549299",
+      "stockId": "HC250088",
+      "submissionId": "SUB-MQQU0HV0-RZ2E",
+      "correctedAt": "2026-06-27T22:17:37.410Z",
+      "changes": {
+        "transmissionCode": {
+          "before": "AT",
+          "after": "6AT"
+        }
+      }
+    },
+    {
+      "vin": "LBELMBND5AY022097",
+      "stockId": "HC250087",
+      "submissionId": "SUB-MQQU5FVE-Y8EF",
+      "correctedAt": "2026-06-27T22:17:37.414Z",
+      "changes": {
+        "transmissionCode": {
+          "before": "AT",
+          "after": "6AT"
+        }
+      }
+    },
+    {
+      "vin": "LBENFAKC49X052962",
+      "stockId": "HC250086",
+      "submissionId": "SUB-MQQUCCFM-8EKS",
+      "correctedAt": "2026-06-27T22:17:37.420Z",
+      "changes": {
+        "transmissionCode": {
+          "before": "AT",
+          "after": "4AT"
+        }
+      }
+    },
+    {
+      "vin": "LDC943X36A1347417",
+      "stockId": "HC250084",
+      "submissionId": "SUB-MQQT9QZW-W8VN",
+      "correctedAt": "2026-06-27T22:17:37.430Z",
+      "changes": {
+        "transmissionCode": {
+          "before": "AT",
+          "after": "4AT"
+        }
+      }
+    },
+    {
+      "vin": "LSGSA52S0CY032202",
+      "stockId": "HC250083",
+      "submissionId": "SUB-MQQTD0OG-GPAZ",
+      "correctedAt": "2026-06-27T22:17:37.434Z",
+      "changes": {
+        "transmissionCode": {
+          "before": "MT",
+          "after": "5MT"
+        }
+      }
+    },
+    {
+      "vin": "WVGAB97P1CD048539",
+      "stockId": "HC250065",
+      "submissionId": "SUB-MQQ07WJH-DQO9",
+      "correctedAt": "2026-06-27T22:17:37.449Z",
+      "changes": {
+        "transmissionCode": {
+          "before": "AT",
+          "after": "8AT"
+        }
+      }
+    },
+    {
+      "vin": "LVGBE40K99G467986",
+      "stockId": "HC250062",
+      "submissionId": "SUB-MQOP2EI4-F6RK",
+      "correctedAt": "2026-06-27T22:17:37.455Z",
+      "changes": {
+        "transmissionCode": {
+          "before": "AT",
+          "after": "5AT"
+        }
+      }
+    },
+    {
+      "vin": "LSGSA52M3CY271793",
+      "stockId": "HC250061",
+      "submissionId": "SUB-MQOOF79H-K8FG",
+      "correctedAt": "2026-06-27T22:17:37.461Z",
+      "changes": {
+        "transmissionCode": {
+          "before": "MT",
+          "after": "5MT"
+        }
+      }
+    },
+    {
+      "vin": "KNALD221965104627",
+      "stockId": "HC250060",
+      "submissionId": "SUB-MQOLPJ3A-A23S",
+      "correctedAt": "2026-06-27T22:17:37.465Z",
+      "changes": {
+        "transmissionCode": {
+          "before": "AT",
+          "after": "5AT"
+        }
+      }
+    },
+    {
+      "vin": "LFV2A1BS3E4611014",
+      "stockId": "HC250059",
+      "submissionId": "SUB-MQOJQZXE-OI3K",
+      "correctedAt": "2026-06-27T22:17:37.470Z",
+      "changes": {
+        "transmissionCode": {
+          "before": "MT",
+          "after": "5MT"
+        }
+      }
+    },
+    {
+      "vin": "LGBN22E28AY002810",
+      "stockId": "HC250057",
+      "submissionId": "SUB-MQNNA2KB-DVAM",
+      "correctedAt": "2026-06-27T22:17:37.472Z",
+      "changes": {
+        "transmissionCode": {
+          "before": "MT",
+          "after": "5MT"
+        }
+      }
+    },
+    {
+      "vin": "LFV3A21K9B3112473",
+      "stockId": "HC250056",
+      "submissionId": "SUB-MQN4S8X4-M58I",
+      "correctedAt": "2026-06-27T22:17:37.476Z",
+      "changes": {
+        "transmissionCode": {
+          "before": "AT",
+          "after": "6AT"
+        }
+      }
+    },
+    {
+      "vin": "LS5A3ABR4CA511669",
+      "stockId": "HC250055",
+      "submissionId": "SUB-MQMG9UYL-6CG3",
+      "correctedAt": "2026-06-27T22:17:37.481Z",
+      "changes": {
+        "transmissionCode": {
+          "before": "MT",
+          "after": "5MT"
+        }
+      }
+    },
+    {
+      "vin": "LBEHDAEB28Y022762",
+      "stockId": "HC250054",
+      "submissionId": "SUB-MQMEWCHL-IAK6",
+      "correctedAt": "2026-06-27T22:17:37.486Z",
+      "changes": {
+        "transmissionCode": {
+          "before": "MT",
+          "after": "5MT"
+        }
+      }
+    },
+    {
+      "vin": "LSGSA62S4CY110325",
+      "stockId": "HC250053",
+      "submissionId": "SUB-MQMEQMIB-Q19A",
+      "correctedAt": "2026-06-27T22:17:37.490Z",
+      "changes": {
+        "transmissionCode": {
+          "before": "MT",
+          "after": "5MT"
+        }
+      }
+    },
+    {
+      "vin": "LFV2B2F30L7713114",
+      "stockId": "HC250051",
+      "submissionId": "SUB-MQLZ9XYI-7YHB",
+      "correctedAt": "2026-06-27T22:17:37.497Z",
+      "changes": {
+        "transmissionCode": {
+          "before": "DCT",
+          "after": "7DCT"
+        }
+      }
+    },
+    {
+      "vin": "LVGBH42K7BG515303",
+      "stockId": "HC250050",
+      "submissionId": "SUB-MQMBUDBS-QE6J",
+      "correctedAt": "2026-06-27T22:17:37.497Z",
+      "changes": {
+        "transmissionCode": {
+          "before": "AT",
+          "after": "4AT"
+        }
+      }
+    },
+    {
+      "vin": "LSGPC54U1AF058332",
+      "stockId": "HC250049",
+      "submissionId": "SUB-MQMCFFVE-1IX6",
+      "correctedAt": "2026-06-27T22:17:37.502Z",
+      "changes": {
+        "transmissionCode": {
+          "before": "MT",
+          "after": "5MT"
+        }
+      }
+    },
+    {
+      "vin": "LHGCM567362046766",
+      "stockId": "HC250048",
+      "submissionId": "SUB-MQMCT4BY-0QBD",
+      "correctedAt": "2026-06-27T22:17:37.503Z",
+      "changes": {
+        "transmissionCode": {
+          "before": "AT",
+          "after": "5AT"
+        }
+      }
+    },
+    {
+      "vin": "WDDFH3DB0BJ663359",
+      "stockId": "HC250047",
+      "submissionId": "SUB-MQMD188J-TO6A",
+      "correctedAt": "2026-06-27T22:17:37.508Z",
+      "changes": {
+        "transmissionCode": {
+          "before": "CVT",
+          "after": "7CVT"
+        }
+      }
+    },
+    {
+      "vin": "LBVVA96056SA63090",
+      "stockId": "HC250046",
+      "submissionId": "SUB-MQMD71TZ-CT89",
+      "correctedAt": "2026-06-27T22:17:37.513Z",
+      "changes": {
+        "transmissionCode": {
+          "before": "AT",
+          "after": "6AT"
+        }
+      }
+    },
+    {
+      "vin": "LSGPB64U3BS024118",
+      "stockId": "HC250044",
+      "submissionId": "SUB-MQMDWTFF-BQTI",
+      "correctedAt": "2026-06-27T22:17:37.518Z",
+      "changes": {
+        "transmissionCode": {
+          "before": "AT",
+          "after": "6AT"
+        }
+      }
+    },
+    {
+      "vin": "LJDDAA223A0408415",
+      "stockId": "HC250043",
+      "submissionId": "SUB-MQME468R-THHD",
+      "correctedAt": "2026-06-27T22:17:37.523Z",
+      "changes": {
+        "transmissionCode": {
+          "before": "MT",
+          "after": "5MT"
+        }
+      }
+    },
+    {
+      "vin": "LBV5S3106ESJ48940",
+      "stockId": "HC250042",
+      "submissionId": "SUB-MQLQHRIK-NJ0W",
+      "correctedAt": "2026-06-27T22:17:37.528Z",
+      "changes": {
+        "transmissionCode": {
+          "before": "AT",
+          "after": "8AT"
+        }
+      }
+    },
+    {
+      "vin": "LJDKAA249C0067257",
+      "stockId": "HC250041",
+      "submissionId": "SUB-MQLOO34J-OND8",
+      "correctedAt": "2026-06-27T22:17:37.534Z",
+      "changes": {
+        "transmissionCode": {
+          "before": "AT",
+          "after": "6AT"
+        }
+      }
+    },
+    {
+      "vin": "LB1RF4495E8002517",
+      "stockId": "HC250040",
+      "submissionId": "SUB-MQLP2UK1-HDUM",
+      "correctedAt": "2026-06-27T22:17:37.539Z",
+      "changes": {
+        "transmissionCode": {
+          "before": "MT",
+          "after": "6MT"
+        }
+      }
+    },
+    {
+      "vin": "4JGBB86E57A228810",
+      "stockId": "HC250039",
+      "submissionId": "SUB-MQLNG5FK-311H",
+      "correctedAt": "2026-06-27T22:17:37.544Z",
+      "changes": {
+        "transmissionCode": {
+          "before": "AMT",
+          "after": "7AMT"
+        }
+      }
+    },
+    {
+      "vin": "JN1TFSY61Z0535349",
+      "stockId": "HC250038",
+      "submissionId": "SUB-MQLNMU87-RADA",
+      "correctedAt": "2026-06-27T22:17:37.549Z",
+      "changes": {
+        "transmissionCode": {
+          "before": "AT",
+          "after": "5AT"
+        }
+      }
+    },
+    {
+      "vin": "JTEBU25J030015169",
+      "stockId": "HC250037",
+      "submissionId": "SUB-MQKY982C-9XTI",
+      "correctedAt": "2026-06-27T22:17:37.554Z",
+      "changes": {
+        "transmissionCode": {
+          "before": "AT",
+          "after": "4AT"
+        }
+      }
+    },
+    {
+      "vin": "JTEBU25J140028398",
+      "stockId": "HC250036",
+      "submissionId": "SUB-MQILFSC2-PD6B",
+      "correctedAt": "2026-06-27T22:17:37.559Z",
+      "changes": {
+        "transmissionCode": {
+          "before": "AT",
+          "after": "4AT"
+        }
+      }
     }
   ]
 }

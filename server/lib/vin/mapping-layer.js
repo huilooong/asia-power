@@ -34,6 +34,7 @@ const ASIAPOWER_VEHICLE_SCHEMA_KEYS = [
   'engineDescription',
   'displacementCc',
   'transmissionCode',
+  'transmissionType',
   'transmissionDescription',
   'gearboxModel',
   'drivetrainRaw',
@@ -52,7 +53,7 @@ const DIRECT_FIELD_MAP = {
   engine_code: 'engineCode',       // "HR15DE" — matches AsiaPower's existing engineCode convention directly
   engine_desc: 'engineDescription', // "1.5L 107马力 L4"
   displacement: 'displacementCc',  // "1498" — cubic centimeters, NOT liters (AsiaPower's existing brand-catalog.js uses "2.8L" style)
-  trans_type: 'transmissionCode',  // "MT" — bare type, missing gear count (AsiaPower convention is "5MT"/"6AT")
+  trans_type: 'transmissionType',  // "MT" — bare type (CVT/MT/AT), combined with shift_num below into transmissionCode
   trans_des: 'transmissionDescription', // "手动变速器(MT)"
   driver_type: 'drivetrainRaw',    // "前置前驱" — Chinese descriptive phrase, NOT AsiaPower's "2WD/4WD/AWD/RWD" codes
   fuel_type: 'fuelTypeRaw',        // "汽油" — Chinese, NOT AsiaPower's "Petrol/Diesel/Hybrid" enum
@@ -63,7 +64,7 @@ const DIRECT_FIELD_MAP = {
 // Fields whose VALUES need a human-reviewed translation dictionary before
 // they can populate AsiaPower's existing enums. Each unseen value must go
 // through knowledge-base unknownQueue, not be guessed here.
-const NEEDS_DICTIONARY = ['transmissionCode', 'drivetrainRaw', 'fuelTypeRaw', 'brand'];
+const NEEDS_DICTIONARY = ['drivetrainRaw', 'fuelTypeRaw', 'brand'];
 
 /**
  * Maps the first model in a QXB decode response to AsiaPower's schema.
@@ -87,6 +88,17 @@ function applyMapping(rawResponseJson) {
       rawUnmapped[qxbField] = value;
     }
   });
+
+  // Combine shift_num (gear count) + trans_type into AsiaPower's existing
+  // "5MT"/"6AT" convention. shift_num is numeric for MT/AT ("5", "6", ...)
+  // but a Chinese phrase for CVT ("无级变速") — only prefix the gear count
+  // when it's actually numeric, otherwise transmissionCode is just the type.
+  const shiftNum = model.shift_num;
+  if (mapped.transmissionType) {
+    mapped.transmissionCode = /^\d+$/.test(String(shiftNum || '').trim())
+      ? `${shiftNum}${mapped.transmissionType}`
+      : mapped.transmissionType;
+  }
 
   // result.trans_code is a SIBLING of models[] (not a field inside the model
   // object) — the actual gearbox model number (e.g. "RE0F10A/JF011E"), distinct
