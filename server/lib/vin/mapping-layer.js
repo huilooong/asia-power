@@ -10,10 +10,11 @@
  * see the AsiaPower schema below. If AsiaPower switches VIN providers later,
  * only this file changes.
  *
- * STATUS: DRAFT — built from exactly ONE real response so far (VIN
- * LGBN22E28AY002810, 2026-06-27, /VinDecoder/decode v4.6.0, number:200).
- * Field *names* below are taken directly from that real response (see
- * data/knowledge-base/vin-cache.json) — not guessed from other providers.
+ * STATUS: validated against 10 real production VINs (2026-06-27, sampled
+ * from data/half-cut-submissions.json + half-cut-approved.json on the VPS),
+ * 9/10 decoded successfully. Field names below are taken directly from real
+ * responses (see data/knowledge-base/vin-cache.json) — not guessed from
+ * other providers.
  * Field *value normalization* (Chinese enums → AsiaPower's English codes)
  * is flagged `needsDictionary: true` and intentionally NOT auto-applied:
  * one sample isn't enough to know the full value space (e.g. all possible
@@ -34,6 +35,7 @@ const ASIAPOWER_VEHICLE_SCHEMA_KEYS = [
   'displacementCc',
   'transmissionCode',
   'transmissionDescription',
+  'gearboxModel',
   'drivetrainRaw',
   'fuelTypeRaw',
   'bodyType',
@@ -85,6 +87,13 @@ function applyMapping(rawResponseJson) {
       rawUnmapped[qxbField] = value;
     }
   });
+
+  // result.trans_code is a SIBLING of models[] (not a field inside the model
+  // object) — the actual gearbox model number (e.g. "RE0F10A/JF011E"), distinct
+  // from trans_type/trans_des which only describe the gearbox TYPE (CVT/MT/AT).
+  // Confirmed present in real responses 2026-06-27 (sample VIN batch).
+  const transCode = rawResponseJson?.result?.trans_code;
+  if (transCode) mapped.gearboxModel = transCode;
 
   const needsDictionary = NEEDS_DICTIONARY
     .filter((field) => mapped[field] !== undefined)
