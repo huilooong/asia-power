@@ -1,0 +1,3908 @@
+{
+  "entries": [
+    {
+      "vin": "LGBF1AE00BR083023",
+      "stockId": "",
+      "submissionId": "SUB-MQWCIBHY-WTED",
+      "correctedAt": "2026-06-27T21:58:20.189Z",
+      "changes": {
+        "engineCode": {
+          "before": "MR20",
+          "after": "MR20DE"
+        },
+        "gearboxModel": {
+          "after": "RE0F10A/JF011E"
+        },
+        "displacement": {
+          "after": "2.0L"
+        },
+        "fuelType": {
+          "after": "Petrol"
+        }
+      }
+    },
+    {
+      "vin": "LRH17A4E490000497",
+      "stockId": "HC250163",
+      "submissionId": "SUB-MQVT3Y8P-LOZQ",
+      "correctedAt": "2026-06-27T21:58:20.192Z",
+      "changes": {
+        "year": {
+          "before": 2009,
+          "after": 2010
+        },
+        "transmissionCode": {
+          "before": "AT",
+          "after": "MT"
+        },
+        "displacement": {
+          "after": "2.4L"
+        },
+        "fuelType": {
+          "after": "Petrol"
+        },
+        "drivetrain": {
+          "before": "2WD",
+          "after": "4WD"
+        }
+      }
+    },
+    {
+      "vin": "LZWADAGA4E1202318",
+      "stockId": "HC250155",
+      "submissionId": "SUB-MQUX525X-W7NM",
+      "correctedAt": "2026-06-27T21:58:20.194Z",
+      "changes": {
+        "engineCode": {
+          "before": "L MH",
+          "after": "LMU"
+        },
+        "transmissionCode": {
+          "before": "mt",
+          "after": "MT"
+        },
+        "gearboxModel": {
+          "after": "5MT"
+        },
+        "displacement": {
+          "after": "1.2L"
+        },
+        "fuelType": {
+          "after": "Petrol"
+        },
+        "drivetrain": {
+          "before": "2WD",
+          "after": "RWD"
+        }
+      }
+    },
+    {
+      "vin": "LVVDB11B3ED196667",
+      "stockId": "HC250156",
+      "submissionId": "SUB-MQUX1RA5-DJGX",
+      "correctedAt": "2026-06-27T21:58:20.195Z",
+      "changes": {
+        "transmissionCode": {
+          "before": "mt",
+          "after": "MT"
+        },
+        "gearboxModel": {
+          "after": "5MT"
+        },
+        "displacement": {
+          "after": "1.6L"
+        },
+        "fuelType": {
+          "after": "Petrol"
+        }
+      }
+    },
+    {
+      "vin": "LVFAB2ADXBG042330",
+      "stockId": "HC250157",
+      "submissionId": "SUB-MQUWWLN2-EYM7",
+      "correctedAt": "2026-06-27T21:58:20.197Z",
+      "changes": {
+        "year": {
+          "before": 2011,
+          "after": 2013
+        },
+        "engineCode": {
+          "before": "K14B",
+          "after": "K14B-D"
+        },
+        "transmissionCode": {
+          "before": "mt",
+          "after": "MT"
+        },
+        "displacement": {
+          "after": "1.4L"
+        },
+        "fuelType": {
+          "after": "Petrol"
+        }
+      }
+    },
+    {
+      "vin": "LVFAD1ACXAG006658",
+      "stockId": "HC250159",
+      "submissionId": "SUB-MQUWN75X-OJZQ",
+      "correctedAt": "2026-06-27T21:58:20.199Z",
+      "changes": {
+        "transmissionCode": {
+          "before": "mt",
+          "after": "MT"
+        },
+        "displacement": {
+          "after": "1.2L"
+        },
+        "fuelType": {
+          "after": "Petrol"
+        },
+        "drivetrain": {
+          "before": "2WD",
+          "after": "RWD"
+        }
+      }
+    },
+    {
+      "vin": "LVGBE40KX7G118252",
+      "stockId": "HC250160",
+      "submissionId": "SUB-MQUWI7YU-TQD7",
+      "correctedAt": "2026-06-27T21:58:20.201Z",
+      "changes": {
+        "engineCode": {
+          "before": "2AZ",
+          "after": "2AZ-FE"
+        },
+        "gearboxModel": {
+          "after": "U250E/AW95-50LS"
+        },
+        "displacement": {
+          "after": "2.4L"
+        },
+        "fuelType": {
+          "after": "Petrol"
+        }
+      }
+    },
+    {
+      "vin": "LBESCCBH93X053146",
+      "stockId": "HC250161",
+      "submissionId": "SUB-MQUWCG18-8H6L",
+      "correctedAt": "2026-06-27T21:58:20.201Z",
+      "changes": {
+        "model": {
+          "before": "Elantra",
+          "after": "Sonata"
+        },
+        "engineCode": {
+          "before": "G4ED",
+          "after": "G4GC"
+        },
+        "transmissionCode": {
+          "before": "mt",
+          "after": "MT"
+        },
+        "displacement": {
+          "after": "2.0L"
+        },
+        "fuelType": {
+          "after": "Petrol"
+        }
+      }
+    },
+    {
+      "vin": "LSCABN3R0JE247910",
+      "stockId": "HC250154",
+      "submissionId": "SUB-MQUW8XL9-M1OC",
+      "correctedAt": "2026-06-27T21:58:20.203Z",
+      "changes": {
+        "year": {
+          "before": 2018,
+          "after": 2016
+        },
+        "engineCode": {
+          "before": "100",
+          "after": "DK12-10"
+        },
+        "transmissionCode": {
+          "before": "10",
+          "after": "MT"
+        },
+        "displacement": {
+          "after": "1.2L"
+        },
+        "fuelType": {
+          "after": "Petrol"
+        },
+        "drivetrain": {
+          "before": "2WD",
+          "after": "RWD"
+        }
+      }
+    },
+    {
+      "vin": "LJ166A345D7104747",
+      "stockId": "HC250153",
+      "submissionId": "SUB-MQUW5GCE-IKGC",
+      "correctedAt": "2026-06-27T21:58:20.205Z",
+      "changes": {
+        "engineCode": {
+          "before": "HFV4GA3",
+          "after": "HFC4GA3.1D"
+        },
+        "transmissionCode": {
+          "before": "mt",
+          "after": "MT"
+        },
+        "gearboxModel": {
+          "after": "6MT"
+        },
+        "displacement": {
+          "after": "2.0L"
+        },
+        "fuelType": {
+          "after": "Petrol"
+        },
+        "drivetrain": {
+          "before": "2WD",
+          "after": "RWD"
+        }
+      }
+    },
+    {
+      "vin": "LFMARE2C2C0368602",
+      "stockId": "HC250152",
+      "submissionId": "SUB-MQUW1PMN-LFQT",
+      "correctedAt": "2026-06-27T21:58:20.206Z",
+      "changes": {
+        "model": {
+          "before": "Corolla Cross",
+          "after": "Corolla"
+        },
+        "engineCode": {
+          "before": "2ZR",
+          "after": "2ZR-FE"
+        },
+        "displacement": {
+          "after": "1.8L"
+        },
+        "fuelType": {
+          "after": "Petrol"
+        }
+      }
+    },
+    {
+      "vin": "LBEJMBKB48X114862",
+      "stockId": "HC250148",
+      "submissionId": "SUB-MQUVO1BH-F18Z",
+      "correctedAt": "2026-06-27T21:58:20.206Z",
+      "changes": {
+        "year": {
+          "before": 2008,
+          "after": 2007
+        },
+        "fuelType": {
+          "after": "Petrol"
+        }
+      }
+    },
+    {
+      "vin": "LBEXDAEB09X742323",
+      "stockId": "HC250149",
+      "submissionId": "SUB-MQUVLSHG-SZBT",
+      "correctedAt": "2026-06-27T21:58:20.207Z",
+      "changes": {
+        "year": {
+          "before": 2009,
+          "after": 2008
+        },
+        "displacement": {
+          "after": "1.6L"
+        },
+        "fuelType": {
+          "after": "Petrol"
+        }
+      }
+    },
+    {
+      "vin": "LDC621P25C1004749",
+      "stockId": "HC250150",
+      "submissionId": "SUB-MQUVEYI4-USCN",
+      "correctedAt": "2026-06-27T21:58:20.209Z",
+      "changes": {
+        "transmissionCode": {
+          "before": "mt",
+          "after": "MT"
+        },
+        "displacement": {
+          "after": "1.4L"
+        },
+        "fuelType": {
+          "after": "Petrol"
+        }
+      }
+    },
+    {
+      "vin": "LJDLAA291C0108478",
+      "stockId": "HC250151",
+      "submissionId": "SUB-MQUV9ELW-SKXS",
+      "correctedAt": "2026-06-27T21:58:20.210Z",
+      "changes": {
+        "displacement": {
+          "after": "1.4L"
+        },
+        "fuelType": {
+          "after": "Petrol"
+        }
+      }
+    },
+    {
+      "vin": "LDCC13X2X90984267",
+      "stockId": "HC250162",
+      "submissionId": "SUB-MQUUK89V-CKEZ",
+      "correctedAt": "2026-06-27T21:58:20.212Z",
+      "changes": {
+        "engineCode": {
+          "before": "1.8",
+          "after": "PSA RFN 10LH3X"
+        },
+        "transmissionCode": {
+          "before": "mt",
+          "after": "MT"
+        },
+        "displacement": {
+          "after": "2.0L"
+        },
+        "fuelType": {
+          "after": "Petrol"
+        }
+      }
+    },
+    {
+      "vin": "LSGSA52M8ED032198",
+      "stockId": "HC250143",
+      "submissionId": "SUB-MQUUH558-NAGN",
+      "correctedAt": "2026-06-27T21:58:20.213Z",
+      "changes": {
+        "year": {
+          "before": 2014,
+          "after": 2013
+        },
+        "transmissionCode": {
+          "before": "mt",
+          "after": "MT"
+        },
+        "gearboxModel": {
+          "after": "5MT"
+        },
+        "displacement": {
+          "after": "1.4L"
+        },
+        "fuelType": {
+          "after": "Petrol"
+        }
+      }
+    },
+    {
+      "vin": "LBEHDAHB89Y220971",
+      "stockId": "HC250144",
+      "submissionId": "SUB-MQUUDBDF-5IOA",
+      "correctedAt": "2026-06-27T21:58:20.215Z",
+      "changes": {
+        "year": {
+          "before": 2009,
+          "after": 2008
+        },
+        "transmissionCode": {
+          "before": "mt",
+          "after": "AT"
+        },
+        "displacement": {
+          "after": "1.8L"
+        },
+        "fuelType": {
+          "after": "Petrol"
+        }
+      }
+    },
+    {
+      "vin": "5GAEV23DX9J162342",
+      "stockId": "HC250146",
+      "submissionId": "SUB-MQUU6W23-XHXR",
+      "correctedAt": "2026-06-27T21:58:20.217Z",
+      "changes": {
+        "engineCode": {
+          "before": "LL T",
+          "after": "LLT"
+        },
+        "gearboxModel": {
+          "after": "6T75"
+        },
+        "displacement": {
+          "after": "3.6L"
+        },
+        "fuelType": {
+          "after": "Petrol"
+        },
+        "drivetrain": {
+          "before": "2WD",
+          "after": "4WD"
+        }
+      }
+    },
+    {
+      "vin": "LSGGF53XXAH119541",
+      "stockId": "HC250147",
+      "submissionId": "SUB-MQUU4Q2J-24C4",
+      "correctedAt": "2026-06-27T21:58:20.219Z",
+      "changes": {
+        "gearboxModel": {
+          "after": "6T45"
+        },
+        "displacement": {
+          "after": "2.4L"
+        },
+        "fuelType": {
+          "after": "Petrol"
+        }
+      }
+    },
+    {
+      "vin": "KL1DC53F19B299769",
+      "stockId": "HC250142",
+      "submissionId": "SUB-MQUTWDKT-W58T",
+      "correctedAt": "2026-06-27T21:58:20.221Z",
+      "changes": {
+        "year": {
+          "before": 2009,
+          "after": 2010
+        },
+        "engineCode": {
+          "before": "Z24sed",
+          "after": "Z24SED"
+        },
+        "transmissionCode": {
+          "before": "at",
+          "after": "AT"
+        },
+        "gearboxModel": {
+          "after": "AW55-51SN"
+        },
+        "displacement": {
+          "after": "2.4L"
+        },
+        "fuelType": {
+          "after": "Petrol"
+        },
+        "drivetrain": {
+          "before": "2WD",
+          "after": "4WD"
+        }
+      }
+    },
+    {
+      "vin": "LBENFAKB87X016339",
+      "stockId": "HC250141",
+      "submissionId": "SUB-MQUTMVPM-JWU6",
+      "correctedAt": "2026-06-27T21:58:20.223Z",
+      "changes": {
+        "year": {
+          "before": 2007,
+          "after": 2006
+        },
+        "transmissionCode": {
+          "before": "At",
+          "after": "AT"
+        },
+        "fuelType": {
+          "after": "Petrol"
+        }
+      }
+    },
+    {
+      "vin": "LBENFAJB08X031226",
+      "stockId": "HC250140",
+      "submissionId": "SUB-MQUTJ0JU-3AE1",
+      "correctedAt": "2026-06-27T21:58:20.225Z",
+      "changes": {
+        "year": {
+          "before": 2008,
+          "after": 2006
+        },
+        "transmissionCode": {
+          "before": "mt",
+          "after": "MT"
+        },
+        "fuelType": {
+          "after": "Petrol"
+        }
+      }
+    },
+    {
+      "vin": "LHGCP168488022808",
+      "stockId": "HC250139",
+      "submissionId": "SUB-MQUTGORO-10V9",
+      "correctedAt": "2026-06-27T21:58:20.225Z",
+      "changes": {
+        "transmissionCode": {
+          "before": "mt",
+          "after": "AT"
+        },
+        "gearboxModel": {
+          "after": "M94A"
+        },
+        "displacement": {
+          "after": "2.0L"
+        },
+        "fuelType": {
+          "after": "Petrol"
+        }
+      }
+    },
+    {
+      "vin": "LJNMEW1J4AN016150",
+      "stockId": "HC250138",
+      "submissionId": "SUB-MQUT67NE-99T5",
+      "correctedAt": "2026-06-27T21:58:20.227Z",
+      "changes": {
+        "year": {
+          "before": 2010,
+          "after": 2007
+        },
+        "engineCode": {
+          "before": "汽油",
+          "after": "4G64 S4M"
+        },
+        "transmissionCode": {
+          "before": "mt",
+          "after": "AT"
+        },
+        "gearboxModel": {
+          "after": "RE4R01A/JR402E"
+        },
+        "displacement": {
+          "after": "2.4L"
+        },
+        "fuelType": {
+          "after": "Petrol"
+        },
+        "drivetrain": {
+          "before": "2WD",
+          "after": "RWD"
+        }
+      }
+    },
+    {
+      "vin": "LBENFAJB08X033851",
+      "stockId": "HC250137",
+      "submissionId": "SUB-MQUT1L3M-RUT9",
+      "correctedAt": "2026-06-27T21:58:20.229Z",
+      "changes": {
+        "year": {
+          "before": 2008,
+          "after": 2006
+        },
+        "transmissionCode": {
+          "before": "mt",
+          "after": "MT"
+        },
+        "fuelType": {
+          "after": "Petrol"
+        }
+      }
+    },
+    {
+      "vin": "3D4PG6FD8AT267465",
+      "stockId": "HC250136",
+      "submissionId": "SUB-MQUSSVIB-BF64",
+      "correctedAt": "2026-06-27T21:58:20.231Z",
+      "changes": {
+        "engineCode": {
+          "before": "JCDU",
+          "after": "D"
+        },
+        "transmissionCode": {
+          "before": "at",
+          "after": "AT"
+        },
+        "gearboxModel": {
+          "after": "62TE"
+        },
+        "fuelType": {
+          "after": "Petrol"
+        }
+      }
+    },
+    {
+      "vin": "LVSHEFAC0BF917538",
+      "stockId": "HC250131",
+      "submissionId": "SUB-MQUSF9L8-0NKX",
+      "correctedAt": "2026-06-27T21:58:20.232Z",
+      "changes": {
+        "engineCode": {
+          "before": "b48",
+          "after": "CAF488Q3"
+        },
+        "transmissionCode": {
+          "before": "at",
+          "after": "DCT"
+        },
+        "gearboxModel": {
+          "after": "MPS6/6DCT450"
+        },
+        "displacement": {
+          "after": "2.0L"
+        },
+        "fuelType": {
+          "after": "Petrol"
+        }
+      }
+    },
+    {
+      "vin": "LVSHCADB5CE044226",
+      "stockId": "HC250132",
+      "submissionId": "SUB-MQUS2L0B-3LMF",
+      "correctedAt": "2026-06-27T21:58:20.234Z",
+      "changes": {
+        "transmissionCode": {
+          "before": "at",
+          "after": "DCT"
+        },
+        "gearboxModel": {
+          "after": "DPS6/6DCT250"
+        },
+        "displacement": {
+          "after": "1.6L"
+        },
+        "fuelType": {
+          "after": "Petrol"
+        }
+      }
+    },
+    {
+      "vin": "LJDFAA14290050716",
+      "stockId": "HC250133",
+      "submissionId": "SUB-MQURX4II-LKIX",
+      "correctedAt": "2026-06-27T21:58:20.235Z",
+      "changes": {
+        "year": {
+          "before": 2009,
+          "after": 2011
+        },
+        "transmissionCode": {
+          "before": "at",
+          "after": "AT"
+        },
+        "gearboxModel": {
+          "after": "F4A42/F4A4B"
+        },
+        "displacement": {
+          "after": "2.0L"
+        },
+        "fuelType": {
+          "after": "Petrol"
+        }
+      }
+    },
+    {
+      "vin": "LSVCD6A49BN249678",
+      "stockId": "HC250134",
+      "submissionId": "SUB-MQURN0AY-Y5CC",
+      "correctedAt": "2026-06-27T21:58:20.236Z",
+      "changes": {
+        "transmissionCode": {
+          "before": "at",
+          "after": "DCT"
+        },
+        "gearboxModel": {
+          "after": "DQ200/0AM"
+        },
+        "displacement": {
+          "after": "1.8L"
+        },
+        "fuelType": {
+          "after": "Petrol"
+        }
+      }
+    },
+    {
+      "vin": "L6T7722Z1HN046969",
+      "stockId": "",
+      "submissionId": "SUB-MQURJ5DP-LD83",
+      "correctedAt": "2026-06-27T21:58:20.238Z",
+      "changes": {
+        "engineCode": {
+          "before": "",
+          "after": "JLγ-4G15"
+        },
+        "transmissionCode": {
+          "before": "",
+          "after": "CVT"
+        },
+        "gearboxModel": {
+          "after": "CVT"
+        },
+        "displacement": {
+          "after": "1.5L"
+        },
+        "fuelType": {
+          "after": "Petrol"
+        }
+      }
+    },
+    {
+      "vin": "LSKG4GC10HA097250",
+      "stockId": "HC250135",
+      "submissionId": "SUB-MQURHHKT-N8TF",
+      "correctedAt": "2026-06-27T21:58:20.240Z",
+      "changes": {
+        "year": {
+          "before": 2017,
+          "after": 2018
+        },
+        "transmissionCode": {
+          "before": "MT6",
+          "after": "MT"
+        },
+        "gearboxModel": {
+          "after": "6MT"
+        },
+        "fuelType": {
+          "after": "Diesel"
+        },
+        "drivetrain": {
+          "before": "2WD",
+          "after": "RWD"
+        }
+      }
+    },
+    {
+      "vin": "KMHSH81B0BU717098",
+      "stockId": "HC250128",
+      "submissionId": "SUB-MQT30VNN-2PKZ",
+      "correctedAt": "2026-06-27T21:58:20.241Z",
+      "changes": {
+        "transmissionCode": {
+          "before": "AT",
+          "after": "AMT"
+        },
+        "displacement": {
+          "after": "2.4L"
+        },
+        "fuelType": {
+          "after": "Petrol"
+        },
+        "drivetrain": {
+          "before": "2WD",
+          "after": "4WD"
+        }
+      }
+    },
+    {
+      "vin": "LBEDMBKD2GZ203573",
+      "stockId": "HC250129",
+      "submissionId": "SUB-MQT2M0A1-K55T",
+      "correctedAt": "2026-06-27T21:58:20.242Z",
+      "changes": {
+        "model": {
+          "before": "Tucson",
+          "after": "Santa Fe"
+        },
+        "year": {
+          "before": 2016,
+          "after": 2017
+        },
+        "gearboxModel": {
+          "after": "6AT"
+        },
+        "displacement": {
+          "after": "2.0L"
+        },
+        "fuelType": {
+          "after": "Petrol"
+        }
+      }
+    },
+    {
+      "vin": "LSVDF6C42MN098696",
+      "stockId": "HC250130",
+      "submissionId": "SUB-MQT2A0AQ-YCOV",
+      "correctedAt": "2026-06-27T21:58:20.244Z",
+      "changes": {
+        "year": {
+          "before": 2021,
+          "after": 2022
+        },
+        "engineCode": {
+          "before": "EA888",
+          "after": "DPL"
+        },
+        "transmissionCode": {
+          "before": "7AT",
+          "after": "DCT"
+        },
+        "displacement": {
+          "after": "2.0L"
+        },
+        "fuelType": {
+          "after": "Petrol"
+        }
+      }
+    },
+    {
+      "vin": "JTJHY00W6A4058024",
+      "stockId": "HC250127",
+      "submissionId": "SUB-MQT0MOWH-3OFW",
+      "correctedAt": "2026-06-27T21:58:20.245Z",
+      "changes": {
+        "year": {
+          "before": 2010,
+          "after": 2009
+        },
+        "engineCode": {
+          "before": "3UR",
+          "after": "3UR-FE"
+        },
+        "transmissionCode": {
+          "before": "6AT",
+          "after": "AT"
+        },
+        "gearboxModel": {
+          "after": "TB-68LS/AB60E"
+        },
+        "displacement": {
+          "after": "5.7L"
+        },
+        "fuelType": {
+          "after": "Petrol"
+        },
+        "drivetrain": {
+          "before": "2WD",
+          "after": "4WD"
+        }
+      }
+    },
+    {
+      "vin": "LJNMFE2K3EN051136",
+      "stockId": "HC250105",
+      "submissionId": "SUB-MQRHK6XE-TOML",
+      "correctedAt": "2026-06-27T21:58:20.247Z",
+      "changes": {
+        "year": {
+          "before": 2014,
+          "after": 2013
+        },
+        "engineCode": {
+          "before": "zg24",
+          "after": "ZG24"
+        },
+        "transmissionCode": {
+          "before": "5MT",
+          "after": "MT"
+        },
+        "displacement": {
+          "after": "2.4L"
+        },
+        "fuelType": {
+          "after": "Petrol"
+        },
+        "drivetrain": {
+          "before": "2WD",
+          "after": "RWD"
+        }
+      }
+    },
+    {
+      "vin": "KMHSH81B9BU718556",
+      "stockId": "HC250097",
+      "submissionId": "SUB-MQRDULI0-3BUN",
+      "correctedAt": "2026-06-27T21:58:20.249Z",
+      "changes": {
+        "transmissionCode": {
+          "before": "6AT",
+          "after": "AMT"
+        },
+        "displacement": {
+          "after": "2.4L"
+        },
+        "fuelType": {
+          "after": "Petrol"
+        },
+        "drivetrain": {
+          "before": "2WD",
+          "after": "4WD"
+        }
+      }
+    },
+    {
+      "vin": "LFV2A21K0C4002628",
+      "stockId": "",
+      "submissionId": "SUB-MQRC90FB-UMZ8",
+      "correctedAt": "2026-06-27T21:58:20.251Z",
+      "changes": {
+        "engineCode": {
+          "before": "EA211",
+          "after": "CFB"
+        },
+        "transmissionCode": {
+          "before": "6AT",
+          "after": "DCT"
+        },
+        "gearboxModel": {
+          "after": "DQ200/0AM"
+        },
+        "displacement": {
+          "after": "1.4L"
+        },
+        "fuelType": {
+          "after": "Petrol"
+        }
+      }
+    },
+    {
+      "vin": "LBENFAKC49X052962",
+      "stockId": "HC250086",
+      "submissionId": "SUB-MQQUCCFM-8EKS",
+      "correctedAt": "2026-06-27T21:58:20.252Z",
+      "changes": {
+        "transmissionCode": {
+          "before": "at",
+          "after": "AT"
+        },
+        "fuelType": {
+          "after": "Petrol"
+        }
+      }
+    },
+    {
+      "vin": "LBELMBND5AY022097",
+      "stockId": "HC250087",
+      "submissionId": "SUB-MQQU5FVE-Y8EF",
+      "correctedAt": "2026-06-27T21:58:20.254Z",
+      "changes": {
+        "transmissionCode": {
+          "before": "at",
+          "after": "AT"
+        },
+        "displacement": {
+          "after": "2.4L"
+        },
+        "fuelType": {
+          "after": "Petrol"
+        },
+        "drivetrain": {
+          "before": "2WD",
+          "after": "4WD"
+        }
+      }
+    },
+    {
+      "vin": "WVGEH35N1BW549299",
+      "stockId": "HC250088",
+      "submissionId": "SUB-MQQU0HV0-RZ2E",
+      "correctedAt": "2026-06-27T21:58:20.254Z",
+      "changes": {
+        "gearboxModel": {
+          "after": "TF-61SN/09M"
+        },
+        "displacement": {
+          "after": "2.0L"
+        },
+        "fuelType": {
+          "after": "Petrol"
+        },
+        "drivetrain": {
+          "before": "2WD",
+          "after": "4WD"
+        }
+      }
+    },
+    {
+      "vin": "JE3AS29W38Z006345",
+      "stockId": "HC250085",
+      "submissionId": "SUB-MQQTS002-04WA",
+      "correctedAt": "2026-06-27T21:58:20.256Z",
+      "changes": {
+        "year": {
+          "before": 2008,
+          "after": 2007
+        },
+        "transmissionCode": {
+          "before": "AT",
+          "after": "CVT"
+        },
+        "gearboxModel": {
+          "after": "RE0F10A/JF011E"
+        },
+        "displacement": {
+          "after": "2.4L"
+        },
+        "fuelType": {
+          "after": "Petrol"
+        },
+        "drivetrain": {
+          "before": "2WD",
+          "after": "4WD"
+        }
+      }
+    },
+    {
+      "vin": "LSGSA52S0CY032202",
+      "stockId": "HC250083",
+      "submissionId": "SUB-MQQTD0OG-GPAZ",
+      "correctedAt": "2026-06-27T21:58:20.258Z",
+      "changes": {
+        "year": {
+          "before": 2012,
+          "after": 2010
+        },
+        "displacement": {
+          "after": "1.2L"
+        },
+        "fuelType": {
+          "after": "Petrol"
+        }
+      }
+    },
+    {
+      "vin": "LDC943X36A1347417",
+      "stockId": "HC250084",
+      "submissionId": "SUB-MQQT9QZW-W8VN",
+      "correctedAt": "2026-06-27T21:58:20.259Z",
+      "changes": {
+        "engineCode": {
+          "before": "LCU",
+          "after": "PSARFN10LH3X"
+        },
+        "gearboxModel": {
+          "after": "AL4/DPO"
+        },
+        "displacement": {
+          "after": "2.0L"
+        },
+        "fuelType": {
+          "after": "Petrol"
+        }
+      }
+    },
+    {
+      "vin": "LS1D364D1J0007712",
+      "stockId": "HC250074",
+      "submissionId": "SUB-MQQ8EPXZ-CXDR",
+      "correctedAt": "2026-06-27T21:58:20.261Z",
+      "changes": {
+        "displacement": {
+          "after": "12.7L"
+        },
+        "fuelType": {
+          "after": "Diesel"
+        }
+      }
+    },
+    {
+      "vin": "1GTZGGBG4A1181234",
+      "stockId": "HC250064",
+      "submissionId": "SUB-MQQ0KRC0-ED1T",
+      "correctedAt": "2026-06-27T21:58:20.263Z",
+      "changes": {
+        "engineCode": {
+          "before": "LY6",
+          "after": "L96"
+        }
+      }
+    },
+    {
+      "vin": "WVGAB97P1CD048539",
+      "stockId": "HC250065",
+      "submissionId": "SUB-MQQ07WJH-DQO9",
+      "correctedAt": "2026-06-27T21:58:20.265Z",
+      "changes": {
+        "transmissionCode": {
+          "before": "8at",
+          "after": "AT"
+        },
+        "gearboxModel": {
+          "after": "TR-80SD/0C8"
+        },
+        "displacement": {
+          "after": "3.0L"
+        },
+        "fuelType": {
+          "after": "Petrol"
+        },
+        "drivetrain": {
+          "before": "2WD",
+          "after": "4WD"
+        }
+      }
+    },
+    {
+      "vin": "LVGBE40K99G467986",
+      "stockId": "HC250062",
+      "submissionId": "SUB-MQOP2EI4-F6RK",
+      "correctedAt": "2026-06-27T21:58:20.267Z",
+      "changes": {
+        "engineCode": {
+          "before": "2az",
+          "after": "2AZ-FE"
+        },
+        "transmissionCode": {
+          "before": "4AT",
+          "after": "AT"
+        },
+        "gearboxModel": {
+          "after": "U250E/AW95-50LS"
+        },
+        "displacement": {
+          "after": "2.4L"
+        },
+        "fuelType": {
+          "after": "Petrol"
+        }
+      }
+    },
+    {
+      "vin": "LSGSA52M3CY271793",
+      "stockId": "HC250061",
+      "submissionId": "SUB-MQOOF79H-K8FG",
+      "correctedAt": "2026-06-27T21:58:20.268Z",
+      "changes": {
+        "year": {
+          "before": 2012,
+          "after": 2011
+        },
+        "displacement": {
+          "after": "1.4L"
+        },
+        "fuelType": {
+          "after": "Petrol"
+        }
+      }
+    },
+    {
+      "vin": "KNALD221965104627",
+      "stockId": "HC250060",
+      "submissionId": "SUB-MQOLPJ3A-A23S",
+      "correctedAt": "2026-06-27T21:58:20.269Z",
+      "changes": {
+        "year": {
+          "before": 2006,
+          "after": 2005
+        },
+        "gearboxModel": {
+          "after": "A5HF1"
+        },
+        "displacement": {
+          "after": "2.7L"
+        },
+        "fuelType": {
+          "after": "Petrol"
+        }
+      }
+    },
+    {
+      "vin": "LFV2A1BS3E4611014",
+      "stockId": "HC250059",
+      "submissionId": "SUB-MQOJQZXE-OI3K",
+      "correctedAt": "2026-06-27T21:58:20.271Z",
+      "changes": {
+        "year": {
+          "before": 2014,
+          "after": 2013
+        },
+        "gearboxModel": {
+          "after": "5MT"
+        },
+        "displacement": {
+          "after": "1.6L"
+        },
+        "fuelType": {
+          "after": "Petrol"
+        }
+      }
+    },
+    {
+      "vin": "LGBN22E28AY002810",
+      "stockId": "HC250057",
+      "submissionId": "SUB-MQNNA2KB-DVAM",
+      "correctedAt": "2026-06-27T21:58:20.272Z",
+      "changes": {
+        "engineCode": {
+          "before": "HR15",
+          "after": "HR15DE"
+        },
+        "displacement": {
+          "after": "1.5L"
+        },
+        "fuelType": {
+          "after": "Petrol"
+        }
+      }
+    },
+    {
+      "vin": "LFV3A21K9B3112473",
+      "stockId": "HC250056",
+      "submissionId": "SUB-MQN4S8X4-M58I",
+      "correctedAt": "2026-06-27T21:58:20.274Z",
+      "changes": {
+        "engineCode": {
+          "before": "BYJ1.8T",
+          "after": "BYJ"
+        },
+        "transmissionCode": {
+          "before": "6AT",
+          "after": "AT"
+        },
+        "gearboxModel": {
+          "after": "TF-60SN/09G"
+        },
+        "displacement": {
+          "after": "1.8L"
+        },
+        "fuelType": {
+          "after": "Petrol"
+        }
+      }
+    },
+    {
+      "vin": "LS5A3ABR4CA511669",
+      "stockId": "HC250055",
+      "submissionId": "SUB-MQMG9UYL-6CG3",
+      "correctedAt": "2026-06-27T21:58:20.275Z",
+      "changes": {
+        "year": {
+          "before": 2012,
+          "after": 2011
+        },
+        "transmissionCode": {
+          "before": "5MT",
+          "after": "MT"
+        },
+        "displacement": {
+          "after": "1.3L"
+        },
+        "fuelType": {
+          "after": "Petrol"
+        }
+      }
+    },
+    {
+      "vin": "LBEHDAEB28Y022762",
+      "stockId": "HC250054",
+      "submissionId": "SUB-MQMEWCHL-IAK6",
+      "correctedAt": "2026-06-27T21:58:20.277Z",
+      "changes": {
+        "displacement": {
+          "after": "1.6L"
+        },
+        "fuelType": {
+          "after": "Petrol"
+        }
+      }
+    },
+    {
+      "vin": "LSGSA62S4CY110325",
+      "stockId": "HC250053",
+      "submissionId": "SUB-MQMEQMIB-Q19A",
+      "correctedAt": "2026-06-27T21:58:20.278Z",
+      "changes": {
+        "year": {
+          "before": 2012,
+          "after": 2010
+        },
+        "displacement": {
+          "after": "1.2L"
+        },
+        "fuelType": {
+          "after": "Petrol"
+        }
+      }
+    },
+    {
+      "vin": "LJDDAA223A0408415",
+      "stockId": "HC250043",
+      "submissionId": "SUB-MQME468R-THHD",
+      "correctedAt": "2026-06-27T21:58:20.280Z",
+      "changes": {
+        "displacement": {
+          "after": "1.6L"
+        },
+        "fuelType": {
+          "after": "Petrol"
+        }
+      }
+    },
+    {
+      "vin": "LSGPB64U3BS024118",
+      "stockId": "HC250044",
+      "submissionId": "SUB-MQMDWTFF-BQTI",
+      "correctedAt": "2026-06-27T21:58:20.281Z",
+      "changes": {
+        "year": {
+          "before": 2011,
+          "after": 2010
+        },
+        "gearboxModel": {
+          "after": "6T30"
+        },
+        "displacement": {
+          "after": "1.6L"
+        },
+        "fuelType": {
+          "after": "Petrol"
+        }
+      }
+    },
+    {
+      "vin": "LBVVA96056SA63090",
+      "stockId": "HC250046",
+      "submissionId": "SUB-MQMD71TZ-CT89",
+      "correctedAt": "2026-06-27T21:58:20.284Z",
+      "changes": {
+        "year": {
+          "before": 2006,
+          "after": 2007
+        },
+        "transmissionCode": {
+          "before": "6AT",
+          "after": "AT"
+        },
+        "gearboxModel": {
+          "after": "6HP19"
+        },
+        "displacement": {
+          "after": "2.0L"
+        },
+        "fuelType": {
+          "after": "Petrol"
+        },
+        "drivetrain": {
+          "before": "2WD",
+          "after": "RWD"
+        }
+      }
+    },
+    {
+      "vin": "WDDFH3DB0BJ663359",
+      "stockId": "HC250047",
+      "submissionId": "SUB-MQMD188J-TO6A",
+      "correctedAt": "2026-06-27T21:58:20.285Z",
+      "changes": {
+        "year": {
+          "before": 2011,
+          "after": 2009
+        },
+        "engineCode": {
+          "before": "226.960",
+          "after": "266 960"
+        },
+        "transmissionCode": {
+          "before": "7AT",
+          "after": "CVT"
+        },
+        "gearboxModel": {
+          "after": "WFC280/722.8"
+        },
+        "displacement": {
+          "after": "2.0L"
+        },
+        "fuelType": {
+          "after": "Petrol"
+        }
+      }
+    },
+    {
+      "vin": "LHGCM567362046766",
+      "stockId": "HC250048",
+      "submissionId": "SUB-MQMCT4BY-0QBD",
+      "correctedAt": "2026-06-27T21:58:20.286Z",
+      "changes": {
+        "engineCode": {
+          "before": "KA24A8",
+          "after": "K24A8"
+        },
+        "transmissionCode": {
+          "before": "5AT",
+          "after": "AT"
+        },
+        "gearboxModel": {
+          "after": "DCLA"
+        },
+        "displacement": {
+          "after": "2.4L"
+        },
+        "fuelType": {
+          "after": "Petrol"
+        }
+      }
+    },
+    {
+      "vin": "LSGPC54U1AF058332",
+      "stockId": "HC250049",
+      "submissionId": "SUB-MQMCFFVE-1IX6",
+      "correctedAt": "2026-06-27T21:58:20.287Z",
+      "changes": {
+        "displacement": {
+          "after": "1.6L"
+        },
+        "fuelType": {
+          "after": "Petrol"
+        }
+      }
+    },
+    {
+      "vin": "LVGBH42K7BG515303",
+      "stockId": "HC250050",
+      "submissionId": "SUB-MQMBUDBS-QE6J",
+      "correctedAt": "2026-06-27T21:58:20.289Z",
+      "changes": {
+        "engineCode": {
+          "before": "1AZ",
+          "after": "1AZ-FE"
+        },
+        "transmissionCode": {
+          "before": "4AT",
+          "after": "AT"
+        },
+        "gearboxModel": {
+          "after": "U241E/AW90-40LS"
+        },
+        "displacement": {
+          "after": "2.0L"
+        },
+        "fuelType": {
+          "after": "Petrol"
+        }
+      }
+    },
+    {
+      "vin": "LBVCU5103DSF91870",
+      "stockId": "",
+      "submissionId": "SUB-MQLZR2W3-WYOY",
+      "correctedAt": "2026-06-27T21:58:20.291Z",
+      "changes": {
+        "engineCode": {
+          "before": "",
+          "after": "N52B30AF"
+        },
+        "transmissionCode": {
+          "before": "",
+          "after": "AT"
+        },
+        "gearboxModel": {
+          "after": "8AT"
+        },
+        "displacement": {
+          "after": "3.0L"
+        },
+        "fuelType": {
+          "after": "Petrol"
+        },
+        "drivetrain": {
+          "before": "2WD",
+          "after": "RWD"
+        }
+      }
+    },
+    {
+      "vin": "LFV2B2F30L7713114",
+      "stockId": "HC250051",
+      "submissionId": "SUB-MQLZ9XYI-7YHB",
+      "correctedAt": "2026-06-27T21:58:20.292Z",
+      "changes": {
+        "engineCode": {
+          "before": "EA211",
+          "after": "DJS"
+        },
+        "transmissionCode": {
+          "before": "7AT",
+          "after": "DCT"
+        },
+        "gearboxModel": {
+          "after": "7DCT"
+        },
+        "displacement": {
+          "after": "1.4L"
+        },
+        "fuelType": {
+          "after": "Petrol"
+        }
+      }
+    },
+    {
+      "vin": "JTEBL29J095153996",
+      "stockId": "",
+      "submissionId": "SUB-MQLY6F3C-AR1A",
+      "correctedAt": "2026-06-27T21:58:20.294Z",
+      "changes": {
+        "year": {
+          "before": 2009,
+          "after": 2004
+        },
+        "engineCode": {
+          "before": "",
+          "after": "2TR-FE"
+        },
+        "transmissionCode": {
+          "before": "",
+          "after": "AT"
+        },
+        "gearboxModel": {
+          "after": "A343E/AW30-43LE"
+        },
+        "displacement": {
+          "after": "2.7L"
+        },
+        "fuelType": {
+          "after": "Petrol"
+        },
+        "drivetrain": {
+          "before": "2WD",
+          "after": "4WD"
+        }
+      }
+    },
+    {
+      "vin": "LBV5S3106ESJ48940",
+      "stockId": "HC250042",
+      "submissionId": "SUB-MQLQHRIK-NJ0W",
+      "correctedAt": "2026-06-27T21:58:20.295Z",
+      "changes": {
+        "year": {
+          "before": 2014,
+          "after": 2013
+        },
+        "engineCode": {
+          "before": "N20",
+          "after": "N20B20C"
+        },
+        "transmissionCode": {
+          "before": "8AT",
+          "after": "AT"
+        },
+        "gearboxModel": {
+          "after": "8AT"
+        },
+        "displacement": {
+          "after": "2.0L"
+        },
+        "fuelType": {
+          "after": "Petrol"
+        },
+        "drivetrain": {
+          "before": "2WD",
+          "after": "RWD"
+        }
+      }
+    },
+    {
+      "vin": "LB1RF4495E8002517",
+      "stockId": "HC250040",
+      "submissionId": "SUB-MQLP2UK1-HDUM",
+      "correctedAt": "2026-06-27T21:58:20.297Z",
+      "changes": {
+        "year": {
+          "before": 2014,
+          "after": 2012
+        },
+        "engineCode": {
+          "before": "651.955",
+          "after": "651 955"
+        },
+        "transmissionCode": {
+          "before": "7AT",
+          "after": "MT"
+        },
+        "displacement": {
+          "after": "2.1L"
+        },
+        "fuelType": {
+          "after": "Diesel"
+        },
+        "drivetrain": {
+          "before": "2WD",
+          "after": "RWD"
+        }
+      }
+    },
+    {
+      "vin": "LJDKAA249C0067257",
+      "stockId": "HC250041",
+      "submissionId": "SUB-MQLOO34J-OND8",
+      "correctedAt": "2026-06-27T21:58:20.299Z",
+      "changes": {
+        "transmissionCode": {
+          "before": "6AT",
+          "after": "AT"
+        },
+        "gearboxModel": {
+          "after": "A6MF1"
+        },
+        "displacement": {
+          "after": "2.0L"
+        },
+        "fuelType": {
+          "after": "Petrol"
+        }
+      }
+    },
+    {
+      "vin": "JN1TFSY61Z0535349",
+      "stockId": "HC250038",
+      "submissionId": "SUB-MQLNMU87-RADA",
+      "correctedAt": "2026-06-27T21:58:20.301Z",
+      "changes": {
+        "year": {
+          "before": 2003,
+          "after": 2004
+        },
+        "engineCode": {
+          "before": "TE48",
+          "after": "TB48DE"
+        },
+        "transmissionCode": {
+          "before": "6at",
+          "after": "AT"
+        },
+        "gearboxModel": {
+          "after": "RE5R05A/JR507E"
+        },
+        "displacement": {
+          "after": "4.8L"
+        },
+        "fuelType": {
+          "after": "Petrol"
+        },
+        "drivetrain": {
+          "before": "2WD",
+          "after": "4WD"
+        }
+      }
+    },
+    {
+      "vin": "4JGBB86E57A228810",
+      "stockId": "HC250039",
+      "submissionId": "SUB-MQLNG5FK-311H",
+      "correctedAt": "2026-06-27T21:58:20.302Z",
+      "changes": {
+        "year": {
+          "before": 2007,
+          "after": 2006
+        },
+        "engineCode": {
+          "before": "M272.96",
+          "after": "M272.962"
+        },
+        "transmissionCode": {
+          "before": "7AT",
+          "after": "AMT"
+        },
+        "displacement": {
+          "after": "3.5L"
+        },
+        "fuelType": {
+          "after": "Petrol"
+        },
+        "drivetrain": {
+          "before": "2WD",
+          "after": "4WD"
+        }
+      }
+    },
+    {
+      "vin": "JTEBU25J030015169",
+      "stockId": "HC250037",
+      "submissionId": "SUB-MQKY982C-9XTI",
+      "correctedAt": "2026-06-27T21:58:20.304Z",
+      "changes": {
+        "engineCode": {
+          "before": "1gr",
+          "after": "1GR-FE"
+        },
+        "transmissionCode": {
+          "before": "4at",
+          "after": "AT"
+        },
+        "displacement": {
+          "after": "4.0L"
+        },
+        "fuelType": {
+          "after": "Petrol"
+        },
+        "drivetrain": {
+          "before": "2WD",
+          "after": "4WD"
+        }
+      }
+    },
+    {
+      "vin": "LCUBU29JX4S002552",
+      "stockId": "",
+      "submissionId": "SUB-MQJLTDD2-0SD3",
+      "correctedAt": "2026-06-27T21:58:20.305Z",
+      "changes": {
+        "engineCode": {
+          "before": "1gt",
+          "after": "1GR"
+        },
+        "transmissionCode": {
+          "before": "",
+          "after": "AT"
+        },
+        "gearboxModel": {
+          "after": "TB-50LS/A750F"
+        },
+        "displacement": {
+          "after": "4.0L"
+        },
+        "fuelType": {
+          "after": "Petrol"
+        },
+        "drivetrain": {
+          "before": "2WD",
+          "after": "4WD"
+        }
+      }
+    },
+    {
+      "vin": "JTEBU25J140028398",
+      "stockId": "HC250036",
+      "submissionId": "SUB-MQILFSC2-PD6B",
+      "correctedAt": "2026-06-27T21:58:20.307Z",
+      "changes": {
+        "year": {
+          "before": 2004,
+          "after": 2003
+        },
+        "engineCode": {
+          "before": "1gr",
+          "after": "1GR-FE"
+        },
+        "transmissionCode": {
+          "before": "4at",
+          "after": "AT"
+        },
+        "gearboxModel": {
+          "after": "TB-50LS/A750F"
+        },
+        "displacement": {
+          "after": "4.0L"
+        },
+        "fuelType": {
+          "after": "Petrol"
+        },
+        "drivetrain": {
+          "before": "2WD",
+          "after": "4WD"
+        }
+      }
+    },
+    {
+      "vin": "LRH17A4E490000497",
+      "stockId": "HC250163",
+      "submissionId": "SUB-MQVT3Y8P-LOZQ",
+      "correctedAt": "2026-06-27T21:58:20.309Z",
+      "changes": {
+        "year": {
+          "before": 2009,
+          "after": 2010
+        },
+        "transmissionCode": {
+          "before": "AT",
+          "after": "MT"
+        },
+        "displacement": {
+          "after": "2.4L"
+        },
+        "fuelType": {
+          "after": "Petrol"
+        },
+        "drivetrain": {
+          "before": "2WD",
+          "after": "4WD"
+        }
+      }
+    },
+    {
+      "vin": "LDCC13X2X90984267",
+      "stockId": "HC250162",
+      "submissionId": "SUB-MQUUK89V-CKEZ",
+      "correctedAt": "2026-06-27T21:58:20.311Z",
+      "changes": {
+        "engineCode": {
+          "before": "1.8",
+          "after": "PSA RFN 10LH3X"
+        },
+        "transmissionCode": {
+          "before": "mt",
+          "after": "MT"
+        },
+        "displacement": {
+          "after": "2.0L"
+        },
+        "fuelType": {
+          "after": "Petrol"
+        }
+      }
+    },
+    {
+      "vin": "LBESCCBH93X053146",
+      "stockId": "HC250161",
+      "submissionId": "SUB-MQUWCG18-8H6L",
+      "correctedAt": "2026-06-27T21:58:20.311Z",
+      "changes": {
+        "model": {
+          "before": "Elantra",
+          "after": "Sonata"
+        },
+        "engineCode": {
+          "before": "G4ED",
+          "after": "G4GC"
+        },
+        "transmissionCode": {
+          "before": "mt",
+          "after": "MT"
+        },
+        "displacement": {
+          "after": "2.0L"
+        },
+        "fuelType": {
+          "after": "Petrol"
+        },
+        "title": {
+          "before": "Hyundai Elantra G4ED Half Cut",
+          "after": "Hyundai Sonata G4GC Half Cut"
+        }
+      }
+    },
+    {
+      "vin": "LVGBE40KX7G118252",
+      "stockId": "HC250160",
+      "submissionId": "SUB-MQUWI7YU-TQD7",
+      "correctedAt": "2026-06-27T21:58:20.313Z",
+      "changes": {
+        "engineCode": {
+          "before": "2AZ",
+          "after": "2AZ-FE"
+        },
+        "gearboxModel": {
+          "after": "U250E/AW95-50LS"
+        },
+        "displacement": {
+          "after": "2.4L"
+        },
+        "fuelType": {
+          "after": "Petrol"
+        }
+      }
+    },
+    {
+      "vin": "LVFAD1ACXAG006658",
+      "stockId": "HC250159",
+      "submissionId": "SUB-MQUWN75X-OJZQ",
+      "correctedAt": "2026-06-27T21:58:20.314Z",
+      "changes": {
+        "transmissionCode": {
+          "before": "mt",
+          "after": "MT"
+        },
+        "displacement": {
+          "after": "1.2L"
+        },
+        "fuelType": {
+          "after": "Petrol"
+        },
+        "drivetrain": {
+          "before": "2WD",
+          "after": "RWD"
+        }
+      }
+    },
+    {
+      "vin": "LVFAB2ADXBG042330",
+      "stockId": "HC250157",
+      "submissionId": "SUB-MQUWWLN2-EYM7",
+      "correctedAt": "2026-06-27T21:58:20.317Z",
+      "changes": {
+        "year": {
+          "before": 2011,
+          "after": 2013
+        },
+        "engineCode": {
+          "before": "K14B",
+          "after": "K14B-D"
+        },
+        "transmissionCode": {
+          "before": "mt",
+          "after": "MT"
+        },
+        "displacement": {
+          "after": "1.4L"
+        },
+        "fuelType": {
+          "after": "Petrol"
+        }
+      }
+    },
+    {
+      "vin": "LVVDB11B3ED196667",
+      "stockId": "HC250156",
+      "submissionId": "SUB-MQUX1RA5-DJGX",
+      "correctedAt": "2026-06-27T21:58:20.318Z",
+      "changes": {
+        "transmissionCode": {
+          "before": "mt",
+          "after": "MT"
+        },
+        "gearboxModel": {
+          "after": "5MT"
+        },
+        "displacement": {
+          "after": "1.6L"
+        },
+        "fuelType": {
+          "after": "Petrol"
+        }
+      }
+    },
+    {
+      "vin": "LZWADAGA4E1202318",
+      "stockId": "HC250155",
+      "submissionId": "SUB-MQUX525X-W7NM",
+      "correctedAt": "2026-06-27T21:58:20.320Z",
+      "changes": {
+        "engineCode": {
+          "before": "L MH",
+          "after": "LMU"
+        },
+        "transmissionCode": {
+          "before": "mt",
+          "after": "MT"
+        },
+        "gearboxModel": {
+          "after": "5MT"
+        },
+        "displacement": {
+          "after": "1.2L"
+        },
+        "fuelType": {
+          "after": "Petrol"
+        },
+        "drivetrain": {
+          "before": "2WD",
+          "after": "RWD"
+        }
+      }
+    },
+    {
+      "vin": "LSCABN3R0JE247910",
+      "stockId": "HC250154",
+      "submissionId": "SUB-MQUW8XL9-M1OC",
+      "correctedAt": "2026-06-27T21:58:20.322Z",
+      "changes": {
+        "year": {
+          "before": 2018,
+          "after": 2016
+        },
+        "engineCode": {
+          "before": "100",
+          "after": "DK12-10"
+        },
+        "transmissionCode": {
+          "before": "10",
+          "after": "MT"
+        },
+        "displacement": {
+          "after": "1.2L"
+        },
+        "fuelType": {
+          "after": "Petrol"
+        },
+        "drivetrain": {
+          "before": "2WD",
+          "after": "RWD"
+        }
+      }
+    },
+    {
+      "vin": "LJ166A345D7104747",
+      "stockId": "HC250153",
+      "submissionId": "SUB-MQUW5GCE-IKGC",
+      "correctedAt": "2026-06-27T21:58:20.324Z",
+      "changes": {
+        "engineCode": {
+          "before": "HFV4GA3",
+          "after": "HFC4GA3.1D"
+        },
+        "transmissionCode": {
+          "before": "mt",
+          "after": "MT"
+        },
+        "gearboxModel": {
+          "after": "6MT"
+        },
+        "displacement": {
+          "after": "2.0L"
+        },
+        "fuelType": {
+          "after": "Petrol"
+        },
+        "drivetrain": {
+          "before": "2WD",
+          "after": "RWD"
+        }
+      }
+    },
+    {
+      "vin": "LFMARE2C2C0368602",
+      "stockId": "HC250152",
+      "submissionId": "SUB-MQUW1PMN-LFQT",
+      "correctedAt": "2026-06-27T21:58:20.325Z",
+      "changes": {
+        "model": {
+          "before": "Corolla Cross",
+          "after": "Corolla"
+        },
+        "engineCode": {
+          "before": "2ZR",
+          "after": "2ZR-FE"
+        },
+        "displacement": {
+          "after": "1.8L"
+        },
+        "fuelType": {
+          "after": "Petrol"
+        },
+        "title": {
+          "before": "Toyota Corolla Cross 2ZR Half Cut",
+          "after": "Toyota Corolla 2ZR-FE Half Cut"
+        }
+      }
+    },
+    {
+      "vin": "LJDLAA291C0108478",
+      "stockId": "HC250151",
+      "submissionId": "SUB-MQUV9ELW-SKXS",
+      "correctedAt": "2026-06-27T21:58:20.326Z",
+      "changes": {
+        "displacement": {
+          "after": "1.4L"
+        },
+        "fuelType": {
+          "after": "Petrol"
+        }
+      }
+    },
+    {
+      "vin": "LDC621P25C1004749",
+      "stockId": "HC250150",
+      "submissionId": "SUB-MQUVEYI4-USCN",
+      "correctedAt": "2026-06-27T21:58:20.329Z",
+      "changes": {
+        "transmissionCode": {
+          "before": "mt",
+          "after": "MT"
+        },
+        "displacement": {
+          "after": "1.4L"
+        },
+        "fuelType": {
+          "after": "Petrol"
+        }
+      }
+    },
+    {
+      "vin": "LBEXDAEB09X742323",
+      "stockId": "HC250149",
+      "submissionId": "SUB-MQUVLSHG-SZBT",
+      "correctedAt": "2026-06-27T21:58:20.329Z",
+      "changes": {
+        "year": {
+          "before": 2009,
+          "after": 2008
+        },
+        "displacement": {
+          "after": "1.6L"
+        },
+        "fuelType": {
+          "after": "Petrol"
+        }
+      }
+    },
+    {
+      "vin": "LBEJMBKB48X114862",
+      "stockId": "HC250148",
+      "submissionId": "SUB-MQUVO1BH-F18Z",
+      "correctedAt": "2026-06-27T21:58:20.330Z",
+      "changes": {
+        "year": {
+          "before": 2008,
+          "after": 2007
+        },
+        "fuelType": {
+          "after": "Petrol"
+        }
+      }
+    },
+    {
+      "vin": "LSGGF53XXAH119541",
+      "stockId": "HC250147",
+      "submissionId": "SUB-MQUU4Q2J-24C4",
+      "correctedAt": "2026-06-27T21:58:20.333Z",
+      "changes": {
+        "gearboxModel": {
+          "after": "6T45"
+        },
+        "displacement": {
+          "after": "2.4L"
+        },
+        "fuelType": {
+          "after": "Petrol"
+        }
+      }
+    },
+    {
+      "vin": "5GAEV23DX9J162342",
+      "stockId": "HC250146",
+      "submissionId": "SUB-MQUU6W23-XHXR",
+      "correctedAt": "2026-06-27T21:58:20.335Z",
+      "changes": {
+        "engineCode": {
+          "before": "LL T",
+          "after": "LLT"
+        },
+        "gearboxModel": {
+          "after": "6T75"
+        },
+        "displacement": {
+          "after": "3.6L"
+        },
+        "fuelType": {
+          "after": "Petrol"
+        },
+        "drivetrain": {
+          "before": "2WD",
+          "after": "4WD"
+        }
+      }
+    },
+    {
+      "vin": "LBEHDAHB89Y220971",
+      "stockId": "HC250144",
+      "submissionId": "SUB-MQUUDBDF-5IOA",
+      "correctedAt": "2026-06-27T21:58:20.338Z",
+      "changes": {
+        "year": {
+          "before": 2009,
+          "after": 2008
+        },
+        "transmissionCode": {
+          "before": "mt",
+          "after": "AT"
+        },
+        "displacement": {
+          "after": "1.8L"
+        },
+        "fuelType": {
+          "after": "Petrol"
+        }
+      }
+    },
+    {
+      "vin": "LSGSA52M8ED032198",
+      "stockId": "HC250143",
+      "submissionId": "SUB-MQUUH558-NAGN",
+      "correctedAt": "2026-06-27T21:58:20.340Z",
+      "changes": {
+        "year": {
+          "before": 2014,
+          "after": 2013
+        },
+        "transmissionCode": {
+          "before": "mt",
+          "after": "MT"
+        },
+        "gearboxModel": {
+          "after": "5MT"
+        },
+        "displacement": {
+          "after": "1.4L"
+        },
+        "fuelType": {
+          "after": "Petrol"
+        }
+      }
+    },
+    {
+      "vin": "KL1DC53F19B299769",
+      "stockId": "HC250142",
+      "submissionId": "SUB-MQUTWDKT-W58T",
+      "correctedAt": "2026-06-27T21:58:20.342Z",
+      "changes": {
+        "year": {
+          "before": 2009,
+          "after": 2010
+        },
+        "engineCode": {
+          "before": "Z24sed",
+          "after": "Z24SED"
+        },
+        "transmissionCode": {
+          "before": "at",
+          "after": "AT"
+        },
+        "gearboxModel": {
+          "after": "AW55-51SN"
+        },
+        "displacement": {
+          "after": "2.4L"
+        },
+        "fuelType": {
+          "after": "Petrol"
+        },
+        "drivetrain": {
+          "before": "2WD",
+          "after": "4WD"
+        }
+      }
+    },
+    {
+      "vin": "LBENFAKB87X016339",
+      "stockId": "HC250141",
+      "submissionId": "SUB-MQUTMVPM-JWU6",
+      "correctedAt": "2026-06-27T21:58:20.344Z",
+      "changes": {
+        "year": {
+          "before": 2007,
+          "after": 2006
+        },
+        "transmissionCode": {
+          "before": "At",
+          "after": "AT"
+        },
+        "fuelType": {
+          "after": "Petrol"
+        }
+      }
+    },
+    {
+      "vin": "LBENFAJB08X031226",
+      "stockId": "HC250140",
+      "submissionId": "SUB-MQUTJ0JU-3AE1",
+      "correctedAt": "2026-06-27T21:58:20.346Z",
+      "changes": {
+        "year": {
+          "before": 2008,
+          "after": 2006
+        },
+        "transmissionCode": {
+          "before": "mt",
+          "after": "MT"
+        },
+        "fuelType": {
+          "after": "Petrol"
+        }
+      }
+    },
+    {
+      "vin": "LHGCP168488022808",
+      "stockId": "HC250139",
+      "submissionId": "SUB-MQUTGORO-10V9",
+      "correctedAt": "2026-06-27T21:58:20.346Z",
+      "changes": {
+        "transmissionCode": {
+          "before": "mt",
+          "after": "AT"
+        },
+        "gearboxModel": {
+          "after": "M94A"
+        },
+        "displacement": {
+          "after": "2.0L"
+        },
+        "fuelType": {
+          "after": "Petrol"
+        }
+      }
+    },
+    {
+      "vin": "LJNMEW1J4AN016150",
+      "stockId": "HC250138",
+      "submissionId": "SUB-MQUT67NE-99T5",
+      "correctedAt": "2026-06-27T21:58:20.350Z",
+      "changes": {
+        "year": {
+          "before": 2010,
+          "after": 2007
+        },
+        "engineCode": {
+          "before": "汽油",
+          "after": "4G64 S4M"
+        },
+        "transmissionCode": {
+          "before": "mt",
+          "after": "AT"
+        },
+        "gearboxModel": {
+          "after": "RE4R01A/JR402E"
+        },
+        "displacement": {
+          "after": "2.4L"
+        },
+        "fuelType": {
+          "after": "Petrol"
+        },
+        "drivetrain": {
+          "before": "2WD",
+          "after": "RWD"
+        }
+      }
+    },
+    {
+      "vin": "LBENFAJB08X033851",
+      "stockId": "HC250137",
+      "submissionId": "SUB-MQUT1L3M-RUT9",
+      "correctedAt": "2026-06-27T21:58:20.353Z",
+      "changes": {
+        "year": {
+          "before": 2008,
+          "after": 2006
+        },
+        "transmissionCode": {
+          "before": "mt",
+          "after": "MT"
+        },
+        "fuelType": {
+          "after": "Petrol"
+        }
+      }
+    },
+    {
+      "vin": "3D4PG6FD8AT267465",
+      "stockId": "HC250136",
+      "submissionId": "SUB-MQUSSVIB-BF64",
+      "correctedAt": "2026-06-27T21:58:20.355Z",
+      "changes": {
+        "engineCode": {
+          "before": "JCDU",
+          "after": "D"
+        },
+        "transmissionCode": {
+          "before": "at",
+          "after": "AT"
+        },
+        "gearboxModel": {
+          "after": "62TE"
+        },
+        "fuelType": {
+          "after": "Petrol"
+        }
+      }
+    },
+    {
+      "vin": "LSKG4GC10HA097250",
+      "stockId": "HC250135",
+      "submissionId": "SUB-MQURHHKT-N8TF",
+      "correctedAt": "2026-06-27T21:58:20.358Z",
+      "changes": {
+        "year": {
+          "before": 2017,
+          "after": 2018
+        },
+        "transmissionCode": {
+          "before": "MT6",
+          "after": "MT"
+        },
+        "gearboxModel": {
+          "after": "6MT"
+        },
+        "fuelType": {
+          "after": "Diesel"
+        },
+        "drivetrain": {
+          "before": "2WD",
+          "after": "RWD"
+        }
+      }
+    },
+    {
+      "vin": "LSVCD6A49BN249678",
+      "stockId": "HC250134",
+      "submissionId": "SUB-MQURN0AY-Y5CC",
+      "correctedAt": "2026-06-27T21:58:20.360Z",
+      "changes": {
+        "transmissionCode": {
+          "before": "at",
+          "after": "DCT"
+        },
+        "gearboxModel": {
+          "after": "DQ200/0AM"
+        },
+        "displacement": {
+          "after": "1.8L"
+        },
+        "fuelType": {
+          "after": "Petrol"
+        }
+      }
+    },
+    {
+      "vin": "LJDFAA14290050716",
+      "stockId": "HC250133",
+      "submissionId": "SUB-MQURX4II-LKIX",
+      "correctedAt": "2026-06-27T21:58:20.363Z",
+      "changes": {
+        "year": {
+          "before": 2009,
+          "after": 2011
+        },
+        "transmissionCode": {
+          "before": "at",
+          "after": "AT"
+        },
+        "gearboxModel": {
+          "after": "F4A42/F4A4B"
+        },
+        "displacement": {
+          "after": "2.0L"
+        },
+        "fuelType": {
+          "after": "Petrol"
+        }
+      }
+    },
+    {
+      "vin": "LVSHCADB5CE044226",
+      "stockId": "HC250132",
+      "submissionId": "SUB-MQUS2L0B-3LMF",
+      "correctedAt": "2026-06-27T21:58:20.365Z",
+      "changes": {
+        "transmissionCode": {
+          "before": "at",
+          "after": "DCT"
+        },
+        "gearboxModel": {
+          "after": "DPS6/6DCT250"
+        },
+        "displacement": {
+          "after": "1.6L"
+        },
+        "fuelType": {
+          "after": "Petrol"
+        }
+      }
+    },
+    {
+      "vin": "LVSHEFAC0BF917538",
+      "stockId": "HC250131",
+      "submissionId": "SUB-MQUSF9L8-0NKX",
+      "correctedAt": "2026-06-27T21:58:20.367Z",
+      "changes": {
+        "engineCode": {
+          "before": "b48",
+          "after": "CAF488Q3"
+        },
+        "transmissionCode": {
+          "before": "at",
+          "after": "DCT"
+        },
+        "gearboxModel": {
+          "after": "MPS6/6DCT450"
+        },
+        "displacement": {
+          "after": "2.0L"
+        },
+        "fuelType": {
+          "after": "Petrol"
+        }
+      }
+    },
+    {
+      "vin": "LSVDF6C42MN098696",
+      "stockId": "HC250130",
+      "submissionId": "SUB-MQT2A0AQ-YCOV",
+      "correctedAt": "2026-06-27T21:58:20.369Z",
+      "changes": {
+        "year": {
+          "before": 2021,
+          "after": 2022
+        },
+        "engineCode": {
+          "before": "EA888",
+          "after": "DPL"
+        },
+        "transmissionCode": {
+          "before": "7AT",
+          "after": "DCT"
+        },
+        "displacement": {
+          "after": "2.0L"
+        },
+        "fuelType": {
+          "after": "Petrol"
+        }
+      }
+    },
+    {
+      "vin": "LBEDMBKD2GZ203573",
+      "stockId": "HC250129",
+      "submissionId": "SUB-MQT2M0A1-K55T",
+      "correctedAt": "2026-06-27T21:58:20.369Z",
+      "changes": {
+        "model": {
+          "before": "Tucson",
+          "after": "Santa Fe"
+        },
+        "year": {
+          "before": 2016,
+          "after": 2017
+        },
+        "gearboxModel": {
+          "after": "6AT"
+        },
+        "displacement": {
+          "after": "2.0L"
+        },
+        "fuelType": {
+          "after": "Petrol"
+        },
+        "title": {
+          "before": "Hyundai Tucson G4KH Half Cut",
+          "after": "Hyundai Santa Fe G4KH Half Cut"
+        }
+      }
+    },
+    {
+      "vin": "KMHSH81B0BU717098",
+      "stockId": "HC250128",
+      "submissionId": "SUB-MQT30VNN-2PKZ",
+      "correctedAt": "2026-06-27T21:58:20.371Z",
+      "changes": {
+        "transmissionCode": {
+          "before": "AT",
+          "after": "AMT"
+        },
+        "displacement": {
+          "after": "2.4L"
+        },
+        "fuelType": {
+          "after": "Petrol"
+        },
+        "drivetrain": {
+          "before": "2WD",
+          "after": "4WD"
+        }
+      }
+    },
+    {
+      "vin": "JTJHY00W6A4058024",
+      "stockId": "HC250127",
+      "submissionId": "SUB-MQT0MOWH-3OFW",
+      "correctedAt": "2026-06-27T21:58:20.376Z",
+      "changes": {
+        "year": {
+          "before": 2010,
+          "after": 2009
+        },
+        "engineCode": {
+          "before": "3UR",
+          "after": "3UR-FE"
+        },
+        "transmissionCode": {
+          "before": "6AT",
+          "after": "AT"
+        },
+        "gearboxModel": {
+          "after": "TB-68LS/AB60E"
+        },
+        "displacement": {
+          "after": "5.7L"
+        },
+        "fuelType": {
+          "after": "Petrol"
+        },
+        "drivetrain": {
+          "before": "2WD",
+          "after": "4WD"
+        }
+      }
+    },
+    {
+      "vin": "LJNMFE2K3EN051136",
+      "stockId": "HC250105",
+      "submissionId": "SUB-MQRHK6XE-TOML",
+      "correctedAt": "2026-06-27T21:58:20.379Z",
+      "changes": {
+        "year": {
+          "before": 2014,
+          "after": 2013
+        },
+        "engineCode": {
+          "before": "zg24",
+          "after": "ZG24"
+        },
+        "transmissionCode": {
+          "before": "5MT",
+          "after": "MT"
+        },
+        "displacement": {
+          "after": "2.4L"
+        },
+        "fuelType": {
+          "after": "Petrol"
+        },
+        "drivetrain": {
+          "before": "2WD",
+          "after": "RWD"
+        }
+      }
+    },
+    {
+      "vin": "KMHSH81B9BU718556",
+      "stockId": "HC250097",
+      "submissionId": "SUB-MQRDULI0-3BUN",
+      "correctedAt": "2026-06-27T21:58:20.382Z",
+      "changes": {
+        "transmissionCode": {
+          "before": "6AT",
+          "after": "AMT"
+        },
+        "displacement": {
+          "after": "2.4L"
+        },
+        "fuelType": {
+          "after": "Petrol"
+        },
+        "drivetrain": {
+          "before": "2WD",
+          "after": "4WD"
+        }
+      }
+    },
+    {
+      "vin": "WVGEH35N1BW549299",
+      "stockId": "HC250088",
+      "submissionId": "SUB-MQQU0HV0-RZ2E",
+      "correctedAt": "2026-06-27T21:58:20.383Z",
+      "changes": {
+        "gearboxModel": {
+          "after": "TF-61SN/09M"
+        },
+        "displacement": {
+          "after": "2.0L"
+        },
+        "fuelType": {
+          "after": "Petrol"
+        },
+        "drivetrain": {
+          "before": "2WD",
+          "after": "4WD"
+        }
+      }
+    },
+    {
+      "vin": "LBELMBND5AY022097",
+      "stockId": "HC250087",
+      "submissionId": "SUB-MQQU5FVE-Y8EF",
+      "correctedAt": "2026-06-27T21:58:20.385Z",
+      "changes": {
+        "transmissionCode": {
+          "before": "at",
+          "after": "AT"
+        },
+        "displacement": {
+          "after": "2.4L"
+        },
+        "fuelType": {
+          "after": "Petrol"
+        },
+        "drivetrain": {
+          "before": "2WD",
+          "after": "4WD"
+        }
+      }
+    },
+    {
+      "vin": "LBENFAKC49X052962",
+      "stockId": "HC250086",
+      "submissionId": "SUB-MQQUCCFM-8EKS",
+      "correctedAt": "2026-06-27T21:58:20.387Z",
+      "changes": {
+        "transmissionCode": {
+          "before": "at",
+          "after": "AT"
+        },
+        "fuelType": {
+          "after": "Petrol"
+        }
+      }
+    },
+    {
+      "vin": "JE3AS29W38Z006345",
+      "stockId": "HC250085",
+      "submissionId": "SUB-MQQTS002-04WA",
+      "correctedAt": "2026-06-27T21:58:20.392Z",
+      "changes": {
+        "year": {
+          "before": 2008,
+          "after": 2007
+        },
+        "transmissionCode": {
+          "before": "AT",
+          "after": "CVT"
+        },
+        "gearboxModel": {
+          "after": "RE0F10A/JF011E"
+        },
+        "displacement": {
+          "after": "2.4L"
+        },
+        "fuelType": {
+          "after": "Petrol"
+        },
+        "drivetrain": {
+          "before": "2WD",
+          "after": "4WD"
+        }
+      }
+    },
+    {
+      "vin": "LDC943X36A1347417",
+      "stockId": "HC250084",
+      "submissionId": "SUB-MQQT9QZW-W8VN",
+      "correctedAt": "2026-06-27T21:58:20.396Z",
+      "changes": {
+        "engineCode": {
+          "before": "LCU",
+          "after": "PSARFN10LH3X"
+        },
+        "gearboxModel": {
+          "after": "AL4/DPO"
+        },
+        "displacement": {
+          "after": "2.0L"
+        },
+        "fuelType": {
+          "after": "Petrol"
+        }
+      }
+    },
+    {
+      "vin": "LSGSA52S0CY032202",
+      "stockId": "HC250083",
+      "submissionId": "SUB-MQQTD0OG-GPAZ",
+      "correctedAt": "2026-06-27T21:58:20.399Z",
+      "changes": {
+        "year": {
+          "before": 2012,
+          "after": 2010
+        },
+        "displacement": {
+          "after": "1.2L"
+        },
+        "fuelType": {
+          "after": "Petrol"
+        }
+      }
+    },
+    {
+      "vin": "LS1D364D1J0007712",
+      "stockId": "HC250074",
+      "submissionId": "SUB-MQQ8EPXZ-CXDR",
+      "correctedAt": "2026-06-27T21:58:20.404Z",
+      "changes": {
+        "displacement": {
+          "after": "12.7L"
+        },
+        "fuelType": {
+          "after": "Diesel"
+        }
+      }
+    },
+    {
+      "vin": "WVGAB97P1CD048539",
+      "stockId": "HC250065",
+      "submissionId": "SUB-MQQ07WJH-DQO9",
+      "correctedAt": "2026-06-27T21:58:20.407Z",
+      "changes": {
+        "transmissionCode": {
+          "before": "8at",
+          "after": "AT"
+        },
+        "gearboxModel": {
+          "after": "TR-80SD/0C8"
+        },
+        "displacement": {
+          "after": "3.0L"
+        },
+        "fuelType": {
+          "after": "Petrol"
+        },
+        "drivetrain": {
+          "before": "2WD",
+          "after": "4WD"
+        }
+      }
+    },
+    {
+      "vin": "1GTZGGBG4A1181234",
+      "stockId": "HC250064",
+      "submissionId": "SUB-MQQ0KRC0-ED1T",
+      "correctedAt": "2026-06-27T21:58:20.410Z",
+      "changes": {
+        "engineCode": {
+          "before": "LY6",
+          "after": "L96"
+        }
+      }
+    },
+    {
+      "vin": "LVGBE40K99G467986",
+      "stockId": "HC250062",
+      "submissionId": "SUB-MQOP2EI4-F6RK",
+      "correctedAt": "2026-06-27T21:58:20.415Z",
+      "changes": {
+        "engineCode": {
+          "before": "2az",
+          "after": "2AZ-FE"
+        },
+        "transmissionCode": {
+          "before": "4AT",
+          "after": "AT"
+        },
+        "gearboxModel": {
+          "after": "U250E/AW95-50LS"
+        },
+        "displacement": {
+          "after": "2.4L"
+        },
+        "fuelType": {
+          "after": "Petrol"
+        }
+      }
+    },
+    {
+      "vin": "LSGSA52M3CY271793",
+      "stockId": "HC250061",
+      "submissionId": "SUB-MQOOF79H-K8FG",
+      "correctedAt": "2026-06-27T21:58:20.418Z",
+      "changes": {
+        "year": {
+          "before": 2012,
+          "after": 2011
+        },
+        "displacement": {
+          "after": "1.4L"
+        },
+        "fuelType": {
+          "after": "Petrol"
+        }
+      }
+    },
+    {
+      "vin": "KNALD221965104627",
+      "stockId": "HC250060",
+      "submissionId": "SUB-MQOLPJ3A-A23S",
+      "correctedAt": "2026-06-27T21:58:20.421Z",
+      "changes": {
+        "year": {
+          "before": 2006,
+          "after": 2005
+        },
+        "gearboxModel": {
+          "after": "A5HF1"
+        },
+        "displacement": {
+          "after": "2.7L"
+        },
+        "fuelType": {
+          "after": "Petrol"
+        }
+      }
+    },
+    {
+      "vin": "LFV2A1BS3E4611014",
+      "stockId": "HC250059",
+      "submissionId": "SUB-MQOJQZXE-OI3K",
+      "correctedAt": "2026-06-27T21:58:20.423Z",
+      "changes": {
+        "year": {
+          "before": 2014,
+          "after": 2013
+        },
+        "gearboxModel": {
+          "after": "5MT"
+        },
+        "displacement": {
+          "after": "1.6L"
+        },
+        "fuelType": {
+          "after": "Petrol"
+        }
+      }
+    },
+    {
+      "vin": "LGBN22E28AY002810",
+      "stockId": "HC250057",
+      "submissionId": "SUB-MQNNA2KB-DVAM",
+      "correctedAt": "2026-06-27T21:58:20.424Z",
+      "changes": {
+        "engineCode": {
+          "before": "HR15",
+          "after": "HR15DE"
+        },
+        "displacement": {
+          "after": "1.5L"
+        },
+        "fuelType": {
+          "after": "Petrol"
+        }
+      }
+    },
+    {
+      "vin": "LFV3A21K9B3112473",
+      "stockId": "HC250056",
+      "submissionId": "SUB-MQN4S8X4-M58I",
+      "correctedAt": "2026-06-27T21:58:20.427Z",
+      "changes": {
+        "engineCode": {
+          "before": "BYJ1.8T",
+          "after": "BYJ"
+        },
+        "transmissionCode": {
+          "before": "6AT",
+          "after": "AT"
+        },
+        "gearboxModel": {
+          "after": "TF-60SN/09G"
+        },
+        "displacement": {
+          "after": "1.8L"
+        },
+        "fuelType": {
+          "after": "Petrol"
+        }
+      }
+    },
+    {
+      "vin": "LS5A3ABR4CA511669",
+      "stockId": "HC250055",
+      "submissionId": "SUB-MQMG9UYL-6CG3",
+      "correctedAt": "2026-06-27T21:58:20.430Z",
+      "changes": {
+        "year": {
+          "before": 2012,
+          "after": 2011
+        },
+        "transmissionCode": {
+          "before": "5MT",
+          "after": "MT"
+        },
+        "displacement": {
+          "after": "1.3L"
+        },
+        "fuelType": {
+          "after": "Petrol"
+        }
+      }
+    },
+    {
+      "vin": "LBEHDAEB28Y022762",
+      "stockId": "HC250054",
+      "submissionId": "SUB-MQMEWCHL-IAK6",
+      "correctedAt": "2026-06-27T21:58:20.433Z",
+      "changes": {
+        "displacement": {
+          "after": "1.6L"
+        },
+        "fuelType": {
+          "after": "Petrol"
+        }
+      }
+    },
+    {
+      "vin": "LSGSA62S4CY110325",
+      "stockId": "HC250053",
+      "submissionId": "SUB-MQMEQMIB-Q19A",
+      "correctedAt": "2026-06-27T21:58:20.436Z",
+      "changes": {
+        "year": {
+          "before": 2012,
+          "after": 2010
+        },
+        "displacement": {
+          "after": "1.2L"
+        },
+        "fuelType": {
+          "after": "Petrol"
+        }
+      }
+    },
+    {
+      "vin": "LFV2B2F30L7713114",
+      "stockId": "HC250051",
+      "submissionId": "SUB-MQLZ9XYI-7YHB",
+      "correctedAt": "2026-06-27T21:58:20.439Z",
+      "changes": {
+        "engineCode": {
+          "before": "EA211",
+          "after": "DJS"
+        },
+        "transmissionCode": {
+          "before": "7AT",
+          "after": "DCT"
+        },
+        "gearboxModel": {
+          "after": "7DCT"
+        },
+        "displacement": {
+          "after": "1.4L"
+        },
+        "fuelType": {
+          "after": "Petrol"
+        }
+      }
+    },
+    {
+      "vin": "LVGBH42K7BG515303",
+      "stockId": "HC250050",
+      "submissionId": "SUB-MQMBUDBS-QE6J",
+      "correctedAt": "2026-06-27T21:58:20.442Z",
+      "changes": {
+        "engineCode": {
+          "before": "1AZ",
+          "after": "1AZ-FE"
+        },
+        "transmissionCode": {
+          "before": "4AT",
+          "after": "AT"
+        },
+        "gearboxModel": {
+          "after": "U241E/AW90-40LS"
+        },
+        "displacement": {
+          "after": "2.0L"
+        },
+        "fuelType": {
+          "after": "Petrol"
+        }
+      }
+    },
+    {
+      "vin": "LSGPC54U1AF058332",
+      "stockId": "HC250049",
+      "submissionId": "SUB-MQMCFFVE-1IX6",
+      "correctedAt": "2026-06-27T21:58:20.444Z",
+      "changes": {
+        "displacement": {
+          "after": "1.6L"
+        },
+        "fuelType": {
+          "after": "Petrol"
+        }
+      }
+    },
+    {
+      "vin": "LHGCM567362046766",
+      "stockId": "HC250048",
+      "submissionId": "SUB-MQMCT4BY-0QBD",
+      "correctedAt": "2026-06-27T21:58:20.444Z",
+      "changes": {
+        "engineCode": {
+          "before": "KA24A8",
+          "after": "K24A8"
+        },
+        "transmissionCode": {
+          "before": "5AT",
+          "after": "AT"
+        },
+        "gearboxModel": {
+          "after": "DCLA"
+        },
+        "displacement": {
+          "after": "2.4L"
+        },
+        "fuelType": {
+          "after": "Petrol"
+        }
+      }
+    },
+    {
+      "vin": "WDDFH3DB0BJ663359",
+      "stockId": "HC250047",
+      "submissionId": "SUB-MQMD188J-TO6A",
+      "correctedAt": "2026-06-27T21:58:20.447Z",
+      "changes": {
+        "year": {
+          "before": 2011,
+          "after": 2009
+        },
+        "engineCode": {
+          "before": "226.960",
+          "after": "266 960"
+        },
+        "transmissionCode": {
+          "before": "7AT",
+          "after": "CVT"
+        },
+        "gearboxModel": {
+          "after": "WFC280/722.8"
+        },
+        "displacement": {
+          "after": "2.0L"
+        },
+        "fuelType": {
+          "after": "Petrol"
+        }
+      }
+    },
+    {
+      "vin": "LBVVA96056SA63090",
+      "stockId": "HC250046",
+      "submissionId": "SUB-MQMD71TZ-CT89",
+      "correctedAt": "2026-06-27T21:58:20.451Z",
+      "changes": {
+        "year": {
+          "before": 2006,
+          "after": 2007
+        },
+        "transmissionCode": {
+          "before": "6AT",
+          "after": "AT"
+        },
+        "gearboxModel": {
+          "after": "6HP19"
+        },
+        "displacement": {
+          "after": "2.0L"
+        },
+        "fuelType": {
+          "after": "Petrol"
+        },
+        "drivetrain": {
+          "before": "2WD",
+          "after": "RWD"
+        }
+      }
+    },
+    {
+      "vin": "LSGPB64U3BS024118",
+      "stockId": "HC250044",
+      "submissionId": "SUB-MQMDWTFF-BQTI",
+      "correctedAt": "2026-06-27T21:58:20.456Z",
+      "changes": {
+        "year": {
+          "before": 2011,
+          "after": 2010
+        },
+        "gearboxModel": {
+          "after": "6T30"
+        },
+        "displacement": {
+          "after": "1.6L"
+        },
+        "fuelType": {
+          "after": "Petrol"
+        }
+      }
+    },
+    {
+      "vin": "LJDDAA223A0408415",
+      "stockId": "HC250043",
+      "submissionId": "SUB-MQME468R-THHD",
+      "correctedAt": "2026-06-27T21:58:20.458Z",
+      "changes": {
+        "displacement": {
+          "after": "1.6L"
+        },
+        "fuelType": {
+          "after": "Petrol"
+        }
+      }
+    },
+    {
+      "vin": "LBV5S3106ESJ48940",
+      "stockId": "HC250042",
+      "submissionId": "SUB-MQLQHRIK-NJ0W",
+      "correctedAt": "2026-06-27T21:58:20.461Z",
+      "changes": {
+        "year": {
+          "before": 2014,
+          "after": 2013
+        },
+        "engineCode": {
+          "before": "N20",
+          "after": "N20B20C"
+        },
+        "transmissionCode": {
+          "before": "8AT",
+          "after": "AT"
+        },
+        "gearboxModel": {
+          "after": "8AT"
+        },
+        "displacement": {
+          "after": "2.0L"
+        },
+        "fuelType": {
+          "after": "Petrol"
+        },
+        "drivetrain": {
+          "before": "2WD",
+          "after": "RWD"
+        }
+      }
+    },
+    {
+      "vin": "LJDKAA249C0067257",
+      "stockId": "HC250041",
+      "submissionId": "SUB-MQLOO34J-OND8",
+      "correctedAt": "2026-06-27T21:58:20.465Z",
+      "changes": {
+        "transmissionCode": {
+          "before": "6AT",
+          "after": "AT"
+        },
+        "gearboxModel": {
+          "after": "A6MF1"
+        },
+        "displacement": {
+          "after": "2.0L"
+        },
+        "fuelType": {
+          "after": "Petrol"
+        }
+      }
+    },
+    {
+      "vin": "LB1RF4495E8002517",
+      "stockId": "HC250040",
+      "submissionId": "SUB-MQLP2UK1-HDUM",
+      "correctedAt": "2026-06-27T21:58:20.467Z",
+      "changes": {
+        "year": {
+          "before": 2014,
+          "after": 2012
+        },
+        "engineCode": {
+          "before": "651.955",
+          "after": "651 955"
+        },
+        "transmissionCode": {
+          "before": "7AT",
+          "after": "MT"
+        },
+        "displacement": {
+          "after": "2.1L"
+        },
+        "fuelType": {
+          "after": "Diesel"
+        },
+        "drivetrain": {
+          "before": "2WD",
+          "after": "RWD"
+        }
+      }
+    },
+    {
+      "vin": "4JGBB86E57A228810",
+      "stockId": "HC250039",
+      "submissionId": "SUB-MQLNG5FK-311H",
+      "correctedAt": "2026-06-27T21:58:20.469Z",
+      "changes": {
+        "year": {
+          "before": 2007,
+          "after": 2006
+        },
+        "engineCode": {
+          "before": "M272.96",
+          "after": "M272.962"
+        },
+        "transmissionCode": {
+          "before": "7AT",
+          "after": "AMT"
+        },
+        "displacement": {
+          "after": "3.5L"
+        },
+        "fuelType": {
+          "after": "Petrol"
+        },
+        "drivetrain": {
+          "before": "2WD",
+          "after": "4WD"
+        }
+      }
+    },
+    {
+      "vin": "JN1TFSY61Z0535349",
+      "stockId": "HC250038",
+      "submissionId": "SUB-MQLNMU87-RADA",
+      "correctedAt": "2026-06-27T21:58:20.473Z",
+      "changes": {
+        "year": {
+          "before": 2003,
+          "after": 2004
+        },
+        "engineCode": {
+          "before": "TE48",
+          "after": "TB48DE"
+        },
+        "transmissionCode": {
+          "before": "6at",
+          "after": "AT"
+        },
+        "gearboxModel": {
+          "after": "RE5R05A/JR507E"
+        },
+        "displacement": {
+          "after": "4.8L"
+        },
+        "fuelType": {
+          "after": "Petrol"
+        },
+        "drivetrain": {
+          "before": "2WD",
+          "after": "4WD"
+        }
+      }
+    },
+    {
+      "vin": "JTEBU25J030015169",
+      "stockId": "HC250037",
+      "submissionId": "SUB-MQKY982C-9XTI",
+      "correctedAt": "2026-06-27T21:58:20.475Z",
+      "changes": {
+        "engineCode": {
+          "before": "1gr",
+          "after": "1GR-FE"
+        },
+        "transmissionCode": {
+          "before": "4at",
+          "after": "AT"
+        },
+        "displacement": {
+          "after": "4.0L"
+        },
+        "fuelType": {
+          "after": "Petrol"
+        },
+        "drivetrain": {
+          "before": "2WD",
+          "after": "4WD"
+        }
+      }
+    },
+    {
+      "vin": "JTEBU25J140028398",
+      "stockId": "HC250036",
+      "submissionId": "SUB-MQILFSC2-PD6B",
+      "correctedAt": "2026-06-27T21:58:20.477Z",
+      "changes": {
+        "year": {
+          "before": 2004,
+          "after": 2003
+        },
+        "engineCode": {
+          "before": "1gr",
+          "after": "1GR-FE"
+        },
+        "transmissionCode": {
+          "before": "4at",
+          "after": "AT"
+        },
+        "gearboxModel": {
+          "after": "TB-50LS/A750F"
+        },
+        "displacement": {
+          "after": "4.0L"
+        },
+        "fuelType": {
+          "after": "Petrol"
+        },
+        "drivetrain": {
+          "before": "2WD",
+          "after": "4WD"
+        }
+      }
+    },
+    {
+      "vin": "LZWADAGA4E1202318",
+      "stockId": "HC250155",
+      "submissionId": "SUB-MQUX525X-W7NM",
+      "correctedAt": "2026-06-27T22:01:28.250Z",
+      "changes": {
+        "brand": {
+          "before": "BYD",
+          "after": "Wuling"
+        },
+        "brandSlug": {
+          "before": "byd",
+          "after": "wuling"
+        }
+      }
+    },
+    {
+      "vin": "LSCABN3R0JE247910",
+      "stockId": "HC250154",
+      "submissionId": "SUB-MQUW8XL9-M1OC",
+      "correctedAt": "2026-06-27T22:01:28.264Z",
+      "changes": {
+        "brand": {
+          "before": "Acura",
+          "after": "Changan Kuayue"
+        },
+        "brandSlug": {
+          "before": "acura",
+          "after": "changan-kuayue"
+        }
+      }
+    },
+    {
+      "vin": "LDC621P25C1004749",
+      "stockId": "HC250150",
+      "submissionId": "SUB-MQUVEYI4-USCN",
+      "correctedAt": "2026-06-27T22:01:28.270Z",
+      "changes": {
+        "brand": {
+          "before": "Dongfeng",
+          "after": "Citroën"
+        },
+        "brandSlug": {
+          "before": "dongfeng",
+          "after": "citroen"
+        }
+      }
+    },
+    {
+      "vin": "LDCC13X2X90984267",
+      "stockId": "HC250162",
+      "submissionId": "SUB-MQUUK89V-CKEZ",
+      "correctedAt": "2026-06-27T22:01:28.274Z",
+      "changes": {
+        "brand": {
+          "before": "Chevrolet",
+          "after": "Citroën"
+        },
+        "brandSlug": {
+          "before": "chevrolet",
+          "after": "citroen"
+        }
+      }
+    },
+    {
+      "vin": "3D4PG6FD8AT267465",
+      "stockId": "HC250136",
+      "submissionId": "SUB-MQUSSVIB-BF64",
+      "correctedAt": "2026-06-27T22:01:28.298Z",
+      "changes": {
+        "brand": {
+          "before": "Tank",
+          "after": "Dodge"
+        },
+        "brandSlug": {
+          "before": "tank",
+          "after": "dodge"
+        }
+      }
+    },
+    {
+      "vin": "LVSHEFAC0BF917538",
+      "stockId": "HC250131",
+      "submissionId": "SUB-MQUSF9L8-0NKX",
+      "correctedAt": "2026-06-27T22:01:28.301Z",
+      "changes": {
+        "brand": {
+          "before": "Chery",
+          "after": "Volvo"
+        },
+        "brandSlug": {
+          "before": "chery",
+          "after": "volvo"
+        }
+      }
+    },
+    {
+      "vin": "LDC943X36A1347417",
+      "stockId": "HC250084",
+      "submissionId": "SUB-MQQT9QZW-W8VN",
+      "correctedAt": "2026-06-27T22:01:28.349Z",
+      "changes": {
+        "brand": {
+          "before": "Chevrolet",
+          "after": "Peugeot"
+        },
+        "brandSlug": {
+          "before": "chevrolet",
+          "after": "peugeot"
+        }
+      }
+    },
+    {
+      "vin": "LDCC13X2X90984267",
+      "stockId": "HC250162",
+      "submissionId": "SUB-MQUUK89V-CKEZ",
+      "correctedAt": "2026-06-27T22:01:28.437Z",
+      "changes": {
+        "brand": {
+          "before": "Chevrolet",
+          "after": "Citroën"
+        },
+        "brandSlug": {
+          "before": "chevrolet",
+          "after": "citroen"
+        },
+        "title": {
+          "before": "Chevrolet Spark 1.8 Half Cut",
+          "after": "Citroën Spark PSA RFN 10LH3X Half Cut"
+        }
+      }
+    },
+    {
+      "vin": "LZWADAGA4E1202318",
+      "stockId": "HC250155",
+      "submissionId": "SUB-MQUX525X-W7NM",
+      "correctedAt": "2026-06-27T22:01:28.453Z",
+      "changes": {
+        "brand": {
+          "before": "BYD",
+          "after": "Wuling"
+        },
+        "brandSlug": {
+          "before": "byd",
+          "after": "wuling"
+        },
+        "title": {
+          "before": "BYD S6 L MH Half Cut",
+          "after": "Wuling S6 LMU Half Cut"
+        }
+      }
+    },
+    {
+      "vin": "LSCABN3R0JE247910",
+      "stockId": "HC250154",
+      "submissionId": "SUB-MQUW8XL9-M1OC",
+      "correctedAt": "2026-06-27T22:01:28.456Z",
+      "changes": {
+        "brand": {
+          "before": "Acura",
+          "after": "Changan Kuayue"
+        },
+        "brandSlug": {
+          "before": "acura",
+          "after": "changan-kuayue"
+        },
+        "title": {
+          "before": "Acura Lumin 100 Truck Half Cut",
+          "after": "Changan Kuayue Lumin DK12-10 Truck Half Cut"
+        }
+      }
+    },
+    {
+      "vin": "LDC621P25C1004749",
+      "stockId": "HC250150",
+      "submissionId": "SUB-MQUVEYI4-USCN",
+      "correctedAt": "2026-06-27T22:01:28.465Z",
+      "changes": {
+        "brand": {
+          "before": "Dongfeng",
+          "after": "Citroën"
+        },
+        "brandSlug": {
+          "before": "dongfeng",
+          "after": "citroen"
+        },
+        "title": {
+          "before": "Dongfeng 东风 TU3AF Half Cut",
+          "after": "Citroën 东风 TU3AF Half Cut"
+        }
+      }
+    },
+    {
+      "vin": "3D4PG6FD8AT267465",
+      "stockId": "HC250136",
+      "submissionId": "SUB-MQUSSVIB-BF64",
+      "correctedAt": "2026-06-27T22:01:28.496Z",
+      "changes": {
+        "brand": {
+          "before": "Tank",
+          "after": "Dodge"
+        },
+        "brandSlug": {
+          "before": "tank",
+          "after": "dodge"
+        },
+        "title": {
+          "before": "Tank Tank 300 JCDU Half Cut",
+          "after": "Dodge Tank 300 D Half Cut"
+        }
+      }
+    },
+    {
+      "vin": "LVSHEFAC0BF917538",
+      "stockId": "HC250131",
+      "submissionId": "SUB-MQUSF9L8-0NKX",
+      "correctedAt": "2026-06-27T22:01:28.509Z",
+      "changes": {
+        "brand": {
+          "before": "Chery",
+          "after": "Volvo"
+        },
+        "brandSlug": {
+          "before": "chery",
+          "after": "volvo"
+        },
+        "title": {
+          "before": "Chery Windcloud b48 Half Cut",
+          "after": "Volvo Windcloud CAF488Q3 Half Cut"
+        }
+      }
+    },
+    {
+      "vin": "LDC943X36A1347417",
+      "stockId": "HC250084",
+      "submissionId": "SUB-MQQT9QZW-W8VN",
+      "correctedAt": "2026-06-27T22:01:28.537Z",
+      "changes": {
+        "brand": {
+          "before": "Chevrolet",
+          "after": "Peugeot"
+        },
+        "brandSlug": {
+          "before": "chevrolet",
+          "after": "peugeot"
+        },
+        "title": {
+          "before": "Chevrolet Spark LCU Half Cut",
+          "after": "Peugeot Spark PSARFN10LH3X Half Cut"
+        }
+      }
+    },
+    {
+      "vin": "LRH17A4E490000497",
+      "stockId": "HC250163",
+      "submissionId": "SUB-MQVT3Y8P-LOZQ",
+      "correctedAt": "2026-06-27T22:02:19.454Z",
+      "changes": {
+        "brand": {
+          "before": "Hyundai",
+          "after": "Hawtai"
+        },
+        "brandSlug": {
+          "before": "hyundai",
+          "after": "hawtai"
+        }
+      }
+    },
+    {
+      "vin": "LRH17A4E490000497",
+      "stockId": "HC250163",
+      "submissionId": "SUB-MQVT3Y8P-LOZQ",
+      "correctedAt": "2026-06-27T22:02:19.696Z",
+      "changes": {
+        "brand": {
+          "before": "Hyundai",
+          "after": "Hawtai"
+        },
+        "brandSlug": {
+          "before": "hyundai",
+          "after": "hawtai"
+        },
+        "title": {
+          "before": "Hyundai Santa Fe 4G64 Running Vehicle",
+          "after": "Hawtai Santa Fe 4G64 Running Vehicle"
+        }
+      }
+    },
+    {
+      "vin": "LRH17A4E490000497",
+      "stockId": "HC250163",
+      "submissionId": "SUB-MQVT3Y8P-LOZQ",
+      "correctedAt": "2026-06-27T22:03:53.094Z",
+      "changes": {
+        "model": {
+          "before": "Santa Fe",
+          "after": "特拉卡"
+        }
+      },
+      "note": "manual targeted fix: model corrected to Chinese series name (no English dictionary entry yet), only applied to the 8 confirmed brand-conflict VINs from the 87-VIN sample"
+    },
+    {
+      "vin": "LZWADAGA4E1202318",
+      "stockId": "HC250155",
+      "submissionId": "SUB-MQUX525X-W7NM",
+      "correctedAt": "2026-06-27T22:03:53.106Z",
+      "changes": {
+        "model": {
+          "before": "S6",
+          "after": "五菱宏光"
+        }
+      },
+      "note": "manual targeted fix: model corrected to Chinese series name (no English dictionary entry yet), only applied to the 8 confirmed brand-conflict VINs from the 87-VIN sample"
+    },
+    {
+      "vin": "LSCABN3R0JE247910",
+      "stockId": "HC250154",
+      "submissionId": "SUB-MQUW8XL9-M1OC",
+      "correctedAt": "2026-06-27T22:03:53.106Z",
+      "changes": {
+        "model": {
+          "before": "Lumin",
+          "after": "新豹MINI"
+        }
+      },
+      "note": "manual targeted fix: model corrected to Chinese series name (no English dictionary entry yet), only applied to the 8 confirmed brand-conflict VINs from the 87-VIN sample"
+    },
+    {
+      "vin": "LJ166A345D7104747",
+      "stockId": "HC250153",
+      "submissionId": "SUB-MQUW5GCE-IKGC",
+      "correctedAt": "2026-06-27T22:03:53.106Z",
+      "changes": {
+        "model": {
+          "before": "N-Series",
+          "after": "瑞风M5"
+        }
+      },
+      "note": "manual targeted fix: model corrected to Chinese series name (no English dictionary entry yet), only applied to the 8 confirmed brand-conflict VINs from the 87-VIN sample"
+    },
+    {
+      "vin": "LDC621P25C1004749",
+      "stockId": "HC250150",
+      "submissionId": "SUB-MQUVEYI4-USCN",
+      "correctedAt": "2026-06-27T22:03:53.106Z",
+      "changes": {
+        "model": {
+          "before": "东风",
+          "after": "雪铁龙C2"
+        }
+      },
+      "note": "manual targeted fix: model corrected to Chinese series name (no English dictionary entry yet), only applied to the 8 confirmed brand-conflict VINs from the 87-VIN sample"
+    },
+    {
+      "vin": "LDCC13X2X90984267",
+      "stockId": "HC250162",
+      "submissionId": "SUB-MQUUK89V-CKEZ",
+      "correctedAt": "2026-06-27T22:03:53.106Z",
+      "changes": {
+        "model": {
+          "before": "Spark",
+          "after": "世嘉"
+        }
+      },
+      "note": "manual targeted fix: model corrected to Chinese series name (no English dictionary entry yet), only applied to the 8 confirmed brand-conflict VINs from the 87-VIN sample"
+    },
+    {
+      "vin": "3D4PG6FD8AT267465",
+      "stockId": "HC250136",
+      "submissionId": "SUB-MQUSSVIB-BF64",
+      "correctedAt": "2026-06-27T22:03:53.106Z",
+      "changes": {
+        "model": {
+          "before": "Tank 300",
+          "after": "酷威"
+        }
+      },
+      "note": "manual targeted fix: model corrected to Chinese series name (no English dictionary entry yet), only applied to the 8 confirmed brand-conflict VINs from the 87-VIN sample"
+    },
+    {
+      "vin": "LVSHEFAC0BF917538",
+      "stockId": "HC250131",
+      "submissionId": "SUB-MQUSF9L8-0NKX",
+      "correctedAt": "2026-06-27T22:03:53.106Z",
+      "changes": {
+        "model": {
+          "before": "Windcloud",
+          "after": "沃尔沃S40"
+        }
+      },
+      "note": "manual targeted fix: model corrected to Chinese series name (no English dictionary entry yet), only applied to the 8 confirmed brand-conflict VINs from the 87-VIN sample"
+    },
+    {
+      "vin": "LRH17A4E490000497",
+      "stockId": "HC250163",
+      "submissionId": "SUB-MQVT3Y8P-LOZQ",
+      "correctedAt": "2026-06-27T22:03:53.106Z",
+      "changes": {
+        "model": {
+          "before": "Santa Fe",
+          "after": "特拉卡"
+        }
+      },
+      "note": "manual targeted fix: model corrected to Chinese series name (no English dictionary entry yet), only applied to the 8 confirmed brand-conflict VINs from the 87-VIN sample"
+    },
+    {
+      "vin": "LDCC13X2X90984267",
+      "stockId": "HC250162",
+      "submissionId": "SUB-MQUUK89V-CKEZ",
+      "correctedAt": "2026-06-27T22:03:53.106Z",
+      "changes": {
+        "model": {
+          "before": "Spark",
+          "after": "世嘉"
+        }
+      },
+      "note": "manual targeted fix: model corrected to Chinese series name (no English dictionary entry yet), only applied to the 8 confirmed brand-conflict VINs from the 87-VIN sample"
+    },
+    {
+      "vin": "LZWADAGA4E1202318",
+      "stockId": "HC250155",
+      "submissionId": "SUB-MQUX525X-W7NM",
+      "correctedAt": "2026-06-27T22:03:53.106Z",
+      "changes": {
+        "model": {
+          "before": "S6",
+          "after": "五菱宏光"
+        }
+      },
+      "note": "manual targeted fix: model corrected to Chinese series name (no English dictionary entry yet), only applied to the 8 confirmed brand-conflict VINs from the 87-VIN sample"
+    },
+    {
+      "vin": "LSCABN3R0JE247910",
+      "stockId": "HC250154",
+      "submissionId": "SUB-MQUW8XL9-M1OC",
+      "correctedAt": "2026-06-27T22:03:53.106Z",
+      "changes": {
+        "model": {
+          "before": "Lumin",
+          "after": "新豹MINI"
+        }
+      },
+      "note": "manual targeted fix: model corrected to Chinese series name (no English dictionary entry yet), only applied to the 8 confirmed brand-conflict VINs from the 87-VIN sample"
+    },
+    {
+      "vin": "LJ166A345D7104747",
+      "stockId": "HC250153",
+      "submissionId": "SUB-MQUW5GCE-IKGC",
+      "correctedAt": "2026-06-27T22:03:53.106Z",
+      "changes": {
+        "model": {
+          "before": "N-Series",
+          "after": "瑞风M5"
+        }
+      },
+      "note": "manual targeted fix: model corrected to Chinese series name (no English dictionary entry yet), only applied to the 8 confirmed brand-conflict VINs from the 87-VIN sample"
+    },
+    {
+      "vin": "LDC621P25C1004749",
+      "stockId": "HC250150",
+      "submissionId": "SUB-MQUVEYI4-USCN",
+      "correctedAt": "2026-06-27T22:03:53.106Z",
+      "changes": {
+        "model": {
+          "before": "东风",
+          "after": "雪铁龙C2"
+        }
+      },
+      "note": "manual targeted fix: model corrected to Chinese series name (no English dictionary entry yet), only applied to the 8 confirmed brand-conflict VINs from the 87-VIN sample"
+    },
+    {
+      "vin": "3D4PG6FD8AT267465",
+      "stockId": "HC250136",
+      "submissionId": "SUB-MQUSSVIB-BF64",
+      "correctedAt": "2026-06-27T22:03:53.106Z",
+      "changes": {
+        "model": {
+          "before": "Tank 300",
+          "after": "酷威"
+        }
+      },
+      "note": "manual targeted fix: model corrected to Chinese series name (no English dictionary entry yet), only applied to the 8 confirmed brand-conflict VINs from the 87-VIN sample"
+    },
+    {
+      "vin": "LVSHEFAC0BF917538",
+      "stockId": "HC250131",
+      "submissionId": "SUB-MQUSF9L8-0NKX",
+      "correctedAt": "2026-06-27T22:03:53.106Z",
+      "changes": {
+        "model": {
+          "before": "Windcloud",
+          "after": "沃尔沃S40"
+        }
+      },
+      "note": "manual targeted fix: model corrected to Chinese series name (no English dictionary entry yet), only applied to the 8 confirmed brand-conflict VINs from the 87-VIN sample"
+    }
+  ]
+}

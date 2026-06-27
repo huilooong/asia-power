@@ -66,6 +66,16 @@ const BRAND_ZH_TO_EN = {
   '双龙': 'Ssangyong',
   '五十铃': 'Isuzu',
   '比亚迪': 'BYD',
+  '华泰': 'Hawtai', // verified: hawtaimotor.com official site, en.wikipedia.org/wiki/Hawtai
+  '华泰汽车': 'Hawtai',
+  '五菱汽车': 'Wuling', // verified: en.wikipedia.org/wiki/Wuling_Motors
+  '长安跨越': 'Changan Kuayue', // verified: caky.com.cn official site, en.wikipedia.org/wiki/Kuayue_Kuayuexing
+  '沃尔沃': 'Volvo',
+  '雪铁龙': 'Citroën',
+  '东风雪铁龙': 'Citroën',
+  '标致': 'Peugeot',
+  '东风标致': 'Peugeot',
+  '道奇': 'Dodge',
   '吉利': 'Geely',
   '吉利汽车': 'Geely', // QXB sometimes returns the full corporate name with "汽车" suffix
   '极氪': 'Zeekr',
