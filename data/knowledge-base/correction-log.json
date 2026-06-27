@@ -5871,6 +5871,90 @@
           "after": "4AT"
         }
       }
+    },
+    {
+      "vin": "LDC621P25C1004749",
+      "stockId": "HC250150",
+      "submissionId": "SUB-MQUVEYI4-USCN",
+      "correctedAt": "2026-06-27T22:19:51.094Z",
+      "changes": {
+        "model": {
+          "before": "雪铁龙C2",
+          "after": "C2"
+        },
+        "title": {
+          "before": "Citroën 雪铁龙C2 TU3AF Half Cut",
+          "after": "Citroën C2 TU3AF Half Cut"
+        },
+        "shortDescription": {
+          "before": "2012 Citroën 雪铁龙C2 with TU3AF — supplier-verified listing via AsiaPower.",
+          "after": "2012 Citroën C2 with TU3AF — supplier-verified listing via AsiaPower."
+        }
+      },
+      "note": "stripped redundant Chinese brand-name prefix from model (QXB series field sometimes includes the brand name, e.g. 沃尔沃S40 when brand is already Volvo) — user-requested cleanup 2026-06-27"
+    },
+    {
+      "vin": "LVSHEFAC0BF917538",
+      "stockId": "HC250131",
+      "submissionId": "SUB-MQUSF9L8-0NKX",
+      "correctedAt": "2026-06-27T22:19:51.102Z",
+      "changes": {
+        "model": {
+          "before": "沃尔沃S40",
+          "after": "S40"
+        },
+        "title": {
+          "before": "Volvo 沃尔沃S40 CAF488Q3 Half Cut",
+          "after": "Volvo S40 CAF488Q3 Half Cut"
+        },
+        "shortDescription": {
+          "before": "2011 Volvo 沃尔沃S40 with CAF488Q3 — supplier-verified listing via AsiaPower.",
+          "after": "2011 Volvo S40 with CAF488Q3 — supplier-verified listing via AsiaPower."
+        }
+      },
+      "note": "stripped redundant Chinese brand-name prefix from model (QXB series field sometimes includes the brand name, e.g. 沃尔沃S40 when brand is already Volvo) — user-requested cleanup 2026-06-27"
+    },
+    {
+      "vin": "LDC621P25C1004749",
+      "stockId": "HC250150",
+      "submissionId": "SUB-MQUVEYI4-USCN",
+      "correctedAt": "2026-06-27T22:19:51.102Z",
+      "changes": {
+        "model": {
+          "before": "雪铁龙C2",
+          "after": "C2"
+        },
+        "title": {
+          "before": "Citroën 雪铁龙C2 TU3AF Half Cut",
+          "after": "Citroën C2 TU3AF Half Cut"
+        },
+        "shortDescription": {
+          "before": "2012 Citroën 雪铁龙C2 with TU3AF — supplier-verified listing via AsiaPower.",
+          "after": "2012 Citroën C2 with TU3AF — supplier-verified listing via AsiaPower."
+        }
+      },
+      "note": "stripped redundant Chinese brand-name prefix from model (QXB series field sometimes includes the brand name, e.g. 沃尔沃S40 when brand is already Volvo) — user-requested cleanup 2026-06-27"
+    },
+    {
+      "vin": "LVSHEFAC0BF917538",
+      "stockId": "HC250131",
+      "submissionId": "SUB-MQUSF9L8-0NKX",
+      "correctedAt": "2026-06-27T22:19:51.103Z",
+      "changes": {
+        "model": {
+          "before": "沃尔沃S40",
+          "after": "S40"
+        },
+        "title": {
+          "before": "Volvo 沃尔沃S40 CAF488Q3 Half Cut",
+          "after": "Volvo S40 CAF488Q3 Half Cut"
+        },
+        "shortDescription": {
+          "before": "2011 Volvo 沃尔沃S40 with CAF488Q3 — supplier-verified listing via AsiaPower.",
+          "after": "2011 Volvo S40 with CAF488Q3 — supplier-verified listing via AsiaPower."
+        }
+      },
+      "note": "stripped redundant Chinese brand-name prefix from model (QXB series field sometimes includes the brand name, e.g. 沃尔沃S40 when brand is already Volvo) — user-requested cleanup 2026-06-27"
     }
   ]
 }
