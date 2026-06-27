@@ -29,6 +29,7 @@ loadEnv(ROOT);
 const { applyMapping } = require('../server/lib/vin/mapping-layer');
 const { localizeForDisplay, seedKnowledgeBase } = require('../server/lib/vin/localize');
 const { createVehicleKnowledgeBase } = require('../server/lib/vin/knowledge-base');
+const { rebuildInventoryDerivedFields } = require('../server/lib/vehicle-name-normalize');
 
 const SUBMISSIONS_PATH = '/tmp/vin-correction/half-cut-submissions.json';
 const APPROVED_PATH = '/tmp/vin-correction/half-cut-approved.json';
@@ -57,8 +58,28 @@ const BRAND_SLUG_MAP = {
 const kb = createVehicleKnowledgeBase(path.join(ROOT, 'data'));
 seedKnowledgeBase(kb);
 
+// VINs with a deliberate manual override that disagrees with the raw QXB
+// decode — never let the automatic pass overwrite these back to the API
+// value. See correction-log.json entries with type:"manual_override" for
+// the rationale behind each.
+const MANUAL_OVERRIDE_VINS = new Set(['LRH17A4E490000497']);
+
 function correctRecord(record, log) {
   if (!record.vin) return;
+  if (MANUAL_OVERRIDE_VINS.has(record.vin.toUpperCase())) {
+    // Still safe to regenerate title/shortDescription from current (already
+    // manually-correct) brand/model — that part doesn't touch brand/model.
+    const beforeTitle = record.title;
+    const beforeDesc = record.shortDescription;
+    const rebuilt = rebuildInventoryDerivedFields(record);
+    const changes = {};
+    if (rebuilt.title !== beforeTitle) { changes.title = { before: beforeTitle, after: rebuilt.title }; record.title = rebuilt.title; }
+    if (rebuilt.shortDescription !== beforeDesc) { changes.shortDescription = { before: beforeDesc, after: rebuilt.shortDescription }; record.shortDescription = rebuilt.shortDescription; }
+    if (Object.keys(changes).length) {
+      log.push({ vin: record.vin, stockId: record.stockId || record.approvedStockId || '', submissionId: record.submissionId || '', correctedAt: new Date().toISOString(), changes, note: 'text-only regen, manual_override VIN excluded from brand/model auto-correction' });
+    }
+    return;
+  }
   const cached = kb.getCachedVin(record.vin.toUpperCase());
   if (!cached || cached.rawResponse?.number !== 200) return; // only correct confirmed-decoded VINs
 
@@ -108,12 +129,29 @@ function correctRecord(record, log) {
   if (display.fuelType && display.fuelType !== mapped.fuelTypeRaw) setIfChanged('fuelType', display.fuelType);
   if (display.drivetrain && display.drivetrain !== mapped.drivetrainRaw) setIfChanged('drivetrain', display.drivetrain);
 
-  // Regenerate title text (not slug/URL) only if brand+model both changed/confirmed in English
-  if (changes.brand || changes.model) {
-    const newTitle = `${record.brand} ${record.model} ${record.engineCode || ''} ${record.vehicleCondition || ''}`.replace(/\s+/g, ' ').trim();
-    if (record.title && record.title !== newTitle) {
-      changes.title = { before: record.title, after: newTitle };
-      record.title = newTitle;
+  // Regenerate title/shortDescription using the SAME canonical generator the
+  // rest of the system uses (server/lib/vehicle-name-normalize.js), not an
+  // ad-hoc template — this guarantees consistency AND reuses its existing
+  // safety check: shortDescription is only overwritten if it's empty or
+  // still matches the auto-generated boilerplate pattern. Admin-authored
+  // custom descriptions (e.g. "没有三元催化", real condition notes) do NOT
+  // match that pattern and are correctly left untouched. Regenerate whenever
+  // ANY relevant field changed (not just brand/model) — a stale title from
+  // an engineCode/year-only correction is just as wrong as a stale brand.
+  // Runs unconditionally (not gated on `changes` from this pass) because a
+  // PRIOR pass may have corrected engineCode/year/etc without regenerating
+  // these text fields at the time — this sweep catches that backlog too.
+  {
+    const beforeTitle = record.title;
+    const beforeDesc = record.shortDescription;
+    const rebuilt = rebuildInventoryDerivedFields(record);
+    if (rebuilt.title !== beforeTitle) {
+      changes.title = { before: beforeTitle, after: rebuilt.title };
+      record.title = rebuilt.title;
+    }
+    if (rebuilt.shortDescription !== beforeDesc) {
+      changes.shortDescription = { before: beforeDesc, after: rebuilt.shortDescription };
+      record.shortDescription = rebuilt.shortDescription;
     }
   }
 

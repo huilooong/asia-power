@@ -5955,6 +5955,839 @@
         }
       },
       "note": "stripped redundant Chinese brand-name prefix from model (QXB series field sometimes includes the brand name, e.g. 沃尔沃S40 when brand is already Volvo) — user-requested cleanup 2026-06-27"
+    },
+    {
+      "vin": "LRH17A4E490000497",
+      "stockId": "HC250163",
+      "submissionId": "SUB-MQVT3Y8P-LOZQ",
+      "correctedAt": "2026-06-27T22:29:30.955Z",
+      "changes": {
+        "shortDescription": {
+          "before": "2010 Hyundai Terracan with 4G64 — supplier-verified listing via AsiaPower.",
+          "after": "2010 Hawtai 特拉卡 vehicle with 4G64 — supplier-verified listing via AsiaPower."
+        }
+      },
+      "note": "text-only regen, manual_override VIN excluded from brand/model auto-correction"
+    },
+    {
+      "vin": "LDCC13X2X90984267",
+      "stockId": "HC250162",
+      "submissionId": "SUB-MQUUK89V-CKEZ",
+      "correctedAt": "2026-06-27T22:29:30.960Z",
+      "changes": {
+        "shortDescription": {
+          "before": "2009 Citroën 世嘉 with PSA RFN 10LH3X — supplier-verified listing via AsiaPower.",
+          "after": "2009 Citroën 世嘉 vehicle with PSA RFN 10LH3X — supplier-verified listing via AsiaPower."
+        }
+      }
+    },
+    {
+      "vin": "LBESCCBH93X053146",
+      "stockId": "HC250161",
+      "submissionId": "SUB-MQUWCG18-8H6L",
+      "correctedAt": "2026-06-27T22:29:30.961Z",
+      "changes": {
+        "shortDescription": {
+          "before": "2003 Hyundai Elantra with G4ED — supplier-verified listing via AsiaPower.",
+          "after": "2003 Hyundai Sonata vehicle with G4GC — supplier-verified listing via AsiaPower."
+        }
+      }
+    },
+    {
+      "vin": "LVGBE40KX7G118252",
+      "stockId": "HC250160",
+      "submissionId": "SUB-MQUWI7YU-TQD7",
+      "correctedAt": "2026-06-27T22:29:30.962Z",
+      "changes": {
+        "title": {
+          "before": "Toyota Camry 2AZ Half Cut",
+          "after": "Toyota Camry 2AZ-FE Half Cut"
+        },
+        "shortDescription": {
+          "before": "2007 Toyota Camry with 2AZ — supplier-verified listing via AsiaPower.",
+          "after": "2007 Toyota Camry vehicle with 2AZ-FE — supplier-verified listing via AsiaPower."
+        }
+      }
+    },
+    {
+      "vin": "LVFAD1ACXAG006658",
+      "stockId": "HC250159",
+      "submissionId": "SUB-MQUWN75X-OJZQ",
+      "correctedAt": "2026-06-27T22:29:30.967Z",
+      "changes": {
+        "shortDescription": {
+          "before": "2010 Suzuki Baleno with K12B-A — supplier-verified listing via AsiaPower.",
+          "after": "2010 Suzuki Baleno vehicle with K12B-A — supplier-verified listing via AsiaPower."
+        }
+      }
+    },
+    {
+      "vin": "LVFAB2ADXBG042330",
+      "stockId": "HC250157",
+      "submissionId": "SUB-MQUWWLN2-EYM7",
+      "correctedAt": "2026-06-27T22:29:30.973Z",
+      "changes": {
+        "title": {
+          "before": "Suzuki Wagon R K14B Half Cut",
+          "after": "Suzuki Wagon R K14B-D Half Cut"
+        },
+        "shortDescription": {
+          "before": "2011 Suzuki Wagon R with K14B — supplier-verified listing via AsiaPower.",
+          "after": "2013 Suzuki Wagon R vehicle with K14B-D — supplier-verified listing via AsiaPower."
+        }
+      }
+    },
+    {
+      "vin": "LVVDB11B3ED196667",
+      "stockId": "HC250156",
+      "submissionId": "SUB-MQUX1RA5-DJGX",
+      "correctedAt": "2026-06-27T22:29:30.974Z",
+      "changes": {
+        "shortDescription": {
+          "before": "2014 Chery Arrizo 3 with SQRE4G16 — supplier-verified listing via AsiaPower.",
+          "after": "2014 Chery Tiggo 3 vehicle with SQRE4G16 — supplier-verified listing via AsiaPower."
+        }
+      }
+    },
+    {
+      "vin": "LZWADAGA4E1202318",
+      "stockId": "HC250155",
+      "submissionId": "SUB-MQUX525X-W7NM",
+      "correctedAt": "2026-06-27T22:29:30.979Z",
+      "changes": {
+        "shortDescription": {
+          "before": "2014 Wuling 五菱宏光 with LMU — supplier-verified listing via AsiaPower.",
+          "after": "2014 Wuling 五菱宏光 vehicle with LMU — supplier-verified listing via AsiaPower."
+        }
+      }
+    },
+    {
+      "vin": "LJ166A345D7104747",
+      "stockId": "HC250153",
+      "submissionId": "SUB-MQUW5GCE-IKGC",
+      "correctedAt": "2026-06-27T22:29:30.994Z",
+      "changes": {
+        "shortDescription": {
+          "before": "2013 JAC 瑞风M5 with HFC4GA3.1D — supplier-verified listing via AsiaPower.",
+          "after": "2013 JAC 瑞风M5 vehicle with HFC4GA3.1D — supplier-verified listing via AsiaPower."
+        }
+      }
+    },
+    {
+      "vin": "LFMARE2C2C0368602",
+      "stockId": "HC250152",
+      "submissionId": "SUB-MQUW1PMN-LFQT",
+      "correctedAt": "2026-06-27T22:29:30.995Z",
+      "changes": {
+        "shortDescription": {
+          "before": "2012 Toyota Corolla Cross with 2ZR — supplier-verified listing via AsiaPower.",
+          "after": "2012 Toyota Corolla vehicle with 2ZR-FE — supplier-verified listing via AsiaPower."
+        }
+      }
+    },
+    {
+      "vin": "LJDLAA291C0108478",
+      "stockId": "HC250151",
+      "submissionId": "SUB-MQUV9ELW-SKXS",
+      "correctedAt": "2026-06-27T22:29:31.000Z",
+      "changes": {
+        "shortDescription": {
+          "before": "2012 Kia K5 with G4FA — supplier-verified listing via AsiaPower.",
+          "after": "2012 Kia K5 vehicle with G4FA — supplier-verified listing via AsiaPower."
+        }
+      }
+    },
+    {
+      "vin": "LDC621P25C1004749",
+      "stockId": "HC250150",
+      "submissionId": "SUB-MQUVEYI4-USCN",
+      "correctedAt": "2026-06-27T22:29:31.006Z",
+      "changes": {
+        "shortDescription": {
+          "before": "2012 Citroën C2 with TU3AF — supplier-verified listing via AsiaPower.",
+          "after": "2012 Citroën C2 vehicle with TU3AF — supplier-verified listing via AsiaPower."
+        }
+      }
+    },
+    {
+      "vin": "LBEXDAEB09X742323",
+      "stockId": "HC250149",
+      "submissionId": "SUB-MQUVLSHG-SZBT",
+      "correctedAt": "2026-06-27T22:29:31.006Z",
+      "changes": {
+        "shortDescription": {
+          "before": "2009 Hyundai Elantra with G4ED — supplier-verified listing via AsiaPower.",
+          "after": "2008 Hyundai Elantra vehicle with G4ED — supplier-verified listing via AsiaPower."
+        }
+      }
+    },
+    {
+      "vin": "LBEJMBKB48X114862",
+      "stockId": "HC250148",
+      "submissionId": "SUB-MQUVO1BH-F18Z",
+      "correctedAt": "2026-06-27T22:29:31.007Z",
+      "changes": {
+        "shortDescription": {
+          "before": "2008 Hyundai Tucson with G4GC — supplier-verified listing via AsiaPower.",
+          "after": "2007 Hyundai Tucson vehicle with G4GC — supplier-verified listing via AsiaPower."
+        }
+      }
+    },
+    {
+      "vin": "LSGGF53XXAH119541",
+      "stockId": "HC250147",
+      "submissionId": "SUB-MQUU4Q2J-24C4",
+      "correctedAt": "2026-06-27T22:29:31.012Z",
+      "changes": {
+        "shortDescription": {
+          "before": "2010 Buick LaCrosse with LE5 — supplier-verified listing via AsiaPower.",
+          "after": "2010 Buick LaCrosse vehicle with LE5 — supplier-verified listing via AsiaPower."
+        }
+      }
+    },
+    {
+      "vin": "5GAEV23DX9J162342",
+      "stockId": "HC250146",
+      "submissionId": "SUB-MQUU6W23-XHXR",
+      "correctedAt": "2026-06-27T22:29:31.018Z",
+      "changes": {
+        "title": {
+          "before": "Buick Envision LL T Half Cut",
+          "after": "Buick Envision LLT Half Cut"
+        },
+        "shortDescription": {
+          "before": "2009 Buick Envision with LL T — supplier-verified listing via AsiaPower.",
+          "after": "2009 Buick Envision vehicle with LLT — supplier-verified listing via AsiaPower."
+        }
+      }
+    },
+    {
+      "vin": "LBEHDAHB89Y220971",
+      "stockId": "HC250144",
+      "submissionId": "SUB-MQUUDBDF-5IOA",
+      "correctedAt": "2026-06-27T22:29:31.024Z",
+      "changes": {
+        "shortDescription": {
+          "before": "2009 Hyundai Elantra with G4GB — supplier-verified listing via AsiaPower.",
+          "after": "2008 Hyundai Elantra vehicle with G4GB — supplier-verified listing via AsiaPower."
+        }
+      }
+    },
+    {
+      "vin": "LSGSA52M8ED032198",
+      "stockId": "HC250143",
+      "submissionId": "SUB-MQUUH558-NAGN",
+      "correctedAt": "2026-06-27T22:29:31.029Z",
+      "changes": {
+        "shortDescription": {
+          "before": "2014 Chevrolet Spark with LCU — supplier-verified listing via AsiaPower.",
+          "after": "2013 Chevrolet Spark vehicle with LCU — supplier-verified listing via AsiaPower."
+        }
+      }
+    },
+    {
+      "vin": "KL1DC53F19B299769",
+      "stockId": "HC250142",
+      "submissionId": "SUB-MQUTWDKT-W58T",
+      "correctedAt": "2026-06-27T22:29:31.035Z",
+      "changes": {
+        "title": {
+          "before": "Chevrolet Captiva Z24sed Half Cut",
+          "after": "Chevrolet Captiva Z24SED Half Cut"
+        },
+        "shortDescription": {
+          "before": "2009 Chevrolet Captiva with Z24sed — supplier-verified listing via AsiaPower.",
+          "after": "2010 Chevrolet Captiva vehicle with Z24SED — supplier-verified listing via AsiaPower."
+        }
+      }
+    },
+    {
+      "vin": "LBENFAKB87X016339",
+      "stockId": "HC250141",
+      "submissionId": "SUB-MQUTMVPM-JWU6",
+      "correctedAt": "2026-06-27T22:29:31.041Z",
+      "changes": {
+        "shortDescription": {
+          "before": "2007 Hyundai Sonata with G4KA — supplier-verified listing via AsiaPower.",
+          "after": "2006 Hyundai Sonata vehicle with G4KA — supplier-verified listing via AsiaPower."
+        }
+      }
+    },
+    {
+      "vin": "LBENFAJB08X031226",
+      "stockId": "HC250140",
+      "submissionId": "SUB-MQUTJ0JU-3AE1",
+      "correctedAt": "2026-06-27T22:29:31.046Z",
+      "changes": {
+        "shortDescription": {
+          "before": "2008 Hyundai Sonata with G4KA — supplier-verified listing via AsiaPower.",
+          "after": "2006 Hyundai Sonata vehicle with G4KA — supplier-verified listing via AsiaPower."
+        }
+      }
+    },
+    {
+      "vin": "LHGCP168488022808",
+      "stockId": "HC250139",
+      "submissionId": "SUB-MQUTGORO-10V9",
+      "correctedAt": "2026-06-27T22:29:31.046Z",
+      "changes": {
+        "shortDescription": {
+          "before": "2008 Honda Accord with R20A3 — supplier-verified listing via AsiaPower.",
+          "after": "2008 Honda Accord vehicle with R20A3 — supplier-verified listing via AsiaPower."
+        }
+      }
+    },
+    {
+      "vin": "LJNMEW1J4AN016150",
+      "stockId": "HC250138",
+      "submissionId": "SUB-MQUT67NE-99T5",
+      "correctedAt": "2026-06-27T22:29:31.052Z",
+      "changes": {
+        "title": {
+          "before": "Dongfeng 东风 汽油 Half Cut",
+          "after": "Dongfeng 东风 4G64 S4M Half Cut"
+        },
+        "shortDescription": {
+          "before": "2010 Dongfeng 东风 with 汽油 — supplier-verified listing via AsiaPower.",
+          "after": "2007 Dongfeng 东风 vehicle with 4G64 S4M — supplier-verified listing via AsiaPower."
+        }
+      }
+    },
+    {
+      "vin": "LBENFAJB08X033851",
+      "stockId": "HC250137",
+      "submissionId": "SUB-MQUT1L3M-RUT9",
+      "correctedAt": "2026-06-27T22:29:31.058Z",
+      "changes": {
+        "shortDescription": {
+          "before": "2008 Hyundai Sonata with G4KA — supplier-verified listing via AsiaPower.",
+          "after": "2006 Hyundai Sonata vehicle with G4KA — supplier-verified listing via AsiaPower."
+        }
+      }
+    },
+    {
+      "vin": "3D4PG6FD8AT267465",
+      "stockId": "HC250136",
+      "submissionId": "SUB-MQUSSVIB-BF64",
+      "correctedAt": "2026-06-27T22:29:31.064Z",
+      "changes": {
+        "shortDescription": {
+          "before": "2010 Dodge 酷威 with D — supplier-verified listing via AsiaPower.",
+          "after": "2010 Dodge 酷威 vehicle with D — supplier-verified listing via AsiaPower."
+        }
+      }
+    },
+    {
+      "vin": "LSKG4GC10HA097250",
+      "stockId": "HC250135",
+      "submissionId": "SUB-MQURHHKT-N8TF",
+      "correctedAt": "2026-06-27T22:29:31.069Z",
+      "changes": {
+        "shortDescription": {
+          "before": "2017 Maxus G10 with 19D4N — supplier-verified listing via AsiaPower.",
+          "after": "2018 Maxus G10 vehicle with 19D4N — supplier-verified listing via AsiaPower."
+        }
+      }
+    },
+    {
+      "vin": "LVSHEFAC0BF917538",
+      "stockId": "HC250131",
+      "submissionId": "SUB-MQUSF9L8-0NKX",
+      "correctedAt": "2026-06-27T22:29:31.091Z",
+      "changes": {
+        "shortDescription": {
+          "before": "2011 Volvo S40 with CAF488Q3 — supplier-verified listing via AsiaPower.",
+          "after": "2011 Volvo S40 vehicle with CAF488Q3 — supplier-verified listing via AsiaPower."
+        }
+      }
+    },
+    {
+      "vin": "LSVDF6C42MN098696",
+      "stockId": "HC250130",
+      "submissionId": "SUB-MQT2A0AQ-YCOV",
+      "correctedAt": "2026-06-27T22:29:31.097Z",
+      "changes": {
+        "title": {
+          "before": "Volkswagen Passat EA888 Half Cut",
+          "after": "Volkswagen Passat DPL Half Cut"
+        },
+        "shortDescription": {
+          "before": "2021 Volkswagen Passat with EA888 — supplier-verified listing via AsiaPower.",
+          "after": "2022 Volkswagen Passat vehicle with DPL — supplier-verified listing via AsiaPower."
+        }
+      }
+    },
+    {
+      "vin": "JTJHY00W6A4058024",
+      "stockId": "HC250127",
+      "submissionId": "SUB-MQT0MOWH-3OFW",
+      "correctedAt": "2026-06-27T22:29:31.109Z",
+      "changes": {
+        "title": {
+          "before": "Lexus LX570 3UR Half Cut",
+          "after": "Lexus LX570 3UR-FE Half Cut"
+        },
+        "shortDescription": {
+          "before": "2010 Lexus LX570 with 3UR — supplier-verified listing via AsiaPower.",
+          "after": "2009 Lexus LX570 vehicle with 3UR-FE — supplier-verified listing via AsiaPower."
+        }
+      }
+    },
+    {
+      "vin": "LJNMFE2K3EN051136",
+      "stockId": "HC250105",
+      "submissionId": "SUB-MQRHK6XE-TOML",
+      "correctedAt": "2026-06-27T22:29:31.116Z",
+      "changes": {
+        "title": {
+          "before": "Dongfeng 东风 zg24 Running Vehicle",
+          "after": "Dongfeng 东风 ZG24 Running Vehicle"
+        },
+        "shortDescription": {
+          "before": "2014 Dongfeng 东风 with zg24 — supplier-verified listing via AsiaPower.",
+          "after": "2013 Dongfeng 东风 vehicle with ZG24 — supplier-verified listing via AsiaPower."
+        }
+      }
+    },
+    {
+      "vin": "KMHSH81B9BU718556",
+      "stockId": "HC250097",
+      "submissionId": "SUB-MQRDULI0-3BUN",
+      "correctedAt": "2026-06-27T22:29:31.122Z",
+      "changes": {
+        "title": {
+          "before": "Hyundai Santa Fe G4KE Half Cut",
+          "after": "Hyundai Santa Fe G4KE Running Vehicle"
+        },
+        "shortDescription": {
+          "before": "2011 Hyundai Santa Fe with G4KE — supplier-verified listing via AsiaPower.",
+          "after": "2011 Hyundai Santa Fe vehicle with G4KE — supplier-verified listing via AsiaPower."
+        }
+      }
+    },
+    {
+      "vin": "1GTZGGBG4A1181234",
+      "stockId": "HC250064",
+      "submissionId": "SUB-MQQ0KRC0-ED1T",
+      "correctedAt": "2026-06-27T22:29:31.175Z",
+      "changes": {
+        "title": {
+          "before": "GMC Savana LY6 Running Vehicle",
+          "after": "GMC Savana L96 Running Vehicle"
+        },
+        "shortDescription": {
+          "before": "2010 GMC Savana with LY6 — supplier-verified listing via AsiaPower.",
+          "after": "2010 GMC Savana vehicle with L96 — supplier-verified listing via AsiaPower."
+        }
+      }
+    },
+    {
+      "vin": "LVGBE40K99G467986",
+      "stockId": "HC250062",
+      "submissionId": "SUB-MQOP2EI4-F6RK",
+      "correctedAt": "2026-06-27T22:29:31.177Z",
+      "changes": {
+        "title": {
+          "before": "Toyota Camry 2az Half Cut",
+          "after": "Toyota Camry 2AZ-FE Running Vehicle"
+        },
+        "shortDescription": {
+          "before": "2009 Toyota Camry with 2az — supplier-verified listing via AsiaPower.",
+          "after": "2009 Toyota Camry vehicle with 2AZ-FE — supplier-verified listing via AsiaPower."
+        }
+      }
+    },
+    {
+      "vin": "KNALD221965104627",
+      "stockId": "HC250060",
+      "submissionId": "SUB-MQOLPJ3A-A23S",
+      "correctedAt": "2026-06-27T22:29:31.188Z",
+      "changes": {
+        "title": {
+          "before": "Kia OPIRUS G6BA Half Cut",
+          "after": "Kia OPIRUS G6BA Running Vehicle"
+        },
+        "shortDescription": {
+          "before": "2006 Kia OPIRUS with G6BA — supplier-verified listing via AsiaPower.",
+          "after": "2005 Kia OPIRUS vehicle with G6BA — supplier-verified listing via AsiaPower."
+        }
+      }
+    },
+    {
+      "vin": "LFV2A1BS3E4611014",
+      "stockId": "HC250059",
+      "submissionId": "SUB-MQOJQZXE-OI3K",
+      "correctedAt": "2026-06-27T22:29:31.194Z",
+      "changes": {
+        "title": {
+          "before": "Volkswagen Jetta CPD Half Cut",
+          "after": "Volkswagen Jetta CPD Running Vehicle"
+        },
+        "shortDescription": {
+          "before": "2014 Volkswagen Jetta with CPD — supplier-verified listing via AsiaPower.",
+          "after": "2013 Volkswagen Jetta vehicle with CPD — supplier-verified listing via AsiaPower."
+        }
+      }
+    },
+    {
+      "vin": "LGBN22E28AY002810",
+      "stockId": "HC250057",
+      "submissionId": "SUB-MQNNA2KB-DVAM",
+      "correctedAt": "2026-06-27T22:29:31.195Z",
+      "changes": {
+        "title": {
+          "before": "Nissan March HR15 Half Cut",
+          "after": "Nissan March HR15DE Running Vehicle"
+        },
+        "shortDescription": {
+          "before": "2010 Nissan March with HR15 — supplier-verified listing via AsiaPower.",
+          "after": "2010 Nissan March vehicle with HR15DE — supplier-verified listing via AsiaPower."
+        }
+      }
+    },
+    {
+      "vin": "LFV3A21K9B3112473",
+      "stockId": "HC250056",
+      "submissionId": "SUB-MQN4S8X4-M58I",
+      "correctedAt": "2026-06-27T22:29:31.201Z",
+      "changes": {
+        "title": {
+          "before": "Volkswagen Sagitar BYJ1.8T Half Cut",
+          "after": "Volkswagen Sagitar BYJ Running Vehicle"
+        }
+      }
+    },
+    {
+      "vin": "LS5A3ABR4CA511669",
+      "stockId": "HC250055",
+      "submissionId": "SUB-MQMG9UYL-6CG3",
+      "correctedAt": "2026-06-27T22:29:31.209Z",
+      "changes": {
+        "title": {
+          "before": "Changan CX20 JL474QL Half Cut",
+          "after": "Changan CX20 JL474QL Running Vehicle"
+        },
+        "shortDescription": {
+          "before": "2012 Changan CX20 with JL474QL — supplier-verified listing via AsiaPower.",
+          "after": "2011 Changan CX20 vehicle with JL474QL — supplier-verified listing via AsiaPower."
+        }
+      }
+    },
+    {
+      "vin": "LBEHDAEB28Y022762",
+      "stockId": "HC250054",
+      "submissionId": "SUB-MQMEWCHL-IAK6",
+      "correctedAt": "2026-06-27T22:29:31.216Z",
+      "changes": {
+        "title": {
+          "before": "Hyundai Elantra G4ED Half Cut",
+          "after": "Hyundai Elantra G4ED Running Vehicle"
+        },
+        "shortDescription": {
+          "before": "2008 Hyundai Elantra with G4ED — supplier-verified listing via AsiaPower.",
+          "after": "2008 Hyundai Elantra vehicle with G4ED — supplier-verified listing via AsiaPower."
+        }
+      }
+    },
+    {
+      "vin": "LSGSA62S4CY110325",
+      "stockId": "HC250053",
+      "submissionId": "SUB-MQMEQMIB-Q19A",
+      "correctedAt": "2026-06-27T22:29:31.221Z",
+      "changes": {
+        "title": {
+          "before": "Chevrolet Spark LMU Half Cut",
+          "after": "Chevrolet Spark LMU Running Vehicle"
+        },
+        "shortDescription": {
+          "before": "2012 Chevrolet Spark with LMU — supplier-verified listing via AsiaPower.",
+          "after": "2010 Chevrolet Spark vehicle with LMU — supplier-verified listing via AsiaPower."
+        }
+      }
+    },
+    {
+      "vin": "LFV2B2F30L7713114",
+      "stockId": "HC250051",
+      "submissionId": "SUB-MQLZ9XYI-7YHB",
+      "correctedAt": "2026-06-27T22:29:31.227Z",
+      "changes": {
+        "title": {
+          "before": "Audi Q3 EA211 Half Cut",
+          "after": "Audi Q3 DJS Half Cut"
+        }
+      }
+    },
+    {
+      "vin": "LVGBH42K7BG515303",
+      "stockId": "HC250050",
+      "submissionId": "SUB-MQMBUDBS-QE6J",
+      "correctedAt": "2026-06-27T22:29:31.228Z",
+      "changes": {
+        "title": {
+          "before": "Toyota Camry 1AZ Half Cut",
+          "after": "Toyota Camry 1AZ-FE Running Vehicle"
+        },
+        "shortDescription": {
+          "before": "2011 Toyota Camry with 1AZ — supplier-verified listing via AsiaPower.",
+          "after": "2011 Toyota Camry vehicle with 1AZ-FE — supplier-verified listing via AsiaPower."
+        }
+      }
+    },
+    {
+      "vin": "LSGPC54U1AF058332",
+      "stockId": "HC250049",
+      "submissionId": "SUB-MQMCFFVE-1IX6",
+      "correctedAt": "2026-06-27T22:29:31.233Z",
+      "changes": {
+        "title": {
+          "before": "Chevrolet Cruze LDE Half Cut",
+          "after": "Chevrolet Cruze LDE Running Vehicle"
+        },
+        "shortDescription": {
+          "before": "2010 Chevrolet Cruze with LDE — supplier-verified listing via AsiaPower.",
+          "after": "2010 Chevrolet Cruze vehicle with LDE — supplier-verified listing via AsiaPower."
+        }
+      }
+    },
+    {
+      "vin": "LHGCM567362046766",
+      "stockId": "HC250048",
+      "submissionId": "SUB-MQMCT4BY-0QBD",
+      "correctedAt": "2026-06-27T22:29:31.234Z",
+      "changes": {
+        "title": {
+          "before": "Honda Accord KA24A8 Half Cut",
+          "after": "Honda Accord K24A8 Running Vehicle"
+        },
+        "shortDescription": {
+          "before": "2006 Honda Accord with KA24A8 — supplier-verified listing via AsiaPower.",
+          "after": "2006 Honda Accord vehicle with K24A8 — supplier-verified listing via AsiaPower."
+        }
+      }
+    },
+    {
+      "vin": "WDDFH3DB0BJ663359",
+      "stockId": "HC250047",
+      "submissionId": "SUB-MQMD188J-TO6A",
+      "correctedAt": "2026-06-27T22:29:31.240Z",
+      "changes": {
+        "title": {
+          "before": "Mercedes-Benz B200 226.960 Half Cut",
+          "after": "Mercedes-Benz B200 266 960 Running Vehicle"
+        },
+        "shortDescription": {
+          "before": "2011 Mercedes-Benz B200 with 226.960 — supplier-verified listing via AsiaPower.",
+          "after": "2009 Mercedes-Benz B200 vehicle with 266 960 — supplier-verified listing via AsiaPower."
+        }
+      }
+    },
+    {
+      "vin": "LBVVA96056SA63090",
+      "stockId": "HC250046",
+      "submissionId": "SUB-MQMD71TZ-CT89",
+      "correctedAt": "2026-06-27T22:29:31.245Z",
+      "changes": {
+        "title": {
+          "before": "BMW 320i N46B20CB Half Cut",
+          "after": "BMW 320i N46B20CB Running Vehicle"
+        },
+        "shortDescription": {
+          "before": "2006 BMW 320i with N46B20CB — supplier-verified listing via AsiaPower.",
+          "after": "2007 BMW 320i vehicle with N46B20CB — supplier-verified listing via AsiaPower."
+        }
+      }
+    },
+    {
+      "vin": "LSGPB64U3BS024118",
+      "stockId": "HC250044",
+      "submissionId": "SUB-MQMDWTFF-BQTI",
+      "correctedAt": "2026-06-27T22:29:31.251Z",
+      "changes": {
+        "title": {
+          "before": "Buick Excelle GT LDE Half Cut",
+          "after": "Buick Excelle GT LDE Running Vehicle"
+        },
+        "shortDescription": {
+          "before": "2011 Buick Excelle GT with LDE — supplier-verified listing via AsiaPower.",
+          "after": "2010 Buick Excelle GT vehicle with LDE — supplier-verified listing via AsiaPower."
+        }
+      }
+    },
+    {
+      "vin": "LJDDAA223A0408415",
+      "stockId": "HC250043",
+      "submissionId": "SUB-MQME468R-THHD",
+      "correctedAt": "2026-06-27T22:29:31.258Z",
+      "changes": {
+        "title": {
+          "before": "Kia Seltos G4ED Half Cut",
+          "after": "Kia Seltos G4ED Running Vehicle"
+        },
+        "shortDescription": {
+          "before": "2010 Kia Seltos with G4ED — supplier-verified listing via AsiaPower.",
+          "after": "2010 Kia Seltos vehicle with G4ED — supplier-verified listing via AsiaPower."
+        }
+      }
+    },
+    {
+      "vin": "LBV5S3106ESJ48940",
+      "stockId": "HC250042",
+      "submissionId": "SUB-MQLQHRIK-NJ0W",
+      "correctedAt": "2026-06-27T22:29:31.264Z",
+      "changes": {
+        "title": {
+          "before": "BMW 520i N20 Half Cut",
+          "after": "BMW 520i N20B20C Running Vehicle"
+        }
+      }
+    },
+    {
+      "vin": "LJDKAA249C0067257",
+      "stockId": "HC250041",
+      "submissionId": "SUB-MQLOO34J-OND8",
+      "correctedAt": "2026-06-27T22:29:31.269Z",
+      "changes": {
+        "shortDescription": {
+          "before": "2012 Kia K5 with G4NA — supplier-verified listing via AsiaPower.",
+          "after": "2012 Kia K5 vehicle with G4NA — supplier-verified listing via AsiaPower."
+        }
+      }
+    },
+    {
+      "vin": "LB1RF4495E8002517",
+      "stockId": "HC250040",
+      "submissionId": "SUB-MQLP2UK1-HDUM",
+      "correctedAt": "2026-06-27T22:29:31.275Z",
+      "changes": {
+        "title": {
+          "before": "Mercedes-Benz Sprinter 651.955 Half Cut",
+          "after": "Mercedes-Benz Sprinter 651 955 Running Vehicle"
+        }
+      }
+    },
+    {
+      "vin": "4JGBB86E57A228810",
+      "stockId": "HC250039",
+      "submissionId": "SUB-MQLNG5FK-311H",
+      "correctedAt": "2026-06-27T22:29:31.281Z",
+      "changes": {
+        "title": {
+          "before": "Mercedes-Benz ML350 M272.96 Half Cut",
+          "after": "Mercedes-Benz ML350 M272.962 Half Cut"
+        },
+        "shortDescription": {
+          "before": "2007 Mercedes-Benz ML350 with M272.96 — supplier-verified listing via AsiaPower.",
+          "after": "2006 Mercedes-Benz ML350 vehicle with M272.962 — supplier-verified listing via AsiaPower."
+        }
+      }
+    },
+    {
+      "vin": "JN1TFSY61Z0535349",
+      "stockId": "HC250038",
+      "submissionId": "SUB-MQLNMU87-RADA",
+      "correctedAt": "2026-06-27T22:29:31.286Z",
+      "changes": {
+        "title": {
+          "before": "Nissan Patrol TE48 Half Cut",
+          "after": "Nissan Patrol TB48DE Running Vehicle"
+        },
+        "shortDescription": {
+          "before": "2003 Nissan Patrol with TE48 — supplier-verified listing via AsiaPower.",
+          "after": "2004 Nissan Patrol vehicle with TB48DE — supplier-verified listing via AsiaPower."
+        }
+      }
+    },
+    {
+      "vin": "JTEBU25J030015169",
+      "stockId": "HC250037",
+      "submissionId": "SUB-MQKY982C-9XTI",
+      "correctedAt": "2026-06-27T22:29:31.292Z",
+      "changes": {
+        "title": {
+          "before": "Toyota Land Cruiser Prado 1gr Half Cut",
+          "after": "Toyota Land Cruiser Prado 1GR-FE Running Vehicle"
+        },
+        "shortDescription": {
+          "before": "2003 Toyota prado with 1gr — supplier-verified listing via AsiaPower.",
+          "after": "2003 Toyota Land Cruiser Prado vehicle with 1GR-FE — supplier-verified listing via AsiaPower."
+        }
+      }
+    },
+    {
+      "vin": "JTEBU25J140028398",
+      "stockId": "HC250036",
+      "submissionId": "SUB-MQILFSC2-PD6B",
+      "correctedAt": "2026-06-27T22:29:31.299Z",
+      "changes": {
+        "title": {
+          "before": "Toyota Land Cruiser Prado 1gr Half Cut",
+          "after": "Toyota Land Cruiser Prado 1GR-FE Half Cut"
+        },
+        "shortDescription": {
+          "before": "2004 Toyota Pardo with 1gr — supplier-verified listing via AsiaPower.",
+          "after": "2003 Toyota Land Cruiser Prado vehicle with 1GR-FE — supplier-verified listing via AsiaPower."
+        }
+      }
+    },
+    {
+      "vin": "LRH17A4E490000497",
+      "stockId": "HC250163",
+      "submissionId": "SUB-MQVT3Y8P-LOZQ",
+      "correctedAt": "2026-06-27T22:30:30.686Z",
+      "changes": {
+        "brand": {
+          "before": "Hawtai",
+          "after": "Hyundai"
+        },
+        "brandSlug": {
+          "before": "hawtai",
+          "after": "hyundai"
+        },
+        "model": {
+          "before": "特拉卡",
+          "after": "Terracan"
+        },
+        "title": {
+          "before": "Hawtai 特拉卡 4G64 Running Vehicle",
+          "after": "Hawtai 特拉卡 4G64 Running Vehicle"
+        },
+        "shortDescription": {
+          "before": "2010 Hyundai Terracan with 4G64 — supplier-verified listing via AsiaPower.",
+          "after": "2010 Hyundai Terracan with 4G64 — supplier-verified listing via AsiaPower."
+        }
+      },
+      "type": "manual_override",
+      "rationale": "RE-APPLYING override lost in an earlier batch run (b757d17 transmissionCode gear-count fix) that predated the MANUAL_OVERRIDE_VINS exclusion list in scripts/vin-batch-correct.js. Same rationale as the original override: physical vehicle carries Hyundai badge; Hawtai/Hyundai JV history verified earlier (chejiahao.autohome.com.cn/info/1013588, cn.auto-che.com/b/hawtai-terracan-hyundai)."
+    },
+    {
+      "vin": "LRH17A4E490000497",
+      "stockId": "HC250163",
+      "submissionId": "SUB-MQVT3Y8P-LOZQ",
+      "correctedAt": "2026-06-27T22:30:30.698Z",
+      "changes": {
+        "brand": {
+          "before": "Hawtai",
+          "after": "Hyundai"
+        },
+        "brandSlug": {
+          "before": "hawtai",
+          "after": "hyundai"
+        },
+        "model": {
+          "before": "特拉卡",
+          "after": "Terracan"
+        },
+        "title": {
+          "before": "Hawtai 特拉卡 4G64 Running Vehicle",
+          "after": "Hyundai Terracan 4G64 Running Vehicle"
+        },
+        "shortDescription": {
+          "before": "2010 Hawtai 特拉卡 vehicle with 4G64 — supplier-verified listing via AsiaPower.",
+          "after": "2010 Hyundai Terracan vehicle with 4G64 — supplier-verified listing via AsiaPower."
+        }
+      },
+      "type": "manual_override",
+      "rationale": "RE-APPLYING override lost in an earlier batch run (b757d17 transmissionCode gear-count fix) that predated the MANUAL_OVERRIDE_VINS exclusion list in scripts/vin-batch-correct.js. Same rationale as the original override: physical vehicle carries Hyundai badge; Hawtai/Hyundai JV history verified earlier (chejiahao.autohome.com.cn/info/1013588, cn.auto-che.com/b/hawtai-terracan-hyundai)."
     }
   ]
 }
