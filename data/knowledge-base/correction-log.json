@@ -3903,6 +3903,274 @@
         }
       },
       "note": "manual targeted fix: model corrected to Chinese series name (no English dictionary entry yet), only applied to the 8 confirmed brand-conflict VINs from the 87-VIN sample"
+    },
+    {
+      "vin": "LRH17A4E490000497",
+      "stockId": "HC250163",
+      "submissionId": "SUB-MQVT3Y8P-LOZQ",
+      "correctedAt": "2026-06-27T22:14:10.648Z",
+      "changes": {
+        "brand": {
+          "before": "Hawtai",
+          "after": "Hyundai"
+        },
+        "brandSlug": {
+          "before": "hyundai",
+          "after": "hyundai"
+        },
+        "model": {
+          "before": "特拉卡",
+          "after": "Terracan"
+        }
+      },
+      "type": "manual_override",
+      "rationale": "User decision 2026-06-27: physical vehicle still carries Hyundai badge. Hawtai had a JV with Hyundai (badged \"华泰现代\", using Hyundai H logo) from 2002/2003 until switching to its own logo in 2007-06 (source: chejiahao.autohome.com.cn/info/1013588). 华泰特拉卡 (Hawtai Terracan) is the localized version of Hyundai Terracan (source: cn.auto-che.com/b/hawtai-terracan-hyundai, baike.baidu.com/华泰汽车特拉卡). QXB decode (brand:华泰/Hawtai, series:特拉卡) is factually about the vehicle platform/manufacturer registration, but the user is overriding to the physical Hyundai badge for display purposes."
+    },
+    {
+      "vin": "LRH17A4E490000497",
+      "stockId": "HC250163",
+      "submissionId": "SUB-MQVT3Y8P-LOZQ",
+      "correctedAt": "2026-06-27T22:14:10.654Z",
+      "changes": {
+        "brand": {
+          "before": "Hawtai",
+          "after": "Hyundai"
+        },
+        "brandSlug": {
+          "before": "hyundai",
+          "after": "hyundai"
+        },
+        "model": {
+          "before": "特拉卡",
+          "after": "Terracan"
+        }
+      },
+      "type": "manual_override",
+      "rationale": "User decision 2026-06-27: physical vehicle still carries Hyundai badge. Hawtai had a JV with Hyundai (badged \"华泰现代\", using Hyundai H logo) from 2002/2003 until switching to its own logo in 2007-06 (source: chejiahao.autohome.com.cn/info/1013588). 华泰特拉卡 (Hawtai Terracan) is the localized version of Hyundai Terracan (source: cn.auto-che.com/b/hawtai-terracan-hyundai, baike.baidu.com/华泰汽车特拉卡). QXB decode (brand:华泰/Hawtai, series:特拉卡) is factually about the vehicle platform/manufacturer registration, but the user is overriding to the physical Hyundai badge for display purposes."
+    },
+    {
+      "vin": "LRH17A4E490000497",
+      "stockId": "HC250163",
+      "submissionId": "SUB-MQVT3Y8P-LOZQ",
+      "correctedAt": "2026-06-27T22:14:10.654Z",
+      "changes": {
+        "title": {
+          "after": "Hyundai Terracan 4G64 Running Vehicle"
+        },
+        "shortDescription": {
+          "after": "2010 Hyundai Terracan with 4G64 — supplier-verified listing via AsiaPower."
+        }
+      },
+      "note": "regenerated stale title/shortDescription text that still referenced the pre-correction brand/model (follow-up fix for a gap in the original batch script — model corrections from a separate manual pass were not reflected in these text fields at the time)"
+    },
+    {
+      "vin": "LZWADAGA4E1202318",
+      "stockId": "HC250155",
+      "submissionId": "SUB-MQUX525X-W7NM",
+      "correctedAt": "2026-06-27T22:14:10.660Z",
+      "changes": {
+        "title": {
+          "after": "Wuling 五菱宏光 LMU Half Cut"
+        },
+        "shortDescription": {
+          "after": "2014 Wuling 五菱宏光 with LMU — supplier-verified listing via AsiaPower."
+        }
+      },
+      "note": "regenerated stale title/shortDescription text that still referenced the pre-correction brand/model (follow-up fix for a gap in the original batch script — model corrections from a separate manual pass were not reflected in these text fields at the time)"
+    },
+    {
+      "vin": "LJ166A345D7104747",
+      "stockId": "HC250153",
+      "submissionId": "SUB-MQUW5GCE-IKGC",
+      "correctedAt": "2026-06-27T22:14:10.660Z",
+      "changes": {
+        "title": {
+          "after": "JAC 瑞风M5 HFC4GA3.1D Half Cut"
+        },
+        "shortDescription": {
+          "after": "2013 JAC 瑞风M5 with HFC4GA3.1D — supplier-verified listing via AsiaPower."
+        }
+      },
+      "note": "regenerated stale title/shortDescription text that still referenced the pre-correction brand/model (follow-up fix for a gap in the original batch script — model corrections from a separate manual pass were not reflected in these text fields at the time)"
+    },
+    {
+      "vin": "LDC621P25C1004749",
+      "stockId": "HC250150",
+      "submissionId": "SUB-MQUVEYI4-USCN",
+      "correctedAt": "2026-06-27T22:14:10.660Z",
+      "changes": {
+        "title": {
+          "after": "Citroën 雪铁龙C2 TU3AF Half Cut"
+        },
+        "shortDescription": {
+          "after": "2012 Citroën 雪铁龙C2 with TU3AF — supplier-verified listing via AsiaPower."
+        }
+      },
+      "note": "regenerated stale title/shortDescription text that still referenced the pre-correction brand/model (follow-up fix for a gap in the original batch script — model corrections from a separate manual pass were not reflected in these text fields at the time)"
+    },
+    {
+      "vin": "LDCC13X2X90984267",
+      "stockId": "HC250162",
+      "submissionId": "SUB-MQUUK89V-CKEZ",
+      "correctedAt": "2026-06-27T22:14:10.660Z",
+      "changes": {
+        "title": {
+          "after": "Citroën 世嘉 PSA RFN 10LH3X Half Cut"
+        },
+        "shortDescription": {
+          "after": "2009 Citroën 世嘉 with PSA RFN 10LH3X — supplier-verified listing via AsiaPower."
+        }
+      },
+      "note": "regenerated stale title/shortDescription text that still referenced the pre-correction brand/model (follow-up fix for a gap in the original batch script — model corrections from a separate manual pass were not reflected in these text fields at the time)"
+    },
+    {
+      "vin": "3D4PG6FD8AT267465",
+      "stockId": "HC250136",
+      "submissionId": "SUB-MQUSSVIB-BF64",
+      "correctedAt": "2026-06-27T22:14:10.660Z",
+      "changes": {
+        "title": {
+          "after": "Dodge 酷威 D Half Cut"
+        },
+        "shortDescription": {
+          "after": "2010 Dodge 酷威 with D — supplier-verified listing via AsiaPower."
+        }
+      },
+      "note": "regenerated stale title/shortDescription text that still referenced the pre-correction brand/model (follow-up fix for a gap in the original batch script — model corrections from a separate manual pass were not reflected in these text fields at the time)"
+    },
+    {
+      "vin": "LVSHEFAC0BF917538",
+      "stockId": "HC250131",
+      "submissionId": "SUB-MQUSF9L8-0NKX",
+      "correctedAt": "2026-06-27T22:14:10.660Z",
+      "changes": {
+        "title": {
+          "after": "Volvo 沃尔沃S40 CAF488Q3 Half Cut"
+        },
+        "shortDescription": {
+          "after": "2011 Volvo 沃尔沃S40 with CAF488Q3 — supplier-verified listing via AsiaPower."
+        }
+      },
+      "note": "regenerated stale title/shortDescription text that still referenced the pre-correction brand/model (follow-up fix for a gap in the original batch script — model corrections from a separate manual pass were not reflected in these text fields at the time)"
+    },
+    {
+      "vin": "LRH17A4E490000497",
+      "stockId": "HC250163",
+      "submissionId": "SUB-MQVT3Y8P-LOZQ",
+      "correctedAt": "2026-06-27T22:14:10.660Z",
+      "changes": {
+        "title": {
+          "before": "Hawtai Santa Fe 4G64 Running Vehicle",
+          "after": "Hyundai Terracan 4G64 Running Vehicle"
+        },
+        "shortDescription": {
+          "before": "2009 Hyundai Santa Fe with 4G64 — supplier-verified listing via AsiaPower.",
+          "after": "2010 Hyundai Terracan with 4G64 — supplier-verified listing via AsiaPower."
+        }
+      },
+      "note": "regenerated stale title/shortDescription text that still referenced the pre-correction brand/model (follow-up fix for a gap in the original batch script — model corrections from a separate manual pass were not reflected in these text fields at the time)"
+    },
+    {
+      "vin": "LDCC13X2X90984267",
+      "stockId": "HC250162",
+      "submissionId": "SUB-MQUUK89V-CKEZ",
+      "correctedAt": "2026-06-27T22:14:10.660Z",
+      "changes": {
+        "title": {
+          "before": "Citroën Spark PSA RFN 10LH3X Half Cut",
+          "after": "Citroën 世嘉 PSA RFN 10LH3X Half Cut"
+        },
+        "shortDescription": {
+          "before": "2009 Chevrolet Spark with 1.8 — supplier-verified listing via AsiaPower.",
+          "after": "2009 Citroën 世嘉 with PSA RFN 10LH3X — supplier-verified listing via AsiaPower."
+        }
+      },
+      "note": "regenerated stale title/shortDescription text that still referenced the pre-correction brand/model (follow-up fix for a gap in the original batch script — model corrections from a separate manual pass were not reflected in these text fields at the time)"
+    },
+    {
+      "vin": "LZWADAGA4E1202318",
+      "stockId": "HC250155",
+      "submissionId": "SUB-MQUX525X-W7NM",
+      "correctedAt": "2026-06-27T22:14:10.660Z",
+      "changes": {
+        "title": {
+          "before": "Wuling S6 LMU Half Cut",
+          "after": "Wuling 五菱宏光 LMU Half Cut"
+        },
+        "shortDescription": {
+          "before": "2014 BYD S6 with L MH — supplier-verified listing via AsiaPower.",
+          "after": "2014 Wuling 五菱宏光 with LMU — supplier-verified listing via AsiaPower."
+        }
+      },
+      "note": "regenerated stale title/shortDescription text that still referenced the pre-correction brand/model (follow-up fix for a gap in the original batch script — model corrections from a separate manual pass were not reflected in these text fields at the time)"
+    },
+    {
+      "vin": "LJ166A345D7104747",
+      "stockId": "HC250153",
+      "submissionId": "SUB-MQUW5GCE-IKGC",
+      "correctedAt": "2026-06-27T22:14:10.660Z",
+      "changes": {
+        "title": {
+          "before": "JAC N-Series HFV4GA3 Half Cut",
+          "after": "JAC 瑞风M5 HFC4GA3.1D Half Cut"
+        },
+        "shortDescription": {
+          "before": "2013 JAC N-Series with HFV4GA3 — supplier-verified listing via AsiaPower.",
+          "after": "2013 JAC 瑞风M5 with HFC4GA3.1D — supplier-verified listing via AsiaPower."
+        }
+      },
+      "note": "regenerated stale title/shortDescription text that still referenced the pre-correction brand/model (follow-up fix for a gap in the original batch script — model corrections from a separate manual pass were not reflected in these text fields at the time)"
+    },
+    {
+      "vin": "LDC621P25C1004749",
+      "stockId": "HC250150",
+      "submissionId": "SUB-MQUVEYI4-USCN",
+      "correctedAt": "2026-06-27T22:14:10.660Z",
+      "changes": {
+        "title": {
+          "before": "Citroën 东风 TU3AF Half Cut",
+          "after": "Citroën 雪铁龙C2 TU3AF Half Cut"
+        },
+        "shortDescription": {
+          "before": "2012 Dongfeng 东风 with TU3AF — supplier-verified listing via AsiaPower.",
+          "after": "2012 Citroën 雪铁龙C2 with TU3AF — supplier-verified listing via AsiaPower."
+        }
+      },
+      "note": "regenerated stale title/shortDescription text that still referenced the pre-correction brand/model (follow-up fix for a gap in the original batch script — model corrections from a separate manual pass were not reflected in these text fields at the time)"
+    },
+    {
+      "vin": "3D4PG6FD8AT267465",
+      "stockId": "HC250136",
+      "submissionId": "SUB-MQUSSVIB-BF64",
+      "correctedAt": "2026-06-27T22:14:10.660Z",
+      "changes": {
+        "title": {
+          "before": "Dodge Tank 300 D Half Cut",
+          "after": "Dodge 酷威 D Half Cut"
+        },
+        "shortDescription": {
+          "before": "2010 Tank Tank 300 with JCDU — supplier-verified listing via AsiaPower.",
+          "after": "2010 Dodge 酷威 with D — supplier-verified listing via AsiaPower."
+        }
+      },
+      "note": "regenerated stale title/shortDescription text that still referenced the pre-correction brand/model (follow-up fix for a gap in the original batch script — model corrections from a separate manual pass were not reflected in these text fields at the time)"
+    },
+    {
+      "vin": "LVSHEFAC0BF917538",
+      "stockId": "HC250131",
+      "submissionId": "SUB-MQUSF9L8-0NKX",
+      "correctedAt": "2026-06-27T22:14:10.660Z",
+      "changes": {
+        "title": {
+          "before": "Volvo Windcloud CAF488Q3 Half Cut",
+          "after": "Volvo 沃尔沃S40 CAF488Q3 Half Cut"
+        },
+        "shortDescription": {
+          "before": "没有三元",
+          "after": "2011 Volvo 沃尔沃S40 with CAF488Q3 — supplier-verified listing via AsiaPower."
+        }
+      },
+      "note": "regenerated stale title/shortDescription text that still referenced the pre-correction brand/model (follow-up fix for a gap in the original batch script — model corrections from a separate manual pass were not reflected in these text fields at the time)"
     }
   ]
 }

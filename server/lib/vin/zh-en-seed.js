@@ -125,6 +125,7 @@ const MODEL_ZH_TO_EN = {
     '骊威': 'Livina',
   },
   toyota: {
+    '凯美瑞': 'Camry', // verified: zh.wikipedia.org/丰田凯美瑞, gac-toyota.com.cn official site
     '卡罗拉': 'Corolla',
     '威驰': 'Vios',
     '雅力士': 'Yaris',
@@ -153,6 +154,9 @@ const MODEL_ZH_TO_EN = {
     '智跑': 'Sportage',
     '索兰托': 'Sorento',
     '嘉华': 'Carnival',
+  },
+  chery: {
+    '瑞虎3': 'Tiggo 3', // verified: en.wikipedia.org/wiki/Chery_Tiggo_3 ("Chinese: 奇瑞瑞虎3")
   },
 };
 
