@@ -1,0 +1,64 @@
+{
+  "LGBN22E28AY002810": {
+    "vin": "LGBN22E28AY002810",
+    "rawResponse": {
+      "version": "4.6.0",
+      "object": "VinDecoder/decode",
+      "message": "",
+      "number": 200,
+      "result": {
+        "models": [
+          {
+            "brand_id": 63,
+            "brand": "日产",
+            "series_id": 2086,
+            "series": "玛驰",
+            "model_id": 8175,
+            "model_name": "2010款 1.5L 手动易型版",
+            "years": "2010",
+            "price": "6.69万",
+            "time_to_market": "2010.08",
+            "factory": "东风日产",
+            "level": "小型车",
+            "sales_status": "停售",
+            "body": "5门5座两厢车",
+            "model_size": "3779 * 1666 * 1526",
+            "curb_weight": "-",
+            "door": "5",
+            "seat": "5",
+            "displacement": "1498",
+            "shift_num": "5",
+            "engine_code": "HR15DE",
+            "engine": "1.5L",
+            "engine_desc": "1.5L 107马力 L4",
+            "max_power": "79",
+            "front_brake": "通风盘式",
+            "rear_brake": "通风盘式",
+            "assist_type": "电动助力",
+            "wheel_base": "2450",
+            "wheel_base_font": "1470",
+            "wheel_base_rear": "1475",
+            "front_tire": "165/70 R14",
+            "rear_tire": "165/70 R14",
+            "spare_tire": "全尺寸",
+            "driver_type": "前置前驱",
+            "trans_type": "MT",
+            "trans_des": "手动变速器(MT)",
+            "engine_gas_in": "自然吸气",
+            "engine_gasin_number": "4",
+            "engine_cylinder_arranged": "L",
+            "fuel_type": "汽油",
+            "fuel_grade": "92#",
+            "oil_providing": "多点电喷",
+            "emission_standard": "欧IV+OBD"
+          }
+        ],
+        "vehicle": [],
+        "trans_code": ""
+      }
+    },
+    "source": "qxb-connectivity-test",
+    "requestedAt": "2026-06-27T21:10:20.227Z",
+    "cachedAt": "2026-06-27T21:10:21.423Z"
+  }
+}

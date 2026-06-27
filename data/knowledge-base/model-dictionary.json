@@ -1,0 +1,210 @@
+{
+  "nissan": {
+    "玛驰": {
+      "chinese": "玛驰",
+      "english": "March",
+      "source": "manual_seed",
+      "learnedAt": "2026-06-27T21:18:18.857Z"
+    },
+    "天籁": {
+      "chinese": "天籁",
+      "english": "Teana",
+      "source": "manual_seed",
+      "learnedAt": "2026-06-27T21:18:18.857Z"
+    },
+    "轩逸": {
+      "chinese": "轩逸",
+      "english": "Sylphy",
+      "source": "manual_seed",
+      "learnedAt": "2026-06-27T21:18:18.858Z"
+    },
+    "骐达": {
+      "chinese": "骐达",
+      "english": "Tiida",
+      "source": "manual_seed",
+      "learnedAt": "2026-06-27T21:18:18.858Z"
+    },
+    "逍客": {
+      "chinese": "逍客",
+      "english": "Qashqai",
+      "source": "manual_seed",
+      "learnedAt": "2026-06-27T21:18:18.858Z"
+    },
+    "楼兰": {
+      "chinese": "楼兰",
+      "english": "Murano",
+      "source": "manual_seed",
+      "learnedAt": "2026-06-27T21:18:18.859Z"
+    },
+    "途达": {
+      "chinese": "途达",
+      "english": "Terra",
+      "source": "manual_seed",
+      "learnedAt": "2026-06-27T21:18:18.859Z"
+    },
+    "阳光": {
+      "chinese": "阳光",
+      "english": "Sunny",
+      "source": "manual_seed",
+      "learnedAt": "2026-06-27T21:18:18.859Z"
+    },
+    "西玛": {
+      "chinese": "西玛",
+      "english": "Cefiro",
+      "source": "manual_seed",
+      "learnedAt": "2026-06-27T21:18:18.860Z"
+    },
+    "奇骏": {
+      "chinese": "奇骏",
+      "english": "X-Trail",
+      "source": "manual_seed",
+      "learnedAt": "2026-06-27T21:18:18.861Z"
+    },
+    "骊威": {
+      "chinese": "骊威",
+      "english": "Livina",
+      "source": "manual_seed",
+      "learnedAt": "2026-06-27T21:18:18.862Z"
+    }
+  },
+  "toyota": {
+    "卡罗拉": {
+      "chinese": "卡罗拉",
+      "english": "Corolla",
+      "source": "manual_seed",
+      "learnedAt": "2026-06-27T21:18:18.862Z"
+    },
+    "威驰": {
+      "chinese": "威驰",
+      "english": "Vios",
+      "source": "manual_seed",
+      "learnedAt": "2026-06-27T21:18:18.863Z"
+    },
+    "雅力士": {
+      "chinese": "雅力士",
+      "english": "Yaris",
+      "source": "manual_seed",
+      "learnedAt": "2026-06-27T21:18:18.863Z"
+    },
+    "汉兰达": {
+      "chinese": "汉兰达",
+      "english": "Highlander",
+      "source": "manual_seed",
+      "learnedAt": "2026-06-27T21:18:18.863Z"
+    },
+    "普拉多": {
+      "chinese": "普拉多",
+      "english": "Land Cruiser Prado",
+      "source": "manual_seed",
+      "learnedAt": "2026-06-27T21:18:18.864Z"
+    },
+    "塞纳": {
+      "chinese": "塞纳",
+      "english": "Sienna",
+      "source": "manual_seed",
+      "learnedAt": "2026-06-27T21:18:18.864Z"
+    },
+    "海狮": {
+      "chinese": "海狮",
+      "english": "Hiace",
+      "source": "manual_seed",
+      "learnedAt": "2026-06-27T21:18:18.865Z"
+    },
+    "海拉克斯": {
+      "chinese": "海拉克斯",
+      "english": "Hilux",
+      "source": "manual_seed",
+      "learnedAt": "2026-06-27T21:18:18.865Z"
+    },
+    "陆地巡洋舰": {
+      "chinese": "陆地巡洋舰",
+      "english": "Land Cruiser",
+      "source": "manual_seed",
+      "learnedAt": "2026-06-27T21:18:18.865Z"
+    }
+  },
+  "honda": {
+    "雅阁": {
+      "chinese": "雅阁",
+      "english": "Accord",
+      "source": "manual_seed",
+      "learnedAt": "2026-06-27T21:18:18.866Z"
+    },
+    "思域": {
+      "chinese": "思域",
+      "english": "Civic",
+      "source": "manual_seed",
+      "learnedAt": "2026-06-27T21:18:18.866Z"
+    },
+    "飞度": {
+      "chinese": "飞度",
+      "english": "Fit",
+      "source": "manual_seed",
+      "learnedAt": "2026-06-27T21:18:18.866Z"
+    },
+    "缤智": {
+      "chinese": "缤智",
+      "english": "HR-V",
+      "source": "manual_seed",
+      "learnedAt": "2026-06-27T21:18:18.867Z"
+    },
+    "凌派": {
+      "chinese": "凌派",
+      "english": "Crider",
+      "source": "manual_seed",
+      "learnedAt": "2026-06-27T21:18:18.867Z"
+    },
+    "本田CR-V": {
+      "chinese": "本田CR-V",
+      "english": "CR-V",
+      "source": "manual_seed",
+      "learnedAt": "2026-06-27T21:18:18.867Z"
+    }
+  },
+  "hyundai": {
+    "途胜": {
+      "chinese": "途胜",
+      "english": "Tucson",
+      "source": "manual_seed",
+      "learnedAt": "2026-06-27T21:18:18.868Z"
+    },
+    "胜达": {
+      "chinese": "胜达",
+      "english": "Santa Fe",
+      "source": "manual_seed",
+      "learnedAt": "2026-06-27T21:18:18.868Z"
+    },
+    "伊兰特": {
+      "chinese": "伊兰特",
+      "english": "Elantra",
+      "source": "manual_seed",
+      "learnedAt": "2026-06-27T21:18:18.869Z"
+    },
+    "索纳塔": {
+      "chinese": "索纳塔",
+      "english": "Sonata",
+      "source": "manual_seed",
+      "learnedAt": "2026-06-27T21:18:18.870Z"
+    }
+  },
+  "kia": {
+    "智跑": {
+      "chinese": "智跑",
+      "english": "Sportage",
+      "source": "manual_seed",
+      "learnedAt": "2026-06-27T21:18:18.870Z"
+    },
+    "索兰托": {
+      "chinese": "索兰托",
+      "english": "Sorento",
+      "source": "manual_seed",
+      "learnedAt": "2026-06-27T21:18:18.871Z"
+    },
+    "嘉华": {
+      "chinese": "嘉华",
+      "english": "Carnival",
+      "source": "manual_seed",
+      "learnedAt": "2026-06-27T21:18:18.871Z"
+    }
+  }
+}

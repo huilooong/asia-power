@@ -1,0 +1,6 @@
+{
+  "status": "PENDING_REAL_RESPONSE",
+  "note": "RESOLVED 2026-06-27. Confirmed signing: appid+version+timestamp+secret+interfaceParams, sorted ASCII, urlencoded, MD5 uppercase, secret excluded from final request. Confirmed working endpoint: POST /VinDecoder/decode, version=4.6.0 (this AsiaPower account is authorized for this one only — decodeNormal v3.6.0 returns number:-6 unauthorized). Real test: VIN LGBN22E28AY002810 -> number:200, Nissan March 2010 1.5L MT, engine HR15DE. Awaiting human review before FIELD_MAP in mapping-layer.js is populated.",
+  "fields": {},
+  "history": []
+}
