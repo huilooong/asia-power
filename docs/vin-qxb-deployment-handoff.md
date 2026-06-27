@@ -1,8 +1,22 @@
 # VIN / QXB Integration — Deployment Handoff
 
+**Project archive name: AsiaPower Vehicle Intelligence Foundation v0.1**
+
 Status as of 2026-06-27: **interface + knowledge base infrastructure complete and verified with 1 real VIN. No inventory data has been touched. No batch correction has happened. Do not start batch correction without explicit user confirmation.**
 
-This document is the handoff point between "local interface build" (done) and "server-side batch validation + correction" (not started). Read this fully before doing anything with real inventory data.
+This document is the handoff point between "local interface build" (done, this is v0.1) and "server-side sample validation" (next phase, scope locked below). Read this fully before doing anything with real inventory data.
+
+## Next phase scope (locked by user, 2026-06-27) — sample validation ONLY
+
+1. Deploy to server
+2. Configure `.env` (real `QXB_APPID`/`QXB_SECRET`)
+3. Run `node scripts/vin-connectivity-test.js` — connectivity sanity check
+4. Sample 5–10 real inventory VINs
+5. Produce a coverage report (Mapping hit rate, what landed in Unknown Queue)
+6. Expand Dictionary / Unknown Queue based on human-reviewed results
+7. **Stop here. Batch inventory correction requires explicit user go-ahead — do not proceed past step 6 without it.**
+
+This list is the only scope for the next phase. Do not start batch correction (Section 10 below) as part of "finishing" this phase — it is a separate, separately-confirmed phase.
 
 ---
 
