@@ -92,8 +92,16 @@ function applyMapping(rawResponseJson) {
   // object) — the actual gearbox model number (e.g. "RE0F10A/JF011E"), distinct
   // from trans_type/trans_des which only describe the gearbox TYPE (CVT/MT/AT).
   // Confirmed present in real responses 2026-06-27 (sample VIN batch).
+  //
+  // Observed data quality issue in QXB's own database (VIN LBEJMBKB48X114862,
+  // 87-VIN sample 2026-06-27): trans_code returned as "G4GC" — identical to
+  // engine_code for that record, i.e. QXB mixed up engine/gearbox fields on
+  // their end. Defend against propagating that: if trans_code equals the
+  // engine code, treat it as unreliable and drop it rather than mapping it.
   const transCode = rawResponseJson?.result?.trans_code;
-  if (transCode) mapped.gearboxModel = transCode;
+  if (transCode && transCode !== mapped.engineCode) {
+    mapped.gearboxModel = transCode;
+  }
 
   const needsDictionary = NEEDS_DICTIONARY
     .filter((field) => mapped[field] !== undefined)

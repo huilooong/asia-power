@@ -67,6 +67,7 @@ const BRAND_ZH_TO_EN = {
   '五十铃': 'Isuzu',
   '比亚迪': 'BYD',
   '吉利': 'Geely',
+  '吉利汽车': 'Geely', // QXB sometimes returns the full corporate name with "汽车" suffix
   '极氪': 'Zeekr',
   '领克': 'Lynk & Co',
   '几何': 'Geometry',
@@ -84,6 +85,7 @@ const BRAND_ZH_TO_EN = {
   '广汽': 'GAC',
   '长安': 'Changan',
   '江淮': 'JAC',
+  '江汽集团': 'JAC', // verified: jac.com.cn official site self-identifies as "JAC GROUP江汽集团"
   '东风': 'Dongfeng',
   '一汽': 'FAW',
   '福田': 'Foton',
