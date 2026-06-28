@@ -9,7 +9,7 @@ from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
 
-from customer_gateway.gateway_readonly import PATTERNS_DIR, PROFILES_DIR, ensure_gateway_dirs
+import customer_gateway.gateway_readonly as gw
 
 _NEGOTIATION_RE = re.compile(
     r"\b(too high|discount|cheaper|best price|lower|negotiate)\b", re.I,
@@ -26,7 +26,7 @@ _PORT_RE = re.compile(
 
 
 def build_all_profiles(parsed: list[dict[str, Any]]) -> list[dict[str, Any]]:
-    ensure_gateway_dirs()
+    gw.ensure_gateway_dirs()
     by_contact: dict[str, list[dict[str, Any]]] = {}
     for conv in parsed:
         contact = conv.get("contact", "unknown")
@@ -153,9 +153,9 @@ def _next_action(
 
 
 def load_profiles() -> list[dict[str, Any]]:
-    ensure_gateway_dirs()
+    gw.ensure_gateway_dirs()
     profiles: list[dict[str, Any]] = []
-    for path in sorted(PROFILES_DIR.glob("*.json")):
+    for path in sorted(gw.PROFILES_DIR.glob("*.json")):
         try:
             profiles.append(json.loads(path.read_text(encoding="utf-8")))
         except (json.JSONDecodeError, OSError):
@@ -220,7 +220,7 @@ def _save_profile(profile: dict[str, Any]) -> Path:
         r"[^a-z0-9\u4e00-\u9fff]+", "-",
         profile.get("contact_name", "unknown").lower(),
     ).strip("-")[:48] or "unknown"
-    path = PROFILES_DIR / f"{slug}.json"
+    path = gw.PROFILES_DIR / f"{slug}.json"
     path.write_text(json.dumps(profile, indent=2, ensure_ascii=False), encoding="utf-8")
     return path
 
@@ -247,8 +247,8 @@ def _save_enquiry_patterns(
         "profile_count": len(profiles),
         "updated_at": datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M UTC"),
     }
-    PATTERNS_DIR.mkdir(parents=True, exist_ok=True)
-    (PATTERNS_DIR / "patterns.json").write_text(
+    gw.PATTERNS_DIR.mkdir(parents=True, exist_ok=True)
+    (gw.PATTERNS_DIR / "patterns.json").write_text(
         json.dumps(data, indent=2, ensure_ascii=False),
         encoding="utf-8",
     )

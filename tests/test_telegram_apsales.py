@@ -64,6 +64,14 @@ class TelegramAPSalesTests(unittest.TestCase):
         self.assertIn("销售智能报告", out)
 
     def test_telegram_customer_followups(self) -> None:
+        from customer_gateway.gateway_readonly import reconfigure_paths, run_intelligence_analysis
+        from customer_gateway.whatsapp_importer import import_whatsapp_txt
+
+        fixture = Path(__file__).resolve().parent / "fixtures" / "sample_whatsapp_chat.txt"
+        gw = Path(self.tmp.name) / "gateway_followups"
+        reconfigure_paths(gw)
+        import_whatsapp_txt(fixture)
+        run_intelligence_analysis()
         out = dispatch_message(
             "/customer followups",
             source="telegram_apsales",

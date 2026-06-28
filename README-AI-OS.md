@@ -540,6 +540,55 @@ python main.py "/customer search G4KJ"
 
 `/whatsapp analyze` 输出《WhatsApp 销售智能报告》：总体分析、产品排行、销售漏斗、跟进清单、CEO 回复效果分析、APSales 改进 SOP。
 
+### WhatsApp Live Business Entry (APLIVE-001)
+
+**Read Only → Analyze → Draft → Telegram Approval**（本阶段不发送 WhatsApp）
+
+新消息流程：
+
+```
+WhatsApp 收件箱 → Customer Gateway → Classifier → Language Router
+→ APSales → CRM / Profile → Draft Queue → APSales Telegram
+```
+
+| Module | Path |
+|--------|------|
+| Live listener | `customer_gateway/whatsapp_live_readonly.py` |
+| Inbound router | `customer_gateway/inbound_message_router.py` |
+| Draft queue | `customer_gateway/draft_queue.py` |
+| Telegram notification | `customer_gateway/approval_notification.py` |
+
+数据目录：
+
+- `memory/customer_gateway/inbound_messages/`
+- `memory/customer_gateway/draft_queue/`
+- `memory/customer_gateway/processed_messages.json`
+
+环境变量：
+
+```bash
+# 新消息 JSON 投递目录（只读监听源）
+WHATSAPP_LIVE_INBOX=/path/to/whatsapp/inbox
+```
+
+收件箱格式（`.json` 或 `inbox.jsonl`）：
+
+```json
+{"contact_name": "Ghana Motors", "message": "Do you have G4KJ?", "timestamp": "2024-03-15 10:00", "phone_hint": "233..."}
+```
+
+CLI：
+
+```bash
+python main.py "/whatsapp listen --readonly"
+python main.py "/whatsapp listen status"
+python main.py "/drafts list"
+python main.py "/drafts show <draft_id>"
+python main.py "/drafts approve <draft_id>"
+```
+
+`/drafts approve` 仅表示 CEO 同意草稿内容，**不发送 WhatsApp**（发送留到下一阶段）。
+
 ### Approval workflow
 
 | Level | Route |
@@ -563,6 +612,9 @@ APSALES_TELEGRAM_ALLOWED_CHAT_IDS=
 # 可选：服务器上 WhatsApp 导出 .txt 目录（只读同步源）
 WHATSAPP_READONLY_EXPORT_DIR=/path/to/whatsapp/exports
 
+# 可选：WhatsApp 新消息 JSON 投递目录（只读监听源）
+WHATSAPP_LIVE_INBOX=/path/to/whatsapp/inbox
+
 python integrations/telegram_apsales_bot.py
 ```
 
@@ -572,9 +624,16 @@ python integrations/telegram_apsales_bot.py
 
 | 命令 | 说明 |
 |------|------|
+| `/whatsapp listen --readonly` | 只读监听新消息 → 生成草稿 |
+| `/whatsapp listen status` | 监听状态 |
 | `/whatsapp sync --readonly` | 从 `WHATSAPP_READONLY_EXPORT_DIR` 或已解析数据只读同步 |
 | `/whatsapp analyze` | 生成《WhatsApp 销售智能报告》（中文） |
 | `/whatsapp report` | 查看最新完整报告 |
+| `/drafts list` | 草稿队列 |
+| `/drafts show <draft_id>` | 查看草稿详情 |
+| `/drafts approve <draft_id>` | 批准草稿（**不发送** WhatsApp） |
+| `/drafts reject <draft_id>` | 拒绝草稿 |
+| `/drafts revise <draft_id> <意见>` | 记录修改意见 |
 | `/customer followups` | 客户跟进清单（今天/本周/重新激活/归档） |
 | `/customer search <关键词>` | 搜索客户画像与历史消息 |
 
@@ -585,6 +644,8 @@ python integrations/telegram_apsales_bot.py
 完整 Markdown 报告持久化在：
 
 `memory/customer_gateway/reports/latest_report.md`
+
+草稿队列：`memory/customer_gateway/draft_queue/`
 
 （每次 `/whatsapp analyze` 也会写入带时间戳的 `sales_intelligence_*.md`）
 

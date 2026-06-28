@@ -26,7 +26,7 @@ def main() -> int:
     def process(message: str) -> None:
         stripped = message.strip()
         agent_id = "apcoo"
-        if stripped.lower().startswith("/sales") or stripped.lower().startswith("/whatsapp") or (
+        if stripped.lower().startswith("/sales") or stripped.lower().startswith("/whatsapp") or stripped.lower().startswith("/drafts") or (
             is_apsales_command(message) and not is_coo_command(message)
         ):
             agent_id = "apsales"

@@ -30,6 +30,7 @@ from tools.crm_tool import (
     update_pipeline_stage,
 )
 from customer_gateway.gateway_readonly import (
+    dispatch_drafts_command,
     dispatch_whatsapp_command,
     format_customer_followups,
     get_gateway_context_for_enquiry,
@@ -39,7 +40,7 @@ from tools.registry import ToolContext, list_tools, run_tool, run_tool_command
 
 APSALES_COMMANDS = (
     "/help", "/tools", "/remember", "/recall", "/customer", "/pipeline",
-    "/tool", "/sales", "/whatsapp",
+    "/tool", "/sales", "/whatsapp", "/drafts",
 )
 
 INTERNAL_SECTIONS = (
@@ -55,6 +56,8 @@ INTERNAL_SECTIONS = (
 def is_apsales_command(message: str) -> bool:
     text = (message or "").strip()
     if text.lower().startswith("/sales"):
+        return True
+    if text.lower().startswith("/drafts"):
         return True
     if text == "/tools" or text.startswith("/tool "):
         return True
@@ -89,8 +92,13 @@ def apsales_help_text() -> str:
         "/whatsapp import <path> — import WhatsApp .txt export (read-only)\n"
         "/whatsapp sync --readonly — 只读同步 WhatsApp 历史\n"
         "/whatsapp analyze — 销售智能分析报告（中文）\n"
-        "/whatsapp report — 查看最新完整报告\n\n"
-        "原则：Read Only. Analyze First. 从历史学习，不盲目模仿 CEO。\n"
+        "/whatsapp report — 查看最新完整报告\n"
+        "/whatsapp listen --readonly — 只读监听新消息\n"
+        "/whatsapp listen status — 监听状态\n"
+        "/drafts list — WhatsApp 回复草稿队列\n"
+        "/drafts show <id> — 查看草稿\n"
+        "/drafts approve <id> — 批准草稿（不发送）\n\n"
+        "原则：Read Only → Analyze → Draft → Telegram Approval。禁止自动发送 WhatsApp。\n"
         "平台定位：撮合买家与供应商，提升 GMV；默认不假设 AsiaPower 自有库存。\n"
         "输出：【内部分析】中文 + 【客户草稿】买家语言 (EN/FR/AR)"
     )
@@ -150,6 +158,9 @@ def dispatch_apsales_command(message: str, channel: str = "cli") -> str:
 
     if text.lower().startswith("/whatsapp"):
         return dispatch_whatsapp_command(text)
+
+    if text.lower().startswith("/drafts"):
+        return dispatch_drafts_command(text)
 
     if text.startswith("/customer"):
         body = text[len("/customer"):].strip()
@@ -392,3 +403,82 @@ def check_quote_approval_needed(message: str) -> dict | None:
                 command=message[:100],
             ))
     return None
+
+
+def parse_enquiry_sections(reply: str) -> tuple[str, str]:
+    """Split APSales dual output into internal analysis + customer draft."""
+    parts = re.split(r"【客户草稿[^】]*】", reply, maxsplit=1)
+    internal = parts[0].replace("【内部分析】", "").strip()
+    draft = parts[1].strip() if len(parts) > 1 else ""
+    return internal, draft
+
+
+def _risk_for_category(category: str) -> str:
+    return {
+        "price_request": "high",
+        "negotiation": "high",
+        "payment": "high",
+        "delivery_commitment": "critical",
+        "complaint": "high",
+        "availability_check": "medium",
+        "enquiry": "medium",
+        "shipping_request": "medium",
+        "follow_up": "low",
+    }.get(category, "medium")
+
+
+def _next_action_for_category(category: str) -> str:
+    return {
+        "follow_up": "contact_today",
+        "price_request": "contact_today",
+        "negotiation": "contact_this_week",
+        "availability_check": "contact_today",
+        "enquiry": "contact_today",
+        "complaint": "contact_today",
+    }.get(category, "monitor")
+
+
+def build_inbound_draft(
+    message: str,
+    *,
+    customer_name: str,
+    customer_hash: str,
+    detected_language: str,
+    communication_language: str,
+    category: str,
+    channel: str = "whatsapp_live",
+) -> dict[str, str | bool]:
+    """Structured draft for WhatsApp live inbound (APLive-001)."""
+    reply = process_apsales_enquiry(message, channel=channel)
+    internal, draft = parse_enquiry_sections(reply)
+
+    inventory_hit, _ = check_inventory_for_enquiry(message)
+    try:
+        save_customer_record(
+            customer_name,
+            language=communication_language,
+            detected_language=detected_language,
+            communication_language=communication_language,
+            preferred_language=communication_language,
+            interested_products=", ".join(extract_product_keywords(message)),
+            conversation_summary=message[:400],
+            follow_up_status="open",
+            source="whatsapp_live",
+            buyer_or_supplier="buyer",
+            demand_type=category,
+            matched_inventory_status="matched" if inventory_hit else "unchecked",
+            platform_value="gmv_lead",
+        )
+    except Exception:
+        pass
+
+    return {
+        "customer_name": customer_name,
+        "customer_hash": customer_hash,
+        "detected_language": detected_language,
+        "internal_analysis_zh": internal,
+        "customer_reply_draft": draft,
+        "risk_level": _risk_for_category(category),
+        "approval_required": True,
+        "next_action": _next_action_for_category(category),
+    }

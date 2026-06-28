@@ -16,13 +16,20 @@ PATTERNS_DIR = GATEWAY_ROOT / "enquiry_patterns"
 REPORTS_DIR = GATEWAY_ROOT / "reports"
 STYLE_DIR = GATEWAY_ROOT / "reply_style"  # legacy, kept for compat
 SYNC_STATE_PATH = GATEWAY_ROOT / "sync_state.json"
+INBOUND_MESSAGES_DIR = GATEWAY_ROOT / "inbound_messages"
+DRAFT_QUEUE_DIR = GATEWAY_ROOT / "draft_queue"
+PROCESSED_MESSAGES_PATH = GATEWAY_ROOT / "processed_messages.json"
+LISTEN_STATE_PATH = GATEWAY_ROOT / "listen_state.json"
 
 READONLY_MODE = True
 CEO_SENDER_ALIASES = frozenset({"me", "you", "asia power", "asiapower", "ceo", "boss"})
 
 
 def ensure_gateway_dirs() -> None:
-    for d in (RAW_DIR, PARSED_DIR, PROFILES_DIR, PATTERNS_DIR, REPORTS_DIR, STYLE_DIR):
+    for d in (
+        RAW_DIR, PARSED_DIR, PROFILES_DIR, PATTERNS_DIR, REPORTS_DIR, STYLE_DIR,
+        INBOUND_MESSAGES_DIR, DRAFT_QUEUE_DIR,
+    ):
         d.mkdir(parents=True, exist_ok=True)
 
 
@@ -30,6 +37,7 @@ def reconfigure_paths(base: Path) -> None:
     """Test helper — redirect gateway storage."""
     global GATEWAY_ROOT, RAW_DIR, PARSED_DIR, PROFILES_DIR, PATTERNS_DIR
     global REPORTS_DIR, STYLE_DIR, SYNC_STATE_PATH
+    global INBOUND_MESSAGES_DIR, DRAFT_QUEUE_DIR, PROCESSED_MESSAGES_PATH, LISTEN_STATE_PATH
     GATEWAY_ROOT = base
     RAW_DIR = base / "whatsapp_raw"
     PARSED_DIR = base / "whatsapp_parsed"
@@ -38,6 +46,10 @@ def reconfigure_paths(base: Path) -> None:
     REPORTS_DIR = base / "reports"
     STYLE_DIR = base / "reply_style"
     SYNC_STATE_PATH = base / "sync_state.json"
+    INBOUND_MESSAGES_DIR = base / "inbound_messages"
+    DRAFT_QUEUE_DIR = base / "draft_queue"
+    PROCESSED_MESSAGES_PATH = base / "processed_messages.json"
+    LISTEN_STATE_PATH = base / "listen_state.json"
     ensure_gateway_dirs()
 
 
@@ -73,6 +85,19 @@ def dispatch_whatsapp_command(message: str) -> str:
             return "Usage: /whatsapp sync --readonly"
         return format_sync_result(sync_readonly())
 
+    if body.lower().startswith("listen"):
+        from customer_gateway.whatsapp_live_readonly import (
+            format_listen_result,
+            listen_readonly,
+            listen_status,
+        )
+
+        if "status" in body.lower():
+            return listen_status()
+        if "--readonly" not in body.lower():
+            return "Usage: /whatsapp listen --readonly  或  /whatsapp listen status"
+        return format_listen_result(listen_readonly())
+
     if body.lower() == "analyze":
         return run_intelligence_analysis()
 
@@ -94,10 +119,81 @@ def _help_text() -> str:
         "从历史中学习，但不要盲目模仿 CEO。\n\n"
         "/whatsapp import <path/to/chat.txt> — 导入导出聊天记录\n"
         "/whatsapp sync --readonly — 只读同步（直连/导出目录）\n"
+        "/whatsapp listen --readonly — 只读监听新消息 → 生成草稿\n"
+        "/whatsapp listen status — 监听状态\n"
         "/whatsapp analyze — 生成销售智能分析报告\n"
         "/whatsapp report — 查看最新完整报告\n"
+        "/drafts list — 草稿队列\n"
         "/customer followups — 跟进清单（中文）\n"
     )
+
+
+def dispatch_drafts_command(message: str) -> str:
+    """Handle /drafts list|show|approve|reject|revise."""
+    from customer_gateway.draft_queue import (
+        approve_draft,
+        format_draft_detail,
+        format_draft_list,
+        list_drafts,
+        load_draft,
+        reject_draft,
+        revise_draft,
+    )
+
+    assert_readonly("drafts_command")
+    text = (message or "").strip()
+    body = text[len("/drafts"):].strip() if text.lower().startswith("/drafts") else text
+
+    if not body or body.lower() == "help":
+        return (
+            "WhatsApp 回复草稿（Telegram 审批 — 本阶段不发送）\n"
+            "/drafts list — 列出草稿\n"
+            "/drafts show <draft_id> — 查看详情\n"
+            "/drafts approve <draft_id> — CEO 批准草稿（不发送 WhatsApp）\n"
+            "/drafts reject <draft_id> — 拒绝\n"
+            "/drafts revise <draft_id> <修改意见> — 要求修改\n"
+        )
+
+    parts = body.split(maxsplit=2)
+    action = parts[0].lower() if parts else "list"
+
+    if action == "list":
+        return format_draft_list(list_drafts())
+
+    if action == "show" and len(parts) >= 2:
+        draft = load_draft(parts[1])
+        if not draft:
+            return f"未找到草稿: {parts[1]}"
+        return format_draft_detail(draft)
+
+    if action == "approve" and len(parts) >= 2:
+        try:
+            draft = approve_draft(parts[1])
+            return (
+                f"✅ 草稿已批准（未发送 WhatsApp）\n"
+                f"ID: {draft['draft_id']}\n"
+                f"客户: {draft['customer_name']}\n"
+                f"状态: {draft['status']}\n\n"
+                "下一阶段才会支持实际发送。"
+            )
+        except ValueError as exc:
+            return f"Error: {exc}"
+
+    if action == "reject" and len(parts) >= 2:
+        try:
+            draft = reject_draft(parts[1])
+            return f"已拒绝草稿 {draft['draft_id']}"
+        except ValueError as exc:
+            return f"Error: {exc}"
+
+    if action == "revise" and len(parts) >= 3:
+        try:
+            draft = revise_draft(parts[1], parts[2])
+            return f"已记录修改意见: {draft['draft_id']}\n{draft['revision_note']}"
+        except ValueError as exc:
+            return f"Error: {exc}"
+
+    return dispatch_drafts_command("/drafts help")
 
 
 def run_intelligence_analysis() -> str:

@@ -23,22 +23,31 @@ from tools import message_tool
 POLL_TIMEOUT = 30
 
 WHATSAPP_INTEL_COMMANDS_ZH = (
-    "APSales WhatsApp 销售智能（只读）\n"
+    "APSales WhatsApp 业务入口（只读 → 草稿 → Telegram 审批）\n"
     "━━━━━━━━━━━━━━━━━━━━\n"
+    "/whatsapp listen --readonly — 监听新消息\n"
+    "/whatsapp listen status — 监听状态\n"
     "/whatsapp sync --readonly — 只读同步历史\n"
-    "/whatsapp analyze — 生成销售智能分析报告\n"
-    "/whatsapp report — 查看最新完整报告\n"
-    "/customer followups — 客户跟进清单\n"
-    "/customer search <关键词> — 搜索客户与历史\n"
+    "/whatsapp analyze — 销售智能报告\n"
+    "/whatsapp report — 查看最新报告\n"
+    "/drafts list — 草稿队列\n"
+    "/drafts show <draft_id> — 查看草稿\n"
+    "/drafts approve <draft_id> — 批准（不发送）\n"
+    "/drafts reject <draft_id> — 拒绝\n"
+    "/drafts revise <draft_id> <意见> — 修改意见\n"
+    "/customer followups — 跟进清单\n"
+    "/customer search <关键词> — 搜索历史\n"
     "\n"
     "安全：禁止发送/修改 WhatsApp，禁止承诺价格/库存/交期。\n"
-    "报告文件：memory/customer_gateway/reports/latest_report.md"
+    "approve = 同意草稿，本阶段不发送 WhatsApp。"
 )
 
 
 def _is_whatsapp_intel_command(text: str) -> bool:
     t = (text or "").strip().lower()
     if t.startswith("/whatsapp"):
+        return True
+    if t.startswith("/drafts"):
         return True
     if t.startswith("/customer followups") or t.startswith("/customer search"):
         return True
