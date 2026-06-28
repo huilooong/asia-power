@@ -1,0 +1,37 @@
+# Unified Language Policy — AsiaPower AI OS (APAI-011)
+# Loaded at runtime bootstrap; all agents use core/language_router.py.
+
+internal:
+  default: zh
+  participants:
+    - ceo
+    - apcoo
+    - apsales
+    - apsupply
+    - apinventory
+    - apcustomersuccess
+    - apmarketing
+    - apfinance
+    - audit
+    - memory
+    - approval
+
+buyer:
+  default: en
+  auto_detect: true
+  supported:
+    - en
+    - fr
+    - ar
+
+supplier:
+  default: zh
+  auto_detect: true
+  supported:
+    - zh
+    - en
+
+future:
+  extensible: true
+  # Add codes to buyer.supported or supplier.supported — no code changes required
+  # for registry labels; detection heuristics may need extension per language family.

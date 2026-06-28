@@ -1,0 +1,15 @@
+agent_id: apcoo
+language: zh
+default_channel: telegram
+heartbeat_interval_seconds: 300
+auto_restart: true
+supervisor_restart_delay_seconds: 10
+healthcheck_on_start: true
+
+agents:
+  apcoo:
+    enabled: true
+    telegram: true
+  apsales:
+    enabled: true
+    telegram: true

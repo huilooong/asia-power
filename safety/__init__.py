@@ -1,0 +1,1 @@
+"""AsiaPower APCOO safety package."""

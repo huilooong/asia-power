@@ -1,0 +1,27 @@
+[Unit]
+Description=AsiaPower APCOO Runtime Service (AI COO Agent)
+Documentation=file://@@APCOO_ROOT@@/README-AI-OS.md
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+WorkingDirectory=@@APCOO_ROOT@@
+ExecStart=@@PYTHON@@ -m runtime.service
+Restart=always
+RestartSec=10
+
+# Secrets live in project .env only — never hard-code API keys here.
+EnvironmentFile=-@@APCOO_ROOT@@/.env
+
+StandardOutput=journal
+StandardError=journal
+SyslogIdentifier=apcoo
+
+# Reasonable caps for a 2 GB VPS COO agent process
+MemoryMax=512M
+MemoryHigh=384M
+TasksMax=64
+
+[Install]
+WantedBy=multi-user.target
