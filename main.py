@@ -9,7 +9,7 @@ from pathlib import Path
 from dotenv import load_dotenv
 
 from coo_core.dispatcher import dispatch_message, is_coo_command, log_dispatch
-from sales_core.apsales_handler import is_apsales_command
+from sales_core.apsales_handler import is_apsales_command, is_slash_command
 
 ROOT = Path(__file__).resolve().parent
 
@@ -26,13 +26,22 @@ def main() -> int:
     def process(message: str) -> None:
         stripped = message.strip()
         agent_id = "apcoo"
-        if stripped.lower().startswith("/sales") or stripped.lower().startswith("/whatsapp") or stripped.lower().startswith("/drafts") or (
-            is_apsales_command(message) and not is_coo_command(message)
-        ):
+        if (
+            is_apsales_command(message)
+            or stripped.lower().startswith("/sales")
+            or stripped.lower().startswith("/whatsapp")
+            or stripped.lower().startswith("/drafts")
+            or stripped.lower().startswith("/conversations")
+            or stripped.lower().startswith("/learning")
+            or stripped.lower().startswith("/sales-intelligence")
+        ) and not is_coo_command(message):
             agent_id = "apsales"
             print("\n[APSales]")
         elif is_coo_command(message) or stripped in {"/help", "/start"}:
             print("\n[COO Core]")
+        elif is_slash_command(message):
+            agent_id = "apsales"
+            print("\n[APSales]")
         reply = dispatch_message(message, source="cli", agent_id=agent_id)
         print(reply)
         log_dispatch("cli", message, reply)

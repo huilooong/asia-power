@@ -139,6 +139,34 @@ def reject_draft(draft_id: str, *, rejected_by: str = "CEO") -> dict[str, Any]:
     return draft
 
 
+_MISROUTED_CLI_RE = re.compile(
+    r"(?:^/sales-intelligence\b|^-?intelligence\s+(?:import|analyze|dashboard|pending)\b)",
+    re.I,
+)
+
+
+def is_misrouted_cli_draft(draft: dict[str, Any]) -> bool:
+    """Detect drafts created when CLI commands were mistaken for buyer enquiries."""
+    original = (draft.get("original_message") or "").strip()
+    if _MISROUTED_CLI_RE.search(original):
+        return True
+    customer = (draft.get("customer_name") or "").lower()
+    if customer.startswith("inquiry-intelligence") or customer == "intelligence":
+        return True
+    return False
+
+
+def reject_misrouted_cli_drafts(*, rejected_by: str = "system") -> list[str]:
+    """Reject pending drafts caused by CLI routing bugs."""
+    rejected_ids: list[str] = []
+    for draft in list_drafts(status="pending", limit=500):
+        if not is_misrouted_cli_draft(draft):
+            continue
+        reject_draft(draft["draft_id"], rejected_by=rejected_by)
+        rejected_ids.append(draft["draft_id"])
+    return rejected_ids
+
+
 def revise_draft(draft_id: str, note: str, *, by: str = "CEO") -> dict[str, Any]:
     draft = load_draft(draft_id)
     if not draft:

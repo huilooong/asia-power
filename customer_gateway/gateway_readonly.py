@@ -160,6 +160,7 @@ def dispatch_drafts_command(message: str) -> str:
         list_drafts,
         load_draft,
         reject_draft,
+        reject_misrouted_cli_drafts,
         revise_draft,
     )
 
@@ -175,6 +176,7 @@ def dispatch_drafts_command(message: str) -> str:
             "/drafts approve <draft_id> — CEO 批准草稿（不发送 WhatsApp）\n"
             "/drafts reject <draft_id> — 拒绝\n"
             "/drafts revise <draft_id> <修改意见> — 要求修改\n"
+            "/drafts reject-misrouted — 拒绝 CLI 误路由草稿\n"
         )
 
     parts = body.split(maxsplit=2)
@@ -208,6 +210,12 @@ def dispatch_drafts_command(message: str) -> str:
             return f"已拒绝草稿 {draft['draft_id']}"
         except ValueError as exc:
             return f"Error: {exc}"
+
+    if action == "reject-misrouted":
+        ids = reject_misrouted_cli_drafts()
+        if not ids:
+            return "无待处理的 CLI 误路由草稿。"
+        return f"已拒绝 {len(ids)} 条误路由草稿:\n" + "\n".join(f"  - {i}" for i in ids)
 
     if action == "revise" and len(parts) >= 3:
         try:

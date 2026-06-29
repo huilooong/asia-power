@@ -47,6 +47,25 @@ APSALES_COMMANDS = (
     "/sales-intelligence",
 )
 
+# Longer prefixes must be checked before shorter ones (e.g. /sales-intelligence before /sales).
+APSALES_ROUTE_PREFIXES = (
+    "/sales-intelligence",
+    "/whatsapp",
+    "/conversations",
+    "/learning",
+    "/drafts",
+    "/customer",
+    "/pipeline",
+    "/remember",
+    "/recall",
+    "/tools",
+    "/tool ",
+    "/sales ",
+    "/sales",
+    "/help",
+    "/start",
+)
+
 INTERNAL_SECTIONS = (
     "买方需求",
     "潜在供应商匹配",
@@ -58,21 +77,41 @@ INTERNAL_SECTIONS = (
 
 
 def is_apsales_command(message: str) -> bool:
+    """True for APSales slash commands — not bare buyer enquiries."""
     text = (message or "").strip()
-    if text.lower().startswith("/sales"):
+    if not text.startswith("/"):
+        return False
+    lower = text.lower()
+    if lower.startswith("/sales-intelligence"):
         return True
-    if text.lower().startswith("/drafts"):
+    for prefix in APSALES_ROUTE_PREFIXES:
+        if prefix in ("/sales", "/sales ", "/help", "/start"):
+            continue
+        if lower.startswith(prefix.lower()):
+            return True
+    if lower == "/sales" or lower.startswith("/sales "):
         return True
     if text == "/tools" or text.startswith("/tool "):
         return True
-    return any(text.startswith(cmd) for cmd in APSALES_COMMANDS if cmd != "/sales")
+    if lower in ("/help", "/start"):
+        return True
+    return any(text.startswith(cmd) for cmd in APSALES_COMMANDS if cmd not in ("/sales",))
+
+
+def is_slash_command(message: str) -> bool:
+    return (message or "").strip().startswith("/")
 
 
 def parse_sales_message(message: str) -> str:
     """Strip /sales and optional customer: prefix."""
     text = message.strip()
-    if text.lower().startswith("/sales"):
+    lower = text.lower()
+    if lower.startswith("/sales-intelligence"):
+        return ""
+    if lower.startswith("/sales"):
         text = text[6:].strip()
+        if text.startswith("-intelligence"):
+            return ""
     if text.lower().startswith("customer:"):
         text = text[9:].strip()
     return text
@@ -131,6 +170,21 @@ def check_inventory_for_enquiry(message: str) -> tuple[bool, str]:
 def dispatch_apsales_command(message: str, channel: str = "cli") -> str:
     text = message.strip()
 
+    if text.lower().startswith("/sales-intelligence"):
+        return dispatch_sales_intelligence_command(text)
+
+    if text.lower().startswith("/whatsapp"):
+        return dispatch_whatsapp_command(text)
+
+    if text.lower().startswith("/drafts"):
+        return dispatch_drafts_command(text)
+
+    if text.lower().startswith("/conversations"):
+        return dispatch_conversations_command(text)
+
+    if text.lower().startswith("/learning"):
+        return dispatch_learning_command(text)
+
     if text.lower().startswith("/sales"):
         enquiry = parse_sales_message(text)
         if not enquiry:
@@ -167,21 +221,6 @@ def dispatch_apsales_command(message: str, channel: str = "cli") -> str:
         if not keyword:
             return "Usage: /recall <keyword>"
         return memory_tool.recall(keyword)
-
-    if text.lower().startswith("/whatsapp"):
-        return dispatch_whatsapp_command(text)
-
-    if text.lower().startswith("/drafts"):
-        return dispatch_drafts_command(text)
-
-    if text.lower().startswith("/conversations"):
-        return dispatch_conversations_command(text)
-
-    if text.lower().startswith("/learning"):
-        return dispatch_learning_command(text)
-
-    if text.lower().startswith("/sales-intelligence"):
-        return dispatch_sales_intelligence_command(text)
 
     if text.startswith("/customer"):
         body = text[len("/customer"):].strip()

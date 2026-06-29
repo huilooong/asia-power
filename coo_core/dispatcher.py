@@ -259,12 +259,13 @@ def dispatch_message(
         from sales_core.apsales_handler import (
             dispatch_apsales_command,
             is_apsales_command,
-            parse_sales_message,
+            is_slash_command,
             process_apsales_enquiry,
         )
         if is_apsales_command(message) or message == "/start":
             return dispatch_apsales_command(message, channel=source)
-
+        if is_slash_command(message):
+            return "Unknown command. Try /help"
         return process_apsales_enquiry(message, channel=source)
 
     # Default: APCOO (unchanged behaviour)
