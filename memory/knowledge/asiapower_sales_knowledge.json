@@ -1,0 +1,73 @@
+{
+  "version": "1.0",
+  "company": "AsiaPower",
+  "positioning": {
+    "summary_zh": "AsiaPower 专注中国发动机、变速箱、半切车、底盘件出口，连接海外买家与中国拆车/报废车供应链。",
+    "summary_en": "AsiaPower specializes in exporting engines, gearboxes, half-cuts, and chassis parts from China, connecting overseas buyers with verified dismantling and scrap-vehicle supply chains."
+  },
+  "core_products": [
+    "engines",
+    "gearboxes",
+    "half-cuts",
+    "chassis parts"
+  ],
+  "supply_chain": {
+    "source_zh": "中国拆车厂、报废车供应链、合作供应商网络",
+    "source_en": "China dismantling yards, scrap-vehicle supply chain, verified supplier network"
+  },
+  "default_advantages": [
+    "verified suppliers",
+    "real photos and videos",
+    "compression test available",
+    "export packing",
+    "FOB/CIF support"
+  ],
+  "enquiry_fields_required": [
+    "vehicle model",
+    "year",
+    "engine code",
+    "VIN if available",
+    "quantity",
+    "destination port",
+    "Incoterms"
+  ],
+  "engine_knowledge": {
+    "G4KJ": {
+      "brand": "Hyundai/Kia",
+      "notes_zh": "G4KJ 为 Hyundai/Kia 常见 Gamma 系列发动机，海外询盘频繁。",
+      "notes_en": "G4KJ is a common Hyundai/Kia Gamma-series engine with strong export demand.",
+      "variants": ["complete engine", "with accessories", "long block / bare engine"]
+    },
+    "G4KD": {
+      "brand": "Hyundai/Kia",
+      "notes_en": "G4KD is widely used on Hyundai/Kia models; confirm model year and configuration."
+    },
+    "G4KE": {
+      "brand": "Hyundai/Kia",
+      "notes_en": "G4KE — verify vehicle application and whether turbo/NA variant is required."
+    },
+    "1NZ": {
+      "brand": "Toyota",
+      "notes_en": "Toyota 1NZ-FE family — common in Corolla/Yaris exports; confirm VIN or model year."
+    },
+    "2NZ": {
+      "brand": "Toyota",
+      "notes_en": "Toyota 2NZ — check destination emission requirements and quantity."
+    },
+    "2AZ": {
+      "brand": "Toyota",
+      "notes_en": "Toyota 2AZ — popular Camry/RAV4 application; clarify complete vs long block."
+    },
+    "1KD": {
+      "brand": "Toyota",
+      "notes_en": "Toyota 1KD-FTV diesel — high demand in Africa/Middle East; confirm turbo and 4x4 spec."
+    },
+    "2KD": {
+      "brand": "Toyota",
+      "notes_en": "Toyota 2KD-FTV — verify Hilux/Hiace application and destination port."
+    }
+  },
+  "draft_tone": {
+    "en": "Professional export sales — not generic customer service. Show China engine export focus, ask for model/year/port/qty, mention photos/videos/compression test before quote."
+  }
+}

@@ -4,12 +4,17 @@ from __future__ import annotations
 
 from typing import Any
 
+from audit.logger import log_event
 from customer_gateway.approval_notification import notify_new_draft
 from customer_gateway.draft_queue import save_draft
-from customer_gateway.message_classifier import classify_text
+from customer_gateway.sales_message_classifier import (
+    classify_inbound_message,
+    should_generate_draft,
+)
 from customer_gateway.whatsapp_live_readonly import InboundMessage
 from core.language_router import detect_language, resolve_target_language
 from sales_core.platform_supply import extract_product_keywords
+from sales_core.sales_brain_draft import build_sales_brain_draft
 
 
 def route_inbound_batch(messages: list[InboundMessage]) -> list[dict[str, Any]]:
@@ -22,20 +27,30 @@ def route_inbound_batch(messages: list[InboundMessage]) -> list[dict[str, Any]]:
 
 
 def route_inbound_message(msg: InboundMessage) -> dict[str, Any] | None:
-    """Customer Gateway → Classifier → Language Router → APSales → CRM → Draft."""
-    from sales_core.apsales_handler import build_inbound_draft
+    """Customer Gateway → Sales Brain Classifier → APSales → Draft (if allowed)."""
+    classification = classify_inbound_message(msg.message, contact_name=msg.contact_name)
 
-    category = classify_text(msg.message, is_ceo=False)
+    if not should_generate_draft(classification):
+        log_event(
+            "inbound_message_ignored",
+            message_id=msg.message_id,
+            contact=msg.contact_name,
+            classification=classification.classification,
+            action=classification.action,
+            reasoning=classification.reasoning_summary[:200],
+        )
+        return None
+
     detected = detect_language(msg.message, scenario="buyer")
     comm_lang = resolve_target_language("apsales", "buyer", msg.message)
 
-    draft_payload = build_inbound_draft(
+    draft_payload = build_sales_brain_draft(
         msg.message,
         customer_name=msg.contact_name,
         customer_hash=msg.customer_hash,
         detected_language=detected,
         communication_language=comm_lang,
-        category=category,
+        classification=classification,
         channel="whatsapp_live",
     )
 
@@ -45,7 +60,6 @@ def route_inbound_message(msg: InboundMessage) -> dict[str, Any] | None:
         "phone_number_hash": msg.phone_number_hash,
         "original_message": msg.message,
         "detected_language": detected,
-        "category": category,
         "products": extract_product_keywords(msg.message),
     })
 

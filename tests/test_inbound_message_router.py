@@ -46,6 +46,12 @@ class InboundMessageRouterTests(unittest.TestCase):
             "approval_required",
             "next_action",
             "created_at",
+            "classification",
+            "confidence",
+            "action",
+            "reasoning_summary",
+            "memory_write",
+            "memory_reason",
         ):
             self.assertIn(field, draft)
         self.assertEqual(draft["customer_name"], "Ghana Motors")

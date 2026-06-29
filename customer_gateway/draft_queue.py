@@ -42,6 +42,12 @@ def save_draft(payload: dict[str, Any]) -> dict[str, Any]:
         "approval_required": bool(payload.get("approval_required", True)),
         "next_action": payload.get("next_action", "monitor"),
         "category": payload.get("category", "unknown"),
+        "classification": payload.get("classification", ""),
+        "confidence": payload.get("confidence", 0.0),
+        "action": payload.get("action", "generate_draft"),
+        "reasoning_summary": payload.get("reasoning_summary", ""),
+        "memory_write": bool(payload.get("memory_write", False)),
+        "memory_reason": payload.get("memory_reason", ""),
         "status": "pending",
         "created_at": _now(),
         "updated_at": _now(),
@@ -143,7 +149,7 @@ def format_draft_list(drafts: list[dict[str, Any]]) -> str:
     for d in drafts:
         lines.append(
             f"- {d['draft_id']} | {d['customer_name']} | "
-            f"{d.get('category', '?')} | {d.get('status', 'pending')} | "
+            f"{d.get('classification') or d.get('category', '?')} | {d.get('status', 'pending')} | "
             f"风险:{d.get('risk_level')} | 审批:{'是' if d.get('approval_required') else '否'}"
         )
     lines.append("")
@@ -156,12 +162,20 @@ def format_draft_detail(draft: dict[str, Any]) -> str:
         f"草稿 ID: {draft['draft_id']}",
         f"客户: {draft['customer_name']} ({draft.get('customer_hash', '')[:8]}…)",
         f"语言: {draft.get('detected_language')}",
-        f"分类: {draft.get('category')}",
+        f"分类: {draft.get('classification') or draft.get('category')}",
+        f"意图: {draft.get('category')}",
+        f"置信度: {draft.get('confidence', 0)}",
+        f"动作: {draft.get('action', '')}",
         f"风险: {draft.get('risk_level')}",
         f"需审批: {'是' if draft.get('approval_required') else '否'}",
         f"下一步: {draft.get('next_action')}",
         f"状态: {draft.get('status')}",
+        f"记忆写入: {'是' if draft.get('memory_write') else '否'}",
+        f"记忆原因: {draft.get('memory_reason', '')}",
         f"创建: {draft.get('created_at')}",
+        "",
+        "—— 推理摘要 ——",
+        draft.get("reasoning_summary", ""),
         "",
         "—— 客户原消息 ——",
         draft.get("original_message", ""),
