@@ -275,6 +275,14 @@ const halfCut = createHalfCutApi(ROOT, {
 });
 halfCut.ensureDirs();
 
+const vinDecodeRoutePath = [
+  path.join(__dirname, 'lib', 'vin', 'decode-route.js'),
+  path.join(__dirname, '..', 'server', 'lib', 'vin', 'decode-route.js'),
+].find((candidate) => fs.existsSync(candidate));
+const handleVinDecode = vinDecodeRoutePath
+  ? require(vinDecodeRoutePath).createVinDecodeHandler(ROOT)
+  : null;
+
 function parseCookies(cookieHeader = '') {
   return Object.fromEntries(cookieHeader.split(';').map(v => v.trim()).filter(Boolean).map(c => {
     const i = c.indexOf('=');
@@ -455,7 +463,7 @@ async function serveStatic(req, res, pathname, search = '') {
   };
   const mime = mimeMap[ext] || 'application/octet-stream';
   const isText = mime.startsWith('text/') || mime === 'application/javascript' || mime === 'application/json' || mime === 'image/svg+xml';
-  const isAsset = !['.html', '.xml', '.txt', '.json'].includes(ext);
+  const isAsset = !['.html', '.xml', '.txt'].includes(ext);
   if (ext === '.html') {
     siteAnalytics.recordPageView(req, `${pathname}${search || ''}`);
   }
@@ -473,6 +481,22 @@ async function serveStatic(req, res, pathname, search = '') {
 const server = http.createServer(async (req, res) => {
   const url = new URL(req.url, `http://${req.headers.host}`);
   const p = url.pathname;
+
+  if (p === '/manifest.json') {
+    const manifestPath = path.join(PUBLIC_DIR, 'manifest.json');
+    if (fs.existsSync(manifestPath)) {
+      applySecurityHeaders(res);
+      res.writeHead(200, {
+        'Content-Type': 'application/manifest+json; charset=utf-8',
+        'Cache-Control': 'no-cache',
+        'X-Content-Type-Options': 'nosniff',
+        'Referrer-Policy': 'strict-origin-when-cross-origin',
+      });
+      if (req.method === 'HEAD') return res.end();
+      fs.createReadStream(manifestPath).pipe(res);
+      return;
+    }
+  }
 
   if (p.startsWith('/api/')) {
     if (req.method === 'OPTIONS') {
@@ -638,6 +662,16 @@ const server = http.createServer(async (req, res) => {
           model,
           models: halfCut.modelMemory.getForBrand(brand),
         });
+      }
+
+      if (req.method === 'POST' && p === '/api/vin/decode') {
+        if (!handleVinDecode) return json(res, 200, { ok: false, reason: 'qxb_unavailable' });
+        try {
+          await handleVinDecode(req, res, json);
+        } catch (err) {
+          json(res, 200, { ok: false, reason: 'qxb_unavailable', message: err.message });
+        }
+        return;
       }
 
       if (p.startsWith('/api/half-cuts/')) {
