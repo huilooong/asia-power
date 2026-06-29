@@ -17,6 +17,8 @@ ROUTING_RULES: list[tuple[str, tuple[str, ...]]] = [
         (
             "库存", "上架", "审核", "listing", "stock", "hc25", "半车", "乘用车", "catalog",
             "supplier upload", "供应商上传",
+            # 三国代号:库存 = 赵云(子龙),守资产护家底
+            "赵云", "子龙",
         ),
     ),
     (
@@ -24,6 +26,8 @@ ROUTING_RULES: list[tuple[str, tuple[str, ...]]] = [
         (
             "客户", "报价", "quote", "price", "多少钱", "发动机", "engine",
             "g4kd", "g4na", "回复", "buyer", "fob", "cif", "询价",
+            # 三国代号:销售 = 鲁肃(子敬),外交促成交易
+            "鲁肃", "子敬",
         ),
     ),
     (
@@ -31,6 +35,8 @@ ROUTING_RULES: list[tuple[str, tuple[str, ...]]] = [
         (
             "计划", "部署", "决定", "决策", "战略", "优先级", "agent", "组织",
             "roadmap", "kpi", "运营", "memory", "架构",
+            # 三国代号:COO 本体 = 诸葛亮(孔明 / 丞相)
+            "孔明", "诸葛亮", "丞相",
         ),
     ),
 ]
