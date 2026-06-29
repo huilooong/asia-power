@@ -239,6 +239,7 @@
   function renderWhatsApp() {
     const c = getConfig();
     if (!c) return '';
+    if (document.body.dataset.page === 'home') return '';
     return `
       <div class="whatsapp-float">
         <span class="whatsapp-float__label">${t('whatsapp.label', 'Chat on WhatsApp')}</span>
@@ -246,6 +247,28 @@
           ${iconSvg('whatsapp')}
         </a>
       </div>`;
+  }
+
+  function renderAppBottomNav(activeId) {
+    const items = [
+      { id: 'home', label: 'Home', href: 'index.html', icon: 'H' },
+      { id: 'products', label: 'Products', href: 'engines/', icon: 'P' },
+      { id: 'brands', label: 'Brands', href: 'brands.html', icon: 'B' },
+      { id: 'contact', label: 'Contact', href: 'contact.html', icon: 'C' },
+      { id: 'app', label: 'App', href: 'app.html', icon: 'A' },
+    ];
+    const page = document.body.dataset.page || activeId;
+    const path = window.location.pathname;
+    const current = page === 'engines' || page === 'gearboxes' || page === 'halfcuts' ? 'products'
+      : path.endsWith('/app.html') || path.endsWith('app.html') ? 'app'
+      : activeId;
+    const links = items.map(item => `
+      <a class="app-bottom-nav__item${item.id === current ? ' active' : ''}" href="${href(item.href)}" aria-label="${item.label}">
+        <span class="app-bottom-nav__icon" aria-hidden="true">${item.icon}</span>
+        <span class="app-bottom-nav__label">${item.label}</span>
+      </a>`).join('');
+
+    return `<nav class="app-bottom-nav" aria-label="Mobile app navigation">${links}</nav>`;
   }
 
   function injectLayout() {
@@ -265,6 +288,10 @@
     if (header) header.innerHTML = renderHeader(activeId);
     if (footer) footer.innerHTML = renderFooter();
     if (wa) wa.innerHTML = renderWhatsApp();
+    document.querySelectorAll('.app-bottom-nav').forEach((nav) => nav.remove());
+    if (!isInternalToolPage()) {
+      document.body.insertAdjacentHTML('beforeend', renderAppBottomNav(activeId));
+    }
 
     const pub = i18n();
     if (pub) {

@@ -61,7 +61,7 @@
     'catalog.browseByBrand': { zh: '按品牌浏览' },
     'catalog.viewBrands': { zh: '查看品牌' },
     'home.eyebrow': { zh: '全球动力总成采购平台' , fr: 'Plateforme mondiale d\'approvisionnement en groupes motopropulseurs', ar: 'منصة عالمية لتوريد مجموعة نقل الحركة' },
-    'home.title': { zh: '乘用车、卡车、摩托车与工程机械配件<br><em>源自中国，出口全球</em>' , fr: 'Pièces pour voitures, camions, motos et engins de chantier<br><em>Source en Chine. Exporté dans le monde entier.</em>', ar: 'قطع غيار للسيارات والشاحنات والدراجات النارية والمعدات الثقيلة<br><em>المصدر من الصين. التصدير لجميع أنحاء العالم.</em>' },
+    'home.title': { zh: '动力总成配件<br><em>快速采购</em>' , fr: 'Pièces de groupe motopropulseur<br><em>Prêtes à sourcer</em>', ar: 'قطع مجموعة نقل الحركة<br><em>جاهزة للتوريد</em>' },
     'home.lead': {
       zh: 'AsiaPower 为全球进口商、维修厂和车队运营商对接中国供应网络 — 提供发动机、变速箱、底盘件及定制拆解半车，覆盖乘用车、卡车、摩托车与工程机械。',
       fr: 'AsiaPower connecte les importateurs, ateliers et opérateurs de flottes du monde entier à un réseau d\'approvisionnement basé en Chine couvrant moteurs, boîtes de vitesses, pièces de châssis et demi-carcasses sur mesure — pour voitures particulières, camions, motos et engins de chantier.',
@@ -73,6 +73,8 @@
     'home.whatsappTruck': { zh: 'WhatsApp 发送卡车需求' , fr: 'Envoyer une demande de camion sur WhatsApp', ar: 'إرسال طلب شاحنة عبر واتساب' },
     'home.requestQuoteCta': { zh: '索取报价' , fr: 'Demander un devis', ar: 'طلب عرض سعر' },
     'home.whatsappGeneral': { zh: 'WhatsApp 联系我们' , fr: 'Discuter avec nous sur WhatsApp', ar: 'تحدث معنا عبر واتساب' },
+    'home.viewProductsCta': { zh: '查看产品' , fr: 'Voir les produits', ar: 'عرض المنتجات' },
+    'home.downloadAppCta': { zh: '下载 APP' , fr: 'Télécharger l’APP', ar: 'تنزيل التطبيق' },
     'home.requestQuote': { zh: '索取报价' , fr: 'Demander un devis', ar: 'طلب عرض سعر' },
     'trust.block': { zh: '适用时可提供拆解前整车启动视频。客户确认后可按买方要求拆解部件。', fr: 'Vidéo de démarrage du véhicule complet disponible avant démontage. Les pièces peuvent être démontées selon les exigences de l\'acheteur après confirmation.', ar: 'فيديو تشغيل المركبة الكاملة متاح قبل التفكيك. يمكن تفكيك القطع حسب متطلبات المشتري بعد التأكيد.' },
     'trust.startupVideo': { zh: '适用时可提供拆解前整车启动视频。' , fr: 'Vidéo de démarrage du véhicule complet disponible avant démontage.', ar: 'فيديو تشغيل المركبة الكاملة متاح قبل التفكيك.' },
