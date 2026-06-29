@@ -8,7 +8,6 @@ const STATIC_ASSETS = [
   OFFLINE_URL,
   '/manifest.json',
   '/css/styles.css',
-  '/css/fonts.css',
   '/js/path-utils.js',
   '/js/config.js',
   '/js/components.js',
@@ -23,10 +22,59 @@ const STATIC_ASSETS = [
   '/assets/images/hero-halfcut.webp'
 ];
 
+function cacheStaticAssets() {
+  return caches.open(STATIC_CACHE).then(cache => Promise.all(
+    STATIC_ASSETS.map(url => (
+      fetch(url, { cache: 'reload' })
+        .then(response => {
+          if (!response || !response.ok) return null;
+          return cache.put(url, response);
+        })
+        .catch(() => null)
+    ))
+  ));
+}
+
+function cacheFirst(request) {
+  return caches.match(request).then(cached => {
+    if (cached) return cached;
+    return fetch(request).then(response => {
+      if (!response || response.status !== 200 || response.type !== 'basic') return response;
+      const copy = response.clone();
+      caches.open(STATIC_CACHE).then(cache => cache.put(request, copy));
+      return response;
+    }).catch(() => Response.error());
+  });
+}
+
+function staleWhileRevalidate(request) {
+  return caches.match(request).then(cached => {
+    const networkFetch = fetch(request)
+      .then(response => {
+        if (response && response.status === 200 && response.type === 'basic') {
+          const copy = response.clone();
+          caches.open(STATIC_CACHE).then(cache => cache.put(request, copy));
+        }
+        return response;
+      })
+      .catch(() => cached || Response.error());
+    return cached || networkFetch;
+  });
+}
+
+function networkFirstNavigation(request) {
+  return fetch(request)
+    .then(response => {
+      const copy = response.clone();
+      caches.open(STATIC_CACHE).then(cache => cache.put(request, copy));
+      return response;
+    })
+    .catch(() => caches.match(request).then(cached => cached || caches.match(OFFLINE_URL)));
+}
+
 self.addEventListener('install', event => {
   event.waitUntil(
-    caches.open(STATIC_CACHE)
-      .then(cache => cache.addAll(STATIC_ASSETS))
+    cacheStaticAssets()
       .then(() => self.skipWaiting())
   );
 });
@@ -51,27 +99,16 @@ self.addEventListener('fetch', event => {
   if (url.origin !== self.location.origin) return;
 
   if (request.mode === 'navigate') {
-    event.respondWith(
-      fetch(request)
-        .then(response => {
-          const copy = response.clone();
-          caches.open(STATIC_CACHE).then(cache => cache.put(request, copy));
-          return response;
-        })
-        .catch(() => caches.match(request).then(cached => cached || caches.match(OFFLINE_URL)))
-    );
+    event.respondWith(networkFirstNavigation(request));
     return;
   }
 
-  event.respondWith(
-    caches.match(request).then(cached => {
-      if (cached) return cached;
-      return fetch(request).then(response => {
-        if (!response || response.status !== 200 || response.type !== 'basic') return response;
-        const copy = response.clone();
-        caches.open(STATIC_CACHE).then(cache => cache.put(request, copy));
-        return response;
-      });
-    })
-  );
+  if (request.destination === 'style' || request.destination === 'script') {
+    event.respondWith(staleWhileRevalidate(request));
+    return;
+  }
+
+  if (request.destination === 'image' || url.pathname.startsWith('/assets/icons/')) {
+    event.respondWith(cacheFirst(request));
+  }
 });

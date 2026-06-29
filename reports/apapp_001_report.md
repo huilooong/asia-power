@@ -25,7 +25,13 @@ Prepared for Lighthouse PWA baseline:
 - Manifest includes name, short name, start URL, scope, display mode, theme color, background color, and 192/512 icons.
 - Service worker is registered from the home page.
 - Offline fallback page is cached.
-- Static shell assets are cached for basic offline loading.
+- Static shell assets are cached for basic offline loading with per-asset install tolerance.
+- Service worker no longer depends on untracked `/css/fonts.css`.
+- Runtime caching is split by resource type:
+  - Page navigation: network-first, fallback to `offline.html`.
+  - CSS/JS: stale-while-revalidate so deployed updates refresh after the first online request.
+  - Icons/logo/images: cache-first for stable static assets.
+  - Cross-origin links such as `wa.me` are not intercepted.
 
 Local verification completed:
 
@@ -33,6 +39,12 @@ Local verification completed:
 - `sw.js` passes JavaScript syntax check.
 - `js/pwa-install.js` passes JavaScript syntax check.
 - App icons are present at 192x192, 512x512, and 180x180.
+
+APAPP-001 fix follow-up:
+
+- Removed `/css/fonts.css` from `STATIC_ASSETS` because it is not part of the committed baseline.
+- Replaced `cache.addAll(STATIC_ASSETS)` with per-asset fetch/cache tolerance so one missing file cannot fail service worker installation.
+- Replaced broad cache-first runtime handling with navigation network-first, CSS/JS stale-while-revalidate, and image/icon cache-first behavior.
 
 Lighthouse status: not executed in this workspace because a Lighthouse binary is not installed and the local static server could not bind to a localhost port under the current sandbox. The PWA files are prepared for Lighthouse verification after deployment or in a local browser environment with localhost access.
 
