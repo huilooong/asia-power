@@ -328,3 +328,11 @@ def build_verified_ceo_report(question: str = "") -> str:
         lines.extend(["", f"Question: {question.strip()[:200]}"])
 
     return "\n".join(lines)
+
+
+if __name__ == "__main__":
+    # Deterministic verified report for any agent: `python -m truth.verified_sales_intelligence [question]`
+    import sys
+
+    q = " ".join(sys.argv[1:])
+    print(build_verified_ceo_report(q))

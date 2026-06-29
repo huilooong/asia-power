@@ -120,10 +120,18 @@ def fallback_decision_from_user(message: str, source_agent: str) -> str | None:
     )
 
 
-def call_openai(client: OpenAI, model: str, system_prompt: str, user_message: str) -> str:
+def call_openai(
+    client: OpenAI,
+    model: str,
+    system_prompt: str,
+    user_message: str,
+    *,
+    knowledge_addon: str = "",
+) -> str:
+    extra = knowledge_addon or memory_context_snippet(user_message)
     response = client.responses.create(
         model=model,
-        instructions=system_prompt + memory_context_snippet(user_message),
+        instructions=system_prompt + extra,
         input=user_message,
     )
     if hasattr(response, "output_text") and response.output_text:
@@ -292,7 +300,7 @@ def dispatch_message(
     import traceback
 
     try:
-        client = OpenAI(api_key=api_key)
+        client = OpenAI(api_key=api_key, timeout=60.0, max_retries=1)
         routed_id, profile = route_with_profile(message)
         model = AGENT_MODELS.get(routed_id, DEFAULT_MODEL)
 
@@ -346,13 +354,51 @@ def dispatch_message(
                 important=True,
             )
             return visible
-        elif source == "telegram":
+
+        from knowledge.guard import (
+            audit_and_enforce,
+            knowledge_system_addon,
+            requires_knowledge_query,
+        )
+        from knowledge.runtime import bootstrap_knowledge_runtime, get_runtime
+
+        bootstrap_knowledge_runtime()
+        runtime = get_runtime()
+        bundle = runtime.query(message, agent_id=routed_id)
+        knowledge_addon = ""
+
+        if requires_knowledge_query(message):
+            if not bundle.has_facts():
+                visible = bundle.format_no_data_response()
+                print(
+                    f"[APCOO DEBUG] mode=knowledge_runtime_no_data reply_len={len(visible)}",
+                    flush=True,
+                )
+                memory_tool.log_conversation(
+                    message, visible,
+                    source="apcoo",
+                    channel=source,
+                    important=True,
+                )
+                return visible
+            system_prompt += knowledge_system_addon(bundle)
+            knowledge_addon = "\n"  # memory already in bundle via memory provider
+        elif bundle.has_facts():
+            system_prompt += (
+                "\n\n--- Knowledge Runtime (read-only facts) ---\n"
+                + bundle.format_context(max_chars=2500)
+            )
+            knowledge_addon = "\n"
+
+        if source == "telegram":
             print(
                 f"[APCOO DEBUG] openai route agent={routed_id} model={model} "
-                f"chat_len={len(message)}",
+                f"chat_len={len(message)} knowledge_domains={bundle.domains_queried}",
                 flush=True,
             )
-        reply = call_openai(client, model, system_prompt, message)
+        reply = call_openai(
+            client, model, system_prompt, message, knowledge_addon=knowledge_addon,
+        )
         memory_actions = (
             apply_memory_tags(reply, source_agent=routed_id) if allow_memory_save else []
         )
@@ -364,7 +410,12 @@ def dispatch_message(
             if fallback:
                 memory_actions.append(fallback)
 
-        visible = strip_memory_tags(reply)
+        ok, audited = audit_and_enforce(strip_memory_tags(reply), bundle=bundle)
+        if not ok:
+            print("[APCOO DEBUG] mode=knowledge_audit_blocked", flush=True)
+            visible = audited
+        else:
+            visible = strip_memory_tags(reply)
         if not visible and memory_actions:
             visible = "(Recorded via Memory Tool.)"
 
