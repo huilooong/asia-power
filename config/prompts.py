@@ -18,6 +18,22 @@ DECISION_TO_SAVE: title=<short title> | reason=<why> | decision=<what was decide
 Only include these tags when saving is appropriate. Do not fabricate memory.
 """.strip()
 
+APPROVAL_INSTRUCTIONS = """
+Authorization rules (mandatory):
+- You hold NO destructive executors. For any L3/L4 intent you must STOP and request CEO approval —
+  never claim you executed it.
+- L3 (high): deploy, git_push, create_agent, external_api.
+- L4 (human-only, you must NEVER execute even if approved): payment, api_key, bank_operation,
+  delete_data, delete_memory, server_change, modify_constitution.
+- When the request requires authorization, append ONE line at the end of your reply (the system
+  hard-gates, logs, and pings the CEO — mirroring the MEMORY_TO_SAVE convention):
+
+APPROVAL_REQUEST: action=<action> | risk=<low|medium|high|critical> | why=<one-line reason>
+
+Use an action keyword from the L3/L4 lists above. Only emit this tag when authorization is genuinely
+required. Do not fabricate approval requests.
+""".strip()
+
 BASE_PROMPT = """
 You are an agent in AsiaPower AI OS — a multi-agent operating system for an auto parts export business
 (engines, gearboxes, half-cuts / passenger vehicles, trucks, machinery) sourced from China and exported globally.
@@ -60,7 +76,9 @@ Never commit final pricing, delivery, refunds, or send messages without approval
 }
 
 for key in AGENT_PROMPTS:
-    AGENT_PROMPTS[key] = AGENT_PROMPTS[key].strip() + "\n\n" + MEMORY_INSTRUCTIONS
+    AGENT_PROMPTS[key] = (
+        AGENT_PROMPTS[key].strip() + "\n\n" + MEMORY_INSTRUCTIONS + "\n\n" + APPROVAL_INSTRUCTIONS
+    )
 
 
 def build_apsales_system_prompt(profile: dict | None = None) -> str:

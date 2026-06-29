@@ -293,6 +293,34 @@ def dispatch_message(
     if message.startswith("/"):
         return "Unknown command. Try /help"
 
+    # COO approval gate — works without OpenAI.
+    from coo_core.approval_gate import (
+        detect_catastrophic_intent,
+        format_ceo_request,
+        format_resolution,
+        open_approval,
+        resolve_reply,
+    )
+
+    resolved = resolve_reply(message)
+    if resolved:
+        visible = format_resolution(resolved)
+        memory_tool.log_conversation(
+            message, visible, source="apcoo", channel=source, important=True,
+        )
+        return visible
+
+    catastrophic = detect_catastrophic_intent(message)
+    if catastrophic:
+        action, _level = catastrophic
+        rec = open_approval(action, request_text=message, chat_id=user_id or "")
+        visible = format_ceo_request(rec)
+        print("[APCOO DEBUG] mode=approval_gate_catastrophic action=" + action, flush=True)
+        memory_tool.log_conversation(
+            message, visible, source="apcoo", channel=source, important=True,
+        )
+        return visible
+
     api_key = os.getenv("OPENAI_API_KEY")
     if not api_key:
         return "Error: OPENAI_API_KEY not set. COO slash commands still work without it."
@@ -399,6 +427,23 @@ def dispatch_message(
         reply = call_openai(
             client, model, system_prompt, message, knowledge_addon=knowledge_addon,
         )
+
+        # COO emitted an APPROVAL_REQUEST tag → open a gated, audited approval.
+        from coo_core.approval_gate import (
+            format_ceo_request as _fmt_req,
+            open_approval as _open_approval,
+            parse_approval_tag,
+            strip_approval_tag,
+        )
+        approval_card = ""
+        _tag = parse_approval_tag(reply)
+        if _tag:
+            _action, _risk, _why = _tag
+            _rec = _open_approval(_action, why=_why, request_text=message, chat_id=user_id or "")
+            approval_card = "\n\n" + _fmt_req(_rec)
+            reply = strip_approval_tag(reply)
+            print(f"[APCOO DEBUG] mode=approval_gate_tag action={_action}", flush=True)
+
         memory_actions = (
             apply_memory_tags(reply, source_agent=routed_id) if allow_memory_save else []
         )
@@ -422,6 +467,9 @@ def dispatch_message(
         if memory_actions:
             memory_lines = "\n".join(f"✓ {a}" for a in memory_actions)
             visible = f"{visible}\n\n— Memory —\n{memory_lines}"
+
+        if approval_card:
+            visible = f"{visible}{approval_card}".strip()
 
         memory_tool.log_conversation(
             message, visible,
