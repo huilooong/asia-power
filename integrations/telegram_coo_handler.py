@@ -74,17 +74,33 @@ def handle_telegram_update(
 
     chat = message.get("chat") or {}
     chat_id = str(chat.get("id", ""))
-    text = (message.get("text") or "").strip()
-    if not text:
-        _debug("skip_empty_text", chat_id=chat_id)
-        return
 
+    # Authorize before any download/transcription so we never spend Whisper
+    # calls on unauthorized chats.
     ok, reason = authorize_chat(chat, allowed)
     if not ok:
         _debug("rejected", chat_id=chat_id, reason=reason)
         message_tool.log_message(
-            "telegram", "inbound", chat_id, text, status=f"rejected:{reason}",
+            "telegram", "inbound", chat_id, message.get("text") or "<non-text>",
+            status=f"rejected:{reason}",
         )
+        return
+
+    text = (message.get("text") or "").strip()
+    if not text and (message.get("voice") or message.get("audio")):
+        from integrations.telegram_voice import transcribe_voice_message
+        try:
+            text = (transcribe_voice_message(message) or "").strip()
+        except Exception as exc:
+            _debug("voice_transcribe_failed", error=str(exc), traceback=traceback.format_exc())
+            message_tool.send_telegram_message(chat_id, "🎙️ 语音识别失败,请重试或改用文字。")
+            return
+        _debug("voice_transcribed", chat_id=chat_id, text=text)
+        if text:
+            message_tool.send_telegram_message(chat_id, f"🎙️ 已识别:{text}")
+
+    if not text:
+        _debug("skip_empty_text", chat_id=chat_id)
         return
 
     message_tool.log_message("telegram", "inbound", chat_id, text, status="ok")
