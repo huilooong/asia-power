@@ -3,7 +3,11 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="theme-color" content="#0a1628">
+  <meta name="theme-color" content="#0a1628">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-title" content="AsiaPower">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="description" content="AsiaPower is a global powertrain sourcing platform for passenger cars, trucks, motorcycles and machinery — engines, gearboxes, chassis parts and custom half-cuts from a China-based supply network, exported worldwide.">
   <title>AsiaPower | Global Powertrain Sourcing for Cars, Trucks, Motorcycles &amp; Machinery</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -12,7 +16,9 @@
   <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700;800&family=Inter:wght@400;500;600&display=swap"></noscript>
   <link rel="stylesheet" href="css/styles.css?v=mobile-rtl-fix-v1">
   <link rel="icon" href="assets/favicon.png" type="image/png">
-  <link rel="apple-touch-icon" href="assets/favicon.png">
+  <link rel="manifest" href="/manifest.json">
+  <link rel="apple-touch-icon" href="/assets/icons/apple-touch-icon.png">
+  <link rel="apple-touch-startup-image" href="/assets/icons/apple-splash-1170x2532.png" media="(device-width: 390px) and (device-height: 844px) and (-webkit-device-pixel-ratio: 3)">
   <link rel="canonical" href="https://asia-power.com/">
   <meta property="og:title" content="AsiaPower | Global Powertrain Sourcing for Cars, Trucks, Motorcycles &amp; Machinery">
   <meta property="og:description" content="AsiaPower is a global powertrain sourcing platform for passenger cars, trucks, motorcycles and machinery. China-based supply network — serving importers and fleet operators worldwide.">
@@ -542,5 +548,6 @@
   <script src="js/seo.js?v=merchant-schema-v1"></script>
   <script src="js/components.js?v=seo-v1" defer></script>
   <script src="js/main.js?v=wa-lead-v1" defer></script>
+  <script src="js/pwa-install.js?v=apapp-001" defer></script>
 </body>
 </html>
