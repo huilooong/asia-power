@@ -8,6 +8,8 @@ from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Any, Protocol
 
+from customer_gateway.whatsapp_safety import SafetyError, assert_write_blocked
+
 SEND_ENABLED = False
 MODIFY_ENABLED = False
 DELETE_ENABLED = False
@@ -52,9 +54,7 @@ def chat_id_for(contact: str, source: str = "") -> str:
 
 
 def assert_send_blocked(operation: str) -> None:
-    blocked = ("send", "reply", "delete", "modify", "auto_reply", "auto_send", "mark-read", "mark_read")
-    if any(b in operation.lower() for b in blocked):
-        raise PermissionError(f"WhatsApp send disabled (read-only phase): {operation}")
+    assert_write_blocked(operation)
 
 
 class ReadOnlyBackend(Protocol):

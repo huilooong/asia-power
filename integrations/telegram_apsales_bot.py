@@ -25,7 +25,10 @@ POLL_TIMEOUT = 30
 WHATSAPP_INTEL_COMMANDS_ZH = (
     "APSales WhatsApp 业务入口（只读 → 草稿 → Telegram 审批）\n"
     "━━━━━━━━━━━━━━━━━━━━\n"
-    "/whatsapp listen --readonly — 监听新消息\n"
+    "/whatsapp business connect — Business App 关联设备\n"
+    "/whatsapp business status — 连接器状态\n"
+    "/whatsapp business poll — 轮询新消息 → 收件箱\n"
+    "/whatsapp listen --readonly — 消费收件箱 → 生成草稿\n"
     "/whatsapp listen status — 监听状态\n"
     "/whatsapp sync --readonly — 只读同步历史\n"
     "/whatsapp analyze — 销售智能报告\n"

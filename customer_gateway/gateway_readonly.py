@@ -85,6 +85,26 @@ def dispatch_whatsapp_command(message: str) -> str:
             return "Usage: /whatsapp sync --readonly"
         return format_sync_result(sync_readonly())
 
+    if body.lower().startswith("business"):
+        from customer_gateway.whatsapp_business_polling import format_poll_result, poll_readonly
+        from customer_gateway.whatsapp_business_web_connector import business_connect, business_status
+
+        rest = body[8:].strip().lower()
+        if rest.startswith("connect"):
+            return business_connect()
+        if rest.startswith("status"):
+            return business_status()
+        if rest.startswith("poll"):
+            if "--readonly" not in body.lower():
+                return "Usage: /whatsapp business poll --readonly"
+            return format_poll_result(poll_readonly())
+        return (
+            "WhatsApp Business App 连接器（只读）\n"
+            "/whatsapp business connect — QR / 关联设备说明\n"
+            "/whatsapp business status — 连接器状态\n"
+            "/whatsapp business poll --readonly — 轮询新消息 → 收件箱\n"
+        )
+
     if body.lower().startswith("listen"):
         from customer_gateway.whatsapp_live_readonly import (
             format_listen_result,
@@ -119,7 +139,10 @@ def _help_text() -> str:
         "从历史中学习，但不要盲目模仿 CEO。\n\n"
         "/whatsapp import <path/to/chat.txt> — 导入导出聊天记录\n"
         "/whatsapp sync --readonly — 只读同步（直连/导出目录）\n"
-        "/whatsapp listen --readonly — 只读监听新消息 → 生成草稿\n"
+        "/whatsapp business connect — Business App 关联设备（QR）\n"
+        "/whatsapp business status — Business 连接器状态\n"
+        "/whatsapp business poll --readonly — 轮询新消息 → 收件箱\n"
+        "/whatsapp listen --readonly — 消费收件箱 → 生成草稿\n"
         "/whatsapp listen status — 监听状态\n"
         "/whatsapp analyze — 生成销售智能分析报告\n"
         "/whatsapp report — 查看最新完整报告\n"

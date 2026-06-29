@@ -589,6 +589,64 @@ python main.py "/drafts approve <draft_id>"
 
 `/drafts approve` 仅表示 CEO 同意草稿内容，**不发送 WhatsApp**（发送留到下一阶段）。
 
+### WhatsApp Business App Live Connector (APLIVE-002 / APLIVE-002A)
+
+**适用 WhatsApp Business App（非 Cloud API）** — 通过 Playwright + WhatsApp Web 关联设备会话只读接入。
+
+```
+WhatsApp Business App
+  → Linked Device / WhatsApp Web (Playwright Chromium)
+  → WHATSAPP_LIVE_INBOX
+  → /whatsapp listen --readonly
+  → APSales → Draft Queue → Telegram Approval
+```
+
+| Module | Path |
+|--------|------|
+| Business web connector | `customer_gateway/whatsapp_business_web_connector.py` |
+| **Browser adapter (Playwright)** | `customer_gateway/whatsapp_browser_adapter.py` |
+| Session state | `customer_gateway/whatsapp_business_session.py` |
+| Polling → inbox | `customer_gateway/whatsapp_business_polling.py` |
+| Adapter router | `customer_gateway/whatsapp_live_adapter.py` |
+| Safety | `customer_gateway/whatsapp_safety.py` |
+
+**Playwright 安装（APLIVE-002A）：**
+
+```bash
+pip install playwright
+python -m playwright install chromium
+```
+
+**本阶段不做：** Cloud API、号码迁移、自动发送、mark-read、删除/归档。
+
+环境变量：
+
+```bash
+WHATSAPP_CONNECTOR_MODE=business_web_readonly
+WHATSAPP_LIVE_ADAPTER=browser
+WHATSAPP_LIVE_INBOX=memory/customer_gateway/live_inbox
+WHATSAPP_SESSION_DIR=memory/customer_gateway/whatsapp_session
+WHATSAPP_SEND_ENABLED=false
+WHATSAPP_MARK_READ_ENABLED=false
+WHATSAPP_BROWSER_HEADLESS=false
+WHATSAPP_POLL_RECENT_MESSAGES=20
+```
+
+CLI：
+
+```bash
+python main.py "/whatsapp business connect"      # 打开 Chromium → web.whatsapp.com → QR 扫码
+python main.py "/whatsapp business status"       # adapter / logged_in / readonly / send_enabled
+python main.py "/whatsapp business poll --readonly"  # Store API 读取 → 收件箱 JSON
+python main.py "/whatsapp listen --readonly"     # 消费收件箱 → 草稿
+```
+
+**人工验收：** connect → 扫码 → 发测试消息 → poll → listen → drafts list
+
+无 Playwright 或未登录时自动 **fallback 到 Mock**（CI 测试用 `WHATSAPP_LIVE_ADAPTER=mock`）。
+
+归一化收件箱 JSON：`connector` 为 `browser_readonly`，电话号码仅哈希存储。
+
 ### Approval workflow
 
 | Level | Route |
@@ -626,6 +684,9 @@ python integrations/telegram_apsales_bot.py
 |------|------|
 | `/whatsapp listen --readonly` | 只读监听新消息 → 生成草稿 |
 | `/whatsapp listen status` | 监听状态 |
+| `/whatsapp business connect` | Business App 关联设备（QR 说明） |
+| `/whatsapp business status` | Business 连接器状态 |
+| `/whatsapp business poll --readonly` | 轮询新消息 → 收件箱 |
 | `/whatsapp sync --readonly` | 从 `WHATSAPP_READONLY_EXPORT_DIR` 或已解析数据只读同步 |
 | `/whatsapp analyze` | 生成《WhatsApp 销售智能报告》（中文） |
 | `/whatsapp report` | 查看最新完整报告 |
