@@ -539,6 +539,8 @@ def dispatch_sales_intelligence_command(message: str) -> str:
             "/sales-intelligence approve-reply <reply_id> — CEO 批准话术升级\n"
             "/sales-intelligence reject-reply <reply_id> — 拒绝话术升级\n"
             "/sales-intelligence pending — 待审话术列表\n"
+            "/sales-intelligence verified-report — 已验证销售数据报告（无 LLM）\n"
+            "/sales-intelligence truth-audit <text> — 审计回答是否含无来源数字\n"
         )
 
     parts = body.split(maxsplit=2)
@@ -605,6 +607,27 @@ def dispatch_sales_intelligence_command(message: str) -> str:
                 f"- {v.get('reply_id')} | {v.get('category')} {v.get('version')} | "
                 f"{v.get('success_rate_pct')}% | {str(v.get('text', ''))[:60]}"
             )
+        return "\n".join(lines)
+
+    if action == "verified-report":
+        from truth.verified_sales_intelligence import build_verified_ceo_report
+        return build_verified_ceo_report()
+
+    if action == "truth-audit":
+        audit_text = " ".join(parts[1:]).strip() if len(parts) > 1 else ""
+        if not audit_text:
+            return "Usage: /sales-intelligence truth-audit <answer text to audit>"
+        from truth.answer_auditor import audit_answer
+        from truth.truth_guard import reject_unsourced_numbers
+        result = audit_answer(audit_text)
+        rejected, reason = reject_unsourced_numbers(audit_text)
+        lines = [
+            f"passed: {result['passed'] and not rejected}",
+            f"issues: {result.get('issues') or []}",
+            f"unsafe_numbers: {result.get('unsafe_numbers') or []}",
+        ]
+        if rejected:
+            lines.append(f"reject_unsourced_numbers: {reason}")
         return "\n".join(lines)
 
     if action == "approve-reply" and len(parts) >= 2:

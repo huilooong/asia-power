@@ -330,6 +330,22 @@ def dispatch_message(
                 important=True,
             )
             return visible
+        from truth.truth_guard import is_business_intelligence_query
+        if is_business_intelligence_query(message):
+            from truth.verified_sales_intelligence import build_verified_ceo_report
+            visible = build_verified_ceo_report(message)
+            print(
+                f"[APCOO DEBUG] mode=verified_sales_intelligence reply_len={len(visible)} "
+                f"(deterministic, no LLM)",
+                flush=True,
+            )
+            memory_tool.log_conversation(
+                message, visible,
+                source="apcoo",
+                channel=source,
+                important=True,
+            )
+            return visible
         elif source == "telegram":
             print(
                 f"[APCOO DEBUG] openai route agent={routed_id} model={model} "
