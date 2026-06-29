@@ -34,7 +34,8 @@ Things like:
 - **Sam = COO bot = `@APCOO_BOT`** (env `COO_TELEGRAM_BOT_TOKEN`), the dispatcher: takes CEO message → `coo_core/dispatcher.py` `dispatch_message` → approval gate → `route_with_profile()` assigns to other agents. **PRIVATE CHAT ONLY** — `integrations/telegram_access.py` hard-rejects group/supergroup (`non_private`). Whitelist `COO_TELEGRAM_ALLOWED_CHAT_IDS=8918522756` (= Weylon Hui private chat). DM **@APCOO_BOT** directly; do NOT @ it in a group, and `@Asiapower_sam_bot` does NOT exist.
 - **Sursor bot** = `@sursor_bot` (周瑜) (all Sursor ack + replies — not Sam)
 - **Work group** `Asia-power AI Command Ceter` · chat_id `-1004428287084` — multi-agent in-group reporting/discussion is NOT implemented (premature; bot rejects group chats). Private chat with Sam only for now.
-- Launcher: COO bot runs from a Cursor terminal (`source .venv/bin/activate && python integrations/telegram_coo_bot.py`), **no supervisor/auto-restart** — relaunch manually if killed.
+- Launcher: COO bot is a **launchd agent** `~/Library/LaunchAgents/ai.asiapower.apcoo-bot.plist` (repo copy at `ops/launchd/`), `RunAtLoad`+`KeepAlive` → starts at login, auto-restarts on crash. Manage: `launchctl kickstart -k gui/$(id -u)/ai.asiapower.apcoo-bot` (restart after code change), `launchctl bootout gui/$(id -u)/ai.asiapower.apcoo-bot` (stop). Logs → `memory/apcoo-bot.log`. Do NOT also run it manually (409 polling conflict).
+- **Voice notes:** DM a voice/audio message to @APCOO_BOT → `integrations/telegram_voice.py` downloads via `getFile` and transcribes with OpenAI Whisper (`whisper-1`, override via `COO_VOICE_MODEL`) → bot echoes "🎙️ 已识别:…" then routes the text through `dispatch_message`. Only the whitelisted chat is transcribed (auth happens first).
 - **Sursor long tasks:** @sursor → `sursor_tasks` queue → `sursor_openclaw_worker.py` on prod (3600s, autonomous, no confirm loops)
 - Test alert: `node scripts/telegram-test.js "message"`
 
