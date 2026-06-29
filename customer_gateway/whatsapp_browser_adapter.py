@@ -22,6 +22,51 @@ WHATSAPP_WEB_URL = "https://web.whatsapp.com"
 BROWSER_CONNECTOR = "browser_readonly"
 STORE_WAIT_MS = 120_000
 
+_EXTRACT_FULL_HISTORY_JS = """
+(batchIndex, batchSize, perChatLimit) => {
+  const Store = window.Store;
+  if (!Store || !Store.Chat) {
+    return { error: "store_unavailable", messages: [], done: true };
+  }
+
+  const allChats = Store.Chat.getModels();
+  const start = batchIndex * batchSize;
+  const end = Math.min(start + batchSize, allChats.length);
+  const out = [];
+
+  for (let ci = start; ci < end; ci++) {
+    const chat = allChats[ci];
+    const contactName = chat.formattedTitle || chat.name || chat.contact?.formattedName || "unknown";
+    const rawId = chat.id?._serialized || chat.id?.user || String(chat.id || contactName);
+    const msgs = chat.msgs ? chat.msgs.getModels() : [];
+    const slice = msgs.length > perChatLimit ? msgs.slice(-perChatLimit) : msgs;
+
+    for (const msg of slice) {
+      const body = (msg.body || msg.caption || "").trim();
+      if (!body) continue;
+      const isMe = msg.isSentByMe || msg.id?.fromMe;
+      const ts = msg.t ? new Date(msg.t * 1000).toISOString().replace("T", " ").slice(0, 16) : "";
+      out.push({
+        contact_name: contactName,
+        chat_id_raw: rawId,
+        message: body,
+        timestamp: ts,
+        direction: isMe ? "outgoing" : "incoming",
+        media_placeholder: (msg.isMedia || msg.mediaData) ? "[media]" : null,
+      });
+    }
+  }
+
+  return {
+    error: null,
+    messages: out,
+    done: end >= allChats.length,
+    total_chats: allChats.length,
+    batch_end: end,
+  };
+}
+"""
+
 _EXTRACT_MESSAGES_JS = """
 (maxChats, perChatLimit) => {
   const Store = window.Store;
@@ -95,6 +140,20 @@ def browser_profile_dir() -> Path:
 
 def headless_mode() -> bool:
     return os.getenv("WHATSAPP_BROWSER_HEADLESS", "false").strip().lower() in ("1", "true", "yes")
+
+
+def history_batch_size() -> int:
+    try:
+        return max(1, int(os.getenv("WHATSAPP_HISTORY_BATCH_SIZE", "50")))
+    except ValueError:
+        return 50
+
+
+def history_per_chat_limit() -> int:
+    try:
+        return max(1, int(os.getenv("WHATSAPP_HISTORY_PER_CHAT", "500")))
+    except ValueError:
+        return 500
 
 
 def poll_recent_limit() -> int:
@@ -197,6 +256,45 @@ class WhatsAppBrowserAdapter:
             raise BrowserAdapterError(f"Playwright poll 失败: {exc}") from exc
         finally:
             self.close()
+
+    def fetch_history_batches(self) -> list[list[dict[str, Any]]]:
+        """Paginated full chat history for intelligence import (read-only, both directions)."""
+        assert_write_blocked("history_import_readonly")
+        batches: list[list[dict[str, Any]]] = []
+        try:
+            page = self._launch(headless=headless_mode())
+            page.goto(WHATSAPP_WEB_URL, wait_until="domcontentloaded", timeout=60_000)
+            if not self._wait_for_login(page, timeout_sec=connect_timeout_sec()):
+                return batches
+            self._logged_in = True
+
+            batch_size = history_batch_size()
+            per_chat = history_per_chat_limit()
+            batch_index = 0
+            while True:
+                result = page.evaluate(
+                    _EXTRACT_FULL_HISTORY_JS,
+                    batch_index,
+                    batch_size,
+                    per_chat,
+                )
+                if not isinstance(result, dict):
+                    break
+                msgs = list(result.get("messages") or [])
+                if msgs:
+                    batches.append(msgs)
+                if result.get("done") or result.get("error"):
+                    break
+                batch_index += 1
+                if batch_index > 200:
+                    break
+        except BrowserAdapterError:
+            raise
+        except Exception as exc:
+            raise BrowserAdapterError(f"History import 失败: {exc}") from exc
+        finally:
+            self.close()
+        return batches
 
     def status(self) -> dict[str, Any]:
         profile_exists = self.browser_profile_path().is_dir() and any(

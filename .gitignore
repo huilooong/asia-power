@@ -12,6 +12,7 @@ uploads/videos/*
 # Runtime memory — not committed (policy JSON under memory/constitution/ and memory/knowledge/ stay tracked)
 memory/conversations/
 memory/learning/
+memory/sales_intelligence/
 memory/customer_gateway/
 memory/customers/
 memory/suppliers/

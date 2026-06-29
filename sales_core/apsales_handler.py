@@ -33,6 +33,7 @@ from customer_gateway.gateway_readonly import (
     dispatch_conversations_command,
     dispatch_drafts_command,
     dispatch_learning_command,
+    dispatch_sales_intelligence_command,
     dispatch_whatsapp_command,
     format_customer_followups,
     get_gateway_context_for_enquiry,
@@ -43,6 +44,7 @@ from tools.registry import ToolContext, list_tools, run_tool, run_tool_command
 APSALES_COMMANDS = (
     "/help", "/tools", "/remember", "/recall", "/customer", "/pipeline",
     "/tool", "/sales", "/whatsapp", "/drafts", "/conversations", "/learning",
+    "/sales-intelligence",
 )
 
 INTERNAL_SECTIONS = (
@@ -105,6 +107,9 @@ def apsales_help_text() -> str:
         "/learning candidates — 待审 learning 候选\n"
         "/learning approve <id> — CEO 批准写入 memory\n"
         "/learning reject <id> — 拒绝（不写入 memory）\n\n"
+        "/sales-intelligence import — 全量历史导入 Conversation DB\n"
+        "/sales-intelligence analyze — 销售智能分析\n"
+        "/sales-intelligence dashboard — CEO Dashboard\n\n"
         "原则：Read Only → Analyze → Draft → Telegram Approval。禁止自动发送 WhatsApp。\n"
         "平台定位：撮合买家与供应商，提升 GMV；默认不假设 AsiaPower 自有库存。\n"
         "输出：【内部分析】中文 + 【客户草稿】买家语言 (EN/FR/AR)"
@@ -174,6 +179,9 @@ def dispatch_apsales_command(message: str, channel: str = "cli") -> str:
 
     if text.lower().startswith("/learning"):
         return dispatch_learning_command(text)
+
+    if text.lower().startswith("/sales-intelligence"):
+        return dispatch_sales_intelligence_command(text)
 
     if text.startswith("/customer"):
         body = text[len("/customer"):].strip()

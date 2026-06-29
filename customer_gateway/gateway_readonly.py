@@ -240,6 +240,13 @@ def run_intelligence_analysis() -> str:
     build_all_profiles(parsed)
     profiles = load_profiles()
     result = generate_intelligence_report(parsed, profiles)
+
+    try:
+        from customer_gateway.reply_style_learner import learn_ceo_style
+        learn_ceo_style(parsed)
+    except Exception:
+        pass
+
     return result["markdown"]
 
 
@@ -311,6 +318,11 @@ def get_gateway_context_for_enquiry(message: str, customer_hint: str = "") -> st
     report_path = REPORTS_DIR / "latest_report.md"
     if report_path.is_file():
         sections.append("（完整报告: /whatsapp report）")
+
+    from customer_gateway.reply_evolution import format_approved_context
+    approved_ctx = format_approved_context()
+    if approved_ctx:
+        sections.append(approved_ctx)
 
     sections.append("Draft Only — 禁止自动发送 WhatsApp，禁止承诺价格/库存/交期。")
     return "\n".join(sections)
@@ -479,6 +491,101 @@ def dispatch_learning_command(message: str) -> str:
             return f"Error: {exc}"
 
     return dispatch_learning_command("/learning help")
+
+
+def dispatch_sales_intelligence_command(message: str) -> str:
+    """Handle /sales-intelligence import|analyze|dashboard|approve-reply|reject-reply."""
+    assert_readonly("sales_intelligence_command")
+    from customer_gateway.history_importer import run_full_history_import
+    from customer_gateway.reply_evolution import (
+        approve_reply,
+        list_pending_replies,
+        reject_reply,
+    )
+    from customer_gateway.sales_intelligence_engine import (
+        format_dashboard_markdown,
+        run_sales_intelligence_analysis,
+    )
+
+    text = (message or "").strip()
+    body = (
+        text[len("/sales-intelligence"):].strip()
+        if text.lower().startswith("/sales-intelligence")
+        else text
+    )
+
+    if not body or body.lower() == "help":
+        return (
+            "APBRAIN-002 Sales Intelligence Engine（只读学习）\n"
+            "/sales-intelligence import — 导入全部历史到 Conversation Database\n"
+            "/sales-intelligence import --browser — 含 Browser 分页全量抓取\n"
+            "/sales-intelligence analyze — 运行销售智能分析（阶段 2–7）\n"
+            "/sales-intelligence dashboard — CEO Dashboard\n"
+            "/sales-intelligence approve-reply <reply_id> — CEO 批准话术升级\n"
+            "/sales-intelligence reject-reply <reply_id> — 拒绝话术升级\n"
+            "/sales-intelligence pending — 待审话术列表\n"
+        )
+
+    parts = body.split(maxsplit=2)
+    action = parts[0].lower()
+
+    if action == "import":
+        include_browser = "--browser" in body.lower()
+        result = run_full_history_import(include_browser=include_browser)
+        return result.get("message", str(result))
+
+    if action == "analyze":
+        result = run_sales_intelligence_analysis()
+        if not result.get("ok"):
+            return result.get("message", "分析失败")
+        d = result.get("dashboard", {})
+        return (
+            f"销售智能分析完成。\n"
+            f"会话: {result.get('conversation_count')} | 消息: {result.get('message_count')}\n"
+            f"活跃客户: {d.get('active_customers', 0)} | 重复客户: {d.get('repeat_customers', 0)}\n"
+            f"最佳产品: {d.get('easiest_product')} | 最佳国家: {d.get('easiest_country')}\n"
+            f"待 CEO 审批评审话术: {result.get('reply_evolution', {}).get('proposed', 0)} 条\n"
+            "查看 Dashboard: /sales-intelligence dashboard"
+        )
+
+    if action == "dashboard":
+        from customer_gateway import sales_intelligence_paths as sip
+        import json as _json
+
+        path = sip.DASHBOARD_DIR / "latest.json"
+        if not path.is_file():
+            analyze = run_sales_intelligence_analysis()
+            if not analyze.get("ok"):
+                return "请先 /sales-intelligence import 再 analyze"
+            return format_dashboard_markdown(analyze)
+        data = _json.loads(path.read_text(encoding="utf-8"))
+        return format_dashboard_markdown({"dashboard": data})
+
+    if action == "pending":
+        pending = list_pending_replies()
+        if not pending:
+            return "无待审 Reply Evolution 话术。"
+        lines = ["待 CEO 审批的话术升级:", ""]
+        for v in pending[:15]:
+            lines.append(
+                f"- {v.get('reply_id')} | {v.get('category')} {v.get('version')} | "
+                f"{v.get('success_rate_pct')}% | {str(v.get('text', ''))[:60]}"
+            )
+        return "\n".join(lines)
+
+    if action == "approve-reply" and len(parts) >= 2:
+        try:
+            return approve_reply(parts[1])
+        except ValueError as exc:
+            return f"Error: {exc}"
+
+    if action == "reject-reply" and len(parts) >= 2:
+        try:
+            return reject_reply(parts[1])
+        except ValueError as exc:
+            return f"Error: {exc}"
+
+    return dispatch_sales_intelligence_command("/sales-intelligence help")
 
 
 def _extract_keywords(message: str) -> list[str]:
