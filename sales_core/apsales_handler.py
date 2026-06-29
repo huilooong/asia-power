@@ -112,6 +112,8 @@ def parse_sales_message(message: str) -> str:
         text = text[6:].strip()
         if text.startswith("-intelligence"):
             return ""
+        if text.lower().startswith("intelligence"):
+            return ""
     if text.lower().startswith("customer:"):
         text = text[9:].strip()
     return text
@@ -168,7 +170,9 @@ def check_inventory_for_enquiry(message: str) -> tuple[bool, str]:
 
 
 def dispatch_apsales_command(message: str, channel: str = "cli") -> str:
-    text = message.strip()
+    from coo_core.cli_router import normalize_apsales_command
+
+    text = normalize_apsales_command(message.strip())
 
     if text.lower().startswith("/sales-intelligence"):
         return dispatch_sales_intelligence_command(text)

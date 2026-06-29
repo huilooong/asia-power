@@ -31,6 +31,21 @@ class CLIRoutingTests(unittest.TestCase):
         mock_enquiry.assert_not_called()
         self.assertIn("导入", out)
 
+    def test_sales_space_intelligence_alias_not_enquiry(self) -> None:
+        with mock.patch("sales_core.apsales_handler.process_apsales_enquiry") as mock_enquiry:
+            out = dispatch_apsales_command("/sales intelligence import")
+        mock_enquiry.assert_not_called()
+        self.assertIn("导入", out)
+
+    def test_cli_router_resolve_agent_id(self) -> None:
+        from coo_core.cli_router import resolve_agent_id
+
+        self.assertEqual(resolve_agent_id("/sales-intelligence import"), "apsales")
+        self.assertEqual(resolve_agent_id("/whatsapp sync"), "apsales")
+        self.assertEqual(resolve_agent_id("/plan deploy"), "apcoo")
+        self.assertEqual(resolve_agent_id("/unknown"), "apsales")
+        self.assertEqual(resolve_agent_id("Do you have G4KJ?"), "apcoo")
+
     def test_sales_intelligence_dashboard_not_enquiry(self) -> None:
         with mock.patch("sales_core.apsales_handler.process_apsales_enquiry") as mock_enquiry:
             out = dispatch_apsales_command("/sales-intelligence dashboard")

@@ -143,6 +143,10 @@ _MISROUTED_CLI_RE = re.compile(
     r"(?:^/sales-intelligence\b|^-?intelligence\s+(?:import|analyze|dashboard|pending)\b)",
     re.I,
 )
+_MISROUTED_ENQUIRY_RE = re.compile(
+    r"^intelligence\s+(?:import|analyze|dashboard|pending)\b",
+    re.I,
+)
 
 
 def is_misrouted_cli_draft(draft: dict[str, Any]) -> bool:
@@ -150,6 +154,12 @@ def is_misrouted_cli_draft(draft: dict[str, Any]) -> bool:
     original = (draft.get("original_message") or "").strip()
     if _MISROUTED_CLI_RE.search(original):
         return True
+    if _MISROUTED_ENQUIRY_RE.match(original):
+        return True
+    for field in ("internal_analysis_zh", "customer_reply_draft"):
+        body = (draft.get(field) or "").strip()
+        if _MISROUTED_ENQUIRY_RE.search(body):
+            return True
     customer = (draft.get("customer_name") or "").lower()
     if customer.startswith("inquiry-intelligence") or customer == "intelligence":
         return True

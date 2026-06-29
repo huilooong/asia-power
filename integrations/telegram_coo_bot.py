@@ -16,8 +16,8 @@ from dotenv import load_dotenv
 ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(ROOT))
 
-from coo_core.dispatcher import dispatch_message
-from integrations.telegram_access import authorize_chat, parse_allowed_chat_ids
+from integrations.telegram_access import parse_allowed_chat_ids
+from integrations.telegram_coo_handler import handle_telegram_update
 from tools import message_tool
 
 POLL_TIMEOUT = 30
@@ -45,36 +45,7 @@ def _handle_update(update: dict, allowed: set[str]) -> None:
     message = update.get("message") or update.get("edited_message")
     if not message:
         return
-
-    chat = message.get("chat") or {}
-    chat_id = str(chat.get("id", ""))
-    text = (message.get("text") or "").strip()
-    if not text:
-        return
-
-    ok, reason = authorize_chat(chat, allowed)
-    if not ok:
-        message_tool.log_message(
-            "telegram", "inbound", chat_id, text, status=f"rejected:{reason}",
-        )
-        return
-
-    message_tool.log_message("telegram", "inbound", chat_id, text, status="ok")
-
-    user = message.get("from") or {}
-    user_id = str(user.get("id", chat_id))
-
-    try:
-        reply = dispatch_message(text, source="telegram", user_id=user_id)
-        message_tool.send_telegram_message(chat_id, reply)
-        message_tool.log_message("telegram", "outbound", chat_id, reply, status="ok")
-    except Exception as exc:
-        err = f"COO error: {exc}"
-        message_tool.log_message("telegram", "outbound", chat_id, err, status="error")
-        try:
-            message_tool.send_telegram_message(chat_id, "Sorry, something went wrong. Check server logs.")
-        except Exception:
-            pass
+    handle_telegram_update(message, allowed=allowed)
 
 
 def run_bot(once: bool = False) -> int:
