@@ -30,10 +30,11 @@ Things like:
 
 ### Telegram
 
-- **Alerts bot** (env): `ASIAPOWER_TELEGRAM_BOT_TOKEN`, `ASIAPOWER_TELEGRAM_CHAT_ID` — lead/upload/reminder pushes via `server/lib/telegram-notify.js`
-- **Command Center bot** = `@Asiapower_sam_bot` (polls group, Sam/Kongming/Claude routing)
-- **Sursor bot** = `@sursor_bot` (all Sursor ack + replies — not Sam)
-- **Work group** (team chat): `Asia-power AI Command Ceter` · chat_id `-1004428287084` — 需求 / 分工 / 复盘
+- **Alerts bot** (env `ASIAPOWER_TELEGRAM_BOT_TOKEN` / `ASIAPOWER_TELEGRAM_CHAT_ID`) is actually **`@sursor_bot` (周瑜)** — same token as `SURSOR_TELEGRAM_BOT_TOKEN`. So `scripts/telegram-test.js` pushes appear FROM Sursor, not Sam. lead/upload/reminder pushes via `server/lib/telegram-notify.js`
+- **Sam = COO bot = `@APCOO_BOT`** (env `COO_TELEGRAM_BOT_TOKEN`), the dispatcher: takes CEO message → `coo_core/dispatcher.py` `dispatch_message` → approval gate → `route_with_profile()` assigns to other agents. **PRIVATE CHAT ONLY** — `integrations/telegram_access.py` hard-rejects group/supergroup (`non_private`). Whitelist `COO_TELEGRAM_ALLOWED_CHAT_IDS=8918522756` (= Weylon Hui private chat). DM **@APCOO_BOT** directly; do NOT @ it in a group, and `@Asiapower_sam_bot` does NOT exist.
+- **Sursor bot** = `@sursor_bot` (周瑜) (all Sursor ack + replies — not Sam)
+- **Work group** `Asia-power AI Command Ceter` · chat_id `-1004428287084` — multi-agent in-group reporting/discussion is NOT implemented (premature; bot rejects group chats). Private chat with Sam only for now.
+- Launcher: COO bot runs from a Cursor terminal (`source .venv/bin/activate && python integrations/telegram_coo_bot.py`), **no supervisor/auto-restart** — relaunch manually if killed.
 - **Sursor long tasks:** @sursor → `sursor_tasks` queue → `sursor_openclaw_worker.py` on prod (3600s, autonomous, no confirm loops)
 - Test alert: `node scripts/telegram-test.js "message"`
 
