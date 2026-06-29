@@ -305,15 +305,43 @@ def dispatch_message(
             router = get_router()
             router.resolve_target_language("apcoo", "ceo", message)
             system_prompt += router.internal_channel_addon("telegram")
+
+        from coo_core.ceo_ops_briefing import (
+            detect_ceo_ops_query,
+            detect_website_content_query,
+            render_ceo_daily_brief,
+            user_explicitly_requests_memory,
+            website_content_prompt_addon,
+        )
+        allow_memory_save = user_explicitly_requests_memory(message)
+        if detect_website_content_query(message):
+            system_prompt += website_content_prompt_addon()
+        elif detect_ceo_ops_query(message):
+            visible = render_ceo_daily_brief()
+            print(
+                f"[APCOO DEBUG] mode=ceo_ops_briefing reply_len={len(visible)} "
+                f"(deterministic CEO Daily Brief)",
+                flush=True,
+            )
+            memory_tool.log_conversation(
+                message, visible,
+                source="apcoo",
+                channel=source,
+                important=True,
+            )
+            return visible
+        elif source == "telegram":
             print(
                 f"[APCOO DEBUG] openai route agent={routed_id} model={model} "
                 f"chat_len={len(message)}",
                 flush=True,
             )
         reply = call_openai(client, model, system_prompt, message)
-        memory_actions = apply_memory_tags(reply, source_agent=routed_id)
+        memory_actions = (
+            apply_memory_tags(reply, source_agent=routed_id) if allow_memory_save else []
+        )
 
-        if "DECISION_TO_SAVE:" not in reply and not any(
+        if allow_memory_save and "DECISION_TO_SAVE:" not in reply and not any(
             a.startswith("Saved decision:") for a in memory_actions
         ):
             fallback = fallback_decision_from_user(message, source_agent=routed_id)
