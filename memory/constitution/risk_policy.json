@@ -1,0 +1,39 @@
+{
+  "version": "1.0",
+  "levels": {
+    "low": {
+      "action": "auto_draft",
+      "approval_required": false,
+      "allowed": true
+    },
+    "medium": {
+      "action": "ceo_review",
+      "approval_required": true,
+      "allowed": true
+    },
+    "high": {
+      "action": "ceo_approval_required",
+      "approval_required": true,
+      "allowed": true
+    },
+    "critical": {
+      "action": "block",
+      "approval_required": true,
+      "allowed": false
+    }
+  },
+  "intent_weights": {
+    "price_request": 2,
+    "negotiation": 2,
+    "payment": 3,
+    "delivery_commitment": 3,
+    "complaint": 2,
+    "availability_check": 1,
+    "enquiry": 0,
+    "follow_up": 0
+  },
+  "classification_weights": {
+    "customer_inquiry": 0,
+    "customer_followup": 0
+  }
+}

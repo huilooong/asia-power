@@ -1,0 +1,21 @@
+{
+  "version": "1.0",
+  "roles": {
+    "sales": {
+      "allow": ["draft", "recommend_price", "inventory_lookup"],
+      "deny": ["send", "delete", "price_commit", "final_price_commit", "mark_read", "inventory_modify"]
+    },
+    "inventory": {
+      "allow": ["inventory_lookup"],
+      "deny": ["inventory_modify", "send", "price_commit"]
+    },
+    "pricing": {
+      "allow": ["recommend_price"],
+      "deny": ["final_price_commit", "send"]
+    },
+    "ceo": {
+      "allow": ["all"],
+      "deny": []
+    }
+  }
+}

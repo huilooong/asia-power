@@ -13,6 +13,8 @@ from customer_gateway.sales_message_classifier import (
 )
 from customer_gateway.whatsapp_live_readonly import InboundMessage
 from core.language_router import detect_language, resolve_target_language
+from core.constitution_runtime import apply_constitution_runtime, estimate_inventory_confidence
+from sales_core.apsales_handler import check_inventory_for_enquiry
 from sales_core.platform_supply import extract_product_keywords
 from sales_core.sales_brain_draft import build_sales_brain_draft
 
@@ -53,6 +55,32 @@ def route_inbound_message(msg: InboundMessage) -> dict[str, Any] | None:
         classification=classification,
         channel="whatsapp_live",
     )
+
+    inventory_hit, _ = check_inventory_for_enquiry(msg.message)
+    inventory_confidence = estimate_inventory_confidence(
+        inventory_hit=inventory_hit,
+        message=msg.message,
+    )
+    draft_payload = apply_constitution_runtime(
+        draft_payload,
+        context={
+            "message": msg.message,
+            "intent": draft_payload.get("category"),
+            "classification": classification.classification,
+            "inventory_hit": inventory_hit,
+            "inventory_confidence": inventory_confidence,
+            "pricing_confidence": 0.55 if "price" in msg.message.lower() else 0.8,
+            "role": "sales",
+        },
+    )
+
+    if draft_payload.get("constitution_allowed") is False:
+        log_event(
+            "constitution_blocked_draft",
+            message_id=msg.message_id,
+            reason=draft_payload.get("constitution_reason", ""),
+            risk=draft_payload.get("risk_level"),
+        )
 
     draft_payload.update({
         "message_id": msg.message_id,

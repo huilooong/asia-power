@@ -1,0 +1,42 @@
+{
+  "version": "1.0",
+  "inventory_confidence": [
+    {
+      "min": 0.9,
+      "max": 1.0,
+      "rule": "inventory_high_confidence",
+      "action": "allow_available",
+      "guidance": "May reference matched availability with supplier confirmation caveat."
+    },
+    {
+      "min": 0.6,
+      "max": 0.89,
+      "rule": "inventory_medium_confidence",
+      "action": "supplier_confirmation",
+      "guidance": "Use supplier confirmation wording — do not promise Available."
+    },
+    {
+      "min": 0.0,
+      "max": 0.59,
+      "rule": "inventory_low_confidence",
+      "action": "never_promise_inventory",
+      "guidance": "Never promise inventory or say Available/in stock."
+    }
+  ],
+  "pricing_confidence": [
+    {
+      "min": 0.75,
+      "max": 1.0,
+      "rule": "pricing_high_confidence",
+      "action": "recommend",
+      "guidance": "May recommend indicative pricing process — not final commit."
+    },
+    {
+      "min": 0.0,
+      "max": 0.74,
+      "rule": "pricing_low_confidence",
+      "action": "request_approval",
+      "guidance": "Request CEO approval before any price discussion."
+    }
+  ]
+}
