@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="robots" content="noindex">
+  <meta name="theme-color" content="#0a1628">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-title" content="AsiaPower">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <title>下载 AsiaPower APP</title>
+  <link rel="manifest" href="/manifest.json">
+  <link rel="icon" href="assets/favicon.png" type="image/png">
+  <link rel="apple-touch-icon" href="/assets/icons/apple-touch-icon.png">
+  <link rel="stylesheet" href="css/styles.css?v=self-hosted-fonts-v1">
+  <style>
+    body { background: #f5f7fb; color: #0a1628; }
+    .app-install-page { min-height: 100vh; padding: 28px 16px 48px; }
+    .app-install-shell { width: min(920px, 100%); margin: 0 auto; }
+    .app-install-hero { background: #0a1628; color: #fff; border-radius: 8px; padding: 28px 22px; }
+    .app-install-hero img { width: 190px; max-width: 70%; height: auto; margin-bottom: 26px; }
+    .app-install-hero h1 { color: #fff; font-size: clamp(32px, 8vw, 58px); line-height: 1; margin: 0 0 14px; }
+    .app-install-hero p { color: #d7dee8; font-size: 18px; line-height: 1.6; margin: 0; }
+    .app-install-actions { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 24px; }
+    .app-install-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 18px; margin-top: 20px; }
+    .app-install-card { background: #fff; border: 1px solid #d7dee8; border-radius: 8px; padding: 20px; box-shadow: 0 12px 32px rgba(10,22,40,.08); }
+    .app-install-card h2 { font-size: 22px; margin: 0 0 12px; color: #0a1628; }
+    .app-install-card ol { margin: 0; padding-left: 20px; color: #334155; line-height: 1.8; }
+    .app-install-card p { color: #52606d; line-height: 1.65; margin: 0; }
+    .app-qr-placeholder { display: grid; place-items: center; min-height: 180px; border: 2px dashed #c6d0dc; border-radius: 8px; color: #52606d; text-align: center; font-weight: 700; background: #f8fafc; }
+    .app-install-note { margin-top: 18px; color: #52606d; font-size: 14px; line-height: 1.6; }
+    @media (max-width: 760px) {
+      .app-install-grid { grid-template-columns: 1fr; }
+      .app-install-hero { padding: 24px 18px; }
+      .app-install-actions .btn { width: 100%; justify-content: center; }
+    }
+  </style>
+</head>
+<body>
+  <main class="app-install-page">
+    <div class="app-install-shell">
+      <section class="app-install-hero">
+        <img src="assets/logo@2x.png" alt="AsiaPower">
+        <h1>下载 AsiaPower APP</h1>
+        <p>无需应用商店，可直接添加到手机桌面。No app store required — add AsiaPower to your phone home screen.</p>
+        <div class="app-install-actions">
+          <a class="btn btn-accent" href="/">打开首页 / Open Home</a>
+          <a class="btn btn-whatsapp" href="https://wa.me/233540911111?text=Hello%20AsiaPower%2C%20I%20would%20like%20to%20enquire%20about%20powertrain%20sourcing%20for%20export." target="_blank" rel="noopener">联系 WhatsApp</a>
+          <button class="btn btn-outline-light" type="button" id="copy-app-url">复制网址</button>
+        </div>
+      </section>
+
+      <section class="app-install-grid" aria-label="AsiaPower APP install steps">
+        <article class="app-install-card">
+          <h2>Android Chrome 安装步骤</h2>
+          <ol>
+            <li>打开 <strong>asia-power.com/app.html</strong></li>
+            <li>点击浏览器右上角菜单</li>
+            <li>选择“安装应用”或“添加到主屏幕”</li>
+          </ol>
+        </article>
+
+        <article class="app-install-card">
+          <h2>iPhone Safari 安装步骤</h2>
+          <ol>
+            <li>用 Safari 打开 <strong>asia-power.com/app.html</strong></li>
+            <li>点击分享按钮</li>
+            <li>选择“添加到主屏幕”</li>
+          </ol>
+        </article>
+
+        <article class="app-install-card">
+          <h2>扫码打开下载页面</h2>
+          <div class="app-qr-placeholder">二维码区域预留<br>QR code placeholder</div>
+        </article>
+
+        <article class="app-install-card">
+          <h2>说明 / Notes</h2>
+          <p>AsiaPower APP 是网站安装版，方便快速打开产品页、询价表和 WhatsApp 联系入口。安装后仍使用 asia-power.com 的最新内容。</p>
+          <p class="app-install-note">如果页面没有弹出安装按钮，请使用浏览器菜单手动添加到主屏幕。</p>
+        </article>
+      </section>
+    </div>
+  </main>
+
+  <script src="js/pwa-install.js?v=apapp-002" defer></script>
+  <script>
+    (function () {
+      var button = document.getElementById('copy-app-url');
+      if (!button) return;
+      button.addEventListener('click', function () {
+        var url = 'https://asia-power.com/app.html';
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+          navigator.clipboard.writeText(url).then(function () {
+            button.textContent = '已复制';
+          }).catch(function () {
+            button.textContent = url;
+          });
+          return;
+        }
+        button.textContent = url;
+      });
+    })();
+  </script>
+</body>
+</html>
