@@ -19,6 +19,14 @@ const EXCLUDES = [
   'uploads', 'node_modules', '.env', '.cursor', 'agent-transcripts', 'tmp',
   'sitemap.xml',
   'supplier-portal/upload-key.js',
+  // OpenClaw agent/workspace private files — must never reach the public web root.
+  // NOTE: 'guides' is a real public site section — do NOT exclude it.
+  '.openclaw', 'memory', 'backups',
+  'AGENTS.md', 'SOUL.md', 'MEMORY.md', 'USER.md', 'TOOLS.md', 'IDENTITY.md', 'HEARTBEAT.md', 'BOOTSTRAP.md',
+  // Python backend source — server-side only, must NEVER be web-downloadable.
+  // (line 35 rsyncs the tree into public/; the web root is static assets + node only.)
+  'coo_core', 'customer_gateway', 'truth', 'config', 'agents', 'audit', 'integrations', 'core', 'tools', 'tests',
+  '*.py', '*.pyc', '__pycache__', 'requirements.txt', 'pyproject.toml', '.venv*',
 ];
 
 function rsync(local, remote, extra = []) {
@@ -53,6 +61,7 @@ spawnSync('rsync', ['-av',
   `${ROOT}/scripts/optimize-inventory-photos.mjs`,
   `${ROOT}/scripts/compress-inventory-videos.mjs`,
   `${ROOT}/scripts/fix-hc250081-lonking.mjs`,
+  `${ROOT}/scripts/fix-hc250107-machinery.mjs`,
   `${SITE}/scripts/`,
 ], { stdio: 'inherit' });
 spawnSync('rsync', ['-av', `${ROOT}/package.json`, `${ROOT}/package-lock.json`, `${SITE}/`], { stdio: 'inherit' });
@@ -129,6 +138,9 @@ if [ -f "$SITE/scripts/fix-inventory-record.mjs" ]; then
 fi
 if [ -f "$SITE/scripts/fix-truck-listing-meta.mjs" ]; then
   node "$SITE/scripts/fix-truck-listing-meta.mjs" --root "$SITE" && echo "[deploy] normalized truck/cab listing metadata" || echo "[deploy] truck/cab metadata fix skipped"
+fi
+if [ -f "$SITE/scripts/fix-hc250107-machinery.mjs" ]; then
+  node "$SITE/scripts/fix-hc250107-machinery.mjs" --root "$SITE" && echo "[deploy] HC250107 -> machinery (mobile crane)" || echo "[deploy] HC250107 machinery patch skipped"
 fi
 if [ -f "$SITE/package.json" ]; then
   cd "$SITE" && npm install --omit=dev 2>/dev/null || npm install || echo "[deploy] npm install skipped"
