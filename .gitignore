@@ -1,6 +1,7 @@
 .DS_Store
 .venv/
 .venv-logo/
+output/tiktok/
 *.log
 *.tmp
 Thumbs.db
@@ -8,6 +9,21 @@ uploads/photos/*
 uploads/videos/*
 !uploads/photos/.gitkeep
 !uploads/videos/.gitkeep
+# Runtime memory — not committed (policy JSON under memory/constitution/ and memory/knowledge/ stay tracked)
+memory/conversations/
+memory/learning/
+memory/customer_gateway/
+memory/customers/
+memory/suppliers/
+memory/daily_logs/
+memory/agent_notes/
+memory/company/
+memory/decisions/
+memory/projects/
+memory/index.json
+memory/*.md
+!memory/constitution/
+!memory/knowledge/
 data/half-cut-*.json
 data/contact-leads.json
 data/users.json

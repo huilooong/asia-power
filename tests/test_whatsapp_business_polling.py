@@ -21,6 +21,8 @@ class WhatsAppBusinessPollingTests(unittest.TestCase):
         self.addCleanup(self.tmp.cleanup)
         base = Path(self.tmp.name)
         reconfigure_paths(base / "gateway")
+        from customer_gateway.conversation_paths import reconfigure_paths as reconfigure_conv_paths
+        reconfigure_conv_paths(base / "memory")
         self.inbox = base / "inbox"
         self.session = base / "session"
         self.inbox.mkdir()

@@ -45,6 +45,13 @@ def poll_readonly(*, force_connect: bool = True) -> dict[str, Any]:
         new_msgs.append(msg)
 
     written = _write_inbox_files(new_msgs)
+
+    learning_stats: dict[str, Any] = {"processed": 0, "candidates_created": 0}
+    if new_msgs:
+        from customer_gateway.conversation_learning_pipeline import process_live_batch
+
+        learning_stats = process_live_batch(new_msgs, source="poll")
+
     poll_state["polled_ids"] = sorted(seen)
     poll_state["last_poll"] = new_msgs[0].sync_time if new_msgs else poll_state.get("last_poll")
     save_poll_state(poll_state)
@@ -60,6 +67,8 @@ def poll_readonly(*, force_connect: bool = True) -> dict[str, Any]:
         "written": written,
         "inbox_dir": str(inbox_dir()),
         "adapter": conn.adapter.name,
+        "learning_processed": learning_stats.get("processed", 0),
+        "learning_candidates": learning_stats.get("candidates_created", 0),
         "message": (
             f"只读轮询完成：收到 {len(incoming)} 条，新写入收件箱 {len(new_msgs)} 条。"
             "未发送 WhatsApp。"
@@ -95,4 +104,9 @@ def format_poll_result(result: dict[str, Any]) -> str:
         lines.append(f"  - {name}")
     lines.append("")
     lines.append("下一步: /whatsapp listen --readonly")
+    if result.get("learning_processed"):
+        lines.append(
+            f"学习归档: {result.get('learning_processed')} 条 → "
+            f"candidates {result.get('learning_candidates', 0)}"
+        )
     return "\n".join(lines)

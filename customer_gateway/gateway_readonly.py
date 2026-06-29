@@ -360,6 +360,127 @@ def format_customer_followups() -> str:
     return format_followups_report()
 
 
+def dispatch_conversations_command(message: str) -> str:
+    """Handle /conversations list|analyze."""
+    assert_readonly("conversations_command")
+    from customer_gateway import conversation_paths as cp
+    from customer_gateway.conversation_analyzer import list_analysis, save_analysis, analyze_normalized
+    from customer_gateway.conversation_normalizer import (
+        list_normalized,
+        load_unanalyzed_normalized,
+        save_normalized,
+    )
+    from customer_gateway.conversation_raw_archive import list_raw_messages
+
+    text = (message or "").strip()
+    body = text[len("/conversations"):].strip() if text.lower().startswith("/conversations") else text
+
+    if not body or body.lower() == "help":
+        return (
+            "Conversation Learning Pipeline（只读归档 + 分析）\n"
+            "/conversations list — 查看 raw / normalized / analysis 统计\n"
+            "/conversations analyze — 分析尚未处理的 normalized 消息\n"
+        )
+
+    cp.ensure_conversation_dirs()
+    action = body.split()[0].lower() if body else "list"
+
+    if action == "list":
+        raw_count = sum(1 for _ in cp.RAW_DIR.rglob("*.json"))
+        norm_count = sum(1 for _ in cp.NORMALIZED_DIR.glob("*.json"))
+        analysis_count = sum(1 for _ in cp.ANALYSIS_DIR.glob("*.json"))
+        lines = [
+            "Conversation Learning 归档（非长期记忆）",
+            f"  raw: {raw_count}  normalized: {norm_count}  analysis: {analysis_count}",
+            "",
+            "最近 raw:",
+        ]
+        for item in list_raw_messages(limit=5):
+            payload = item.get("payload") or {}
+            lines.append(
+                f"  - {item.get('message_id', '')[:12]} | "
+                f"{payload.get('contact_name', '')} | "
+                f"{str(payload.get('message', ''))[:50]}"
+            )
+        lines.append("")
+        lines.append("最近 analysis:")
+        for item in list_analysis(limit=5):
+            lines.append(
+                f"  - {item.get('classification')} | private={item.get('private_signal')} | "
+                f"candidate={item.get('memory_candidate')} | "
+                f"{str(item.get('contact_name', ''))[:20]}"
+            )
+        return "\n".join(lines)
+
+    if action == "analyze":
+        pending = load_unanalyzed_normalized()
+        if not pending:
+            return "无待分析 normalized 消息。"
+        analyzed = 0
+        candidates = 0
+        from customer_gateway.learning_candidate_queue import enqueue_from_analysis
+
+        for record in pending:
+            analysis = analyze_normalized(record)
+            save_analysis(analysis)
+            analyzed += 1
+            if analysis.get("memory_candidate"):
+                cand = enqueue_from_analysis(analysis, record)
+                if cand:
+                    candidates += 1
+        return (
+            f"已分析 {analyzed} 条 normalized 消息，"
+            f"新建 learning candidates {candidates} 条。"
+        )
+
+    return dispatch_conversations_command("/conversations help")
+
+
+def dispatch_learning_command(message: str) -> str:
+    """Handle /learning candidates|approve|reject."""
+    assert_readonly("learning_command")
+    from customer_gateway.learning_candidate_queue import (
+        approve_candidate,
+        format_candidates_list,
+        list_candidates,
+        reject_candidate,
+    )
+
+    text = (message or "").strip()
+    body = text[len("/learning"):].strip() if text.lower().startswith("/learning") else text
+
+    if not body or body.lower() == "help":
+        return (
+            "Learning Candidate Queue（CEO 审批后才写入正式 memory）\n"
+            "/learning candidates — 待审候选\n"
+            "/learning approve <candidate_id> — 批准并写入 memory\n"
+            "/learning reject <candidate_id> — 拒绝（不写入 memory）\n"
+        )
+
+    parts = body.split(maxsplit=2)
+    action = parts[0].lower() if parts else "candidates"
+
+    if action in ("candidates", "list"):
+        return format_candidates_list(list_candidates())
+
+    if action == "approve" and len(parts) >= 2:
+        try:
+            result = approve_candidate(parts[1])
+            return f"✅ Learning candidate 已批准并写入 memory:\n{result}"
+        except ValueError as exc:
+            return f"Error: {exc}"
+
+    if action == "reject" and len(parts) >= 2:
+        reason = parts[2] if len(parts) >= 3 else ""
+        try:
+            reject_candidate(parts[1], reason=reason)
+            return f"已拒绝 candidate {parts[1]}（未写入 memory）"
+        except ValueError as exc:
+            return f"Error: {exc}"
+
+    return dispatch_learning_command("/learning help")
+
+
 def _extract_keywords(message: str) -> list[str]:
     from sales_core.platform_supply import extract_product_keywords
 
