@@ -23,7 +23,7 @@ BROWSER_CONNECTOR = "browser_readonly"
 STORE_WAIT_MS = 120_000
 
 _EXTRACT_FULL_HISTORY_JS = """
-(batchIndex, batchSize, perChatLimit) => {
+async ([batchIndex, batchSize, perChatLimit, maxLoadRounds]) => {
   const Store = window.Store;
   if (!Store || !Store.Chat) {
     return { error: "store_unavailable", messages: [], done: true };
@@ -33,16 +33,42 @@ _EXTRACT_FULL_HISTORY_JS = """
   const start = batchIndex * batchSize;
   const end = Math.min(start + batchSize, allChats.length);
   const out = [];
+  const loadEarlier = Store.ConversationMsgs?.loadEarlierMsgs?.bind(Store.ConversationMsgs)
+    || Store.Msg?.loadEarlierMsgs?.bind(Store.Msg)
+    || null;
+
+  const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
 
   for (let ci = start; ci < end; ci++) {
     const chat = allChats[ci];
     const contactName = chat.formattedTitle || chat.name || chat.contact?.formattedName || "unknown";
     const rawId = chat.id?._serialized || chat.id?.user || String(chat.id || contactName);
+
+    if (loadEarlier) {
+      let rounds = 0;
+      while (rounds < maxLoadRounds) {
+        const msgs = chat.msgs ? chat.msgs.getModels() : [];
+        if (msgs.length >= perChatLimit) break;
+        const state = chat.msgs?.msgLoadState;
+        if (state && state.noEarlierMsgs) break;
+        try {
+          await loadEarlier(chat);
+        } catch (e) {
+          break;
+        }
+        rounds += 1;
+        await sleep(150);
+      }
+    }
+
     const msgs = chat.msgs ? chat.msgs.getModels() : [];
     const slice = msgs.length > perChatLimit ? msgs.slice(-perChatLimit) : msgs;
 
     for (const msg of slice) {
-      const body = (msg.body || msg.caption || "").trim();
+      let body = (msg.body || msg.caption || "").trim();
+      if (!body && (msg.isMedia || msg.mediaData)) {
+        body = "[media]";
+      }
       if (!body) continue;
       const isMe = msg.isSentByMe || msg.id?.fromMe;
       const ts = msg.t ? new Date(msg.t * 1000).toISOString().replace("T", " ").slice(0, 16) : "";
@@ -154,6 +180,13 @@ def history_per_chat_limit() -> int:
         return max(1, int(os.getenv("WHATSAPP_HISTORY_PER_CHAT", "500")))
     except ValueError:
         return 500
+
+
+def history_load_rounds() -> int:
+    try:
+        return max(1, int(os.getenv("WHATSAPP_HISTORY_LOAD_ROUNDS", "50")))
+    except ValueError:
+        return 50
 
 
 def poll_recent_limit() -> int:
@@ -270,13 +303,12 @@ class WhatsAppBrowserAdapter:
 
             batch_size = history_batch_size()
             per_chat = history_per_chat_limit()
+            load_rounds = history_load_rounds()
             batch_index = 0
             while True:
                 result = page.evaluate(
                     _EXTRACT_FULL_HISTORY_JS,
-                    batch_index,
-                    batch_size,
-                    per_chat,
+                    [batch_index, batch_size, per_chat, load_rounds],
                 )
                 if not isinstance(result, dict):
                     break

@@ -133,6 +133,42 @@ class WhatsAppBrowserAdapterTests(unittest.TestCase):
     def test_playwright_available_is_boolean(self) -> None:
         self.assertIsInstance(playwright_available(), bool)
 
+    def test_fetch_history_batches_paginated(self) -> None:
+        fake_page = mock.MagicMock()
+        batch1 = {
+            "error": None,
+            "messages": [{
+                "contact_name": "Buyer A",
+                "chat_id_raw": "1",
+                "message": "G4KD engine?",
+                "timestamp": "2024-01-01 10:00",
+                "direction": "incoming",
+            }],
+            "done": False,
+        }
+        batch2 = {"error": None, "messages": [], "done": True}
+
+        with mock.patch.dict(
+            self.env,
+            {"WHATSAPP_HISTORY_BATCH_SIZE": "50", "WHATSAPP_HISTORY_PER_CHAT": "500"},
+        ):
+            with mock.patch(
+                "customer_gateway.whatsapp_browser_adapter.playwright_available",
+                return_value=True,
+            ):
+                with mock.patch.object(WhatsAppBrowserAdapter, "_launch", return_value=fake_page):
+                    with mock.patch.object(WhatsAppBrowserAdapter, "_wait_for_login", return_value=True):
+                        fake_page.evaluate.side_effect = [batch1, batch2]
+                        with mock.patch.object(WhatsAppBrowserAdapter, "close"):
+                            adapter = WhatsAppBrowserAdapter()
+                            batches = adapter.fetch_history_batches()
+
+        self.assertEqual(len(batches), 1)
+        self.assertEqual(batches[0][0]["contact_name"], "Buyer A")
+        args = fake_page.evaluate.call_args_list[0][0][1]
+        self.assertEqual(args[1], 50)
+        self.assertEqual(args[2], 500)
+
 
 if __name__ == "__main__":
     unittest.main()

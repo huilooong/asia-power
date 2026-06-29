@@ -514,6 +514,12 @@ def dispatch_sales_intelligence_command(message: str) -> str:
         format_dashboard_markdown,
         run_sales_intelligence_analysis,
     )
+    from customer_gateway.whatsapp_sales_intelligence_full_report import (
+        FULL_JSON_PATH,
+        FULL_MD_PATH,
+        format_full_report_markdown,
+        save_full_report,
+    )
 
     text = (message or "").strip()
     body = (
@@ -528,6 +534,7 @@ def dispatch_sales_intelligence_command(message: str) -> str:
             "/sales-intelligence import — 导入全部历史到 Conversation Database\n"
             "/sales-intelligence import --browser — 含 Browser 分页全量抓取\n"
             "/sales-intelligence analyze — 运行销售智能分析（阶段 2–7）\n"
+            "/sales-intelligence report — 生成完整销售智能报告（md+json）\n"
             "/sales-intelligence dashboard — CEO Dashboard\n"
             "/sales-intelligence approve-reply <reply_id> — CEO 批准话术升级\n"
             "/sales-intelligence reject-reply <reply_id> — 拒绝话术升级\n"
@@ -547,13 +554,32 @@ def dispatch_sales_intelligence_command(message: str) -> str:
         if not result.get("ok"):
             return result.get("message", "分析失败")
         d = result.get("dashboard", {})
+        fr = result.get("full_report") or {}
         return (
             f"销售智能分析完成。\n"
             f"会话: {result.get('conversation_count')} | 消息: {result.get('message_count')}\n"
             f"活跃客户: {d.get('active_customers', 0)} | 重复客户: {d.get('repeat_customers', 0)}\n"
             f"最佳产品: {d.get('easiest_product')} | 最佳国家: {d.get('easiest_country')}\n"
             f"待 CEO 审批评审话术: {result.get('reply_evolution', {}).get('proposed', 0)} 条\n"
-            "查看 Dashboard: /sales-intelligence dashboard"
+            f"完整报告: {fr.get('markdown_path', FULL_MD_PATH)}\n"
+            "查看 Dashboard: /sales-intelligence dashboard | 报告: /sales-intelligence report"
+        )
+
+    if action == "report":
+        import json as _json
+
+        if FULL_JSON_PATH.is_file():
+            report = _json.loads(FULL_JSON_PATH.read_text(encoding="utf-8"))
+            return format_full_report_markdown(report)
+        analyze = run_sales_intelligence_analysis()
+        if not analyze.get("ok"):
+            return "请先 /sales-intelligence import 再 analyze"
+        saved = save_full_report(analyze)
+        return (
+            f"完整报告已生成:\n"
+            f"- {saved.get('markdown_path')}\n"
+            f"- {saved.get('json_path')}\n\n"
+            + format_full_report_markdown(saved["report"])
         )
 
     if action == "dashboard":

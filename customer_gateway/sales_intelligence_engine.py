@@ -434,6 +434,14 @@ def run_sales_intelligence_analysis() -> dict[str, Any]:
     (sip.SI_ROOT / "latest_analysis.json").write_text(
         json.dumps(result, indent=2, ensure_ascii=False), encoding="utf-8",
     )
+
+    from customer_gateway.whatsapp_sales_intelligence_full_report import save_full_report
+
+    full = save_full_report(result)
+    result["full_report"] = {
+        "markdown_path": full.get("markdown_path"),
+        "json_path": full.get("json_path"),
+    }
     return result
 
 

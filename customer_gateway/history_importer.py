@@ -116,7 +116,12 @@ def import_from_browser(*, use_browser: bool = True) -> dict[str, Any]:
     if not use_browser:
         return {"source": "browser", "contacts": 0, "messages": 0, "skipped": True}
 
-    from customer_gateway.whatsapp_browser_adapter import WhatsAppBrowserAdapter, playwright_available
+    from customer_gateway.whatsapp_browser_adapter import (
+        WhatsAppBrowserAdapter,
+        history_batch_size,
+        history_per_chat_limit,
+        playwright_available,
+    )
 
     if not playwright_available():
         return {"source": "browser", "contacts": 0, "messages": 0, "error": "playwright_unavailable"}
@@ -127,8 +132,9 @@ def import_from_browser(*, use_browser: bool = True) -> dict[str, Any]:
     except Exception as exc:
         return {"source": "browser", "contacts": 0, "messages": 0, "error": str(exc)}
 
-    contacts = 0
+    seen_contacts: set[str] = set()
     messages = 0
+    total_chats_reported = 0
     for batch in batches:
         by_contact: dict[str, list[dict[str, Any]]] = {}
         for rec in batch:
@@ -144,14 +150,17 @@ def import_from_browser(*, use_browser: bool = True) -> dict[str, Any]:
             ))
         for contact, msgs in by_contact.items():
             save_conversation(contact, msgs, source="browser_history")
-            contacts += 1
+            seen_contacts.add(contact)
             messages += len(msgs)
 
     return {
         "source": "browser",
-        "contacts": contacts,
+        "contacts": len(seen_contacts),
         "messages": messages,
         "batches": len(batches),
+        "batch_size": history_batch_size(),
+        "per_chat_limit": history_per_chat_limit(),
+        "unique_contacts": len(seen_contacts),
     }
 
 
@@ -167,20 +176,47 @@ def run_full_history_import(*, include_browser: bool = False) -> dict[str, Any]:
         results.append(import_from_browser())
 
     from customer_gateway.conversation_database import load_all_conversations
+    from customer_gateway.contact_role_classifier import summarize_contact_roles
+
     all_convs = load_all_conversations()
     total_msgs = sum(c.get("message_count", 0) for c in all_convs)
+    role_summary = summarize_contact_roles(all_convs)
 
     state = _load_import_state()
     state["last_full_import"] = _now()
     state["conversation_count"] = len(all_convs)
     state["message_count"] = total_msgs
     state["sources"] = results
+    state["role_summary"] = {
+        "customer_tiers": role_summary["customer_tiers"],
+        "other_roles": role_summary["other_roles"],
+        "effective_customers": role_summary["effective_customers"],
+    }
     _save_import_state(state)
+
+    tiers = role_summary["customer_tiers"]
+    others = role_summary["other_roles"]
+    msg = (
+        f"历史导入完成：{len(all_convs)} 个会话，{total_msgs} 条消息。\n"
+        f"有效客户: {role_summary['effective_customers']} | "
+        f"A级: {tiers.get('A级客户', 0)} B级: {tiers.get('B级客户', 0)} "
+        f"潜在: {tiers.get('潜在客户', 0)}\n"
+        f"供应商: {others.get('供应商', 0)} | 私人: {others.get('私人', 0)} | "
+        f"系统/广告: {others.get('系统/广告', 0)}"
+    )
+    browser = next((r for r in results if r.get("source") == "browser"), None)
+    if browser and not browser.get("error"):
+        msg += (
+            f"\nBrowser: {browser.get('messages', 0)} 条 / "
+            f"{browser.get('unique_contacts', browser.get('contacts', 0))} 联系人 "
+            f"({browser.get('batches', 0)} 批, per_chat={browser.get('per_chat_limit', '?')})"
+        )
 
     return {
         "ok": True,
         "conversation_count": len(all_convs),
         "message_count": total_msgs,
         "sources": results,
-        "message": f"历史导入完成：{len(all_convs)} 个会话，{total_msgs} 条消息。",
+        "role_summary": role_summary,
+        "message": msg,
     }
