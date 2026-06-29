@@ -383,45 +383,54 @@ def dispatch_message(
             )
             return visible
 
-        from knowledge.guard import (
-            audit_and_enforce,
-            knowledge_system_addon,
-            requires_knowledge_query,
-        )
-        from knowledge.runtime import bootstrap_knowledge_runtime, get_runtime
-
-        bootstrap_knowledge_runtime()
-        runtime = get_runtime()
-        bundle = runtime.query(message, agent_id=routed_id)
+        # Optional knowledge-runtime augmentation. The `knowledge` package is not
+        # present in this build; when it is unavailable we skip augmentation and
+        # the post-reply audit, falling back to the base prompt. Verified-data
+        # protection for BI/data queries already ran above via truth.*.
         knowledge_addon = ""
-
-        if requires_knowledge_query(message):
-            if not bundle.has_facts():
-                visible = bundle.format_no_data_response()
-                print(
-                    f"[APCOO DEBUG] mode=knowledge_runtime_no_data reply_len={len(visible)}",
-                    flush=True,
-                )
-                memory_tool.log_conversation(
-                    message, visible,
-                    source="apcoo",
-                    channel=source,
-                    important=True,
-                )
-                return visible
-            system_prompt += knowledge_system_addon(bundle)
-            knowledge_addon = "\n"  # memory already in bundle via memory provider
-        elif bundle.has_facts():
-            system_prompt += (
-                "\n\n--- Knowledge Runtime (read-only facts) ---\n"
-                + bundle.format_context(max_chars=2500)
+        bundle = None
+        audit_and_enforce = None
+        try:
+            from knowledge.guard import (
+                audit_and_enforce,
+                knowledge_system_addon,
+                requires_knowledge_query,
             )
-            knowledge_addon = "\n"
+            from knowledge.runtime import bootstrap_knowledge_runtime, get_runtime
+
+            bootstrap_knowledge_runtime()
+            runtime = get_runtime()
+            bundle = runtime.query(message, agent_id=routed_id)
+
+            if requires_knowledge_query(message):
+                if not bundle.has_facts():
+                    visible = bundle.format_no_data_response()
+                    print(
+                        f"[APCOO DEBUG] mode=knowledge_runtime_no_data reply_len={len(visible)}",
+                        flush=True,
+                    )
+                    memory_tool.log_conversation(
+                        message, visible,
+                        source="apcoo",
+                        channel=source,
+                        important=True,
+                    )
+                    return visible
+                system_prompt += knowledge_system_addon(bundle)
+                knowledge_addon = "\n"  # memory already in bundle via memory provider
+            elif bundle.has_facts():
+                system_prompt += (
+                    "\n\n--- Knowledge Runtime (read-only facts) ---\n"
+                    + bundle.format_context(max_chars=2500)
+                )
+                knowledge_addon = "\n"
+        except ImportError:
+            pass
 
         if source == "telegram":
             print(
                 f"[APCOO DEBUG] openai route agent={routed_id} model={model} "
-                f"chat_len={len(message)} knowledge_domains={bundle.domains_queried}",
+                f"chat_len={len(message)} knowledge_domains={bundle.domains_queried if bundle else 'n/a'}",
                 flush=True,
             )
         reply = call_openai(
@@ -455,7 +464,10 @@ def dispatch_message(
             if fallback:
                 memory_actions.append(fallback)
 
-        ok, audited = audit_and_enforce(strip_memory_tags(reply), bundle=bundle)
+        if audit_and_enforce is not None:
+            ok, audited = audit_and_enforce(strip_memory_tags(reply), bundle=bundle)
+        else:
+            ok, audited = True, strip_memory_tags(reply)
         if not ok:
             print("[APCOO DEBUG] mode=knowledge_audit_blocked", flush=True)
             visible = audited
