@@ -3,18 +3,19 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="theme-color" content="#0a1628">
+  <meta name="theme-color" content="#ffffff">
   <meta name="mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-title" content="AsiaPower">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="description" content="AsiaPower is a global powertrain sourcing platform for passenger cars, trucks, motorcycles and machinery — engines, gearboxes, chassis parts and custom half-cuts from a China-based supply network, exported worldwide.">
-  <title>AsiaPower | Global Powertrain Sourcing for Cars, Trucks, Motorcycles &amp; Machinery</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700;800&family=Inter:wght@400;500;600&display=swap" media="print" onload="this.media='all'">
-  <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700;800&family=Inter:wght@400;500;600&display=swap"></noscript>
-  <link rel="stylesheet" href="css/styles.css?v=mobile-rtl-fix-v1">
+  <title data-i18n-title="meta.home.title">AsiaPower | Global Powertrain Sourcing for Cars, Trucks, Motorcycles &amp; Machinery</title>
+  <link rel="preload" href="assets/fonts/barlow-condensed-800-latin.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href="assets/fonts/inter-latin.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href="/api/half-cuts/public" as="fetch" crossorigin>
+  <link rel="stylesheet" href="css/fonts.css?v=self-hosted-fonts-v1">
+  <link rel="stylesheet" href="css/styles.css?v=exw-badge-v1">
+  <link rel="stylesheet" href="css/ebay-layout.css?v=73" data-ebay-layout="1">
   <link rel="icon" href="assets/favicon.png" type="image/png">
   <link rel="manifest" href="/manifest.json">
   <link rel="apple-touch-icon" href="/assets/icons/apple-touch-icon.png">
@@ -23,7 +24,6 @@
   <meta property="og:title" content="AsiaPower | Global Powertrain Sourcing for Cars, Trucks, Motorcycles &amp; Machinery">
   <meta property="og:description" content="AsiaPower is a global powertrain sourcing platform for passenger cars, trucks, motorcycles and machinery. China-based supply network — serving importers and fleet operators worldwide.">
   <meta property="og:url" content="https://asia-power.com/">
-  <!-- Google tag (gtag.js) -->
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-PB2J3VRX5J"></script>
   <script>
     window.dataLayer = window.dataLayer || [];
@@ -31,522 +31,164 @@
     gtag('js', new Date());
     gtag('config', 'G-PB2J3VRX5J');
   </script>
+  <meta property="og:image" content="https://asia-power.com/assets/asia-power-og.svg">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:image" content="https://asia-power.com/assets/asia-power-og.svg">
+  <link rel="stylesheet" href="css/asia-power-apple.css">
 </head>
-<body data-page="home" class="page-home">
+<body data-page="home" class="page-home scheme-ebay">
 
   <div id="site-topbar"></div>
   <div id="site-header"></div>
 
   <main id="main-content">
-    <!-- Hero -->
-    <section class="hero-home">
-      <div class="hero-home__bg" aria-hidden="true"></div>
-      <div class="container hero-home__grid">
-        <div class="hero-home__content">
-        <span class="hero-home__eyebrow" data-i18n="home.eyebrow">Global Powertrain Sourcing Platform</span>
-        <h1 data-i18n="home.title" data-i18n-html="true">Powertrain Parts<br><em>Ready to Source</em></h1>
-        <p class="hero-home__lead" data-i18n="home.lead">AsiaPower connects global importers, workshops and fleet operators to a China-based supply network spanning engines, gearboxes, chassis parts and custom-dismantled half-cuts — for passenger cars, trucks, motorcycles and construction machinery.</p>
-        <p class="hero-home__trust" data-i18n="trust.block">Whole-vehicle startup video available before dismantling. Parts can be dismantled according to buyer requirements after confirmation.</p>
+<div class="ebay-page">
+    <div class="ebay-page__intro">
+      <nav class="ebay-breadcrumb" aria-label="Breadcrumb">
+        <ol>
+          <li><a href="index.html">AsiaPower</a></li>
+          <li aria-current="page">Export Parts &amp; Vehicles</li>
+        </ol>
+      </nav>
+      <h1 class="ebay-page-title">Export Parts &amp; Vehicles</h1>
+    </div>
 
-        <div class="hero-capability">
-          <h2 class="hero-capability__title" data-i18n="home.capabilityTitle">Global Sourcing at Scale</h2>
-          <div class="hero-capability__row">
-            <div class="hero-capability__item">
-              <span class="hero-capability__value">4</span>
-              <span class="hero-capability__label" data-i18n="home.productLines">Product Lines</span>
-            </div>
-            <div class="hero-capability__item">
-              <span class="hero-capability__value">5000+</span>
-              <span class="hero-capability__label" data-i18n="home.enginesAvail">Engines Available</span>
-            </div>
-            <div class="hero-capability__item">
-              <span class="hero-capability__value">1000+</span>
-              <span class="hero-capability__label" data-i18n="home.gearboxesAvail">Gearboxes Available</span>
-            </div>
-            <div class="hero-capability__item">
-              <span class="hero-capability__value">Global</span>
-              <span class="hero-capability__label" data-i18n="home.exportNetwork">Export Network</span>
-            </div>
-          </div>
-        </div>
+    <div class="ebay-page__body">
+      <aside class="ebay-sidebar" aria-label="Browse by category">
+        <h2 class="ebay-sidebar__title" data-i18n="ebay.browseByCategory">Browse by category</h2>
+        <ul class="ebay-sidebar__list" data-ebay-sidebar-list></ul>
+      </aside>
 
-        <div class="hero-home__markets">
-          <span class="hero-home__markets-label" data-i18n="home.marketsLabel">Target Markets</span>
-          <div class="hero-home__markets-list">
-            <span class="hero-home__market" data-i18n="home.regionAfrica">Africa</span>
-            <span class="hero-home__market" data-i18n="home.regionAmericas">Americas</span>
-            <span class="hero-home__market" data-i18n="home.regionCaribbean">Caribbean</span>
-            <span class="hero-home__market" data-i18n="home.regionMiddleEast">Middle East</span>
-            <span class="hero-home__market" data-i18n="home.regionSoutheastAsia">Southeast Asia</span>
-            <span class="hero-home__market" data-i18n="home.regionAustralia">Australia</span>
+      <div class="ebay-main">
+        <a class="ebay-banner-main" href="half-cuts/">
+          <img src="assets/images/hero-composite-ship-truck-machinery.png?v=v3-hero-v2" alt="Half-cuts, engines and truck parts — shipped worldwide">
+          <div class="ebay-banner-main__overlay">
+            <h2>Find What You Need.<br><em>Ship Worldwide.</em></h2>
+            <p>Half-cuts, engines &amp; truck parts — video verified, EXW pricing.</p>
+            <span class="ebay-banner-main__cta">Shop now →</span>
           </div>
-        </div>
-        <div class="hero-home__actions">
-          <a href="engines/" class="btn btn-accent" data-i18n="home.viewProductsCta">View Products</a>
-          <a href="app.html" class="btn btn-ghost" data-i18n="home.downloadAppCta">Download APP</a>
-        </div>
-        </div>
-        <div class="hero-home__visual">
-          <div class="hero-visual">
-            <figure class="hero-visual__card hero-visual__card--main">
-              <picture>
-                <source srcset="assets/images/hero-halfcut.webp?v=img-v4" type="image/webp">
-                <img src="assets/images/hero-halfcut.jpg?v=img-v4" alt="Toyota RAV4 front half-cut ready for export" width="720" height="540" loading="eager" decoding="async" fetchpriority="high">
-              </picture>
-              <figcaption class="hero-visual__tag">Half-Cuts · Custom Dismantled</figcaption>
-            </figure>
-            <figure class="hero-visual__card hero-visual__card--sub">
-              <picture>
-                <source srcset="assets/images/hero-engine.webp?v=img-v3" type="image/webp">
-                <img src="assets/images/hero-engine.jpg?v=img-v3" alt="Inspected used engine ready for export" width="360" height="270" loading="lazy" decoding="async">
-              </picture>
-              <figcaption class="hero-visual__tag">Engines · Inspected</figcaption>
-            </figure>
+        </a>
+
+        <section class="ebay-carousel-section" data-home-section="best-selling" aria-labelledby="best-selling-heading">
+          <div class="ebay-section__head">
+            <h2 id="best-selling-heading" data-i18n="home.sectionHalfCuts">Half-Cuts</h2>
+            <a href="half-cuts/" data-i18n="home.seeAll">See All</a>
           </div>
-        </div>
+          <div class="ebay-carousel" data-carousel>
+            <button type="button" class="ebay-carousel__nav ebay-carousel__nav--prev" data-carousel-prev aria-label="Previous">‹</button>
+            <div class="ebay-carousel__track" data-carousel-track data-home-carousel="best-selling"></div>
+            <button type="button" class="ebay-carousel__nav ebay-carousel__nav--next" data-carousel-next aria-label="Next">›</button>
+          </div>
+        </section>
+
+        <section class="ebay-carousel-section" data-home-section="passenger-engines" aria-labelledby="passenger-engines-heading">
+          <div class="ebay-section__head">
+            <h2 id="passenger-engines-heading" data-i18n="home.sectionPassengerEngines">Passenger Car Engines</h2>
+            <a href="engines/" data-i18n="home.seeAll">See All</a>
+          </div>
+          <div class="ebay-carousel" data-carousel>
+            <button type="button" class="ebay-carousel__nav ebay-carousel__nav--prev" data-carousel-prev aria-label="Previous">‹</button>
+            <div class="ebay-carousel__track" data-carousel-track data-home-carousel="passenger-engines"></div>
+            <button type="button" class="ebay-carousel__nav ebay-carousel__nav--next" data-carousel-next aria-label="Next">›</button>
+          </div>
+        </section>
+
+        <section class="ebay-carousel-section" data-home-section="deals" aria-labelledby="deals-heading">
+          <div class="ebay-section__head">
+            <h2 id="deals-heading" data-i18n="home.sectionTruckCabs">Truck Cabs</h2>
+            <a href="trucks/" data-i18n="home.seeAll">See All</a>
+          </div>
+          <div class="ebay-carousel" data-carousel>
+            <button type="button" class="ebay-carousel__nav ebay-carousel__nav--prev" data-carousel-prev aria-label="Previous">‹</button>
+            <div class="ebay-carousel__track" data-carousel-track data-home-carousel="deals"></div>
+            <button type="button" class="ebay-carousel__nav ebay-carousel__nav--next" data-carousel-next aria-label="Next">›</button>
+          </div>
+        </section>
+
+        <section class="ebay-carousel-section" data-home-section="top-rated" aria-labelledby="top-rated-heading">
+          <div class="ebay-section__head">
+            <h2 id="top-rated-heading" data-i18n="home.sectionMachineryEngines">Construction Machinery &amp; Engines</h2>
+            <a href="half-cuts/?cat=machinery" data-i18n="home.seeAll">See All</a>
+          </div>
+          <div class="ebay-carousel" data-carousel>
+            <button type="button" class="ebay-carousel__nav ebay-carousel__nav--prev" data-carousel-prev aria-label="Previous">‹</button>
+            <div class="ebay-carousel__track" data-carousel-track data-home-carousel="top-rated"></div>
+            <button type="button" class="ebay-carousel__nav ebay-carousel__nav--next" data-carousel-next aria-label="Next">›</button>
+          </div>
+        </section>
+
+        <section class="ebay-carousel-section" data-home-section="used-cars" aria-labelledby="used-cars-heading">
+          <div class="ebay-section__head">
+            <h2 id="used-cars-heading" data-i18n="home.sectionUsedCars">Export Used Cars</h2>
+            <a href="half-cuts/?cat=used-cars" data-i18n="home.seeAll">See All</a>
+          </div>
+          <div class="ebay-carousel" data-carousel>
+            <button type="button" class="ebay-carousel__nav ebay-carousel__nav--prev" data-carousel-prev aria-label="Previous">‹</button>
+            <div class="ebay-carousel__track" data-carousel-track data-home-carousel="used-cars"></div>
+            <button type="button" class="ebay-carousel__nav ebay-carousel__nav--next" data-carousel-next aria-label="Next">›</button>
+          </div>
+        </section>
       </div>
-    </section>
+    </div>
+  </div>
 
-    <!-- Customer Case Studies -->
-    <section class="platform-section case-studies-section">
-      <div class="container">
-        <div class="platform-section__header platform-section__header--center">
-          <span class="section-eyebrow" data-i18n="home.caseEyebrow">Real Inventory, Verified Quality</span>
-          <h2 class="section-title" data-i18n="home.caseTitle">Recent Customer Sourcing Cases</h2>
-          <p class="section-lead" data-i18n="home.caseLead">Actual photos and inspection videos of half-cuts and truck cabs sourced and exported for our buyers — every unit documented before shipment.</p>
-        </div>
-        <div class="case-studies-grid">
-          <div class="case-card">
-            <video class="case-card__media" poster="assets/images/case-studies/isuzu-100p-poster.jpg" loop playsinline preload="none" controls>
-              <source src="assets/videos/case-studies/isuzu-100p-halfcut-v2.mp4" type="video/mp4">
-            </video>
-            <div class="case-card__body">
-              <span class="case-card__tag" data-i18n="home.caseTagVideo">Inspection Video</span>
-              <h3>Isuzu 100P 4JB1 Truck Half Cut</h3>
-            </div>
-          </div>
-          <div class="case-card">
-            <video class="case-card__media" poster="assets/images/case-studies/hyundai-truck-poster.jpg" loop playsinline preload="none" controls>
-              <source src="assets/videos/case-studies/hyundai-truck-halfcut-v2.mp4" type="video/mp4">
-            </video>
-            <div class="case-card__body">
-              <span class="case-card__tag" data-i18n="home.caseTagVideo">Inspection Video</span>
-              <h3>Hyundai D6CF48E5 Truck Half Cut</h3>
-            </div>
-          </div>
-          <div class="case-card">
-            <img class="case-card__media" src="assets/images/case-studies/howo-t7h-cab.webp" alt="HOWO T7H driver cab" loading="lazy" width="600" height="800">
-            <div class="case-card__body">
-              <span class="case-card__tag" data-i18n="home.caseTagPhoto">Customer Photo</span>
-              <h3>HOWO T7H Driver Cab</h3>
-            </div>
-          </div>
-          <div class="case-card">
-            <img class="case-card__media" src="assets/images/case-studies/hino-700-cab.webp" alt="Hino 700 driver cab" loading="lazy" width="600" height="800">
-            <div class="case-card__body">
-              <span class="case-card__tag" data-i18n="home.caseTagPhoto">Customer Photo</span>
-              <h3>Hino 700 Driver Cab</h3>
-            </div>
-          </div>
-          <div class="case-card">
-            <img class="case-card__media" src="assets/images/case-studies/sinotruk-howo-tx-cab.webp" alt="Sinotruk Howo TX driver cab" loading="lazy" width="600" height="800">
-            <div class="case-card__body">
-              <span class="case-card__tag" data-i18n="home.caseTagPhoto">Customer Photo</span>
-              <h3>Sinotruk Howo TX Driver Cab</h3>
-            </div>
-          </div>
-          <div class="case-card">
-            <img class="case-card__media" src="assets/images/case-studies/toyota-camry-halfcut.webp" alt="Toyota Camry half cut" loading="lazy" width="600" height="800">
-            <div class="case-card__body">
-              <span class="case-card__tag" data-i18n="home.caseTagPhoto">Customer Photo</span>
-              <h3>Toyota Camry 2AZ Half Cut</h3>
-            </div>
-          </div>
-          <div class="case-card">
-            <img class="case-card__media" src="assets/images/case-studies/bmw-320i-halfcut.webp" alt="BMW 320i half cut" loading="lazy" width="600" height="800">
-            <div class="case-card__body">
-              <span class="case-card__tag" data-i18n="home.caseTagPhoto">Customer Photo</span>
-              <h3>BMW 320i N46B20CB Half Cut</h3>
-            </div>
-          </div>
-          <div class="case-card">
-            <img class="case-card__media" src="assets/images/case-studies/mercedes-b200-halfcut.webp" alt="Mercedes-Benz B200 half cut" loading="lazy" width="600" height="800">
-            <div class="case-card__body">
-              <span class="case-card__tag" data-i18n="home.caseTagPhoto">Customer Photo</span>
-              <h3>Mercedes-Benz B200 Half Cut</h3>
-            </div>
-          </div>
-          <div class="case-card">
-            <img class="case-card__media" src="assets/images/case-studies/audi-q3-halfcut.webp" alt="Audi Q3 half cut" loading="lazy" width="600" height="800">
-            <div class="case-card__body">
-              <span class="case-card__tag" data-i18n="home.caseTagPhoto">Customer Photo</span>
-              <h3>Audi Q3 EA211 Half Cut</h3>
-            </div>
-          </div>
-          <div class="case-card">
-            <img class="case-card__media" src="assets/images/case-studies/honda-accord-halfcut.webp" alt="Honda Accord half cut" loading="lazy" width="600" height="800">
-            <div class="case-card__body">
-              <span class="case-card__tag" data-i18n="home.caseTagPhoto">Customer Photo</span>
-              <h3>Honda Accord KA24A8 Half Cut</h3>
-            </div>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- What We Supply -->
-    <section class="platform-section">
-      <div class="container">
-        <div class="platform-section__header">
-          <span class="section-eyebrow" data-i18n="home.supplyEyebrow">What We Supply</span>
-          <h2 class="section-title" data-i18n="home.supplyTitle">Four Product Lines. One Sourcing Platform.</h2>
-          <p class="section-lead" data-i18n="home.supplyLead">AsiaPower is not an e-commerce catalog. Browse engines, gearboxes, chassis parts and custom dismantling by brand — or contact us for custom commercial vehicle sourcing.</p>
-        </div>
-        <div class="platform-supply">
-          <a href="engines/" class="platform-supply__item platform-supply__item--engines">
-            <div class="platform-supply__media media-carousel">
-              <img src="assets/images/product-lines/engine-toyota-landcruiser-prado.webp" alt="Toyota Land Cruiser Prado engine, supplier photo" width="640" height="400" loading="lazy" decoding="async">
-              <img src="assets/images/product-lines/engine-bmw-320i.webp" alt="BMW 320i engine, supplier photo" width="640" height="400" loading="lazy" decoding="async">
-              <img src="assets/images/product-lines/engine-mercedes-ml350.webp" alt="Mercedes-Benz ML350 engine, supplier photo" width="640" height="400" loading="lazy" decoding="async">
-              <img src="assets/images/product-lines/engine-honda-accord.webp" alt="Honda Accord engine, supplier photo" width="640" height="400" loading="lazy" decoding="async">
-              <img src="assets/images/product-lines/engine-hyundai-santafe.webp" alt="Hyundai Santa Fe engine, supplier photo" width="640" height="400" loading="lazy" decoding="async">
-              <img src="assets/images/product-lines/engine-nissan-patrol.webp" alt="Nissan Patrol engine, supplier photo" width="640" height="400" loading="lazy" decoding="async">
-              <img src="assets/images/product-lines/engine-volkswagen-touareg.webp" alt="Volkswagen Touareg engine, supplier photo" width="640" height="400" loading="lazy" decoding="async">
-              <img src="assets/images/product-lines/engine-kia-k5.webp" alt="Kia K5 engine, supplier photo" width="640" height="400" loading="lazy" decoding="async">
-            </div>
-            <div class="platform-supply__body">
-            <span class="platform-supply__label">01</span>
-            <h3 data-i18n="home.catEngines">Engines</h3>
-            <p data-i18n="home.catEnginesDesc">Petrol, diesel and hybrid units. Whole-vehicle startup video available before dismantling, with export documentation.</p>
-            <span class="platform-supply__link" data-i18n="home.viewCategory">View category →</span>
-            </div>
-          </a>
-          <a href="gearboxes/" class="platform-supply__item platform-supply__item--gearboxes">
-            <div class="platform-supply__media">
-              <picture>
-                <source srcset="assets/images/supply-gearbox.webp?v=img-v3" type="image/webp">
-                <img src="assets/images/supply-gearbox.jpg?v=img-v3" alt="Automatic and manual gearboxes for global buyers" width="640" height="400" loading="lazy" decoding="async">
-              </picture>
-            </div>
-            <div class="platform-supply__body">
-            <span class="platform-supply__label">02</span>
-            <h3 data-i18n="home.catGearboxes">Gearboxes</h3>
-            <p data-i18n="home.catGearboxesDesc">Automatic, manual, CVT and 4WD transmissions. Shift-tested and crated.</p>
-            <span class="platform-supply__link" data-i18n="home.viewCategory">View category →</span>
-            </div>
-          </a>
-          <a href="chassis-parts/" class="platform-supply__item platform-supply__item--chassis">
-            <div class="platform-supply__media">
-              <picture>
-                <source srcset="assets/images/supply-chassis.webp?v=img-v3" type="image/webp">
-                <img src="assets/images/supply-chassis.jpg?v=img-v3" alt="Chassis and suspension parts from salvage vehicles" width="640" height="400" loading="lazy" decoding="async">
-              </picture>
-            </div>
-            <div class="platform-supply__body">
-            <span class="platform-supply__label">03</span>
-            <h3 data-i18n="home.catChassis">Chassis Parts</h3>
-            <p data-i18n="home.catChassisDesc">Suspension, steering, brakes, axles and differentials by application.</p>
-            <span class="platform-supply__link" data-i18n="home.viewCategory">View category →</span>
-            </div>
-          </a>
-          <a href="half-cuts/" class="platform-supply__item platform-supply__item--halfcuts">
-            <div class="platform-supply__media media-carousel">
-              <img src="assets/images/product-lines/halfcut-isuzu.webp" alt="Isuzu half-cut, supplier photo" width="640" height="400" loading="lazy" decoding="async">
-              <img src="assets/images/product-lines/halfcut-hino-700.webp" alt="Hino 700 half-cut, supplier photo" width="640" height="400" loading="lazy" decoding="async">
-              <img src="assets/images/product-lines/halfcut-mitsubishi-challenger.webp" alt="Mitsubishi Challenger half-cut, supplier photo" width="640" height="400" loading="lazy" decoding="async">
-              <img src="assets/images/product-lines/halfcut-chevrolet-spark.webp" alt="Chevrolet Spark half-cut, supplier photo" width="640" height="400" loading="lazy" decoding="async">
-              <img src="assets/images/product-lines/halfcut-gmc-savana.webp" alt="GMC Savana half-cut, supplier photo" width="640" height="400" loading="lazy" decoding="async">
-              <img src="assets/images/product-lines/halfcut-buick-excelle.webp" alt="Buick Excelle GT half-cut, supplier photo" width="640" height="400" loading="lazy" decoding="async">
-              <img src="assets/images/product-lines/halfcut-hyundai-trucks-p440.webp" alt="Hyundai Trucks P440 half-cut, supplier photo" width="640" height="400" loading="lazy" decoding="async">
-              <img src="assets/images/product-lines/halfcut-toyota-camry.webp" alt="Toyota Camry half-cut, supplier photo" width="640" height="400" loading="lazy" decoding="async">
-            </div>
-            <div class="platform-supply__body">
-            <span class="platform-supply__label">04</span>
-            <h3 data-i18n="home.catHalfCuts">Custom Dismantling (Half-Cuts)</h3>
-            <p data-i18n="home.catHalfCutsDesc">Front, rear, nose and complete half-cuts dismantled to buyer specification for rebuild and extraction programs.</p>
-            <span class="platform-supply__link" data-i18n="home.viewCategory">View category →</span>
-            </div>
-          </a>
-        </div>
-      </div>
-    </section>
-
-    <!-- Export Market Coverage -->
-    <section class="platform-section platform-section--dark home-market-section">
-      <div class="container">
-        <div class="home-market-stats home-market-stats--standalone" aria-label="Export market scale">
-          <p class="home-market-stats__intro" data-i18n="home.marketIntro">Our export footprint spans:</p>
-          <div class="home-market-stats__grid">
-            <div class="home-market-stats__item">
-              <div class="home-market-stats__value market-stat" data-market-stat="countries">
-                <span class="market-stat__en"><span>110</span>+</span>
-                <span class="market-stat__zh" lang="zh-CN"><span>110</span>+</span>
-              </div>
-              <div class="home-market-stats__label" data-i18n="home.statCountries">Countries &amp; territories</div>
-            </div>
-            <div class="home-market-stats__item">
-              <div class="home-market-stats__value market-stat" data-market-stat="population">
-                <span class="market-stat__en"><span>3.5</span>B+</span>
-                <span class="market-stat__zh" lang="zh-CN"><span>35</span>亿+</span>
-              </div>
-              <div class="home-market-stats__label" data-i18n="home.statPopulation">Combined population</div>
-            </div>
-            <div class="home-market-stats__item">
-              <div class="home-market-stats__value market-stat" data-market-stat="vehicles">
-                <span class="market-stat__en"><span>700</span>M+</span>
-                <span class="market-stat__zh" lang="zh-CN"><span>7</span>亿+</span>
-              </div>
-              <div class="home-market-stats__label" data-i18n="home.statVehicles">Registered motor vehicles</div>
-            </div>
-            <div class="home-market-stats__item">
-              <div class="home-market-stats__value market-stat" data-market-stat="market">
-                <span class="market-stat__en">$<span>100</span>B+</span>
-                <span class="market-stat__zh" lang="zh-CN"><span>1000</span>亿美元+</span>
-              </div>
-              <div class="home-market-stats__label" data-i18n="home.statMarket">Est. annual aftermarket demand</div>
-            </div>
-          </div>
-          <p class="home-market-stats__note" data-i18n="home.marketNote">Approximate regional totals from public population, vehicle-registration and automotive aftermarket industry data.</p>
-        </div>
-      </div>
-    </section>
-
-    <!-- Platform Pillars -->
-    <section class="platform-section">
-      <div class="container">
-        <div class="platform-section__header platform-section__header--center">
-          <span class="section-eyebrow" data-i18n="home.whyEyebrow">Why AsiaPower</span>
-          <h2 class="section-title" data-i18n="home.whyTitle">Built for Professional Global Trade</h2>
-        </div>
-        <div class="platform-pillars">
-          <div class="platform-pillar">
-            <div class="platform-pillar__num">01</div>
-            <h3 data-i18n="home.pillar1Title">Trust</h3>
-            <p data-i18n="home.pillar1Desc">Whole-vehicle startup video available before dismantling, plus photos and export documentation. Parts can be dismantled according to buyer requirements after confirmation.</p>
-          </div>
-          <div class="platform-pillar">
-            <div class="platform-pillar__num">02</div>
-            <h3 data-i18n="home.pillar2Title">Scale</h3>
-            <p data-i18n="home.pillar2Desc">6,000+ units exported across 110+ countries. Container and LCL programs for single-unit and volume buyers.</p>
-          </div>
-          <div class="platform-pillar">
-            <div class="platform-pillar__num">03</div>
-            <h3 data-i18n="home.pillar3Title">Supplier Network</h3>
-            <p data-i18n="home.pillar3Desc">200+ verified suppliers across Japan, Korea and China — consolidated through China-based export channels in Zhengzhou.</p>
-          </div>
-          <div class="platform-pillar">
-            <div class="platform-pillar__num">04</div>
-            <h3 data-i18n="home.pillar4Title">Global Export</h3>
-            <p data-i18n="home.pillar4Desc">FOB and CIF shipment to Africa, the Americas, Caribbean, Middle East, Southeast Asia and Australia. Full export crating and logistics.</p>
-          </div>
-          <div class="platform-pillar">
-            <div class="platform-pillar__num">05</div>
-            <h3 data-i18n="home.pillar5Title">Professional Sourcing</h3>
-            <p data-i18n="home.pillar5Desc">Dedicated B2B quotation within 24 hours. Volume pricing, account management and consistent supply for repeat buyers.</p>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- Business Model -->
-    <section class="platform-section platform-section--dark">
-      <div class="container">
-        <div class="platform-section__header platform-section__header--center">
-          <span class="section-eyebrow" data-i18n="home.modelEyebrow">Business Model</span>
-          <h2 class="section-title section-title--light" data-i18n="home.modelTitle">How AsiaPower Operates</h2>
-          <p class="section-lead section-lead--light" data-i18n="home.modelLead">A China-based sourcing platform — not a retail store. We aggregate supply, inspect quality, and export to global buyers.</p>
-        </div>
-        <div class="platform-flow">
-          <div class="platform-flow__step">
-            <div class="platform-flow__icon">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="5" r="3"/><circle cx="5" cy="19" r="3"/><circle cx="19" cy="19" r="3"/><line x1="12" y1="8" x2="5" y2="16"/><line x1="12" y1="8" x2="19" y2="16"/></svg>
-            </div>
-            <h3 data-i18n="home.model1Title">Chinese Supply Network</h3>
-            <p data-i18n="home.model1Desc">Verified dismantling yards and export specialists consolidated through Zhengzhou and coastal China hubs.</p>
-          </div>
-          <div class="platform-flow__arrow" aria-hidden="true">→</div>
-          <div class="platform-flow__step">
-            <div class="platform-flow__icon">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="4" y="8" width="16" height="10" rx="1"/><circle cx="8" cy="18" r="2"/><circle cx="16" cy="18" r="2"/></svg>
-            </div>
-            <h3 data-i18n="home.model2Title">Vehicle Applications</h3>
-            <p data-i18n="home.model2Desc">Japanese, Korean and Chinese brands — Toyota, Hyundai, BYD, Honda, Nissan and 30+ makes supported.</p>
-          </div>
-          <div class="platform-flow__arrow" aria-hidden="true">→</div>
-          <div class="platform-flow__step">
-            <div class="platform-flow__icon">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
-            </div>
-            <h3 data-i18n="home.model3Title">Global Buyers</h3>
-            <p data-i18n="home.model3Desc">Importers, workshops, fleet operators and dealers across Africa, the Americas, Caribbean, Middle East, Southeast Asia and Australia.</p>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- Supported Brands -->
-    <section class="platform-section platform-section--muted">
-      <div class="container">
-        <div class="platform-section__header platform-section__header--center">
-          <span class="section-eyebrow" data-i18n="home.brandsEyebrow">Start Here</span>
-          <h2 class="section-title" data-i18n="home.brandsTitle">Brands We Support</h2>
-          <p class="section-lead" data-i18n="home.brandsLead">Brands is the primary entry point. Select a vehicle make to view engines, gearboxes, chassis parts and half-cuts available for that brand.</p>
-        </div>
-        <div class="platform-brands" id="homepage-brands"></div>
-        <div class="platform-brands__footer">
-          <a href="brands.html" class="btn btn-navy" data-i18n="home.viewAllBrands">View All 50+ Brands</a>
-        </div>
-      </div>
-    </section>
-
-    <!-- How to Source -->
-    <section class="platform-section">
-      <div class="container">
-        <div class="platform-section__header platform-section__header--center">
-          <span class="section-eyebrow" data-i18n="home.processEyebrow">How to Source</span>
-          <h2 class="section-title" data-i18n="home.processTitle">From Enquiry to Global Delivery</h2>
-        </div>
-        <div class="platform-process">
-          <div class="platform-process__step">
-            <span class="platform-process__num">01</span>
-            <h3 data-i18n="home.process1Title">Select Brand &amp; Product</h3>
-            <p data-i18n="home.process1Desc">Browse our brand directory or send your vehicle make, model, year and engine code.</p>
-          </div>
-          <div class="platform-process__step">
-            <span class="platform-process__num">02</span>
-            <h3 data-i18n="home.process2Title">Receive Quotation</h3>
-            <p data-i18n="home.process2Desc">FOB/CIF pricing within 24 hours. Whole-vehicle startup video available before dismantling when applicable.</p>
-          </div>
-          <div class="platform-process__step">
-            <span class="platform-process__num">03</span>
-            <h3 data-i18n="home.process3Title">Inspect &amp; Confirm</h3>
-            <p data-i18n="home.process3Desc">Unit sourced from our network. Startup video, photos and dismantling to buyer requirements after confirmation.</p>
-          </div>
-          <div class="platform-process__step">
-            <span class="platform-process__num">04</span>
-            <h3 data-i18n="home.process4Title">Export &amp; Ship</h3>
-            <p data-i18n="home.process4Desc">Professionally crated with full export documentation. Container or LCL to your port.</p>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- Global Reach -->
-    <section class="platform-section platform-section--dark">
-      <div class="container">
-        <div class="platform-reach">
-          <div class="platform-reach__content">
-            <span class="section-eyebrow" data-i18n="home.reachEyebrow">Global Reach</span>
-            <h2 class="section-title section-title--light" data-i18n="home.reachTitle">Serving Buyers Worldwide</h2>
-            <p class="section-lead section-lead--light" data-i18n="home.reachLead">AsiaPower exports from China to importers and fleet operators across six major regions — every African country plus the Americas, Caribbean, Middle East, Southeast Asia and Australia. Offices in Zhengzhou, China and Accra, Ghana support global communication.</p>
-            <ul class="platform-reach__regions">
-              <li data-i18n="home.regionAfrica">Africa</li>
-              <li data-i18n="home.regionAmericas">Americas</li>
-              <li data-i18n="home.regionCaribbean">Caribbean</li>
-              <li data-i18n="home.regionMiddleEast">Middle East</li>
-              <li data-i18n="home.regionSoutheastAsia">Southeast Asia</li>
-              <li data-i18n="home.regionAustralia">Australia</li>
-            </ul>
-          </div>
-          <div class="platform-reach__offices" id="platform-offices"></div>
-        </div>
-      </div>
-    </section>
-
-    <!-- Quick Inquiry -->
-    <section class="platform-section platform-section--muted home-inquiry-section">
-      <div class="container container--narrow">
-        <div class="platform-section__header platform-section__header--center">
-          <span class="section-eyebrow" data-i18n="home.inquiryEyebrow">Get a Quote</span>
-          <h2 class="section-title" data-i18n="home.inquiryTitle">Send Us Your Requirement</h2>
-          <p class="section-lead" data-i18n="home.inquiryLead">Tell us what you need — our sourcing team replies on WhatsApp or email within 24 hours.</p>
-        </div>
-        <form data-form="contact-enquiry" class="home-inquiry-form" novalidate>
-          <input type="hidden" name="enquiry_type" value="general">
-          <div class="form-row form-row--2">
-            <div class="form-group">
-              <label for="home-inquiry-name" data-i18n="contact.fullName">Full name</label>
-              <input type="text" id="home-inquiry-name" name="name" required>
-            </div>
-            <div class="form-group">
-              <label for="home-inquiry-email" data-i18n="contact.email">Email</label>
-              <input type="email" id="home-inquiry-email" name="email" required>
-            </div>
-          </div>
-          <div class="form-group">
-            <label for="home-inquiry-contact" data-i18n="contact.whatsappOrPhone">WhatsApp / phone number</label>
-            <input type="text" id="home-inquiry-contact" name="phone" required>
-          </div>
-          <div class="form-group">
-            <label for="home-inquiry-category" data-i18n="contact.productType">What are you looking for?</label>
-            <select id="home-inquiry-category" name="product_category">
-              <option value="truck-heads" data-i18n="quote.catTruckHeads">Truck Heads / Cabs</option>
-              <option value="engines" data-i18n="contact.typeEngine">Engines</option>
-              <option value="gearboxes" data-i18n="contact.typeGearbox">Gearboxes</option>
-              <option value="truck-parts" data-i18n="quote.catTruckParts">Truck Parts</option>
-              <option value="half-cuts" data-i18n="quote.catHalfCuts">Half-cuts</option>
-              <option value="chassis" data-i18n="quote.catChassis">Chassis Parts</option>
-            </select>
-          </div>
-          <div class="form-group">
-            <label for="home-inquiry-message" data-i18n="contact.message">Message</label>
-            <textarea id="home-inquiry-message" name="message" rows="3" placeholder="Brand, model, year, engine code, destination country..."></textarea>
-          </div>
-          <button type="submit" class="btn btn-accent home-inquiry-form__submit" data-i18n="contact.send">Send Inquiry</button>
-        </form>
-      </div>
-    </section>
-
-    <!-- FAQ -->
-    <section class="platform-section platform-section--muted">
-      <div class="container container--narrow">
-        <div class="platform-section__header platform-section__header--center">
-          <span class="section-eyebrow" data-i18n="home.faqEyebrow">FAQ</span>
-          <h2 class="section-title" data-i18n="home.faqTitle">Common Questions</h2>
-        </div>
-        <div class="faq-list">
-          <div class="faq-item">
-            <button class="faq-q"><span data-i18n="home.faq1Q">What is AsiaPower?</span><svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg></button>
-            <div class="faq-a"><p data-i18n="home.faq1A">AsiaPower is a global powertrain sourcing platform — not a retail auto parts store. We connect B2B buyers to a China-based supply network for Japanese, Korean and Chinese vehicle applications, handling inspection, export documentation and international shipping.</p></div>
-          </div>
-          <div class="faq-item">
-            <button class="faq-q"><span data-i18n="home.faq2Q">How do I find parts for my vehicle brand?</span><svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg></button>
-            <div class="faq-a"><p data-i18n="home.faq2A">Start at our Brands page. Select your vehicle make — for example Toyota — then browse engines, gearboxes, chassis parts and half-cuts for that brand. Send a quote request with your engine code or VIN for precise sourcing.</p></div>
-          </div>
-          <div class="faq-item">
-            <button class="faq-q"><span data-i18n="home.faq3Q">Do you ship internationally?</span><svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg></button>
-            <div class="faq-a"><p data-i18n="home.faq3A">Yes. We offer FOB and CIF shipping to ports worldwide including Africa, the Americas, Caribbean, Middle East, Southeast Asia and Australia. Container and LCL options available for all order sizes.</p><p>New to importing? Read our guide: <a href="guides/fob-vs-cif-shipping-guide.html">FOB vs CIF — Which Shipping Term Should You Choose?</a></p></div>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- CTA -->
-    <section class="cta-block">
-      <div class="container cta-block__inner">
-        <div>
-          <h2 data-i18n="home.ctaTitle">Ready to Source Powertrain Parts?</h2>
-          <p data-i18n="home.ctaLead">Send your requirements — competitive FOB/CIF quotation within 24 hours.</p>
-        </div>
-        <div class="cta-block__actions">
-          <a href="contact.html?product=truck" class="btn btn-accent" data-i18n="home.truckHeadQuote">Request Truck Head Quote</a>
-          <a href="contact.html" class="btn btn-outline-light" data-i18n="home.contactTeam">Contact Sourcing Team</a>
-        </div>
-      </div>
-    </section>
   </main>
 
   <div id="site-footer"></div>
   <div id="site-whatsapp"></div>
 
-  <script src="js/public-i18n.js?v=seo-v1"></script>
-  <script src="js/path-utils.js?v=i18n-v3"></script>
-  <script src="js/config.js?v=nav-v4"></script>
+  <script src="js/path-utils.js?v=passenger-engines-v1"></script>
+  <script src="js/config.js?v=contact-20260625"></script>
   <script src="js/whatsapp-crm.js?v=1"></script>
   <script src="js/trust-copy.js?v=1"></script>
   <script src="js/seo.js?v=merchant-schema-v1"></script>
-  <script src="js/components.js?v=seo-v1" defer></script>
-  <script src="js/main.js?v=wa-lead-v1" defer></script>
+  <script src="js/half-cut-vin.js?v=phase3"></script>
+  <script src="js/half-cut-upload-layer.js?v=machinery-v2"></script>
+  <script src="js/half-cut-inventory-layer.js?v=qxb-title-v1"></script>
+      <script src="js/vehicle-title-lexicon.bundle.js?v=lexicon-v2"></script>
+  <script src="js/half-cut-vehicle-title-i18n.js?v=vehicle-title-i18n-v2"></script>
+<script src="js/half-cut-title.js?v=qxb-title-v1"></script>
+<script src="js/contact-redact.js?v=contact-redact-v1"></script>
+<script src="js/half-cut-directory.js?v=passenger-engines-v1"></script>
+  <script src="js/half-cut-gallery-lightbox.js?v=gallery-v7"></script>
+  <script src="js/half-cut-media-api.js?v=security-v1"></script>
+  <script src="js/half-cut-inventory-store.js?v=catalog-perf-v1"></script>
+  <script src="js/engine-directory.js?v=1"></script>
+  <script src="js/home-hub.js?v=passenger-engines-cheap-v1" defer></script>
+  <script src="js/ebay-categories.js?v=truck-submodules-v1"></script>
+  <script src="js/components.js?v=footer-links-v2" defer></script>
   <script src="js/pwa-install.js?v=apapp-001" defer></script>
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "Organization",
+        "@id": "https://asia-power.com/#organization",
+        "name": "AsiaPower",
+        "url": "https://asia-power.com",
+        "logo": { "@type": "ImageObject", "url": "https://asia-power.com/assets/asia-power-og.svg" },
+        "description": "Global powertrain sourcing platform — engines, gearboxes, half-cuts and truck parts from Japan, Korea and China, exported worldwide.",
+        "contactPoint": [
+          { "@type": "ContactPoint", "contactType": "sales", "telephone": "+86-186-0377-3077", "email": "info@asia-power.com", "availableLanguage": ["English","Chinese"] },
+          { "@type": "ContactPoint", "contactType": "customer support", "telephone": "+233-540-911-111", "areaServed": "Africa" }
+        ],
+        "address": [
+          { "@type": "PostalAddress", "streetAddress": "South Third Ring Road", "addressLocality": "Zhengzhou", "addressRegion": "Henan", "addressCountry": "CN" },
+          { "@type": "PostalAddress", "streetAddress": "No.2 Flower Street, Tabora", "addressLocality": "Accra", "addressCountry": "GH" }
+        ]
+      },
+      {
+        "@type": "WebSite",
+        "@id": "https://asia-power.com/#website",
+        "url": "https://asia-power.com",
+        "name": "AsiaPower",
+        "publisher": { "@id": "https://asia-power.com/#organization" }
+      }
+    ]
+  }
+  </script>
 </body>
 </html>
