@@ -286,6 +286,19 @@ def dispatch_message(
             return "Unknown command. Try /help"
         return process_apsales_enquiry(message, channel=source)
 
+    if canonical == "apinventory":
+        from inventory_core.apinventory_handler import (
+            dispatch_apinventory_command,
+            is_apinventory_command,
+            is_slash_command,
+            process_inventory_query,
+        )
+        if is_apinventory_command(message) or message == "/start":
+            return dispatch_apinventory_command(message, channel=source)
+        if is_slash_command(message):
+            return "Unknown command. Try /help"
+        return process_inventory_query(message, channel=source)
+
     # Default: APCOO (unchanged behaviour)
     if is_coo_command(message) or message == "/start":
         return dispatch_coo_command(message, channel=source)

@@ -133,9 +133,17 @@ class WhatsAppBrowserAdapterTests(unittest.TestCase):
     def test_playwright_available_is_boolean(self) -> None:
         self.assertIsInstance(playwright_available(), bool)
 
-    def test_fetch_history_batches_paginated(self) -> None:
+    def test_fetch_history_batches_per_chat(self) -> None:
         fake_page = mock.MagicMock()
-        batch1 = {
+        chat_count = {"error": None, "total_chats": 2, "has_conversation_msgs": True}
+        store_chats = {
+            "error": None,
+            "chats": [
+                {"index": 0, "name": "Buyer A", "id": "1", "is_group": False},
+                {"index": 1, "name": "Buyer B", "id": "2", "is_group": False},
+            ],
+        }
+        chat_result = {
             "error": None,
             "messages": [{
                 "contact_name": "Buyer A",
@@ -144,13 +152,16 @@ class WhatsAppBrowserAdapterTests(unittest.TestCase):
                 "timestamp": "2024-01-01 10:00",
                 "direction": "incoming",
             }],
-            "done": False,
+            "stats": {"msgs_extracted": 1, "msgs_in_store": 45, "initial_msgs": 14},
         }
-        batch2 = {"error": None, "messages": [], "done": True}
 
         with mock.patch.dict(
             self.env,
-            {"WHATSAPP_HISTORY_BATCH_SIZE": "50", "WHATSAPP_HISTORY_PER_CHAT": "500"},
+            {
+                "WHATSAPP_HISTORY_BATCH_SIZE": "50",
+                "WHATSAPP_HISTORY_PER_CHAT": "500",
+                "WHATSAPP_HISTORY_SCROLL_ROUNDS": "5",
+            },
         ):
             with mock.patch(
                 "customer_gateway.whatsapp_browser_adapter.playwright_available",
@@ -158,16 +169,25 @@ class WhatsAppBrowserAdapterTests(unittest.TestCase):
             ):
                 with mock.patch.object(WhatsAppBrowserAdapter, "_launch", return_value=fake_page):
                     with mock.patch.object(WhatsAppBrowserAdapter, "_wait_for_login", return_value=True):
-                        fake_page.evaluate.side_effect = [batch1, batch2]
-                        with mock.patch.object(WhatsAppBrowserAdapter, "close"):
-                            adapter = WhatsAppBrowserAdapter()
-                            batches = adapter.fetch_history_batches()
+                        with mock.patch.object(WhatsAppBrowserAdapter, "_scroll_chat_list", return_value=2):
+                            with mock.patch.object(
+                                WhatsAppBrowserAdapter,
+                                "_open_chat_for_store_index",
+                                return_value=(True, "Buyer A", "1"),
+                            ):
+                                fake_page.evaluate.side_effect = [
+                                    store_chats, chat_count, chat_result, chat_result,
+                                ]
+                                with mock.patch.object(WhatsAppBrowserAdapter, "close"):
+                                    adapter = WhatsAppBrowserAdapter()
+                                    batches = adapter.fetch_history_batches()
 
         self.assertEqual(len(batches), 1)
         self.assertEqual(batches[0][0]["contact_name"], "Buyer A")
-        args = fake_page.evaluate.call_args_list[0][0][1]
-        self.assertEqual(args[1], 50)
-        self.assertEqual(args[2], 500)
+        self.assertEqual(adapter.last_import_meta.get("chats_processed"), 2)
+        self.assertEqual(adapter.last_import_meta.get("loaded_chats"), 2)
+        stats = adapter.last_import_meta.get("chat_stats") or []
+        self.assertTrue(any(s.get("msgs_in_store", 0) >= 45 for s in stats))
 
 
 if __name__ == "__main__":

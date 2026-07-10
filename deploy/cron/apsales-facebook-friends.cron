@@ -1,0 +1,10 @@
+# 子敬 · Facebook 好友请求自动通过（每周一次，不群发私信）
+# 安装: sudo cp deploy/cron/apsales-facebook-friends.cron /etc/cron.d/apsales-facebook-friends
+#
+# 诚实限制: Messenger 无「广播全部好友」API；勿 cron 群发私信。
+
+SHELL=/bin/bash
+PATH=/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin
+
+# 每周一 09:00 UTC — 最多通过 20 个待处理好友请求
+0 9 * * 1 root cd /root/.openclaw/workspace/AsiaPower && APSALES_SOCIAL_BROWSER_HEADLESS=1 APSALES_FB_ACCEPT_MAX=20 .venv/bin/python3 scripts/apsales-facebook-accept-friends.py >> /var/log/apsales-facebook-friends.log 2>&1

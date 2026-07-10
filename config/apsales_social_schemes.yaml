@@ -1,0 +1,123 @@
+# 子敬 · 社媒方案配图 + 短文案（image-first posting）
+# 维护：与 apsales-promotion-schemes-v2.md 同步
+
+version: 2
+updated: "2026-07-04"
+
+defaults:
+  hero: "https://asia-power.com/assets/images/hero-composite-ship-truck-machinery.png"
+  supply_engines: "https://asia-power.com/assets/images/supply-engines.jpg"
+  max_images_per_post: 4
+  caption_limits:
+    facebook: 500
+    x: 280
+    instagram: 2200
+
+schemes:
+  A:
+    listing_url: "https://asia-power.com/half-cuts/"
+    image_urls:
+      - "https://asia-power.com/assets/images/hero-composite-ship-truck-machinery.png"
+    caption_short:
+      facebook: |
+        Custom dismantling · parts on demand 🇬🇭🇳🇬
+
+        Verified half-cuts, engines & gearboxes from China → Africa.
+
+        👉 asia-power.com/half-cuts/
+
+        Need parts? sales@asia-power.com
+      x: |
+        Custom dismantling · parts on demand. Verified half-cuts & engines for Africa 🇬🇭🇳🇬
+
+        👉 asia-power.com/half-cuts/
+        sales@asia-power.com
+      instagram: |
+        Custom dismantling · parts on demand 🇬🇭🇳🇬
+
+        Verified half-cuts, engines & gearboxes from China → Africa.
+
+        👉 asia-power.com/half-cuts/
+        sales@asia-power.com
+
+  B:
+    listing_url: "https://asia-power.com/half-cuts/detail.html?slug=toyota-vios-2010-2nz-fe-half-cut-hc250509"
+    image_urls:
+      - "https://asia-power.com/uploads/photos/photo-1783000347587-ffc6bbc7_full.webp"
+      - "https://asia-power.com/uploads/photos/photo-1783000352805-90433487_full.webp"
+    caption_short:
+      facebook: |
+        2010 Toyota Vios half-cut · 2NZ-FE · verified photos on AsiaPower 🇬🇭🇳🇬
+
+        👉 asia-power.com/half-cuts/detail.html?slug=toyota-vios-2010-2nz-fe-half-cut-hc250509
+
+        Need parts? sales@asia-power.com · HC250509
+      x: |
+        2010 Toyota Vios · 2NZ-FE half-cut · verified photos 🇬🇭🇳🇬
+
+        👉 asia-power.com/half-cuts/detail.html?slug=toyota-vios-2010-2nz-fe-half-cut-hc250509
+        sales@asia-power.com HC250509
+      instagram: |
+        2010 Toyota Vios · 2NZ-FE · verified half-cut 🇬🇭🇳🇬
+
+        👉 asia-power.com/half-cuts/detail.html?slug=toyota-vios-2010-2nz-fe-half-cut-hc250509
+        sales@asia-power.com · HC250509
+
+  C:
+    listing_url: "https://asia-power.com/half-cuts/detail.html?slug=isuzu-giga-2019-6wg51-tcg51-truck-half-cut-hc250512"
+    image_urls:
+      - "https://asia-power.com/uploads/photos/photo-1782976984871-2940bcee_full.webp"
+      - "https://asia-power.com/uploads/photos/photo-1782977005057-4fb984cc_full.webp"
+    caption_short:
+      facebook: |
+        2019 Isuzu Giga truck half-cut · 6WG51 · inspection video on site 🇬🇭🇳🇬
+
+        👉 asia-power.com/half-cuts/detail.html?slug=isuzu-giga-2019-6wg51-tcg51-truck-half-cut-hc250512
+
+        Email sales@asia-power.com · HC250512
+      x: |
+        2019 Isuzu Giga · 6WG51 truck half-cut · photos + video on site 🇬🇭🇳🇬
+
+        👉 asia-power.com/half-cuts/detail.html?slug=isuzu-giga-2019-6wg51-tcg51-truck-half-cut-hc250512
+        sales@asia-power.com HC250512
+
+  D:
+    listing_url: "https://asia-power.com/half-cuts/detail.html?slug=nissan-tiida-2008-hr16de-half-cut-hc250513"
+    image_urls:
+      - "https://asia-power.com/uploads/photos/photo-1783001049889-4579f1ff_full.webp"
+      - "https://asia-power.com/uploads/photos/photo-1783001082173-69683a89_full.webp"
+    caption_short:
+      facebook: |
+        2008 Nissan Tiida · HR16DE · engine code matched · photos on site 🇬🇭🇳🇬
+
+        👉 asia-power.com/half-cuts/detail.html?slug=nissan-tiida-2008-hr16de-half-cut-hc250513
+
+        sales@asia-power.com · HC250513
+      x: |
+        Need HR16DE? 2008 Nissan Tiida half-cut · verified photos 🇬🇭🇳🇬
+
+        👉 asia-power.com/half-cuts/detail.html?slug=nissan-tiida-2008-hr16de-half-cut-hc250513
+        sales@asia-power.com HC250513
+      instagram: |
+        2008 Nissan Tiida · HR16DE · verified half-cut 🇬🇭🇳🇬
+
+        👉 asia-power.com/half-cuts/detail.html?slug=nissan-tiida-2008-hr16de-half-cut-hc250513
+        sales@asia-power.com · HC250513
+
+  E:
+    listing_url: "https://asia-power.com/engines/"
+    image_urls:
+      - "https://asia-power.com/assets/images/supply-engines.jpg"
+    caption_short:
+      facebook: |
+        Can't find your engine? Custom dismantling · parts on demand 🇬🇭🇳🇬
+
+        Send engine code + model → we match supplier stock with photos.
+
+        👉 asia-power.com/engines/
+        sales@asia-power.com
+      x: |
+        Can't find the exact engine? Custom dismantling · parts on demand 🇬🇭🇳🇬
+
+        👉 asia-power.com/engines/
+        Email engine code → sales@asia-power.com

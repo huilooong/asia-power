@@ -1,4 +1,4 @@
-const CACHE_VERSION = 'apapp-001-v1';
+const CACHE_VERSION = 'apapp-001-v5-hybrid';
 const STATIC_CACHE = `${CACHE_VERSION}-static`;
 const OFFLINE_URL = '/offline.html';
 
@@ -8,18 +8,17 @@ const STATIC_ASSETS = [
   OFFLINE_URL,
   '/manifest.json',
   '/css/styles.css',
+  '/css/home-v4-hybrid.css',
   '/js/path-utils.js',
   '/js/config.js',
   '/js/components.js',
-  '/js/main.js',
+  '/js/home-v4-hybrid.js',
   '/assets/favicon.png',
   '/assets/icons/icon-192.png',
   '/assets/icons/icon-512.png',
   '/assets/icons/apple-touch-icon.png',
   '/assets/logo.png',
   '/assets/logo@2x.png',
-  '/assets/images/hero-engine.webp',
-  '/assets/images/hero-halfcut.webp'
 ];
 
 function cacheStaticAssets() {

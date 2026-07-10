@@ -13,10 +13,11 @@ ROUTING_RULES: list[tuple[str, tuple[str, ...]]] = [
         ),
     ),
     (
-        "inventory",
+        "apinventory",
         (
             "库存", "上架", "审核", "listing", "stock", "hc25", "半车", "乘用车", "catalog",
             "supplier upload", "供应商上传",
+            "上传", "批量上传", "上传任务", "汽修宝", "qxb",
             # 三国代号:库存 = 赵云(子龙),守资产护家底
             "赵云", "子龙",
         ),

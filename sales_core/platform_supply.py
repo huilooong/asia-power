@@ -6,6 +6,7 @@ import re
 
 SUPPLY_PHRASES = {
     "en": "We can check available supply from our verified China-based supplier network.",
+    "zh": "我们可以从已验证的中国供应商网络为您查询供货情况。",
     "fr": "Nous pouvons vérifier les disponibilités auprès de notre réseau de fournisseurs vérifiés en Chine.",
     "ar": "يمكننا التحقق من التوفر من شبكة الموردين المعتمدة لدينا في الصين.",
 }

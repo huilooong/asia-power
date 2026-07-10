@@ -22,12 +22,19 @@ function findApprovedItem(catalog, slug) {
   return { item: viaAlias, requestedSlug: slug, redirectSlug: viaAlias.slug || null };
 }
 
-function injectHalfCutPrerender(html, item, siteUrl) {
+function injectHalfCutPrerender(html, item, siteUrl, detailPath = '/half-cuts/detail.html') {
   const title = seoTitle(item);
   const description = seoDescription(item);
-  const canonical = canonicalUrl(siteUrl, item.slug);
-  const jsonLd = JSON.stringify(productJsonLd(item, siteUrl));
-  const ogImage = (productJsonLd(item, siteUrl).image || [])[0] || '';
+  const canonical = canonicalUrl(siteUrl, item.slug, detailPath);
+  const jsonLd = JSON.stringify(productJsonLd(item, siteUrl, detailPath));
+  const ogImage = (productJsonLd(item, siteUrl, detailPath).image || [])[0] || '';
+  const ogImageBlock = ogImage
+    ? `<meta property="og:type" content="product">
+  <meta property="og:image" content="${escapeAttr(ogImage)}">
+  <meta property="og:image:secure_url" content="${escapeAttr(ogImage)}">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:image" content="${escapeAttr(ogImage)}">`
+    : '';
 
   let out = html
     .replace(/<title>[^<]*<\/title>/, `<title>${escapeAttr(title)}</title>`)
@@ -40,6 +47,10 @@ function injectHalfCutPrerender(html, item, siteUrl) {
     .replace(/\s*<meta property="og:description"[^>]*>\n?/g, '')
     .replace(/\s*<meta property="og:url"[^>]*>\n?/g, '')
     .replace(/\s*<meta property="og:image"[^>]*>\n?/g, '')
+    .replace(/\s*<meta property="og:image:secure_url"[^>]*>\n?/g, '')
+    .replace(/\s*<meta property="og:type"[^>]*>\n?/g, '')
+    .replace(/\s*<meta name="twitter:card"[^>]*>\n?/g, '')
+    .replace(/\s*<meta name="twitter:image"[^>]*>\n?/g, '')
     .replace(/\s*<script type="application\/ld\+json" id="schema-halfcut-product"[^>]*>[\s\S]*?<\/script>\n?/g, '')
     .replace(/<!-- HALF_CUT_PRERENDER -->[\s\S]*?<!-- \/HALF_CUT_PRERENDER -->/g, '');
 
@@ -48,7 +59,7 @@ function injectHalfCutPrerender(html, item, siteUrl) {
   <meta property="og:title" content="${escapeAttr(title)}">
   <meta property="og:description" content="${escapeAttr(description)}">
   <meta property="og:url" content="${escapeAttr(canonical)}">
-  ${ogImage ? `<meta property="og:image" content="${escapeAttr(ogImage)}">` : ''}
+  ${ogImageBlock}
   <script type="application/ld+json" id="schema-halfcut-product">${jsonLd}</script>`;
 
   const prerenderJson = JSON.stringify(item).replace(/<\//g, '<\\/');
@@ -72,22 +83,25 @@ function injectHalfCutPrerender(html, item, siteUrl) {
   return out;
 }
 
-function renderHalfCutDetailPage({ publicDir, slug, catalog, siteUrl }) {
+function renderHalfCutDetailPage({ publicDir, slug, catalog, siteUrl, detailPath = '/half-cuts/detail.html' }) {
   const resolved = findApprovedItem(catalog, slug);
   if (!resolved?.item) return null;
-  const templatePath = path.join(publicDir, 'half-cuts', 'detail.html');
+  const rel = String(detailPath || '/half-cuts/detail.html').replace(/^\//, '');
+  const templatePath = path.join(publicDir, rel);
   if (!fs.existsSync(templatePath)) return null;
   const html = fs.readFileSync(templatePath, 'utf8');
   return {
-    html: injectHalfCutPrerender(html, resolved.item, siteUrl),
+    html: injectHalfCutPrerender(html, resolved.item, siteUrl, detailPath),
     redirectSlug: resolved.redirectSlug,
+    detailPath,
   };
 }
 
-function sendPrerenderedHtml(res, html, redirectSlug = null) {
+function sendPrerenderedHtml(res, html, redirectSlug = null, detailPath = '/half-cuts/detail.html') {
   if (redirectSlug) {
+    const pathPart = detailPath.startsWith('/') ? detailPath : `/${detailPath}`;
     res.writeHead(301, {
-      Location: `/half-cuts/detail.html?slug=${encodeURIComponent(redirectSlug)}`,
+      Location: `${pathPart}?slug=${encodeURIComponent(redirectSlug)}`,
       'Cache-Control': 'public, max-age=300',
     });
     res.end();

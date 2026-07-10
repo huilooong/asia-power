@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AsiaPower · v4 门面 + 现网多品类货架（预览）</title>
+  <link rel="stylesheet" href="hybrid.css">
+</head>
+<body>
+  <div class="preview-note">
+    <div>
+      <strong>预览 · 未上线</strong>
+      — 混合版：v4 门面（搜索/Featured）+ 现网五品类货架
+      · <span id="snap-meta">加载中…</span>
+    </div>
+    <div>
+      <a href="../v4-live/">上一版 v4+库存</a>
+      ·
+      <a href="https://asia-power.com/" target="_blank">对照现网</a>
+    </div>
+  </div>
+
+  <div class="demo-bar">
+    <span class="demo-bar-label">AsiaPower — <span>Hybrid</span> · v4 门面 + 多品类货架</span>
+    <div class="tabs">
+      <button class="tab on" data-go="home">首页</button>
+      <button class="tab" data-go="contact">联系我们</button>
+    </div>
+  </div>
+
+  <nav class="ap-nav with-demo">
+    <div class="nav-w">
+      <a class="ap-logo" href="https://asia-power.com/" target="_blank" rel="noopener">Asia<span>Power</span></a>
+      <div class="nav-links">
+        <a href="#shelf-half" class="on">Half-Cuts</a>
+        <a href="#shelf-engines">Engines</a>
+        <a href="#shelf-trucks">Trucks</a>
+        <a href="#shelf-machinery">Construction</a>
+        <a href="#shelf-used">Used Cars</a>
+      </div>
+      <div class="nav-right">
+        <div class="lang-sw">
+          <a href="#" class="on">EN</a><a href="#">中文</a><a href="#">FR</a><a href="#">AR</a>
+        </div>
+        <a id="nav-wa" href="https://wa.me/8618603773077" class="nav-wa" target="_blank" rel="noopener">WhatsApp</a>
+      </div>
+    </div>
+  </nav>
+
+  <div id="home" class="pv on">
+    <!-- v4 door -->
+    <div class="hero">
+      <div class="hero-badge"><span class="dot"></span> Video-verified · Ships to 110+ countries</div>
+      <h1>The global marketplace for<br><em>used powertrains.</em></h1>
+      <p class="hero-sub">Half-cuts, engines and truck parts — sourced in China, delivered worldwide. EXW pricing, 24-hour quotes.</p>
+      <div class="hero-search-wrap">
+        <form class="hero-search" action="https://asia-power.com/half-cuts/" method="get" target="_blank">
+          <input type="text" name="q" placeholder="Search by make, model, engine code or HC number…" />
+          <button class="hero-search-btn" type="submit">Search</button>
+        </form>
+      </div>
+      <div class="popular-wrap">
+        <div class="popular-label">Popular searches</div>
+        <div class="popular-tags" id="popular-tags"></div>
+      </div>
+    </div>
+
+    <div style="max-width:var(--max);margin:0 auto;padding:0 24px;transform:translateY(-24px)">
+      <div class="stats-row" id="stats-row"></div>
+    </div>
+
+    <div class="section" style="padding-top:32px;padding-bottom:40px">
+      <div class="sec-head">
+        <div>
+          <div class="sec-kicker">Browse</div>
+          <div class="sec-h">What are you looking for?</div>
+        </div>
+      </div>
+      <div class="cat-grid" id="cat-grid"></div>
+    </div>
+
+    <div class="showcase-wrap" style="padding-top:0;padding-bottom:40px" id="showcase-wrap"></div>
+
+    <!-- Live multi-category shelves -->
+    <div class="shelf-wrap">
+      <div class="shelf-block" id="shelf-half">
+        <div class="shelf-head">
+          <div>
+            <div class="sec-kicker">Live stock</div>
+            <h2>Half-Cuts</h2>
+            <p class="shelf-sub">Custom dismantling · Parts on demand</p>
+          </div>
+          <a class="see-all" id="see-half" href="https://asia-power.com/half-cuts/" target="_blank" rel="noopener">See All →</a>
+        </div>
+        <div class="shelf-rail" id="rail-half"></div>
+      </div>
+
+      <div class="shelf-block" id="shelf-engines">
+        <div class="shelf-head">
+          <div>
+            <div class="sec-kicker">From half-cuts</div>
+            <h2>Passenger Car Engines</h2>
+            <p class="shelf-sub">Engine codes live in stock · EXW reference</p>
+          </div>
+          <a class="see-all" href="https://asia-power.com/engines/" target="_blank" rel="noopener">See All →</a>
+        </div>
+        <div class="shelf-rail" id="rail-engines"></div>
+      </div>
+
+      <div class="shelf-block" id="shelf-trucks">
+        <div class="shelf-head">
+          <div>
+            <div class="sec-kicker">Commercial</div>
+            <h2>Truck Cabs</h2>
+            <p class="shelf-sub">Driver cabs for export</p>
+          </div>
+          <a class="see-all" href="https://asia-power.com/trucks/" target="_blank" rel="noopener">See All →</a>
+        </div>
+        <div class="shelf-rail" id="rail-trucks"></div>
+      </div>
+
+      <div class="shelf-block" id="shelf-machinery">
+        <div class="shelf-head">
+          <div>
+            <div class="sec-kicker">Heavy</div>
+            <h2>Construction Machinery</h2>
+            <p class="shelf-sub">Machinery &amp; engines</p>
+          </div>
+          <a class="see-all" href="https://asia-power.com/half-cuts/?cat=machinery" target="_blank" rel="noopener">See All →</a>
+        </div>
+        <div class="shelf-rail" id="rail-machinery"></div>
+      </div>
+
+      <div class="shelf-block" id="shelf-used">
+        <div class="shelf-head">
+          <div>
+            <div class="sec-kicker">Export</div>
+            <h2>Export Used Cars</h2>
+            <p class="shelf-sub">Complete vehicles for shipping</p>
+          </div>
+          <a class="see-all" href="https://asia-power.com/half-cuts/?cat=used-cars" target="_blank" rel="noopener">See All →</a>
+        </div>
+        <div class="shelf-rail" id="rail-used"></div>
+      </div>
+    </div>
+
+    <div class="trust">
+      <div class="trust-w" id="trust-w"></div>
+    </div>
+  </div>
+
+  <div id="contact" class="pv">
+    <div class="contact-hero">
+      <h2>Get in Touch</h2>
+      <p>We source, verify, and export to 110+ destinations. We reply within 24 hours.</p>
+    </div>
+    <div class="section">
+      <div class="ch-grid">
+        <div class="ch">
+          <div class="ch-ic wa"></div>
+          <h3>WhatsApp</h3>
+          <p>Fastest way — include stock ID for instant quotes.</p>
+          <a href="https://wa.me/8618603773077" target="_blank" rel="noopener">Chat on WhatsApp →</a>
+        </div>
+        <div class="ch">
+          <div class="ch-ic mail"></div>
+          <h3>Email</h3>
+          <p>Formal inquiries, bulk orders, partnerships.</p>
+          <a href="mailto:info@asia-power.com">info@asia-power.com →</a>
+        </div>
+        <div class="ch">
+          <div class="ch-ic ph"></div>
+          <h3>Offices</h3>
+          <p>Zhengzhou procurement hub · Accra local support.</p>
+          <a href="https://asia-power.com/contact.html" target="_blank" rel="noopener">Contact page →</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <footer class="ap-footer">
+    <div class="footer-w">
+      <div class="footer-g">
+        <div class="footer-brand">
+          <div class="ap-logo">Asia<span>Power</span></div>
+          <p>Hybrid preview: v4 brand door + live multi-category shelves. Not production.</p>
+        </div>
+        <div class="footer-col">
+          <h4>Products</h4>
+          <ul>
+            <li><a href="https://asia-power.com/half-cuts/" target="_blank">Half-Cuts</a></li>
+            <li><a href="https://asia-power.com/engines/" target="_blank">Engines</a></li>
+            <li><a href="https://asia-power.com/trucks/" target="_blank">Trucks</a></li>
+            <li><a href="https://asia-power.com/half-cuts/?cat=used-cars" target="_blank">Used Cars</a></li>
+          </ul>
+        </div>
+        <div class="footer-col">
+          <h4>Company</h4>
+          <ul>
+            <li><a href="https://asia-power.com/about.html" target="_blank">About</a></li>
+            <li><a href="https://asia-power.com/supplier-portal.html" target="_blank">Supplier Portal</a></li>
+            <li><a href="https://asia-power.com/contact.html" target="_blank">Contact</a></li>
+          </ul>
+        </div>
+        <div>
+          <div class="footer-cta-box">
+            <h4>Get a Quote</h4>
+            <p>Reply within 24 hours · EXW &amp; CIF</p>
+            <a class="btn-wa-f" href="https://wa.me/8618603773077" target="_blank" rel="noopener">WhatsApp Now</a>
+          </div>
+        </div>
+      </div>
+      <div class="footer-btm">
+        <span>© 2026 AsiaPower · Preview only</span>
+        <span>Hybrid = v4 door + live shelves</span>
+      </div>
+    </div>
+  </footer>
+
+  <script src="hybrid.js"></script>
+</body>
+</html>

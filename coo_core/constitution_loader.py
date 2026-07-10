@@ -25,6 +25,8 @@ AGENT_ROLE_MAP = {
     "apcoo": "apcoo",
     "apsales": "apsales",
     "sales": "apsales",
+    "apinventory": "apinventory",
+    "inventory": "apinventory",
 }
 
 

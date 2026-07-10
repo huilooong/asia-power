@@ -8,6 +8,7 @@ from coo_core.constitution_loader import build_constitution_context, load_consti
 from core.language_router import init_language_policy
 from tools import memory_tool
 from tools.registry import bootstrap_registry, list_tools
+from knowledge.runtime import bootstrap_knowledge_runtime
 
 ROOT = Path(__file__).resolve().parent.parent
 IDENTITY_FILE = ROOT / "IDENTITY.md"
@@ -28,6 +29,7 @@ def bootstrap_runtime(agent_id: str = "apcoo") -> dict:
     memory_tool._ensure_memory_dir()
     memory_index = memory_tool.INDEX_FILE.is_file()
     bootstrap_registry()
+    knowledge = bootstrap_knowledge_runtime()
     tools = list_tools()
 
     return {
@@ -36,6 +38,7 @@ def bootstrap_runtime(agent_id: str = "apcoo") -> dict:
         "identity_chars": len(identity),
         "memory_index": memory_index,
         "tools_registered": tools.count("\n- "),
+        "knowledge_runtime": knowledge,
         "language_policy": {
             "internal": language_router.default_for("internal"),
             "buyer": language_router.default_for("buyer"),

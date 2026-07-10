@@ -9,7 +9,7 @@
   const EXPORT_STATUS = [
     'Available',
     'Ready for Export',
-    'FOB Available',
+    'EXW Available',
     'CIF Available',
   ];
 

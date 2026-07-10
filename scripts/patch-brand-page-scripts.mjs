@@ -16,8 +16,8 @@ const HALF_CUT_BLOCK = `  <script src="../js/half-cut-vin.js?v=inventory-v1"></s
   <script src="../js/half-cut-directory.js?v=inventory-v1"></script>
   <script src="../js/half-cut-media-api.js?v=security-v1"></script>
   <script src="../js/half-cut-inventory-store.js?v=inventory-v1"></script>
-  <script src="../js/half-cut-gallery-lightbox.js?v=gallery-v2"></script>
-  <script src="../js/half-cut-catalog.js?v=gallery-v2"></script>
+  <script src="../js/half-cut-gallery-lightbox.js?v=gallery-v3"></script>
+  <script src="../js/half-cut-catalog.js?v=gallery-v3"></script>
   <script src="../js/powertrain-labels.js?v=powertrain-v5"></script>
   <script src="../js/brand-catalog.js?v=powertrain-v5" defer></script>
   <script src="../js/gearbox-directory.js?v=powertrain-v5" defer></script>

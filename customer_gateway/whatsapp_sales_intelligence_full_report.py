@@ -8,6 +8,7 @@ from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
 
+from customer_gateway import sales_intelligence_paths as sip
 from customer_gateway.contact_role_classifier import summarize_contact_roles
 
 ROOT = Path(__file__).resolve().parent.parent
@@ -15,8 +16,20 @@ REPORTS_DIR = ROOT / "reports"
 FULL_MD_PATH = REPORTS_DIR / "whatsapp_sales_intelligence_full.md"
 FULL_JSON_PATH = REPORTS_DIR / "whatsapp_sales_intelligence_full.json"
 
-_ENGINE_CODE_RE = re.compile(r"\b(G4K[A-Z]{0,2}|G4KD|G4KJ|HR\d{2}[A-Z]{2,4})\b", re.I)
+# Explicit known-code allowlist (avoids the old G4K[A-Z]{0,2} catch-all that
+# matched any G4K + 0-2 letters). Case-insensitive; counts are uppercased.
+_ENGINE_CODE_RE = re.compile(
+    r"\b(G4K[ABCDEJ]|G4FA|G4FC|G4GC|G4NA|G4ND|HR\d{2}[A-Z]{2}|1NZ|2NZ|1ZZ|"
+    r"2ZR|1ZR|2AZ|1KD|2KD|3SZ|2SZ|4B1[12]|EA888)\b",
+    re.I,
+)
 _ENGINE_TOPIC_RE = re.compile(r"\b(engine|gearbox|motor|moteur|发动机)\b", re.I)
+# Our own inventory/catalog blasts list many codes at once and are broadcast to
+# hundreds of chats, which previously inflated G4KD/G4KA/... to ~conversation
+# count. Treat a message as a non-inquiry broadcast when it lists many distinct
+# codes or carries catalog markers, and exclude it from customer engine stats.
+_CATALOG_MARK_RE = re.compile(r"到货清单|独立卡片|index\.html|GHS\s*\d", re.I)
+_BROADCAST_MIN_CODES = 3
 
 
 def _now() -> str:
@@ -68,11 +81,16 @@ def _engine_inquiry_stats(conversations: list[dict[str, Any]]) -> dict[str, Any]
         for msg in conv.get("messages", []):
             if msg.get("is_ceo"):
                 continue
-            text = msg.get("text", "")
-            if _ENGINE_CODE_RE.search(text) or _ENGINE_TOPIC_RE.search(text):
+            text = msg.get("text", "") or ""
+            codes = {m.upper() for m in _ENGINE_CODE_RE.findall(text)}
+            # Exclude our own catalog/broadcast blasts so they don't inflate
+            # genuine customer engine inquiries.
+            if len(codes) >= _BROADCAST_MIN_CODES or _CATALOG_MARK_RE.search(text):
+                continue
+            if codes or _ENGINE_TOPIC_RE.search(text):
                 hit = True
-                for m in _ENGINE_CODE_RE.findall(text):
-                    code_hits[m.upper()] = code_hits.get(m.upper(), 0) + 1
+                for code in codes:
+                    code_hits[code] = code_hits.get(code, 0) + 1
         if hit:
             engine_threads += 1
     g4kj = sum(v for k, v in code_hits.items() if "G4KJ" in k)
@@ -149,6 +167,18 @@ def _deal_patterns(conversations: list[dict[str, Any]]) -> dict[str, Any]:
     }
 
 
+def _load_browser_coverage() -> dict[str, Any]:
+    """Read last browser import coverage from import_state.json."""
+    path = sip.IMPORT_STATE_PATH
+    if not path.is_file():
+        return {}
+    try:
+        state = json.loads(path.read_text(encoding="utf-8"))
+    except (json.JSONDecodeError, OSError):
+        return {}
+    return state.get("browser_import") or {}
+
+
 def build_full_report(analysis: dict[str, Any]) -> dict[str, Any]:
     """Build structured full report from run_sales_intelligence_analysis() output."""
     from customer_gateway.conversation_database import load_all_conversations
@@ -173,12 +203,23 @@ def build_full_report(analysis: dict[str, Any]) -> dict[str, Any]:
     scenarios = _scenario_replies(talk, patterns)
     followups = _top_followup_customers(issues, profiles, role_summary)
     ceo_analysis = performance.get("ceo_sales_analysis") or {}
+    browser_cov = _load_browser_coverage()
 
     report = {
         "generated_at": analysis.get("generated_at") or _now(),
         "readonly": True,
         "auto_send": False,
         "auto_prompt_update": False,
+        "data_coverage": browser_cov.get("data_coverage", "unknown"),
+        "limitation_reason": browser_cov.get("limitation_reason", ""),
+        "browser_import": {
+            "loaded_chats": browser_cov.get("loaded_chats", 0),
+            "processed_chats": browser_cov.get("processed_chats", 0),
+            "messages_imported": browser_cov.get("messages_imported", 0),
+            "skipped_private": browser_cov.get("skipped_private", 0),
+            "failed_chats": browser_cov.get("failed_chats", 0),
+            "error": browser_cov.get("error"),
+        },
         "totals": {
             "conversation_count": analysis.get("conversation_count", len(conversations)),
             "message_count": analysis.get("message_count", 0),
@@ -191,7 +232,8 @@ def build_full_report(analysis: dict[str, Any]) -> dict[str, Any]:
             [k for k, v in role_summary["customer_tiers"].items() if v > 0]
         ),
         "top_products": (products.get("top_engines") or [])[:20],
-        "top_engines": (products.get("top_engines") or [])[:20],
+        # Real customer engine inquiries (catalog/broadcast blasts excluded).
+        "top_engines": [list(pair) for pair in engine_stats.get("top_engine_codes", [])][:20],
         "country_distribution": products.get("top_countries") or [],
         "top_followup_customers": followups,
         "best_sales_talk": {
@@ -250,41 +292,71 @@ def format_full_report_markdown(report: dict[str, Any]) -> str:
         f"**只读:** {report.get('readonly')} | **自动发送:** {report.get('auto_send')} | "
         f"**自动改 Prompt:** {report.get('auto_prompt_update')}",
         "",
-        "## 1. 总量",
+        f"**DATA COVERAGE:** {report.get('data_coverage', 'unknown').upper()}",
+        "",
+    ]
+    bi = report.get("browser_import") or {}
+    lines.extend([
+        "### Browser 实际读取范围",
+        "",
+        f"- loaded_chats: {bi.get('loaded_chats', 0)}",
+        f"- processed_chats: {bi.get('processed_chats', 0)}",
+        f"- messages_imported: {bi.get('messages_imported', 0)}",
+        f"- skipped_private: {bi.get('skipped_private', 0)}",
+        f"- failed_chats: {bi.get('failed_chats', 0)}",
+    ])
+    if report.get("limitation_reason"):
+        lines.append(f"- **为什么不能全量:** {report['limitation_reason']}")
+    if bi.get("error"):
+        lines.append(f"- browser error: {bi['error']}")
+    bmsgs = int(bi.get("messages_imported") or 0)
+    if bmsgs <= 50 and report.get("data_coverage") == "unknown":
+        lines.append(
+            "- **警告:** Browser 本次几乎未读取历史；"
+            "下方「总量」为 DB 合并数，不能当作 WhatsApp 全量。"
+        )
+    lines.extend([
+        "",
+        "## 1. 实际读取（Browser 本次）",
+        "",
+        f"- 实际读取会话数: {bi.get('processed_chats', 0)} / {bi.get('loaded_chats', 0)}",
+        f"- 实际读取消息数: {bmsgs}",
+        f"- 有效客户数量（全库分析）: {report['totals']['effective_customers']}",
+        "",
+        "## 2. 总量（Conversation DB 合并）",
         "",
         f"- 总聊天数（会话）: {report['totals']['conversation_count']}",
         f"- 总联系人数: {report['totals']['contact_count']}",
         f"- 总消息数: {report['totals']['message_count']}",
-        f"- 有效客户数量: {report['totals']['effective_customers']}",
         "",
-        "## 2. 客户分类",
+        "## 3. 客户分类",
         "",
-    ]
+    ])
     for tier, count in (report.get("customer_classification") or {}).items():
         lines.append(f"- {tier}: {count}")
-    lines.extend(["", "## 3. 供应商 / 私人 / 系统", ""])
+    lines.extend(["", "## 4. 供应商 / 私人 / 系统", ""])
     for role, count in (report.get("other_roles") or {}).items():
         lines.append(f"- {role}: {count}")
 
-    lines.extend(["", "## 4. 热门产品 TOP20", ""])
+    lines.extend(["", "## 5. 热门产品 TOP20", ""])
     for name, cnt in (report.get("top_products") or [])[:20]:
         lines.append(f"- {name}: {cnt}")
     if not report.get("top_products"):
         lines.append("- 数据不足/未读取到")
 
-    lines.extend(["", "## 5. 热门发动机 TOP20", ""])
+    lines.extend(["", "## 6. 热门发动机 TOP20", ""])
     for name, cnt in (report.get("top_engines") or [])[:20]:
         lines.append(f"- {name}: {cnt}")
     if not report.get("top_engines"):
         lines.append("- 数据不足/未读取到")
 
-    lines.extend(["", "## 6. 国家分布", ""])
+    lines.extend(["", "## 7. 国家分布", ""])
     for name, cnt in (report.get("country_distribution") or [])[:20]:
         lines.append(f"- {name}: {cnt}")
     if not report.get("country_distribution"):
         lines.append("- 数据不足/未读取到")
 
-    lines.extend(["", "## 7. 最值得跟进客户 TOP10", ""])
+    lines.extend(["", "## 8. 最值得跟进客户 TOP10", ""])
     for item in report.get("top_followup_customers") or []:
         lines.append(
             f"- {item.get('contact')} [{item.get('tier')}] "
@@ -294,7 +366,7 @@ def format_full_report_markdown(report: dict[str, Any]) -> str:
     if not report.get("top_followup_customers"):
         lines.append("- 数据不足/未读取到")
 
-    lines.extend(["", "## 8. 历史最佳销售话术", ""])
+    lines.extend(["", "## 9. 历史最佳销售话术", ""])
     for t in (report.get("best_sales_talk") or {}).get("effective_replies") or []:
         lines.append(f"- {t}")
     for t in (report.get("best_sales_talk") or {}).get("high_conversion_quotes") or []:
@@ -302,14 +374,14 @@ def format_full_report_markdown(report: dict[str, Any]) -> str:
     if not lines[-1].startswith("- "):
         lines.append("- 数据不足/未读取到")
 
-    lines.extend(["", "## 9. 历史失败话术 / 失败原因", ""])
+    lines.extend(["", "## 10. 历史失败话术 / 失败原因", ""])
     failed = report.get("failed_talk") or {}
     for reason, cnt in (failed.get("failure_reasons") or {}).items():
         lines.append(f"- {reason}: {cnt}")
     for t in failed.get("weak_replies") or []:
         lines.append(f"- 弱回复: {t}")
 
-    lines.extend(["", "## 10. 新版推荐销售话术（待 CEO Review）", ""])
+    lines.extend(["", "## 11. 新版推荐销售话术（待 CEO Review）", ""])
     for scenario, text in (report.get("recommended_replies") or {}).items():
         lines.append(f"### {scenario}")
         lines.append(text)
@@ -317,13 +389,13 @@ def format_full_report_markdown(report: dict[str, Any]) -> str:
 
     eng = report.get("engine_inquiry_stats") or {}
     lines.extend([
-        "## 11. 发动机询盘统计",
+        "## 12. 发动机询盘统计",
         "",
         f"- 发动机类询盘线程: {eng.get('engine_enquiry_threads', 0)}",
         f"- G4KJ 提及: {eng.get('g4kj_mentions', 0)}",
         f"- G4KD 提及: {eng.get('g4kd_mentions', 0)}",
         "",
-        "## 12. CEO Summary",
+        "## 13. CEO Summary",
         "",
         report.get("ceo_summary", "数据不足/未读取到"),
         "",

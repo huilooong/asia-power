@@ -4,6 +4,12 @@
 (function () {
   'use strict';
 
+  const ADS_CONVERSION_ID = 'AW-4801206293';
+  const ADS_GENERATE_LEAD_LABEL = '';
+  const ADS_GENERATE_LEAD_SEND_TO = ADS_GENERATE_LEAD_LABEL
+    ? `${ADS_CONVERSION_ID}/${ADS_GENERATE_LEAD_LABEL}`
+    : '';
+
   if (window.__HALF_CUT_LEADS_INIT__) return;
   window.__HALF_CUT_LEADS_INIT__ = true;
 
@@ -89,22 +95,66 @@
     return null;
   }
 
-  function messageForIntent(item, intent) {
+  function partTypeLabel(partType) {
+    if (!partType) return '';
+    const key = `parts.partType.${partType}`;
+    const fallbacks = {
+      engine: 'Engine',
+      transmission: 'Gearbox',
+      chassis: 'Chassis part',
+      front: 'Front cut',
+    };
+    return t(key, fallbacks[partType] || 'Part');
+  }
+
+  function messageForIntent(item, intent, partType) {
     const u = window.HalfCutUtils;
     if (!u || !item) return 'Hello AsiaPower, I would like to enquire about a half-cut listing.';
+    if (partType) {
+      const label = partTypeLabel(partType);
+      const stock = item.stockId || item.slug || 'listing';
+      const vehicle = [item.year, item.brand, item.model].filter(Boolean).join(' ');
+      const priceLine = u.exwPriceLine?.(item, { prefix: 'EXW Price' })
+        || (u.formatFobPrice?.(item) ? `EXW Price: ${u.formatFobPrice(item)} USD` : 'EXW Price: on enquiry');
+      const listingLine = u.listingSharePageUrl?.(item) ? `Listing: ${u.listingSharePageUrl(item)}` : '';
+      return [
+        `Hello AsiaPower, I would like a ${label} enquiry for ${stock}${vehicle ? ` (${vehicle})` : ''}.`,
+        priceLine,
+        listingLine,
+      ].filter(Boolean).join('\n');
+    }
     if (intent === 'photos') return u.photosMessage(item);
     if (intent === 'similar') return u.similarUnitMessage(item);
     if (intent === 'availability') return u.whatsappMessage(item);
     return u.whatsappMessage(item);
   }
 
-  function buildPayload(item, intent, contact) {
+  function buildPayload(item, intent, contact, partType) {
+    const partLabel = partTypeLabel(partType);
+    const leadMeta = window.AsiaLeadContext?.captureLeadMeta?.({
+      brand: item.brandSlug || item.brand,
+      product: item.engineCode || item.model,
+      enquiry_type: partType ? 'parts' : 'half-cut',
+      source: partType ? `parts-${partType}` : 'half-cut',
+    }) || {
+      pageUrl: `${window.location.pathname}${window.location.search}`,
+      page: `${window.location.pathname}${window.location.search}`,
+      referrer: document.referrer || '',
+    };
     return {
       slug: item.slug,
       stockId: item.stockId,
       intent,
+      partType: partType || '',
+      partTypeLabel: partLabel,
       brand: item.brand,
       model: item.model,
+      product: item.engineCode || item.model,
+      productLabel: leadMeta.productLabel || '',
+      inquirySubject: partType
+        ? `${partLabel} enquiry — ${item.stockId || item.slug}`
+        : (leadMeta.inquirySubject || ''),
+      replySubject: leadMeta.replySubject || '',
       engineCode: item.engineCode,
       transmissionCode: item.transmissionCode,
       listingStatus: item.status,
@@ -112,15 +162,50 @@
       phone: contact?.phone || '',
       email: contact?.email || '',
       country: contact?.country || '',
-      page: `${window.location.pathname}${window.location.search}`,
+      pageUrl: leadMeta.pageUrl,
+      page: leadMeta.page || leadMeta.pageUrl,
+      referrer: leadMeta.referrer || '',
+      utm_source: leadMeta.utm_source || '',
+      utm_medium: leadMeta.utm_medium || '',
+      utm_campaign: leadMeta.utm_campaign || '',
+      utm_content: leadMeta.utm_content || '',
+      utm_term: leadMeta.utm_term || '',
     };
   }
 
-  async function saveHalfCutLead(item, intent, contact) {
+  function trackHalfCutLeadEvent(eventName, params = {}) {
+    if (typeof window.gtag !== 'function') return;
+    const utm = window.AsiaLeadContext?.captureUtm?.() || window.AsiaPowerUtm?.forLead?.() || {};
+    const eventParams = {
+      currency: 'USD',
+      value: eventName === 'generate_lead' ? 1 : 0,
+      event_category: 'lead',
+      lead_source: params.method || params.lead_source || 'half_cut',
+      page_location: window.location.href,
+      page_path: window.location.pathname,
+      ...utm,
+      ...params,
+    };
+
+    if (!window.__ASIAPOWER_GOOGLE_ADS_CONFIGURED__) {
+      window.gtag('config', ADS_CONVERSION_ID);
+      window.__ASIAPOWER_GOOGLE_ADS_CONFIGURED__ = true;
+    }
+
+    window.gtag('event', eventName, eventParams);
+    if (eventName === 'generate_lead' && ADS_GENERATE_LEAD_SEND_TO) {
+      window.gtag('event', 'conversion', {
+        ...eventParams,
+        send_to: ADS_GENERATE_LEAD_SEND_TO,
+      });
+    }
+  }
+
+  async function saveHalfCutLead(item, intent, contact, partType) {
     const res = await fetch('/api/leads/half-cut', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(buildPayload(item, intent, contact)),
+      body: JSON.stringify(buildPayload(item, intent, contact, partType)),
     });
     const data = await res.json().catch(() => ({}));
     if (!res.ok) throw new Error(data.error || 'Could not save enquiry');
@@ -173,13 +258,9 @@
         return;
       }
 
-      showHalfCutStatus({
-        type: 'info',
-        title: t('leadContact.title', 'Your contact details'),
+      const contact = await window.SiteFeedback.promptContact({
         message: t('leadContact.whatsappSaveHint', 'We will save your enquiry before opening WhatsApp.'),
       });
-
-      const contact = await promptContact();
       if (!contact) {
         showHalfCutStatus({ type: 'info', title: '', message: '' });
         return;
@@ -207,6 +288,12 @@
           title: t('feedback.halfCutSaved', 'Enquiry recorded'),
           message: t('feedback.whatsappOpening', 'Opening WhatsApp…'),
           details: `Reference: ${leadId}\nStock: ${item.stockId || '—'}`,
+        });
+        trackHalfCutLeadEvent('generate_lead', {
+          method: 'half_cut_whatsapp',
+          lead_id: leadId,
+          stock_id: item.stockId || '',
+          intent,
         });
         openWhatsAppWithReference(link.href, leadId);
       } else {
@@ -241,6 +328,7 @@
 
       const slug = btn.dataset.slug;
       const intent = btn.dataset.intent || 'price';
+      const partType = btn.dataset.partType || '';
 
       const item = resolveLeadItem(slug);
       if (!item) {
@@ -251,12 +339,6 @@
         });
         return;
       }
-
-      showHalfCutStatus({
-        type: 'info',
-        title: t('leadContact.title', 'Your contact details'),
-        message: t('leadContact.message', 'Select your country, then enter your phone number or email address.'),
-      });
 
       const contact = await promptContact();
       if (!contact) {
@@ -278,7 +360,7 @@
       let savedEmail = '';
       let saveError = null;
       try {
-        const saved = await saveHalfCutLead(item, intent, contact);
+        const saved = await saveHalfCutLead(item, intent, contact, partType);
         leadId = saved?.id || null;
         savedEmail = saved?.email || contact.email || '';
       } catch (err) {
@@ -291,16 +373,28 @@
       }
 
       if (leadId) {
+        const partLabel = partTypeLabel(partType);
         presentHalfCutFeedback({
           type: 'success',
-          title: t('feedback.halfCutSaved', 'Enquiry recorded'),
-          message: t('feedback.halfCutSavedMsg', 'Your half-cut enquiry was submitted successfully. We will contact you within 24 hours.'),
+          title: partType
+            ? t('feedback.partsEnquirySaved', 'Enquiry recorded')
+            : t('feedback.halfCutSaved', 'Enquiry recorded'),
+          message: partType
+            ? t('feedback.partsEnquirySavedMsg', 'Your parts enquiry was submitted successfully. We will contact you within 24 hours.')
+            : t('feedback.halfCutSavedMsg', 'Your half-cut enquiry was submitted successfully. We will contact you within 24 hours.'),
           details: [
             `Reference: ${leadId}`,
-            `Stock: ${item.stockId || '—'}`,
+            partType ? `${partLabel}: ${item.stockId || '—'}` : `Stock: ${item.stockId || '—'}`,
             savedEmail ? `Email: ${savedEmail}` : '',
             contact.phone ? `Phone: ${contact.phone}` : '',
           ].filter(Boolean).join('\n'),
+        });
+        trackHalfCutLeadEvent('generate_lead', {
+          method: partType ? 'parts_enquiry' : 'half_cut_form',
+          lead_id: leadId,
+          stock_id: item.stockId || '',
+          intent,
+          part_type: partType || '',
         });
       } else {
         presentHalfCutFeedback({
@@ -327,6 +421,7 @@
     messageForIntent,
     buildPayload,
     resolveLeadItem,
+    partTypeLabel,
     showHalfCutStatus,
     presentHalfCutFeedback,
   };

@@ -60,9 +60,15 @@ class LanguagePolicyTests(unittest.TestCase):
             "en",
         )
 
+    def test_buyer_chinese_detected(self) -> None:
+        self.assertEqual(
+            resolve_target_language("apsales", "buyer", "你好，我需要3台丰田2az发动机"),
+            "zh",
+        )
+
     def test_detect_language_buyer_scenario(self) -> None:
         self.assertEqual(detect_language("Bonjour moteur", scenario="buyer"), "fr")
-        self.assertEqual(detect_language("你好", scenario="buyer"), "en")
+        self.assertEqual(detect_language("你好", scenario="buyer"), "zh")
 
     def test_detect_language_supplier_scenario(self) -> None:
         self.assertEqual(detect_language("现货价格多少", scenario="supplier"), "zh")

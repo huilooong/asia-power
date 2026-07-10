@@ -1,0 +1,46 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="760" viewBox="0 0 1200 760" role="img" aria-labelledby="title desc">
+  <title id="title">G4KD industrial engine blueprint visual</title>
+  <desc id="desc">A stylized premium industrial blueprint illustration for the AsiaPower G4KD engine page prototype.</desc>
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#0b1220"/>
+      <stop offset="0.52" stop-color="#142238"/>
+      <stop offset="1" stop-color="#1d2d46"/>
+    </linearGradient>
+    <linearGradient id="gold" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#f6c85f"/>
+      <stop offset="1" stop-color="#a56f13"/>
+    </linearGradient>
+    <filter id="soft" x="-20%" y="-20%" width="140%" height="140%">
+      <feGaussianBlur stdDeviation="8"/>
+    </filter>
+    <pattern id="grid" width="44" height="44" patternUnits="userSpaceOnUse">
+      <path d="M44 0H0V44" fill="none" stroke="#ffffff" stroke-opacity=".055" stroke-width="1"/>
+    </pattern>
+  </defs>
+  <rect width="1200" height="760" fill="url(#bg)"/>
+  <rect width="1200" height="760" fill="url(#grid)"/>
+  <circle cx="980" cy="120" r="180" fill="#d59a26" opacity=".12" filter="url(#soft)"/>
+  <circle cx="210" cy="650" r="190" fill="#2f80ed" opacity=".10" filter="url(#soft)"/>
+  <g transform="translate(180 170)" fill="none" stroke-linejoin="round" stroke-linecap="round">
+    <path d="M170 170h510l64 70v180H118V238z" fill="#111b2d" stroke="#cbd5e1" stroke-opacity=".42" stroke-width="3"/>
+    <path d="M232 112h360l58 58H176z" fill="#16243a" stroke="#cbd5e1" stroke-opacity=".38" stroke-width="3"/>
+    <path d="M218 118v-44h320v44" stroke="#cbd5e1" stroke-opacity=".38" stroke-width="3"/>
+    <path d="M248 76h58M352 76h58M456 76h58" stroke="url(#gold)" stroke-width="6"/>
+    <rect x="212" y="224" width="120" height="112" rx="12" fill="#0f1727" stroke="#cbd5e1" stroke-opacity=".32" stroke-width="3"/>
+    <rect x="376" y="224" width="120" height="112" rx="12" fill="#0f1727" stroke="#cbd5e1" stroke-opacity=".32" stroke-width="3"/>
+    <rect x="540" y="224" width="120" height="112" rx="12" fill="#0f1727" stroke="#cbd5e1" stroke-opacity=".32" stroke-width="3"/>
+    <circle cx="272" cy="280" r="34" stroke="url(#gold)" stroke-width="8"/>
+    <circle cx="436" cy="280" r="34" stroke="url(#gold)" stroke-width="8"/>
+    <circle cx="600" cy="280" r="34" stroke="url(#gold)" stroke-width="8"/>
+    <path d="M118 420h626M158 462h544" stroke="#cbd5e1" stroke-opacity=".28" stroke-width="3"/>
+    <path d="M96 238H26m744 0h86M276 38V0m328 100 62-62M196 504l-52 52" stroke="#cbd5e1" stroke-opacity=".28" stroke-width="2"/>
+    <path d="M26 238h-8m838 0h8M276 0v-8M666 38l8-8M144 556l-8 8" stroke="#d59a26" stroke-width="4"/>
+  </g>
+  <g fill="#ffffff" font-family="Inter, Arial, sans-serif">
+    <text x="74" y="82" font-size="18" opacity=".6">ASIA POWER ENGINE SOURCING</text>
+    <text x="74" y="126" font-size="54" font-weight="800">G4KD</text>
+    <text x="74" y="162" font-size="22" fill="#f1c667">HYUNDAI / KIA · EXPORT MATCHING BLUEPRINT</text>
+    <text x="850" y="612" font-size="18" opacity=".62">FITMENT · GEARBOX · HALF-CUT · CIF</text>
+  </g>
+</svg>

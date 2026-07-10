@@ -6,8 +6,8 @@
   "scope": "/",
   "display": "standalone",
   "orientation": "portrait-primary",
-  "background_color": "#0a1628",
-  "theme_color": "#0a1628",
+  "background_color": "#ffffff",
+  "theme_color": "#ffffff",
   "categories": ["business", "shopping", "productivity"],
   "lang": "en",
   "dir": "ltr",
@@ -35,15 +35,22 @@
     {
       "name": "Request a Quote",
       "short_name": "Quote",
-      "description": "Open AsiaPower quote request page.",
-      "url": "/pages/quote.html?source=pwa_shortcut",
+      "description": "Send an engine, gearbox or half-cut enquiry.",
+      "url": "/contact.html?source=pwa_shortcut",
       "icons": [{ "src": "/assets/icons/icon-192.png", "sizes": "192x192" }]
     },
     {
-      "name": "Truck Heads",
+      "name": "Half-Cuts",
+      "short_name": "Half-Cuts",
+      "description": "Browse half-cut inventory.",
+      "url": "/half-cuts/?source=pwa_shortcut",
+      "icons": [{ "src": "/assets/icons/icon-192.png", "sizes": "192x192" }]
+    },
+    {
+      "name": "Truck Parts",
       "short_name": "Trucks",
-      "description": "Browse truck head sourcing options.",
-      "url": "/truck-heads/?source=pwa_shortcut",
+      "description": "Browse truck cabs and parts.",
+      "url": "/trucks/?source=pwa_shortcut",
       "icons": [{ "src": "/assets/icons/icon-192.png", "sizes": "192x192" }]
     }
   ]

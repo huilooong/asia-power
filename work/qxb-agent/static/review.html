@@ -1,0 +1,66 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>QXB 未上传复核</title>
+  <link rel="stylesheet" href="/static/review.css">
+</head>
+<body>
+  <header>
+    <div>
+      <h1>QXB 未上传复核</h1>
+      <div class="sub">确认可上传 → 子龙 process + submit-review；每次决策写入 trainingExemplars 训练识图。</div>
+    </div>
+    <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">
+      <div class="filter-tabs">
+        <button id="filterAll" class="filter-tab">全部图库</button>
+        <button id="filterNeedsVin" class="filter-tab active">真缺 VIN</button>
+      </div>
+      <button id="nextBatch">下一批 / 刷新</button>
+      <div class="status" id="topStatus">加载中...</div>
+    </div>
+  </header>
+  <div class="layout">
+    <nav id="nav"></nav>
+    <main>
+      <div class="meta" id="meta"></div>
+      <div class="grid">
+        <section class="panel">
+          <div class="photo-head">
+            <h2>照片库</h2>
+            <div class="photo-tools">
+              <span class="photo-count">编号照片夹</span>
+              <span class="photo-count" id="photoCount"></span>
+            </div>
+          </div>
+          <div class="photos" id="photos"></div>
+        </section>
+        <section class="panel">
+          <h2>识别数据与槽位</h2>
+          <div class="slots" id="slots"></div>
+          <div style="padding:0 10px 10px">
+            <textarea id="note" placeholder="修正说明，例如：VIN 是 app 截图可兜底，但缺机舱，不上传。"></textarea>
+          </div>
+          <div class="actions">
+            <button class="primary" id="confirmUpload">确认可上传</button>
+            <button id="saveLearning">只保存学习</button>
+            <button id="skipMissing">缺图跳过</button>
+            <button class="danger" id="notSame">不是同一台车</button>
+          </div>
+          <pre id="preview">{}</pre>
+        </section>
+        <section class="panel">
+          <h2>记忆库收益 <small style="font-weight:normal;color:#667085">（子龙 recognitionModel）</small></h2>
+          <div class="memory">
+            <div id="metrics"></div>
+            <textarea id="queueBox" readonly rows="5"></textarea>
+            <ol class="log" id="log"></ol>
+          </div>
+        </section>
+      </div>
+    </main>
+  </div>
+  <script src="/static/review.js?v=review-slot-fix"></script>
+</body>
+</html>

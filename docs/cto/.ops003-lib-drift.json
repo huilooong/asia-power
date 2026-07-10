@@ -1,0 +1,321 @@
+[
+  {
+    "file": ".env.example",
+    "local": "68a129e86bf3f7f6a9aa6c16c1e9144e",
+    "github": "142be5634e26383a15f7158fda5b14cf",
+    "prod": null,
+    "scope": "deploy"
+  },
+  {
+    "file": "server/lib/analytics-internal-ips.js",
+    "local": "ff5c422a3eb57580d6970d9503d72229",
+    "github": null,
+    "prod": "ff5c422a3eb57580d6970d9503d72229",
+    "status": "ALIGNED",
+    "scope": "lib"
+  },
+  {
+    "file": "server/lib/catalog-list-prerender.js",
+    "local": "4f48e6a9ac0f0e76ec2b0a5da6a1095a",
+    "github": null,
+    "prod": "4f48e6a9ac0f0e76ec2b0a5da6a1095a",
+    "status": "ALIGNED",
+    "scope": "lib"
+  },
+  {
+    "file": "server/lib/chassis-blur.js",
+    "local": "9baa2f90ea23ff5f2853561fab7b53e9",
+    "github": null,
+    "prod": "9baa2f90ea23ff5f2853561fab7b53e9",
+    "status": "ALIGNED",
+    "scope": "lib"
+  },
+  {
+    "file": "server/lib/cif-shipping.js",
+    "local": "28feff60cd504e2a604aa30afe29f59b",
+    "github": null,
+    "prod": "28feff60cd504e2a604aa30afe29f59b",
+    "status": "ALIGNED",
+    "scope": "lib"
+  },
+  {
+    "file": "server/lib/contact-leads.js",
+    "local": "207ba5bee55d0e80e4e17f81ee08f5f2",
+    "github": "c19b29c8f2c9b06a4605d47276d7cf8d",
+    "prod": "c19b29c8f2c9b06a4605d47276d7cf8d",
+    "status": "LOCAL_AHEAD",
+    "scope": "lib"
+  },
+  {
+    "file": "server/lib/contact-redact.js",
+    "local": "154f94cb203ca377a9f6d7d28eefdaf8",
+    "github": null,
+    "prod": "154f94cb203ca377a9f6d7d28eefdaf8",
+    "status": "ALIGNED",
+    "scope": "lib"
+  },
+  {
+    "file": "server/lib/data-intake-log.js",
+    "local": "94e33d71931d18120eb7ef3adf35db9e",
+    "github": null,
+    "prod": "94e33d71931d18120eb7ef3adf35db9e",
+    "status": "ALIGNED",
+    "scope": "lib"
+  },
+  {
+    "file": "server/lib/email-mailbox.js",
+    "local": "da80ab9e472e185c62f183c7eea688a0",
+    "github": null,
+    "prod": "da80ab9e472e185c62f183c7eea688a0",
+    "status": "ALIGNED",
+    "scope": "lib"
+  },
+  {
+    "file": "server/lib/email-outbound.js",
+    "local": "f32ab76f746ddda89e1505648113e326",
+    "github": null,
+    "prod": "f32ab76f746ddda89e1505648113e326",
+    "status": "ALIGNED",
+    "scope": "lib"
+  },
+  {
+    "file": "server/lib/email-proxy.js",
+    "local": "a7fa1094d6802d29dfc39063ef37d191",
+    "github": null,
+    "prod": "a7fa1094d6802d29dfc39063ef37d191",
+    "status": "ALIGNED",
+    "scope": "lib"
+  },
+  {
+    "file": "server/lib/half-cut-api.js",
+    "local": "10888a1460f45a6537ed2ab759828899",
+    "github": "8070c278ccb3a0af7c96e9b0656733db",
+    "prod": "8070c278ccb3a0af7c96e9b0656733db",
+    "status": "LOCAL_AHEAD",
+    "scope": "lib"
+  },
+  {
+    "file": "server/lib/half-cut-list-prerender.js",
+    "local": "cb21cf1e75d88e70f3377ab22c2621b6",
+    "github": null,
+    "prod": "cb21cf1e75d88e70f3377ab22c2621b6",
+    "status": "ALIGNED",
+    "scope": "lib"
+  },
+  {
+    "file": "server/lib/half-cut-notifications.js",
+    "local": "2e5bd8f2689bbe1fbdabfb80eb1c236f",
+    "github": "32ab6047d9ae16e3a44cd6e3503bb610",
+    "prod": "32ab6047d9ae16e3a44cd6e3503bb610",
+    "status": "LOCAL_AHEAD",
+    "scope": "lib"
+  },
+  {
+    "file": "server/lib/half-cut-prerender.js",
+    "local": "a54bbae78f000278cb93d4ae7d48d910",
+    "github": "88f8c0ede8a0acd72929c0c8dcd46c24",
+    "prod": "88f8c0ede8a0acd72929c0c8dcd46c24",
+    "status": "LOCAL_AHEAD",
+    "scope": "lib"
+  },
+  {
+    "file": "server/lib/half-cut-public.js",
+    "local": "5274dee746455e75d15fcf2618b7987d",
+    "github": "29884b4d066282bec97459440a49d370",
+    "prod": "29884b4d066282bec97459440a49d370",
+    "status": "LOCAL_AHEAD",
+    "scope": "lib"
+  },
+  {
+    "file": "server/lib/half-cut-seo.js",
+    "local": "30bd23aa6136bc12f8eceb5ffa852c4e",
+    "github": "8055bb82c56ddcac1093cb71427a40be",
+    "prod": "8055bb82c56ddcac1093cb71427a40be",
+    "status": "LOCAL_AHEAD",
+    "scope": "lib"
+  },
+  {
+    "file": "server/lib/half-cut-title.js",
+    "local": "4aaa638b30a550e368e6d585232cb6de",
+    "github": null,
+    "prod": "4aaa638b30a550e368e6d585232cb6de",
+    "status": "ALIGNED",
+    "scope": "lib"
+  },
+  {
+    "file": "server/lib/half-cut-vehicle-title-i18n.js",
+    "local": "3ebe6c76a5c70ffcd8ea69c5d786f100",
+    "github": null,
+    "prod": "3ebe6c76a5c70ffcd8ea69c5d786f100",
+    "status": "ALIGNED",
+    "scope": "lib"
+  },
+  {
+    "file": "server/lib/inventory-catalog-seo.js",
+    "local": "5f39d2c91d53f0378dba240ddddf7ee3",
+    "github": null,
+    "prod": "5f39d2c91d53f0378dba240ddddf7ee3",
+    "status": "ALIGNED",
+    "scope": "lib"
+  },
+  {
+    "file": "server/lib/lead-context.js",
+    "local": "0f0686b58cbe6ca02244e7365f8997c5",
+    "github": null,
+    "prod": "0f0686b58cbe6ca02244e7365f8997c5",
+    "status": "ALIGNED",
+    "scope": "lib"
+  },
+  {
+    "file": "server/lib/machinery-brand-catalog.js",
+    "local": null,
+    "github": null,
+    "prod": "c89784173b26615ad06f155db51ef7fc",
+    "status": "PROD_ONLY",
+    "scope": "lib"
+  },
+  {
+    "file": "server/lib/media-optimize.js",
+    "local": "a4dc550e97d4b381a3ea74295cbaf8e4",
+    "github": null,
+    "prod": "a4dc550e97d4b381a3ea74295cbaf8e4",
+    "status": "ALIGNED",
+    "scope": "lib"
+  },
+  {
+    "file": "server/lib/media-storage.js",
+    "local": "32187224dc4f0b66cc6e8b31d75d2e70",
+    "github": "839592f619bbd020952f1a93c74724ff",
+    "prod": "839592f619bbd020952f1a93c74724ff",
+    "status": "LOCAL_AHEAD",
+    "scope": "lib"
+  },
+  {
+    "file": "server/lib/phone-utils.js",
+    "local": "b08ceebac521d6ac3b44b03eb0fe63e4",
+    "github": null,
+    "prod": "b08ceebac521d6ac3b44b03eb0fe63e4",
+    "status": "ALIGNED",
+    "scope": "lib"
+  },
+  {
+    "file": "server/lib/powertrain-catalog-memory.js",
+    "local": "eb433d4caee8c4cb305abab85f3bee95",
+    "github": null,
+    "prod": "eb433d4caee8c4cb305abab85f3bee95",
+    "status": "ALIGNED",
+    "scope": "lib"
+  },
+  {
+    "file": "server/lib/powertrain-labels.js",
+    "local": null,
+    "github": null,
+    "prod": "61e95742dab059827a6619c93866a94a",
+    "status": "PROD_ONLY",
+    "scope": "lib"
+  },
+  {
+    "file": "server/lib/promote-approved-media.mjs",
+    "local": null,
+    "github": null,
+    "prod": "99ced86e721b0b9728e6705869185ccd",
+    "status": "PROD_ONLY",
+    "scope": "lib"
+  },
+  {
+    "file": "server/lib/r2-storage.js",
+    "local": "f03fd6084d87b9f9565152369a758c23",
+    "github": null,
+    "prod": "f03fd6084d87b9f9565152369a758c23",
+    "status": "ALIGNED",
+    "scope": "lib"
+  },
+  {
+    "file": "server/lib/security-paths.js",
+    "local": "a85f10243949fff14cf85464edd6497c",
+    "github": "88ef47ef426cab92747428dfae932d4c",
+    "prod": "88ef47ef426cab92747428dfae932d4c",
+    "status": "LOCAL_AHEAD",
+    "scope": "lib"
+  },
+  {
+    "file": "server/lib/site-analytics.js",
+    "local": "d26e060a7e7725fdd6d890d4acd4530b",
+    "github": "c189ba5f5a21f66c5110b9afac2c3d89",
+    "prod": "c189ba5f5a21f66c5110b9afac2c3d89",
+    "status": "LOCAL_AHEAD",
+    "scope": "lib"
+  },
+  {
+    "file": "server/lib/sitemap.js",
+    "local": "a5ab65922e858b02c2cce06ffed987e5",
+    "github": "f0f12666eb6f9ec0e0bf2c3f9b84db14",
+    "prod": "f0f12666eb6f9ec0e0bf2c3f9b84db14",
+    "status": "LOCAL_AHEAD",
+    "scope": "lib"
+  },
+  {
+    "file": "server/lib/static-powertrain-catalog.js",
+    "local": null,
+    "github": null,
+    "prod": "a37523c52db6d5dc4eab952e819849ea",
+    "status": "PROD_ONLY",
+    "scope": "lib"
+  },
+  {
+    "file": "server/lib/supplier-gate.js",
+    "local": "6665c8d7ce8e19195d7593197c4120b5",
+    "github": "e489d48f8ccf03717aa7129c527f9b02",
+    "prod": "e489d48f8ccf03717aa7129c527f9b02",
+    "status": "LOCAL_AHEAD",
+    "scope": "lib"
+  },
+  {
+    "file": "server/lib/system-metrics.js",
+    "local": null,
+    "github": null,
+    "prod": "0790178d0683e52b7dc129a177b12b29",
+    "status": "PROD_ONLY",
+    "scope": "lib"
+  },
+  {
+    "file": "server/lib/truck-brand-catalog.js",
+    "local": "2f663a04194893c0948de76de866df97",
+    "github": null,
+    "prod": "2f663a04194893c0948de76de866df97",
+    "status": "ALIGNED",
+    "scope": "lib"
+  },
+  {
+    "file": "server/lib/vehicle-name-normalize.js",
+    "local": "8866c1a470e12a7e8af8ea92908b8c9a",
+    "github": "e1066cc55b6602eb32cddcc1dc93ac5a",
+    "prod": "e1066cc55b6602eb32cddcc1dc93ac5a",
+    "status": "LOCAL_AHEAD",
+    "scope": "lib"
+  },
+  {
+    "file": "server/lib/vin/decode-route.js",
+    "local": "6caed2133ca5b289694e03aeb482c843",
+    "github": null,
+    "prod": "6caed2133ca5b289694e03aeb482c843",
+    "status": "ALIGNED",
+    "scope": "lib"
+  },
+  {
+    "file": "server/lib/vin/knowledge-base.js",
+    "local": "b8079b68acf88e8d3a7c866a10c9a2ff",
+    "github": "ae617c5642cdc9d6c70ea9112354920a",
+    "prod": "ae617c5642cdc9d6c70ea9112354920a",
+    "status": "LOCAL_AHEAD",
+    "scope": "lib"
+  },
+  {
+    "file": "server/lib/vin/zh-en-seed.js",
+    "local": "b4512b342e432cfc55011f27ed3417b8",
+    "github": "ac9478578c82e75556779a92439987b5",
+    "prod": "ac9478578c82e75556779a92439987b5",
+    "status": "LOCAL_AHEAD",
+    "scope": "lib"
+  }
+]

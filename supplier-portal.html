@@ -5,13 +5,23 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="theme-color" content="#0a1628">
 
-  <meta name="description" content="Register as a verified AsiaPower supplier. Join our network of engine and gearbox suppliers in Japan, Korea and China.">
+  <meta name="description" content="Apply to join the AsiaPower supplier network. Connect engine and gearbox inventory with export demand worldwide.">
   <title>Supplier Portal | AsiaPower</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700;800&family=Inter:wght@400;500;600&display=swap" media="print" onload="this.media='all'">
-  <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700;800&family=Inter:wght@400;500;600&display=swap"></noscript>
-  <link rel="stylesheet" href="css/styles.css?v=mobile-rtl-fix-v1">
+  <link rel="canonical" href="https://asia-power.com/supplier-portal.html">
+  <meta property="og:title" content="Supplier Portal | AsiaPower">
+  <meta property="og:description" content="Apply to join the AsiaPower supplier network. Connect your inventory with global export demand.">
+  <meta property="og:url" content="https://asia-power.com/supplier-portal.html">
+  <meta property="og:image" content="https://asia-power.com/assets/asia-power-og.svg">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:image" content="https://asia-power.com/assets/asia-power-og.svg">
+    <link rel="preconnect" href="https://www.googletagmanager.com">
+  <link rel="preload" href="assets/fonts/barlow-condensed-800-latin.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href="assets/fonts/inter-latin.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="stylesheet" href="css/fonts.css?v=self-hosted-fonts-v1">
+<link rel="stylesheet" href="css/styles.css?v=lang-sync-v2">
+  <link rel="stylesheet" href="css/ebay-layout.css?v=lang-sync-v2" data-ebay-layout="1">
   <link rel="icon" href="assets/favicon.png" type="image/png">
   <link rel="apple-touch-icon" href="assets/favicon.png">
   <!-- Google tag (gtag.js) -->
@@ -25,55 +35,96 @@
 </head>
 <body data-page="supplier">
 
+  <!-- deploy-marker: auth-nav-sitewide-v1 auth-nav-once-v1 -->
   <div id="site-topbar"></div>
   <div id="site-header"></div>
+  <div style="max-width:1100px;margin:12px auto 0;padding:0 20px;display:flex;flex-wrap:wrap;gap:8px">
+    <a href="/login/?role=supplier&mode=register" style="display:inline-flex;align-items:center;gap:8px;background:#d4880a;color:#fff;font-size:13px;font-weight:700;padding:10px 16px;border-radius:999px;text-decoration:none">
+      新供应商注册 →
+    </a>
+    <a href="/login/?role=supplier" style="display:inline-flex;align-items:center;gap:8px;background:#1d1d1f;color:#fff;font-size:13px;font-weight:700;padding:10px 16px;border-radius:999px;text-decoration:none">
+      供应商登录 · 我的上传 →
+    </a>
+  </div>
 
   <main id="main-content">
     <section class="page-hero">
       <div class="container">
         <div class="page-hero__breadcrumb"><a href="index.html" data-i18n="catalog.home">Home</a> / <span data-i18n="supplier.title">Supplier Portal</span></div>
         <h1 data-i18n="supplier.title">Supplier Portal</h1>
-        <p data-i18n="supplier.lead">Join our verified supplier network. Connect your inventory with export demand across Africa, the Americas, Caribbean, Middle East, Southeast Asia and Australia.</p>
+        <p data-i18n="supplier.lead">Join our supplier network. Connect your inventory with export demand across Africa, the Americas, Caribbean, Middle East, Southeast Asia and Australia.</p>
         <p class="supplier-market-scope" data-i18n="supplier.marketScope">Six export regions — every African country plus the Americas, Caribbean, Middle East, Southeast Asia and Australia — forming one of the world&apos;s largest import and rebuild buyer footprints.</p>
+      </div>
+    </section>
+
+    <section class="section supplier-upload-section" aria-labelledby="supplier-upload-heading">
+      <div class="container">
         <div class="supplier-upload-cta">
-          <p class="supplier-upload-cta__eyebrow">Supplier action · 供应商操作</p>
-          <p class="supplier-upload-cta__hint">Already a verified supplier? Choose your inventory type and upload photos for AsiaPower review.<br>已是合作供应商？选择库存类型，上传照片与车辆信息，提交 AsiaPower 审核。</p>
-          <div class="supplier-upload-choices">
-            <a href="supplier-portal/half-cut-upload.html" class="supplier-upload-choice supplier-upload-choice--halfcut">
-              <span class="supplier-upload-choice__icon" aria-hidden="true">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75"><path d="M7 17h10M5 11l1.5-4h11L19 11"/><rect x="3" y="11" width="18" height="7" rx="1.5"/><circle cx="7.5" cy="18" r="1.25"/><circle cx="16.5" cy="18" r="1.25"/></svg>
-              </span>
-              <span class="supplier-upload-choice__text">
-                <strong class="supplier-upload-choice__title">Half-Cut Inventory</strong>
-                <span class="supplier-upload-choice__title-zh">上传半车库存</span>
-                <span class="supplier-upload-choice__desc">Passenger cars, SUVs &amp; vans · 乘用车 / SUV / 面包车</span>
-              </span>
-              <span class="supplier-upload-choice__go" aria-hidden="true">→</span>
-            </a>
-            <a href="supplier-portal/truck-upload.html?part=cab" class="supplier-upload-choice supplier-upload-choice--truck">
-              <span class="supplier-upload-choice__badge">Driver Cab · 驾驶室</span>
-              <span class="supplier-upload-choice__icon" aria-hidden="true">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75"><path d="M3 10h13v7H3z"/><path d="M16 12h2l3 3v2h-5v-5z"/><circle cx="7" cy="17" r="1.75"/><circle cx="19" cy="17" r="1.75"/></svg>
-              </span>
-              <span class="supplier-upload-choice__text">
-                <strong class="supplier-upload-choice__title">Driver Cab Upload</strong>
-                <span class="supplier-upload-choice__title-zh">上传驾驶室</span>
-                <span class="supplier-upload-choice__desc">Truck cabs only · VIN optional · 仅驾驶室，VIN 可留空</span>
-              </span>
-              <span class="supplier-upload-choice__go" aria-hidden="true">→</span>
-            </a>
-            <a href="supplier-portal/truck-upload.html" class="supplier-upload-choice supplier-upload-choice--truck">
-              <span class="supplier-upload-choice__badge">Trucks · 卡车</span>
-              <span class="supplier-upload-choice__icon" aria-hidden="true">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75"><path d="M2 9h12v8H2z"/><path d="M14 12h3l3 3v2h-6v-5z"/><circle cx="6" cy="17" r="1.75"/><circle cx="18" cy="17" r="1.75"/><path d="M2 12h12M14 15h3"/></svg>
-              </span>
-              <span class="supplier-upload-choice__text">
-                <strong class="supplier-upload-choice__title">Truck Inventory</strong>
-                <span class="supplier-upload-choice__title-zh">上传卡车库存</span>
-                <span class="supplier-upload-choice__desc">Half-cuts, driver cabs &amp; parts · 半车 / 驾驶室 / 拆车件</span>
-              </span>
-              <span class="supplier-upload-choice__go" aria-hidden="true">→</span>
-            </a>
+          <h2 id="supplier-upload-heading" class="supplier-upload-cta__title" data-i18n="supplier.uploadTitle">Upload Inventory</h2>
+          <p class="supplier-upload-cta__eyebrow" data-i18n="supplier.uploadEyebrow">Supplier action</p>
+          <p class="supplier-upload-cta__hint" data-i18n="supplier.uploadHint">Already registered? Choose your inventory type and upload photos for AsiaPower review.</p>
+          <div class="supplier-upload-choices supplier-upload-choices--quad">
+            <article class="supplier-upload-module supplier-upload-module--truck-vehicle">
+              <div class="supplier-upload-module__head">
+                <span class="supplier-upload-module__icon" aria-hidden="true">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75"><path d="M3 10h13v7H3z"/><path d="M16 12h2l3 3v2h-5v-5z"/><circle cx="7" cy="17" r="1.75"/><circle cx="19" cy="17" r="1.75"/></svg>
+                </span>
+                <div>
+                  <h3 class="supplier-upload-module__title" data-i18n="supplier.uploadTruckVehicle">商用车整车</h3>
+                  <p class="supplier-upload-module__desc" data-i18n="supplier.uploadTruckVehicleDesc">卡车/商用车整车 — 报废车或二手车</p>
+                </div>
+              </div>
+              <p class="supplier-upload-module__rule" data-i18n="supplier.uploadVinRequired">须填 VIN</p>
+              <div class="supplier-upload-module__links">
+                <a href="supplier-portal/truck-vehicle-upload.html?type=scrap" class="supplier-upload-module__link" data-i18n="supplier.uploadScrap">报废车</a>
+                <a href="supplier-portal/truck-vehicle-upload.html?type=used" class="supplier-upload-module__link" data-i18n="supplier.uploadUsedCar">二手车</a>
+              </div>
+            </article>
+
+            <article class="supplier-upload-module supplier-upload-module--passenger-vehicle">
+              <div class="supplier-upload-module__head">
+                <span class="supplier-upload-module__icon" aria-hidden="true">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75"><path d="M7 17h10M5 11l1.5-4h11L19 11"/><rect x="3" y="11" width="18" height="7" rx="1.5"/><circle cx="7.5" cy="18" r="1.25"/><circle cx="16.5" cy="18" r="1.25"/></svg>
+                </span>
+                <div>
+                  <h3 class="supplier-upload-module__title" data-i18n="supplier.uploadPassengerVehicle">乘用车整车</h3>
+                  <p class="supplier-upload-module__desc" data-i18n="supplier.uploadPassengerVehicleDesc">乘用车/SUV/面包车整车 — 报废车或二手车</p>
+                </div>
+              </div>
+              <p class="supplier-upload-module__rule" data-i18n="supplier.uploadVinRequired">须填 VIN</p>
+              <div class="supplier-upload-module__links">
+                <a href="supplier-portal/half-cut-upload.html?type=scrap" class="supplier-upload-module__link" data-i18n="supplier.uploadScrap">报废车</a>
+                <a href="supplier-portal/half-cut-upload.html?type=used" class="supplier-upload-module__link" data-i18n="supplier.uploadUsedCar">二手车</a>
+              </div>
+            </article>
+
+            <article class="supplier-upload-module supplier-upload-module--truck-parts">
+              <div class="supplier-upload-module__head">
+                <span class="supplier-upload-module__icon" aria-hidden="true">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75"><rect x="3" y="8" width="11" height="9" rx="1.5"/><path d="M14 10h3l3 3v4h-6v-7z"/><circle cx="7" cy="17" r="1.5"/><circle cx="19" cy="17" r="1.5"/></svg>
+                </span>
+                <div>
+                  <h3 class="supplier-upload-module__title" data-i18n="supplier.uploadTruckParts">商用车配件</h3>
+                  <p class="supplier-upload-module__desc" data-i18n="supplier.uploadTruckPartsDesc">卡车驾驶室、车轴、发动机及变速箱、其他</p>
+                </div>
+              </div>
+              <p class="supplier-upload-module__rule" data-i18n="supplier.uploadNoVin">无需 VIN — 请选择配件类型</p>
+              <a href="supplier-portal/truck-upload.html" class="supplier-upload-module__cta" data-i18n="supplier.uploadStart">开始上传 →</a>
+            </article>
+
+            <article class="supplier-upload-module supplier-upload-module--passenger-parts">
+              <div class="supplier-upload-module__head">
+                <span class="supplier-upload-module__icon" aria-hidden="true">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75"><circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M4.22 4.22l2.12 2.12M17.66 17.66l2.12 2.12M2 12h3M19 12h3M4.22 19.78l2.12-2.12M17.66 6.34l2.12-2.12"/></svg>
+                </span>
+                <div>
+                  <h3 class="supplier-upload-module__title" data-i18n="supplier.uploadPassengerParts">乘用车配件</h3>
+                  <p class="supplier-upload-module__desc" data-i18n="supplier.uploadPassengerPartsDesc">前头、发动机、变速箱、底盘及其他</p>
+                </div>
+              </div>
+              <p class="supplier-upload-module__rule" data-i18n="supplier.uploadNoVin">无需 VIN — 请选择配件类型</p>
+              <a href="supplier-portal/passenger-parts-upload.html" class="supplier-upload-module__cta" data-i18n="supplier.uploadStart">开始上传 →</a>
+            </article>
           </div>
         </div>
       </div>
@@ -151,8 +202,18 @@
       <div class="container form-layout">
         <div>
           <span class="section-eyebrow" data-i18n="supplier.regEyebrow">Registration</span>
-          <h2 class="section-title" data-i18n="supplier.regTitle">Become a Verified Supplier</h2>
-          <p class="section-lead" data-i18n="supplier.regLead">Complete the form and our team will review your application within 3 business days.</p>
+          <h2 class="section-title" data-i18n="supplier.regTitle">Become an AsiaPower Supplier</h2>
+          <p class="section-lead" data-i18n="supplier.regLead">Complete registration with phone OTP and company details. Our team may follow up for partnership review.</p>
+
+          <div class="supplier-upload-links-block">
+            <h3 class="supplier-upload-links__title" data-i18n="supplier.uploadLinksTitle">Already registered? Upload inventory</h3>
+            <ul class="supplier-upload-links">
+              <li><a href="supplier-portal/truck-vehicle-upload.html" data-i18n="supplier.uploadTruckVehicle">商用车整车</a></li>
+              <li><a href="supplier-portal/half-cut-upload.html" data-i18n="supplier.uploadPassengerVehicle">乘用车整车</a></li>
+              <li><a href="supplier-portal/truck-upload.html" data-i18n="supplier.uploadTruckParts">商用车配件</a></li>
+              <li><a href="supplier-portal/passenger-parts-upload.html" data-i18n="supplier.uploadPassengerParts">乘用车配件</a></li>
+            </ul>
+          </div>
 
           <div class="benefit-list">
             <div class="benefit-item">
@@ -175,118 +236,16 @@
         </div>
 
         <div class="form-card">
-          <h3>Supplier Registration Form</h3>
-          <p>All fields marked with * are required.</p>
-
-          <form data-form="supplier-registration">
-            <div class="form-row">
-              <div class="form-group">
-                <label for="company-name">Company Name <span class="req">*</span></label>
-                <input type="text" id="company-name" name="company_name" required placeholder="Company legal name">
-              </div>
-              <div class="form-group">
-                <label for="business-type">Business Type <span class="req">*</span></label>
-                <select id="business-type" name="business_type" required>
-                  <option value="">Select type</option>
-                  <option value="dismantling-yard">Dismantling Yard</option>
-                  <option value="auto-recycler">Auto Recycler</option>
-                  <option value="reconditioner">Reconditioner</option>
-                  <option value="export-dealer">Export Dealer</option>
-                  <option value="other">Other</option>
-                </select>
-              </div>
-            </div>
-
-            <div class="form-row">
-              <div class="form-group">
-                <label for="contact-person">Contact Person <span class="req">*</span></label>
-                <input type="text" id="contact-person" name="contact_person" required placeholder="Full name">
-              </div>
-              <div class="form-group">
-                <label for="supplier-country">Country <span class="req">*</span></label>
-                <select id="supplier-country" name="country" required>
-                  <option value="">Select country</option>
-                  <option value="japan">Japan</option>
-                  <option value="korea">Korea (South)</option>
-                  <option value="china">China</option>
-                  <option value="other">Other</option>
-                </select>
-              </div>
-            </div>
-
-            <div class="form-row">
-              <div class="form-group">
-                <label for="supplier-email">Email <span class="req">*</span></label>
-                <input type="email" id="supplier-email" name="email" required placeholder="business@company.com">
-              </div>
-              <div class="form-group">
-                <label for="supplier-phone">Phone / WhatsApp <span class="req">*</span></label>
-                <input type="tel" id="supplier-phone" name="phone" required placeholder="+86 xxx xxxx xxxx">
-              </div>
-            </div>
-
-            <div class="form-group">
-              <label for="supplier-address">Business Address <span class="req">*</span></label>
-              <input type="text" id="supplier-address" name="address" required placeholder="Full business address">
-            </div>
-
-            <div class="form-group">
-              <label for="specialization">Product Specialization <span class="req">*</span></label>
-              <select id="specialization" name="specialization" required>
-                <option value="">Select specialization</option>
-                <option value="engines">Engines Only</option>
-                <option value="gearboxes">Gearboxes Only</option>
-                <option value="both">Engines &amp; Gearboxes</option>
-                <option value="full-vehicle">Full Vehicle Dismantling</option>
-              </select>
-            </div>
-
-            <div class="form-group">
-              <label for="brands">Brands / Makes Handled</label>
-              <input type="text" id="brands" name="brands" placeholder="Toyota, Honda, Hyundai, BMW, etc.">
-            </div>
-
-            <div class="form-row">
-              <div class="form-group">
-                <label for="monthly-capacity">Monthly Capacity</label>
-                <select id="monthly-capacity" name="monthly_capacity">
-                  <option value="">Select range</option>
-                  <option value="1-10">1 – 10 units</option>
-                  <option value="11-50">11 – 50 units</option>
-                  <option value="51-100">51 – 100 units</option>
-                  <option value="100+">100+ units</option>
-                </select>
-              </div>
-              <div class="form-group">
-                <label for="years-operation">Years in Operation</label>
-                <select id="years-operation" name="years_operation">
-                  <option value="">Select range</option>
-                  <option value="1-3">1 – 3 years</option>
-                  <option value="4-7">4 – 7 years</option>
-                  <option value="8-15">8 – 15 years</option>
-                  <option value="15+">15+ years</option>
-                </select>
-              </div>
-            </div>
-
-            <div class="form-group">
-              <label for="supplier-message">Additional Information</label>
-              <textarea id="supplier-message" name="message" placeholder="Inventory details, certifications, export experience…"></textarea>
-            </div>
-
-            <div class="form-check">
-              <input type="checkbox" id="supplier-terms" name="terms" data-terms required>
-              <label for="supplier-terms">I confirm the information is accurate and agree to AsiaPower's supplier quality standards and terms of partnership.</label>
-            </div>
-
-            <button type="submit" class="btn btn-accent" style="width:100%;">Submit Registration</button>
-          </form>
-
-          <div class="form-success">
-            <svg viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
-            <h4>Registration Submitted</h4>
-            <p>Thank you for applying. Our supplier relations team will contact you at the email provided within 3 business days.</p>
-          </div>
+          <h3>Supplier Registration</h3>
+          <p>新供应商请用手机验证码完成注册，并填写公司资料。注册成功后即可进入工作台上传库存。</p>
+          <p style="margin:12px 0 18px;color:#6e6e73;font-size:14px">New suppliers register with phone OTP + company profile. After signup you can upload inventory from the supplier dashboard.</p>
+          <a class="btn btn-accent" href="/login/?role=supplier&mode=register" style="width:100%;display:inline-flex;justify-content:center;text-decoration:none">
+            Go to registration · 去注册
+          </a>
+          <p style="margin-top:14px;font-size:13px;text-align:center">
+            Already registered?
+            <a href="/login/?role=supplier">Sign in · 登录</a>
+          </p>
         </div>
       </div>
     </section>
@@ -295,11 +254,10 @@
   <div id="site-footer"></div>
   <div id="site-whatsapp"></div>
 
-  <script src="js/public-i18n.js?v=seo-v1"></script>
-  <script src="js/path-utils.js?v=i18n-v3"></script>
-  <script src="js/config.js?v=nav-v4"></script>
-  <script src="js/seo.js"></script>
-  <script src="js/components.js?v=seo-v1" defer></script>
+  <script src="js/path-utils.js?v=supplier-i18n-v2"></script>
+  <script src="js/config.js?v=contact-20260625"></script>
+  <script src="js/seo.js?v=p3-seo-v1"></script>
+  <script src="js/components.js?v=auth-nav-once-v2" defer></script>
   <script src="js/main.js?v=wa-lead-v1" defer></script>
 </body>
 </html>

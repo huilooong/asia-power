@@ -193,13 +193,30 @@ def dispatch_drafts_command(message: str) -> str:
 
     if action == "approve" and len(parts) >= 2:
         try:
-            draft = approve_draft(parts[1])
+            draft_id = parts[1]
+            do_send = "--send" in parts or body.endswith("--send")
+            draft = approve_draft(draft_id, send=do_send)
+            is_email = draft.get("channel") == "email" or (draft.get("customer_name") or "").startswith("email:")
+            if draft.get("status") == "sent" and draft.get("_send_result"):
+                from customer_gateway.email_outbound import format_send_result
+                return format_send_result(draft["_send_result"])
+            if draft.get("send_error"):
+                return (
+                    f"✅ 草稿已批准\nID: {draft['draft_id']}\n"
+                    f"⚠️ 发送失败: {draft['send_error']}\n"
+                    "配置 RESEND 后: /email send " + draft_id
+                )
+            if is_email:
+                return (
+                    f"✅ 邮件草稿已批准（未发送）\n"
+                    f"ID: {draft['draft_id']}\n"
+                    f"发送: /email send {draft_id}  或  /drafts approve {draft_id} --send"
+                )
             return (
                 f"✅ 草稿已批准（未发送 WhatsApp）\n"
                 f"ID: {draft['draft_id']}\n"
                 f"客户: {draft['customer_name']}\n"
-                f"状态: {draft['status']}\n\n"
-                "下一阶段才会支持实际发送。"
+                f"状态: {draft['status']}"
             )
         except ValueError as exc:
             return f"Error: {exc}"

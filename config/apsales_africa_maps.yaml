@@ -1,0 +1,142 @@
+# 子敬 · 非洲全量 Google Maps 获客（54 国逐国跑）
+# CEO 2026-07-04 今晚覆盖全非洲
+
+version: 1
+updated: "2026-07-04"
+
+# CEO 2026-07-04: 每国 500+ 有效线索（有电话或邮箱），无全局日上限
+per_country_target: 500
+require_contact: phone_or_email
+
+daily_caps:
+  leads: 999999
+  email_drafts: 999999
+
+run:
+  max_results_per_query: 20
+  report_every_countries: 1
+  delay_between_queries_sec_min: 3
+  delay_between_queries_sec_max: 5
+  delay_between_countries_sec: 10
+  require_contact: phone_or_email
+  prefer_places_api: true
+  browser_headless: true
+  log_invalid_skips: true
+
+# CEO sprint tonight — --aggressive overrides pace/results only
+aggressive:
+  max_results_per_query: 40
+  delay_between_queries_sec_min: 3
+  delay_between_queries_sec_max: 5
+  delay_between_countries_sec: 10
+  browser_scroll_rounds: 6
+  report_every_countries: 1
+  extra_queries_per_category: 2
+
+ceo_voice:
+  name: "Zijing Lu"
+  title: "AsiaPower"
+  from_email: "sales@asia-power.com"
+  catalog_url: "https://asia-power.com/half-cuts/"
+  whatsapp: "+233 54 091 1111"
+
+email:
+  only_with_email: true
+  scrape_website_for_email: true
+  subject_template: "Custom dismantling from China — half-cuts for {city} dealers"
+
+category_templates:
+  dealer:
+    - "auto spare parts {city}"
+    - "auto parts dealer {city}"
+    - "car spare parts shop {city}"
+    - "automotive parts store {city}"
+    - "used auto parts {city}"
+  dealer_tokunbo:
+    - "tokunbo spare parts {city}"
+    - "tokunbo auto parts {city}"
+    - "tokunbo car parts {city}"
+  repair:
+    - "car repair garage {city}"
+    - "auto repair workshop {city}"
+    - "mechanic workshop {city}"
+    - "auto body shop {city}"
+  importer:
+    - "auto parts importer {city}"
+    - "car parts trading company {city}"
+    - "vehicle spare parts import {country}"
+    - "automotive parts wholesale {city}"
+
+west_africa_ids:
+  - benin
+  - burkina_faso
+  - cabo_verde
+  - gambia
+  - ghana
+  - guinea
+  - guinea_bissau
+  - ivory_coast
+  - liberia
+  - mali
+  - mauritania
+  - niger
+  - nigeria
+  - senegal
+  - sierra_leone
+  - togo
+
+countries:
+  - { id: algeria, country: Algeria, cities: [Algiers, Oran, Constantine] }
+  - { id: angola, country: Angola, cities: [Luanda, Huambo, Benguela] }
+  - { id: benin, country: Benin, cities: [Cotonou, "Porto-Novo", Parakou] }
+  - { id: botswana, country: Botswana, cities: [Gaborone, Francistown] }
+  - { id: burkina_faso, country: "Burkina Faso", cities: [Ouagadougou, Bobo-Dioulasso] }
+  - { id: burundi, country: Burundi, cities: [Bujumbura, Gitega] }
+  - { id: cabo_verde, country: "Cabo Verde", cities: [Praia, Mindelo] }
+  - { id: cameroon, country: Cameroon, cities: [Douala, Yaoundé, Garoua] }
+  - { id: car, country: "Central African Republic", cities: [Bangui] }
+  - { id: chad, country: Chad, cities: ["N'Djamena", Moundou] }
+  - { id: comoros, country: Comoros, cities: [Moroni] }
+  - { id: congo, country: Congo, cities: [Brazzaville, "Pointe-Noire"] }
+  - { id: drc, country: "Democratic Republic of the Congo", cities: [Kinshasa, Lubumbashi, Goma] }
+  - { id: djibouti, country: Djibouti, cities: ["Djibouti City"] }
+  - { id: egypt, country: Egypt, cities: [Cairo, Alexandria, Giza] }
+  - { id: equatorial_guinea, country: "Equatorial Guinea", cities: [Malabo, Bata] }
+  - { id: eritrea, country: Eritrea, cities: [Asmara] }
+  - { id: eswatini, country: Eswatini, cities: [Mbabane, Manzini] }
+  - { id: ethiopia, country: Ethiopia, cities: ["Addis Ababa", "Dire Dawa"] }
+  - { id: gabon, country: Gabon, cities: [Libreville, "Port-Gentil"] }
+  - { id: gambia, country: Gambia, cities: [Banjul, Serekunda] }
+  - { id: ghana, country: Ghana, cities: [Accra, Kumasi, Tema] }
+  - { id: guinea, country: Guinea, cities: [Conakry, Kankan] }
+  - { id: guinea_bissau, country: "Guinea-Bissau", cities: [Bissau] }
+  - { id: ivory_coast, country: "Ivory Coast", cities: [Abidjan, Yamoussoukro, Bouaké] }
+  - { id: kenya, country: Kenya, cities: [Nairobi, Mombasa, Kisumu] }
+  - { id: lesotho, country: Lesotho, cities: [Maseru] }
+  - { id: liberia, country: Liberia, cities: [Monrovia] }
+  - { id: libya, country: Libya, cities: [Tripoli, Benghazi] }
+  - { id: madagascar, country: Madagascar, cities: [Antananarivo, Toamasina] }
+  - { id: malawi, country: Malawi, cities: [Lilongwe, Blantyre] }
+  - { id: mali, country: Mali, cities: [Bamako, Sikasso] }
+  - { id: mauritania, country: Mauritania, cities: [Nouakchott, Nouadhibou] }
+  - { id: mauritius, country: Mauritius, cities: ["Port Louis"] }
+  - { id: morocco, country: Morocco, cities: [Casablanca, Rabat, Marrakech] }
+  - { id: mozambique, country: Mozambique, cities: [Maputo, Beira] }
+  - { id: namibia, country: Namibia, cities: [Windhoek, "Walvis Bay"] }
+  - { id: niger, country: Niger, cities: [Niamey, Zinder] }
+  - { id: nigeria, country: Nigeria, cities: [Lagos, Abuja, Kano, "Port Harcourt"] }
+  - { id: rwanda, country: Rwanda, cities: [Kigali] }
+  - { id: sao_tome, country: "São Tomé and Príncipe", cities: ["São Tomé"] }
+  - { id: senegal, country: Senegal, cities: [Dakar, Touba] }
+  - { id: seychelles, country: Seychelles, cities: [Victoria] }
+  - { id: sierra_leone, country: "Sierra Leone", cities: [Freetown] }
+  - { id: somalia, country: Somalia, cities: [Mogadishu, Hargeisa] }
+  - { id: south_africa, country: "South Africa", cities: [Johannesburg, "Cape Town", Durban, Pretoria] }
+  - { id: south_sudan, country: "South Sudan", cities: [Juba] }
+  - { id: sudan, country: Sudan, cities: [Khartoum, Omdurman] }
+  - { id: tanzania, country: Tanzania, cities: ["Dar es Salaam", Dodoma, Arusha] }
+  - { id: togo, country: Togo, cities: [Lomé, Sokodé] }
+  - { id: tunisia, country: Tunisia, cities: [Tunis, Sfax] }
+  - { id: uganda, country: Uganda, cities: [Kampala, Entebbe] }
+  - { id: zambia, country: Zambia, cities: [Lusaka, Ndola] }
+  - { id: zimbabwe, country: Zimbabwe, cities: [Harare, Bulawayo] }

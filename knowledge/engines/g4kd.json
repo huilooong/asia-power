@@ -1,0 +1,528 @@
+{
+  "schema_version": "1.0.0",
+  "engine_id": "hyundai-g4kd",
+  "basic": {
+    "engine_code": {
+      "value": "G4KD",
+      "source": "engines/hyundai-g4kd.html; js/engine-directory.js",
+      "last_update": "2026-07-04",
+      "confidence": 1
+    },
+    "manufacturer": {
+      "value": "Hyundai / Kia",
+      "source": "js/brand-catalog.js; js/config.js",
+      "last_update": "2026-07-04",
+      "confidence": 0.95
+    },
+    "engine_family": {
+      "value": "Hyundai/Kia Theta-family 2.0L petrol application group",
+      "source": "AsiaPower internal engine directory naming; engines/hyundai-g4kd.html",
+      "last_update": "2026-07-04",
+      "confidence": 0.7
+    },
+    "displacement": {
+      "value": "2.0L",
+      "source": "engines/hyundai-g4kd.html meta description; js/engine-directory.js",
+      "last_update": "2026-07-04",
+      "confidence": 1
+    },
+    "fuel_type": {
+      "value": "Petrol",
+      "source": "engines/hyundai-g4kd.html meta description; js/engine-directory.js",
+      "last_update": "2026-07-04",
+      "confidence": 1
+    },
+    "aspiration": {
+      "value": null,
+      "source": "not_verified_yet",
+      "last_update": "2026-07-04",
+      "confidence": 0
+    },
+    "configuration": {
+      "value": null,
+      "source": "not_verified_yet",
+      "last_update": "2026-07-04",
+      "confidence": 0
+    },
+    "origin_market": {
+      "value": "Korea",
+      "source": "js/seo-engines.js",
+      "last_update": "2026-07-04",
+      "confidence": 0.9
+    },
+    "aliases": {
+      "value": ["hyundai-g4kd", "kia-g4kd"],
+      "source": "engines/hyundai-g4kd.html body data-engine; js/config.js Hyundai/Kia engine model lists",
+      "last_update": "2026-07-04",
+      "confidence": 0.9
+    }
+  },
+  "applications": {
+    "models": {
+      "value": ["Optima", "Sportage", "Sorento", "Hyundai ix35", "Hyundai Sonata", "Kia Sportage"],
+      "source": "engines/hyundai-g4kd.html meta description; js/engine-directory.js; work/half-cut-approved-prod.json; reports/qxb-approved-import.json",
+      "last_update": "2026-07-04",
+      "confidence": 0.82
+    },
+    "years": {
+      "value": ["2009", "2010", "2012"],
+      "source": "work/half-cut-approved-prod.json G4KD records; reports/qxb-approved-import.json G4KD records",
+      "last_update": "2026-07-04",
+      "confidence": 0.76
+    },
+    "notes": {
+      "value": "AsiaPower currently has G4KD references in Hyundai ix35, Hyundai Sonata, and Kia Sportage half-cut/inventory records. Public engine copy also lists Optima, Sportage, and Sorento applications.",
+      "source": "engines/hyundai-g4kd.html; work/half-cut-approved-prod.json; reports/qxb-approved-import.json",
+      "last_update": "2026-07-04",
+      "confidence": 0.82
+    }
+  },
+  "vin": {
+    "decode_sources": {
+      "value": ["QXB VIN cache", "QXB approved import records", "AsiaPower upload learnings"],
+      "source": "data/knowledge-base/vin-cache.json; reports/qxb-approved-import.json; data/knowledge-base/upload-learnings.json",
+      "last_update": "2026-07-04",
+      "confidence": 0.78
+    },
+    "known_vin_patterns": {
+      "value": null,
+      "source": "not_verified_yet",
+      "last_update": "2026-07-04",
+      "confidence": 0
+    },
+    "sample_vins": {
+      "value": [],
+      "source": "privacy_policy: sample VINs are intentionally not exposed in public knowledge records",
+      "last_update": "2026-07-04",
+      "confidence": 1
+    },
+    "vin_notes": {
+      "value": "VIN evidence exists in internal QXB decode/cache files. Public knowledge pages should not expose full VINs; use masked VIN or record-level source references only.",
+      "source": "data/knowledge-base/vin-cache.json; server/lib/half-cut-public.js public redaction policy",
+      "last_update": "2026-07-04",
+      "confidence": 0.9
+    }
+  },
+  "official_specs": {
+    "power": {
+      "value": null,
+      "source": "not_verified_yet: official Hyundai/Kia service manual not present in repository",
+      "last_update": "2026-07-04",
+      "confidence": 0
+    },
+    "torque": {
+      "value": null,
+      "source": "not_verified_yet: official Hyundai/Kia service manual not present in repository",
+      "last_update": "2026-07-04",
+      "confidence": 0
+    },
+    "bore": {
+      "value": null,
+      "source": "not_verified_yet: official Hyundai/Kia service manual not present in repository",
+      "last_update": "2026-07-04",
+      "confidence": 0
+    },
+    "stroke": {
+      "value": null,
+      "source": "not_verified_yet: official Hyundai/Kia service manual not present in repository",
+      "last_update": "2026-07-04",
+      "confidence": 0
+    },
+    "compression_ratio": {
+      "value": null,
+      "source": "not_verified_yet: official Hyundai/Kia service manual not present in repository",
+      "last_update": "2026-07-04",
+      "confidence": 0
+    },
+    "oil_capacity": {
+      "value": null,
+      "source": "not_verified_yet: official Hyundai/Kia service manual not present in repository",
+      "last_update": "2026-07-04",
+      "confidence": 0
+    },
+    "coolant_capacity": {
+      "value": null,
+      "source": "not_verified_yet: official Hyundai/Kia service manual not present in repository",
+      "last_update": "2026-07-04",
+      "confidence": 0
+    },
+    "emissions": {
+      "value": null,
+      "source": "not_verified_yet: official Hyundai/Kia service manual not present in repository",
+      "last_update": "2026-07-04",
+      "confidence": 0
+    },
+    "service_interval": {
+      "value": null,
+      "source": "not_verified_yet: official Hyundai/Kia service manual not present in repository",
+      "last_update": "2026-07-04",
+      "confidence": 0
+    }
+  },
+  "repair": {
+    "common_issues": {
+      "value": [],
+      "source": "not_verified_yet: no verified repair issue dataset in repository for G4KD",
+      "last_update": "2026-07-04",
+      "confidence": 0
+    },
+    "inspection_checklist": {
+      "value": [
+        "Confirm engine code on engine/VIN decode evidence before quote",
+        "Confirm donor model, year, transmission, and drivetrain",
+        "Request startup video or donor vehicle evidence where available",
+        "Check included accessories before quoting EXW/CIF"
+      ],
+      "source": "AsiaPower sales and supplier workflow conventions in reports/customer-data-export-2026-07-04.md and supplier upload pages",
+      "last_update": "2026-07-04",
+      "confidence": 0.65
+    },
+    "service_manuals": {
+      "value": [],
+      "source": "not_verified_yet: official manuals not stored in repository",
+      "last_update": "2026-07-04",
+      "confidence": 0
+    },
+    "parts_notes": {
+      "value": "Use inventory record details to confirm whether the buyer needs engine assembly, half-cut, accessories, gearbox, or custom dismantling.",
+      "source": "reports/customer-contact-leads-2026-07-04.csv; data/knowledge-base/apsales-distribution-playbook.md",
+      "last_update": "2026-07-04",
+      "confidence": 0.7
+    }
+  },
+  "faq": [
+    {
+      "question": {
+        "value": "Can AsiaPower quote a G4KD engine for export?",
+        "source": "README-AI-OS.md sample sales command; customer inquiry tests mentioning G4KD",
+        "last_update": "2026-07-04",
+        "confidence": 0.85
+      },
+      "answer": {
+        "value": "Yes. AsiaPower can use the G4KD engine code to search available engine, half-cut, and donor-vehicle records, then prepare an EXW or CIF quote after confirming model, year, destination port, and included accessories.",
+        "source": "engines/hyundai-g4kd.html; sales_core/enquiry_context.py; reports/customer-contact-leads-2026-07-04.csv",
+        "last_update": "2026-07-04",
+        "confidence": 0.82
+      }
+    },
+    {
+      "question": {
+        "value": "Which vehicles currently appear in AsiaPower G4KD records?",
+        "source": "work/half-cut-approved-prod.json; reports/qxb-approved-import.json",
+        "last_update": "2026-07-04",
+        "confidence": 0.82
+      },
+      "answer": {
+        "value": "Current repository records connect G4KD to Hyundai ix35, Hyundai Sonata, and Kia Sportage inventory/half-cut records. Public engine metadata also lists Optima, Sportage, and Sorento applications.",
+        "source": "work/half-cut-approved-prod.json; reports/qxb-approved-import.json; engines/hyundai-g4kd.html",
+        "last_update": "2026-07-04",
+        "confidence": 0.82
+      }
+    }
+  ],
+  "inventory": {
+    "summary": {
+      "value": "G4KD appears in current AsiaPower inventory/import data and existing public engine SEO pages, but stock availability must be confirmed per record before quoting.",
+      "source": "work/half-cut-approved-prod.json; reports/qxb-approved-import.json; engines/hyundai-g4kd.html",
+      "last_update": "2026-07-04",
+      "confidence": 0.85
+    },
+    "items": [
+      {
+        "stock_id": {
+          "value": "HC250504",
+          "source": "work/half-cut-approved-prod.json",
+          "last_update": "2026-07-04",
+          "confidence": 0.95
+        },
+        "title": {
+          "value": "Hyundai ix35 2010 G4KD half cut",
+          "source": "work/half-cut-approved-prod.json; reports/analytics-top-pages.csv",
+          "last_update": "2026-07-04",
+          "confidence": 0.9
+        },
+        "status": {
+          "value": "listed_in_local_approved_inventory",
+          "source": "work/half-cut-approved-prod.json",
+          "last_update": "2026-07-04",
+          "confidence": 0.8
+        },
+        "url": {
+          "value": "/half-cuts/detail.html?slug=hyundai-ix35-2010-g4kd-half-cut-hc250504",
+          "source": "reports/analytics-top-pages.csv; work/half-cut-approved-prod.json",
+          "last_update": "2026-07-04",
+          "confidence": 0.95
+        },
+        "record_source": {
+          "value": "work/half-cut-approved-prod.json",
+          "source": "local repository",
+          "last_update": "2026-07-04",
+          "confidence": 1
+        }
+      },
+      {
+        "stock_id": {
+          "value": "QXB import Kia Sportage G4KD records",
+          "source": "reports/qxb-approved-import.json",
+          "last_update": "2026-07-04",
+          "confidence": 0.75
+        },
+        "title": {
+          "value": "Kia Sportage G4KD Half Cut",
+          "source": "reports/qxb-approved-import.json",
+          "last_update": "2026-07-04",
+          "confidence": 0.85
+        },
+        "status": {
+          "value": "qxb_import_record",
+          "source": "reports/qxb-approved-import.json",
+          "last_update": "2026-07-04",
+          "confidence": 0.75
+        },
+        "url": {
+          "value": null,
+          "source": "not_verified_yet: public URL not confirmed in repository search output",
+          "last_update": "2026-07-04",
+          "confidence": 0
+        },
+        "record_source": {
+          "value": "reports/qxb-approved-import.json",
+          "source": "local repository",
+          "last_update": "2026-07-04",
+          "confidence": 1
+        }
+      }
+    ]
+  },
+  "half_cuts": {
+    "availability": {
+      "value": "G4KD half-cut records exist in local approved inventory and QXB import output.",
+      "source": "work/half-cut-approved-prod.json; reports/qxb-approved-import.json",
+      "last_update": "2026-07-04",
+      "confidence": 0.85
+    },
+    "items": [
+      {
+        "stock_id": {
+          "value": "HC250504",
+          "source": "work/half-cut-approved-prod.json",
+          "last_update": "2026-07-04",
+          "confidence": 0.95
+        },
+        "title": {
+          "value": "Hyundai ix35 2010 G4KD half cut",
+          "source": "work/half-cut-approved-prod.json",
+          "last_update": "2026-07-04",
+          "confidence": 0.9
+        },
+        "status": {
+          "value": "listed_in_local_approved_inventory",
+          "source": "work/half-cut-approved-prod.json",
+          "last_update": "2026-07-04",
+          "confidence": 0.8
+        },
+        "url": {
+          "value": "/half-cuts/detail.html?slug=hyundai-ix35-2010-g4kd-half-cut-hc250504",
+          "source": "reports/analytics-top-pages.csv; work/half-cut-approved-prod.json",
+          "last_update": "2026-07-04",
+          "confidence": 0.95
+        },
+        "record_source": {
+          "value": "work/half-cut-approved-prod.json",
+          "source": "local repository",
+          "last_update": "2026-07-04",
+          "confidence": 1
+        }
+      }
+    ],
+    "buyer_notes": {
+      "value": "For G4KD buyers, confirm whether the enquiry is for a complete engine, half-cut, gearbox pairing, accessories, or custom dismantling before quoting.",
+      "source": "data/knowledge-base/apsales-distribution-playbook.md; reports/customer-contact-leads-2026-07-04.csv",
+      "last_update": "2026-07-04",
+      "confidence": 0.7
+    }
+  },
+  "shipping": {
+    "terms": {
+      "value": ["EXW", "CIF"],
+      "source": "engines/hyundai-g4kd.html meta description; server/lib/cif-shipping.js",
+      "last_update": "2026-07-04",
+      "confidence": 0.9
+    },
+    "ports": {
+      "value": ["Tema", "Lagos (Tin Can)", "Cotonou", "Douala", "Abidjan", "Mombasa", "Dar es Salaam", "Durban", "Jebel Ali"],
+      "source": "server/lib/cif-shipping.js",
+      "last_update": "2026-07-04",
+      "confidence": 0.95
+    },
+    "packing": {
+      "value": null,
+      "source": "not_verified_yet: no G4KD-specific packing rule in repository",
+      "last_update": "2026-07-04",
+      "confidence": 0
+    },
+    "lead_time": {
+      "value": null,
+      "source": "not_verified_yet: no verified lead-time table in repository",
+      "last_update": "2026-07-04",
+      "confidence": 0
+    },
+    "documents": {
+      "value": ["commercial invoice", "packing list", "photos/video evidence when available"],
+      "source": "AsiaPower buyer workflow convention inferred from supplier upload and lead handling files",
+      "last_update": "2026-07-04",
+      "confidence": 0.55
+    }
+  },
+  "related_products": [
+    {
+      "type": {
+        "value": "engine_page",
+        "source": "existing website page",
+        "last_update": "2026-07-04",
+        "confidence": 1
+      },
+      "label": {
+        "value": "Hyundai G4NA Engine",
+        "source": "engines/hyundai-g4na.html",
+        "last_update": "2026-07-04",
+        "confidence": 1
+      },
+      "url": {
+        "value": "/engines/hyundai-g4na.html",
+        "source": "engines/hyundai-g4na.html",
+        "last_update": "2026-07-04",
+        "confidence": 1
+      },
+      "relationship": {
+        "value": "same Hyundai/Kia buyer segment and ix35/Tucson/Sonata search cluster",
+        "source": "js/config.js; work/half-cut-approved-prod.json",
+        "last_update": "2026-07-04",
+        "confidence": 0.72
+      }
+    },
+    {
+      "type": {
+        "value": "brand_page",
+        "source": "existing website page",
+        "last_update": "2026-07-04",
+        "confidence": 1
+      },
+      "label": {
+        "value": "Hyundai engines, gearboxes and half-cuts",
+        "source": "brands/hyundai.html",
+        "last_update": "2026-07-04",
+        "confidence": 1
+      },
+      "url": {
+        "value": "/brands/hyundai.html",
+        "source": "brands/hyundai.html",
+        "last_update": "2026-07-04",
+        "confidence": 1
+      },
+      "relationship": {
+        "value": "brand-level route for Hyundai engine buyers",
+        "source": "brands/hyundai.html; reports/analytics-top-pages.csv",
+        "last_update": "2026-07-04",
+        "confidence": 0.85
+      }
+    }
+  ],
+  "seo": {
+    "canonical_url": {
+      "value": "https://asia-power.com/engines/hyundai-g4kd.html",
+      "source": "engines/hyundai-g4kd.html canonical tag",
+      "last_update": "2026-07-04",
+      "confidence": 1
+    },
+    "title": {
+      "value": "Hyundai G4KD Engine — Export & Sourcing | AsiaPower",
+      "source": "engines/hyundai-g4kd.html title tag",
+      "last_update": "2026-07-04",
+      "confidence": 1
+    },
+    "meta_description": {
+      "value": "Source Hyundai G4KD (2.0L Petrol) engines for global export. Applications: Optima, Sportage, Sorento. EXW/CIF quotes from AsiaPower.",
+      "source": "engines/hyundai-g4kd.html meta description",
+      "last_update": "2026-07-04",
+      "confidence": 1
+    },
+    "primary_keyword": {
+      "value": "Hyundai G4KD engine",
+      "source": "docs/cto/task-002-growth-audit.md recommended blog topic; existing engine page title",
+      "last_update": "2026-07-04",
+      "confidence": 0.85
+    },
+    "secondary_keywords": {
+      "value": ["G4KD engine China", "Kia Sportage G4KD half cut", "Hyundai ix35 G4KD half cut", "G4KD engine export"],
+      "source": "data/knowledge-base/apsales-distribution-playbook.md; reports/analytics-top-pages.csv; work/half-cut-approved-prod.json",
+      "last_update": "2026-07-04",
+      "confidence": 0.78
+    },
+    "search_intent": {
+      "value": "B2B buyer wants to source or quote a used G4KD engine/half-cut for export.",
+      "source": "README-AI-OS.md sample G4KD sales command; tests and sales files with G4KD inquiry examples",
+      "last_update": "2026-07-04",
+      "confidence": 0.8
+    },
+    "internal_links": {
+      "value": ["/engines/", "/brands/hyundai.html", "/brands/kia.html", "/half-cuts/", "/contact.html"],
+      "source": "existing website routes and Growth Audit recommendations",
+      "last_update": "2026-07-04",
+      "confidence": 0.9
+    },
+    "structured_data_type": {
+      "value": ["Product", "FAQPage", "BreadcrumbList"],
+      "source": "schema design recommendation for engine knowledge pages",
+      "last_update": "2026-07-04",
+      "confidence": 0.75
+    }
+  },
+  "references": [
+    {
+      "id": "ref-engine-page-g4kd",
+      "type": "website_page",
+      "title": "Hyundai G4KD Engine page",
+      "location": "engines/hyundai-g4kd.html",
+      "last_update": "2026-07-04",
+      "confidence": 1,
+      "notes": "Existing public engine page with title, description, canonical and hreflang tags."
+    },
+    {
+      "id": "ref-engine-directory",
+      "type": "local_file",
+      "title": "Engine directory",
+      "location": "js/engine-directory.js",
+      "last_update": "2026-07-04",
+      "confidence": 0.95,
+      "notes": "Lists G4KD as 2.0L petrol with applications."
+    },
+    {
+      "id": "ref-approved-inventory",
+      "type": "inventory_record",
+      "title": "Approved production half-cut inventory snapshot",
+      "location": "work/half-cut-approved-prod.json",
+      "last_update": "2026-07-04",
+      "confidence": 0.9,
+      "notes": "Contains G4KD records including Hyundai ix35 and Hyundai Sonata."
+    },
+    {
+      "id": "ref-qxb-import",
+      "type": "inventory_record",
+      "title": "QXB approved import output",
+      "location": "reports/qxb-approved-import.json",
+      "last_update": "2026-07-04",
+      "confidence": 0.8,
+      "notes": "Contains imported G4KD records including Kia Sportage."
+    },
+    {
+      "id": "ref-analytics",
+      "type": "analytics_report",
+      "title": "Analytics top pages",
+      "location": "reports/analytics-top-pages.csv",
+      "last_update": "2026-07-04",
+      "confidence": 0.85,
+      "notes": "Shows existing visits to the G4KD engine page and G4KD half-cut detail page."
+    }
+  ]
+}

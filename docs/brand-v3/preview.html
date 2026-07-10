@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AsiaPower VI 预览 · 看图版</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: system-ui, sans-serif; background: #0f172a; color: #fff; }
+    header {
+      position: sticky; top: 0; z-index: 10;
+      background: #0a1628; border-bottom: 3px solid #d4a017;
+      padding: 14px 20px; display: flex; flex-wrap: wrap; align-items: center; gap: 12px;
+    }
+    header h1 { font-size: 18px; color: #d4a017; }
+    header p { font-size: 13px; color: #94a3b8; flex: 1; min-width: 200px; }
+    .tabs { display: flex; gap: 8px; flex-wrap: wrap; }
+    .tab {
+      padding: 8px 16px; border-radius: 999px; border: 1px solid #334155;
+      background: transparent; color: #cbd5e1; cursor: pointer; font-size: 13px;
+    }
+    .tab.active { background: #d4a017; color: #0a1628; font-weight: 700; border-color: #d4a017; }
+    .tab:hover { border-color: #d4a017; color: #d4a017; }
+    main { max-width: 1200px; margin: 0 auto; padding: 24px 16px 48px; }
+    .set { display: none; }
+    .set.active { display: block; }
+    .set-head { margin-bottom: 20px; }
+    .set-head h2 { font-size: 24px; margin-bottom: 6px; }
+    .set-head span { color: #94a3b8; font-size: 14px; }
+    .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 16px; }
+    .card {
+      background: #1e293b; border-radius: 12px; overflow: hidden;
+      border: 1px solid #334155;
+    }
+    .card img { width: 100%; display: block; aspect-ratio: 16/10; object-fit: cover; cursor: zoom-in; }
+    .card--live { cursor: pointer; }
+    .card__live {
+      height: 200px; background: #0f172a; overflow: hidden; position: relative;
+    }
+    .card__live iframe {
+      width: 200%; height: 200%; border: 0;
+      transform: scale(0.5); transform-origin: top left; pointer-events: none;
+    }
+    .card__live-cta {
+      position: absolute; inset: 0; display: flex; align-items: center; justify-content: center;
+      background: rgba(0,0,0,.4); color: #f0c040; font-weight: 700; font-size: 14px;
+      opacity: 0; transition: opacity .2s;
+    }
+    .card--live:hover .card__live-cta { opacity: 1; }
+    .card figcaption { padding: 12px 14px; font-size: 14px; color: #e2e8f0; }
+    .card figcaption small { display: block; color: #64748b; margin-top: 4px; font-size: 12px; }
+    .links { margin-top: 24px; padding: 16px; background: rgba(212,160,23,.1); border-radius: 8px; border: 1px solid rgba(212,160,23,.3); }
+    .links a { color: #f0c040; margin-right: 16px; font-size: 14px; }
+    .lightbox {
+      display: none; position: fixed; inset: 0; z-index: 100;
+      background: rgba(0,0,0,.92); align-items: center; justify-content: center; padding: 20px;
+    }
+    .lightbox.open { display: flex; }
+    .lightbox img { max-width: 95vw; max-height: 90vh; border-radius: 8px; }
+    .close-hint { position: absolute; top: 16px; right: 20px; color: #94a3b8; font-size: 13px; }
+  </style>
+</head>
+<body>
+<header>
+  <h1>AsiaPower VI 效果图预览</h1>
+  <p>点 Tab 切换方案 · 点图片放大 · 请在浏览器打开（不是代码编辑器）</p>
+  <div class="tabs">
+    <button class="tab active" data-set="a">A 海军蓝金</button>
+    <button class="tab" data-set="b">B 工业碳钢</button>
+    <button class="tab" data-set="c">C 国际白金</button>
+  </div>
+</header>
+
+<main>
+  <section class="set active" id="set-a">
+    <div class="set-head"><h2>方案 A · 海军蓝金</h2><span>网站 + 国内办公室 · 默认推荐</span></div>
+    <div class="grid">
+      <figure class="card card--live" onclick="window.open('index.html#panel-wall','_blank')">
+        <div class="card__live"><iframe src="index.html" loading="lazy"></iframe><span class="card__live-cta">点击查看 ↗</span></div>
+        <figcaption>完整 VI 手册<small>背景墙 / 门头 / 服装 / 文具 · 点 Tab 切换</small></figcaption>
+      </figure>
+      <figure class="card card--live" onclick="window.open('index.html#panel-storefront','_blank')">
+        <div class="card__live" style="background:#0a1628"><div style="padding:40px;text-align:center;color:#d4a017;font-weight:800">门头店招预览</div></div>
+        <figcaption>门头店招<small>仓库 / 办公室门面</small></figcaption>
+      </figure>
+      <figure class="card card--live" onclick="window.open('index.html#panel-uniform','_blank')">
+        <div class="card__live" style="background:#163058"><div style="padding:40px;text-align:center;color:#fff">工作服预览</div></div>
+        <figcaption>工作服<small>Polo + 夹克</small></figcaption>
+      </figure>
+      <figure class="card card--live" onclick="window.open('index.html#panel-card','_blank')">
+        <div class="card__live" style="background:#f4f6f9"><div style="padding:40px;text-align:center;color:#0a1628">名片 / 信纸 / 信封</div></div>
+        <figcaption>名片 / 信纸 / 信封<small>商务文具</small></figcaption>
+      </figure>
+    </div>
+    <div class="links"><a href="index.html">→ 打开方案 A 完整手册</a></div>
+  </section>
+
+  <section class="set" id="set-b">
+    <div class="set-head"><h2>方案 B · 工业碳钢</h2><span>郑州仓库 / 车间 / 集装箱</span></div>
+    <div class="grid">
+      <figure class="card card--live" onclick="window.open('set-b.html','_blank')">
+        <div class="card__live"><iframe src="set-b.html" loading="lazy"></iframe><span class="card__live-cta">点击查看 ↗</span></div>
+        <figcaption>完整 VI 手册 B<small>炭灰 + 铜色 · 点 Tab 切换</small></figcaption>
+      </figure>
+      <figure class="card card--live" onclick="window.open('set-b.html','_blank')">
+        <div class="card__live" style="background:#18181b"><div style="padding:40px;text-align:center;color:#c2762a;font-weight:800">工业门头</div></div>
+        <figcaption>门头店招<small>工业铝塑板</small></figcaption>
+      </figure>
+      <figure class="card card--live" onclick="window.open('set-b.html','_blank')">
+        <div class="card__live" style="background:#27272a"><div style="padding:40px;text-align:center;color:#fafafa">反光条工装</div></div>
+        <figcaption>工作服<small>反光条工装</small></figcaption>
+      </figure>
+      <figure class="card card--live" onclick="window.open('set-b.html','_blank')">
+        <div class="card__live" style="background:#3f3f46"><div style="padding:40px;text-align:center;color:#c2762a">Kraft 文具</div></div>
+        <figcaption>名片 / 信纸 / 信封<small>Kraft 牛皮纸风</small></figcaption>
+      </figure>
+    </div>
+    <div class="links"><a href="set-b.html">→ 打开方案 B 完整手册</a></div>
+  </section>
+
+  <section class="set" id="set-c">
+    <div class="set-head"><h2>方案 C · 国际白金</h2><span>英国客户 / 展会 / 合同信函</span></div>
+    <div class="grid">
+      <figure class="card card--live" onclick="window.open('set-c.html','_blank')">
+        <div class="card__live"><iframe src="set-c.html" loading="lazy"></iframe><span class="card__live-cta">点击查看 ↗</span></div>
+        <figcaption>完整 VI 手册 C<small>白底极简 · 点 Tab 切换</small></figcaption>
+      </figure>
+      <figure class="card card--live" onclick="window.open('set-c.html','_blank')">
+        <div class="card__live" style="background:#f8fafc"><div style="padding:40px;text-align:center;color:#0a1628;font-weight:800">白色立面</div></div>
+        <figcaption>门头店招<small>白色立面</small></figcaption>
+      </figure>
+      <figure class="card card--live" onclick="window.open('set-c.html','_blank')">
+        <div class="card__live" style="background:#fff;border:1px solid #e2e8f0"><div style="padding:40px;text-align:center;color:#0a1628">白 Polo + 西装</div></div>
+        <figcaption>工作服<small>白 Polo + 西装</small></figcaption>
+      </figure>
+      <figure class="card card--live" onclick="window.open('set-c.html','_blank')">
+        <div class="card__live" style="background:#f4f6f9"><div style="padding:40px;text-align:center;color:#0a1628">高端商务文具</div></div>
+        <figcaption>名片 / 信纸 / 信封<small>高端商务</small></figcaption>
+      </figure>
+    </div>
+    <div class="links"><a href="set-c.html">→ 打开方案 C 完整手册</a></div>
+  </section>
+</main>
+
+<script>
+  document.querySelectorAll('.tab').forEach(t => {
+    t.addEventListener('click', () => {
+      document.querySelectorAll('.tab').forEach(x => x.classList.remove('active'));
+      document.querySelectorAll('.set').forEach(x => x.classList.remove('active'));
+      t.classList.add('active');
+      document.getElementById('set-' + t.dataset.set).classList.add('active');
+    });
+  });
+</script>
+</body>
+</html>

@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AsiaPower 3.0 · 三套网页重构方案</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: system-ui, sans-serif; background: #0f172a; color: #e2e8f0; }
+    header {
+      position: sticky; top: 0; z-index: 20; background: #0a1628;
+      border-bottom: 3px solid #d4a017; padding: 14px 20px;
+      display: flex; flex-wrap: wrap; align-items: center; gap: 12px;
+    }
+    header h1 { font-size: 18px; color: #d4a017; }
+    header p { font-size: 13px; color: #94a3b8; flex: 1; min-width: 220px; }
+    .tabs { display: flex; gap: 8px; flex-wrap: wrap; }
+    .tab {
+      padding: 8px 18px; border-radius: 999px; border: 1px solid #334155;
+      background: transparent; color: #cbd5e1; cursor: pointer; font-size: 13px;
+    }
+    .tab.active { background: #d4a017; color: #0a1628; font-weight: 700; border-color: #d4a017; }
+    main { max-width: 1100px; margin: 0 auto; padding: 24px 16px 60px; }
+    .scheme { display: none; }
+    .scheme.active { display: block; }
+    .hero-img {
+      width: 100%; border-radius: 12px; border: 1px solid #334155;
+      margin-bottom: 20px; cursor: zoom-in;
+    }
+    .hero-live {
+      position: relative; width: 100%; height: 420px; border-radius: 12px;
+      border: 1px solid #334155; margin-bottom: 20px; overflow: hidden;
+      background: #0f172a; cursor: pointer;
+    }
+    .hero-live iframe {
+      width: 200%; height: 200%; border: 0;
+      transform: scale(0.5); transform-origin: top left; pointer-events: none;
+    }
+    .hero-live__cta {
+      position: absolute; inset: 0; display: flex; align-items: center; justify-content: center;
+      background: rgba(15, 23, 42, 0.45); color: #fff; font-size: 18px; font-weight: 700;
+      text-decoration: none; opacity: 0; transition: opacity 0.2s;
+    }
+    .hero-live:hover .hero-live__cta { opacity: 1; }
+    .meta {
+      background: #1e293b; border: 1px solid #334155; border-radius: 10px;
+      padding: 16px 18px; margin-bottom: 24px; line-height: 1.7; font-size: 14px;
+    }
+    .meta strong { color: #f0c040; }
+    table { width: 100%; border-collapse: collapse; font-size: 13px; margin-bottom: 24px; }
+    th, td { border: 1px solid #334155; padding: 10px 12px; text-align: left; }
+    th { background: #1e293b; color: #d4a017; }
+    h2 { font-size: 22px; margin-bottom: 8px; }
+    h3 { font-size: 16px; color: #94a3b8; margin: 24px 0 12px; }
+    .pages { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 14px; margin-bottom: 24px; }
+    .page-card { border-radius: 10px; overflow: hidden; border: 1px solid #334155; background: #1e293b; }
+    .page-card__label { padding: 8px 12px; font-size: 12px; color: #94a3b8; border-bottom: 1px solid #334155; }
+    .page-card__frame { transform-origin: top left; height: 220px; overflow: hidden; }
+
+    /* themes */
+    .t-a { --bg: #0a1628; --bg2: #163058; --accent: #d4a017; --text: #fff; --muted: rgba(255,255,255,.6); --card: rgba(255,255,255,.06); }
+    .t-b { --bg: #18181b; --bg2: #27272a; --accent: #c2762a; --text: #fafafa; --muted: #a1a1aa; --card: rgba(255,255,255,.05); }
+    .t-c { --bg: #f8fafc; --bg2: #e2e8f0; --accent: #d4a017; --text: #0a1628; --muted: #64748b; --card: #fff; }
+
+    .mini { background: var(--bg); color: var(--text); font-size: 10px; width: 600px; transform: scale(0.5); margin-bottom: -110px; }
+    .mini-nav { background: var(--bg2); padding: 8px 14px; display: flex; align-items: center; gap: 10px; }
+    .mini-logo { font-weight: 800; letter-spacing: .5px; }
+    .mini-logo em { color: var(--accent); font-style: normal; }
+    .mini-search { flex: 1; background: var(--card); border: 1px solid rgba(128,128,128,.2); border-radius: 6px; padding: 6px 10px; color: var(--muted); }
+    .mini-hero { padding: 24px 14px; text-align: center; background: linear-gradient(135deg, var(--bg), var(--bg2)); }
+    .mini-hero h4 { font-size: 18px; margin: 6px 0; }
+    .mini-hero h4 em { color: var(--accent); font-style: normal; }
+    .mini-hero p { color: var(--muted); font-size: 9px; max-width: 360px; margin: 0 auto 10px; }
+    .mini-cats { display: flex; gap: 6px; justify-content: center; flex-wrap: wrap; padding: 0 10px 12px; }
+    .mini-cat { background: var(--card); border: 1px solid rgba(128,128,128,.15); border-radius: 6px; padding: 8px 10px; text-align: center; min-width: 70px; }
+    .mini-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; padding: 10px; background: var(--bg2); }
+    .mini-grid.t-c-grid { background: #f1f5f9; }
+    .mini-vcard { background: var(--card); border-radius: 8px; overflow: hidden; border: 1px solid rgba(128,128,128,.15); }
+    .mini-vphoto { height: 70px; background: var(--bg); display: flex; align-items: center; justify-content: center; font-size: 28px; opacity: .5; }
+    .mini-vbody { padding: 8px; }
+    .mini-price { color: var(--accent); font-weight: 800; font-size: 14px; }
+    .mini-list { padding: 10px; background: #f4f6f9; }
+    .mini-list.t-c-list { background: #fff; }
+    .mini-row { display: flex; gap: 8px; align-items: center; background: #fff; border: 1px solid #e2e8f0; border-radius: 6px; padding: 8px; margin-bottom: 6px; }
+    .mini-thumb { width: 48px; height: 32px; background: var(--bg); border-radius: 4px; flex-shrink: 0; }
+    .mini-row__price { margin-left: auto; color: var(--accent); font-weight: 800; }
+
+    .cta { display: flex; gap: 12px; flex-wrap: wrap; }
+    .btn {
+      display: inline-block; padding: 10px 18px; border-radius: 8px; text-decoration: none;
+      font-size: 14px; font-weight: 600;
+    }
+    .btn--gold { background: #d4a017; color: #0a1628; }
+    .btn--ghost { border: 1px solid #475569; color: #cbd5e1; }
+    .lightbox { display: none; position: fixed; inset: 0; z-index: 100; background: rgba(0,0,0,.92); align-items: center; justify-content: center; padding: 16px; }
+    .lightbox.open { display: flex; }
+    .lightbox img { max-width: 96vw; max-height: 92vh; border-radius: 8px; }
+  </style>
+</head>
+<body>
+<header>
+  <h1>AsiaPower 3.0 网页重构 · 三套方案</h1>
+  <p>点 Tab 切换 · 点大图放大 · 请在浏览器打开（不是代码编辑器）</p>
+  <div class="tabs">
+    <button class="tab active" data-scheme="a">A 海军蓝金 ✓定稿</button>
+    <button class="tab" data-scheme="b">B 工业碳钢</button>
+    <button class="tab" data-scheme="c">C 国际白金</button>
+  </div>
+</header>
+
+<main>
+  <!-- ═══ SCHEME A ═══ -->
+  <section class="scheme active" id="scheme-a">
+    <h2>方案 A · 海军蓝金（默认推荐）</h2>
+    <p style="color:#94a3b8;margin-bottom:16px;">与现网一致升级 · 搜索优先首页 · 半车大图 / 发动机紧凑列表 · 网站 + 国内办公室通用</p>
+    <div class="hero-live" onclick="window.open('../../docs/backups/navy-gold-approved-2026-06-30/website/index-navy-gold-before-claude-3a.html','_blank')">
+      <iframe src="../../docs/backups/navy-gold-approved-2026-06-30/website/index-navy-gold-before-claude-3a.html" title="方案A live preview" loading="lazy"></iframe>
+      <span class="hero-live__cta">点击打开完整首页 ↗</span>
+    </div>
+    <div class="meta">
+      <strong>首页：</strong>Hero 大搜索 + 5 类目 + 案例轮播 + 3 条信任数字（删冗余区块）<br>
+      <strong>半车/整车：</strong>大图 Grid · 照片优先 · EXW 标价<br>
+      <strong>发动机 2AZ：</strong>上型号+适配车型 · 下底盘号在库实例（发动机舱图）<br>
+      <strong>库存分拆：</strong>半车 HC 上线 → ENG/GB/CH 自动 65%/35%/20%<br>
+      <strong>会员：</strong>供应商中心必做 · 客户侧轻量可选
+    </div>
+    <table>
+      <tr><th>页面</th><th>3.0 改什么</th><th>列表模式</th></tr>
+      <tr><td>首页</td><td>搜索占首屏 40%，删 12+ 冗余区块</td><td>—</td></tr>
+      <tr><td>半车 / 二手车</td><td>货值高数量少</td><td><strong>大图 Grid</strong></td></tr>
+      <tr><td>发动机 / 变速箱 / 底盘</td><td>货值低数量大</td><td><strong>紧凑列表</strong></td></tr>
+      <tr><td>2AZ 型号页</td><td>上方型号 · 下方不同底盘号实例</td><td>实例卡片</td></tr>
+      <tr><td>详情页</td><td>FOB/CIF 试算 + 半切车法律告知</td><td>—</td></tr>
+    </table>
+    <h3>核心页面缩略预览（CSS 样机）</h3>
+    <div class="pages">
+      <div class="page-card"><div class="page-card__label">① 首页 · 搜索优先</div><div class="page-card__frame">
+        <div class="mini t-a"><div class="mini-nav"><span class="mini-logo">ASIA<em>POWER</em></span><div class="mini-search">Search 2AZ-FE, HC250160…</div></div>
+        <div class="mini-hero"><div style="color:var(--accent);letter-spacing:2px;font-size:8px">EVERY USED ASSET HAS VALUE</div><h4>Find What You Need.<br><em>Ship Worldwide.</em></h4><p>拆车件主营 · 半车上线自动分拆三套库存</p></div>
+        <div class="mini-cats"><div class="mini-cat">⚙️ Engines</div><div class="mini-cat">🔧 Half-Cuts</div><div class="mini-cat">🚗 Used Vehicles</div><div class="mini-cat">🚛 Trucks</div><div class="mini-cat">🏗️ Machinery</div></div></div>
+      </div></div>
+      <div class="page-card"><div class="page-card__label">② 半车目录 · 大图 Grid</div><div class="page-card__frame">
+        <div class="mini t-a"><div class="mini-nav"><span class="mini-logo">ASIA<em>POWER</em></span><div class="mini-search">Toyota Camry</div></div>
+        <div class="mini-grid"><div class="mini-vcard"><div class="mini-vphoto">🚗</div><div class="mini-vbody"><div>HC250160 · Camry Half Cut</div><div class="mini-price">EXW $2,850</div></div></div>
+        <div class="mini-vcard"><div class="mini-vphoto">🚛</div><div class="mini-vbody"><div>HC250074 · Hyundai Truck</div><div class="mini-price">EXW $8,500</div></div></div></div></div>
+      </div></div>
+      <div class="page-card"><div class="page-card__label">③ 2AZ 发动机 · 在库实例</div><div class="page-card__frame">
+        <div class="mini t-a"><div class="mini-nav"><span class="mini-logo">ASIA<em>POWER</em></span><div class="mini-search">2AZ-FE</div></div>
+        <div class="mini-hero" style="padding:14px"><h4 style="font-size:14px">Toyota <em>2AZ-FE</em></h4><p>2.4L · Petrol · Camry/RAV4/Alphard</p></div>
+        <div class="mini-list" style="background:#f4f6f9"><div class="mini-row"><div class="mini-thumb"></div><div><div>ENG-HC250160 · Chassis …4821</div><div style="color:#64748b">68,000 km · Engine bay photo</div></div><div class="mini-row__price">65%</div></div></div></div>
+      </div></div>
+    </div>
+    <div class="cta">
+      <a class="btn btn--gold" href="index.html">→ 打开交互原型（8 个页面）</a>
+      <a class="btn btn--ghost" href="../brand-v3/preview.html">→ VI 品牌手册</a>
+    </div>
+  </section>
+
+  <!-- ═══ SCHEME B ═══ -->
+  <section class="scheme" id="scheme-b">
+    <h2>方案 B · 工业碳钢</h2>
+    <p style="color:#94a3b8;margin-bottom:16px;">炭灰 + 铜色 · 仓库/车间气质 · 功能与 A 相同，视觉更硬朗耐脏</p>
+    <div class="hero-live" onclick="window.open('index.html','_blank')">
+      <iframe src="index.html" title="方案B live preview" loading="lazy"></iframe>
+      <span class="hero-live__cta">点击打开交互原型 ↗</span>
+    </div>
+    <div class="meta">
+      <strong>适用：</strong>郑州仓库后台、供应商上传端、内部运营看板<br>
+      <strong>差异：</strong>深色底更耐屏 · 铜色强调库存 ID / EXW 价格 · 大图 Grid 边框加粗<br>
+      <strong>不变：</strong>搜索权重、半车分拆逻辑、2AZ 页面结构、Agent 路由
+    </div>
+    <table>
+      <tr><th>对比 A</th><th>方案 B 调整</th></tr>
+      <tr><td>Header</td><td>炭灰 #18181B · 铜色 POWER</td></tr>
+      <tr><td>价格色</td><td>铜色 #C2762A（替代金色）</td></tr>
+      <tr><td>半车卡片</td><td>深色照片区 + 工业边框</td></tr>
+      <tr><td>发动机列表</td><td>紧凑行高 · 等宽字体 Stock ID</td></tr>
+      <tr><td>分拆页</td><td>65/35/20 用铜色进度条可视化</td></tr>
+    </table>
+    <h3>核心页面缩略预览</h3>
+    <div class="pages">
+      <div class="page-card"><div class="page-card__label">① 首页</div><div class="page-card__frame">
+        <div class="mini t-b"><div class="mini-nav"><span class="mini-logo">ASIA<em>POWER</em></span><div class="mini-search">Search stock ID…</div></div>
+        <div class="mini-hero"><div style="color:var(--accent);font-size:8px">POWERTRAIN EXPORT · ZHENGZHOU</div><h4>Find Parts.<br><em>Ship Fast.</em></h4></div>
+        <div class="mini-cats"><div class="mini-cat">Half-Cuts</div><div class="mini-cat">Engines</div><div class="mini-cat">Gearboxes</div></div></div>
+      </div></div>
+      <div class="page-card"><div class="page-card__label">② 半车 Grid</div><div class="page-card__frame">
+        <div class="mini t-b"><div class="mini-grid"><div class="mini-vcard"><div class="mini-vphoto">🚗</div><div class="mini-vbody"><div>HC250160</div><div class="mini-price">$2,850 EXW</div></div></div>
+        <div class="mini-vcard"><div class="mini-vphoto">🚛</div><div class="mini-vbody"><div>HC250074</div><div class="mini-price">$8,500 EXW</div></div></div></div></div>
+      </div></div>
+      <div class="page-card"><div class="page-card__label">③ 发动机紧凑列表</div><div class="page-card__frame">
+        <div class="mini t-b"><div class="mini-list" style="background:#27272a;padding:10px"><div class="mini-row" style="background:#18181b;border-color:#3f3f46;color:#fafafa"><div class="mini-thumb"></div><div><div style="font-family:monospace">ENG-HC250160</div><div style="color:#a1a1aa">2AZ-FE · 68k km</div></div><div class="mini-row__price">$1,853</div></div></div></div>
+      </div></div>
+    </div>
+    <div class="cta"><a class="btn btn--gold" href="index.html">→ 交互原型（配色参考 A，上线时换 B 色板）</a></div>
+  </section>
+
+  <!-- ═══ SCHEME C ═══ -->
+  <section class="scheme" id="scheme-c">
+    <h2>方案 C · 国际白金</h2>
+    <p style="color:#94a3b8;margin-bottom:16px;">白底 + 海军蓝字 + 金色点缀 · 英国/非洲客户 · 展会与询价信任感</p>
+    <div class="hero-live" onclick="window.open('../brand-v3/set-c.html','_blank')">
+      <iframe src="../brand-v3/set-c.html" title="方案C live preview" loading="lazy"></iframe>
+      <span class="hero-live__cta">点击打开方案 C 手册 ↗</span>
+    </div>
+    <div class="meta">
+      <strong>适用：</strong>海外买家首访、英国法条款页、Stripe 付款流程<br>
+      <strong>差异：</strong>浅色大面积留白 · 英文为主 · 价格/法律信息更清晰 · 半车 Grid 白卡片阴影<br>
+      <strong>不变：</strong>双模式列表、库存分拆、搜索权重、会员体系
+    </div>
+    <table>
+      <tr><th>对比 A</th><th>方案 C 调整</th></tr>
+      <tr><td>首页 Hero</td><td>白/浅灰渐变 · Navy 标题 · 细金线</td></tr>
+      <tr><td>导航</td><td>白底 sticky · 更轻边框</td></tr>
+      <tr><td>半车 Grid</td><td>白卡片 + 轻阴影 · 大图更突出</td></tr>
+      <tr><td>详情页</td><td>FOB/CIF 试算器独立白卡片 · 法律条更醒目</td></tr>
+      <tr><td>Footer</td><td>BSB Motors trading as AsiaPower · UK law</td></tr>
+    </table>
+    <h3>核心页面缩略预览</h3>
+    <div class="pages">
+      <div class="page-card"><div class="page-card__label">① 首页</div><div class="page-card__frame">
+        <div class="mini t-c"><div class="mini-nav" style="background:#fff;border-bottom:1px solid #e2e8f0"><span class="mini-logo">ASIA<em>POWER</em></span><div class="mini-search">Search…</div></div>
+        <div class="mini-hero" style="background:linear-gradient(180deg,#fff,#f8fafc)"><h4>Quality Used Assets.<br><em>Fair Global Prices.</em></h4><p>BSB Motors trading as AsiaPower</p></div>
+        <div class="mini-cats"><div class="mini-cat">Engines</div><div class="mini-cat">Half-Cuts</div><div class="mini-cat">Used Vehicles</div></div></div>
+      </div></div>
+      <div class="page-card"><div class="page-card__label">② 半车 Grid</div><div class="page-card__frame">
+        <div class="mini t-c"><div class="mini-grid t-c-grid"><div class="mini-vcard"><div class="mini-vphoto" style="background:#e2e8f0">🚗</div><div class="mini-vbody"><div>Camry Half Cut</div><div class="mini-price">EXW $2,850</div></div></div>
+        <div class="mini-vcard"><div class="mini-vphoto" style="background:#e2e8f0">🚙</div><div class="mini-vbody"><div>Hilux Export-Ready</div><div class="mini-price">EXW $12,800</div></div></div></div></div>
+      </div></div>
+      <div class="page-card"><div class="page-card__label">③ 2AZ 在库实例</div><div class="page-card__frame">
+        <div class="mini t-c"><div class="mini-list t-c-list"><div class="mini-row"><div class="mini-thumb" style="background:#0a1628"></div><div><div style="font-weight:700">ENG-HC250160</div><div style="color:#64748b">Chassis …4821 · 68,000 km</div></div><div class="mini-row__price">EXW 65%</div></div></div></div>
+      </div></div>
+    </div>
+    <div class="cta"><a class="btn btn--gold" href="index.html">→ 交互原型</a><a class="btn btn--ghost" href="../brand-v3/set-c.html">→ 方案 C VI 手册</a></div>
+  </section>
+</main>
+
+<div class="lightbox" id="lightbox"><img id="lb-img" alt="" loading="lazy"></div>
+<script>
+  document.querySelectorAll('.tab').forEach(t => {
+    t.addEventListener('click', () => {
+      document.querySelectorAll('.tab').forEach(x => x.classList.remove('active'));
+      document.querySelectorAll('.scheme').forEach(x => x.classList.remove('active'));
+      t.classList.add('active');
+      document.getElementById('scheme-' + t.dataset.scheme).classList.add('active');
+    });
+  });
+  const lb = document.getElementById('lightbox'), lbImg = document.getElementById('lb-img');
+  document.querySelectorAll('.hero-img').forEach(img => {
+    img.addEventListener('click', () => { lbImg.src = img.src; lb.classList.add('open'); });
+  });
+  lb.addEventListener('click', () => lb.classList.remove('open'));
+</script>
+</body>
+</html>

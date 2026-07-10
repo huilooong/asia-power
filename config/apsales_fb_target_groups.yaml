@@ -1,0 +1,333 @@
+version: 2
+updated: '2026-07-04'
+keyword_search_targets:
+  base_keywords:
+  - tokunbo
+  - half cut
+  - spare parts
+  - Toyota
+  - engine
+  - auto parts
+  - used car parts
+  - gearbox
+  - dismantling
+  country_modifiers:
+  - Ghana
+  - Nigeria
+  - Kenya
+  - Tanzania
+  - Uganda
+  - Senegal
+  - Côte d'Ivoire
+  - South Africa
+  - UAE
+  combined_queries:
+  - tokunbo spare parts Ghana
+  - Nigeria half cut Toyota
+  - Kenya auto parts engine
+  - Lagos tokunbo dealer
+  - Accra spare parts shop
+  - Mombasa used car parts
+  - Nigeria tokunbo half cut
+  - Ghana Toyota spare parts
+  - Kenya half cut engine
+  - Tanzania auto parts importer
+  - Uganda spare parts Toyota
+  - Senegal tokunbo cars
+groups:
+- group_url: https://www.facebook.com/groups/3728114414072414
+  name: '3728114414072414'
+  status: greeted
+  market: Africa
+  language: en
+  discovered_via: Mombasa used car parts
+  discovered_at: 2026-07-04 01:28 UTC
+  joined_at: 2026-07-04 01:28 UTC
+  greeted_at: 2026-07-04 01:30 UTC
+- group_url: https://www.facebook.com/groups/1928819480779405
+  name: 未读一位管理员批准了你在 NEW AND USED CARS FOR SALE -MOMBASA 发布的照片。3分钟
+  status: joined
+  market: Africa
+  language: en
+  discovered_via: Mombasa used car parts
+  discovered_at: 2026-07-04 01:34 UTC
+  joined_at: 2026-07-04 01:34 UTC
+  greeted_at: 2026-07-04 01:30 UTC
+- group_url: https://www.facebook.com/groups/2591008161206708
+  name: 未读你的帖子已被管理员移出 SALVAGE CARS IN KENYA. 查看 TA 的反馈。3分钟
+  status: joined
+  market: Africa
+  language: en
+  discovered_via: Mombasa used car parts
+  discovered_at: 2026-07-04 01:34 UTC
+  joined_at: 2026-07-04 01:34 UTC
+  greeted_at: 2026-07-04 01:31 UTC
+- group_url: https://www.facebook.com/groups/1537658626728562
+  name: '1537658626728562'
+  status: greeted
+  market: Africa
+  language: en
+  discovered_via: Mombasa used car parts
+  discovered_at: 2026-07-04 01:28 UTC
+  joined_at: 2026-07-04 01:29 UTC
+  greeted_at: 2026-07-04 01:31 UTC
+- group_url: https://www.facebook.com/groups/2806858846296409
+  name: '2806858846296409'
+  status: joined
+  market: Africa
+  language: en
+  discovered_via: Mombasa used car parts
+  discovered_at: 2026-07-04 01:28 UTC
+  joined_at: 2026-07-04 01:29 UTC
+- group_url: https://www.facebook.com/groups/193125771221243
+  name: '193125771221243'
+  status: joined
+  market: Africa
+  language: en
+  discovered_via: Mombasa used car parts
+  discovered_at: 2026-07-04 01:28 UTC
+  joined_at: 2026-07-04 01:35 UTC
+- group_url: https://www.facebook.com/groups/652545690447070
+  name: '652545690447070'
+  status: joined
+  market: Africa
+  language: en
+  discovered_via: Mombasa used car parts
+  discovered_at: 2026-07-04 01:34 UTC
+  joined_at: 2026-07-04 01:35 UTC
+- group_url: https://www.facebook.com/groups/1139538763554173
+  name: '1139538763554173'
+  status: joined
+  market: Africa
+  language: en
+  discovered_via: Mombasa used car parts
+  discovered_at: 2026-07-04 01:34 UTC
+  joined_at: 2026-07-05 17:37 UTC
+- group_url: https://www.facebook.com/groups/531675784634625
+  name: 未读Muhammad Mustapha 赞了标记你的照片：“Let's welcome our new members! Kano…”6天·AsiaPower
+  status: joined
+  market: Africa
+  language: en
+  discovered_via: Mombasa used car parts
+  discovered_at: 2026-07-04 01:34 UTC
+  joined_at: 2026-07-05 17:37 UTC
+- group_url: https://www.facebook.com/groups/1204080684541091
+  name: 未读moteur Inporte et pièces détachées 有 1 篇新帖子。1天
+  status: joined
+  market: Africa
+  language: en
+  discovered_via: Mombasa used car parts
+  discovered_at: 2026-07-04 01:34 UTC
+  joined_at: 2026-07-05 17:37 UTC
+- group_url: https://www.facebook.com/groups/133246016381612
+  name: '133246016381612'
+  status: joined
+  market: Africa
+  language: en
+  discovered_via: Mombasa used car parts
+  discovered_at: 2026-07-04 01:34 UTC
+  joined_at: 2026-07-05 17:38 UTC
+- group_url: https://www.facebook.com/groups/394843495717582
+  name: '394843495717582'
+  status: joined
+  market: Africa
+  language: en
+  discovered_via: Mombasa used car parts
+  discovered_at: 2026-07-04 01:34 UTC
+  joined_at: 2026-07-05 17:38 UTC
+- group_url: https://www.facebook.com/groups/940734369787794
+  name: '940734369787794'
+  status: joined
+  market: Ghana
+  language: en
+  discovered_via: tokunbo spare parts Ghana
+  discovered_at: 2026-07-05 17:37 UTC
+  joined_at: 2026-07-05 17:38 UTC
+- group_url: https://www.facebook.com/groups/814586313208536
+  name: '814586313208536'
+  status: joined
+  market: Ghana
+  language: en
+  discovered_via: tokunbo spare parts Ghana
+  discovered_at: 2026-07-05 17:37 UTC
+  joined_at: 2026-07-05 17:38 UTC
+- group_url: https://www.facebook.com/groups/2326348074359132
+  name: '2326348074359132'
+  status: joined
+  market: Ghana
+  language: en
+  discovered_via: tokunbo spare parts Ghana
+  discovered_at: 2026-07-05 17:37 UTC
+  joined_at: 2026-07-05 17:39 UTC
+- group_url: https://www.facebook.com/groups/1105695811425297
+  name: '1105695811425297'
+  status: joined
+  market: Ghana
+  language: en
+  discovered_via: tokunbo spare parts Ghana
+  discovered_at: 2026-07-05 17:37 UTC
+  joined_at: 2026-07-05 17:39 UTC
+- group_url: https://www.facebook.com/groups/261451789044356
+  name: '261451789044356'
+  status: joined
+  market: Ghana
+  language: en
+  discovered_via: tokunbo spare parts Ghana
+  discovered_at: 2026-07-05 17:37 UTC
+  joined_at: 2026-07-05 17:39 UTC
+- group_url: https://www.facebook.com/groups/973782738158827
+  name: '973782738158827'
+  status: joined
+  market: Ghana
+  language: en
+  discovered_via: tokunbo spare parts Ghana
+  discovered_at: 2026-07-05 17:37 UTC
+  joined_at: 2026-07-06 18:50 UTC
+- group_url: https://www.facebook.com/groups/769084240465982
+  name: '769084240465982'
+  status: joined
+  market: Ghana
+  language: en
+  discovered_via: tokunbo spare parts Ghana
+  discovered_at: 2026-07-05 17:37 UTC
+  joined_at: 2026-07-06 18:50 UTC
+- group_url: https://www.facebook.com/groups/1840999259285885
+  name: '1840999259285885'
+  status: joined
+  market: Ghana
+  language: en
+  discovered_via: tokunbo spare parts Ghana
+  discovered_at: 2026-07-05 17:37 UTC
+  joined_at: 2026-07-06 18:50 UTC
+- group_url: https://www.facebook.com/groups/5590506567673361
+  name: '5590506567673361'
+  status: joined
+  market: Nigeria
+  language: en
+  discovered_via: Nigeria half cut Toyota
+  discovered_at: 2026-07-06 18:49 UTC
+  joined_at: 2026-07-06 18:50 UTC
+- group_url: https://www.facebook.com/groups/1100651460898689
+  name: '1100651460898689'
+  status: joined
+  market: Nigeria
+  language: en
+  discovered_via: Nigeria half cut Toyota
+  discovered_at: 2026-07-06 18:49 UTC
+  joined_at: 2026-07-06 18:51 UTC
+- group_url: https://www.facebook.com/groups/1361932431238199
+  name: '1361932431238199'
+  status: joined
+  market: Nigeria
+  language: en
+  discovered_via: Nigeria half cut Toyota
+  discovered_at: 2026-07-06 18:49 UTC
+  joined_at: 2026-07-06 18:51 UTC
+- group_url: https://www.facebook.com/groups/251315120113598
+  name: '251315120113598'
+  status: joined
+  market: Nigeria
+  language: en
+  discovered_via: Nigeria half cut Toyota
+  discovered_at: 2026-07-06 18:49 UTC
+  joined_at: 2026-07-06 18:51 UTC
+- group_url: https://www.facebook.com/groups/1191079515952785
+  name: '1191079515952785'
+  status: joined
+  market: Nigeria
+  language: en
+  discovered_via: Nigeria half cut Toyota
+  discovered_at: 2026-07-06 18:49 UTC
+  joined_at: 2026-07-06 18:52 UTC
+- group_url: https://www.facebook.com/groups/303266571375437
+  name: '303266571375437'
+  status: joined
+  market: Nigeria
+  language: en
+  discovered_via: Nigeria half cut Toyota
+  discovered_at: 2026-07-06 18:49 UTC
+  joined_at: 2026-07-06 18:52 UTC
+- group_url: https://www.facebook.com/groups/359221482442737
+  name: '359221482442737'
+  status: joined
+  market: Nigeria
+  language: en
+  discovered_via: Nigeria half cut Toyota
+  discovered_at: 2026-07-06 18:49 UTC
+  joined_at: 2026-07-06 18:52 UTC
+- group_url: https://www.facebook.com/groups/765709214333622
+  name: '765709214333622'
+  status: joined
+  market: Nigeria
+  language: en
+  discovered_via: Nigeria half cut Toyota
+  discovered_at: 2026-07-06 18:49 UTC
+  joined_at: 2026-07-07 19:34 UTC
+- group_url: https://www.facebook.com/groups/725313485767532
+  name: '725313485767532'
+  status: joined
+  market: Kenya
+  language: en
+  discovered_via: Kenya auto parts engine
+  discovered_at: 2026-07-07 19:34 UTC
+  joined_at: 2026-07-07 19:34 UTC
+- group_url: https://www.facebook.com/groups/1456790531496704
+  name: '1456790531496704'
+  status: joined
+  market: Kenya
+  language: en
+  discovered_via: Kenya auto parts engine
+  discovered_at: 2026-07-07 19:34 UTC
+  joined_at: 2026-07-07 19:34 UTC
+- group_url: https://www.facebook.com/groups/1152531258856052
+  name: '1152531258856052'
+  status: joined
+  market: Kenya
+  language: en
+  discovered_via: Kenya auto parts engine
+  discovered_at: 2026-07-07 19:34 UTC
+  joined_at: 2026-07-07 19:35 UTC
+- group_url: https://www.facebook.com/groups/223171301114869
+  name: '223171301114869'
+  status: joined
+  market: Kenya
+  language: en
+  discovered_via: Kenya auto parts engine
+  discovered_at: 2026-07-07 19:34 UTC
+  joined_at: 2026-07-07 19:35 UTC
+- group_url: https://www.facebook.com/groups/618800375184636
+  name: '618800375184636'
+  status: joined
+  market: Kenya
+  language: en
+  discovered_via: Kenya auto parts engine
+  discovered_at: 2026-07-07 19:34 UTC
+  joined_at: 2026-07-07 19:35 UTC
+- group_url: https://www.facebook.com/groups/1486113625003725
+  name: '1486113625003725'
+  status: joined
+  market: Kenya
+  language: en
+  discovered_via: Kenya auto parts engine
+  discovered_at: 2026-07-07 19:34 UTC
+  joined_at: 2026-07-07 19:35 UTC
+- group_url: https://www.facebook.com/groups/195326293246525
+  name: '195326293246525'
+  status: joined
+  market: Kenya
+  language: en
+  discovered_via: Kenya auto parts engine
+  discovered_at: 2026-07-07 19:34 UTC
+  joined_at: 2026-07-07 19:36 UTC
+- group_url: https://www.facebook.com/groups/2694159907460625
+  name: '2694159907460625'
+  status: joined
+  market: Kenya
+  language: en
+  discovered_via: Kenya auto parts engine
+  discovered_at: 2026-07-07 19:34 UTC
+  joined_at: 2026-07-07 19:36 UTC
+last_search:
+  query: Kenya auto parts engine
+  at: 2026-07-07 19:34 UTC
+  found: 8

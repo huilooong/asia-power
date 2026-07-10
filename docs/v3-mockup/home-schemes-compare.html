@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AsiaPower 3.0 · 三套首页方案对比</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: system-ui, -apple-system, "PingFang SC", sans-serif;
+      background: #0f172a;
+      color: #e2e8f0;
+      min-height: 100vh;
+    }
+    header {
+      background: #0a1628;
+      border-bottom: 3px solid #d4a017;
+      padding: 18px 24px 20px;
+    }
+    header h1 { font-size: 20px; color: #d4a017; margin-bottom: 6px; }
+    header p { font-size: 14px; color: #94a3b8; max-width: 720px; line-height: 1.6; }
+    .tabs {
+      display: flex;
+      gap: 8px;
+      padding: 16px 24px;
+      flex-wrap: wrap;
+      background: #1e293b;
+      border-bottom: 1px solid #334155;
+      position: sticky;
+      top: 0;
+      z-index: 10;
+    }
+    .tab {
+      padding: 10px 20px;
+      border-radius: 999px;
+      border: 1px solid #475569;
+      background: transparent;
+      color: #cbd5e1;
+      cursor: pointer;
+      font-size: 14px;
+      font-weight: 600;
+    }
+    .tab:hover { border-color: #d4a017; color: #fff; }
+    .tab.active {
+      background: #d4a017;
+      color: #0a1628;
+      border-color: #d4a017;
+    }
+    .tab-desc {
+      padding: 14px 24px;
+      background: #1e293b;
+      border-bottom: 1px solid #334155;
+      font-size: 13px;
+      color: #94a3b8;
+      line-height: 1.65;
+    }
+    .tab-desc strong { color: #fbbf24; }
+    .tab-desc a { color: #d4a017; }
+    .frame-wrap {
+      height: calc(100vh - 200px);
+      min-height: 520px;
+      background: #0f172a;
+    }
+    .frame-wrap iframe {
+      width: 100%;
+      height: 100%;
+      border: 0;
+      background: #fff;
+    }
+    .cards {
+      display: none;
+      padding: 24px;
+      gap: 18px;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    }
+    .cards.show { display: grid; }
+    .card {
+      background: #1e293b;
+      border: 1px solid #334155;
+      border-radius: 12px;
+      padding: 18px;
+    }
+    .card h3 { color: #d4a017; font-size: 16px; margin-bottom: 8px; }
+    .card p { font-size: 13px; color: #94a3b8; line-height: 1.6; margin-bottom: 14px; }
+    .card ul { font-size: 12px; color: #cbd5e1; padding-left: 18px; margin-bottom: 14px; }
+    .card a {
+      display: inline-block;
+      padding: 8px 16px;
+      background: #d4a017;
+      color: #0a1628;
+      border-radius: 8px;
+      font-weight: 700;
+      font-size: 13px;
+      text-decoration: none;
+    }
+    .back { margin-left: auto; font-size: 13px; color: #94a3b8; align-self: center; }
+    .back a { color: #d4a017; text-decoration: none; }
+    @media (max-width: 768px) {
+      .frame-wrap { height: calc(100vh - 240px); }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>AsiaPower 3.0 · 三套首页方案</h1>
+    <p>同一套主图合成 + 真实库存素材，三种不同信息架构。点击标签切换 live 预览，或在新标签页打开单独方案。</p>
+  </header>
+
+  <div class="tabs" role="tablist">
+    <button type="button" class="tab active" data-scheme="a" role="tab" aria-selected="true">A · 搜索顶栏沉浸</button>
+    <button type="button" class="tab" data-scheme="b" role="tab">B · Hero 居中搜索</button>
+    <button type="button" class="tab" data-scheme="c" role="tab">C · 轻量目录优先</button>
+    <span class="back"><a href="../preview-hub.html">← 预览中心</a></span>
+  </div>
+
+  <div class="tab-desc" id="tab-desc">
+    <strong>方案 A</strong> — 深色 sticky 顶栏以搜索为核心，Hero 左对齐文案 + 热词，品类卡片半透明叠在主图底部。接近你刚才看的版本，但更独立可对比。
+    <a href="home-scheme-a.html" target="_blank" rel="noopener">新窗口打开 A →</a>
+  </div>
+
+  <div class="frame-wrap">
+    <iframe id="preview-frame" title="Homepage scheme preview" src="home-scheme-a.html"></iframe>
+  </div>
+
+  <script>
+    const desc = {
+      a: '<strong>方案 A</strong> — 深色 sticky 顶栏以搜索为核心，Hero 左对齐文案 + 热词，品类卡片半透明叠在主图底部。适合「随时搜、品牌感强」。 <a href="home-scheme-a.html" target="_blank" rel="noopener">新窗口打开 A →</a>',
+      b: '<strong>方案 B</strong> — 顶栏极简（Logo + 导航），<strong>搜索框放在 Hero 正中央</strong>，品类 icon 条融入主图底部。最接近 CEO 方案 A 效果图的「一整屏」感觉。 <a href="home-scheme-b.html" target="_blank" rel="noopener">新窗口打开 B →</a>',
+      c: '<strong>方案 C</strong> — 白底电商风，<strong>金色边框大搜索框</strong>最扎眼，主图缩为横幅，品类白卡片 + 库存区提前。适合「来了就逛货、转化优先」。 <a href="home-scheme-c.html" target="_blank" rel="noopener">新窗口打开 C →</a>',
+    };
+    const frame = document.getElementById('preview-frame');
+    const descEl = document.getElementById('tab-desc');
+    document.querySelectorAll('.tab').forEach((tab) => {
+      tab.addEventListener('click', () => {
+        document.querySelectorAll('.tab').forEach((t) => {
+          t.classList.remove('active');
+          t.setAttribute('aria-selected', 'false');
+        });
+        tab.classList.add('active');
+        tab.setAttribute('aria-selected', 'true');
+        const id = tab.dataset.scheme;
+        frame.src = 'home-scheme-' + id + '.html';
+        descEl.innerHTML = desc[id];
+      });
+    });
+  </script>
+</body>
+</html>

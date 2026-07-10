@@ -21,6 +21,7 @@ buyer:
   auto_detect: true
   supported:
     - en
+    - zh
     - fr
     - ar
 

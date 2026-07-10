@@ -1,0 +1,14 @@
+# AsiaPower · 子敬社媒 Autopilot（发帖 + 非洲互动 + 回复扫描）
+# Install: sudo cp deploy/cron/apsales-social-autopilot.cron /etc/cron.d/apsales-social-autopilot
+
+SHELL=/bin/bash
+PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+
+# Every 45 min: publish + FB↔X alternate engagement (1 FB + 1 X per tick)
+*/45 * * * * root cd /root/.openclaw/workspace/AsiaPower && APSALES_SOCIAL_AUTOPILOT=1 APSALES_SOCIAL_ENGAGEMENT=1 APSALES_SOCIAL_ALTERNATE=1 APSALES_SOCIAL_SKIP_INSTAGRAM=1 APSALES_SOCIAL_ENGAGEMENT_MAX_PER_RUN=2 .venv/bin/python3 scripts/apsales-social-autopilot.py --all >> /var/log/apsales-social-autopilot.log 2>&1
+
+# Daily UTC 00:00 — regenerate westward-timeline engagement queue
+0 0 * * * root cd /root/.openclaw/workspace/AsiaPower && APSALES_SOCIAL_ENGAGEMENT=1 .venv/bin/python3 scripts/apsales-social-autopilot.py --plan-only >> /var/log/apsales-social-autopilot.log 2>&1
+
+# Hourly reply watch (backup if --all skipped)
+0 * * * * root cd /root/.openclaw/workspace/AsiaPower && APSALES_SOCIAL_REPLY_WATCH=1 .venv/bin/python3 scripts/apsales-social-reply-watch.py >> /var/log/apsales-social-reply-watch.log 2>&1

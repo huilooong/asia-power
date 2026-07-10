@@ -4,6 +4,12 @@
 (function () {
   'use strict';
 
+  const ADS_CONVERSION_ID = 'AW-4801206293';
+  const ADS_GENERATE_LEAD_LABEL = '';
+  const ADS_GENERATE_LEAD_SEND_TO = ADS_GENERATE_LEAD_LABEL
+    ? `${ADS_CONVERSION_ID}/${ADS_GENERATE_LEAD_LABEL}`
+    : '';
+
   function t(key, fallback) {
     return window.PublicI18n?.t(key, fallback) ?? fallback;
   }
@@ -124,7 +130,9 @@
   }
 
   function contactPhoneE164(form) {
-    const raw = form.querySelector('[name="phone"]')?.value || '';
+    const field = form.querySelector('[name="phone"]');
+    if (field?.dataset?.e164) return field.dataset.e164;
+    const raw = field?.value || '';
     if (window.AsiaPhone?.toE164) return window.AsiaPhone.toE164(raw);
     const digits = String(raw).replace(/\D/g, '');
     return digits ? `+${digits}` : '';
@@ -143,73 +151,79 @@
     return digits.length >= 8 && digits.length <= 15;
   }
 
+  function contactPhoneCheck(form, phoneRaw) {
+    if (window.AsiaPhone?.validatePhoneLoose) {
+      return window.AsiaPhone.validatePhoneLoose(phoneRaw);
+    }
+    const phone = contactPhoneE164(form);
+    return isValidPhone(phone, '') ? { ok: true, phone } : {
+      ok: false,
+      message: t('leadContact.phoneInvalid', 'Enter a valid international phone number.'),
+    };
+  }
+
+  function phoneFieldHost(field) {
+    return field.closest('.form-group') || field.closest('.site-modal__field') || field.parentElement;
+  }
+
+  function presentContactFeedback(form, options) {
+    if (window.SiteFeedback?.presentFormFeedback) {
+      return window.SiteFeedback.presentFormFeedback(form, {
+        modal: false,
+        toast: options?.toast ?? false,
+        scroll: options?.scroll ?? false,
+        ...options,
+      });
+    }
+    return presentFeedback(form, options);
+  }
+
+  function showFieldError(form, fieldName, message) {
+    const field = form.querySelector(`[name="${fieldName}"]`);
+    if (!field) return;
+    field.style.borderColor = 'var(--danger)';
+    field.setAttribute('aria-invalid', 'true');
+    const host = phoneFieldHost(field);
+    host?.querySelectorAll('.field-err').forEach((el) => el.remove());
+    const span = document.createElement('span');
+    span.className = 'field-err';
+    span.style.cssText = 'color:var(--danger);font-size:.75rem;margin-top:4px;display:block;';
+    span.textContent = message;
+    host?.appendChild(span);
+    field.focus();
+    scrollFormCardIntoView(field);
+  }
+
   function validateContactReachable(form) {
-    const country = fieldValue(form, 'country');
     const email = fieldValue(form, 'email').trim();
     const phoneRaw = form.querySelector('[name="phone"]')?.value || '';
 
     if (!email) {
-      presentFeedback(form, {
-        type: 'error',
-        title: t('leadContact.title', 'Your contact details'),
-        message: t('leadContact.emailRequired', 'Please enter your email address so we can reply.'),
-      });
-      form.querySelector('[name="email"]')?.focus();
+      showFieldError(form, 'email', t('leadContact.emailRequired', 'Please enter your email address so we can reply.'));
       return false;
     }
 
     if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
-      presentFeedback(form, {
-        type: 'error',
-        title: t('leadContact.title', 'Your contact details'),
-        message: t('leadContact.emailInvalid', 'Please enter a valid email address.'),
-      });
-      form.querySelector('[name="email"]')?.focus();
+      showFieldError(form, 'email', t('leadContact.emailInvalid', 'Please enter a valid email address.'));
       return false;
     }
 
     if (window.SiteFeedback?.isPlaceholderOrTestEmail?.(email)) {
-      presentFeedback(form, {
-        type: 'error',
-        title: t('leadContact.title', 'Your contact details'),
-        message: t('leadContact.emailPlaceholder', 'Please use a real email address you can receive mail at. Test addresses such as test@example.com cannot be submitted.'),
-      });
-      form.querySelector('[name="email"]')?.focus();
+      showFieldError(form, 'email', t('leadContact.emailPlaceholder', 'Please use a real email address you can receive mail at.'));
       return false;
     }
 
     if (!phoneRaw.trim()) return true;
 
-    const phone = contactPhoneE164(form);
-    const phoneCheck = window.AsiaPhone?.validatePhone
-      ? window.AsiaPhone.validatePhone(phoneRaw, country)
-      : null;
-    if (phoneCheck && !phoneCheck.ok) {
-      presentFeedback(form, {
-        type: 'error',
-        title: t('leadContact.title', 'Your contact details'),
-        message: phoneCheck.message,
-      });
-      form.querySelector('[name="phone"]')?.focus();
-      return false;
-    }
-    if (!phoneCheck && !isValidPhone(phone, country)) {
-      presentFeedback(form, {
-        type: 'error',
-        title: t('leadContact.title', 'Your contact details'),
-        message: t('leadContact.phoneInvalid', 'Enter a valid international phone number.'),
-      });
-      form.querySelector('[name="phone"]')?.focus();
+    const phoneCheck = contactPhoneCheck(form, phoneRaw);
+    if (!phoneCheck.ok) {
+      showFieldError(form, 'phone', phoneCheck.message);
       return false;
     }
 
     const phoneField = form.querySelector('[name="phone"]');
-    if (phoneField && phoneCheck?.phone) phoneField.dataset.e164 = phoneCheck.phone;
+    if (phoneField && phoneCheck.phone) phoneField.dataset.e164 = phoneCheck.phone;
     return true;
-  }
-
-  function phoneFieldHost(field) {
-    return field.closest('.form-group') || field.closest('.site-modal__field') || field.parentElement;
   }
 
   function validateForm(form) {
@@ -248,10 +262,8 @@
         phoneField.removeAttribute('aria-invalid');
         const host = phoneFieldHost(phoneField);
         host?.querySelectorAll('.field-err').forEach((el) => el.remove());
-        const phoneCheck = window.AsiaPhone?.validatePhone
-          ? window.AsiaPhone.validatePhone(phoneField.value, country)
-          : null;
-        if (phoneCheck && !phoneCheck.ok) {
+        const phoneCheck = contactPhoneCheck(form, phoneField.value);
+        if (!phoneCheck.ok) {
           ok = false;
           phoneField.style.borderColor = 'var(--danger)';
           phoneField.setAttribute('aria-invalid', 'true');
@@ -259,15 +271,6 @@
           span.className = 'field-err';
           span.style.cssText = 'color:var(--danger);font-size:.75rem;margin-top:4px;display:block;';
           span.textContent = phoneCheck.message;
-          host?.appendChild(span);
-        } else if (!phoneCheck && !isValidPhone(contactPhoneE164(form), country)) {
-          ok = false;
-          phoneField.style.borderColor = 'var(--danger)';
-          phoneField.setAttribute('aria-invalid', 'true');
-          const span = document.createElement('span');
-          span.className = 'field-err';
-          span.style.cssText = 'color:var(--danger);font-size:.75rem;margin-top:4px;display:block;';
-          span.textContent = t('leadContact.phoneInvalid', 'Enter a valid international phone number.');
           host?.appendChild(span);
         }
       }
@@ -373,6 +376,17 @@
     const extras = window.QuoteRequestForm?.buildLeadExtras?.(form) || {};
     const channel = options.channel || 'email';
     const waMessage = extras.whatsapp_message || buildContactWhatsAppMessage(form);
+    const leadMeta = window.AsiaLeadContext?.captureLeadMeta?.({
+      brand: extras.brand || fieldValue(form, 'brand'),
+      product: extras.product || extras.model || fieldValue(form, 'model'),
+      enquiry_type: fieldValue(form, 'enquiry_type'),
+      source: options.source || 'quote-form',
+    }) || {
+      pageUrl: `${window.location.pathname}${window.location.search}`,
+      page: `${window.location.pathname}${window.location.search}`,
+      referrer: document.referrer || '',
+      ...(window.AsiaPowerUtm?.forLead?.() || {}),
+    };
     return {
       name: fieldValue(form, 'name'),
       company: fieldValue(form, 'company'),
@@ -382,14 +396,25 @@
       enquiry_type: fieldValue(form, 'enquiry_type'),
       vehicle_details: extras.vehicle_details || fieldValue(form, 'vehicle_details'),
       message: waMessage || extras.message || fieldValue(form, 'message'),
-      brand: extras.brand || fieldValue(form, 'brand'),
+      brand: leadMeta.brand || extras.brand || fieldValue(form, 'brand'),
       model: extras.model || fieldValue(form, 'model'),
+      product: leadMeta.product || extras.product || extras.model || fieldValue(form, 'model'),
+      productLabel: leadMeta.productLabel || '',
+      inquirySubject: leadMeta.inquirySubject || '',
+      replySubject: leadMeta.replySubject || '',
       engine_code: extras.engine_code || fieldValue(form, 'engine_code'),
       prefer_email_reply: channel === 'email',
       source: options.source || 'quote-form',
       intent: channel === 'whatsapp' ? 'whatsapp-quote' : (options.intent || 'quote'),
       company_website: fieldValue(form, 'company_website'),
-      page: `${window.location.pathname}${window.location.search}`,
+      pageUrl: leadMeta.pageUrl,
+      page: leadMeta.page || leadMeta.pageUrl,
+      referrer: leadMeta.referrer || '',
+      utm_source: leadMeta.utm_source || '',
+      utm_medium: leadMeta.utm_medium || '',
+      utm_campaign: leadMeta.utm_campaign || '',
+      utm_content: leadMeta.utm_content || '',
+      utm_term: leadMeta.utm_term || '',
     };
   }
 
@@ -419,10 +444,24 @@
       const phoneInput = form.querySelector('[name="phone"]');
       const countrySelect = form.querySelector('[name="country"]');
       window.AsiaPhone?.bindInput?.(phoneInput, countrySelect, {
+        suggestPrefixOnly: true,
+        keepRequired: true,
         onChange: () => {
           phoneInput?.style.removeProperty('border-color');
           phoneInput?.removeAttribute('aria-invalid');
+          window.SiteFeedback?.clearFormStatus?.(form);
         },
+      });
+    });
+  }
+
+  function initContactFormFeedbackReset() {
+    document.querySelectorAll('form[data-form="contact-enquiry"]').forEach((form) => {
+      form.addEventListener('input', () => {
+        window.SiteFeedback?.clearFormStatus?.(form);
+      });
+      form.addEventListener('change', () => {
+        window.SiteFeedback?.clearFormStatus?.(form);
       });
     });
   }
@@ -464,7 +503,40 @@
         'success',
       );
     }
+    trackAdsLeadEvent('generate_lead', {
+      method: channel === 'whatsapp' ? 'whatsapp_quote' : 'contact_form',
+      lead_id: leadId || '',
+      page_path: window.location.pathname,
+    });
     void email;
+  }
+
+  function trackAdsLeadEvent(eventName, params = {}) {
+    if (typeof window.gtag !== 'function') return;
+    const utm = window.AsiaLeadContext?.captureUtm?.() || window.AsiaPowerUtm?.forLead?.() || {};
+    const eventParams = {
+      currency: 'USD',
+      value: eventName === 'generate_lead' ? 1 : 0,
+      lead_source: params.method || params.lead_source || '',
+      event_category: 'lead',
+      page_location: window.location.href,
+      page_path: window.location.pathname,
+      ...utm,
+      ...params,
+    };
+
+    if (!window.__ASIAPOWER_GOOGLE_ADS_CONFIGURED__) {
+      window.gtag('config', ADS_CONVERSION_ID);
+      window.__ASIAPOWER_GOOGLE_ADS_CONFIGURED__ = true;
+    }
+
+    window.gtag('event', eventName, eventParams);
+    if (eventName === 'generate_lead' && ADS_GENERATE_LEAD_SEND_TO) {
+      window.gtag('event', 'conversion', {
+        ...eventParams,
+        send_to: ADS_GENERATE_LEAD_SEND_TO,
+      });
+    }
   }
 
   function initQuoteWhatsAppButton() {
@@ -477,14 +549,10 @@
         syncQuoteFormFields(form);
 
         if (!validateForm(form)) {
-          presentFeedback(form, {
-            type: 'error',
-            title: t('feedback.formIncomplete', 'Please complete the form'),
-            message: t('feedback.formIncompleteMsg', 'Fill in all required fields marked with *.'),
-          });
-          const missing = form.querySelector('[required]:invalid, [required][value=""]');
-          (missing || form.querySelector('[name="email"]'))?.focus();
-          scrollFormCardIntoView(form);
+          const firstErr = form.querySelector('.field-err, [required][style*="border-color"]');
+          const focusTarget = form.querySelector('[required]:invalid, [required][value=""], [name="email"], [name="phone"]');
+          (focusTarget)?.focus();
+          scrollFormCardIntoView(firstErr || focusTarget || form);
           return;
         }
 
@@ -493,12 +561,6 @@
         const originalLabel = btn.textContent;
         btn.disabled = true;
         btn.textContent = t('feedback.saving', 'Saving enquiry…');
-
-        presentFeedback(form, {
-          type: 'info',
-          title: t('feedback.saving', 'Saving enquiry…'),
-          message: t('leadContact.whatsappSaveHint', 'We will save your enquiry before opening WhatsApp.'),
-        });
 
         try {
           const result = await saveContactLead(form, { channel: 'whatsapp', source: 'quote-form' });
@@ -517,13 +579,14 @@
           if (window.WhatsAppCrm?.openWhatsApp) {
             window.WhatsAppCrm.openWhatsApp(msg, leadId);
           } else {
-            window.open(`https://wa.me/${String(window.ASIAPOWER?.whatsapp || '8618603773077').replace(/\D/g, '')}?text=${encodeURIComponent(msg)}`, '_blank', 'noopener,noreferrer');
+            window.open(`https://wa.me/${String(window.ASIAPOWER?.whatsapp || '233540911111').replace(/\D/g, '')}?text=${encodeURIComponent(msg)}`, '_blank', 'noopener,noreferrer');
           }
 
           showContactSuccess(form, { channel: 'whatsapp', leadId, email: result?.email });
+          window.SiteFeedback?.clearFormStatus?.(form);
         } catch (err) {
           console.warn('[quote-wa]', err);
-          presentFeedback(form, {
+          presentContactFeedback(form, {
             type: 'error',
             title: t('feedback.enquiryFailed', 'Could not save enquiry'),
             message: err?.message || t('feedback.enquiryFailedMsg', 'We could not save your enquiry on the server. Please try again later or contact us directly.'),
@@ -565,14 +628,8 @@
             const card = form.closest('.form-card');
             const success = card?.querySelector('.form-success');
             if (form.dataset.form === 'supplier-registration') {
-              if (success) success.classList.remove('show');
-              form.classList.add('hidden');
-              if (success) success.classList.add('show');
-              showModal({
-                type: 'success',
-                title: t('feedback.registrationSuccess', 'Registration submitted'),
-                message: t('feedback.registrationSuccessMsg', 'Thank you for applying. Our supplier relations team will contact you at the email provided within 3 business days.'),
-              });
+              // Legacy fake form removed — always send users to real OTP registration.
+              window.location.href = '/login/?role=supplier&mode=register';
               return;
             }
             if (success) {
@@ -588,14 +645,10 @@
           syncQuoteFormFields(form);
 
           if (!validateForm(form)) {
-            presentFeedback(form, {
-              type: 'error',
-              title: t('feedback.formIncomplete', 'Please complete the form'),
-              message: t('feedback.formIncompleteMsg', 'Fill in all required fields marked with *.'),
-            });
-            const missing = form.querySelector('[required]:invalid, [required][value=""]');
-            (missing || form.querySelector('[name="email"]'))?.focus();
-            scrollFormCardIntoView(form);
+            const firstErr = form.querySelector('.field-err');
+            const focusTarget = form.querySelector('[required]:invalid, [required][value=""], [name="email"], [name="phone"]');
+            (focusTarget)?.focus();
+            scrollFormCardIntoView(firstErr || focusTarget || form);
             return;
           }
 
@@ -605,12 +658,6 @@
           const success = card?.querySelector('.form-success');
           const submitBtn = form.querySelector('[type="submit"]');
           const originalLabel = submitBtn?.textContent;
-
-          presentFeedback(form, {
-            type: 'info',
-            title: t('feedback.saving', 'Saving enquiry…'),
-            message: t('feedback.savingMsg', 'Please wait while we submit your enquiry.'),
-          });
 
           if (submitBtn) {
             submitBtn.disabled = true;
@@ -644,38 +691,31 @@
             }
           }
 
-          const successWhatsapp = card?.querySelector('.form-success--whatsapp');
-          const successEmail = card?.querySelector('.form-success--email');
-          if (success) success.classList.remove('show');
-          if (successWhatsapp) successWhatsapp.classList.remove('show');
-          if (successEmail) successEmail.classList.remove('show');
+          window.SiteFeedback?.clearFormStatus?.(form);
 
           if (saved) {
-            presentFeedback(form, {
-              type: 'success',
-              title: t('feedback.enquirySaved', 'Enquiry saved'),
-              message: t('feedback.enquirySavedEmail', 'Your enquiry was submitted successfully. We will reply to your email within 24 hours.'),
-              details: [
-                leadId ? `Reference: ${leadId}` : '',
-                savedEmail ? `Email: ${savedEmail}` : '',
-              ].filter(Boolean).join(' — '),
-              onClose: () => {
-                showContactSuccess(form, { channel: 'email', leadId, email: savedEmail });
-              },
-            });
+            showContactSuccess(form, { channel: 'email', leadId, email: savedEmail });
+            if (leadId && window.SiteFeedback?.toast) {
+              window.SiteFeedback.toast(
+                t('feedback.enquirySavedRef', `Enquiry saved — reference ${leadId}`),
+                'success',
+              );
+            }
             scrollFormCardIntoView(form);
           } else {
-            presentFeedback(form, {
+            presentContactFeedback(form, {
               type: 'error',
+              toast: true,
               title: t('feedback.enquiryFailed', 'Could not save enquiry'),
-              message: saveError?.message || t('feedback.enquiryFailedMsg', 'We could not save your enquiry on the server. Please try again later or contact us directly.'),
+              message: saveError?.message || t('feedback.enquiryFailedMsg', 'We could not save your enquiry. Please try WhatsApp or email us directly.'),
             });
-            scrollFormCardIntoView(form);
+            scrollFormCardIntoView(submitBtn || form);
           }
         } catch (err) {
           console.error('[form-submit]', err);
-          presentFeedback(form, {
+          presentContactFeedback(form, {
             type: 'error',
+            toast: true,
             title: t('feedback.enquiryFailed', 'Could not save enquiry'),
             message: err?.message || t('feedback.enquiryFailedMsg', 'Something went wrong. Please try again or contact us directly.'),
           });
@@ -842,6 +882,11 @@
   ];
 
   function bindPowertrainToolbar(catalogType, root, options) {
+    if (window.AsiaPowerEbayCatalogHub?.initParts) {
+      const pageMap = { engines: 'engines', gearboxes: 'gearboxes', chassis: 'chassis' };
+      window.AsiaPowerEbayCatalogHub.initParts(pageMap[catalogType] || 'engines', root, options);
+      return;
+    }
     window.PowertrainCatalogToolbar?.bind({
       catalogType,
       root,
@@ -856,74 +901,26 @@
 
   function initEngineCatalogPage() {
     const root = document.getElementById('engine-catalog-root');
-    if (!root || !window.getAllEngineBrands || !window.EngineCatalog) return;
-
-    const render = () => {
-      const brands = window.getAllEngineBrands();
-      root.innerHTML = brands
-        .map((b) => window.EngineCatalog.renderEngineCatalogSection(b, { showHeader: true }))
-        .join('');
-
-      bindPowertrainToolbar('engines', root, {
-        getBrands: () => window.getAllEngineBrands().filter((b) => (b.models || []).length > 0),
-        getTotalCount: () => window.getEngineModelCount?.() || 0,
-        countId: 'engine-catalog-count',
-        typeFilters: ENGINE_TYPE_FILTERS,
-        emptyHref: '../contact.html',
-      });
-    };
-
-    window.PowertrainCatalog?.loadLearnedPowertrain?.()
-      .then(render)
-      .catch(render);
+    if (!root || !window.AsiaPowerEbayCatalogHub?.initInventoryParts) return;
+    window.AsiaPowerEbayCatalogHub.initInventoryParts('engines', root);
   }
 
   function initGearboxCatalogPage() {
     const root = document.getElementById('gearbox-catalog-root');
-    if (!root || !window.getAllGearboxBrands || !window.GearboxCatalog) return;
-
-    const render = () => {
-      const brands = window.getAllGearboxBrands().filter((b) => (b.models || []).length > 0);
-      root.innerHTML = brands
-        .map((b) => window.GearboxCatalog.renderGearboxCatalogSection(b, { showHeader: true }))
-        .join('');
-
-      bindPowertrainToolbar('gearboxes', root, {
-        getBrands: () => window.getAllGearboxBrands().filter((b) => (b.models || []).length > 0),
-        getTotalCount: () => window.getGearboxModelCount?.() || 0,
-        countId: 'gearbox-catalog-count',
-        typeFilters: GEARBOX_TYPE_FILTERS,
-        emptyHref: '../contact.html',
-      });
-    };
-
-    window.PowertrainCatalog?.loadLearnedPowertrain?.()
-      .then(render)
-      .catch(render);
+    if (!root || !window.AsiaPowerEbayCatalogHub?.initInventoryParts) return;
+    window.AsiaPowerEbayCatalogHub.initInventoryParts('gearboxes', root);
   }
 
   function initChassisCatalogPage() {
     const root = document.getElementById('chassis-catalog-root');
-    if (!root || !window.getAllChassisBrands || !window.ChassisCatalog) return;
+    if (!root || !window.AsiaPowerEbayCatalogHub?.initInventoryParts) return;
+    window.AsiaPowerEbayCatalogHub.initInventoryParts('chassis', root);
+  }
 
-    const render = () => {
-      const brands = window.getAllChassisBrands().filter((b) => (b.models || []).length > 0);
-      root.innerHTML = brands
-        .map((b) => window.ChassisCatalog.renderChassisCatalogSection(b, { showHeader: true }))
-        .join('');
-
-      bindPowertrainToolbar('chassis', root, {
-        getBrands: () => window.getAllChassisBrands().filter((b) => (b.models || []).length > 0),
-        getTotalCount: () => window.getChassisModelCount?.() || 0,
-        countId: 'chassis-catalog-count',
-        typeFilters: CHASSIS_TYPE_FILTERS,
-        emptyHref: '../contact.html',
-      });
-    };
-
-    window.PowertrainCatalog?.loadLearnedPowertrain?.()
-      .then(render)
-      .catch(render);
+  function initFrontCutCatalogPage() {
+    const root = document.getElementById('frontcut-catalog-root');
+    if (!root || !window.AsiaPowerEbayCatalogHub?.initInventoryParts) return;
+    window.AsiaPowerEbayCatalogHub.initInventoryParts('frontcuts', root);
   }
 
   function initPlatformOffices() {
@@ -1245,6 +1242,9 @@
   }
 
   function initWhatsAppAnalytics() {
+    if (window.__ASIAPOWER_WA_ANALYTICS_INIT__) return;
+    window.__ASIAPOWER_WA_ANALYTICS_INIT__ = true;
+
     document.addEventListener('click', (e) => {
       const link = e.target.closest('a[href*="wa.me"]');
       if (!link) return;
@@ -1254,6 +1254,7 @@
         href: link.href,
         label: (link.getAttribute('aria-label') || link.textContent || '').replace(/\s+/g, ' ').trim().slice(0, 120),
         timestamp: new Date().toISOString(),
+        ...(window.AsiaLeadContext?.captureUtm?.() || window.AsiaPowerUtm?.forLead?.() || {}),
       };
       const body = JSON.stringify(payload);
       try {
@@ -1270,12 +1271,20 @@
       } catch {
         // analytics must not block navigation
       }
+      trackAdsLeadEvent('whatsapp_click', {
+        method: 'whatsapp_link',
+        link_url: link.href,
+        link_text: payload.label,
+      });
     }, true);
   }
 
   const WA_PROMPT_SKIP_SELECTOR = '[data-half-cut-wa], [data-half-cut-lead], [data-product-lead], #quote-wa-btn, [data-wa-no-prompt]';
 
   function initGenericWhatsAppLeadCapture() {
+    if (window.__ASIAPOWER_WA_LEAD_CAPTURE_INIT__) return;
+    window.__ASIAPOWER_WA_LEAD_CAPTURE_INIT__ = true;
+
     document.addEventListener('click', async (e) => {
       const link = e.target.closest('a[href*="wa.me"]');
       if (!link || link.closest(WA_PROMPT_SKIP_SELECTOR)) return;
@@ -1295,6 +1304,32 @@
       });
 
       try {
+        const params = new URLSearchParams(window.location.search);
+        const brand = params.get('brand') || '';
+        const product = params.get('product') || '';
+        let enquiryType = '';
+        let vehicleDetails = '';
+        if (brand || product) {
+          const lines = [];
+          if (brand) lines.push(`Brand: ${brand}`);
+          if (product) lines.push(`Product / Engine code: ${product}`);
+          vehicleDetails = lines.join('\n');
+          const p = product.toLowerCase();
+          if (p.includes('gearbox') || p.includes('transmission')) enquiryType = 'gearbox';
+          else if (p.includes('chassis')) enquiryType = 'chassis';
+          else if (p.includes('engine')) enquiryType = 'engine';
+          else if (product) enquiryType = 'engine';
+        }
+        const leadMeta = window.AsiaLeadContext?.captureLeadMeta?.({
+          brand,
+          product,
+          enquiry_type: enquiryType,
+          source: 'whatsapp-intent',
+        }) || {
+          pageUrl: `${window.location.pathname}${window.location.search}`,
+          page: `${window.location.pathname}${window.location.search}`,
+          referrer: document.referrer || '',
+        };
         const res = await fetch('/api/leads/whatsapp', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
@@ -1302,12 +1337,32 @@
             ...contact,
             intent: 'whatsapp',
             source: 'whatsapp-intent',
-            page: window.location.pathname + window.location.search,
+            brand,
+            product,
+            model: product,
+            productLabel: leadMeta.productLabel || '',
+            inquirySubject: leadMeta.inquirySubject || '',
+            replySubject: leadMeta.replySubject || '',
+            enquiry_type: enquiryType,
+            vehicle_details: vehicleDetails,
+            pageUrl: leadMeta.pageUrl,
+            page: leadMeta.page || leadMeta.pageUrl,
+            referrer: leadMeta.referrer || '',
+            utm_source: leadMeta.utm_source || '',
+            utm_medium: leadMeta.utm_medium || '',
+            utm_campaign: leadMeta.utm_campaign || '',
+            utm_content: leadMeta.utm_content || '',
+            utm_term: leadMeta.utm_term || '',
           }),
         });
         const data = await res.json().catch(() => ({}));
         if (!res.ok) throw new Error(data.error || 'Could not save enquiry');
         window.SiteFeedback?.toast?.(t('feedback.enquirySaved', 'Enquiry saved'), 'success');
+        trackAdsLeadEvent('generate_lead', {
+          method: 'whatsapp_intent',
+          lead_id: data?.id || '',
+          page_path: window.location.pathname,
+        });
         window.open(link.href, '_blank', 'noopener,noreferrer');
       } catch (err) {
         console.warn('[whatsapp-lead]', err);
@@ -1318,6 +1373,38 @@
         });
       }
     }, true);
+  }
+
+  function initCaseStudyVideos() {
+    document.querySelectorAll('[data-case-video]').forEach((card) => {
+      const btn = card.querySelector('.case-card__play');
+      const video = card.querySelector('.case-card__video');
+      if (!btn || !video) return;
+
+      const startPlayback = () => {
+        card.classList.add('case-card--is-playing');
+        video.hidden = false;
+        video.load();
+        video.play().catch(() => {});
+      };
+
+      btn.addEventListener('click', startPlayback);
+      card.querySelector('.case-card__poster')?.addEventListener('click', startPlayback);
+    });
+  }
+
+  function initCaseStudyCarousel() {
+    const track = document.getElementById('case-studies-track');
+    if (!track) return;
+    const prevBtn = document.querySelector('[data-case-prev]');
+    const nextBtn = document.querySelector('[data-case-next]');
+    const scrollByCard = (direction) => {
+      const card = track.querySelector('.case-card');
+      const step = (card?.getBoundingClientRect().width || 220) + 20;
+      track.scrollBy({ left: step * direction, behavior: 'smooth' });
+    };
+    prevBtn?.addEventListener('click', () => scrollByCard(-1));
+    nextBtn?.addEventListener('click', () => scrollByCard(1));
   }
 
   document.addEventListener('DOMContentLoaded', () => {
@@ -1332,6 +1419,7 @@
     initContactInfo();
     initContactCountrySelect();
     initPhoneInputs();
+    initContactFormFeedbackReset();
     initHeaderShadow();
     initCategoryGrid();
     initStatsStrip();
@@ -1343,8 +1431,12 @@
     initEngineCatalogPage();
     initGearboxCatalogPage();
     initChassisCatalogPage();
+    initFrontCutCatalogPage();
     initWhatsAppAnalytics();
     initGenericWhatsAppLeadCapture();
+    initCaseStudyVideos();
+    initCaseStudyCarousel();
+    window.InquiryCta?.initPage?.();
   });
 
   window.addEventListener('load', () => {
@@ -1360,10 +1452,12 @@
     initEngineCatalogPage();
     initGearboxCatalogPage();
     initChassisCatalogPage();
+    initFrontCutCatalogPage();
     if (document.getElementById('brand-matrix') || document.getElementById('brand-featured-matrix')) {
       initBrandDirectory();
     }
     initContactCountrySelect();
     initPhoneInputs();
+    initContactFormFeedbackReset();
   });
 })();

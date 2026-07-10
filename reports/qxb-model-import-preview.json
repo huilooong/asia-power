@@ -1,0 +1,1240 @@
+{
+  "source": "/Users/longhui/Downloads/汽修宝车辆数据_2606291619.xlsx",
+  "rows": 541,
+  "new": [
+    {
+      "brandSlug": "honda",
+      "model": "CR-V",
+      "english": "CR-V",
+      "years": [
+        "2005",
+        "2007",
+        "2010",
+        "2012",
+        "2013"
+      ],
+      "variants": [],
+      "count": 31,
+      "sample": "本田 本田CR-V 2007款 2.4L 自动四驱豪华版"
+    },
+    {
+      "brandSlug": "honda",
+      "model": "XR-V",
+      "english": "XR-V",
+      "years": [
+        "2017"
+      ],
+      "variants": [],
+      "count": 1,
+      "sample": "本田 本田XR-V 2017款 1.8L EXi CVT舒适版"
+    },
+    {
+      "brandSlug": "honda",
+      "model": "奥德赛",
+      "english": null,
+      "years": [
+        "2003",
+        "2005",
+        "2007",
+        "2008",
+        "2009",
+        "2015",
+        "2017"
+      ],
+      "variants": [],
+      "count": 15,
+      "sample": "本田 奥德赛 2015款 改款 2.4L 豪华版"
+    },
+    {
+      "brandSlug": "honda",
+      "model": "思铂睿",
+      "english": null,
+      "years": [
+        "2009",
+        "2015"
+      ],
+      "variants": [],
+      "count": 6,
+      "sample": "本田 思铂睿 2009款 2.4L 豪华版"
+    },
+    {
+      "brandSlug": "honda",
+      "model": "杰德",
+      "english": null,
+      "years": [
+        "2013"
+      ],
+      "variants": [],
+      "count": 1,
+      "sample": "本田 杰德 2013款 1.8L 自动舒适版 5座"
+    },
+    {
+      "brandSlug": "honda",
+      "model": "歌诗图",
+      "english": null,
+      "years": [
+        "2012"
+      ],
+      "variants": [],
+      "count": 2,
+      "sample": "本田 歌诗图 2012款 2.4L 尊享版"
+    },
+    {
+      "brandSlug": "honda",
+      "model": "竞瑞",
+      "english": null,
+      "years": [
+        "2017"
+      ],
+      "variants": [],
+      "count": 1,
+      "sample": "本田 竞瑞 2017款 1.5L CVT经典版"
+    },
+    {
+      "brandSlug": "honda",
+      "model": "艾力绅",
+      "english": null,
+      "years": [
+        "2012",
+        "2016"
+      ],
+      "variants": [],
+      "count": 2,
+      "sample": "本田 艾力绅 2016款 2.4L 至尊版"
+    },
+    {
+      "brandSlug": "honda",
+      "model": "英仕派",
+      "english": null,
+      "years": [
+        "2019"
+      ],
+      "variants": [],
+      "count": 1,
+      "sample": "本田 英仕派 2019款 锐·混动 2.0L 净尚版 国VI"
+    },
+    {
+      "brandSlug": "honda",
+      "model": "锋范",
+      "english": null,
+      "years": [
+        "2011"
+      ],
+      "variants": [],
+      "count": 1,
+      "sample": "本田 锋范 2011款 1.5L 自动 精英品致版"
+    },
+    {
+      "brandSlug": "honda",
+      "model": "锋范经典",
+      "english": null,
+      "years": [
+        "2008",
+        "2012"
+      ],
+      "variants": [],
+      "count": 5,
+      "sample": "本田 锋范经典 2008款 1.5L 手动舒适版"
+    },
+    {
+      "brandSlug": "hyundai",
+      "model": "i30",
+      "english": "i30",
+      "years": [
+        "2009"
+      ],
+      "variants": [],
+      "count": 1,
+      "sample": "现代 北京现代i30 2009款 1.6L 自动舒享型"
+    },
+    {
+      "brandSlug": "hyundai",
+      "model": "ix35",
+      "english": "ix35",
+      "years": [
+        "2010",
+        "2013"
+      ],
+      "variants": [],
+      "count": 12,
+      "sample": "现代 北京现代ix35 2013款 2.0L 自动两驱智能型GLS 国IV"
+    },
+    {
+      "brandSlug": "hyundai",
+      "model": "名图",
+      "english": null,
+      "years": [
+        "2014"
+      ],
+      "variants": [],
+      "count": 1,
+      "sample": "现代 名图 2014款 1.8L 自动尊贵型DLX"
+    },
+    {
+      "brandSlug": "hyundai",
+      "model": "朗动",
+      "english": null,
+      "years": [
+        "2012",
+        "2013",
+        "2015"
+      ],
+      "variants": [],
+      "count": 7,
+      "sample": "现代 朗动 2012款 1.6L 手动领先型"
+    },
+    {
+      "brandSlug": "hyundai",
+      "model": "瑞纳",
+      "english": null,
+      "years": [
+        "2010",
+        "2013",
+        "2017"
+      ],
+      "variants": [],
+      "count": 5,
+      "sample": "现代 瑞纳 2010款 三厢 1.4L 手动舒适型GS"
+    },
+    {
+      "brandSlug": "hyundai",
+      "model": "维拉克斯",
+      "english": null,
+      "years": [
+        "2007",
+        "2012"
+      ],
+      "variants": [],
+      "count": 2,
+      "sample": "现代 维拉克斯 2007款 3.8L 豪华导航版"
+    },
+    {
+      "brandSlug": "hyundai",
+      "model": "酷派",
+      "english": null,
+      "years": [
+        "2004",
+        "2007"
+      ],
+      "variants": [],
+      "count": 2,
+      "sample": "现代 酷派 2004款 FX 2.7"
+    },
+    {
+      "brandSlug": "hyundai",
+      "model": "雅绅特",
+      "english": null,
+      "years": [
+        "2011"
+      ],
+      "variants": [],
+      "count": 1,
+      "sample": "现代 雅绅特 2011款 1.4手动舒适型"
+    },
+    {
+      "brandSlug": "hyundai",
+      "model": "领动",
+      "english": null,
+      "years": [
+        "2016"
+      ],
+      "variants": [],
+      "count": 1,
+      "sample": "现代 领动 2016款 1.6L 手动智炫·青春型"
+    },
+    {
+      "brandSlug": "kia",
+      "model": "K2",
+      "english": "K2",
+      "years": [
+        "2011",
+        "2012",
+        "2015"
+      ],
+      "variants": [],
+      "count": 12,
+      "sample": "起亚 起亚K2 2011款 三厢 1.6L AT Premium"
+    },
+    {
+      "brandSlug": "kia",
+      "model": "K3",
+      "english": "K3",
+      "years": [
+        "2013"
+      ],
+      "variants": [],
+      "count": 2,
+      "sample": "起亚 起亚K3 2013款 1.6L 手动GLS"
+    },
+    {
+      "brandSlug": "kia",
+      "model": "K3S",
+      "english": "K3S",
+      "years": [
+        "2014"
+      ],
+      "variants": [],
+      "count": 1,
+      "sample": "起亚 起亚K3S 2014款 1.6L 自动GLS"
+    },
+    {
+      "brandSlug": "kia",
+      "model": "K5",
+      "english": "K5",
+      "years": [
+        "2011",
+        "2012",
+        "2015"
+      ],
+      "variants": [],
+      "count": 5,
+      "sample": "起亚 起亚K5 2012款 2.0L 自动DLX特别版"
+    },
+    {
+      "brandSlug": "kia",
+      "model": "佳乐",
+      "english": null,
+      "years": [
+        "2007"
+      ],
+      "variants": [],
+      "count": 1,
+      "sample": "起亚 佳乐 2007款 2.0L 5座标准版"
+    },
+    {
+      "brandSlug": "kia",
+      "model": "凯尊",
+      "english": null,
+      "years": [
+        "2011"
+      ],
+      "variants": [],
+      "count": 1,
+      "sample": "起亚 凯尊 2011款 2.4L 尊贵型"
+    },
+    {
+      "brandSlug": "kia",
+      "model": "福瑞迪",
+      "english": null,
+      "years": [
+        "2011"
+      ],
+      "variants": [],
+      "count": 7,
+      "sample": "起亚 福瑞迪 2011款 1.6L MT GL"
+    },
+    {
+      "brandSlug": "kia",
+      "model": "秀尔",
+      "english": null,
+      "years": [
+        "2010",
+        "2012"
+      ],
+      "variants": [],
+      "count": 6,
+      "sample": "起亚 秀尔 2010款 1.6L MT GLS"
+    },
+    {
+      "brandSlug": "kia",
+      "model": "锐欧",
+      "english": null,
+      "years": [
+        "2007"
+      ],
+      "variants": [],
+      "count": 1,
+      "sample": "起亚 锐欧 2007款 1.4L MT GL"
+    },
+    {
+      "brandSlug": "kia",
+      "model": "霸锐",
+      "english": null,
+      "years": [
+        "2008"
+      ],
+      "variants": [],
+      "count": 5,
+      "sample": "起亚 霸锐 2008款 3.8L 豪华版 国IV"
+    },
+    {
+      "brandSlug": "mercedes-benz",
+      "model": "A级",
+      "english": null,
+      "years": [
+        "2011"
+      ],
+      "variants": [
+        "进口"
+      ],
+      "count": 1,
+      "sample": "奔驰 奔驰A级(进口) 2011款 A 160"
+    },
+    {
+      "brandSlug": "mercedes-benz",
+      "model": "B级",
+      "english": null,
+      "years": [
+        "2009"
+      ],
+      "variants": [],
+      "count": 6,
+      "sample": "奔驰 奔驰B级 2009款 B 200 时尚型"
+    },
+    {
+      "brandSlug": "mercedes-benz",
+      "model": "CLS",
+      "english": "CLS",
+      "years": [
+        "2007"
+      ],
+      "variants": [],
+      "count": 1,
+      "sample": "奔驰 奔驰CLS 2007款 CLS 350"
+    },
+    {
+      "brandSlug": "mercedes-benz",
+      "model": "C级",
+      "english": null,
+      "years": [
+        "2008",
+        "2010",
+        "2011",
+        "2013"
+      ],
+      "variants": [],
+      "count": 9,
+      "sample": "奔驰 奔驰C级 2010款 C 180K 经典型"
+    },
+    {
+      "brandSlug": "mercedes-benz",
+      "model": "E级",
+      "english": null,
+      "years": [
+        "2005",
+        "2006",
+        "2010",
+        "2011"
+      ],
+      "variants": [
+        "进口"
+      ],
+      "count": 8,
+      "sample": "奔驰 奔驰E级 2010款 E 300 L 时尚型"
+    },
+    {
+      "brandSlug": "mercedes-benz",
+      "model": "GLK级",
+      "english": null,
+      "years": [
+        "2011",
+        "2012"
+      ],
+      "variants": [
+        "进口"
+      ],
+      "count": 2,
+      "sample": "奔驰 奔驰GLK级 2012款 GLK 300 4MATIC 动感型"
+    },
+    {
+      "brandSlug": "mercedes-benz",
+      "model": "GL级",
+      "english": null,
+      "years": [
+        "2006"
+      ],
+      "variants": [],
+      "count": 1,
+      "sample": "奔驰 奔驰GL级 2006款 GL 450 4MATIC 北美版"
+    },
+    {
+      "brandSlug": "mercedes-benz",
+      "model": "M级",
+      "english": null,
+      "years": [
+        "2006",
+        "2008"
+      ],
+      "variants": [],
+      "count": 4,
+      "sample": "奔驰 奔驰M级 2006款 ML 350 尊贵型"
+    },
+    {
+      "brandSlug": "mercedes-benz",
+      "model": "R级",
+      "english": null,
+      "years": [
+        "2006",
+        "2007",
+        "2009",
+        "2011"
+      ],
+      "variants": [],
+      "count": 4,
+      "sample": "奔驰 奔驰R级 2007款 R 350 L 4MATIC"
+    },
+    {
+      "brandSlug": "mercedes-benz",
+      "model": "SLK级",
+      "english": null,
+      "years": [
+        "2004"
+      ],
+      "variants": [],
+      "count": 1,
+      "sample": "奔驰 奔驰SLK级 2004款 SLK 350"
+    },
+    {
+      "brandSlug": "mercedes-benz",
+      "model": "S级",
+      "english": null,
+      "years": [
+        "2010"
+      ],
+      "variants": [],
+      "count": 1,
+      "sample": "奔驰 奔驰S级 2010款 S 400 L HYBRID"
+    },
+    {
+      "brandSlug": "mercedes-benz",
+      "model": "唯雅诺",
+      "english": null,
+      "years": [
+        "2006"
+      ],
+      "variants": [
+        "进口"
+      ],
+      "count": 1,
+      "sample": "奔驰 唯雅诺(进口) 2006款 Viano 3.2L"
+    },
+    {
+      "brandSlug": "mitsubishi",
+      "model": "劲炫",
+      "english": "ASX",
+      "years": [
+        "2011",
+        "2013"
+      ],
+      "variants": [
+        "进口"
+      ],
+      "count": 2,
+      "sample": "三菱 劲炫ASX 2013款 2.0L 手动两驱舒适版"
+    },
+    {
+      "brandSlug": "mitsubishi",
+      "model": "帕杰罗",
+      "english": null,
+      "years": [
+        "2008",
+        "2011"
+      ],
+      "variants": [],
+      "count": 4,
+      "sample": "三菱 帕杰罗 2011款 V73 3.0L AT GLX"
+    },
+    {
+      "brandSlug": "mitsubishi",
+      "model": "格蓝迪",
+      "english": null,
+      "years": [
+        "2007"
+      ],
+      "variants": [],
+      "count": 1,
+      "sample": "三菱 格蓝迪 2007款 2.4 六座精英版"
+    },
+    {
+      "brandSlug": "mitsubishi",
+      "model": "翼神",
+      "english": null,
+      "years": [
+        "2010"
+      ],
+      "variants": [],
+      "count": 1,
+      "sample": "三菱 翼神 2010款 运动版 2.0L CVT旗舰型"
+    },
+    {
+      "brandSlug": "nissan",
+      "model": "帕拉丁",
+      "english": null,
+      "years": [
+        "2006",
+        "2007",
+        "2008",
+        "2013"
+      ],
+      "variants": [],
+      "count": 4,
+      "sample": "日产 日产帕拉丁 2013款 2.4L 四驱标准型 国IV"
+    },
+    {
+      "brandSlug": "nissan",
+      "model": "颐达",
+      "english": null,
+      "years": [
+        "2006",
+        "2008",
+        "2009"
+      ],
+      "variants": [],
+      "count": 9,
+      "sample": "日产 颐达 2009款 1.6L 自动科技版"
+    },
+    {
+      "brandSlug": "nissan",
+      "model": "骏逸",
+      "english": null,
+      "years": [
+        "2006"
+      ],
+      "variants": [],
+      "count": 1,
+      "sample": "日产 骏逸 2006款 1.8L 手动标准型"
+    },
+    {
+      "brandSlug": "suzuki",
+      "model": "天语",
+      "english": "SX4",
+      "years": [
+        "2008",
+        "2009",
+        "2010",
+        "2011"
+      ],
+      "variants": [],
+      "count": 7,
+      "sample": "铃木 天语 SX4 2010款 两厢 1.6L 手动冠军限量版"
+    },
+    {
+      "brandSlug": "suzuki",
+      "model": "天语尚悦",
+      "english": null,
+      "years": [
+        "2011"
+      ],
+      "variants": [],
+      "count": 1,
+      "sample": "铃木 天语 尚悦 2011款 1.6L 自动舒适型"
+    },
+    {
+      "brandSlug": "suzuki",
+      "model": "奥拓",
+      "english": null,
+      "years": [
+        "2009",
+        "2013"
+      ],
+      "variants": [],
+      "count": 3,
+      "sample": "铃木 奥拓 2013款 1.0L 自动豪华型"
+    },
+    {
+      "brandSlug": "suzuki",
+      "model": "超级维特拉",
+      "english": null,
+      "years": [
+        "2008"
+      ],
+      "variants": [],
+      "count": 1,
+      "sample": "铃木 超级维特拉 2008款 2.4 AT JLX 5门版"
+    },
+    {
+      "brandSlug": "suzuki",
+      "model": "雨燕",
+      "english": null,
+      "years": [
+        "2009"
+      ],
+      "variants": [],
+      "count": 1,
+      "sample": "铃木 雨燕 2009款 1.3L 自动超值版"
+    },
+    {
+      "brandSlug": "toyota",
+      "model": "RAV4",
+      "english": "RAV4",
+      "years": [
+        "2004"
+      ],
+      "variants": [
+        "进口"
+      ],
+      "count": 1,
+      "sample": "丰田 丰田RAV4(进口) 2004款 2.0 三门"
+    },
+    {
+      "brandSlug": "toyota",
+      "model": "亚洲龙",
+      "english": null,
+      "years": [
+        "2019"
+      ],
+      "variants": [],
+      "count": 1,
+      "sample": "丰田 亚洲龙 2019款 2.0L 无级 豪华版"
+    },
+    {
+      "brandSlug": "toyota",
+      "model": "奕泽",
+      "english": "IZOA",
+      "years": [
+        "2022"
+      ],
+      "variants": [],
+      "count": 1,
+      "sample": "丰田 奕泽IZOA 2022款 双擎 2.0L 奕行版"
+    },
+    {
+      "brandSlug": "toyota",
+      "model": "普瑞维亚",
+      "english": null,
+      "years": [
+        "2006",
+        "2007"
+      ],
+      "variants": [],
+      "count": 2,
+      "sample": "丰田 普瑞维亚 2006款 2.4L 7人座豪华版"
+    },
+    {
+      "brandSlug": "toyota",
+      "model": "普锐斯",
+      "english": null,
+      "years": [
+        "2006"
+      ],
+      "variants": [],
+      "count": 2,
+      "sample": "丰田 普锐斯 2006款 1.5L 真皮导航版"
+    },
+    {
+      "brandSlug": "toyota",
+      "model": "皇冠",
+      "english": null,
+      "years": [
+        "2005",
+        "2006",
+        "2010",
+        "2015"
+      ],
+      "variants": [],
+      "count": 11,
+      "sample": "丰田 皇冠 2015款 2.0T 时尚版"
+    },
+    {
+      "brandSlug": "toyota",
+      "model": "花冠",
+      "english": null,
+      "years": [
+        "2004",
+        "2007",
+        "2009",
+        "2010",
+        "2013"
+      ],
+      "variants": [],
+      "count": 13,
+      "sample": "丰田 花冠 2004款 1.8L 自动GLX-i"
+    },
+    {
+      "brandSlug": "toyota",
+      "model": "荣放",
+      "english": "RAV4",
+      "years": [
+        "2009",
+        "2011",
+        "2016",
+        "2026"
+      ],
+      "variants": [],
+      "count": 9,
+      "sample": "丰田 RAV4荣放 2009款 2.4L 自动豪华版"
+    },
+    {
+      "brandSlug": "toyota",
+      "model": "逸致",
+      "english": null,
+      "years": [
+        "2011"
+      ],
+      "variants": [],
+      "count": 1,
+      "sample": "丰田 逸致 2011款 180G CVT舒适版"
+    },
+    {
+      "brandSlug": "toyota",
+      "model": "锐志",
+      "english": null,
+      "years": [
+        "2006",
+        "2007",
+        "2010"
+      ],
+      "variants": [],
+      "count": 9,
+      "sample": "丰田 锐志 2007款 2.5S 真皮天窗版"
+    },
+    {
+      "brandSlug": "toyota",
+      "model": "雷凌",
+      "english": null,
+      "years": [
+        "2017"
+      ],
+      "variants": [],
+      "count": 3,
+      "sample": "丰田 雷凌 2017款 改款双擎 1.8H GS E-CVT精英天窗版 国V"
+    }
+  ],
+  "update": [
+    {
+      "brandSlug": "honda",
+      "model": "凌派",
+      "english": null,
+      "years": [
+        "2013",
+        "2015",
+        "2016"
+      ],
+      "variants": [],
+      "count": 3,
+      "sample": "本田 凌派 2015款 1.8L 自动豪华版"
+    },
+    {
+      "brandSlug": "honda",
+      "model": "思域",
+      "english": null,
+      "years": [
+        "2006",
+        "2008",
+        "2009",
+        "2014",
+        "2016"
+      ],
+      "variants": [],
+      "count": 13,
+      "sample": "本田 思域 2006款 1.8L 自动豪华版"
+    },
+    {
+      "brandSlug": "honda",
+      "model": "雅阁",
+      "english": null,
+      "years": [
+        "2004",
+        "2005",
+        "2006",
+        "2007",
+        "2008",
+        "2009",
+        "2010",
+        "2011",
+        "2012",
+        "2014",
+        "2016"
+      ],
+      "variants": [],
+      "count": 38,
+      "sample": "本田 雅阁 2010款 2.0L EX"
+    },
+    {
+      "brandSlug": "honda",
+      "model": "飞度",
+      "english": null,
+      "years": [
+        "2006",
+        "2007",
+        "2008",
+        "2011",
+        "2012"
+      ],
+      "variants": [],
+      "count": 10,
+      "sample": "本田 飞度 2011款 1.3L 手动舒适版"
+    },
+    {
+      "brandSlug": "hyundai",
+      "model": "伊兰特",
+      "english": null,
+      "years": [
+        "2008"
+      ],
+      "variants": [],
+      "count": 1,
+      "sample": "现代 伊兰特 2008款 1.6L 手动豪华贵雅版"
+    },
+    {
+      "brandSlug": "hyundai",
+      "model": "悦动",
+      "english": null,
+      "years": [
+        "2008",
+        "2010",
+        "2011",
+        "2020"
+      ],
+      "variants": [],
+      "count": 11,
+      "sample": "现代 悦动 2008款 1.6L AT GLS"
+    },
+    {
+      "brandSlug": "hyundai",
+      "model": "索纳塔",
+      "english": null,
+      "years": [
+        "2004",
+        "2011",
+        "2017"
+      ],
+      "variants": [],
+      "count": 10,
+      "sample": "现代 索纳塔 2011款 2.4L 自动尊贵版"
+    },
+    {
+      "brandSlug": "hyundai",
+      "model": "胜达",
+      "english": null,
+      "years": [
+        "2013"
+      ],
+      "variants": [],
+      "count": 4,
+      "sample": "现代 胜达 2013款 2.4L 自动四驱舒适型"
+    },
+    {
+      "brandSlug": "hyundai",
+      "model": "胜达经典",
+      "english": null,
+      "years": [
+        "2007",
+        "2008",
+        "2009",
+        "2010",
+        "2011",
+        "2012"
+      ],
+      "variants": [],
+      "count": 14,
+      "sample": "现代 胜达经典 2011款 2.4L 舒适版 七座四驱"
+    },
+    {
+      "brandSlug": "hyundai",
+      "model": "途胜",
+      "english": null,
+      "years": [
+        "2006",
+        "2009",
+        "2013"
+      ],
+      "variants": [],
+      "count": 10,
+      "sample": "现代 途胜 2009款 2.0L 手动四驱豪华型"
+    },
+    {
+      "brandSlug": "hyundai",
+      "model": "领翔",
+      "english": null,
+      "years": [
+        "2009"
+      ],
+      "variants": [],
+      "count": 1,
+      "sample": "现代 领翔 2009款 2.0L MT GL"
+    },
+    {
+      "brandSlug": "kia",
+      "model": "嘉华",
+      "english": null,
+      "years": [
+        "2006"
+      ],
+      "variants": [],
+      "count": 1,
+      "sample": "起亚 嘉华 2006款 2.7L GL"
+    },
+    {
+      "brandSlug": "kia",
+      "model": "智跑",
+      "english": null,
+      "years": [
+        "2011",
+        "2012"
+      ],
+      "variants": [],
+      "count": 4,
+      "sample": "起亚 智跑 2011款 2.0L 自动四驱版GLS"
+    },
+    {
+      "brandSlug": "kia",
+      "model": "欧菲莱斯",
+      "english": null,
+      "years": [
+        "2005"
+      ],
+      "variants": [],
+      "count": 1,
+      "sample": "起亚 欧菲莱斯 2005款 2.7 V6标配"
+    },
+    {
+      "brandSlug": "kia",
+      "model": "狮跑",
+      "english": null,
+      "years": [
+        "2007",
+        "2009",
+        "2011"
+      ],
+      "variants": [],
+      "count": 6,
+      "sample": "起亚 狮跑 2007款 2.0L 自动两驱版GL 国III"
+    },
+    {
+      "brandSlug": "kia",
+      "model": "索兰托",
+      "english": null,
+      "years": [
+        "2009"
+      ],
+      "variants": [],
+      "count": 2,
+      "sample": "起亚 索兰托 2009款 2.4L 舒适版"
+    },
+    {
+      "brandSlug": "kia",
+      "model": "赛拉图",
+      "english": null,
+      "years": [
+        "2006",
+        "2008",
+        "2010"
+      ],
+      "variants": [],
+      "count": 4,
+      "sample": "起亚 赛拉图 2008款 欧风 1.6 MT GL"
+    },
+    {
+      "brandSlug": "mitsubishi",
+      "model": "欧蓝德",
+      "english": null,
+      "years": [
+        "2008",
+        "2019"
+      ],
+      "variants": [
+        "进口"
+      ],
+      "count": 2,
+      "sample": "三菱 欧蓝德 2019款 2.4L 四驱致享版 7座 国V"
+    },
+    {
+      "brandSlug": "nissan",
+      "model": "天籁",
+      "english": null,
+      "years": [
+        "2005",
+        "2006",
+        "2007",
+        "2008",
+        "2009",
+        "2011",
+        "2013",
+        "2016"
+      ],
+      "variants": [],
+      "count": 23,
+      "sample": "日产 天籁 2008款 2.0L XL舒适版"
+    },
+    {
+      "brandSlug": "nissan",
+      "model": "奇骏",
+      "english": null,
+      "years": [
+        "2008",
+        "2010"
+      ],
+      "variants": [],
+      "count": 6,
+      "sample": "日产 奇骏 2010款 2.5L CVT豪华版 4WD"
+    },
+    {
+      "brandSlug": "nissan",
+      "model": "轩逸",
+      "english": null,
+      "years": [
+        "2006",
+        "2007",
+        "2009",
+        "2012",
+        "2016"
+      ],
+      "variants": [],
+      "count": 13,
+      "sample": "日产 轩逸 2012款 1.6XE 手动舒适版"
+    },
+    {
+      "brandSlug": "nissan",
+      "model": "逍客",
+      "english": null,
+      "years": [
+        "2008",
+        "2010",
+        "2011",
+        "2012"
+      ],
+      "variants": [],
+      "count": 9,
+      "sample": "日产 逍客 2011款 2.0XL 火 6MT 2WD"
+    },
+    {
+      "brandSlug": "nissan",
+      "model": "阳光",
+      "english": null,
+      "years": [
+        "2011",
+        "2012"
+      ],
+      "variants": [],
+      "count": 5,
+      "sample": "日产 阳光 2011款 1.5XE CVT舒适版"
+    },
+    {
+      "brandSlug": "nissan",
+      "model": "骊威",
+      "english": null,
+      "years": [
+        "2007",
+        "2010"
+      ],
+      "variants": [],
+      "count": 3,
+      "sample": "日产 骊威 2007款 1.6L 手动多能型"
+    },
+    {
+      "brandSlug": "nissan",
+      "model": "骐达",
+      "english": "TIIDA",
+      "years": [
+        "2005",
+        "2006",
+        "2008",
+        "2011"
+      ],
+      "variants": [],
+      "count": 5,
+      "sample": "日产 骐达TIIDA 2006款 1.6GE MT"
+    },
+    {
+      "brandSlug": "suzuki",
+      "model": "北斗星",
+      "english": null,
+      "years": [
+        "2012"
+      ],
+      "variants": [],
+      "count": 1,
+      "sample": "铃木 北斗星 2012款 创业版 1.0L 手动超越型"
+    },
+    {
+      "brandSlug": "suzuki",
+      "model": "浪迪",
+      "english": null,
+      "years": [
+        "2009"
+      ],
+      "variants": [],
+      "count": 1,
+      "sample": "铃木 浪迪 2009款 1.4L手动标准型 阳光版"
+    },
+    {
+      "brandSlug": "toyota",
+      "model": "凯美瑞",
+      "english": null,
+      "years": [
+        "2006",
+        "2007",
+        "2008",
+        "2009",
+        "2010",
+        "2012",
+        "2013",
+        "2016",
+        "2019"
+      ],
+      "variants": [],
+      "count": 34,
+      "sample": "丰田 凯美瑞 2009款 200G 豪华版"
+    },
+    {
+      "brandSlug": "toyota",
+      "model": "卡罗拉",
+      "english": null,
+      "years": [
+        "2007",
+        "2008",
+        "2009",
+        "2011",
+        "2012",
+        "2014",
+        "2016",
+        "2019",
+        "2021"
+      ],
+      "variants": [],
+      "count": 23,
+      "sample": "丰田 卡罗拉 2007款 1.8L 自动GLX-i"
+    },
+    {
+      "brandSlug": "toyota",
+      "model": "威驰",
+      "english": null,
+      "years": [
+        "2004",
+        "2005",
+        "2006",
+        "2008",
+        "2010"
+      ],
+      "variants": [],
+      "count": 10,
+      "sample": "丰田 威驰 2010款 1.3L GL-i标准版 AT"
+    },
+    {
+      "brandSlug": "toyota",
+      "model": "普拉多",
+      "english": null,
+      "years": [
+        "2010"
+      ],
+      "variants": [],
+      "count": 1,
+      "sample": "丰田 普拉多 2010款 4.0L 自动VX"
+    },
+    {
+      "brandSlug": "toyota",
+      "model": "汉兰达",
+      "english": null,
+      "years": [
+        "2009",
+        "2012"
+      ],
+      "variants": [],
+      "count": 3,
+      "sample": "丰田 汉兰达 2009款 2.7L 两驱5座运动版"
+    },
+    {
+      "brandSlug": "toyota",
+      "model": "雅力士",
+      "english": null,
+      "years": [
+        "2008",
+        "2011"
+      ],
+      "variants": [],
+      "count": 3,
+      "sample": "丰田 雅力士 2011款 1.6E 自动魅动版"
+    }
+  ]
+}

@@ -1,20 +1,27 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+  <!-- deploy-marker: parts-parallel-v1 stock-id-search-v1 dedicated-price-v1 catalog-search-v1 -->
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="theme-color" content="#ffffff">
 
-  <meta name="description" content="AsiaPower engine listings from half-cut inventory — real stock indexed by chassis number with EXW export pricing.">
-  <title data-i18n-title="engines.title">Engine Model Catalog | AsiaPower</title>
-    <link rel="preload" href="../assets/fonts/barlow-condensed-800-latin.woff2" as="font" type="font/woff2" crossorigin>
+  <meta name="description" content="Used engines export Africa — verified Toyota, Honda, Nissan and Hyundai stock from China half-cuts. EXW/CIF quotes for Ghana, Nigeria, Kenya and global B2B buyers.">
+  <title data-i18n-title="engines.title">Used Engines Export Africa | Engine Catalog | AsiaPower</title>
+    <link rel="preconnect" href="https://www.googletagmanager.com">
+  <link rel="preload" href="../assets/fonts/barlow-condensed-800-latin.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="preload" href="../assets/fonts/inter-latin.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="preload" href="/api/half-cuts/public" as="fetch" crossorigin>
   <link rel="stylesheet" href="../css/fonts.css?v=self-hosted-fonts-v1">
-<link rel="stylesheet" href="../css/styles.css?v=exw-badge-v1">
-  <link rel="stylesheet" href="../css/ebay-layout.css?v=67" data-ebay-layout="1">
+<link rel="stylesheet" href="../css/styles.css?v=lang-sync-v2">
+  <link rel="stylesheet" href="../css/ebay-layout.css?v=about-type-v2" data-ebay-layout="1">
   <link rel="icon" href="../assets/favicon.png" type="image/png">
   <link rel="canonical" href="https://asia-power.com/engines/">
+  <link rel="alternate" hreflang="en" href="https://asia-power.com/engines/">
+  <link rel="alternate" hreflang="zh-Hans" href="https://asia-power.com/engines/?lang=zh">
+  <link rel="alternate" hreflang="fr" href="https://asia-power.com/engines/?lang=fr">
+  <link rel="alternate" hreflang="ar" href="https://asia-power.com/engines/?lang=ar">
+  <link rel="alternate" hreflang="x-default" href="https://asia-power.com/engines/">
   <!-- Google tag (gtag.js) -->
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-PB2J3VRX5J"></script>
   <script>
@@ -28,16 +35,18 @@
   <meta property="og:image:height" content="630">
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:image" content="https://asia-power.com/assets/asia-power-og.svg">
-  <link rel="stylesheet" href="../css/asia-power-apple.css">
-</head>
+  </head>
 <body data-page="engines">
-  <div id="site-topbar"></div>
+      <!-- deploy-marker: auth-nav-sitewide-v1 auth-nav-once-v1 -->
+<div id="site-topbar"></div>
   <div id="site-header"></div>
   <main id="main-content">
-    <section class="page-hero page-hero--catalog page-hero--catalog-dark page-hero--engines">
+    <section class="page-hero page-hero--catalog page-hero--catalog-v4 page-hero--engines">
       <div class="container">
         <div class="page-hero__breadcrumb"><a href="../index.html" data-i18n="catalog.home">Home</a> / <span data-i18n="catalog.engines">Engines</span></div>
-        <h1 data-i18n="engines.title">Engine Model Catalog</h1>
+        <h1 data-i18n="engines.title">Used Engines Export Africa</h1>
+        <p class="page-hero__lead">Verified engines from half-cut stock · EXW Zhengzhou · Quote within 24 hours</p>
+        <a class="page-hero__wa" href="https://wa.me/8618603773077" target="_blank" rel="noopener noreferrer">WhatsApp for price</a>
       </div>
     </section>
     <section class="section section--gray">
@@ -45,217 +54,8 @@
         <div id="engine-catalog-root"></div>
       </div>
     </section>
-    <!-- engines-static-injected -->
 
-    <section class="section" style="padding:40px 0 20px;">
-      <div class="container">
-        <!--
-  ════════════════════════════════════════════════════════
-  AsiaPower — Engines 页面静态内容注入
-  用法：插入 engines/index.html 现有 <h1> 之后
-  ════════════════════════════════════════════════════════
--->
-
-<!-- 简介 -->
-<p style="font-size:16px;color:#6e6e73;line-height:1.75;max-width:640px;margin-bottom:16px;">
-  Low-mileage petrol, diesel and hybrid engines sourced from Japan, Korea and China.
-  All units inspected with engine number, mileage record and condition photos.
-  EXW & CIF pricing — single units or container lots.
-</p>
-
-<!-- 快捷筛选标签 -->
-<div style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:40px;">
-  <a href="#petrol" style="padding:6px 14px;border-radius:100px;background:#1d1d1f;color:#fff;font-size:12.5px;font-weight:600;text-decoration:none;">Petrol</a>
-  <a href="#diesel" style="padding:6px 14px;border-radius:100px;border:1.5px solid #d2d2d7;color:#1d1d1f;font-size:12.5px;font-weight:600;text-decoration:none;">Diesel</a>
-  <a href="#hybrid" style="padding:6px 14px;border-radius:100px;border:1.5px solid #d2d2d7;color:#1d1d1f;font-size:12.5px;font-weight:600;text-decoration:none;">Hybrid</a>
-  <a href="#toyota" style="padding:6px 14px;border-radius:100px;border:1.5px solid #d2d2d7;color:#1d1d1f;font-size:12.5px;font-weight:600;text-decoration:none;">Toyota</a>
-  <a href="#honda" style="padding:6px 14px;border-radius:100px;border:1.5px solid #d2d2d7;color:#1d1d1f;font-size:12.5px;font-weight:600;text-decoration:none;">Honda</a>
-  <a href="#nissan" style="padding:6px 14px;border-radius:100px;border:1.5px solid #d2d2d7;color:#1d1d1f;font-size:12.5px;font-weight:600;text-decoration:none;">Nissan</a>
-  <a href="#mazda" style="padding:6px 14px;border-radius:100px;border:1.5px solid #d2d2d7;color:#1d1d1f;font-size:12.5px;font-weight:600;text-decoration:none;">Mazda</a>
-  <a href="#isuzu-eng" style="padding:6px 14px;border-radius:100px;border:1.5px solid #d2d2d7;color:#1d1d1f;font-size:12.5px;font-weight:600;text-decoration:none;">Isuzu</a>
-</div>
-
-<!-- ── PETROL ── -->
-<section id="petrol" style="margin-bottom:52px;">
-  <h2 style="font-size:20px;font-weight:700;letter-spacing:-0.4px;color:#1d1d1f;margin-bottom:4px;">Petrol Engines</h2>
-  <p style="font-size:13px;color:#86868b;margin-bottom:18px;">Passenger car & light commercial — Toyota, Honda, Nissan, Mazda, Subaru, Mitsubishi</p>
-
-  <!-- Toyota -->
-  <h3 id="toyota" style="font-size:15px;font-weight:700;color:#1d1d1f;margin:20px 0 12px;padding-bottom:8px;border-bottom:1px solid #e8e8ed;">Toyota</h3>
-  <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:10px;margin-bottom:24px;">
-    <div style="background:#f5f5f7;border-radius:12px;padding:14px;">
-      <div style="font-size:14px;font-weight:700;color:#1d1d1f;margin-bottom:4px;">1NZ-FE</div>
-      <div style="font-size:12.5px;color:#6e6e73;">1.5L 4-cyl · Vitz / Yaris / Porte · VVT-i</div>
-    </div>
-    <div style="background:#f5f5f7;border-radius:12px;padding:14px;">
-      <div style="font-size:14px;font-weight:700;color:#1d1d1f;margin-bottom:4px;">2ZR-FE / FBE</div>
-      <div style="font-size:12.5px;color:#6e6e73;">1.8L 4-cyl · Auris / Blade · Dual VVT-i</div>
-    </div>
-    <div style="background:#f5f5f7;border-radius:12px;padding:14px;">
-      <div style="font-size:14px;font-weight:700;color:#1d1d1f;margin-bottom:4px;">1GR-FE</div>
-      <div style="font-size:12.5px;color:#6e6e73;">4.0L V6 · Prado 150 / Hilux Surf</div>
-    </div>
-    <div style="background:#f5f5f7;border-radius:12px;padding:14px;">
-      <div style="font-size:14px;font-weight:700;color:#1d1d1f;margin-bottom:4px;">2GR-FE</div>
-      <div style="font-size:12.5px;color:#6e6e73;">3.5L V6 · Camry / Avalon / Venza</div>
-    </div>
-    <div style="background:#f5f5f7;border-radius:12px;padding:14px;">
-      <div style="font-size:14px;font-weight:700;color:#1d1d1f;margin-bottom:4px;">3S-GE / GTE</div>
-      <div style="font-size:12.5px;color:#6e6e73;">2.0L · Altezza / Celica · JDM sport</div>
-    </div>
-    <div style="background:#f5f5f7;border-radius:12px;padding:14px;">
-      <div style="font-size:14px;font-weight:700;color:#1d1d1f;margin-bottom:4px;">K3-VE / K3-DE</div>
-      <div style="font-size:12.5px;color:#6e6e73;">1.0L · Daihatsu Mira / Move</div>
-    </div>
-  </div>
-
-  <!-- Honda -->
-  <h3 id="honda" style="font-size:15px;font-weight:700;color:#1d1d1f;margin:20px 0 12px;padding-bottom:8px;border-bottom:1px solid #e8e8ed;">Honda</h3>
-  <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:10px;margin-bottom:24px;">
-    <div style="background:#f5f5f7;border-radius:12px;padding:14px;">
-      <div style="font-size:14px;font-weight:700;color:#1d1d1f;margin-bottom:4px;">L15B VTEC</div>
-      <div style="font-size:12.5px;color:#6e6e73;">1.5L Turbo · Fit RS / Vezel · i-VTEC</div>
-    </div>
-    <div style="background:#f5f5f7;border-radius:12px;padding:14px;">
-      <div style="font-size:14px;font-weight:700;color:#1d1d1f;margin-bottom:4px;">K24A / K24Z</div>
-      <div style="font-size:12.5px;color:#6e6e73;">2.4L · Accord / Odyssey / Stream</div>
-    </div>
-    <div style="background:#f5f5f7;border-radius:12px;padding:14px;">
-      <div style="font-size:14px;font-weight:700;color:#1d1d1f;margin-bottom:4px;">J30A / J35A</div>
-      <div style="font-size:12.5px;color:#6e6e73;">3.0L / 3.5L V6 · Inspire / Legend</div>
-    </div>
-    <div style="background:#f5f5f7;border-radius:12px;padding:14px;">
-      <div style="font-size:14px;font-weight:700;color:#1d1d1f;margin-bottom:4px;">B16A / B18C</div>
-      <div style="font-size:12.5px;color:#6e6e73;">1.6/1.8L VTEC · Civic / Integra · Sport</div>
-    </div>
-  </div>
-
-  <!-- Nissan -->
-  <h3 id="nissan" style="font-size:15px;font-weight:700;color:#1d1d1f;margin:20px 0 12px;padding-bottom:8px;border-bottom:1px solid #e8e8ed;">Nissan</h3>
-  <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:10px;margin-bottom:24px;">
-    <div style="background:#f5f5f7;border-radius:12px;padding:14px;">
-      <div style="font-size:14px;font-weight:700;color:#1d1d1f;margin-bottom:4px;">HR15DE / HR16DE</div>
-      <div style="font-size:12.5px;color:#6e6e73;">1.5L / 1.6L · Note / Tiida / March</div>
-    </div>
-    <div style="background:#f5f5f7;border-radius:12px;padding:14px;">
-      <div style="font-size:14px;font-weight:700;color:#1d1d1f;margin-bottom:4px;">MR20DE</div>
-      <div style="font-size:12.5px;color:#6e6e73;">2.0L · Serena / X-Trail / Lafesta</div>
-    </div>
-    <div style="background:#f5f5f7;border-radius:12px;padding:14px;">
-      <div style="font-size:14px;font-weight:700;color:#1d1d1f;margin-bottom:4px;">VQ35DE</div>
-      <div style="font-size:12.5px;color:#6e6e73;">3.5L V6 · Murano / Teana / Fuga</div>
-    </div>
-    <div style="background:#f5f5f7;border-radius:12px;padding:14px;">
-      <div style="font-size:14px;font-weight:700;color:#1d1d1f;margin-bottom:4px;">RB25DET</div>
-      <div style="font-size:12.5px;color:#6e6e73;">2.5L Turbo · Skyline · JDM performance</div>
-    </div>
-  </div>
-
-  <!-- Mazda -->
-  <h3 id="mazda" style="font-size:15px;font-weight:700;color:#1d1d1f;margin:20px 0 12px;padding-bottom:8px;border-bottom:1px solid #e8e8ed;">Mazda</h3>
-  <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:10px;">
-    <div style="background:#f5f5f7;border-radius:12px;padding:14px;">
-      <div style="font-size:14px;font-weight:700;color:#1d1d1f;margin-bottom:4px;">PE-VPS / PE-VPH</div>
-      <div style="font-size:12.5px;color:#6e6e73;">2.0L SKYACTIV · Mazda3 / CX-5</div>
-    </div>
-    <div style="background:#f5f5f7;border-radius:12px;padding:14px;">
-      <div style="font-size:14px;font-weight:700;color:#1d1d1f;margin-bottom:4px;">PY-VPS</div>
-      <div style="font-size:12.5px;color:#6e6e73;">2.5L SKYACTIV · Mazda6 / CX-9</div>
-    </div>
-    <div style="background:#f5f5f7;border-radius:12px;padding:14px;">
-      <div style="font-size:14px;font-weight:700;color:#1d1d1f;margin-bottom:4px;">L3-VDT</div>
-      <div style="font-size:12.5px;color:#6e6e73;">2.3L MPS Turbo · Mazdaspeed</div>
-    </div>
-  </div>
-</section>
-
-<!-- ── DIESEL ── -->
-<section id="diesel" style="margin-bottom:52px;">
-  <h2 style="font-size:20px;font-weight:700;letter-spacing:-0.4px;color:#1d1d1f;margin-bottom:4px;">Diesel Engines</h2>
-  <p style="font-size:13px;color:#86868b;margin-bottom:18px;">SUV, pickup, van and commercial applications — 4WD market focus</p>
-  <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:10px;">
-    <div style="background:#f5f5f7;border-radius:12px;padding:14px;">
-      <div style="font-size:11px;font-weight:700;color:#86868b;text-transform:uppercase;letter-spacing:.05em;margin-bottom:4px;">Toyota</div>
-      <div style="font-size:14px;font-weight:700;color:#1d1d1f;margin-bottom:4px;">1KD-FTV / 2KD-FTV</div>
-      <div style="font-size:12.5px;color:#6e6e73;">3.0L / 2.5L D4-D · HiLux / Prado · Most popular export engine</div>
-    </div>
-    <div style="background:#f5f5f7;border-radius:12px;padding:14px;">
-      <div style="font-size:11px;font-weight:700;color:#86868b;text-transform:uppercase;letter-spacing:.05em;margin-bottom:4px;">Toyota</div>
-      <div style="font-size:14px;font-weight:700;color:#1d1d1f;margin-bottom:4px;">1HZ / 1HD-FTE</div>
-      <div style="font-size:12.5px;color:#6e6e73;">4.2L 6-cyl · Land Cruiser 80/100 · Legendary reliability</div>
-    </div>
-    <div style="background:#f5f5f7;border-radius:12px;padding:14px;">
-      <div style="font-size:11px;font-weight:700;color:#86868b;text-transform:uppercase;letter-spacing:.05em;margin-bottom:4px;">Nissan</div>
-      <div style="font-size:14px;font-weight:700;color:#1d1d1f;margin-bottom:4px;">ZD30DDTi</div>
-      <div style="font-size:12.5px;color:#6e6e73;">3.0L · Patrol Y61 / Navara D40</div>
-    </div>
-    <div style="background:#f5f5f7;border-radius:12px;padding:14px;">
-      <div style="font-size:11px;font-weight:700;color:#86868b;text-transform:uppercase;letter-spacing:.05em;margin-bottom:4px;">Isuzu</div>
-      <div style="font-size:14px;font-weight:700;color:#1d1d1f;margin-bottom:4px;" id="isuzu-eng">4JB1 / 4JJ1</div>
-      <div style="font-size:12.5px;color:#6e6e73;">2.8L / 3.0L · D-Max / MU-7 · High demand Africa</div>
-    </div>
-    <div style="background:#f5f5f7;border-radius:12px;padding:14px;">
-      <div style="font-size:11px;font-weight:700;color:#86868b;text-transform:uppercase;letter-spacing:.05em;margin-bottom:4px;">Mitsubishi</div>
-      <div style="font-size:14px;font-weight:700;color:#1d1d1f;margin-bottom:4px;">4D56 / 4M41</div>
-      <div style="font-size:12.5px;color:#6e6e73;">2.5L / 3.2L · Strada L200 / Pajero</div>
-    </div>
-    <div style="background:#f5f5f7;border-radius:12px;padding:14px;">
-      <div style="font-size:11px;font-weight:700;color:#86868b;text-transform:uppercase;letter-spacing:.05em;margin-bottom:4px;">Mazda / Ford</div>
-      <div style="font-size:14px;font-weight:700;color:#1d1d1f;margin-bottom:4px;">WL-T / WE-T</div>
-      <div style="font-size:12.5px;color:#6e6e73;">2.5L / 3.0L Turbo · Proceed / Ranger</div>
-    </div>
-  </div>
-</section>
-
-<!-- ── HYBRID ── -->
-<section id="hybrid" style="margin-bottom:52px;">
-  <h2 style="font-size:20px;font-weight:700;letter-spacing:-0.4px;color:#1d1d1f;margin-bottom:4px;">Hybrid Engines & Units</h2>
-  <p style="font-size:13px;color:#86868b;margin-bottom:18px;">Toyota THS-II · Honda IMA · Lexus — complete hybrid powertrains</p>
-  <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:10px;">
-    <div style="background:#f5f5f7;border-radius:12px;padding:14px;border:1.5px solid #b7e8c9;">
-      <div style="font-size:11px;font-weight:700;color:#1d8348;text-transform:uppercase;letter-spacing:.05em;margin-bottom:4px;">Toyota · Hybrid</div>
-      <div style="font-size:14px;font-weight:700;color:#1d1d1f;margin-bottom:4px;">2ZR-FXE (Prius)</div>
-      <div style="font-size:12.5px;color:#6e6e73;">1.8L + MG2 · Prius 30/50 · Complete hybrid powertrain</div>
-    </div>
-    <div style="background:#f5f5f7;border-radius:12px;padding:14px;border:1.5px solid #b7e8c9;">
-      <div style="font-size:11px;font-weight:700;color:#1d8348;text-transform:uppercase;letter-spacing:.05em;margin-bottom:4px;">Toyota · Hybrid</div>
-      <div style="font-size:14px;font-weight:700;color:#1d1d1f;margin-bottom:4px;">2AR-FXE (Camry HV)</div>
-      <div style="font-size:12.5px;color:#6e6e73;">2.5L Hybrid · Camry XV55 · THS-II system</div>
-    </div>
-    <div style="background:#f5f5f7;border-radius:12px;padding:14px;border:1.5px solid #b7e8c9;">
-      <div style="font-size:11px;font-weight:700;color:#1d8348;text-transform:uppercase;letter-spacing:.05em;margin-bottom:4px;">Lexus · Hybrid</div>
-      <div style="font-size:14px;font-weight:700;color:#1d1d1f;margin-bottom:4px;">2GR-FXS (RX450h)</div>
-      <div style="font-size:12.5px;color:#6e6e73;">3.5L V6 Hybrid · RX450h · Front + rear MG</div>
-    </div>
-    <div style="background:#f5f5f7;border-radius:12px;padding:14px;border:1.5px solid #b7e8c9;">
-      <div style="font-size:11px;font-weight:700;color:#1d8348;text-transform:uppercase;letter-spacing:.05em;margin-bottom:4px;">Honda · Hybrid</div>
-      <div style="font-size:14px;font-weight:700;color:#1d1d1f;margin-bottom:4px;">LEB / LEA (Accord HV)</div>
-      <div style="font-size:12.5px;color:#6e6e73;">2.0L IMA/i-MMD · Accord 9th gen</div>
-    </div>
-  </div>
-</section>
-
-<!-- CTA -->
-<div style="background:#f5f5f7;border:1.5px solid #e8e8ed;border-radius:20px;padding:32px;margin:40px 0;text-align:center;">
-  <p style="font-size:12px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:#86868b;margin-bottom:8px;">Request a Quote</p>
-  <h3 style="font-size:24px;font-weight:700;letter-spacing:-0.5px;color:#1d1d1f;margin-bottom:10px;">Need a specific engine code?</h3>
-  <p style="font-size:15px;color:#6e6e73;margin-bottom:24px;max-width:480px;margin-left:auto;margin-right:auto;">
-    Send your engine code, VIN or vehicle model. We confirm availability and send FOB/CIF pricing within 24 hours — usually same day for in-stock units.
-  </p>
-  <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap;">
-    <a href="https://wa.me/8618603773077?text=Engine%20Quote:%20" style="display:inline-flex;align-items:center;gap:8px;background:#25d366;color:#fff;border-radius:100px;padding:12px 22px;font-size:14px;font-weight:700;text-decoration:none;">
-      WhatsApp Quote
-    </a>
-    <a href="/contact.html" style="display:inline-flex;align-items:center;gap:8px;background:transparent;border:1.5px solid #1d1d1f;color:#1d1d1f;border-radius:100px;padding:11px 22px;font-size:14px;font-weight:600;text-decoration:none;">
-      Send Enquiry Form
-    </a>
-  </div>
-</div>
-
-      </div>
-    </section>
-
-<section class="cta-block">
+    <section class="cta-block">
       <div class="container cta-block__inner">
         <div><h2 data-i18n="catalog.browseByBrand">Browse by Brand</h2><p data-i18n="catalog.browseLeadEngines">Start from our brand directory for engines, gearboxes, chassis parts and half-cuts.</p></div>
         <a href="../brands.html" class="btn btn-accent" data-i18n="catalog.viewBrands">View Brands</a>
@@ -265,25 +65,27 @@
   <div id="site-footer"></div>
   <div id="site-whatsapp"></div>
   <div id="catalog-lead-status" class="half-cut-lead-status catalog-lead-status" role="alert" aria-live="assertive" hidden></div>
-  <script src="../js/path-utils.js?v=inventory-parts-v1"></script>
+  <script src="../js/path-utils.js?v=supplier-upload-search-v1"></script>
   <script src="../js/country-options.js?v=1"></script>
   <script src="../js/phone-utils.js?v=2"></script>
   <script src="../js/site-feedback.js?v=list-lead-modal-v1"></script>
   <script src="../js/catalog-lead-utils.js?v=1"></script>
   <script src="../js/config.js?v=contact-20260625"></script>
   <script src="../js/engine-directory.js?v=inventory-parts-v1"></script>
-  <script src="../js/seo.js"></script>
+  <script src="../js/seo.js?v=p3-seo-v1"></script>
   <script src="../js/half-cut-vin.js?v=phase3"></script>
   <script src="../js/half-cut-upload-layer.js?v=machinery-v2"></script>
   <script src="../js/half-cut-inventory-layer.js?v=qxb-title-v1"></script>
   <script src="../js/contact-redact.js?v=contact-redact-v1"></script>
-  <script src="../js/half-cut-directory.js?v=inventory-parts-v8"></script>
+  <script src="../js/catalog-search-aliases.js?v=catalog-search-v2"></script>
+  <script src="../js/half-cut-directory.js?v=catalog-search-v2"></script>
   <script src="../js/half-cut-media-api.js?v=security-v1"></script>
   <script src="../js/half-cut-inventory-store.js?v=catalog-perf-v1"></script>
   <script src="../js/half-cut-leads.js?v=parts-leads-v1"></script>
   <script src="../js/half-cut-gallery-lightbox.js?v=gallery-v7"></script>
-  <script src="../js/ebay-catalog-hub.js?v=inventory-parts-v9"></script>
-  <script src="../js/components.js?v=trust-bar-v1" defer></script>
+  <script src="../js/ebay-catalog-hub.js?v=catalog-search-v2"></script>
+  <script src="../js/components.js?v=about-type-v2" defer></script>
+  <script src="../js/inquiry-cta.js?v=cta-fix-v1"></script>
   <script src="../js/main.js?v=inventory-parts-v3" defer></script>
   <script src="../js/seo-engines.js" defer></script>
   <script type="application/ld+json">
@@ -314,22 +116,6 @@
         "publisher": { "@id": "https://asia-power.com/#organization" }
       }
     ]
-  }
-  </script>
-  <script type="application/ld+json">
-  {
-    "@context": "https://schema.org",
-    "@type": "CollectionPage",
-    "url": "https://asia-power.com/engines/",
-    "name": "Engine Catalog | JDM & Korean Engines for Global Export | AsiaPower",
-    "description": "Petrol, diesel and hybrid engines by brand. Toyota, Honda, Nissan, Mazda, Isuzu. Low-mileage JDM engines exported worldwide.",
-    "breadcrumb": {
-      "@type": "BreadcrumbList",
-      "itemListElement": [
-        { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://asia-power.com/" },
-        { "@type": "ListItem", "position": 2, "name": "Engines", "item": "https://asia-power.com/engines/" }
-      ]
-    }
   }
   </script>
 </body>

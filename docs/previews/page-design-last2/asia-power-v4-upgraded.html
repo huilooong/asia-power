@@ -1,0 +1,1150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AsiaPower — v4 全站升级版</title>
+<style>
+/* ═══════════════════════════════════
+   TOKENS — Apple DNA (v4 原版)
+═══════════════════════════════════ */
+:root {
+  --bg:      #ffffff;
+  --bg2:     #f5f5f7;
+  --bg3:     #fbfbfd;
+  --t1:      #1d1d1f;
+  --t2:      #6e6e73;
+  --t3:      #86868b;
+  --b1:      #d2d2d7;
+  --b2:      #e8e8ed;
+  --gold:    #d4880a;
+  --gold-bg: #fef3dc;
+  --green:   #1d8348;
+  --green-bg:#e9f7ee;
+  --blue:    #0066cc;
+  --r-sm:    8px;
+  --r-md:    12px;
+  --r-lg:    18px;
+  --r-xl:    24px;
+  --shadow-xs: 0 1px 3px rgba(0,0,0,.06);
+  --shadow-sm: 0 2px 8px rgba(0,0,0,.08);
+  --shadow-md: 0 4px 16px rgba(0,0,0,.08);
+  --max: 1200px;
+  --font: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Helvetica Neue', Arial, 'PingFang SC', sans-serif;
+}
+
+*,*::before,*::after { margin:0; padding:0; box-sizing:border-box }
+html { font-size:16px; -webkit-font-smoothing:antialiased; -moz-osx-font-smoothing:grayscale }
+body { font-family:var(--font); background:var(--bg); color:var(--t1); line-height:1.5 }
+a { color:inherit; text-decoration:none }
+button { font-family:var(--font); cursor:pointer }
+img { display:block; max-width:100% }
+
+/* ═══════════════════════════════════
+   DEMO SHELL
+═══════════════════════════════════ */
+.demo-bar {
+  position:sticky; top:0; z-index:9999;
+  background:rgba(255,255,255,.85);
+  backdrop-filter:saturate(180%) blur(12px);
+  -webkit-backdrop-filter:saturate(180%) blur(12px);
+  border-bottom:1px solid var(--b2);
+  padding:10px 24px;
+  display:flex; align-items:center; justify-content:space-between;
+}
+.demo-bar-label { font-size:12px; color:var(--t2); font-weight:500 }
+.demo-bar-label span { color:var(--gold); font-weight:700 }
+.tabs { display:flex; gap:3px }
+.tab {
+  padding:7px 16px; border-radius:100px;
+  font-size:12px; font-weight:600;
+  border:none; background:transparent; color:var(--t2);
+  cursor:pointer; transition:all .12s;
+}
+.tab.on { background:var(--t1); color:#fff }
+.tab:hover:not(.on) { background:var(--bg2); color:var(--t1) }
+.pv { display:none }
+.pv.on { display:block }
+
+/* ═══════════════════════════════════
+   NAV
+═══════════════════════════════════ */
+.ap-nav {
+  position:sticky; top:41px; z-index:90;
+  background:rgba(255,255,255,.82);
+  backdrop-filter:saturate(180%) blur(20px);
+  -webkit-backdrop-filter:saturate(180%) blur(20px);
+  border-bottom:1px solid var(--b2);
+}
+.nav-w {
+  max-width:var(--max); margin:auto;
+  padding:0 24px; height:52px;
+  display:flex; align-items:center; gap:32px;
+}
+.ap-logo { font-size:18px; font-weight:800; letter-spacing:-.4px; flex-shrink:0; color:var(--t1) }
+.ap-logo span { color:var(--gold) }
+.nav-links { display:flex; gap:0; flex:1; justify-content:center }
+.nav-links a {
+  font-size:13px; font-weight:500; color:var(--t2);
+  padding:0 14px; height:52px;
+  display:flex; align-items:center;
+  border-bottom:2px solid transparent;
+  transition:all .12s;
+}
+.nav-links a:hover { color:var(--t1) }
+.nav-links a.on { color:var(--t1); border-bottom-color:var(--t1) }
+.nav-right { display:flex; align-items:center; gap:12px; flex-shrink:0 }
+.lang-sw { display:flex; gap:0 }
+.lang-sw a { font-size:12px; color:var(--t2); padding:4px 7px; transition:color .12s }
+.lang-sw a.on, .lang-sw a:hover { color:var(--t1) }
+.lang-sw a + a { border-left:1px solid var(--b1) }
+.nav-wa {
+  display:inline-flex; align-items:center; gap:6px;
+  background:#25d366; color:#fff;
+  font-size:12.5px; font-weight:700;
+  padding:8px 16px; border-radius:100px;
+  transition:opacity .12s;
+}
+.nav-wa:hover { opacity:.88 }
+.nav-wa svg { width:13px; height:13px; fill:white }
+
+/* ═══════════════════════════════════
+   HOME — HERO
+   升级：h1 更大，letter-spacing 更紧，
+   徽章更精炼
+═══════════════════════════════════ */
+.hero {
+  background:var(--bg2);
+  border-bottom:1px solid var(--b2);
+  padding:96px 24px 80px;   /* ↑ 原 88px/72px */
+  text-align:center;
+}
+.hero-badge {
+  display:inline-flex; align-items:center; gap:7px;
+  background:var(--bg); border:1px solid var(--b1);
+  color:var(--t2); font-size:12px; font-weight:500;
+  padding:6px 14px; border-radius:100px; margin-bottom:28px;
+}
+.hero-badge .dot { width:6px; height:6px; border-radius:50%; background:#34c759; box-shadow:0 0 0 3px rgba(52,199,89,.15) }
+.hero h1 {
+  font-size:clamp(44px,6.5vw,80px);   /* ↑ 原 40/6vw/72 */
+  font-weight:700;
+  letter-spacing:-3px;                 /* ↑ 原 -2.5px */
+  line-height:1.04;
+  color:var(--t1);
+  max-width:820px; margin:0 auto 20px;
+}
+.hero h1 em { font-style:normal; color:var(--gold) }
+.hero-sub {
+  font-size:clamp(17px,2vw,22px);
+  color:var(--t2); font-weight:400;
+  line-height:1.65; max-width:600px; margin:0 auto 40px;
+}
+.hero-actions { display:flex; gap:12px; justify-content:center; flex-wrap:wrap; margin-bottom:40px }
+.btn-main {
+  display:inline-flex; align-items:center; gap:7px;
+  background:var(--t1); color:#fff;
+  font-size:14px; font-weight:600;
+  padding:13px 26px; border-radius:100px;
+  transition:opacity .12s; border:none;
+}
+.btn-main:hover { opacity:.82 }
+.btn-outline {
+  display:inline-flex; align-items:center; gap:7px;
+  background:transparent; border:1.5px solid var(--t1); color:var(--t1);
+  font-size:14px; font-weight:600;
+  padding:12px 24px; border-radius:100px;
+  transition:all .12s;
+}
+.btn-outline:hover { background:var(--t1); color:#fff }
+
+/* Hero search */
+.hero-search-wrap { max-width:600px; margin:0 auto 20px }
+.hero-search {
+  display:flex; background:#fff;
+  border:1.5px solid var(--b1);
+  border-radius:var(--r-lg); overflow:hidden;
+  box-shadow:var(--shadow-sm); transition:border-color .15s;
+}
+.hero-search:focus-within { border-color:#b0b0b5 }
+.hero-search input {
+  flex:1; border:none; outline:none;
+  padding:14px 18px; font-size:15px;
+  color:var(--t1); font-family:var(--font); background:transparent;
+}
+.hero-search input::placeholder { color:var(--t3) }
+.hero-search-btn {
+  background:var(--t1); color:#fff; border:none;
+  padding:0 22px; font-size:14px; font-weight:600;
+  font-family:var(--font);
+  display:flex; align-items:center; gap:7px;
+  transition:opacity .12s;
+}
+.hero-search-btn:hover { opacity:.82 }
+.popular-wrap { text-align:center }
+.popular-label { font-size:12px; color:var(--t3); margin-bottom:8px }
+.popular-tags { display:flex; gap:7px; justify-content:center; flex-wrap:wrap }
+.ptag {
+  font-size:12.5px; color:var(--t2);
+  padding:5px 13px; border-radius:100px;
+  border:1.5px solid var(--b1); background:var(--bg);
+  transition:all .12s; cursor:pointer;
+}
+.ptag:hover { border-color:var(--t2); color:var(--t1) }
+
+/* STATS ROW */
+.stats-row {
+  display:grid; grid-template-columns:repeat(4,1fr);
+  max-width:var(--max); margin:0 auto;
+  border:1px solid var(--b2); border-radius:var(--r-xl);
+  background:#fff; overflow:hidden;
+  box-shadow:var(--shadow-xs);
+}
+.stat { padding:28px 24px; text-align:center; border-right:1px solid var(--b2) }
+.stat:last-child { border-right:none }
+.stat-n { font-size:34px; font-weight:700; letter-spacing:-1.5px; color:var(--t1); line-height:1 }
+.stat-n em { font-style:normal; color:var(--gold) }
+.stat-l { font-size:13px; color:var(--t2); margin-top:4px }
+
+/* SECTION共用 */
+.section { max-width:var(--max); margin:0 auto; padding:72px 24px }
+.sec-kicker { font-size:11px; font-weight:600; letter-spacing:.08em; text-transform:uppercase; color:var(--t3); margin-bottom:8px }
+.sec-h { font-size:clamp(26px,3vw,38px); font-weight:700; letter-spacing:-1px; color:var(--t1); margin-bottom:8px }
+.sec-sub { font-size:16px; color:var(--t2); margin-bottom:36px; line-height:1.6 }
+.sec-head { display:flex; align-items:flex-end; justify-content:space-between; margin-bottom:28px }
+.see-all { font-size:13px; font-weight:600; color:var(--blue); display:flex; align-items:center; gap:4px }
+.see-all:hover { text-decoration:underline }
+
+/* CATEGORIES */
+.cat-grid { display:grid; grid-template-columns:repeat(5,1fr); gap:10px }
+.cat-card {
+  background:#fff; border:1.5px solid var(--b2);
+  border-radius:var(--r-lg); padding:24px 16px;
+  text-align:center; cursor:pointer; transition:all .18s;
+}
+.cat-card:hover { border-color:var(--b1); box-shadow:var(--shadow-md); transform:translateY(-2px) }
+.cat-card.on { border-color:var(--t1); background:var(--t1) }
+.cat-card.on .cat-ic { background:rgba(255,255,255,.15); border-color:rgba(255,255,255,.2) }
+.cat-card.on .cat-ic svg { stroke:#fff }
+.cat-card.on .cat-n { color:#fff }
+.cat-card.on .cat-c { color:rgba(255,255,255,.6) }
+.cat-ic { width:48px; height:48px; border-radius:14px; margin:0 auto 12px; background:var(--bg2); border:1.5px solid var(--b2); display:grid; place-items:center }
+.cat-ic svg { width:22px; height:22px; stroke:var(--t1); fill:none; stroke-width:1.7 }
+.cat-n { font-size:13px; font-weight:600; color:var(--t1); margin-bottom:3px }
+.cat-c { font-size:11.5px; color:var(--t3) }
+
+/* ═══════════════════════════════════
+   FEATURED SHOWCASE — 新增
+   全宽横向大卡片，突出单品
+═══════════════════════════════════ */
+.showcase-wrap {
+  max-width:var(--max); margin:0 auto;
+  padding:0 24px 72px;
+}
+.showcase-card {
+  background:var(--bg2);
+  border:1.5px solid var(--b2);
+  border-radius:var(--r-xl);
+  overflow:hidden;
+  display:grid; grid-template-columns:1fr 360px;
+  transition:box-shadow .2s;
+}
+.showcase-card:hover { box-shadow:var(--shadow-md) }
+.sc-img {
+  min-height:320px;
+  background:linear-gradient(90deg,#ececec 25%,#e4e4e4 37%,#ececec 63%);
+  background-size:800px 100%; animation:sk 1.6s ease-in-out infinite;
+  position:relative; display:flex; align-items:center; justify-content:center;
+}
+.sc-img.rp { background:#e2e6ea; animation:none }
+@keyframes sk { 0%{background-position:-600px 0} 100%{background-position:600px 0} }
+.sc-img-ph { opacity:.15; display:flex; flex-direction:column; align-items:center; gap:6px }
+.sc-img-ph svg { width:36px; height:36px; stroke:var(--t2); fill:none; stroke-width:1.5 }
+.sc-img-ph span { font-size:9px; letter-spacing:.09em; text-transform:uppercase; color:var(--t3) }
+.sc-badges { position:absolute; top:14px; left:14px; display:flex; gap:7px }
+.sc-badge {
+  display:inline-flex; align-items:center; gap:5px;
+  font-size:11px; font-weight:700;
+  padding:5px 11px; border-radius:100px;
+}
+.sc-badge.vf { background:var(--green-bg); color:var(--green); border:1px solid #b7e8c9 }
+.sc-badge.vid { background:rgba(0,0,0,.45); color:#fff; backdrop-filter:blur(4px) }
+.sc-badge.vid::before { content:'▶ '; font-size:8px; color:#fbbf24 }
+.sc-hc-tag { position:absolute; bottom:12px; left:14px; background:rgba(0,0,0,.4); color:rgba(255,255,255,.9); font-size:9px; font-weight:700; padding:3px 9px; border-radius:5px; letter-spacing:.04em }
+
+.sc-body {
+  padding:32px 32px;
+  border-left:1px solid var(--b2);
+  display:flex; flex-direction:column; justify-content:space-between;
+  background:#fff;
+}
+.sc-kicker { font-size:11px; font-weight:700; letter-spacing:.06em; text-transform:uppercase; color:var(--t3); margin-bottom:7px }
+.sc-name { font-size:20px; font-weight:700; letter-spacing:-.4px; line-height:1.3; margin-bottom:18px }
+.sc-specs { display:flex; flex-direction:column; gap:0; margin-bottom:22px }
+.sc-spec {
+  display:flex; align-items:center; justify-content:space-between;
+  padding:10px 0; border-bottom:1px solid var(--b2);
+}
+.sc-spec:first-child { border-top:1px solid var(--b2) }
+.sc-spec-k { font-size:12.5px; color:var(--t2) }
+.sc-spec-v { font-size:12.5px; font-weight:600; color:var(--t1) }
+.sc-spec-v.mono { font-family:'SF Mono',Menlo,monospace; font-size:11px; color:var(--t2); font-weight:400 }
+.sc-price-area { margin-top:auto }
+.sc-price { font-size:28px; font-weight:700; letter-spacing:-.8px; line-height:1; margin-bottom:4px }
+.sc-exw { font-size:10px; font-weight:700; background:var(--gold-bg); color:var(--gold); border:1px solid #f9d68a; padding:2px 8px; border-radius:5px; margin-left:5px }
+.sc-note { font-size:12.5px; color:var(--t2); margin-bottom:16px }
+.sc-ctas { display:flex; gap:8px }
+.sc-wa {
+  flex:1; display:flex; align-items:center; justify-content:center; gap:7px;
+  background:#25d366; color:#fff; border:none;
+  font-size:13.5px; font-weight:700;
+  padding:12px; border-radius:var(--r-md);
+  transition:opacity .12s;
+}
+.sc-wa:hover { opacity:.88 }
+.sc-wa svg { width:15px; height:15px; fill:white; flex-shrink:0 }
+.sc-view {
+  flex:1; display:flex; align-items:center; justify-content:center;
+  background:transparent; border:1.5px solid var(--b1); color:var(--t1);
+  font-size:13.5px; font-weight:600;
+  padding:12px; border-radius:var(--r-md);
+  transition:all .12s;
+}
+.sc-view:hover { border-color:var(--t1) }
+
+/* PRODUCT CARDS */
+.prod-grid { display:grid; grid-template-columns:repeat(4,1fr); gap:12px }
+.pcard {
+  background:#fff; border:1.5px solid var(--b2);
+  border-radius:var(--r-lg); overflow:hidden;
+  transition:all .2s; cursor:pointer;
+}
+.pcard:hover { border-color:var(--b1); box-shadow:var(--shadow-md); transform:translateY(-3px) }
+.pc-img {
+  aspect-ratio:4/3; position:relative;
+  background:linear-gradient(90deg,#f0f0f0 25%,#e8e8e8 37%,#f0f0f0 63%);
+  background-size:600px 100%; animation:sk 1.5s ease-in-out infinite;
+  display:flex; align-items:center; justify-content:center;
+  border-bottom:1px solid var(--b2);
+}
+.pc-img.real { background:var(--bg2); animation:none }
+.pc-hc {
+  position:absolute; top:8px; left:8px;
+  background:rgba(0,0,0,.45); color:rgba(255,255,255,.9);
+  font-size:9px; font-weight:700; padding:3px 8px; border-radius:5px;
+  letter-spacing:.04em;
+}
+.pc-video {
+  position:absolute; top:8px; right:8px;
+  background:rgba(0,0,0,.5); color:#fff;
+  font-size:9.5px; font-weight:700; padding:3px 8px; border-radius:5px;
+  display:flex; align-items:center; gap:4px;
+}
+.pc-video::before { content:'▶'; font-size:7px; color:#fbbf24 }
+.pc-ph { opacity:.2; display:flex; flex-direction:column; align-items:center; gap:5px }
+.pc-ph svg { width:26px; height:26px; stroke:#6e6e73; fill:none; stroke-width:1.5 }
+.pc-ph span { font-size:9px; letter-spacing:.08em; text-transform:uppercase; color:var(--t3) }
+.pc-body { padding:14px 15px }
+.pc-make { font-size:10.5px; font-weight:700; letter-spacing:.06em; text-transform:uppercase; color:var(--t3); margin-bottom:3px }
+.pc-name {
+  font-size:13.5px; font-weight:600; color:var(--t1);
+  display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden;
+  line-height:1.4; min-height:38px; margin-bottom:9px; letter-spacing:-.1px;
+}
+.pc-tags { display:flex; gap:5px; margin-bottom:10px; flex-wrap:wrap }
+.ptg {
+  font-size:10.5px; font-weight:500; color:var(--t2);
+  background:var(--bg2); border:1px solid var(--b2);
+  padding:2.5px 8px; border-radius:5px;
+}
+/* 升级：Video 标签绿色 */
+.ptg.v { background:var(--green-bg); color:var(--green); border-color:#b7e8c9; font-weight:700 }
+.pc-foot {
+  display:flex; align-items:center; justify-content:space-between;
+  padding-top:10px; border-top:1px solid var(--b2);
+}
+.pc-price { font-size:17px; font-weight:700; color:var(--t1); letter-spacing:-.3px }
+.pc-exw {
+  font-size:9.5px; font-weight:600; color:var(--gold);
+  background:var(--gold-bg); border:1px solid #f9d68a;
+  padding:2px 7px; border-radius:5px; margin-left:4px; letter-spacing:.03em;
+}
+.btn-q {
+  font-size:11.5px; font-weight:700;
+  background:var(--t1); color:#fff;
+  padding:6px 13px; border-radius:100px; border:none;
+  transition:opacity .12s;
+}
+.btn-q:hover { opacity:.78 }
+
+/* TRUST */
+.trust {
+  background:var(--bg2);
+  border-top:1px solid var(--b2); border-bottom:1px solid var(--b2);
+  padding:48px 24px;
+}
+.trust-w { max-width:var(--max); margin:0 auto; display:grid; grid-template-columns:repeat(4,1fr); gap:0 }
+.ti { text-align:center; padding:0 24px; border-right:1px solid var(--b1) }
+.ti:last-child { border-right:none }
+.ti-ic { width:38px; height:38px; border-radius:11px; margin:0 auto 11px; background:#fff; border:1.5px solid var(--b2); display:grid; place-items:center }
+.ti-ic svg { width:17px; height:17px; stroke:var(--t1); fill:none; stroke-width:1.8 }
+.ti-n { font-size:30px; font-weight:700; letter-spacing:-1.5px; color:var(--t1); line-height:1; margin-bottom:4px }
+.ti-n em { font-style:normal; color:var(--gold) }
+.ti-l { font-size:13px; color:var(--t2) }
+
+/* FOOTER */
+.ap-footer { background:var(--bg2); border-top:1px solid var(--b2); padding:48px 24px 24px }
+.footer-w { max-width:var(--max); margin:auto }
+.footer-g { display:grid; grid-template-columns:1.5fr 1fr 1fr 1.2fr; gap:40px; margin-bottom:40px }
+.footer-brand .ap-logo { display:block; margin-bottom:12px }
+.footer-brand p { font-size:13px; color:var(--t2); line-height:1.7; max-width:260px }
+.footer-col h4 { font-size:11.5px; font-weight:700; letter-spacing:.04em; text-transform:uppercase; color:var(--t2); margin-bottom:14px }
+.footer-col ul { list-style:none }
+.footer-col li { margin-bottom:8px }
+.footer-col a { font-size:13.5px; color:var(--t2); transition:color .12s }
+.footer-col a:hover { color:var(--t1) }
+.footer-cta-box { background:#fff; border:1.5px solid var(--b2); border-radius:var(--r-lg); padding:18px }
+.footer-cta-box h4 { font-size:13px; font-weight:700; color:var(--t1); margin-bottom:8px }
+.footer-cta-box p { font-size:12.5px; color:var(--t2); margin-bottom:12px; line-height:1.6 }
+.btn-wa-f {
+  display:flex; align-items:center; justify-content:center; gap:7px;
+  width:100%; background:#25d366; color:#fff;
+  font-size:13px; font-weight:700; padding:10px; border-radius:9px; border:none;
+  transition:opacity .12s;
+}
+.btn-wa-f:hover { opacity:.88 }
+.footer-btm { border-top:1px solid var(--b2); padding-top:20px; display:flex; justify-content:space-between; font-size:12px; color:var(--t3) }
+
+/* ═══════════════════════════════════
+   LISTING PAGE
+═══════════════════════════════════ */
+.page-head { background:var(--bg2); border-bottom:1px solid var(--b2); padding:32px 24px }
+.page-head-w { max-width:var(--max); margin:auto }
+.breadcrumb { font-size:12.5px; color:var(--t2); margin-bottom:8px; display:flex; align-items:center; gap:6px }
+.breadcrumb a { color:var(--blue) }
+.breadcrumb .s { color:var(--b1) }
+.page-head h1 { font-size:28px; font-weight:700; letter-spacing:-.6px; margin-bottom:3px }
+.page-head p { font-size:14px; color:var(--t2) }
+
+.listing-layout { max-width:var(--max); margin:0 auto; padding:24px; display:grid; grid-template-columns:240px 1fr; gap:24px }
+
+/* Sidebar */
+.sb { position:sticky; top:95px; align-self:start }
+.sb-block { margin-bottom:8px }
+.sb-block h3 { font-size:11px; font-weight:700; letter-spacing:.06em; text-transform:uppercase; color:var(--t3); padding:0 4px; margin-bottom:10px }
+.sb-cats { display:flex; flex-direction:column; gap:2px }
+.sc {
+  display:flex; align-items:center; gap:10px;
+  padding:9px 12px; border-radius:var(--r-sm);
+  cursor:pointer; border:1.5px solid transparent;
+  transition:all .12s; text-decoration:none;
+}
+.sc:hover { background:var(--bg2) }
+.sc.on { background:var(--bg2); border-color:var(--b2) }
+.sc-ico { width:30px; height:30px; border-radius:8px; background:var(--bg3); border:1px solid var(--b2); display:grid; place-items:center; flex-shrink:0 }
+.sc-ico svg { width:14px; height:14px; stroke:var(--t2); fill:none; stroke-width:1.8 }
+.sc.on .sc-ico svg { stroke:var(--t1) }
+.sc-n { flex:1; font-size:13px; font-weight:500; color:var(--t1) }
+.sc.on .sc-n { font-weight:700 }
+.sc-c { font-size:12px; color:var(--t3) }
+.sb-filters { border-top:1px solid var(--b2); padding-top:14px; margin-top:14px }
+.sb-filters h3 { margin-bottom:10px }
+.fo { display:flex; align-items:center; gap:9px; padding:7px 8px; border-radius:var(--r-sm); cursor:pointer; transition:background .1s }
+.fo:hover { background:var(--bg2) }
+.fo-box { width:16px; height:16px; border-radius:4px; border:1.5px solid var(--b1); flex-shrink:0; display:grid; place-items:center }
+.fo.ck .fo-box { background:var(--t1); border-color:var(--t1) }
+.fo.ck .fo-box::after { content:'✓'; font-size:9px; color:#fff; font-weight:800 }
+.fo-n { flex:1; font-size:13px; color:var(--t1) }
+.fo-c { font-size:12px; color:var(--t3) }
+
+/* Listing main */
+.lm-bar { display:flex; align-items:center; justify-content:space-between; margin-bottom:14px; padding-bottom:12px; border-bottom:1px solid var(--b2) }
+.lm-info { font-size:13px; color:var(--t2) }
+.lm-info strong { color:var(--t1) }
+.sort-sel { background:#fff; border:1.5px solid var(--b1); color:var(--t1); padding:7px 12px; border-radius:var(--r-sm); font-size:13px; font-family:var(--font) }
+.act-filters { display:flex; gap:6px; flex-wrap:wrap; margin-bottom:14px }
+.af { display:inline-flex; align-items:center; gap:5px; font-size:12px; font-weight:600; background:var(--bg2); border:1px solid var(--b1); color:var(--t2); padding:4px 10px; border-radius:100px }
+.af x { cursor:pointer; opacity:.5; font-size:10px }
+
+/* Listing rows */
+.lrows { display:flex; flex-direction:column; gap:8px }
+.lr {
+  background:#fff; border:1.5px solid var(--b2);
+  border-radius:var(--r-lg); overflow:hidden;
+  display:grid; grid-template-columns:220px 1fr;
+  transition:all .2s; cursor:pointer;
+}
+.lr:hover { border-color:var(--b1); box-shadow:var(--shadow-md) }
+.lr-img {
+  background:linear-gradient(90deg,#f0f0f0 25%,#e8e8e8 37%,#f0f0f0 63%);
+  background-size:600px 100%; animation:sk 1.5s ease-in-out infinite;
+  border-right:1px solid var(--b2); position:relative;
+  display:flex; align-items:center; justify-content:center;
+  min-height:160px;
+}
+.lr-img.rp { background:var(--bg2); animation:none }
+.lr-hc { position:absolute; top:9px; left:9px; background:rgba(0,0,0,.4); color:rgba(255,255,255,.9); font-size:8.5px; font-weight:700; padding:3px 7px; border-radius:4px; letter-spacing:.04em }
+.lr-body { padding:16px 18px; display:flex; flex-direction:column; justify-content:space-between }
+.lr-make { font-size:10.5px; font-weight:700; letter-spacing:.06em; text-transform:uppercase; color:var(--t3); margin-bottom:3px }
+.lr-name { font-size:15px; font-weight:700; color:var(--t1); margin-bottom:7px; letter-spacing:-.2px; line-height:1.3 }
+.lr-tags { display:flex; gap:5px; flex-wrap:wrap; margin-bottom:9px }
+.lr-price { font-size:22px; font-weight:700; letter-spacing:-.5px; color:var(--t1); margin-bottom:4px }
+.lr-exw { font-size:10px; font-weight:600; color:var(--gold); background:var(--gold-bg); border:1px solid #f9d68a; padding:2px 8px; border-radius:5px; margin-left:5px }
+.lr-specs { font-size:12.5px; color:var(--t2); display:flex; gap:12px; flex-wrap:wrap; margin-bottom:12px }
+.lr-bot { display:flex; align-items:center; justify-content:space-between; padding-top:10px; border-top:1px solid var(--b2) }
+.lr-vin { font-size:11px; color:var(--t3); font-family:'SF Mono',monospace; letter-spacing:.02em }
+.lr-ctas { display:flex; gap:6px }
+
+/* 升级：WhatsApp 按钮默认绿色底，更醒目 */
+.lr-wa {
+  display:flex; align-items:center; gap:5px;
+  background:var(--green-bg); color:var(--green);
+  border:1px solid #b7e8c9;
+  padding:7px 14px; border-radius:100px;
+  font-size:11.5px; font-weight:700;
+  transition:all .15s;
+}
+.lr-wa:hover { background:#25d366; color:#fff; border-color:#25d366 }
+.lr-get {
+  background:var(--t1); color:#fff; border:none;
+  padding:7px 16px; border-radius:100px;
+  font-size:11.5px; font-weight:700;
+  transition:opacity .12s;
+}
+.lr-get:hover { opacity:.78 }
+
+/* ═══════════════════════════════════
+   DETAIL PAGE
+═══════════════════════════════════ */
+.detail-layout { max-width:var(--max); margin:0 auto; padding:24px 24px 60px; display:grid; grid-template-columns:1fr 400px; gap:32px; align-items:start }
+
+.gallery-main-img {
+  aspect-ratio:4/3; background:var(--bg2);
+  border:1.5px solid var(--b2); border-radius:var(--r-xl);
+  margin-bottom:10px; display:flex; align-items:center; justify-content:center;
+  position:relative; overflow:hidden;
+}
+.gm-inner { width:100%; height:100%; background:var(--bg2); display:flex; align-items:center; justify-content:center }
+.g-overlay { position:absolute; top:12px; right:12px; display:flex; flex-direction:column; gap:7px }
+.g-badge { display:inline-flex; align-items:center; gap:5px; padding:6px 12px; border-radius:100px; font-size:11.5px; font-weight:700 }
+.g-badge.v { background:var(--green-bg); color:var(--green); border:1px solid #b7e8c9 }
+.g-badge.vid { background:rgba(0,0,0,.5); color:#fff; backdrop-filter:blur(6px) }
+.g-badge.vid::before { content:'▶ '; font-size:8px; color:#fbbf24 }
+
+.gallery-thumbs { display:flex; gap:8px }
+.gth {
+  flex:1; aspect-ratio:4/3; border-radius:var(--r-md);
+  background:var(--bg2); border:1.5px solid var(--b2);
+  cursor:pointer; transition:all .12s;
+  display:flex; align-items:center; justify-content:center;
+  flex-direction:column; gap:4px;
+}
+.gth:hover { border-color:var(--b1) }
+.gth.on { border-color:var(--t1) }
+.gth span { font-size:11px; color:var(--t3) }
+.gth strong { font-size:9px; text-align:center; color:var(--t2) }
+
+.det-make { font-size:12px; font-weight:600; letter-spacing:.04em; text-transform:uppercase; color:var(--t3); margin-bottom:5px }
+.det-name { font-size:22px; font-weight:700; letter-spacing:-.5px; margin-bottom:10px; line-height:1.25 }
+.det-badges { display:flex; gap:7px; margin-bottom:18px; flex-wrap:wrap }
+.dbg { font-size:12px; font-weight:600; padding:4px 11px; border-radius:100px }
+.dbg.g { background:var(--green-bg); color:var(--green); border:1px solid #b7e8c9 }
+.dbg.b { background:#e8f0fe; color:#1a56db; border:1px solid #c3d4f7 }
+.dbg.y { background:var(--gold-bg); color:var(--gold); border:1px solid #f9d68a }
+
+.price-block { background:var(--bg2); border:1.5px solid var(--b2); border-radius:var(--r-lg); padding:20px; margin-bottom:14px }
+.price-main { font-size:34px; font-weight:700; letter-spacing:-1.2px; color:var(--t1); line-height:1 }
+.price-row { display:flex; align-items:center; gap:8px; margin-top:8px; padding-top:10px; border-top:1px solid var(--b2) }
+.exw-b { font-size:11px; font-weight:700; background:var(--gold-bg); color:var(--gold); border:1px solid #f9d68a; padding:3px 9px; border-radius:100px }
+.exw-note { font-size:12px; color:var(--t2) }
+
+.cif-block { background:#fff; border:1.5px solid var(--b2); border-radius:var(--r-lg); padding:18px; margin-bottom:14px }
+.cif-head { display:flex; align-items:center; gap:8px; font-size:12px; font-weight:700; color:var(--t1); letter-spacing:.04em; text-transform:uppercase; margin-bottom:14px }
+.cif-head svg { width:14px; height:14px; stroke:var(--t2); fill:none; stroke-width:2 }
+.cif-row { display:grid; grid-template-columns:1fr 1fr; gap:8px; margin-bottom:8px }
+.cf label { font-size:11.5px; color:var(--t2); display:block; margin-bottom:4px; font-weight:500 }
+.cf select, .cf input {
+  width:100%; background:var(--bg2); border:1.5px solid var(--b2);
+  border-radius:var(--r-sm); padding:8px 10px;
+  font-size:13px; color:var(--t1); font-family:var(--font); outline:none;
+  transition:border-color .12s;
+}
+.cf select:focus, .cf input:focus { border-color:var(--b1) }
+.cif-result { background:var(--bg2); border:1px solid var(--b2); border-radius:var(--r-sm); padding:12px 14px; margin-top:10px; display:flex; align-items:center; justify-content:space-between }
+.cif-result-l { font-size:12px; color:var(--t2) }
+.cif-result-p { font-size:18px; font-weight:700; color:var(--t1); letter-spacing:-.4px }
+.btn-cif { width:100%; margin-top:8px; background:var(--bg2); border:1.5px solid var(--b1); color:var(--t1); font-size:13px; font-weight:700; padding:10px; border-radius:var(--r-sm); transition:all .12s }
+.btn-cif:hover { background:var(--b2); border-color:var(--t2) }
+
+.det-ctas { display:flex; flex-direction:column; gap:8px; margin-bottom:14px }
+.btn-wa-det {
+  display:flex; align-items:center; justify-content:center; gap:9px;
+  background:#25d366; color:#fff; border:none;
+  padding:14px; border-radius:var(--r-md); font-size:15px; font-weight:700;
+  transition:opacity .12s;
+}
+.btn-wa-det:hover { opacity:.88 }
+.btn-inq {
+  display:flex; align-items:center; justify-content:center; gap:7px;
+  background:var(--bg2); border:1.5px solid var(--b1); color:var(--t1);
+  padding:12px; border-radius:var(--r-md); font-size:14px; font-weight:600;
+  transition:all .12s;
+}
+.btn-inq:hover { background:var(--b2) }
+
+.specs-tbl { background:#fff; border:1.5px solid var(--b2); border-radius:var(--r-lg); overflow:hidden; margin-top:18px }
+.sp-head { font-size:11px; font-weight:700; letter-spacing:.06em; text-transform:uppercase; color:var(--t3); padding:13px 16px; border-bottom:1px solid var(--b2); background:var(--bg2) }
+.sp-row { display:grid; grid-template-columns:120px 1fr; border-bottom:1px solid var(--b2) }
+.sp-row:last-child { border-bottom:none }
+.sp-k { font-size:12.5px; color:var(--t2); padding:11px 14px; background:var(--bg2); border-right:1px solid var(--b2) }
+.sp-v { font-size:13px; color:var(--t1); padding:11px 14px; font-weight:500 }
+.sp-v.mono { font-family:'SF Mono',monospace; font-size:11.5px; color:var(--t2) }
+
+/* ═══════════════════════════════════
+   CONTACT PAGE
+═══════════════════════════════════ */
+.contact-hero { background:var(--bg2); border-bottom:1px solid var(--b2); padding:72px 24px 56px; text-align:center }
+.contact-hero h2 { font-size:48px; font-weight:700; letter-spacing:-1.8px; margin-bottom:12px }
+.contact-hero p { font-size:18px; color:var(--t2); max-width:540px; margin:0 auto; line-height:1.6 }
+.contact-w { max-width:900px; margin:0 auto; padding:56px 24px 80px }
+.ch-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:12px; margin-bottom:40px }
+.ch { background:#fff; border:1.5px solid var(--b2); border-radius:var(--r-xl); padding:28px 24px; transition:all .18s }
+.ch:hover { border-color:var(--b1); box-shadow:var(--shadow-md) }
+.ch-ic { width:48px; height:48px; border-radius:14px; margin-bottom:14px; display:grid; place-items:center }
+.ch-ic svg { width:22px; height:22px; fill:none; stroke-width:1.8 }
+.ch-ic.wa { background:#f0fdf4; border:1.5px solid #bbf7d0 }
+.ch-ic.wa svg { stroke:#166534 }
+.ch-ic.mail { background:var(--gold-bg); border:1.5px solid #f9d68a }
+.ch-ic.mail svg { stroke:var(--gold) }
+.ch-ic.ph { background:#eff6ff; border:1.5px solid #c3d4f7 }
+.ch-ic.ph svg { stroke:var(--blue) }
+.ch h3 { font-size:15px; font-weight:700; margin-bottom:5px }
+.ch p { font-size:13px; color:var(--t2); margin-bottom:12px; line-height:1.6 }
+.ch a { font-size:13.5px; font-weight:700; color:var(--blue) }
+.offices { display:grid; grid-template-columns:1fr 1fr; gap:12px }
+.oc { background:#fff; border:1.5px solid var(--b2); border-radius:var(--r-xl); padding:28px }
+.oc-flag { font-size:30px; margin-bottom:12px }
+.oc h3 { font-size:17px; font-weight:700; margin-bottom:4px }
+.oc-role { font-size:11px; font-weight:700; letter-spacing:.06em; text-transform:uppercase; color:var(--t3); margin-bottom:12px }
+.oc p { font-size:13.5px; color:var(--t2); line-height:1.7 }
+</style>
+</head>
+<body>
+
+<!-- Demo shell -->
+<div class="demo-bar">
+  <span class="demo-bar-label">AsiaPower — <span>v4 全站升级版</span> · Apple 极简 · 浅色系</span>
+  <div class="tabs">
+    <button class="tab on" onclick="go('home',this)">首页</button>
+    <button class="tab" onclick="go('listing',this)">列表页</button>
+    <button class="tab" onclick="go('detail',this)">产品详情</button>
+    <button class="tab" onclick="go('contact',this)">联系我们</button>
+  </div>
+</div>
+
+<!-- NAV -->
+<nav class="ap-nav">
+  <div class="nav-w">
+    <div class="ap-logo">Asia<span>Power</span></div>
+    <div class="nav-links">
+      <a href="#" class="on">Half-Cuts</a>
+      <a href="#">Trucks</a>
+      <a href="#">Engines & Parts</a>
+      <a href="#">Construction</a>
+      <a href="#">About</a>
+    </div>
+    <div class="nav-right">
+      <div class="lang-sw">
+        <a href="#" class="on">EN</a><a href="#">中文</a><a href="#">FR</a><a href="#">AR</a>
+      </div>
+      <a href="#" class="nav-wa">
+        <svg viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51a5.5 5.5 0 00-.57-.01c-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/></svg>
+        WhatsApp
+      </a>
+    </div>
+  </div>
+</nav>
+
+<!-- ══════ HOME ══════ -->
+<div id="home" class="pv on">
+
+  <!-- HERO -->
+  <div class="hero">
+    <div class="hero-badge"><span class="dot"></span> Video-verified · Ships to 110+ countries</div>
+    <h1>The global marketplace for<br><em>used powertrains.</em></h1>
+    <p class="hero-sub">Half-cuts, engines and truck parts — sourced in China, delivered worldwide. EXW pricing, 24-hour quotes.</p>
+    <div class="hero-search-wrap">
+      <div class="hero-search">
+        <input type="text" placeholder="Search by make, model, engine code or HC number…" readonly />
+        <button class="hero-search-btn">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+          Search
+        </button>
+      </div>
+    </div>
+    <div class="popular-wrap">
+      <div class="popular-label">Popular searches</div>
+      <div class="popular-tags">
+        <span class="ptag">Toyota LandCruiser</span>
+        <span class="ptag">1GR-FE</span>
+        <span class="ptag">2AZ-FE</span>
+        <span class="ptag">BMW 3 Series</span>
+        <span class="ptag">4JB1</span>
+        <span class="ptag">Nissan Tiida</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- STATS (浮在 hero 下方) -->
+  <div style="max-width:var(--max);margin:0 auto;padding:0 24px;transform:translateY(-24px)">
+    <div class="stats-row">
+      <div class="stat"><div class="stat-n">394<em>+</em></div><div class="stat-l">Items in stock</div></div>
+      <div class="stat"><div class="stat-n">110<em>+</em></div><div class="stat-l">Export destinations</div></div>
+      <div class="stat"><div class="stat-n">24<em>h</em></div><div class="stat-l">Quote turnaround</div></div>
+      <div class="stat"><div class="stat-n">200<em>+</em></div><div class="stat-l">Vehicle brands</div></div>
+    </div>
+  </div>
+
+  <!-- CATEGORIES -->
+  <div class="section" style="padding-top:32px">
+    <div class="sec-head">
+      <div>
+        <div class="sec-kicker">Browse</div>
+        <div class="sec-h">What are you looking for?</div>
+      </div>
+    </div>
+    <div class="cat-grid">
+      <div class="cat-card on">
+        <div class="cat-ic"><svg viewBox="0 0 24 24"><rect x="1" y="3" width="15" height="13"/><polygon points="16 8 20 8 23 11 23 16 16 16 16 8"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg></div>
+        <div class="cat-n">Half-Cuts</div><div class="cat-c">394 listings</div>
+      </div>
+      <div class="cat-card">
+        <div class="cat-ic"><svg viewBox="0 0 24 24"><path d="M5 17H3a2 2 0 01-2-2V5a2 2 0 012-2h11a2 2 0 012 2v3"/><rect x="9" y="11" width="14" height="10" rx="2"/><circle cx="12" cy="16" r="1"/></svg></div>
+        <div class="cat-n">Trucks</div><div class="cat-c">48 listings</div>
+      </div>
+      <div class="cat-card">
+        <div class="cat-ic"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M12 1v4M12 19v4M4.22 4.22l2.83 2.83M16.95 16.95l2.83 2.83M1 12h4M19 12h4M4.22 19.78l2.83-2.83M16.95 7.05l2.83-2.83"/></svg></div>
+        <div class="cat-n">Engines & Parts</div><div class="cat-c">210 listings</div>
+      </div>
+      <div class="cat-card">
+        <div class="cat-ic"><svg viewBox="0 0 24 24"><path d="M14.7 6.3a1 1 0 000 1.4l1.6 1.6a1 1 0 001.4 0l3.77-3.77a6 6 0 01-7.94 7.94l-6.91 6.91a2.12 2.12 0 01-3-3l6.91-6.91a6 6 0 017.94-7.94l-3.76 3.76z"/></svg></div>
+        <div class="cat-n">Construction</div><div class="cat-c">23 listings</div>
+      </div>
+      <div class="cat-card">
+        <div class="cat-ic"><svg viewBox="0 0 24 24"><path d="M21 16V8a2 2 0 00-1-1.73l-7-4a2 2 0 00-2 0l-7 4A2 2 0 003 8v8a2 2 0 001 1.73l7 4a2 2 0 002 0l7-4A2 2 0 0021 16z"/></svg></div>
+        <div class="cat-n">Chassis Parts</div><div class="cat-c">67 listings</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══ FEATURED SHOWCASE (新增模块) ═══ -->
+  <div class="showcase-wrap" style="padding-top:0">
+    <div style="margin-bottom:18px">
+      <div class="sec-kicker">Featured listing</div>
+      <div class="sec-h" style="margin-bottom:0">Handpicked this week</div>
+    </div>
+    <div class="showcase-card">
+      <!-- 左侧：图片区 -->
+      <div class="sc-img">
+        <div class="sc-img-ph">
+          <svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+          <span>Product photo</span>
+        </div>
+        <div class="sc-badges">
+          <span class="sc-badge vf">✓ Video Verified</span>
+          <span class="sc-badge vid">Watch Video</span>
+        </div>
+        <span class="sc-hc-tag">HC250037</span>
+      </div>
+      <!-- 右侧：产品信息 -->
+      <div class="sc-body">
+        <div>
+          <div class="sc-kicker">Toyota · 2003</div>
+          <div class="sc-name">Land Cruiser Prado<br>1GR-FE Half-Cut, 4WD</div>
+          <div class="sc-specs">
+            <div class="sc-spec"><span class="sc-spec-k">Engine</span><span class="sc-spec-v">1GR-FE 4.0L V6</span></div>
+            <div class="sc-spec"><span class="sc-spec-k">Transmission</span><span class="sc-spec-v">4AT Automatic</span></div>
+            <div class="sc-spec"><span class="sc-spec-k">Drivetrain</span><span class="sc-spec-v">4WD</span></div>
+            <div class="sc-spec"><span class="sc-spec-k">Chassis VIN</span><span class="sc-spec-v mono">JTEBU17R030****189</span></div>
+          </div>
+        </div>
+        <div class="sc-price-area">
+          <div class="sc-price">$7,000 <span class="sc-exw">EXW</span></div>
+          <div class="sc-note">Est. CIF Tema Port: ~$8,450</div>
+          <div class="sc-ctas">
+            <button class="sc-wa">
+              <svg viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51a5.5 5.5 0 00-.57-.01c-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/></svg>
+              WhatsApp
+            </button>
+            <button class="sc-view">View Details →</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- PRODUCTS GRID -->
+  <div class="section" style="padding-top:0; background:var(--bg2); padding-bottom:72px">
+    <div class="sec-head" style="padding-top:64px">
+      <div>
+        <div class="sec-kicker">Latest stock</div>
+        <div class="sec-h">Featured Half-Cuts</div>
+      </div>
+      <a href="#" class="see-all">View all 394 →</a>
+    </div>
+    <div class="prod-grid">
+      <div class="pcard">
+        <div class="pc-img"><span class="pc-hc">HC250051</span><div class="pc-ph"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg><span>Photo on request</span></div></div>
+        <div class="pc-body">
+          <div class="pc-make">Audi</div>
+          <div class="pc-name">Q3 EA211 Half-Cut 2WD</div>
+          <div class="pc-tags"><span class="ptg">2020</span><span class="ptg">7DCT</span><span class="ptg">2WD</span></div>
+          <div class="pc-foot"><div><span class="pc-price">$7,500</span><span class="pc-exw">EXW</span></div><button class="btn-q">Quote →</button></div>
+        </div>
+      </div>
+      <div class="pcard">
+        <div class="pc-img"><span class="pc-hc">HC250127</span><span class="pc-video">Video</span><div class="pc-ph"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg><span>Photo on request</span></div></div>
+        <div class="pc-body">
+          <div class="pc-make">Lexus</div>
+          <div class="pc-name">LX570 3UR-FE Half-Cut 4WD</div>
+          <div class="pc-tags"><span class="ptg">2009</span><span class="ptg">6AT</span><span class="ptg">4WD</span><span class="ptg v">Video</span></div>
+          <div class="pc-foot"><div><span class="pc-price">$5,900</span><span class="pc-exw">EXW</span></div><button class="btn-q">Quote →</button></div>
+        </div>
+      </div>
+      <div class="pcard">
+        <div class="pc-img real" style="background:#e8ecf0;animation:none"><span class="pc-hc">HC250386</span></div>
+        <div class="pc-body">
+          <div class="pc-make">Mercedes-Benz</div>
+          <div class="pc-name">V-Class 651 955 Half-Cut 2WD</div>
+          <div class="pc-tags"><span class="ptg">2010</span><span class="ptg">7AT</span><span class="ptg">2WD</span></div>
+          <div class="pc-foot"><div><span class="pc-price">$5,500</span><span class="pc-exw">EXW</span></div><button class="btn-q">Quote →</button></div>
+        </div>
+      </div>
+      <div class="pcard">
+        <div class="pc-img"><span class="pc-hc">HC250203</span><span class="pc-video">Video</span><div class="pc-ph"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg><span>Photo on request</span></div></div>
+        <div class="pc-body">
+          <div class="pc-make">BMW</div>
+          <div class="pc-name">3 Series F30 B48 Half-Cut 2WD</div>
+          <div class="pc-tags"><span class="ptg">2018</span><span class="ptg">8AT</span><span class="ptg">2WD</span><span class="ptg v">Video</span></div>
+          <div class="pc-foot"><div><span class="pc-price">$6,200</span><span class="pc-exw">EXW</span></div><button class="btn-q">Quote →</button></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- TRUST -->
+  <div class="trust">
+    <div class="trust-w">
+      <div class="ti">
+        <div class="ti-ic"><svg viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 11-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg></div>
+        <div class="ti-n">394<em>+</em></div><div class="ti-l">Items in stock</div>
+      </div>
+      <div class="ti">
+        <div class="ti-ic"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 014 10 15.3 15.3 0 01-4 10 15.3 15.3 0 01-4-10 15.3 15.3 0 014-10z"/></svg></div>
+        <div class="ti-n">110<em>+</em></div><div class="ti-l">Export destinations</div>
+      </div>
+      <div class="ti">
+        <div class="ti-ic"><svg viewBox="0 0 24 24"><rect x="1" y="3" width="15" height="13"/><polygon points="16 8 20 8 23 11 23 16 16 16 16 8"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg></div>
+        <div class="ti-n">200<em>+</em></div><div class="ti-l">Vehicle brands</div>
+      </div>
+      <div class="ti">
+        <div class="ti-ic"><svg viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></div>
+        <div class="ti-n">100<em>%</em></div><div class="ti-l">Video-verified</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- FOOTER -->
+  <footer class="ap-footer">
+    <div class="footer-w">
+      <div class="footer-g">
+        <div class="footer-brand">
+          <div class="ap-logo">Asia<span>Power</span></div>
+          <p style="margin-top:10px">Global B2B marketplace for used powertrains. Sourced in China, exported worldwide.</p>
+        </div>
+        <div class="footer-col">
+          <h4>Products</h4>
+          <ul>
+            <li><a href="#">Half-Cuts</a></li>
+            <li><a href="#">Trucks</a></li>
+            <li><a href="#">Engines & Parts</a></li>
+            <li><a href="#">Construction</a></li>
+            <li><a href="#">Chassis Parts</a></li>
+          </ul>
+        </div>
+        <div class="footer-col">
+          <h4>Company</h4>
+          <ul>
+            <li><a href="#">About</a></li>
+            <li><a href="#">Become a Supplier</a></li>
+            <li><a href="#">Shipping & Logistics</a></li>
+            <li><a href="#">Quality Standards</a></li>
+            <li><a href="#">Privacy Policy</a></li>
+          </ul>
+        </div>
+        <div class="footer-cta-box">
+          <h4>Get a Quote</h4>
+          <p>Two offices — Zhengzhou &amp; Accra. Reply within 24 hours.</p>
+          <button class="btn-wa-f">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="white"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51a5.5 5.5 0 00-.57-.01c-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/></svg>
+            WhatsApp Now
+          </button>
+        </div>
+      </div>
+      <div class="footer-btm">
+        <span>© 2025 AsiaPower. All rights reserved.</span>
+        <span>Zhengzhou, China · Accra, Ghana</span>
+      </div>
+    </div>
+  </footer>
+</div><!-- /home -->
+
+<!-- ══════ LISTING ══════ -->
+<div id="listing" class="pv">
+  <div class="page-head">
+    <div class="page-head-w">
+      <div class="breadcrumb"><a href="#">Home</a><span class="s">›</span>Half-Cuts</div>
+      <h1>Half-Cut Vehicles</h1>
+      <p>394 verified units · EXW from Zhengzhou, China</p>
+    </div>
+  </div>
+  <div class="listing-layout">
+    <aside class="sb">
+      <div class="sb-block">
+        <h3>Category</h3>
+        <div class="sb-cats">
+          <a href="#" class="sc on">
+            <div class="sc-ico"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.8"><rect x="1" y="3" width="15" height="13"/><polygon points="16 8 20 8 23 11 23 16 16 16 16 8"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg></div>
+            <span class="sc-n">Half-Cuts</span><span class="sc-c">394</span>
+          </a>
+          <a href="#" class="sc">
+            <div class="sc-ico"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.8"><circle cx="12" cy="12" r="3"/><path d="M12 1v4M12 19v4M4.22 4.22l2.83 2.83M16.95 16.95l2.83 2.83M1 12h4M19 12h4"/></svg></div>
+            <span class="sc-n">Engines & Parts</span><span class="sc-c">210</span>
+          </a>
+          <a href="#" class="sc">
+            <div class="sc-ico"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.8"><path d="M5 17H3a2 2 0 01-2-2V5a2 2 0 012-2h11a2 2 0 012 2v3"/><rect x="9" y="11" width="14" height="10" rx="2"/><circle cx="12" cy="16" r="1"/></svg></div>
+            <span class="sc-n">Trucks</span><span class="sc-c">48</span>
+          </a>
+          <a href="#" class="sc">
+            <div class="sc-ico"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.8"><path d="M14.7 6.3a1 1 0 000 1.4l1.6 1.6a1 1 0 001.4 0l3.77-3.77a6 6 0 01-7.94 7.94l-6.91 6.91a2.12 2.12 0 01-3-3l6.91-6.91a6 6 0 017.94-7.94l-3.76 3.76z"/></svg></div>
+            <span class="sc-n">Construction</span><span class="sc-c">23</span>
+          </a>
+        </div>
+      </div>
+      <div class="sb-filters">
+        <h3>Brand</h3>
+        <div class="fo ck"><div class="fo-box"></div><span class="fo-n">Toyota</span><span class="fo-c">89</span></div>
+        <div class="fo"><div class="fo-box"></div><span class="fo-n">Nissan</span><span class="fo-c">67</span></div>
+        <div class="fo"><div class="fo-box"></div><span class="fo-n">BMW</span><span class="fo-c">44</span></div>
+        <div class="fo"><div class="fo-box"></div><span class="fo-n">Mercedes-Benz</span><span class="fo-c">38</span></div>
+        <div class="fo"><div class="fo-box"></div><span class="fo-n">Audi</span><span class="fo-c">31</span></div>
+      </div>
+      <div class="sb-filters">
+        <h3>Drivetrain</h3>
+        <div class="fo"><div class="fo-box"></div><span class="fo-n">2WD</span><span class="fo-c">267</span></div>
+        <div class="fo"><div class="fo-box"></div><span class="fo-n">4WD</span><span class="fo-c">89</span></div>
+        <div class="fo"><div class="fo-box"></div><span class="fo-n">AWD</span><span class="fo-c">38</span></div>
+      </div>
+      <div class="sb-filters">
+        <h3>Transmission</h3>
+        <div class="fo"><div class="fo-box"></div><span class="fo-n">Automatic</span><span class="fo-c">312</span></div>
+        <div class="fo"><div class="fo-box"></div><span class="fo-n">Manual</span><span class="fo-c">82</span></div>
+        <div class="fo"><div class="fo-box"></div><span class="fo-n">CVT</span><span class="fo-c">18</span></div>
+      </div>
+    </aside>
+    <div class="lm">
+      <div class="lm-bar">
+        <span class="lm-info"><strong>394</strong> results</span>
+        <select class="sort-sel"><option>Newest first</option><option>Price: Low to High</option><option>Price: High to Low</option></select>
+      </div>
+      <div class="act-filters"><span class="af">Toyota <x>×</x></span></div>
+      <div class="lrows">
+
+        <div class="lr">
+          <div class="lr-img"><span class="lr-hc">HC250037</span><div class="pc-ph" style="opacity:.15"><svg viewBox="0 0 24 24" style="width:26px;height:26px"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg></div></div>
+          <div class="lr-body">
+            <div>
+              <div class="lr-make">Toyota</div>
+              <div class="lr-name">Land Cruiser Prado 1GR-FE Half-Cut</div>
+              <div class="lr-tags"><span class="ptg">2003</span><span class="ptg">4AT</span><span class="ptg">4WD</span><span class="ptg v">Video</span></div>
+              <div><span class="lr-price">$7,000</span><span class="lr-exw">EXW</span></div>
+              <div class="lr-specs"><span>1GR-FE 4.0L V6</span><span>4WD</span><span>Custom dismantling available</span></div>
+            </div>
+            <div class="lr-bot">
+              <span class="lr-vin">JTEBU17R030****189</span>
+              <div class="lr-ctas">
+                <button class="lr-wa">WhatsApp</button>
+                <button class="lr-get">Get Quote</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="lr">
+          <div class="lr-img rp" style="background:#e8ecf0"><span class="lr-hc">HC250176</span></div>
+          <div class="lr-body">
+            <div>
+              <div class="lr-make">Toyota</div>
+              <div class="lr-name">霸道 (Prado) 1GR-FE Half-Cut 2WD</div>
+              <div class="lr-tags"><span class="ptg">2015</span><span class="ptg">6AT</span><span class="ptg">2WD</span></div>
+              <div><span class="lr-price">$45,000</span><span class="lr-exw">EXW</span></div>
+              <div class="lr-specs"><span>1GR-FE 4.0L V6</span><span>2WD</span></div>
+            </div>
+            <div class="lr-bot">
+              <span class="lr-vin">JTEZU5JR5F5****248</span>
+              <div class="lr-ctas">
+                <button class="lr-wa">WhatsApp</button>
+                <button class="lr-get">Get Quote</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="lr">
+          <div class="lr-img"><span class="lr-hc">HC250513</span><div class="pc-ph" style="opacity:.15"><svg viewBox="0 0 24 24" style="width:26px;height:26px"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg></div></div>
+          <div class="lr-body">
+            <div>
+              <div class="lr-make">Nissan</div>
+              <div class="lr-name">Tiida HR16DE Half-Cut 2WD</div>
+              <div class="lr-tags"><span class="ptg">2008</span><span class="ptg">4AT</span><span class="ptg">2WD</span></div>
+              <div><span class="lr-price">$1,300</span><span class="lr-exw">EXW</span></div>
+              <div class="lr-specs"><span>Parts on demand</span><span>Custom dismantling</span></div>
+            </div>
+            <div class="lr-bot">
+              <span class="lr-vin">LGBG22E088****410</span>
+              <div class="lr-ctas">
+                <button class="lr-wa">WhatsApp</button>
+                <button class="lr-get">Get Quote</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════ DETAIL ══════ -->
+<div id="detail" class="pv">
+  <div class="page-head">
+    <div class="page-head-w">
+      <div class="breadcrumb"><a href="#">Home</a><span class="s">›</span><a href="#">Half-Cuts</a><span class="s">›</span>HC250037</div>
+      <h1>Toyota Land Cruiser Prado — HC250037</h1>
+      <p>Listed 3 days ago · 47 inquiries</p>
+    </div>
+  </div>
+  <div class="detail-layout">
+    <div>
+      <div class="gallery-main-img">
+        <div class="gm-inner"><div class="pc-ph" style="opacity:.18"><svg viewBox="0 0 24 24" style="width:38px;height:38px"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg></div></div>
+        <div class="g-overlay">
+          <span class="g-badge v">✓ Video Verified</span>
+          <span class="g-badge vid">Watch Video</span>
+        </div>
+      </div>
+      <div class="gallery-thumbs">
+        <div class="gth on"><span>📷</span><strong>Main Photo</strong></div>
+        <div class="gth"><span>🔧</span><strong>Engine Bay</strong></div>
+        <div class="gth"><span>⚙️</span><strong>Gearbox</strong></div>
+        <div class="gth"><span>🎬</span><strong>Video Walk</strong></div>
+        <div class="gth"><span>📄</span><strong>VIN Plate</strong></div>
+      </div>
+      <div class="specs-tbl" style="margin-top:18px">
+        <div class="sp-head">Full Specifications</div>
+        <div class="sp-row"><div class="sp-k">Stock No.</div><div class="sp-v mono">HC250037</div></div>
+        <div class="sp-row"><div class="sp-k">Brand</div><div class="sp-v">Toyota</div></div>
+        <div class="sp-row"><div class="sp-k">Model</div><div class="sp-v">Land Cruiser Prado</div></div>
+        <div class="sp-row"><div class="sp-k">Year</div><div class="sp-v">2003</div></div>
+        <div class="sp-row"><div class="sp-k">Engine</div><div class="sp-v">1GR-FE 4.0L V6 Petrol</div></div>
+        <div class="sp-row"><div class="sp-k">Transmission</div><div class="sp-v">4AT Automatic</div></div>
+        <div class="sp-row"><div class="sp-k">Drivetrain</div><div class="sp-v">4WD</div></div>
+        <div class="sp-row"><div class="sp-k">Chassis VIN</div><div class="sp-v mono">JTEBU17R030****189</div></div>
+      </div>
+    </div>
+    <div>
+      <div class="det-make">Toyota · Land Cruiser Prado</div>
+      <div class="det-name">1GR-FE Half-Cut — 2003, 4WD</div>
+      <div class="det-badges">
+        <span class="dbg g">✓ Video Verified</span>
+        <span class="dbg b">4WD</span>
+        <span class="dbg y">In Stock</span>
+      </div>
+      <div class="price-block">
+        <div class="price-main">$7,000</div>
+        <div class="price-row"><span class="exw-b">EXW</span><span class="exw-note">Ex-Works · Zhengzhou, China</span></div>
+      </div>
+      <div class="cif-block">
+        <div class="cif-head"><svg viewBox="0 0 24 24"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg> CIF Price Calculator</div>
+        <div class="cif-row">
+          <div class="cf"><label>Destination</label><select><option>Ghana</option><option>Nigeria</option><option>Kenya</option><option>South Africa</option></select></div>
+          <div class="cf"><label>Port</label><select><option>Tema Port</option><option>Lagos</option><option>Mombasa</option></select></div>
+        </div>
+        <div class="cif-row">
+          <div class="cf"><label>Shipping</label><select><option>Sea — RoRo</option><option>Sea — Container</option><option>Air Freight</option></select></div>
+          <div class="cf"><label>Qty</label><input type="number" value="1" min="1"/></div>
+        </div>
+        <div class="cif-result"><span class="cif-result-l">Estimated CIF price</span><span class="cif-result-p">~$8,450</span></div>
+        <button class="btn-cif">Get Exact CIF Quote →</button>
+      </div>
+      <div class="det-ctas">
+        <button class="btn-wa-det">
+          <svg width="17" height="17" viewBox="0 0 24 24" fill="white"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51a5.5 5.5 0 00-.57-.01c-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/></svg>
+          Inquire via WhatsApp
+        </button>
+        <button class="btn-inq">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+          Send Inquiry via Email
+        </button>
+      </div>
+      <div style="background:var(--bg2);border:1.5px solid var(--b2);border-radius:var(--r-md);padding:14px;font-size:12.5px;color:var(--t2);line-height:1.7">
+        <div style="color:var(--t1);font-weight:600;margin-bottom:5px">What's included</div>
+        Engine · Gearbox · Front suspension · Axle · Complete electrical harness · Video inspection certificate · Export documentation support
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════ CONTACT ══════ -->
+<div id="contact" class="pv">
+  <div class="contact-hero">
+    <h2>Get in Touch</h2>
+    <p>We source, verify, and export to 110+ destinations. We reply within 24 hours.</p>
+  </div>
+  <div class="contact-w">
+    <div class="ch-grid">
+      <div class="ch">
+        <div class="ch-ic wa"><svg viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51a5.5 5.5 0 00-.57-.01c-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/></svg></div>
+        <h3>WhatsApp</h3><p>Fastest way to reach us. Include your item number for instant quotes.</p>
+        <a href="#">+86 xxx xxxx xxxx →</a>
+      </div>
+      <div class="ch">
+        <div class="ch-ic mail"><svg viewBox="0 0 24 24"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg></div>
+        <h3>Email</h3><p>For formal inquiries, bulk orders, or partnership discussions.</p>
+        <a href="#">info@asia-power.com →</a>
+      </div>
+      <div class="ch">
+        <div class="ch-ic ph"><svg viewBox="0 0 24 24"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07A19.5 19.5 0 013.07 8.81a19.79 19.79 0 01-3.07-8.7A2 2 0 012 0h3a2 2 0 012 1.72 12.84 12.84 0 00.7 2.81 2 2 0 01-.45 2.11L6.09 7.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45 12.84 12.84 0 002.81.7A2 2 0 0122 14.92z"/></svg></div>
+        <h3>Phone</h3><p>Available Mon–Sat, 8am–8pm China Standard Time.</p>
+        <a href="#">Call Zhengzhou Office →</a>
+      </div>
+    </div>
+    <div style="font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--t3);margin-bottom:14px">Our Offices</div>
+    <div class="offices">
+      <div class="oc"><div class="oc-flag">🇨🇳</div><h3>Zhengzhou, China</h3><div class="oc-role">Global Sourcing Hub</div><p>Main procurement and logistics office. All inventory is inspected and prepared here before shipping.</p></div>
+      <div class="oc"><div class="oc-flag">🇬🇭</div><h3>Accra, Ghana</h3><div class="oc-role">West Africa Regional Office</div><p>Local support for buyers across West Africa. Assists with customs clearance, delivery, and after-sales.</p></div>
+    </div>
+  </div>
+</div>
+
+<script>
+function go(id,btn){
+  document.querySelectorAll('.pv').forEach(p=>p.classList.remove('on'));
+  document.querySelectorAll('.tab').forEach(b=>b.classList.remove('on'));
+  document.getElementById(id).classList.add('on');
+  btn.classList.add('on');
+  window.scrollTo({top:41,behavior:'smooth'});
+}
+</script>
+</body>
+</html>

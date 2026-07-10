@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>企业微信 · AsiaPower 库存 Agent — CEO 一步一步</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: "PingFang SC", "Microsoft YaHei", system-ui, sans-serif;
+      background: #f8fafc; color: #0f172a; line-height: 1.7;
+      font-size: 20px;
+    }
+    header {
+      background: linear-gradient(135deg, #0a1628 0%, #1e3a5f 100%);
+      color: #fff; padding: 32px 24px 28px; border-bottom: 6px solid #d4a017;
+    }
+    header h1 { font-size: 32px; margin-bottom: 10px; }
+    header p { font-size: 18px; opacity: 0.9; max-width: 820px; }
+    main { max-width: 900px; margin: 0 auto; padding: 28px 20px 60px; }
+    .tip {
+      background: #fffbeb; border: 2px solid #fbbf24; border-radius: 14px;
+      padding: 18px 20px; margin-bottom: 28px; font-size: 18px;
+    }
+    .step {
+      background: #fff; border: 2px solid #e2e8f0; border-radius: 16px;
+      padding: 24px; margin-bottom: 22px; box-shadow: 0 2px 8px rgba(0,0,0,.04);
+    }
+    .step__num {
+      display: inline-block; background: #d4a017; color: #0a1628;
+      font-weight: 800; font-size: 22px; width: 44px; height: 44px;
+      line-height: 44px; text-align: center; border-radius: 50%; margin-bottom: 12px;
+    }
+    .step h2 { font-size: 24px; margin-bottom: 10px; color: #0a1628; }
+    .step p { font-size: 20px; margin-bottom: 10px; }
+    .step .explain { font-size: 16px; color: #64748b; }
+    .shot {
+      background: #e2e8f0; border: 2px dashed #94a3b8; border-radius: 12px;
+      min-height: 140px; display: flex; align-items: center; justify-content: center;
+      color: #64748b; font-size: 16px; margin: 14px 0; text-align: center; padding: 16px;
+    }
+    .field { margin-top: 14px; }
+    .field label {
+      display: block; font-size: 16px; font-weight: 700; color: #475569; margin-bottom: 6px;
+    }
+    .field input, .field textarea {
+      width: 100%; font-size: 18px; padding: 12px 14px; border: 2px solid #cbd5e1;
+      border-radius: 10px; font-family: ui-monospace, monospace; background: #f8fafc;
+    }
+    .field textarea { min-height: 52px; resize: vertical; }
+    .field button {
+      margin-top: 8px; padding: 10px 18px; font-size: 16px; font-weight: 700;
+      background: #0a1628; color: #d4a017; border: none; border-radius: 8px; cursor: pointer;
+    }
+    .field button:active { transform: scale(0.98); }
+    .links { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 28px; }
+    .btn {
+      display: inline-block; padding: 14px 22px; border-radius: 12px;
+      text-decoration: none; font-size: 18px; font-weight: 700;
+    }
+    .btn-gold { background: #d4a017; color: #0a1628; }
+    .btn-dark { background: #0a1628; color: #fff; }
+    .ok { color: #16a34a; font-weight: 700; }
+    footer { font-size: 15px; color: #64748b; margin-top: 32px; text-align: center; }
+  </style>
+</head>
+<body>
+<header>
+  <h1>企业微信 · AsiaPower 库存 Agent — CEO 一步一步</h1>
+  <p>把销售 Agent 接到企业微信群：群里 <strong>@AsiaPower 库存 Agent</strong> 问销售数据，它会自动回复。我们内部叫它「子敬」。电脑已登录企业微信不够，还要进<strong>管理后台</strong>拿密钥。</p>
+  <table style="width:100%; border-collapse:collapse; margin:16px 0; font-size:18px;">
+    <tr style="background:#0a1628; color:#fff;"><th style="padding:10px;">企业微信里显示</th><th style="padding:10px;">我们内部叫</th></tr>
+    <tr><td style="padding:10px; border:1px solid #e2e8f0;"><strong>AsiaPower 库存 Agent</strong></td><td style="padding:10px; border:1px solid #e2e8f0;"><strong>子敬</strong></td></tr>
+  </table>
+</header>
+<main>
+  <div class="tip">
+    <strong>最快方式：</strong>在 Cursor 里对 AI 说「帮我填子敬配置」，把下面 5 个值发过去；或终端运行
+    <code>.venv/bin/python3 scripts/wecom-setup-wizard.py</code>
+  </div>
+
+  <article class="step">
+    <span class="step__num">1</span>
+    <h2>打开管理后台</h2>
+    <p>浏览器打开：<a href="https://work.weixin.qq.com/wework_admin/frame" target="_blank">work.weixin.qq.com/wework_admin/frame</a></p>
+    <p class="explain">「管理后台」= 网页版控制台，不是桌面企业微信。看不到「应用管理」就找公司 IT 开管理员权限。</p>
+    <div class="shot">📷 截图占位：登录后左侧菜单「应用管理」</div>
+  </article>
+
+  <article class="step">
+    <span class="step__num">2</span>
+    <h2>复制企业 ID</h2>
+    <p>左侧 <strong>我的企业 → 企业信息</strong> → 复制「企业 ID」</p>
+    <div class="field">
+      <label for="corp">粘贴到 .env → WECOM_CORP_ID</label>
+      <input id="corp" type="text" placeholder="wwxxxxxxxxxxxxxxxx">
+      <button type="button" onclick="copyField('corp')">复制变量名+值</button>
+    </div>
+    <div class="shot">📷 截图占位：企业 ID 位置</div>
+  </article>
+
+  <article class="step">
+    <span class="step__num">3</span>
+    <h2>创建「AsiaPower 库存 Agent」应用</h2>
+    <p><strong>应用管理 → 应用 → 创建应用</strong>，名称填 <strong>AsiaPower 库存 Agent</strong>（不要填「子敬」— 那是内部昵称），可见范围先选您和测试同事。</p>
+    <p>进入应用详情，复制 <strong>AgentId</strong> 和 <strong>Secret</strong>（Secret 要点「查看」）。</p>
+    <div class="field">
+      <label for="agent">WECOM_AGENT_ID</label>
+      <input id="agent" type="text" placeholder="1000002">
+    </div>
+    <div class="field">
+      <label for="secret">WECOM_AGENT_SECRET（敏感，勿发到公开群）</label>
+      <input id="secret" type="password" placeholder="粘贴 Secret">
+      <button type="button" onclick="copyField('secret')">复制 WECOM_AGENT_SECRET=…</button>
+    </div>
+    <div class="shot">📷 截图占位：AgentId 与 Secret</div>
+  </article>
+
+  <article class="step">
+    <span class="step__num">4</span>
+    <h2>配置接收消息（回调）</h2>
+    <p>同一应用页 → <strong>接收消息 → 设置 API 接收</strong></p>
+    <p class="explain">「回调」= 企业微信把群消息推到我们的服务器。生产环境已部署，<strong>直接填下面三行</strong>即可（Token / Key 与服务器 .env 一致）。</p>
+    <ol style="margin: 12px 0 12px 28px; font-size: 18px;">
+      <li><strong>URL</strong>：<code>https://asia-power.cn/wecom/callback</code>（企业备案域名，与企微主体一致）</li>
+      <li><strong>Token</strong>：<code>asiapower1</code></li>
+      <li><strong>EncodingAESKey</strong>：<code>t5CiHUAFe76N9EryQq1USCskNLI5k1BbALUTdggTsHD</code></li>
+      <li>保存后 → <strong>我的企业 → 企业信息 → 企业可信 IP</strong> → 添加 <code>124.222.191.164</code></li>
+    </ol>
+    <p class="explain" style="margin-top:8px;">本地开发才用 ngrok；生产勿填 <code>asia-power.com</code>（个人备案，企微校验过不去）。</p>
+    <div class="field">
+      <label for="token">WECOM_CALLBACK_TOKEN</label>
+      <input id="token" type="text" placeholder="例如 AsiaPowerZijing2026">
+    </div>
+    <div class="field">
+      <label for="aes">WECOM_ENCODING_AES_KEY</label>
+      <textarea id="aes" placeholder="43 位 EncodingAESKey"></textarea>
+    </div>
+    <div class="field">
+      <label for="pub">WECOM_PUBLIC_BASE_URL（ngrok 根地址，不含 /wecom/callback）</label>
+      <input id="pub" type="text" placeholder="https://xxxx.ngrok-free.app">
+    </div>
+    <div class="shot">📷 截图占位：接收消息 API 设置页</div>
+  </article>
+
+  <article class="step">
+    <span class="step__num">5</span>
+    <h2>启动本机服务 + ngrok</h2>
+    <p>双击 <strong>docs/企业微信-子敬-一步一步.command</strong>（回调端口 <strong>8791</strong>）</p>
+    <p>另开一个终端：<code>ngrok http 8791</code>，把 https 地址填进上一步 URL 和 .env。</p>
+    <p class="explain">「ngrok」= 临时把本机端口暴露到公网，让企业微信能访问；意思是开发测试用的隧道工具。</p>
+  </article>
+
+  <article class="step">
+    <span class="step__num">6</span>
+    <h2>把 Agent 拉进群并测试</h2>
+    <p>企业微信 → 进测试群 → 添加应用 <strong>AsiaPower 库存 Agent</strong> → 群里发 <strong>@AsiaPower 库存 Agent /ping</strong></p>
+    <p class="ok">成功：Agent 回复在线状态（回复里可能自称「子敬」）</p>
+    <div class="shot">📷 截图占位：群内 @AsiaPower 库存 Agent</div>
+  </article>
+
+  <article class="step">
+    <span class="step__num">7</span>
+    <h2>验证配置</h2>
+    <p>终端运行：<code>.venv/bin/python3 scripts/wecom-verify-config.py</code></p>
+    <p>应显示 <span class="ok">✅ access_token 获取成功</span></p>
+  </article>
+
+  <div class="links">
+    <a class="btn btn-gold" href="https://work.weixin.qq.com/wework_admin/frame" target="_blank">打开管理后台 ↗</a>
+    <a class="btn btn-dark" href="file:///Users/longhui/Desktop/AsiaPower/docs/企业微信-子敬-一步一步.command">说明：双击 .command 启动</a>
+  </div>
+
+  <footer>密钥只放本机 .env，不要提交 Git · Runbook: data/knowledge-base/wecom-zijing-setup-runbook.md</footer>
+</main>
+<script>
+function copyField(id) {
+  const el = document.getElementById(id);
+  const keyMap = {
+    corp: 'WECOM_CORP_ID',
+    agent: 'WECOM_AGENT_ID',
+    secret: 'WECOM_AGENT_SECRET',
+    token: 'WECOM_CALLBACK_TOKEN',
+    aes: 'WECOM_ENCODING_AES_KEY',
+    pub: 'WECOM_PUBLIC_BASE_URL'
+  };
+  const key = keyMap[id] || id;
+  const text = key + '=' + (el.value || '');
+  navigator.clipboard.writeText(text).then(() => {
+    alert('已复制到剪贴板：' + key + '=…');
+  }).catch(() => {
+    el.select();
+    document.execCommand('copy');
+    alert('已复制');
+  });
+}
+</script>
+</body>
+</html>

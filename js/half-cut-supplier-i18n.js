@@ -1,9 +1,17 @@
 /**
- * AsiaPower — Bilingual labels for supplier/admin half-cut workflow only.
- * Public customer catalog remains English.
+ * AsiaPower — Supplier/admin half-cut workflow labels.
+ * Uses PublicI18n when available (en/zh/fr/ar); registers supplier.form.* keys at load.
  */
 (function () {
   'use strict';
+
+  function escapeHtml(str) {
+    return String(str || '')
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;');
+  }
 
   function bi(en, zh) {
     return { en, zh, html: `${en}<span class="bi-zh">${zh}</span>`, inline: `${en} / ${zh}` };
@@ -18,14 +26,14 @@
     reject: bi('Reject', '拒绝'),
     requestReview: bi('Request Review', '提交审核'),
     checkAvailability: bi('Check Availability', '确认库存'),
-    addHalfCutInventory: bi('Add Half Cut Inventory', '上传半车库存'),
+    addHalfCutInventory: bi('Add Half Cut Inventory', '上传乘用车库存'),
     pendingReview: bi('Pending Review', '待审核'),
     approved: bi('Approved', '已通过'),
     rejected: bi('Rejected', '已拒绝'),
     backToPortal: bi('Back to Supplier Portal', '返回供应商门户'),
     remove: bi('Remove', '删除'),
 
-    supplierUploadTitle: bi('Submit Half-Cut Listing', '提交半车库存'),
+    supplierUploadTitle: bi('Submit Half-Cut Listing', '提交乘用车库存'),
     supplierUploadLead: bi(
       'Enter the VIN first. The system will try to detect brand, model and year automatically. If decoding fails, please enter vehicle details manually. Upload at least 3 clear photos.',
       '请先输入VIN底盘号，系统会尝试自动识别品牌、车型和年份。如果识别失败，请手动填写车辆信息。请至少上传3张清晰照片。'
@@ -34,28 +42,106 @@
       'Submission does not guarantee publication. Asia Power will verify inventory before listing.',
       '提交不代表一定上架。亚洲动力会在上架前核实库存真实性。'
     ),
-    truckUploadTitle: bi('Submit Truck Listing', '提交卡车库存'),
+    truckUploadTitle: bi('Submit Truck Parts Listing', '提交卡车配件'),
     truckUploadLead: bi(
-      'Upload light, medium or heavy-duty truck half-cuts, driver cabs and dismantled units. Choose listing type on step 2. VIN and engine are optional for driver cabs.',
-      '上传轻卡、中卡、重卡半车、驾驶室及拆车件。请在第2步选择库存类型。驾驶室上传时VIN和发动机为选填。'
+      'Upload truck cabs, engines, axles and other parts. Choose part type on step 1. VIN is optional for individual parts; engine code is required for engine listings.',
+      '上传卡车车头、发动机、车轴及其他配件。请在第1步选择配件类型。单件配件VIN可留空；上传发动机时须填写发动机型号。'
     ),
     passengerUploadOnlyHint: bi(
-      'Trucks and driver cabs must use the Truck Upload page in the Supplier Portal.',
-      '卡车和驾驶室请使用供应商门户中的「卡车库存上传」入口。'
+      'Truck parts must use the Truck Parts Upload page in the Supplier Portal.',
+      '卡车配件请使用供应商门户中的「卡车配件上传」入口。'
     ),
-    conditionTruckHalfCut: bi('Truck Half Cut', '卡车半车'),
+    conditionTruckHalfCut: bi('Truck Half Cut', '卡车乘用车'),
     conditionDriverCab: bi('Driver Cab', '驾驶室'),
-    truckPartType: bi('Listing Type', '库存类型'),
-    truckPartVehicle: bi('Truck / Half Cut', '整车 / 半车'),
-    truckPartCab: bi('Driver Cab', '驾驶室'),
-    truckPartVehicleHint: bi(
-      'Complete truck or half-cut with VIN, engine and transmission.',
-      '整车或半车，需填写VIN、发动机和变速箱。'
-    ),
+    truckPartType: bi('Part Type', '配件类型'),
+    truckPartCab: bi('Driver Cab', '卡车驾驶室'),
+    truckPartEngine: bi('Engine & Transmission', '发动机及变速箱'),
+    truckPartAxle: bi('Axle', '车轴'),
+    truckPartOther: bi('Other', '其他'),
+    truckPartVehicle: bi('Truck / Half Cut', '整车 / 乘用车'),
     truckPartCabHint: bi(
       'Driver cab only — VIN and engine are optional.',
       '仅驾驶室 — VIN和发动机为选填。'
     ),
+    truckPartEngineHint: bi(
+      'Engine assembly — engine code required; VIN optional.',
+      '发动机总成 — 须填发动机型号；VIN可留空。'
+    ),
+    truckPartAxleHint: bi(
+      'Axle assembly — VIN and engine are optional.',
+      '车轴总成 — VIN和发动机为选填。'
+    ),
+    truckPartOtherHint: bi(
+      'Other truck parts — VIN and engine are optional.',
+      '其他卡车配件 — VIN和发动机为选填。'
+    ),
+    truckPartVehicleHint: bi(
+      'Complete truck or half-cut with VIN, engine and transmission.',
+      '整车或乘用车，需填写VIN、发动机和变速箱。'
+    ),
+    truckVehicleUploadTitle: bi('Submit Commercial Vehicle Listing', '提交商用车整车'),
+    truckVehicleUploadLead: bi(
+      'Upload whole commercial vehicles — scrap or export used car. Enter the VIN first, then confirm vehicle details and photos.',
+      '上传商用车整车（报废车或二手车）。请先输入VIN，再确认车辆信息与照片。'
+    ),
+    passengerVehicleUploadTitle: bi('Submit Passenger Vehicle Listing', '提交乘用车整车'),
+    passengerVehicleUploadLead: bi(
+      'Upload whole passenger vehicles — scrap or export used car. Enter the VIN first, then confirm vehicle details and photos.',
+      '上传乘用车整车（报废车或二手车）。请先输入VIN，再确认车辆信息与照片。'
+    ),
+    passengerPartsUploadTitle: bi('Submit Passenger Parts Listing', '提交乘用车配件'),
+    passengerPartsUploadLead: bi(
+      'Upload passenger front cuts, engines, transmissions, chassis parts and other components. Choose part type on step 1 — no VIN required.',
+      '上传乘用车前头、发动机、变速箱、底盘及其他配件。请在第1步选择配件类型；无需VIN。'
+    ),
+    vehicleListingType: bi('Listing Type', '库存类型'),
+    listingTypeScrap: bi('Scrap vehicle', '报废车'),
+    listingTypeUsed: bi('Used car (export)', '二手车（出口）'),
+    listingTypeScrapHint: bi(
+      'Dismantled or half-cut scrap vehicle for parts export.',
+      '已拆解或半切的报废车，用于配件出口。'
+    ),
+    listingTypeUsedHint: bi(
+      'Running or repairable whole vehicle for export — export paperwork required.',
+      '可启动或可修复的整车出口 — 需具备出口手续。'
+    ),
+    passengerPartType: bi('Part Type', '配件类型'),
+    passengerPartFront: bi('Front cut / nose', '前头'),
+    passengerPartEngine: bi('Engine', '发动机'),
+    passengerPartTransmission: bi('Transmission', '变速箱'),
+    passengerPartChassis: bi('Chassis', '底盘'),
+    passengerPartOther: bi('Other parts', '其他'),
+    passengerPartFrontHint: bi(
+      'Front clip / nose cut — VIN optional.',
+      '前头/半切前部 — VIN可留空。'
+    ),
+    passengerPartEngineHint: bi(
+      'Engine assembly — engine code required; VIN optional.',
+      '发动机总成 — 须填发动机型号；VIN可留空。'
+    ),
+    passengerPartTransmissionHint: bi(
+      'Transmission / gearbox — transmission code recommended; VIN optional.',
+      '变速箱总成 — 建议填写变速箱型号；VIN可留空。'
+    ),
+    passengerPartChassisHint: bi(
+      'Chassis / suspension parts — VIN optional.',
+      '底盘/悬挂件 — VIN可留空。'
+    ),
+    passengerPartOtherHint: bi(
+      'Other passenger parts — VIN optional.',
+      '其他乘用车配件 — VIN可留空。'
+    ),
+    conditionFrontCut: bi('Front Cut', '前头'),
+    conditionTransmissionAssembly: bi('Transmission Assembly', '变速箱总成'),
+    conditionChassisPart: bi('Chassis Part', '底盘件'),
+    conditionPart: bi('Part', '配件'),
+    vinPartsSkipHint: bi(
+      'No VIN for this part? Tap Next — enter brand, model and photos on the following steps.',
+      '没有底盘号？直接点「下一步」，在后续步骤填写品牌、车型和照片即可。'
+    ),
+    conditionEngineAssembly: bi('Engine Assembly', '发动机总成'),
+    conditionAxleAssembly: bi('Axle Assembly', '车轴总成'),
+    conditionTruckPart: bi('Truck Part', '卡车配件'),
     stepVinOptional: bi('Step 1 — VIN (optional)', '第1步 — VIN（选填）'),
     stepTruckStart: bi('Step 1 — Listing Type', '第1步 — 选择库存类型'),
     vinCabSkipHint: bi(
@@ -75,12 +161,12 @@
     vin: bi('VIN', 'VIN底盘号'),
     vinFullSupplier: bi('Full VIN (supplier view)', '完整VIN（供应商可见）'),
     mileage: bi('Mileage', '里程'),
-    fobPriceUsd: bi('FOB Price (USD)', '离岸价（美元）'),
+    fobPriceUsd: bi('EXW Price (USD)', 'EXW价（美元）'),
     fobPriceHint: bi(
-      'Export FOB price in US dollars — China port basis, excluding freight and import duties.',
-      '出口离岸价（美元），中国港口交货，不含国际运费及进口关税。'
+      'Export EXW price in US dollars — ex-works Zhengzhou, excluding freight and import duties.',
+      '出口EXW价（美元），郑州工厂交货，不含国际运费及进口关税。'
     ),
-    fobPriceRequired: bi('FOB price (USD) is required and must be greater than zero.', '离岸价（美元）必填，且必须大于零。'),
+    fobPriceRequired: bi('EXW price (USD) is required and must be greater than zero.', 'EXW价（美元）必填，且必须大于零。'),
     supplierName: bi('Supplier Name', '供应商名称'),
     supplierPhone: bi('Supplier Phone', '联系电话'),
     supplierWechat: bi('Supplier WeChat', '微信号'),
@@ -90,6 +176,13 @@
     year: bi('Year', '年份'),
     engineCode: bi('Engine Code', '发动机型号'),
     transmission: bi('Transmission', '变速箱'),
+    fuelType: bi('Fuel Type', '燃油类型'),
+    selectFuelType: bi('Select fuel type', '选择燃油类型'),
+    fuelPetrol: bi('Petrol', '汽油'),
+    fuelDiesel: bi('Diesel', '柴油'),
+    fuelHybrid: bi('Hybrid', '混合动力'),
+    fuelPlugInHybrid: bi('Plug-in Hybrid', '插电式混合动力'),
+    fuelElectric: bi('Electric', '纯电动'),
     drivetrain: bi('Drivetrain', '驱动形式'),
     vehicleCondition: bi('Vehicle Condition', '车辆状态'),
     vehicleCategory: bi('Vehicle Type', '车辆类型'),
@@ -139,8 +232,13 @@
     fieldsAutoFilled: bi('fields auto-filled', '个字段已自动填写'),
     onlyFillMissing: bi('Only complete the highlighted fields.', '只需填写高亮字段。'),
     phoneOrWechat: bi('Phone or WeChat is required.', '电话或微信至少填写一项。'),
-    photosMin: bi('Upload at least 3 photos. 5+ recommended.', '至少上传3张照片，建议5张以上。'),
-    photosCabHint: bi('Upload at least 3 photos (up to 10 for driver cabs).', '至少上传3张照片；驾驶室最多可上传10张。'),
+    photosMin: bi('Upload at least 3 photos (up to 15).', '至少上传3张照片，最多15张。'),
+    extraPhoto: bi('Additional Photo', '补充照片'),
+    photosCabHint: bi('Upload at least 3 cab photos (up to 15).', '至少上传3张驾驶室照片，最多15张。'),
+    photoCompressHint: bi(
+      'Photos are compressed automatically to save storage (quality kept).',
+      '照片会自动压缩以节省空间（尽量保持清晰）。'
+    ),
     required: bi('Required', '必填'),
     recommended: bi('Recommended', '建议'),
     optional: bi('Optional', '选填'),
@@ -151,11 +249,11 @@
     sold: bi('Sold', '已售'),
 
     conditionRunning: bi('Running Vehicle', '可启动整车'),
-    conditionHalfCut: bi('Half Cut', '半车'),
+    conditionHalfCut: bi('Half Cut', '乘用车'),
     conditionDismantled: bi('Dismantled', '已拆解'),
     conditionEngineRemoved: bi('Engine Removed', '已拆发动机'),
 
-    adminReviewTitle: bi('Half-Cut Submission Review', '半车库存审核'),
+    adminReviewTitle: bi('Half-Cut Submission Review', '乘用车库存审核'),
     adminPending: bi('Pending', '待审核'),
     adminApproved: bi('Approved', '已通过'),
     adminRejected: bi('Rejected', '已拒绝'),
@@ -188,7 +286,7 @@
       '审核通过后库存才会出现在目录页。'
     ),
 
-    portalHalfCutBtn: bi('Submit Half-Cut Inventory', '上传半车库存'),
+    portalHalfCutBtn: bi('Submit Half-Cut Inventory', '上传乘用车库存'),
 
     partialDecode: bi(
       'Partial decode — confirm brand/year and enter model and engine details.',
@@ -206,6 +304,9 @@
     photoTooLarge: bi('Photo must be 8 MB or smaller. Try a lower resolution or JPG format.', '单张照片不能超过 8 MB，请降低分辨率或使用 JPG 格式。'),
     uploadingMedia: bi('Uploading…', '正在上传…'),
     uploadFailed: bi('Upload failed.', '上传失败。'),
+    uploadSuccess: bi('Upload successful', '上传成功'),
+    photoUploaded: bi('Photo uploaded', '照片已上传'),
+    videoUploaded: bi('Video uploaded', '视频已上传'),
     submissionFailed: bi('Submission failed.', '提交失败。'),
 
     photoLabels: [
@@ -229,23 +330,56 @@
     ],
   };
 
-  function labelHtml(key) {
+  function publicKey(key) {
+    return `supplier.form.${key}`;
+  }
+
+  function labelText(key) {
     const item = L[key];
-    if (!item) return key;
-    return `<span class="bi-label"><span class="bi-en">${item.en}</span><span class="bi-zh">${item.zh}</span></span>`;
+    const en = item?.en || key;
+    const pub = window.PublicI18n;
+    if (pub?.t && pub?.getLang) {
+      return pub.t(publicKey(key), en);
+    }
+    return en;
+  }
+
+  function labelHtml(key) {
+    return escapeHtml(labelText(key));
   }
 
   function labelInline(key) {
-    return L[key]?.inline || key;
+    return labelText(key);
   }
 
   function labelEn(key) {
-    return L[key]?.en || key;
+    return labelText(key);
   }
 
   function labelZh(key) {
-    return L[key]?.zh || '';
+    return L[key]?.zh || labelText(key);
   }
 
-  window.HalfCutSupplierI18n = { L, labelHtml, labelInline, labelEn, labelZh };
+  function registerFormStrings() {
+    const pub = window.PublicI18n;
+    if (!pub?.registerStrings) return;
+    const entries = {};
+    Object.keys(L).forEach((key) => {
+      const item = L[key];
+      if (!item?.en) return;
+      entries[publicKey(key)] = { zh: item.zh || item.en };
+    });
+    pub.registerStrings(entries);
+  }
+
+  function labelFromBi(biItem) {
+    if (!biItem) return '';
+    const lang = window.PublicI18n?.getLang?.() || 'en';
+    if (lang === 'zh' && biItem.zh) return biItem.zh;
+    return biItem.en || '';
+  }
+
+  registerFormStrings();
+
+  window.HalfCutSupplierI18n = { L, labelHtml, labelInline, labelEn, labelZh, labelText, labelFromBi, registerFormStrings };
 })();

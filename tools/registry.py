@@ -8,6 +8,7 @@ from tools import memory_tool
 from tools.deploy_tool import TOOL as DEPLOY_TOOL
 from tools.git_tool import TOOL as GIT_TOOL
 from tools.inventory_tool import TOOL as INVENTORY_TOOL
+from tools.qxb_upload_tool import TOOL as QXB_UPLOAD_TOOL
 from tools.telegram_tool import TOOL as TELEGRAM_TOOL
 from tools.tool_base import APPROVAL_REQUIRED_ACTIONS, BaseTool, Permission, ToolResult
 from tools.vin_tool import TOOL as VIN_TOOL
@@ -57,7 +58,7 @@ def bootstrap_registry() -> None:
     if _REGISTRY:
         return
     for tool in (
-        VIN_TOOL, INVENTORY_TOOL, DEPLOY_TOOL, GIT_TOOL,
+        VIN_TOOL, INVENTORY_TOOL, QXB_UPLOAD_TOOL, DEPLOY_TOOL, GIT_TOOL,
         WHATSAPP_TOOL, TELEGRAM_TOOL,
     ):
         _register(tool)

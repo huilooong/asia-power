@@ -1,0 +1,296 @@
+/**
+ * Admin v4 tool skin — white / SF / gold accents.
+ * Loaded after styles.css; does not change review business logic.
+ */
+:root {
+  --admin-v4-bg: #f5f5f7;
+  --admin-v4-surface: #ffffff;
+  --admin-v4-t1: #1d1d1f;
+  --admin-v4-t2: #6e6e73;
+  --admin-v4-t3: #86868b;
+  --admin-v4-b1: #d2d2d7;
+  --admin-v4-b2: #e8e8ed;
+  --admin-v4-gold: #d4880a;
+  --admin-v4-gold-bg: #fef3dc;
+  --admin-v4-font: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Helvetica Neue', Arial, 'PingFang SC', sans-serif;
+  --admin-v4-r: 12px;
+}
+
+body[data-page^="admin-"] {
+  font-family: var(--admin-v4-font);
+  background: var(--admin-v4-bg);
+  color: var(--admin-v4-t1);
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Text wordmark */
+.ap-logo {
+  font-size: 18px;
+  font-weight: 800;
+  letter-spacing: -0.4px;
+  color: var(--admin-v4-t1);
+  text-decoration: none !important;
+  white-space: nowrap;
+}
+.ap-logo span { color: var(--admin-v4-gold); }
+.admin-v4-header__logo {
+  font-size: 16px;
+  font-weight: 800;
+  letter-spacing: -0.3px;
+  color: var(--admin-v4-t1);
+  text-decoration: none !important;
+  white-space: nowrap;
+}
+
+.admin-v4-header {
+  background: var(--admin-v4-surface) !important;
+  border-bottom: 1px solid var(--admin-v4-b2);
+  box-shadow: none !important;
+  position: sticky;
+  top: 0;
+  z-index: 80;
+}
+.admin-v4-header__inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  min-height: 56px;
+  padding-top: 8px;
+  padding-bottom: 8px;
+}
+.admin-v4-header .menu-toggle { display: none; }
+.admin-v4-nav {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  align-items: center;
+}
+.admin-v4-nav__link {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--admin-v4-t2);
+  text-decoration: none !important;
+  padding: 8px 12px;
+  border-radius: 8px;
+}
+.admin-v4-nav__link:hover { color: var(--admin-v4-t1); background: var(--admin-v4-bg); }
+.admin-v4-nav__link.is-active {
+  color: var(--admin-v4-t1);
+  background: var(--admin-v4-gold-bg);
+}
+
+/* Hero */
+body[data-page^="admin-"] .page-hero--catalog {
+  background: var(--admin-v4-surface);
+  border-bottom: 1px solid var(--admin-v4-b2);
+  padding: 36px 0 28px;
+}
+body[data-page^="admin-"] .page-hero--catalog .page-hero__breadcrumb {
+  color: var(--admin-v4-t3);
+  font-size: 13px;
+  margin-bottom: 10px;
+}
+body[data-page^="admin-"] .page-hero--catalog .page-hero__breadcrumb a {
+  color: var(--admin-v4-t2);
+  text-decoration: none;
+}
+body[data-page^="admin-"] .page-hero--catalog h1 {
+  color: var(--admin-v4-t1);
+  font-family: var(--admin-v4-font);
+  font-size: clamp(1.5rem, 2.5vw, 1.85rem);
+  font-weight: 800;
+  letter-spacing: -0.3px;
+  line-height: 1.25;
+  text-transform: none;
+}
+body[data-page^="admin-"] .page-hero--catalog .page-hero__subtitle-zh {
+  color: var(--admin-v4-t2);
+  font-weight: 600;
+  font-size: 0.92em;
+}
+body[data-page^="admin-"] .page-hero--catalog p {
+  color: var(--admin-v4-t2);
+  max-width: 640px;
+}
+body[data-page^="admin-"] .admin-v4-badge {
+  display: inline-flex;
+  align-items: center;
+  margin-top: 10px;
+  padding: 4px 10px;
+  border-radius: 999px;
+  background: var(--admin-v4-gold-bg);
+  color: #8a5a00;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+body[data-page^="admin-"] .section--gray {
+  background: var(--admin-v4-bg) !important;
+}
+
+/* Review chrome */
+body[data-page^="admin-"] .admin-review-tab {
+  border-radius: 10px;
+  border-color: var(--admin-v4-b1);
+  background: var(--admin-v4-surface);
+  color: var(--admin-v4-t1);
+  font-family: var(--admin-v4-font);
+}
+body[data-page^="admin-"] .admin-review-tab.active {
+  background: var(--admin-v4-t1);
+  border-color: var(--admin-v4-t1);
+  color: #fff;
+}
+body[data-page^="admin-"] .admin-review-tab__count {
+  background: var(--admin-v4-gold);
+  color: #1d1d1f;
+}
+body[data-page^="admin-"] .admin-review-tab.active .admin-review-tab__count {
+  background: #fff;
+  color: var(--admin-v4-t1);
+}
+body[data-page^="admin-"] .admin-review-card {
+  border-color: var(--admin-v4-b2);
+  border-radius: var(--admin-v4-r);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+}
+body[data-page^="admin-"] .admin-review-card__id {
+  font-family: var(--admin-v4-font);
+  color: var(--admin-v4-t1);
+}
+body[data-page^="admin-"] .btn,
+body[data-page^="admin-"] button.btn {
+  font-family: var(--admin-v4-font);
+}
+body[data-page^="admin-"] .btn--primary,
+body[data-page^="admin-"] .btn-primary {
+  background: var(--admin-v4-t1) !important;
+  border-color: var(--admin-v4-t1) !important;
+  color: #fff !important;
+}
+body[data-page^="admin-"] .btn--accent,
+body[data-page^="admin-"] .btn-accent {
+  background: var(--admin-v4-gold) !important;
+  border-color: var(--admin-v4-gold) !important;
+  color: #1d1d1f !important;
+}
+
+body[data-page^="admin-"] .header .logo__img { display: none; }
+
+/* Admin footer — light v4, matches header */
+.admin-v4-footer {
+  background: var(--admin-v4-bg) !important;
+  border-top: 1px solid var(--admin-v4-b2);
+  color: var(--admin-v4-t2);
+  margin-top: 40px;
+  padding: 36px 0 20px;
+}
+.admin-v4-footer__inner {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 24px;
+  flex-wrap: wrap;
+  margin-bottom: 24px;
+}
+.admin-v4-footer__brand { max-width: 320px; }
+.admin-v4-footer__logo {
+  display: inline-block;
+  margin-bottom: 8px;
+}
+.admin-v4-footer__tag {
+  font-size: 13px;
+  color: var(--admin-v4-t2);
+  line-height: 1.5;
+  margin: 0;
+}
+.admin-v4-footer__nav {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px 4px;
+}
+.admin-v4-footer__nav a {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--admin-v4-t2);
+  text-decoration: none !important;
+  padding: 6px 10px;
+  border-radius: 8px;
+}
+.admin-v4-footer__nav a:hover {
+  color: var(--admin-v4-t1);
+  background: #fff;
+}
+.admin-v4-footer__dot {
+  color: var(--admin-v4-b1);
+  padding: 0 2px;
+}
+.admin-v4-footer__bottom {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+  padding-top: 16px;
+  border-top: 1px solid var(--admin-v4-b2);
+  font-size: 12px;
+  color: var(--admin-v4-t3);
+}
+
+/* Kill legacy navy footer if any leftover markup appears */
+body[data-page^="admin-"] .footer.ap-footer,
+body[data-page^="admin-"] footer.footer {
+  background: var(--admin-v4-bg) !important;
+  color: var(--admin-v4-t2) !important;
+}
+body[data-page^="admin-"] .whatsapp-float { display: none !important; }
+
+.admin-review-login__oauth {
+  margin: 0 0 16px;
+}
+.admin-review-login__oauth .btn {
+  width: 100%;
+}
+.admin-review-login__hint--oauth {
+  margin-top: 8px;
+  font-size: 13px;
+  color: var(--admin-v4-t2);
+}
+.admin-review-login__divider {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: 16px 0 8px;
+  color: var(--admin-v4-t3);
+  font-size: 12px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+.admin-review-login__divider::before,
+.admin-review-login__divider::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: var(--admin-v4-b2);
+}
+.admin-review-login__divider span { white-space: nowrap; }
+
+@media (max-width: 720px) {
+  .admin-v4-header__inner {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  .admin-v4-nav {
+    width: 100%;
+    overflow-x: auto;
+    flex-wrap: nowrap;
+    padding-bottom: 4px;
+  }
+  .admin-v4-footer__inner {
+    flex-direction: column;
+  }
+}

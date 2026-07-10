@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>AsiaPower Refined v5 · Cleanup</title>
+<style>:root{--w:#fff;--g1:#f5f5f7;--g2:#e8e8ed;--g3:#d2d2d7;--t1:#1d1d1f;--t2:#6e6e73;--t3:#86868b;--au:#b8850a;--au2:#fef3dc;--gr:#1a7f37;--gr2:#e6f4ea;--bl:#0066cc;--r:12px;--r2:18px;--r3:22px;--font:-apple-system,BlinkMacSystemFont,'SF Pro Display','Helvetica Neue',Arial,sans-serif;--max:1180px}
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+body{font-family:var(--font);background:var(--w);color:var(--t1);line-height:1.5;font-size:16px;-webkit-font-smoothing:antialiased}
+a{color:inherit;text-decoration:none}button,select,input{font-family:var(--font)}
+.shell{position:sticky;top:0;z-index:9999;background:rgba(255,255,255,.92);backdrop-filter:blur(16px);border-bottom:1px solid var(--g2);padding:10px 28px;display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap}
+.shell-lbl{font-size:12px;color:var(--t2);font-weight:500}.shell-lbl b{color:var(--t1)}
+.shell-note{font-size:11.5px;color:var(--gr);background:var(--gr2);border:1px solid #b7e4c7;padding:5px 12px;border-radius:100px;font-weight:600}
+.tabs{display:flex;gap:3px}.tab{padding:7px 18px;border-radius:100px;font-size:12.5px;font-weight:600;border:none;background:transparent;color:var(--t2);cursor:pointer;transition:all .14s}.tab.on{background:var(--t1);color:#fff}.tab:hover:not(.on){background:var(--g1);color:var(--t1)}
+.pv{display:none}.pv.on{display:block}
+.nav{position:sticky;top:41px;z-index:90;background:rgba(255,255,255,.84);backdrop-filter:blur(20px);border-bottom:1px solid var(--g2)}
+.nav-in{max-width:var(--max);margin:auto;padding:0 28px;height:50px;display:flex;align-items:center}
+.logo{font-size:19px;font-weight:800;letter-spacing:-.5px;flex-shrink:0;margin-right:40px}.logo em{font-style:normal;color:var(--au)}
+.nav-links{display:flex;flex:1;height:100%}.nav-links a{font-size:13.5px;font-weight:500;color:var(--t2);padding:0 15px;display:flex;align-items:center;border-bottom:2px solid transparent;transition:all .14s}.nav-links a:hover{color:var(--t1)}.nav-links a.on{color:var(--t1);border-bottom-color:var(--t1)}
+.nav-r{display:flex;align-items:center;gap:14px;flex-shrink:0;margin-left:auto}
+.lang{display:flex}.lang a{font-size:12px;color:var(--t3);padding:3px 7px;transition:color .12s}.lang a+a{border-left:1px solid var(--g3)}.lang a.on,.lang a:hover{color:var(--t1)}
+.wa-nav{display:inline-flex;align-items:center;gap:6px;background:#25d366;color:#fff;font-size:12.5px;font-weight:700;padding:8px 18px;border-radius:100px;transition:opacity .12s}.wa-nav:hover{opacity:.88}.wa-nav svg{width:13px;height:13px;fill:#fff}
+.hero{background:var(--g1);padding:0 28px;overflow:hidden;border-bottom:1px solid var(--g2)}
+.hero-in{max-width:var(--max);margin:auto;padding:72px 0 0;display:grid;grid-template-columns:1fr 420px;gap:56px;align-items:end}
+.hero-text{padding-bottom:56px}
+.hero-eyebrow{display:inline-flex;align-items:center;gap:8px;font-size:13px;color:var(--t2);font-weight:500;margin-bottom:20px}
+.hero-live{width:7px;height:7px;border-radius:50%;background:#34c759;box-shadow:0 0 0 4px rgba(52,199,89,.15)}
+.hero h1{font-size:clamp(44px,5.8vw,72px);font-weight:700;letter-spacing:-2.4px;line-height:1.05;color:var(--t1);margin-bottom:18px}.hero h1 em{font-style:normal;color:var(--au)}
+.hero-sub{font-size:clamp(16px,1.6vw,19px);color:var(--t2);line-height:1.6;font-weight:400;max-width:480px;margin-bottom:28px}
+.hero-cta{display:inline-flex;align-items:center;gap:8px;background:var(--t1);color:#fff;font-size:15px;font-weight:600;padding:14px 28px;border-radius:100px;border:none;cursor:pointer;transition:opacity .14s;margin-bottom:22px}.hero-cta:hover{opacity:.8}.hero-cta svg{width:14px;height:14px;stroke:#fff;fill:none;stroke-width:2.5}
+.search-bar{display:flex;background:#fff;border:1.5px solid var(--g3);border-radius:var(--r2);overflow:hidden;box-shadow:0 2px 8px rgba(0,0,0,.05);max-width:480px;transition:border-color .15s}
+.search-bar:focus-within{border-color:var(--t1)}
+.search-bar input{flex:1;border:none;outline:none;padding:12px 16px;font-size:14px;color:var(--t1);background:transparent}
+.search-bar input::placeholder{color:var(--t3)}
+.search-bar button{background:var(--t1);color:#fff;border:none;padding:0 18px;font-size:13px;font-weight:600;display:flex;align-items:center;gap:6px;cursor:pointer;white-space:nowrap}
+.search-bar button svg{width:13px;height:13px;stroke:#fff;fill:none;stroke-width:2.5}
+.search-tags{display:flex;gap:6px;flex-wrap:wrap;margin-top:12px}
+.stag{font-size:12px;color:var(--t2);padding:5px 12px;border-radius:100px;border:1.5px solid var(--g3);background:#fff;cursor:pointer;transition:all .12s}.stag:hover{border-color:var(--t2);color:var(--t1)}
+.hero-card{background:#fff;border-radius:var(--r3) var(--r3) 0 0;overflow:hidden;box-shadow:0 -4px 24px rgba(0,0,0,.06),0 -1px 0 var(--g2);align-self:flex-end}
+@keyframes sk{0%{background-position:-800px 0}100%{background-position:800px 0}}
+.hero-card-img{height:240px;background:var(--g2);position:relative;display:flex;align-items:center;justify-content:center}
+.hero-card-img.sk{background:linear-gradient(90deg,var(--g1) 25%,var(--g2) 37%,var(--g1) 63%);background-size:800px 100%;animation:sk 1.5s linear infinite}
+.ph{opacity:.18;display:flex;flex-direction:column;align-items:center;gap:7px}.ph svg{width:32px;height:32px;stroke:var(--t2);fill:none;stroke-width:1.5}.ph span{font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:var(--t3)}
+.hcm{padding:18px 20px 22px}.hcm-top{display:flex;justify-content:space-between;margin-bottom:8px}
+.hcm-make{font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--t3)}
+.hcm-stock{font-size:11px;color:var(--t3)}
+.hcm-name{font-size:16px;font-weight:700;letter-spacing:-.3px;margin-bottom:10px}
+.hcm-tags{display:flex;gap:6px;margin-bottom:12px;flex-wrap:wrap}
+.hcm-tag{font-size:11.5px;color:var(--t2);background:var(--g1);border:1px solid var(--g3);padding:3px 10px;border-radius:100px}
+.hcm-bot{display:flex;align-items:center;justify-content:space-between;padding-top:12px;border-top:1px solid var(--g2)}
+.hcm-price{font-size:20px;font-weight:700;letter-spacing:-.6px}
+.hcm-exw{font-size:10px;font-weight:700;background:var(--au2);color:var(--au);border:1px solid #f5d882;padding:2px 8px;border-radius:100px;margin-left:5px}
+.hcm-btn{font-size:13px;font-weight:700;background:var(--t1);color:#fff;padding:8px 16px;border-radius:100px;border:none;cursor:pointer}
+.cats-sec{padding:64px 28px 48px}.cats-in{max-width:var(--max);margin:auto}
+.sec-kicker{font-size:11.5px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--t3);margin-bottom:9px}
+.sec-h{font-size:clamp(24px,3vw,32px);font-weight:700;letter-spacing:-.8px;margin-bottom:28px}
+.cat-strip{display:grid;grid-template-columns:repeat(5,1fr);gap:10px}
+.cc{background:var(--g1);border:1.5px solid transparent;border-radius:var(--r2);padding:22px 16px;text-align:center;cursor:pointer;transition:all .18s}
+.cc:hover{background:#fff;border-color:var(--g2);box-shadow:0 4px 16px rgba(0,0,0,.08)}
+.cc.on{background:var(--t1);border-color:var(--t1)}
+.cc.on .cc-ic{background:rgba(255,255,255,.12);border-color:rgba(255,255,255,.15)}
+.cc.on .cc-ic svg{stroke:#fff}.cc.on .cc-n{color:#fff}.cc.on .cc-c{color:rgba(255,255,255,.55)}
+.cc-ic{width:44px;height:44px;border-radius:12px;margin:0 auto 10px;background:#fff;border:1.5px solid var(--g2);display:grid;place-items:center}
+.cc-ic svg{width:20px;height:20px;stroke:var(--t1);fill:none;stroke-width:1.7}
+.cc-n{font-size:13px;font-weight:600;color:var(--t1);margin-bottom:3px}.cc-c{font-size:11.5px;color:var(--t3)}
+.grid-sec{padding:0 28px 72px;background:var(--g1)}.grid-sec-in{max-width:var(--max);margin:auto;padding-top:64px}
+.sec-head{display:flex;align-items:flex-end;justify-content:space-between;margin-bottom:28px}
+.see-all{font-size:14px;font-weight:600;color:var(--bl);display:flex;align-items:center;gap:4px}.see-all:hover{text-decoration:underline}
+.prod-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+.pc{background:#fff;border-radius:var(--r2);overflow:hidden;border:1.5px solid var(--g2);transition:all .2s;cursor:pointer}.pc:hover{border-color:var(--g3);box-shadow:0 6px 24px rgba(0,0,0,.09);transform:translateY(-3px)}
+.pc-img{aspect-ratio:16/10;position:relative;background:linear-gradient(90deg,var(--g1) 25%,var(--g2) 37%,var(--g1) 63%);background-size:600px 100%;animation:sk 1.5s linear infinite;border-bottom:1px solid var(--g2);display:flex;align-items:center;justify-content:center}
+.pc-img.rp{background:var(--g1);animation:none}
+.pc-hc{position:absolute;top:9px;left:9px;background:rgba(0,0,0,.38);color:rgba(255,255,255,.95);font-size:9.5px;font-weight:700;padding:3px 9px;border-radius:100px;letter-spacing:.04em}
+.pc-vid{position:absolute;top:9px;right:9px;background:rgba(0,0,0,.38);color:#fff;font-size:10px;font-weight:700;padding:3px 9px;border-radius:100px;display:flex;align-items:center;gap:4px;backdrop-filter:blur(4px)}.pc-vid::before{content:'▶';font-size:7.5px;color:#fbbf24}
+.ph-inner{opacity:.18;display:flex;flex-direction:column;align-items:center;gap:6px}.ph-inner svg{width:26px;height:26px;stroke:var(--t2);fill:none;stroke-width:1.5}.ph-inner span{font-size:9px;letter-spacing:.08em;text-transform:uppercase;color:var(--t3)}
+.pc-body{padding:16px 18px}
+.pc-make{font-size:10.5px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--t3);margin-bottom:3px}
+.pc-name{font-size:14.5px;font-weight:600;color:var(--t1);line-height:1.4;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;min-height:40px;margin-bottom:10px}
+.pc-tags{display:flex;gap:5px;flex-wrap:wrap;margin-bottom:12px}
+.t{font-size:11.5px;color:var(--t2);background:var(--g1);border:1px solid var(--g2);padding:3px 10px;border-radius:100px;font-weight:500}.t.v{background:var(--gr2);color:var(--gr);border-color:#b7e4c7}
+.pc-foot{display:flex;align-items:center;justify-content:space-between;padding-top:12px;border-top:1px solid var(--g2)}
+.pc-price{font-size:17px;font-weight:700;letter-spacing:-.4px}
+.pc-exw{font-size:10px;font-weight:700;background:var(--au2);color:var(--au);border:1px solid #f5d882;padding:2px 7px;border-radius:100px;margin-left:4px}
+.pc-btn{font-size:12px;font-weight:700;background:var(--t1);color:#fff;padding:7px 16px;border-radius:100px;border:none;cursor:pointer;transition:opacity .12s}.pc-btn:hover{opacity:.78}
+.trust-sec{border-top:1px solid var(--g2);border-bottom:1px solid var(--g2);padding:48px 28px;background:#fff}
+.trust-in{max-width:var(--max);margin:auto;display:grid;grid-template-columns:repeat(4,1fr)}
+.ti{text-align:center;padding:0 24px;border-right:1px solid var(--g2)}.ti:last-child{border-right:none}
+.ti-n{font-size:30px;font-weight:700;letter-spacing:-1.5px;line-height:1;margin-bottom:5px}.ti-n em{font-style:normal;color:var(--au)}
+.ti-l{font-size:13.5px;color:var(--t2)}
+.footer{background:var(--g1);border-top:1px solid var(--g2);padding:56px 28px 28px}
+.footer-in{max-width:var(--max);margin:auto}
+.footer-top{display:grid;grid-template-columns:1.6fr 1fr 1fr 1.2fr;gap:48px;margin-bottom:44px}
+.fb .logo{display:block;margin-bottom:12px}.fb p{font-size:13.5px;color:var(--t2);line-height:1.7;max-width:260px;margin-top:8px}
+.fcol h4{font-size:11.5px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;color:var(--t3);margin-bottom:14px}.fcol ul{list-style:none}.fcol li{margin-bottom:9px}.fcol a{font-size:13.5px;color:var(--t2);transition:color .12s}.fcol a:hover{color:var(--t1)}
+.fcta{background:#fff;border:1.5px solid var(--g2);border-radius:var(--r2);padding:20px}
+.fcta h4{font-size:14px;font-weight:700;color:var(--t1);margin-bottom:8px}.fcta p{font-size:13px;color:var(--t2);margin-bottom:14px;line-height:1.6}
+.btn-wa-f{display:flex;align-items:center;justify-content:center;gap:7px;width:100%;background:#25d366;color:#fff;font-size:13.5px;font-weight:700;padding:11px;border-radius:var(--r);border:none;cursor:pointer;transition:opacity .12s}.btn-wa-f svg{width:15px;height:15px;fill:#fff}.btn-wa-f:hover{opacity:.88}
+.footer-btm{border-top:1px solid var(--g2);padding-top:20px;display:flex;justify-content:space-between;font-size:12px;color:var(--t3)}
+.cut-list{max-width:var(--max);margin:24px auto 0;padding:0 28px 40px}
+.cut-box{background:#fff;border:1.5px solid var(--g2);border-radius:var(--r2);padding:20px 22px}
+.cut-box h3{font-size:14px;font-weight:700;margin-bottom:10px}
+.cut-box ul{margin:0;padding-left:18px;color:var(--t2);font-size:13.5px;line-height:1.7}
+.cut-box li{margin-bottom:4px}
+.page-banner{background:var(--g1);border-bottom:1px solid var(--g2);padding:32px 28px}
+.pb-in{max-width:var(--max);margin:auto}.crumb{font-size:12.5px;color:var(--t2);display:flex;align-items:center;gap:5px;margin-bottom:7px}.crumb a{color:var(--bl)}.crumb .sep{color:var(--g3)}
+.pb-in h1{font-size:30px;font-weight:700;letter-spacing:-.7px;margin-bottom:3px}.pb-in p{font-size:14px;color:var(--t2)}
+.listing-body{max-width:var(--max);margin:0 auto;padding:24px 28px;display:grid;grid-template-columns:224px 1fr;gap:28px}
+.sb{position:sticky;top:93px;align-self:start}.sb-sec{margin-bottom:4px}
+.sb-lbl{font-size:11px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;color:var(--t3);padding:0 6px;margin-bottom:8px}
+.sb-cats{display:flex;flex-direction:column;gap:2px}
+.scat{display:flex;align-items:center;gap:10px;padding:9px 12px;border-radius:var(--r);cursor:pointer;border:1.5px solid transparent;transition:all .14s;text-decoration:none}.scat:hover{background:var(--g1)}.scat.on{background:var(--g1);border-color:var(--g2)}
+.scat-ic{width:30px;height:30px;border-radius:9px;background:var(--g2);display:grid;place-items:center;flex-shrink:0}.scat-ic svg{width:14px;height:14px;stroke:var(--t2);fill:none;stroke-width:1.8}.scat.on .scat-ic svg{stroke:var(--t1)}
+.scat-n{flex:1;font-size:13px;font-weight:500;color:var(--t1)}.scat.on .scat-n{font-weight:700}.scat-c{font-size:12px;color:var(--t3)}
+.sb-filter{border-top:1px solid var(--g2);padding-top:20px;margin-top:20px}
+.fo{display:flex;align-items:center;gap:9px;padding:7px 8px;border-radius:var(--r);cursor:pointer;transition:background .1s}.fo:hover{background:var(--g1)}
+.fo-box{width:16px;height:16px;border-radius:4px;border:1.5px solid var(--g3);flex-shrink:0;display:grid;place-items:center}.fo.on .fo-box{background:var(--t1);border-color:var(--t1)}.fo.on .fo-box::after{content:'✓';font-size:9px;color:#fff;font-weight:900}
+.fo-n{flex:1;font-size:13px;color:var(--t1)}.fo-c{font-size:12px;color:var(--t3)}
+.lm .lm-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;padding-bottom:14px;border-bottom:1px solid var(--g2)}
+.lm .lm-info{font-size:13.5px;color:var(--t2)}.lm .lm-info strong{color:var(--t1)}
+.lm select{background:#fff;border:1.5px solid var(--g3);color:var(--t1);padding:7px 12px;border-radius:var(--r);font-size:13px}
+.active-f{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:16px}
+.af{display:inline-flex;align-items:center;gap:5px;font-size:12px;font-weight:600;background:var(--g1);border:1.5px solid var(--g3);color:var(--t2);padding:4px 11px;border-radius:100px}.af x{cursor:pointer;opacity:.5;font-size:10px}
+.lrows{display:flex;flex-direction:column;gap:8px}
+.lr{background:#fff;border:1.5px solid var(--g2);border-radius:var(--r2);overflow:hidden;display:grid;grid-template-columns:200px 1fr;transition:all .2s;cursor:pointer}.lr:hover{border-color:var(--g3);box-shadow:0 4px 18px rgba(0,0,0,.08)}
+.lr-img{background:linear-gradient(90deg,var(--g1) 25%,var(--g2) 37%,var(--g1) 63%);background-size:600px 100%;animation:sk 1.5s linear infinite;border-right:1px solid var(--g2);position:relative;display:flex;align-items:center;justify-content:center;min-height:156px}.lr-img.rp{background:var(--g1);animation:none}
+.lr-hc{position:absolute;top:9px;left:9px;background:rgba(0,0,0,.32);color:rgba(255,255,255,.95);font-size:8.5px;font-weight:700;padding:3px 8px;border-radius:100px;letter-spacing:.04em}
+.lr-body{padding:16px 18px;display:flex;flex-direction:column;justify-content:space-between}
+.lr-make{font-size:10px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;color:var(--t3);margin-bottom:3px}
+.lr-name{font-size:15px;font-weight:700;letter-spacing:-.2px;margin-bottom:7px}
+.lr-tags{display:flex;gap:5px;flex-wrap:wrap;margin-bottom:9px}
+.lr-price{font-size:22px;font-weight:700;letter-spacing:-.5px;margin-bottom:4px}
+.lr-exw{font-size:10px;font-weight:700;background:var(--au2);color:var(--au);border:1px solid #f5d882;padding:2px 7px;border-radius:100px;margin-left:4px}
+.lr-specs{font-size:12.5px;color:var(--t2);display:flex;gap:12px;flex-wrap:wrap;margin-bottom:12px}
+.lr-bot{display:flex;align-items:center;justify-content:space-between;padding-top:10px;border-top:1px solid var(--g2)}
+.lr-vin{font-size:11px;color:var(--t3);font-family:monospace}
+.lr-ctas{display:flex;gap:6px}
+.lr-wa-btn{display:flex;align-items:center;gap:5px;background:#f0fdf4;color:var(--gr);border:1px solid #b7e4c7;padding:7px 14px;border-radius:100px;font-size:12px;font-weight:700;transition:all .12s}.lr-wa-btn:hover{background:#25d366;color:#fff;border-color:#25d366}
+.lr-get-btn{background:var(--t1);color:#fff;border:none;padding:7px 18px;border-radius:100px;font-size:12px;font-weight:700;cursor:pointer;transition:opacity .12s}.lr-get-btn:hover{opacity:.78}
+.note-page{max-width:720px;margin:80px auto;padding:0 28px;text-align:center;color:var(--t2)}
+.note-page h2{font-size:28px;color:var(--t1);margin-bottom:12px;letter-spacing:-.6px}
+@media (max-width:900px){
+  .hero-in,.cat-strip,.prod-grid,.trust-in,.footer-top,.listing-body{grid-template-columns:1fr}
+  .nav-links{display:none}
+}
+</style>
+</head>
+<body>
+<div class="shell">
+  <span class="shell-lbl">AsiaPower — <b>Refined v5 Cleanup</b> · 首页精简预览（未上线）</span>
+  <span class="shell-note">已删：独立搜索区 · 双份数据条 · 重复 Featured</span>
+  <div class="tabs">
+    <button class="tab on" onclick="go('home',this)">Home</button>
+    <button class="tab" onclick="go('listing',this)">Listing</button>
+    <button class="tab" onclick="go('diff',this)">改了什么</button>
+  </div>
+</div>
+<nav class="nav">
+  <div class="nav-in">
+    <div class="logo">Asia<em>Power</em></div>
+    <div class="nav-links">
+      <a href="#" class="on">Half-Cuts</a><a href="#">Trucks</a><a href="#">Engines &amp; Parts</a><a href="#">Construction</a><a href="#">About</a>
+    </div>
+    <div class="nav-r">
+      <div class="lang"><a href="#" class="on">EN</a><a href="#">中文</a><a href="#">FR</a><a href="#">AR</a></div>
+      <a href="#" class="wa-nav"><svg viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51a5.5 5.5 0 00-.57-.01c-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/></svg>WhatsApp</a>
+    </div>
+  </div>
+</nav>
+
+<!-- HOME · cleaned -->
+<div id="home" class="pv on">
+  <div class="hero">
+    <div class="hero-in">
+      <div class="hero-text">
+        <div class="hero-eyebrow"><span class="hero-live"></span>Ships to 110+ countries from Zhengzhou</div>
+        <h1>The world's<br>used <em>powertrain</em><br>marketplace.</h1>
+        <p class="hero-sub">Half-cuts, engines and truck parts — video-verified, EXW pricing, 24-hour quotes.</p>
+        <button class="hero-cta">Browse inventory <svg viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg></button>
+        <div class="search-bar">
+          <input type="text" placeholder="Make, model, engine code or HC…" readonly/>
+          <button><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>Search</button>
+        </div>
+        <div class="search-tags">
+          <span class="stag">Toyota LandCruiser</span><span class="stag">1GR-FE</span><span class="stag">2AZ-FE</span><span class="stag">4JB1</span>
+        </div>
+      </div>
+      <div class="hero-card">
+        <div class="hero-card-img sk"><div class="ph"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg><span>Product photo</span></div></div>
+        <div class="hcm">
+          <div class="hcm-top"><div class="hcm-make">Toyota</div><div class="hcm-stock">HC250037</div></div>
+          <div class="hcm-name">Land Cruiser Prado 1GR-FE Half-Cut</div>
+          <div class="hcm-tags"><span class="hcm-tag">2003</span><span class="hcm-tag">4AT</span><span class="hcm-tag">4WD</span><span class="hcm-tag" style="background:#f0fdf4;color:#1a7f37;border-color:#b7e4c7">✓ Video</span></div>
+          <div class="hcm-bot"><div><span class="hcm-price">$7,000</span><span class="hcm-exw">EXW</span></div><button class="hcm-btn">Get Quote</button></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="cats-sec"><div class="cats-in">
+    <div class="sec-kicker">Browse</div>
+    <div class="sec-h">What are you looking for?</div>
+    <div class="cat-strip">
+      <div class="cc on"><div class="cc-ic"><svg viewBox="0 0 24 24"><rect x="1" y="3" width="15" height="13"/><polygon points="16 8 20 8 23 11 23 16 16 16 16 8"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg></div><div class="cc-n">Half-Cuts</div><div class="cc-c">394</div></div>
+      <div class="cc"><div class="cc-ic"><svg viewBox="0 0 24 24"><path d="M5 17H3a2 2 0 01-2-2V5a2 2 0 012-2h11a2 2 0 012 2v3"/><rect x="9" y="11" width="14" height="10" rx="2"/><circle cx="12" cy="16" r="1"/></svg></div><div class="cc-n">Trucks</div><div class="cc-c">48</div></div>
+      <div class="cc"><div class="cc-ic"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M12 1v4M12 19v4M4.22 4.22l2.83 2.83M16.95 16.95l2.83 2.83M1 12h4M19 12h4"/></svg></div><div class="cc-n">Engines &amp; Parts</div><div class="cc-c">210</div></div>
+      <div class="cc"><div class="cc-ic"><svg viewBox="0 0 24 24"><path d="M14.7 6.3a1 1 0 000 1.4l1.6 1.6a1 1 0 001.4 0l3.77-3.77a6 6 0 01-7.94 7.94l-6.91 6.91a2.12 2.12 0 01-3-3l6.91-6.91a6 6 0 017.94-7.94l-3.76 3.76z"/></svg></div><div class="cc-n">Construction</div><div class="cc-c">23</div></div>
+      <div class="cc"><div class="cc-ic"><svg viewBox="0 0 24 24"><path d="M21 16V8a2 2 0 00-1-1.73l-7-4a2 2 0 00-2 0l-7 4A2 2 0 003 8v8a2 2 0 001 1.73l7 4a2 2 0 002 0l7-4A2 2 0 0021 16z"/></svg></div><div class="cc-n">Chassis Parts</div><div class="cc-c">67</div></div>
+    </div>
+  </div></div>
+
+  <div class="grid-sec"><div class="grid-sec-in">
+    <div class="sec-head">
+      <div><div class="sec-kicker">Latest stock</div><div class="sec-h" style="margin-bottom:0">Half-Cuts</div></div>
+      <a href="#" class="see-all">View all 394 →</a>
+    </div>
+    <div class="prod-grid">
+      <div class="pc"><div class="pc-img"><span class="pc-hc">HC250051</span><div class="ph-inner"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg><span>Photo on request</span></div></div><div class="pc-body"><div class="pc-make">Audi</div><div class="pc-name">Q3 EA211 Half-Cut 2WD</div><div class="pc-tags"><span class="t">2020</span><span class="t">7DCT</span><span class="t">2WD</span></div><div class="pc-foot"><div><span class="pc-price">$7,500</span><span class="pc-exw">EXW</span></div><button class="pc-btn">Quote</button></div></div></div>
+      <div class="pc"><div class="pc-img"><span class="pc-hc">HC250127</span><span class="pc-vid">Video</span><div class="ph-inner"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg><span>Photo on request</span></div></div><div class="pc-body"><div class="pc-make">Lexus</div><div class="pc-name">LX570 3UR-FE Half-Cut 4WD</div><div class="pc-tags"><span class="t">2009</span><span class="t">6AT</span><span class="t">4WD</span><span class="t v">Video</span></div><div class="pc-foot"><div><span class="pc-price">$5,900</span><span class="pc-exw">EXW</span></div><button class="pc-btn">Quote</button></div></div></div>
+      <div class="pc"><div class="pc-img rp" style="background:#e8ecf0"><span class="pc-hc">HC250386</span></div><div class="pc-body"><div class="pc-make">Mercedes-Benz</div><div class="pc-name">V-Class 651 955 Half-Cut 2WD</div><div class="pc-tags"><span class="t">2010</span><span class="t">7AT</span><span class="t">2WD</span></div><div class="pc-foot"><div><span class="pc-price">$5,500</span><span class="pc-exw">EXW</span></div><button class="pc-btn">Quote</button></div></div></div>
+    </div>
+  </div></div>
+
+  <div class="trust-sec"><div class="trust-in">
+    <div class="ti"><div class="ti-n">394<em>+</em></div><div class="ti-l">Items in stock</div></div>
+    <div class="ti"><div class="ti-n">110<em>+</em></div><div class="ti-l">Export destinations</div></div>
+    <div class="ti"><div class="ti-n">24<em>h</em></div><div class="ti-l">Quote turnaround</div></div>
+    <div class="ti"><div class="ti-n">100<em>%</em></div><div class="ti-l">Video-verified option</div></div>
+  </div></div>
+
+  <footer class="footer"><div class="footer-in">
+    <div class="footer-top">
+      <div class="fb"><div class="logo">Asia<em>Power</em></div><p>Global B2B marketplace for used powertrains. Sourced in China, exported worldwide.</p></div>
+      <div class="fcol"><h4>Products</h4><ul><li><a href="#">Half-Cuts</a></li><li><a href="#">Trucks</a></li><li><a href="#">Engines &amp; Parts</a></li><li><a href="#">Construction</a></li><li><a href="#">Chassis Parts</a></li></ul></div>
+      <div class="fcol"><h4>Company</h4><ul><li><a href="#">About</a></li><li><a href="#">Become a Supplier</a></li><li><a href="#">Shipping &amp; Logistics</a></li><li><a href="#">Quality Standards</a></li><li><a href="#">Privacy Policy</a></li></ul></div>
+      <div class="fcta"><h4>Get a Quote</h4><p>Offices in Zhengzhou &amp; Accra. We reply within 24 hours.</p><button class="btn-wa-f"><svg viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51a5.5 5.5 0 00-.57-.01c-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/></svg>WhatsApp Now</button></div>
+    </div>
+    <div class="footer-btm"><span>© 2025 AsiaPower. All rights reserved.</span><span>Zhengzhou, China · Accra, Ghana</span></div>
+  </div></footer>
+</div>
+
+<!-- LISTING · unchanged structure -->
+<div id="listing" class="pv">
+  <div class="page-banner"><div class="pb-in"><div class="crumb"><a href="#">Home</a><span class="sep">›</span>Half-Cuts</div><h1>Half-Cut Vehicles</h1><p>394 verified units · EXW from Zhengzhou</p></div></div>
+  <div class="listing-body">
+    <aside class="sb">
+      <div class="sb-sec"><div class="sb-lbl">Category</div><div class="sb-cats">
+        <a href="#" class="scat on"><div class="scat-ic"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.8"><rect x="1" y="3" width="15" height="13"/><polygon points="16 8 20 8 23 11 23 16 16 16 16 8"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg></div><span class="scat-n">Half-Cuts</span><span class="scat-c">394</span></a>
+        <a href="#" class="scat"><div class="scat-ic"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.8"><circle cx="12" cy="12" r="3"/><path d="M12 1v4M12 19v4M4.22 4.22l2.83 2.83M16.95 16.95l2.83 2.83M1 12h4M19 12h4"/></svg></div><span class="scat-n">Engines &amp; Parts</span><span class="scat-c">210</span></a>
+        <a href="#" class="scat"><div class="scat-ic"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.8"><path d="M5 17H3a2 2 0 01-2-2V5a2 2 0 012-2h11a2 2 0 012 2v3"/><rect x="9" y="11" width="14" height="10" rx="2"/><circle cx="12" cy="16" r="1"/></svg></div><span class="scat-n">Trucks</span><span class="scat-c">48</span></a>
+      </div></div>
+      <div class="sb-filter"><div class="sb-lbl">Brand</div>
+        <div class="fo on"><div class="fo-box"></div><span class="fo-n">Toyota</span><span class="fo-c">89</span></div>
+        <div class="fo"><div class="fo-box"></div><span class="fo-n">Nissan</span><span class="fo-c">67</span></div>
+        <div class="fo"><div class="fo-box"></div><span class="fo-n">BMW</span><span class="fo-c">44</span></div>
+      </div>
+    </aside>
+    <div class="lm">
+      <div class="lm-top"><span class="lm-info"><strong>394</strong> results</span><select><option>Newest first</option><option>Price: Low to High</option></select></div>
+      <div class="active-f"><span class="af">Toyota <x>×</x></span></div>
+      <div class="lrows">
+        <div class="lr"><div class="lr-img"><span class="lr-hc">HC250037</span></div><div class="lr-body"><div><div class="lr-make">Toyota</div><div class="lr-name">Land Cruiser Prado 1GR-FE Half-Cut</div><div class="lr-tags"><span class="t">2003</span><span class="t">4AT</span><span class="t">4WD</span><span class="t v">Video</span></div><div><span class="lr-price">$7,000</span><span class="lr-exw">EXW</span></div></div><div class="lr-bot"><span class="lr-vin">JTEBU17R030****189</span><div class="lr-ctas"><button class="lr-wa-btn">WhatsApp</button><button class="lr-get-btn">Get Quote</button></div></div></div></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- DIFF -->
+<div id="diff" class="pv">
+  <div class="note-page">
+    <h2>相对原版 v5，首页砍了什么</h2>
+    <p style="margin-bottom:28px">原版 Home 像「堆叠展台」：同一辆车出现两次，同一组数字出现两次，找货入口互相抢戏。</p>
+  </div>
+  <div class="cut-list">
+    <div class="cut-box">
+      <h3>删除 / 合并</h3>
+      <ul>
+        <li><b>独立 Search 整段</b> → 并入 Hero（标题下方），少一截空白滚动</li>
+        <li><b>Hero 下方 Stats 条</b>（394 / 110 / 24h / 200）→ 删掉</li>
+        <li><b>Handpicked Featured 大卡</b>（又是 HC250037 Prado）→ 删掉；Hero 右侧已有同一辆</li>
+        <li><b>页尾 Trust 条与 Stats 重复</b> → 只保留页尾一条数据条</li>
+      </ul>
+      <h3 style="margin-top:18px">保留的清晰路径</h3>
+      <ul>
+        <li>Hero：品牌主张 + 一辆样例车 + 搜索 + 一个主按钮</li>
+        <li>分类条：进目录</li>
+        <li>最新库存网格：看货</li>
+        <li>一条信任数字 + 页脚联系</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<script>
+function go(id,b){
+  document.querySelectorAll('.pv').forEach(p=>p.classList.remove('on'));
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('on'));
+  document.getElementById(id).classList.add('on');
+  b.classList.add('on');
+  window.scrollTo({top:41,behavior:'smooth'});
+}
+</script>
+</body>
+</html>

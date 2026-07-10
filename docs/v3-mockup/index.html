@@ -1,0 +1,1030 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AsiaPower 3.0 UI 效果图 · 交互原型</title>
+  <style>
+    :root {
+      --navy-900: #0a1628;
+      --navy-800: #0f2340;
+      --navy-700: #163058;
+      --accent: #d4a017;
+      --accent-light: #e8bc3a;
+      --white: #ffffff;
+      --gray-100: #f4f6f9;
+      --gray-200: #e2e8f0;
+      --gray-400: #94a3b8;
+      --gray-600: #64748b;
+      --green: #16a34a;
+      --orange: #ea580c;
+      --font-display: "Barlow Condensed", "Arial Narrow", sans-serif;
+      --font-body: "Inter", system-ui, sans-serif;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: var(--font-body);
+      background: #1a1a2e;
+      color: var(--navy-900);
+      min-height: 100vh;
+    }
+
+    /* ── Prototype chrome ── */
+    .proto-bar {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 1000;
+      background: #111827;
+      color: #e5e7eb;
+      padding: 10px 20px;
+      display: flex; align-items: center; gap: 12px;
+      border-bottom: 2px solid var(--accent);
+      flex-wrap: wrap;
+    }
+    .proto-bar__title { font-weight: 700; color: var(--accent); font-size: 14px; white-space: nowrap; }
+    .proto-bar__tabs { display: flex; gap: 6px; flex-wrap: wrap; }
+    .proto-tab {
+      padding: 6px 14px; border-radius: 6px; border: 1px solid #374151;
+      background: transparent; color: #d1d5db; cursor: pointer; font-size: 13px;
+      transition: all .15s;
+    }
+    .proto-tab:hover { border-color: var(--accent); color: var(--accent); }
+    .proto-tab.active { background: var(--accent); color: var(--navy-900); border-color: var(--accent); font-weight: 600; }
+    .proto-bar__note { margin-left: auto; font-size: 12px; color: #6b7280; }
+
+    .proto-content { padding-top: 56px; }
+    .screen { display: none; }
+    .screen.active { display: block; }
+
+    /* ── Shared site chrome ── */
+    .site { background: var(--white); min-height: calc(100vh - 56px); }
+    .topbar {
+      background: var(--navy-900); color: rgba(255,255,255,.7);
+      font-size: 12px; padding: 6px 0; text-align: center;
+    }
+    .header {
+      background: var(--navy-800); padding: 0 32px;
+      display: flex; align-items: center; gap: 24px; height: 64px;
+      border-bottom: 1px solid rgba(255,255,255,.08);
+    }
+    .logo {
+      font-family: var(--font-display); font-size: 22px; font-weight: 800;
+      color: var(--white); letter-spacing: .5px; white-space: nowrap;
+    }
+    .logo em { color: var(--accent); font-style: normal; }
+    .header-search {
+      flex: 1; max-width: 560px; position: relative;
+    }
+    .header-search input {
+      width: 100%; padding: 10px 16px 10px 40px;
+      border-radius: 8px; border: 1px solid rgba(255,255,255,.15);
+      background: rgba(255,255,255,.08); color: var(--white);
+      font-size: 14px; outline: none;
+    }
+    .header-search input::placeholder { color: rgba(255,255,255,.4); }
+    .header-search input:focus { border-color: var(--accent); background: rgba(255,255,255,.12); }
+    .header-search svg {
+      position: absolute; left: 12px; top: 50%; transform: translateY(-50%);
+      width: 18px; height: 18px; color: rgba(255,255,255,.4);
+    }
+    .header-nav { display: flex; gap: 20px; margin-left: auto; }
+    .header-nav a {
+      color: rgba(255,255,255,.75); text-decoration: none; font-size: 13px;
+      font-weight: 500; white-space: nowrap;
+    }
+    .header-nav a:hover { color: var(--accent); }
+    .btn-login {
+      padding: 8px 16px; border-radius: 6px; border: 1px solid var(--accent);
+      color: var(--accent); background: transparent; font-size: 13px; cursor: pointer;
+      white-space: nowrap;
+    }
+
+    /* ── Homepage ── */
+    .hero-v3 {
+      background: linear-gradient(135deg, var(--navy-900) 0%, var(--navy-700) 100%);
+      padding: 64px 32px 48px; text-align: center; color: var(--white);
+    }
+    .hero-v3__slogan {
+      font-family: var(--font-display); font-size: 13px; letter-spacing: 3px;
+      text-transform: uppercase; color: var(--accent); margin-bottom: 12px;
+    }
+    .hero-v3 h1 {
+      font-family: var(--font-display); font-size: clamp(32px, 5vw, 52px);
+      font-weight: 800; line-height: 1.1; margin-bottom: 16px;
+    }
+    .hero-v3 h1 em { color: var(--accent); font-style: normal; }
+    .hero-v3__sub { color: rgba(255,255,255,.65); font-size: 15px; max-width: 560px; margin: 0 auto 32px; line-height: 1.6; }
+    .hero-search {
+      max-width: 640px; margin: 0 auto 20px; position: relative;
+    }
+    .hero-search input {
+      width: 100%; padding: 16px 20px 16px 52px;
+      border-radius: 12px; border: 2px solid rgba(255,255,255,.15);
+      background: rgba(255,255,255,.1); color: var(--white); font-size: 16px; outline: none;
+    }
+    .hero-search input:focus { border-color: var(--accent); }
+    .hero-search svg { position: absolute; left: 18px; top: 50%; transform: translateY(-50%); width: 22px; height: 22px; color: var(--accent); }
+    .hero-search__btn {
+      position: absolute; right: 6px; top: 50%; transform: translateY(-50%);
+      background: var(--accent); color: var(--navy-900); border: none;
+      padding: 10px 20px; border-radius: 8px; font-weight: 700; font-size: 14px; cursor: pointer;
+    }
+    .hot-tags { display: flex; gap: 8px; justify-content: center; flex-wrap: wrap; margin-bottom: 40px; }
+    .hot-tag {
+      padding: 4px 12px; border-radius: 20px; border: 1px solid rgba(255,255,255,.2);
+      color: rgba(255,255,255,.7); font-size: 12px; cursor: pointer;
+    }
+    .hot-tag:hover { border-color: var(--accent); color: var(--accent); }
+    .cat-grid {
+      display: grid; grid-template-columns: repeat(5, 1fr); gap: 12px;
+      max-width: 900px; margin: 0 auto;
+    }
+    .cat-tile {
+      background: rgba(255,255,255,.06); border: 1px solid rgba(255,255,255,.1);
+      border-radius: 10px; padding: 20px 12px; text-align: center; cursor: pointer;
+      transition: all .15s;
+    }
+    .cat-tile:hover { background: rgba(212,160,23,.15); border-color: var(--accent); }
+    .cat-tile__icon { font-size: 28px; margin-bottom: 8px; }
+    .cat-tile__label { font-size: 12px; font-weight: 600; color: rgba(255,255,255,.85); }
+    .cat-tile__count { font-size: 11px; color: rgba(255,255,255,.4); margin-top: 4px; }
+    .cat-tile--new { position: relative; }
+    .cat-tile--new::after {
+      content: 'NEW'; position: absolute; top: 6px; right: 6px;
+      background: var(--accent); color: var(--navy-900); font-size: 9px;
+      font-weight: 800; padding: 2px 5px; border-radius: 4px;
+    }
+
+    .section-v3 { padding: 48px 32px; }
+    .section-v3--gray { background: var(--gray-100); }
+    .section-v3__header { text-align: center; margin-bottom: 32px; }
+    .section-v3__eyebrow { font-size: 12px; letter-spacing: 2px; text-transform: uppercase; color: var(--accent); font-weight: 600; }
+    .section-v3__title { font-family: var(--font-display); font-size: 28px; font-weight: 800; margin-top: 8px; }
+    .cases-row { display: flex; gap: 16px; overflow-x: auto; padding-bottom: 8px; }
+    .case-mini {
+      flex: 0 0 220px; border-radius: 10px; overflow: hidden;
+      background: var(--white); border: 1px solid var(--gray-200);
+    }
+    .case-mini__img {
+      height: 140px; background: var(--navy-700);
+      display: flex; align-items: center; justify-content: center;
+      color: rgba(255,255,255,.3); font-size: 40px;
+    }
+    .case-mini__body { padding: 12px; }
+    .case-mini__tag { font-size: 10px; color: var(--accent); font-weight: 700; text-transform: uppercase; }
+    .case-mini__title { font-size: 13px; font-weight: 600; margin-top: 4px; }
+
+    .trust-row {
+      display: flex; justify-content: center; gap: 40px; flex-wrap: wrap;
+      padding: 32px; background: var(--navy-900); color: var(--white);
+    }
+    .trust-item { text-align: center; }
+    .trust-item__val { font-family: var(--font-display); font-size: 28px; font-weight: 800; color: var(--accent); }
+    .trust-item__label { font-size: 12px; color: rgba(255,255,255,.6); margin-top: 4px; }
+
+    /* ── List page ── */
+    .list-toolbar {
+      background: var(--gray-100); padding: 16px 32px;
+      display: flex; gap: 12px; align-items: center; flex-wrap: wrap;
+      border-bottom: 1px solid var(--gray-200);
+    }
+    .list-toolbar input {
+      flex: 1; min-width: 200px; padding: 10px 14px; border-radius: 8px;
+      border: 1px solid var(--gray-200); font-size: 14px;
+    }
+    .filter-pill {
+      padding: 6px 14px; border-radius: 20px; border: 1px solid var(--gray-200);
+      background: var(--white); font-size: 13px; cursor: pointer;
+    }
+    .filter-pill.active { background: var(--navy-900); color: var(--white); border-color: var(--navy-900); }
+    .list-sort { font-size: 13px; color: var(--gray-600); margin-left: auto; }
+    .list-body { padding: 24px 32px; max-width: 960px; }
+    .list-card {
+      display: flex; align-items: center; gap: 16px;
+      padding: 14px 16px; border: 1px solid var(--gray-200); border-radius: 10px;
+      margin-bottom: 10px; cursor: pointer; transition: all .15s;
+      background: var(--white);
+    }
+    .list-card:hover { border-color: var(--accent); box-shadow: 0 2px 12px rgba(10,22,40,.08); }
+    .list-card__thumb {
+      width: 120px; height: 80px; border-radius: 6px; flex-shrink: 0;
+      background: var(--navy-700); display: flex; align-items: center; justify-content: center;
+      color: rgba(255,255,255,.3); font-size: 24px; overflow: hidden;
+    }
+    .list-card__info { flex: 1; min-width: 0; }
+    .list-card__meta { display: flex; align-items: center; gap: 8px; margin-bottom: 4px; }
+    .list-card__id { font-size: 11px; font-weight: 700; color: var(--gray-600); font-family: monospace; }
+    .badge {
+      font-size: 10px; font-weight: 700; padding: 2px 8px; border-radius: 4px; text-transform: uppercase;
+    }
+    .badge--avail { background: #dcfce7; color: var(--green); }
+    .badge--reserved { background: #fef3c7; color: var(--orange); }
+    .list-card__title { font-size: 15px; font-weight: 700; margin-bottom: 4px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .list-card__specs { font-size: 12px; color: var(--gray-600); }
+    .list-card__price-col { text-align: right; flex-shrink: 0; }
+    .list-card__price-label { font-size: 10px; color: var(--gray-400); text-transform: uppercase; letter-spacing: .5px; }
+    .list-card__price { font-family: var(--font-display); font-size: 26px; font-weight: 800; color: var(--accent); line-height: 1; }
+    .list-card__arrow { font-size: 20px; color: var(--gray-400); margin-left: 8px; }
+    .list-card__link {
+      font-size: 10px; color: var(--gray-400); background: var(--gray-100);
+      padding: 2px 6px; border-radius: 4px; font-family: monospace;
+    }
+
+    /* ── Half-cut / vehicle photo grid (high value, low qty) ── */
+    .catalog-mode-badge {
+      display: inline-block; font-size: 11px; font-weight: 700; padding: 4px 10px;
+      border-radius: 4px; background: #dbeafe; color: #1e40af; margin-bottom: 12px;
+    }
+    .catalog-mode-badge--parts { background: #fef3c7; color: #92400e; }
+    .vehicle-grid-body { padding: 24px 32px; max-width: 1200px; }
+    .vehicle-grid {
+      display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px;
+    }
+    .vehicle-card {
+      border: 1px solid var(--gray-200); border-radius: 12px; overflow: hidden;
+      background: var(--white); cursor: pointer; transition: all .15s;
+    }
+    .vehicle-card:hover { border-color: var(--accent); box-shadow: 0 4px 20px rgba(10,22,40,.1); }
+    .vehicle-card__photo {
+      aspect-ratio: 16/10; background: var(--navy-700);
+      display: flex; align-items: center; justify-content: center;
+      color: rgba(255,255,255,.25); font-size: 64px; position: relative;
+    }
+    .vehicle-card__badges {
+      position: absolute; top: 10px; left: 10px; display: flex; gap: 6px;
+    }
+    .vehicle-card__body { padding: 14px 16px; }
+    .vehicle-card__meta { display: flex; align-items: center; gap: 8px; margin-bottom: 6px; }
+    .vehicle-card__title { font-size: 16px; font-weight: 700; margin-bottom: 6px; }
+    .vehicle-card__specs { font-size: 12px; color: var(--gray-600); margin-bottom: 10px; }
+    .vehicle-card__footer { display: flex; align-items: flex-end; justify-content: space-between; }
+    .vehicle-card__price { font-family: var(--font-display); font-size: 28px; font-weight: 800; color: var(--accent); line-height: 1; }
+    .vehicle-card__price-label { font-size: 10px; color: var(--gray-400); text-transform: uppercase; }
+
+    /* ── Inventory cascade ── */
+    .cascade-body { padding: 32px; max-width: 900px; margin: 0 auto; }
+    .cascade-source {
+      background: var(--navy-900); color: var(--white); border-radius: 12px;
+      padding: 24px; text-align: center; margin-bottom: 8px;
+    }
+    .cascade-source__label { font-size: 11px; letter-spacing: 1px; text-transform: uppercase; color: var(--accent); }
+    .cascade-source__title { font-family: var(--font-display); font-size: 22px; font-weight: 800; margin: 8px 0; }
+    .cascade-source__price { font-family: var(--font-display); font-size: 36px; font-weight: 800; color: var(--accent); }
+    .cascade-arrow { text-align: center; color: var(--accent); font-size: 24px; padding: 8px 0; }
+    .cascade-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
+    .cascade-item {
+      border: 1px solid var(--gray-200); border-radius: 10px; padding: 16px;
+      background: var(--white); text-align: center;
+    }
+    .cascade-item__pct {
+      font-family: var(--font-display); font-size: 32px; font-weight: 800; color: var(--navy-900);
+    }
+    .cascade-item__type { font-size: 13px; font-weight: 700; margin: 6px 0; }
+    .cascade-item__price { font-family: var(--font-display); font-size: 22px; font-weight: 800; color: var(--accent); }
+    .cascade-item__id { font-size: 10px; color: var(--gray-400); font-family: monospace; margin-top: 6px; }
+    .cascade-note {
+      margin-top: 20px; padding: 14px 16px; background: var(--gray-100);
+      border-radius: 8px; font-size: 13px; color: var(--gray-600); line-height: 1.6;
+    }
+    .linked-parts {
+      border: 1px solid var(--gray-200); border-radius: 10px; padding: 14px; margin-bottom: 16px;
+    }
+    .linked-parts__title { font-size: 13px; font-weight: 700; margin-bottom: 10px; }
+    .linked-part-row {
+      display: flex; justify-content: space-between; align-items: center;
+      padding: 8px 0; border-bottom: 1px solid var(--gray-100); font-size: 13px;
+    }
+    .linked-part-row:last-child { border-bottom: none; }
+    .linked-part-row a { color: var(--navy-900); font-weight: 600; text-decoration: none; }
+    .linked-part-row a:hover { color: var(--accent); }
+    .linked-part-row__price { font-weight: 700; color: var(--accent); }
+
+    /* ── Engine model page (2AZ etc.) ── */
+    .engine-model-hero {
+      background: linear-gradient(135deg, var(--navy-900), var(--navy-700));
+      color: var(--white); padding: 40px 32px;
+    }
+    .engine-model-hero__breadcrumb { font-size: 12px; color: rgba(255,255,255,.5); margin-bottom: 12px; }
+    .engine-model-hero__breadcrumb a { color: rgba(255,255,255,.7); text-decoration: none; }
+    .engine-model-hero h1 {
+      font-family: var(--font-display); font-size: 36px; font-weight: 800; margin-bottom: 8px;
+    }
+    .engine-model-hero h1 em { color: var(--accent); font-style: normal; }
+    .engine-model-hero__sub { color: rgba(255,255,255,.65); font-size: 14px; max-width: 640px; line-height: 1.6; }
+    .engine-spec-grid {
+      display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px;
+      margin-top: 24px; max-width: 800px;
+    }
+    .engine-spec-cell {
+      background: rgba(255,255,255,.06); border: 1px solid rgba(255,255,255,.1);
+      border-radius: 8px; padding: 12px;
+    }
+    .engine-spec-cell dt { font-size: 10px; text-transform: uppercase; letter-spacing: .5px; color: rgba(255,255,255,.45); }
+    .engine-spec-cell dd { font-size: 14px; font-weight: 600; margin-top: 4px; }
+    .engine-apps {
+      margin-top: 16px; display: flex; flex-wrap: wrap; gap: 6px;
+    }
+    .engine-app-tag {
+      font-size: 11px; padding: 4px 10px; border-radius: 4px;
+      background: rgba(212,160,23,.15); color: var(--accent); border: 1px solid rgba(212,160,23,.3);
+    }
+    .engine-units-section { padding: 32px; max-width: 960px; }
+    .engine-units-section h2 {
+      font-family: var(--font-display); font-size: 22px; font-weight: 800; margin-bottom: 6px;
+    }
+    .engine-units-section__lead { font-size: 13px; color: var(--gray-600); margin-bottom: 20px; }
+    .unit-row {
+      display: flex; align-items: center; gap: 14px;
+      padding: 12px 14px; border: 1px solid var(--gray-200); border-radius: 10px;
+      margin-bottom: 10px; background: var(--white); cursor: pointer; transition: all .15s;
+    }
+    .unit-row:hover { border-color: var(--accent); }
+    .unit-row__photo {
+      width: 140px; height: 90px; border-radius: 8px; flex-shrink: 0;
+      background: var(--navy-800); display: flex; align-items: center; justify-content: center;
+      color: rgba(255,255,255,.3); font-size: 11px; text-align: center; line-height: 1.3;
+    }
+    .unit-row__info { flex: 1; min-width: 0; }
+    .unit-row__meta { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; margin-bottom: 4px; }
+    .unit-row__chassis {
+      font-family: monospace; font-size: 12px; font-weight: 700; color: var(--navy-900);
+      background: var(--gray-100); padding: 2px 8px; border-radius: 4px;
+    }
+    .unit-row__title { font-size: 15px; font-weight: 700; margin-bottom: 4px; }
+    .unit-row__specs { font-size: 12px; color: var(--gray-600); display: flex; flex-wrap: wrap; gap: 12px; }
+    .unit-row__specs span { white-space: nowrap; }
+    .unit-row__price-col { text-align: right; flex-shrink: 0; }
+
+    /* ── Detail page ── */
+    .detail-layout { display: grid; grid-template-columns: 1fr 400px; gap: 32px; padding: 32px; max-width: 1200px; }
+    .legal-banner {
+      background: #fef9c3; border: 1px solid #fde047; border-radius: 8px;
+      padding: 12px 16px; margin-bottom: 20px; font-size: 13px; color: #713f12;
+      display: flex; gap: 10px; align-items: flex-start;
+    }
+    .legal-banner svg { flex-shrink: 0; margin-top: 1px; }
+    .gallery-main {
+      aspect-ratio: 4/3; background: var(--navy-700); border-radius: 10px;
+      display: flex; align-items: center; justify-content: center;
+      color: rgba(255,255,255,.3); font-size: 60px; margin-bottom: 10px;
+    }
+    .gallery-thumbs { display: flex; gap: 8px; }
+    .gallery-thumb {
+      width: 72px; height: 54px; border-radius: 6px; background: var(--navy-800);
+      border: 2px solid transparent; cursor: pointer;
+    }
+    .gallery-thumb.active { border-color: var(--accent); }
+    .detail-sidebar {}
+    .detail-stock { font-size: 12px; color: var(--gray-600); font-family: monospace; margin-bottom: 4px; }
+    .detail-title { font-family: var(--font-display); font-size: 24px; font-weight: 800; margin-bottom: 16px; }
+    .price-box {
+      background: var(--gray-100); border-radius: 10px; padding: 16px; margin-bottom: 16px;
+    }
+    .price-box__label { font-size: 11px; text-transform: uppercase; letter-spacing: 1px; color: var(--gray-600); }
+    .price-box__value { font-family: var(--font-display); font-size: 36px; font-weight: 800; color: var(--accent); }
+    .price-box__note { font-size: 12px; color: var(--gray-600); margin-top: 6px; line-height: 1.5; }
+    .calc-box {
+      border: 1px solid var(--gray-200); border-radius: 10px; padding: 16px; margin-bottom: 16px;
+    }
+    .calc-box__title { font-size: 13px; font-weight: 700; margin-bottom: 12px; color: var(--navy-900); }
+    .calc-row { display: flex; justify-content: space-between; font-size: 13px; padding: 5px 0; color: var(--gray-600); }
+    .calc-row--total { border-top: 1px solid var(--gray-200); margin-top: 8px; padding-top: 10px; font-weight: 700; color: var(--navy-900); font-size: 15px; }
+    .calc-row--total span:last-child { color: var(--accent); font-family: var(--font-display); font-size: 20px; }
+    .calc-select {
+      width: 100%; padding: 8px 10px; border-radius: 6px; border: 1px solid var(--gray-200);
+      font-size: 13px; margin-bottom: 10px; background: var(--white);
+    }
+    .spec-table { width: 100%; font-size: 13px; margin-bottom: 16px; }
+    .spec-table td { padding: 6px 0; border-bottom: 1px solid var(--gray-100); }
+    .spec-table td:first-child { color: var(--gray-600); width: 40%; }
+    .spec-table td:last-child { font-weight: 500; }
+    .btn-accent {
+      display: block; width: 100%; padding: 14px; border-radius: 8px;
+      background: var(--accent); color: var(--navy-900); border: none;
+      font-size: 15px; font-weight: 700; cursor: pointer; text-align: center;
+      margin-bottom: 8px;
+    }
+    .btn-outline {
+      display: block; width: 100%; padding: 12px; border-radius: 8px;
+      background: transparent; color: var(--navy-900); border: 1px solid var(--gray-200);
+      font-size: 14px; cursor: pointer; text-align: center;
+    }
+
+    /* ── Supplier portal ── */
+    .portal-layout { display: grid; grid-template-columns: 220px 1fr; min-height: calc(100vh - 120px); }
+    .portal-sidebar { background: var(--navy-900); padding: 24px 0; }
+    .portal-sidebar__brand { padding: 0 20px 20px; border-bottom: 1px solid rgba(255,255,255,.08); margin-bottom: 12px; }
+    .portal-sidebar__brand .logo { font-size: 18px; }
+    .portal-nav a {
+      display: flex; align-items: center; gap: 10px; padding: 10px 20px;
+      color: rgba(255,255,255,.65); text-decoration: none; font-size: 13px;
+    }
+    .portal-nav a.active, .portal-nav a:hover { background: rgba(255,255,255,.06); color: var(--accent); }
+    .portal-main { padding: 32px; background: var(--gray-100); }
+    .portal-stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-bottom: 28px; }
+    .stat-card { background: var(--white); border-radius: 10px; padding: 20px; border: 1px solid var(--gray-200); }
+    .stat-card__val { font-family: var(--font-display); font-size: 32px; font-weight: 800; color: var(--navy-900); }
+    .stat-card__val--accent { color: var(--accent); }
+    .stat-card__label { font-size: 12px; color: var(--gray-600); margin-top: 4px; }
+    .inbox-item {
+      background: var(--white); border-radius: 8px; padding: 14px 16px;
+      border: 1px solid var(--gray-200); margin-bottom: 8px;
+      display: flex; align-items: center; gap: 12px;
+    }
+    .inbox-item--unread { border-left: 3px solid var(--accent); }
+    .inbox-item__time { font-size: 11px; color: var(--gray-400); margin-left: auto; white-space: nowrap; }
+
+    /* ── Roadmap screen ── */
+    .roadmap { padding: 40px 32px; max-width: 900px; margin: 0 auto; }
+    .phase {
+      display: flex; gap: 20px; margin-bottom: 28px;
+      padding: 20px; background: var(--white); border-radius: 10px; border: 1px solid var(--gray-200);
+    }
+    .phase__num {
+      width: 48px; height: 48px; border-radius: 50%; background: var(--navy-900);
+      color: var(--accent); font-family: var(--font-display); font-size: 20px; font-weight: 800;
+      display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+    }
+    .phase__title { font-weight: 700; font-size: 16px; margin-bottom: 8px; }
+    .phase__items { font-size: 13px; color: var(--gray-600); line-height: 1.8; }
+    .phase__time { font-size: 12px; color: var(--accent); font-weight: 600; margin-top: 8px; }
+
+    /* ── Mockup images screen ── */
+    .mockup-gallery { padding: 32px; display: grid; grid-template-columns: 1fr; gap: 32px; max-width: 1100px; margin: 0 auto; }
+    .mockup-gallery img { width: 100%; border-radius: 10px; border: 1px solid var(--gray-200); }
+    .mockup-gallery figcaption { font-size: 14px; font-weight: 600; margin-bottom: 10px; color: var(--white); }
+
+    @media (max-width: 768px) {
+      .cat-grid { grid-template-columns: repeat(3, 1fr); }
+      .detail-layout { grid-template-columns: 1fr; }
+      .portal-layout { grid-template-columns: 1fr; }
+      .portal-stats { grid-template-columns: repeat(2, 1fr); }
+      .header-nav { display: none; }
+    }
+  </style>
+</head>
+<body>
+
+<div class="proto-bar">
+  <span class="proto-bar__title">AsiaPower 3.0 效果图 · <span style="color:#86efac;font-size:12px;">✓ 海军蓝金定稿</span></span>
+  <div class="proto-bar__tabs">
+    <button class="proto-tab active" data-screen="home">首页</button>
+    <button class="proto-tab" data-screen="halfcuts">半车目录</button>
+    <button class="proto-tab" data-screen="engines">2AZ 发动机页</button>
+    <button class="proto-tab" data-screen="cascade">库存分拆</button>
+    <button class="proto-tab" data-screen="detail">半车详情</button>
+    <button class="proto-tab" data-screen="supplier">供应商中心</button>
+    <button class="proto-tab" data-screen="roadmap">实施路线</button>
+    <button class="proto-tab" data-screen="images">静态效果图</button>
+  </div>
+  <span class="proto-bar__note"><a href="schemes-preview.html" style="color:#d4a017;text-decoration:none;">→ 三套方案效果图</a> · <a href="../brand-v3/preview.html" style="color:#94a3b8;text-decoration:none;">VI 手册</a></span>
+</div>
+
+<div class="proto-content">
+
+<!-- ══ HOME ══ -->
+<div class="screen active" id="screen-home">
+  <div class="site">
+    <div class="topbar">Export-Ready Powertrain · Zhengzhou, China → Worldwide</div>
+    <header class="header">
+      <div class="logo">ASIA<em>POWER</em></div>
+      <div class="header-search">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+        <input type="search" placeholder="Search brand, model, engine code, stock ID…">
+      </div>
+      <nav class="header-nav">
+        <a href="#">Half-Cuts</a>
+        <a href="#">Used Vehicles</a>
+        <a href="#">Supplier</a>
+      </nav>
+      <button class="btn-login">Sign In</button>
+    </header>
+
+    <section class="hero-v3">
+      <p class="hero-v3__slogan">Every Used Asset Has Value</p>
+      <h1>Find What You Need.<br><em>Ship Worldwide.</em></h1>
+      <p class="hero-v3__sub">拆车件是我们的主营业务。每上线一台半车，发动机/变速箱/底盘目录自动同步一套分拆库存——发达国家退役车辆，在海外市场继续发挥价值。</p>
+      <div class="hero-search">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+        <input type="search" placeholder="Toyota 2AZ-FE · Isuzu 4JB1 · HC250160…">
+        <button class="hero-search__btn">Search</button>
+      </div>
+      <div class="hot-tags">
+        <span class="hot-tag">Toyota Camry</span>
+        <span class="hot-tag">Isuzu 100P</span>
+        <span class="hot-tag">Hyundai D6CF</span>
+        <span class="hot-tag">BMW N46</span>
+        <span class="hot-tag">HOWO T7H</span>
+      </div>
+      <div class="cat-grid">
+        <div class="cat-tile"><div class="cat-tile__icon">⚙️</div><div class="cat-tile__label">Engines</div><div class="cat-tile__count">5,000+</div></div>
+        <div class="cat-tile"><div class="cat-tile__icon">🔧</div><div class="cat-tile__label">Half-Cuts</div><div class="cat-tile__count">800+</div></div>
+        <div class="cat-tile cat-tile--new"><div class="cat-tile__icon">🚗</div><div class="cat-tile__label">Used Vehicles</div><div class="cat-tile__count">120+</div></div>
+        <div class="cat-tile"><div class="cat-tile__icon">🚛</div><div class="cat-tile__label">Trucks & Cabs</div><div class="cat-tile__count">300+</div></div>
+        <div class="cat-tile"><div class="cat-tile__icon">🏗️</div><div class="cat-tile__label">Machinery</div><div class="cat-tile__count">Recruiting</div></div>
+      </div>
+    </section>
+
+    <section class="section-v3 section-v3--gray">
+      <div class="section-v3__header">
+        <div class="section-v3__eyebrow">Verified Cases</div>
+        <div class="section-v3__title">Recent Export Cases</div>
+      </div>
+      <div class="cases-row" style="padding: 0 32px;">
+        <div class="case-mini"><div class="case-mini__img">🎬</div><div class="case-mini__body"><div class="case-mini__tag">Video</div><div class="case-mini__title">Isuzu 100P 4JB1 Half Cut</div></div></div>
+        <div class="case-mini"><div class="case-mini__img">🎬</div><div class="case-mini__body"><div class="case-mini__tag">Video</div><div class="case-mini__title">Hyundai D6CF48E5 Truck</div></div></div>
+        <div class="case-mini"><div class="case-mini__img">📷</div><div class="case-mini__body"><div class="case-mini__tag">Photo</div><div class="case-mini__title">HOWO T7H Driver Cab</div></div></div>
+        <div class="case-mini"><div class="case-mini__img">📷</div><div class="case-mini__body"><div class="case-mini__tag">Photo</div><div class="case-mini__title">Toyota Camry 2AZ-FE</div></div></div>
+      </div>
+    </section>
+
+    <div class="trust-row">
+      <div class="trust-item"><div class="trust-item__val">6,000+</div><div class="trust-item__label">Units Exported</div></div>
+      <div class="trust-item"><div class="trust-item__val">110+</div><div class="trust-item__label">Countries</div></div>
+      <div class="trust-item"><div class="trust-item__val">200+</div><div class="trust-item__label">Verified Suppliers</div></div>
+    </div>
+  </div>
+</div>
+
+<!-- ══ HALF-CUTS GRID (photo-first) ══ -->
+<div class="screen" id="screen-halfcuts">
+  <div class="site">
+    <div class="topbar">拆车件 · 半车/整车为主营业务 · Half-Cuts &amp; Used Vehicles</div>
+    <header class="header">
+      <div class="logo">ASIA<em>POWER</em></div>
+      <div class="header-search">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+        <input type="search" placeholder="Search half-cuts, used vehicles…" value="Toyota Camry">
+      </div>
+      <nav class="header-nav"><a href="#">Half-Cuts</a><a href="#">Used Vehicles</a><a href="#">Engines</a></nav>
+      <button class="btn-login">Sign In</button>
+    </header>
+    <div class="list-toolbar">
+      <input type="search" placeholder="Filter: brand, engine, stock ID…" value="Toyota Camry">
+      <span class="filter-pill active">Half-Cuts</span>
+      <span class="filter-pill">Used Vehicles</span>
+      <span class="filter-pill">Available</span>
+      <span class="list-sort">Sort: <strong>Relevance</strong> ▾</span>
+    </div>
+    <div class="vehicle-grid-body">
+      <span class="catalog-mode-badge">大图模式 · 货值高 / 数量少 · 半车 &amp; 整车</span>
+      <p style="font-size:13px;color:#64748b;margin-bottom:16px;">8 results · 照片优先展示，便于买家评估车况</p>
+      <div class="vehicle-grid">
+        <div class="vehicle-card">
+          <div class="vehicle-card__photo">
+            🚗
+            <div class="vehicle-card__badges">
+              <span class="badge badge--avail">Available</span>
+              <span class="badge" style="background:rgba(0,0,0,.5);color:#fff;">▶ Video</span>
+            </div>
+          </div>
+          <div class="vehicle-card__body">
+            <div class="vehicle-card__meta"><span class="list-card__id">HC250160</span></div>
+            <div class="vehicle-card__title">Toyota Camry 2007 Half Cut</div>
+            <div class="vehicle-card__specs">2AZ-FE · Automatic · 68,000 km · 3 photos</div>
+            <div class="vehicle-card__footer">
+              <div><div class="vehicle-card__price-label">EXW</div><div class="vehicle-card__price">$2,850</div></div>
+              <span style="font-size:13px;color:#64748b;">→ 分拆 3 套配件库存</span>
+            </div>
+          </div>
+        </div>
+        <div class="vehicle-card">
+          <div class="vehicle-card__photo">
+            🚛
+            <div class="vehicle-card__badges"><span class="badge badge--avail">Available</span></div>
+          </div>
+          <div class="vehicle-card__body">
+            <div class="vehicle-card__meta"><span class="list-card__id">HC250074</span></div>
+            <div class="vehicle-card__title">Hyundai D6CF48E5 Truck Half Cut</div>
+            <div class="vehicle-card__specs">D6CF · Manual · 120,000 km · 5 photos · Video</div>
+            <div class="vehicle-card__footer">
+              <div><div class="vehicle-card__price-label">EXW</div><div class="vehicle-card__price">$8,500</div></div>
+              <span style="font-size:13px;color:#64748b;">→ 分拆 3 套配件库存</span>
+            </div>
+          </div>
+        </div>
+        <div class="vehicle-card">
+          <div class="vehicle-card__photo">
+            🚗
+            <div class="vehicle-card__badges"><span class="badge badge--reserved">Reserved</span></div>
+          </div>
+          <div class="vehicle-card__body">
+            <div class="vehicle-card__meta"><span class="list-card__id">HC250046</span></div>
+            <div class="vehicle-card__title">BMW 320i 2006 Half Cut</div>
+            <div class="vehicle-card__specs">N46B20CB · Manual · 74,000 km · 4 photos</div>
+            <div class="vehicle-card__footer">
+              <div><div class="vehicle-card__price-label">EXW</div><div class="vehicle-card__price">$3,200</div></div>
+            </div>
+          </div>
+        </div>
+        <div class="vehicle-card">
+          <div class="vehicle-card__photo">
+            🚙
+            <div class="vehicle-card__badges">
+              <span class="badge badge--avail">Available</span>
+              <span class="badge" style="background:var(--accent);color:var(--navy-900);">Export-Ready</span>
+            </div>
+          </div>
+          <div class="vehicle-card__body">
+            <div class="vehicle-card__meta"><span class="list-card__id">UV260012</span></div>
+            <div class="vehicle-card__title">Toyota Hilux 2019 · Whole Vehicle</div>
+            <div class="vehicle-card__specs">2GD-FTV · 4WD · 有手续 · 可整车出口</div>
+            <div class="vehicle-card__footer">
+              <div><div class="vehicle-card__price-label">EXW</div><div class="vehicle-card__price">$12,800</div></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══ ENGINE MODEL PAGE (2AZ-FE) ══ -->
+<div class="screen" id="screen-engines">
+  <div class="site">
+    <div class="topbar">发动机型号页 · 上方型号信息 · 下方不同底盘号在库实例</div>
+    <header class="header">
+      <div class="logo">ASIA<em>POWER</em></div>
+      <div class="header-search">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+        <input type="search" placeholder="Search engine code…" value="2AZ-FE">
+      </div>
+      <nav class="header-nav"><a href="#">Engines</a><a href="#">Half-Cuts</a></nav>
+      <button class="btn-login">Sign In</button>
+    </header>
+
+    <section class="engine-model-hero">
+      <div style="max-width:960px;margin:0 auto;">
+        <div class="engine-model-hero__breadcrumb">
+          <a href="#">Home</a> / <a href="#">Toyota</a> / <a href="#">Engines</a> / <span>2AZ-FE</span>
+        </div>
+        <h1>Toyota <em>2AZ-FE</em> Engine</h1>
+        <p class="engine-model-hero__sub">2.4L DOHC 16V Petrol — 全球出口拆车发动机。下方列表为<strong>不同底盘号</strong>的在库实例（来自各台半车分拆），非发动机零配件。</p>
+        <dl class="engine-spec-grid">
+          <div class="engine-spec-cell"><dt>排量 Displacement</dt><dd>2.4L (2362cc)</dd></div>
+          <div class="engine-spec-cell"><dt>燃料 Fuel</dt><dd>Petrol</dd></div>
+          <div class="engine-spec-cell"><dt>在库 Units</dt><dd>12 Available</dd></div>
+          <div class="engine-spec-cell"><dt>分拆价比例</dt><dd>整车 EXW × 65%</dd></div>
+        </dl>
+        <div class="engine-apps">
+          <span style="font-size:11px;color:rgba(255,255,255,.5);margin-right:6px;">适配车型 Applications:</span>
+          <span class="engine-app-tag">Camry</span>
+          <span class="engine-app-tag">RAV4</span>
+          <span class="engine-app-tag">Alphard</span>
+          <span class="engine-app-tag">Highlander</span>
+          <span class="engine-app-tag">ES350</span>
+          <span class="engine-app-tag">Previa</span>
+        </div>
+      </div>
+    </section>
+
+    <section class="engine-units-section">
+      <h2>在库实例 · Available Units</h2>
+      <p class="engine-units-section__lead">每台对应一个底盘号 / 半车来源 · 照片为<strong>发动机舱实拍</strong> · 按相关度排序</p>
+
+      <div class="unit-row">
+        <div class="unit-row__photo">Engine Bay<br>Photo</div>
+        <div class="unit-row__info">
+          <div class="unit-row__meta">
+            <span class="unit-row__chassis">JTDBE32K★★★1234</span>
+            <span class="list-card__id">ENG-HC250160</span>
+            <span class="list-card__link">← HC250160</span>
+            <span class="badge badge--avail">Available</span>
+          </div>
+          <div class="unit-row__title">Toyota Camry 2007 · 2AZ-FE</div>
+          <div class="unit-row__specs">
+            <span>里程 Mileage: <strong>68,000 km</strong></span>
+            <span>变速箱: Automatic U151E</span>
+            <span>驱动: FWD</span>
+            <span>▶ Startup video</span>
+          </div>
+        </div>
+        <div class="unit-row__price-col">
+          <div class="list-card__price-label">EXW · 65%</div>
+          <div class="list-card__price" style="font-size:24px;">$1,853</div>
+        </div>
+        <span class="list-card__arrow">→</span>
+      </div>
+
+      <div class="unit-row">
+        <div class="unit-row__photo">Engine Bay<br>Photo</div>
+        <div class="unit-row__info">
+          <div class="unit-row__meta">
+            <span class="unit-row__chassis">JTEGH20V★★★5678</span>
+            <span class="list-card__id">ENG-HC250188</span>
+            <span class="list-card__link">← HC250188</span>
+            <span class="badge badge--avail">Available</span>
+          </div>
+          <div class="unit-row__title">Toyota RAV4 2008 · 2AZ-FE</div>
+          <div class="unit-row__specs">
+            <span>里程 Mileage: <strong>82,000 km</strong></span>
+            <span>变速箱: Automatic</span>
+            <span>驱动: 4WD</span>
+          </div>
+        </div>
+        <div class="unit-row__price-col">
+          <div class="list-card__price-label">EXW · 65%</div>
+          <div class="list-card__price" style="font-size:24px;">$1,920</div>
+        </div>
+        <span class="list-card__arrow">→</span>
+      </div>
+
+      <div class="unit-row">
+        <div class="unit-row__photo">Engine Bay<br>Photo</div>
+        <div class="unit-row__info">
+          <div class="unit-row__meta">
+            <span class="unit-row__chassis">JTMBK31V★★★9012</span>
+            <span class="list-card__id">ENG-HC250201</span>
+            <span class="list-card__link">← HC250201</span>
+            <span class="badge badge--avail">Available</span>
+          </div>
+          <div class="unit-row__title">Toyota Alphard 2006 · 2AZ-FE</div>
+          <div class="unit-row__specs">
+            <span>里程 Mileage: <strong>95,000 km</strong></span>
+            <span>变速箱: Automatic</span>
+            <span>驱动: FWD</span>
+            <span>3 photos</span>
+          </div>
+        </div>
+        <div class="unit-row__price-col">
+          <div class="list-card__price-label">EXW · 65%</div>
+          <div class="list-card__price" style="font-size:24px;">$1,755</div>
+        </div>
+        <span class="list-card__arrow">→</span>
+      </div>
+
+      <div class="unit-row">
+        <div class="unit-row__photo">Engine Bay<br>Photo</div>
+        <div class="unit-row__info">
+          <div class="unit-row__meta">
+            <span class="unit-row__chassis">JTEBU5JR★★★3456</span>
+            <span class="list-card__id">ENG-HC250215</span>
+            <span class="list-card__link">← HC250215</span>
+            <span class="badge badge--reserved">Reserved</span>
+          </div>
+          <div class="unit-row__title">Toyota Highlander 2007 · 2AZ-FE</div>
+          <div class="unit-row__specs">
+            <span>里程 Mileage: <strong>71,000 km</strong></span>
+            <span>变速箱: Automatic</span>
+            <span>驱动: AWD</span>
+          </div>
+        </div>
+        <div class="unit-row__price-col">
+          <div class="list-card__price-label">EXW · 65%</div>
+          <div class="list-card__price" style="font-size:24px;">$1,898</div>
+        </div>
+        <span class="list-card__arrow">→</span>
+      </div>
+    </section>
+  </div>
+</div>
+
+<!-- ══ INVENTORY CASCADE ══ -->
+<div class="screen" id="screen-cascade">
+  <div class="site" style="background:var(--gray-100);min-height:calc(100vh - 56px);">
+    <div class="cascade-body">
+      <h2 style="font-family:var(--font-display);font-size:28px;font-weight:800;margin-bottom:8px;">库存分拆逻辑</h2>
+      <p style="color:#64748b;font-size:14px;margin-bottom:28px;">每上线一台半车，自动在发动机 / 变速箱 / 底盘目录各增加一套对应库存，价格按整车 EXW 比例分配</p>
+
+      <div class="cascade-source">
+        <div class="cascade-source__label">半车主库存 · Half-Cut Master</div>
+        <div class="cascade-source__title">HC250160 · Toyota Camry 2007 Half Cut</div>
+        <div class="cascade-source__price">EXW USD 2,850</div>
+      </div>
+      <div class="cascade-arrow">↓ 自动分拆 · Auto-sync on publish</div>
+      <div class="cascade-grid">
+        <div class="cascade-item">
+          <div class="cascade-item__pct">65%</div>
+          <div class="cascade-item__type">发动机 Engine</div>
+          <div class="cascade-item__price">USD 1,853</div>
+          <div class="cascade-item__id">ENG-HC250160 · 2AZ-FE</div>
+        </div>
+        <div class="cascade-item">
+          <div class="cascade-item__pct">35%</div>
+          <div class="cascade-item__type">变速箱 Gearbox</div>
+          <div class="cascade-item__price">USD 998</div>
+          <div class="cascade-item__id">GB-HC250160 · U151E</div>
+        </div>
+        <div class="cascade-item">
+          <div class="cascade-item__pct">20%</div>
+          <div class="cascade-item__type">底盘 Chassis</div>
+          <div class="cascade-item__price">USD 570</div>
+          <div class="cascade-item__id">CH-HC250160 · Front pack</div>
+        </div>
+      </div>
+      <div class="cascade-note">
+        <strong>业务规则：</strong>分拆库存与半车主记录绑定（同一 HC 编号）。任一套件售出或半车整售，关联库存同步更新状态。<br>
+        <strong>价格说明：</strong>65% + 35% + 20% = 120%，分拆参考价总和高于整车价——反映单买配件的溢价，正式报价以销售确认为准。<br>
+        <strong>无变速箱时：</strong>变速箱份额归零，发动机调整为 65%、底盘 20%，剩余 15% 不生成空记录。
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══ DETAIL ══ -->
+<div class="screen" id="screen-detail">
+  <div class="site">
+    <div class="topbar">Export-Ready Powertrain · Zhengzhou, China → Worldwide</div>
+    <header class="header">
+      <div class="logo">ASIA<em>POWER</em></div>
+      <div class="header-search">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+        <input type="search" placeholder="Search…">
+      </div>
+      <button class="btn-login">Sign In</button>
+    </header>
+    <div style="padding: 16px 32px 0; max-width:1200px;">
+      <div class="legal-banner">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+        <div><strong>Half-Cut Notice:</strong> This unit is a dismantled scrap vehicle. TWC (catalytic converter) and alloy wheels are removed by default. Per PRC regulations, scrap vehicles must be deregistered and cut before export. <a href="#" style="color:#92400e;">Learn more →</a></div>
+      </div>
+    </div>
+    <div class="detail-layout">
+      <div>
+        <div class="gallery-main">🚗</div>
+        <div class="gallery-thumbs">
+          <div class="gallery-thumb active"></div>
+          <div class="gallery-thumb"></div>
+          <div class="gallery-thumb"></div>
+          <div class="gallery-thumb" style="display:flex;align-items:center;justify-content:center;font-size:11px;color:rgba(255,255,255,.5);">▶ Video</div>
+        </div>
+      </div>
+      <div class="detail-sidebar">
+        <div class="detail-stock">HC250160 · <span class="badge badge--avail">Available</span></div>
+        <h1 class="detail-title">Toyota Camry 2007 Half Cut · 2AZ-FE</h1>
+        <div class="price-box">
+          <div class="price-box__label">EXW Price (Supplier Deal Price)</div>
+          <div class="price-box__value">USD 2,850</div>
+          <div class="price-box__note">不含国内运输、装箱、报关及海运费。正式 CIF 报价请联系销售团队。</div>
+        </div>
+        <div class="linked-parts">
+          <div class="linked-parts__title">分拆配件库存（同车 HC250160）</div>
+          <div class="linked-part-row">
+            <span><a href="#">Engine 2AZ-FE</a> <span style="color:#94a3b8;font-size:11px;">65%</span></span>
+            <span class="linked-part-row__price">USD 1,853</span>
+          </div>
+          <div class="linked-part-row">
+            <span><a href="#">Gearbox U151E</a> <span style="color:#94a3b8;font-size:11px;">35%</span></span>
+            <span class="linked-part-row__price">USD 998</span>
+          </div>
+          <div class="linked-part-row">
+            <span><a href="#">Chassis pack</a> <span style="color:#94a3b8;font-size:11px;">20%</span></span>
+            <span class="linked-part-row__price">USD 570</span>
+          </div>
+        </div>
+        <div class="calc-box">
+          <div class="calc-box__title">FOB / CIF Estimate Calculator</div>
+          <select class="calc-select"><option>Lagos, Nigeria (CIF)</option><option>Mombasa, Kenya (CIF)</option><option>Durban, South Africa (CIF)</option><option>FOB Shanghai</option></select>
+          <select class="calc-select"><option>Container 20'</option><option>Container 40'</option><option>LCL</option></select>
+          <div class="calc-row"><span>EXW Price</span><span>USD 2,850</span></div>
+          <div class="calc-row"><span>Domestic transport + crating</span><span>USD 180</span></div>
+          <div class="calc-row"><span>Ocean freight</span><span>USD 650</span></div>
+          <div class="calc-row calc-row--total"><span>Est. CIF Total</span><span>USD 3,680</span></div>
+          <p style="font-size:11px;color:#94a3b8;margin-top:8px;">* Estimate only. Final quote confirmed by sales team.</p>
+        </div>
+        <table class="spec-table">
+          <tr><td>Brand</td><td>Toyota</td></tr>
+          <tr><td>Model</td><td>Camry</td></tr>
+          <tr><td>Year</td><td>2007</td></tr>
+          <tr><td>Engine</td><td>2AZ-FE</td></tr>
+          <tr><td>Mileage</td><td>68,000 km</td></tr>
+          <tr><td>Transmission</td><td>Automatic</td></tr>
+        </table>
+        <button class="btn-accent">Send Inquiry</button>
+        <button class="btn-outline">Add to Quote List</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══ SUPPLIER PORTAL ══ -->
+<div class="screen" id="screen-supplier">
+  <div class="site">
+    <div class="topbar">Supplier Portal · AsiaPower 3.0</div>
+    <div class="portal-layout">
+      <aside class="portal-sidebar">
+        <div class="portal-sidebar__brand"><div class="logo">ASIA<em>POWER</em></div></div>
+        <nav class="portal-nav">
+          <a href="#" class="active">📊 Dashboard</a>
+          <a href="#">📦 My Inventory</a>
+          <a href="#">📩 Inquiries <span style="background:var(--accent);color:var(--navy-900);border-radius:10px;padding:1px 6px;font-size:10px;font-weight:800;margin-left:auto;">3</span></a>
+          <a href="#">✏️ Edit Requests</a>
+          <a href="#">🏷️ Print Labels</a>
+          <a href="#">💬 WeChat Group</a>
+          <a href="#">⚙️ Settings</a>
+        </nav>
+      </aside>
+      <main class="portal-main">
+        <h2 style="font-family:var(--font-display);font-size:24px;font-weight:800;margin-bottom:24px;">Welcome, 郑州拆车场</h2>
+        <div class="portal-stats">
+          <div class="stat-card"><div class="stat-card__val">47</div><div class="stat-card__label">Live Listings</div></div>
+          <div class="stat-card"><div class="stat-card__val stat-card__val--accent">3</div><div class="stat-card__label">New Inquiries</div></div>
+          <div class="stat-card"><div class="stat-card__val">5</div><div class="stat-card__label">Pending Review</div></div>
+          <div class="stat-card"><div class="stat-card__val">2</div><div class="stat-card__label">Edit Requests</div></div>
+        </div>
+        <h3 style="font-size:15px;font-weight:700;margin-bottom:12px;">Recent Inquiries</h3>
+        <div class="inbox-item inbox-item--unread">
+          <span>📩</span>
+          <div><div style="font-size:13px;font-weight:600;">HC250160 · Toyota Camry 2007</div><div style="font-size:12px;color:#64748b;">Buyer from Lagos, Nigeria — wants CIF quote</div></div>
+          <span class="inbox-item__time">2h ago</span>
+        </div>
+        <div class="inbox-item inbox-item--unread">
+          <span>📩</span>
+          <div><div style="font-size:13px;font-weight:600;">HC250074 · Hyundai D6CF Truck</div><div style="font-size:12px;color:#64748b;">Buyer from Mombasa — asks for startup video</div></div>
+          <span class="inbox-item__time">5h ago</span>
+        </div>
+        <div class="inbox-item">
+          <span>📩</span>
+          <div><div style="font-size:13px;font-weight:600;">HC250109 · HOWO T7H Cab</div><div style="font-size:12px;color:#64748b;">Buyer from Durban — price negotiation</div></div>
+          <span class="inbox-item__time">1d ago</span>
+        </div>
+        <div style="margin-top:24px;padding:16px;background:#fff;border-radius:10px;border:1px solid #e2e8f0;">
+          <div style="font-size:13px;font-weight:700;margin-bottom:8px;">子龙 · Your Inventory Assistant</div>
+          <div style="font-size:12px;color:#64748b;line-height:1.6;">Send photos to your WeChat group — 子龙 will identify the vehicle, create a listing, and upload to the website. Need label printing? Ask 子龙 directly.</div>
+          <button style="margin-top:12px;padding:8px 16px;background:#07c160;color:#fff;border:none;border-radius:6px;font-size:13px;cursor:pointer;">Open WeChat Group</button>
+        </div>
+      </main>
+    </div>
+  </div>
+</div>
+
+<!-- ══ ROADMAP ══ -->
+<div class="screen" id="screen-roadmap">
+  <div style="background:#f4f6f9;min-height:calc(100vh - 56px);">
+    <div class="roadmap">
+      <h2 style="font-family:var(--font-display);font-size:32px;font-weight:800;margin-bottom:8px;">AsiaPower 3.0 实施路线</h2>
+      <p style="color:#64748b;margin-bottom:32px;font-size:14px;">四期推进，每期可独立上线验证</p>
+
+      <div class="phase">
+        <div class="phase__num">1</div>
+        <div>
+          <div class="phase__title">体验快赢 · UI & 搜索</div>
+          <div class="phase__items">
+            首页精简（搜索优先）· 列表横向卡片 · EXW 价格标签 · 详情页 FOB/CIF 试算器<br>
+            半切车/报废车/二手车 QA · 搜索权重排序 · 关键词日志 · 取消列表 FOB 字样
+          </div>
+          <div class="phase__time">4–6 周</div>
+        </div>
+      </div>
+      <div class="phase">
+        <div class="phase__num">2</div>
+        <div>
+          <div class="phase__title">会员 & 通信</div>
+          <div class="phase__items">
+            供应商会员中心 · 询价收件箱 · 邮件转发脱敏 · Agent 路由表 · 子敬 failover<br>
+            Used Vehicles 独立类目 · 法律 QA 初稿
+          </div>
+          <div class="phase__time">6–8 周</div>
+        </div>
+      </div>
+      <div class="phase">
+        <div class="phase__num">3</div>
+        <div>
+          <div class="phase__title">企业微信 & 子龙大管家</div>
+          <div class="phase__items">
+            企业微信 API · 一供应商一群 · 子龙照片识别 → 建档 → 上传<br>
+            标准标签 PDF · 供应商改价审核流
+          </div>
+          <div class="phase__time">8–10 周</div>
+        </div>
+      </div>
+      <div class="phase">
+        <div class="phase__num">4</div>
+        <div>
+          <div class="phase__title">交易闭环 & 法律</div>
+          <div class="phase__items">
+            Stripe 订金 · 订单状态机 · 全套英国法协议 · 注册/成交勾选<br>
+            专业供应商招募页 · Machinery 类目开放
+          </div>
+          <div class="phase__time">10–14 周</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══ STATIC IMAGES ══ -->
+<div class="screen" id="screen-images">
+  <div style="background:#111827;min-height:calc(100vh - 56px);padding:32px 0;">
+    <div class="mockup-gallery">
+      <figure><figcaption>半车目录 · 大图模式（货值高 / 数量少）</figcaption><img src="v3-halfcut-grid-mockup.png" alt="Half-cut grid mockup" loading="lazy"></figure>
+      <figure><figcaption>2AZ 发动机型号页 · 上方型号+适配车型 · 下方不同底盘号在库实例（发动机舱图）</figcaption><img src="v3-engine-model-2az-mockup.png" alt="2AZ engine model page mockup" loading="lazy"></figure>
+      <figure><figcaption>库存分拆逻辑 · 半车上线自动同步三套配件</figcaption><img src="v3-inventory-cascade-mockup.png" alt="Inventory cascade mockup" loading="lazy"></figure>
+      <figure><figcaption>首页 · 搜索优先</figcaption><img src="v3-homepage-mockup.png" alt="Homepage mockup" loading="lazy"></figure>
+      <figure><figcaption>半车详情 · FOB/CIF 试算 + 分拆配件链接</figcaption><img src="v3-detail-page-mockup.png" alt="Detail page mockup" loading="lazy"></figure>
+    </div>
+  </div>
+</div>
+
+</div><!-- /proto-content -->
+
+<script>
+  document.querySelectorAll('.proto-tab').forEach(tab => {
+    tab.addEventListener('click', () => {
+      document.querySelectorAll('.proto-tab').forEach(t => t.classList.remove('active'));
+      document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+      tab.classList.add('active');
+      document.getElementById('screen-' + tab.dataset.screen).classList.add('active');
+    });
+  });
+</script>
+</body>
+</html>

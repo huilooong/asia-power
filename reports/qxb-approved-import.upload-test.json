@@ -1,0 +1,82 @@
+[
+  {
+    "stockId": "QXB0002",
+    "vin": "LJDDAA120A0043127",
+    "decodeMethod": "QXB OCR",
+    "decodeConfidence": "very_high:gray:rot0",
+    "vehicleCondition": "Half Cut",
+    "vehicleCategory": "passenger",
+    "truckPartType": "",
+    "machineryType": "",
+    "brand": "Kia",
+    "brandSlug": "kia",
+    "model": "赛拉图",
+    "year": 2008,
+    "engineCode": "",
+    "transmissionCode": "",
+    "drivetrain": "2WD",
+    "mileage": "99,999 km",
+    "priceUsd": null,
+    "origin": "China",
+    "status": "Available",
+    "title": "Kia 赛拉图 Half Cut",
+    "slug": "kia-2008-half-cut-qxb0002",
+    "photos": [
+      {
+        "label": "Front view",
+        "url": "/uploads/pending/photos/photo-1782759623437-7bd1bd11.jpg?access=143b1f2cc79dda89609e48d5069f24d5&exp=1782766823438",
+        "fileName": "01_32d7056133.jpg",
+        "mimeType": "image/jpeg",
+        "size": 386632
+      },
+      {
+        "label": "Rear view",
+        "url": "/uploads/pending/photos/photo-1782759626314-596f771a.jpg?access=051139e955d0092cd6d7095394cb6b8c&exp=1782766826314",
+        "fileName": "02_769c841a1e.jpg",
+        "mimeType": "image/jpeg",
+        "size": 366189
+      },
+      {
+        "label": "Engine bay",
+        "url": "/uploads/pending/photos/photo-1782759628308-6219ec6d.jpg?access=be418af1595b7793c10c62cda9ff3616&exp=1782766828308",
+        "fileName": "03_f6bc7dfe5d.jpg",
+        "mimeType": "image/jpeg",
+        "size": 366859
+      },
+      {
+        "label": "Interior",
+        "url": "/uploads/pending/photos/photo-1782759630357-c4728520.jpg?access=b1af47a2f5457e7f7c9b3906bb169dd4&exp=1782766830358",
+        "fileName": "04_1d875b4162.jpg",
+        "mimeType": "image/jpeg",
+        "size": 375734
+      },
+      {
+        "label": "VIN / chassis plate",
+        "url": "/uploads/pending/photos/photo-1782759632251-734b6f0e.jpg?access=f9ebe8f7647382b884c3d300edfab2ed&exp=1782766832252",
+        "fileName": "16_e5007b2d77.jpg",
+        "mimeType": "image/jpeg",
+        "size": 300125
+      }
+    ],
+    "video": null,
+    "videoUrl": "",
+    "includedParts": [
+      "Engine & gearbox assembly",
+      "Front clip"
+    ],
+    "shortDescription": "2008 Kia 赛拉图 — QXB sourced listing via AsiaPower.",
+    "supplierVerified": true,
+    "supplierName": "汽修宝",
+    "supplierPhone": "16638801930",
+    "supplierCity": "",
+    "submissionId": "QXB-0002",
+    "approvedAt": "2026-06-29T19:00:33Z",
+    "notes": "汽修宝批量导入。\n里程数为系统默认 99,999 km，仅为占位，不代表真实里程。\n原始车型: 起亚 赛拉图 2008款 欧风 1.6 MT GL\n原始说明: 起亚 赛拉图 2008款 欧风\nVIN OCR confidence: very_high:gray:rot0",
+    "qxb": {
+      "row": 2,
+      "brandCn": "起亚",
+      "modelKey": "赛拉图",
+      "description": "起亚 赛拉图 2008款 欧风"
+    }
+  }
+]

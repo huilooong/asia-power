@@ -284,7 +284,7 @@ def build_verified_ceo_report(question: str = "") -> str:
         lines.append("- top_engines:")
         lines.extend(_lines_top_pairs(top_eng, limit=10))
     else:
-        lines.append("- top_engines: unavailable (engine regex 待清洗)")
+        lines.append("- top_engines: 无真实客户引擎询盘记录")
 
     if failures:
         lines.append("- failure_reasons (keyword-inferred, source: failure_report.json):")
@@ -314,7 +314,6 @@ def build_verified_ceo_report(question: str = "") -> str:
         "- 国家会话排名 / 发动机型号占比: 没有真实统计字段，不能输出",
         "",
         "CEO Action:",
-        "- 清洗 engine regex（G4KD 计数可能过宽）",
         "- 建立 quote_event index",
         "- 接入成交/付款数据后再分析成交率",
         "- 审阅 /sales-intelligence pending 话术（不自动改 Prompt）",

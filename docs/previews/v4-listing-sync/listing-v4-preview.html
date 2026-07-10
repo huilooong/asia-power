@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>预览 · 列表页商品卡 + 侧栏 · AsiaPower</title>
+  <style>
+    :root {
+      --t1:#1d1d1f; --t2:#6e6e73; --t3:#86868b; --b1:#d2d2d7; --b2:#e8e8ed;
+      --gold:#b45309; --gold-bg:#fef3dc; --gold-bd:#f5d882;
+      --green:#15803d; --green-bg:#f0fdf4; --green-bd:#b7e4c7;
+      --bg:#f5f5f7;
+      --font:-apple-system,BlinkMacSystemFont,'SF Pro Display','Helvetica Neue',Arial,'PingFang SC',sans-serif;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: var(--font); background: var(--bg); color: var(--t1); line-height: 1.5; }
+    .preview-note {
+      background: #1d1d1f; color: #f5f5f7; padding: 12px 20px;
+      display: flex; justify-content: space-between; gap: 16px; flex-wrap: wrap; font-size: 13px;
+      position: sticky; top: 0; z-index: 50;
+    }
+    .preview-note a { color: #f5c542; }
+    .wrap { max-width: 1180px; margin: 0 auto; padding: 28px 20px 70px; }
+    h1 { font-size: 1.55rem; font-weight: 800; letter-spacing: -.3px; margin-bottom: 8px; }
+    .sub { color: var(--t2); margin-bottom: 18px; max-width: 820px; }
+    .urls {
+      background: #fff; border: 1px solid var(--b2); border-radius: 12px;
+      padding: 14px 16px; margin-bottom: 22px; font-size: 13px; color: var(--t2);
+    }
+    .urls strong { color: var(--t1); }
+    .urls code { font-size: 12px; background: var(--bg); padding: 2px 6px; border-radius: 4px; }
+
+    /* 顶部 = 现有 v4 思路（示意） */
+    .v4-top {
+      background: #fff; border: 1px solid var(--b2); border-radius: 16px 16px 0 0;
+      padding: 12px 16px; display: flex; align-items: center; gap: 14px; flex-wrap: wrap;
+    }
+    .logo { font-size: 17px; font-weight: 800; letter-spacing: -.4px; }
+    .logo span { color: #d4880a; }
+    .nav { display: flex; gap: 16px; flex-wrap: wrap; font-size: 13px; color: var(--t2); }
+    .nav b { color: var(--t1); border-bottom: 2px solid var(--t1); padding-bottom: 2px; }
+    .wa-pill {
+      margin-left: auto; background: #25d366; color: #fff; font-size: 12px; font-weight: 700;
+      padding: 8px 14px; border-radius: 999px; text-decoration: none;
+    }
+    .v4-hero {
+      background: #fff; border: 1px solid var(--b2); border-top: none; padding: 24px 16px 20px;
+    }
+    .crumb { font-size: 13px; color: var(--t3); margin-bottom: 8px; }
+    .crumb b { color: var(--t1); font-weight: 600; }
+    .v4-hero h2 { font-size: 1.45rem; font-weight: 800; letter-spacing: -.3px; margin-bottom: 4px; }
+    .v4-hero p { color: var(--t2); font-size: 13px; }
+
+    .stage {
+      background: var(--bg); border: 1px solid var(--b2); border-top: none;
+      border-radius: 0 0 16px 16px; padding: 18px; display: grid;
+      grid-template-columns: 224px 1fr; gap: 22px;
+    }
+    @media (max-width: 900px) { .stage { grid-template-columns: 1fr; } }
+
+    /* 左边选区 = 截图风 */
+    .sb-lbl {
+      font-size: 11px; font-weight: 700; letter-spacing: .07em; text-transform: uppercase;
+      color: var(--t3); padding: 0 6px; margin-bottom: 8px;
+    }
+    .scat {
+      display: flex; align-items: center; gap: 10px; padding: 9px 12px; border-radius: 10px;
+      border: 1.5px solid transparent; text-decoration: none; color: var(--t1); font-size: 13px;
+      margin-bottom: 2px;
+    }
+    .scat.on { background: #f5f5f7; border-color: var(--b2); font-weight: 700; }
+    .scat-ic {
+      width: 30px; height: 30px; border-radius: 9px; background: var(--b2);
+      display: grid; place-items: center; flex-shrink: 0; color: var(--t2); font-size: 12px;
+    }
+    .scat-n { flex: 1; }
+    .scat-c { font-size: 12px; color: var(--t3); }
+    .sb-filter { border-top: 1px solid var(--b2); padding-top: 18px; margin-top: 18px; }
+    .fo {
+      display: flex; align-items: center; gap: 9px; padding: 7px 8px; border-radius: 10px;
+      font-size: 13px; margin-bottom: 2px;
+    }
+    .fo.on { background: #f5f5f7; font-weight: 600; }
+    .fo-box {
+      width: 16px; height: 16px; border-radius: 4px; border: 1.5px solid #c7c7cc;
+      display: grid; place-items: center; flex-shrink: 0;
+    }
+    .fo.on .fo-box { background: var(--t1); border-color: var(--t1); color: #fff; font-size: 9px; font-weight: 900; }
+    .fo-n { flex: 1; }
+    .fo-c { font-size: 12px; color: var(--t3); }
+
+    /* 商品卡 = 截图风（强制） */
+    .lm-top {
+      display: flex; justify-content: space-between; align-items: center;
+      margin-bottom: 14px; padding-bottom: 12px; border-bottom: 1px solid var(--b2);
+      font-size: 13.5px; color: var(--t2);
+    }
+    .lm-top strong { color: var(--t1); }
+    .lrows { display: flex; flex-direction: column; gap: 10px; }
+    .lr {
+      background: #fff; border: 1.5px solid var(--b2); border-radius: 18px; overflow: hidden;
+      display: grid; grid-template-columns: 200px 1fr; transition: box-shadow .2s, border-color .2s;
+    }
+    .lr:hover { border-color: var(--b1); box-shadow: 0 4px 18px rgba(0,0,0,.08); }
+    .lr-img {
+      min-height: 156px; background: linear-gradient(135deg, #e8e8ed, #d2d2d7);
+      border-right: 1px solid var(--b2); position: relative;
+    }
+    .lr-hc {
+      position: absolute; top: 9px; left: 9px; background: rgba(0,0,0,.32);
+      color: rgba(255,255,255,.95); font-size: 8.5px; font-weight: 700;
+      padding: 3px 8px; border-radius: 999px; letter-spacing: .04em;
+    }
+    .lr-body { padding: 16px 18px; display: flex; flex-direction: column; justify-content: space-between; }
+    .lr-make { font-size: 10px; font-weight: 700; letter-spacing: .07em; text-transform: uppercase; color: var(--t3); margin-bottom: 3px; }
+    .lr-name { font-size: 15px; font-weight: 700; letter-spacing: -.2px; margin-bottom: 7px; }
+    .lr-tags { display: flex; gap: 5px; flex-wrap: wrap; margin-bottom: 9px; }
+    .t {
+      font-size: 11.5px; color: var(--t2); background: #f5f5f7; border: 1px solid var(--b2);
+      padding: 3px 10px; border-radius: 999px; font-weight: 500;
+    }
+    .t.v { background: var(--green-bg); color: var(--green); border-color: var(--green-bd); font-weight: 700; }
+    .lr-price { font-size: 22px; font-weight: 700; letter-spacing: -.5px; margin-bottom: 4px; }
+    .lr-exw {
+      font-size: 10px; font-weight: 700; background: var(--gold-bg); color: var(--gold);
+      border: 1px solid var(--gold-bd); padding: 2px 7px; border-radius: 999px; margin-left: 4px;
+    }
+    .lr-specs { font-size: 12.5px; color: var(--t2); margin-bottom: 4px; }
+    .lr-bot {
+      display: flex; align-items: center; justify-content: space-between; gap: 10px; flex-wrap: wrap;
+      padding-top: 10px; border-top: 1px solid var(--b2); margin-top: 8px;
+    }
+    .lr-vin { font-size: 11px; color: var(--t3); font-family: ui-monospace, Menlo, monospace; }
+    .lr-ctas { display: flex; gap: 6px; margin-left: auto; }
+    .lr-wa {
+      background: var(--green-bg); color: var(--green); border: 1px solid var(--green-bd);
+      padding: 7px 14px; border-radius: 999px; font-size: 12px; font-weight: 700;
+    }
+    .lr-get {
+      background: var(--t1); color: #fff; border: none; padding: 7px 18px;
+      border-radius: 999px; font-size: 12px; font-weight: 700;
+    }
+    @media (max-width: 640px) {
+      .lr { grid-template-columns: 1fr; }
+      .lr-img { min-height: 160px; border-right: none; border-bottom: 1px solid var(--b2); }
+    }
+
+    .compare {
+      margin-top: 28px; display: grid; grid-template-columns: 1fr 1fr; gap: 16px;
+    }
+    @media (max-width: 900px) { .compare { grid-template-columns: 1fr; } }
+    .panel {
+      background: #fff; border: 1px solid var(--b2); border-radius: 14px; overflow: hidden;
+    }
+    .panel__label {
+      padding: 10px 14px; font-size: 12px; font-weight: 700; letter-spacing: .04em;
+      text-transform: uppercase; border-bottom: 1px solid var(--b2);
+    }
+    .panel__label--old { background: #fff5f5; color: #9b1c1c; }
+    .panel__label--new { background: #f0faf3; color: #1d8348; }
+    .old-card {
+      margin: 14px; background: #fff; border-bottom: 1px solid #e2e8f0; padding: 12px 0;
+      display: grid; grid-template-columns: 88px 1fr; gap: 10px;
+    }
+    .old-ph { height: 68px; border-radius: 6px; background: linear-gradient(135deg, #cbd5e1, #94a3b8); }
+    .old-card strong { font-size: 13px; display: block; margin-bottom: 4px; }
+    .old-card span { font-size: 12px; color: #64748b; }
+
+    .diff {
+      margin-top: 24px; background: #fff; border: 1px solid var(--b2);
+      border-radius: 14px; padding: 18px 20px;
+    }
+    .diff h2 { font-size: 15px; margin-bottom: 10px; }
+    table { width: 100%; border-collapse: collapse; font-size: 13px; }
+    th, td { text-align: left; padding: 8px 10px; border-bottom: 1px solid var(--b2); vertical-align: top; }
+    th { color: var(--t3); font-size: 11px; text-transform: uppercase; letter-spacing: .04em; }
+    .ok { color: #1d8348; font-weight: 700; }
+    .wait { color: #9b1c1c; font-weight: 700; }
+    .gate {
+      margin-top: 18px; padding: 14px 16px; border-radius: 12px;
+      background: #fff8e6; border: 1px solid #f0d78c; font-size: 14px;
+    }
+  </style>
+</head>
+<body>
+  <div class="preview-note">
+    <div><strong>预览 · 未上线</strong> — 顶部用现有 v4；左边选区 + 商品卡按截图同步</div>
+    <div>
+      <a href="../../ops/ops-v4-listing-sync.md">说明文档</a> ·
+      <a href="/half-cuts/" target="_blank" rel="noopener">本地半切列表</a>
+    </div>
+  </div>
+
+  <div class="wrap">
+    <h1>列表页 · 商品卡必须像截图</h1>
+    <p class="sub">CEO 反馈：商品卡与左边选区按截图；顶部可沿用现有 v4 浅色页头。下方是改后完整示意；再往下是改前/改后对照。</p>
+
+    <div class="urls">
+      <strong>本地已改（等「可以上线」再部署）：</strong>
+      <code>/half-cuts/</code>
+      <code>/engines/</code>
+      <code>/gearboxes/</code>
+      <code>/trucks/</code>
+      <code>/machinery/</code>
+      <code>/front-cuts/</code>
+      <code>/chassis-parts/</code>
+    </div>
+
+    <!-- 改后完整示意 -->
+    <div class="v4-top">
+      <div class="logo">Asia<span>Power</span></div>
+      <div class="nav"><b>半切</b><span>卡车</span><span>发动机</span><span>机械</span></div>
+      <a class="wa-pill" href="#">WhatsApp</a>
+    </div>
+    <div class="v4-hero">
+      <div class="crumb">家 / <b>半切</b></div>
+      <h2>半截车</h2>
+      <p>394 台已验证单元 · 郑州工厂交货价</p>
+    </div>
+    <div class="stage">
+      <aside>
+        <div class="sb-lbl">类别</div>
+        <a class="scat on" href="#"><span class="scat-ic">🚗</span><span class="scat-n">半切</span><span class="scat-c">394</span></a>
+        <a class="scat" href="#"><span class="scat-ic">⚙️</span><span class="scat-n">发动机</span><span class="scat-c">210</span></a>
+        <a class="scat" href="#"><span class="scat-ic">🚛</span><span class="scat-n">卡车</span><span class="scat-c">48</span></a>
+        <div class="sb-filter">
+          <div class="sb-lbl">Brand</div>
+          <div class="fo on"><span class="fo-box">✓</span><span class="fo-n">丰田</span><span class="fo-c">89</span></div>
+          <div class="fo"><span class="fo-box"></span><span class="fo-n">日产</span><span class="fo-c">67</span></div>
+          <div class="fo"><span class="fo-box"></span><span class="fo-n">宝马</span><span class="fo-c">44</span></div>
+        </div>
+        <div class="sb-filter">
+          <div class="sb-lbl">Drivetrain</div>
+          <div class="fo"><span class="fo-box"></span><span class="fo-n">两驱车</span><span class="fo-c">267</span></div>
+          <div class="fo"><span class="fo-box"></span><span class="fo-n">四驱车</span><span class="fo-c">89</span></div>
+        </div>
+      </aside>
+      <div>
+        <div class="lm-top"><span><strong>394</strong> 结果</span><span>最新优先 ▾</span></div>
+        <div class="lrows">
+          <div class="lr">
+            <div class="lr-img"><span class="lr-hc">HC250527</span></div>
+            <div class="lr-body">
+              <div>
+                <div class="lr-make">丰田</div>
+                <div class="lr-name">陆地巡洋舰普拉多 1GR-FE 半截</div>
+                <div class="lr-tags">
+                  <span class="t">2003</span><span class="t">4AT</span><span class="t">四驱车</span><span class="t v">视频</span>
+                </div>
+                <div><span class="lr-price">7,000 美元</span><span class="lr-exw">出厂价</span></div>
+                <div class="lr-specs">1GR-FE 4.0升 V6 · 四驱车 · 全新拆卸</div>
+              </div>
+              <div class="lr-bot">
+                <span class="lr-vin">JTEBU17R838******139</span>
+                <div class="lr-ctas"><span class="lr-wa">WhatsApp</span><span class="lr-get">获取报价</span></div>
+              </div>
+            </div>
+          </div>
+          <div class="lr">
+            <div class="lr-img"><span class="lr-hc">HC250176</span></div>
+            <div class="lr-body">
+              <div>
+                <div class="lr-make">丰田</div>
+                <div class="lr-name">普拉多 1GR-FE 半截 两驱</div>
+                <div class="lr-tags"><span class="t">2015</span><span class="t">6AT</span><span class="t">两驱车</span></div>
+                <div><span class="lr-price">6,200 美元</span><span class="lr-exw">出厂价</span></div>
+                <div class="lr-specs">1GR-FE 4.0升 V6 · 两驱车</div>
+              </div>
+              <div class="lr-bot">
+                <span class="lr-vin">JTEZU5JR5F5****248</span>
+                <div class="lr-ctas"><span class="lr-wa">WhatsApp</span><span class="lr-get">获取报价</span></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="compare">
+      <div class="panel">
+        <div class="panel__label panel__label--old">改前 · 旧列表行</div>
+        <div class="old-card">
+          <div class="old-ph"></div>
+          <div>
+            <strong>Toyota Camry 2012 · HC250xxx</strong>
+            <span>$2,850 EXW · Drivetrain: 2WD</span>
+          </div>
+        </div>
+      </div>
+      <div class="panel">
+        <div class="panel__label panel__label--new">改后 · 截图商品卡</div>
+        <div style="padding:12px">
+          <div class="lr" style="grid-template-columns:120px 1fr">
+            <div class="lr-img" style="min-height:120px"><span class="lr-hc">HC250527</span></div>
+            <div class="lr-body" style="padding:12px">
+              <div class="lr-make">丰田</div>
+              <div class="lr-name" style="font-size:13px">陆地巡洋舰普拉多 1GR-FE 半截</div>
+              <div class="lr-tags"><span class="t">2003</span><span class="t v">视频</span></div>
+              <div><span class="lr-price" style="font-size:18px">7,000 美元</span><span class="lr-exw">出厂价</span></div>
+              <div class="lr-bot" style="margin-top:6px">
+                <span class="lr-vin">VIN…</span>
+                <div class="lr-ctas"><span class="lr-wa">WhatsApp</span><span class="lr-get">获取报价</span></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="diff">
+      <h2>本轮对照</h2>
+      <table>
+        <thead><tr><th>区域</th><th>要求</th><th>状态</th></tr></thead>
+        <tbody>
+          <tr><td>顶部</td><td>现有 v4 浅色页头 / chrome</td><td class="ok">沿用</td></tr>
+          <tr><td>左边选区</td><td>图标+选中浅灰底+数量；Brand checkbox</td><td class="ok">已同步</td></tr>
+          <tr><td>商品卡</td><td>左图右文、库存号、标签、出厂价、WA+获取报价</td><td class="ok">已同步</td></tr>
+          <tr><td>生产部署</td><td>等 CEO「可以上线」</td><td class="wait">未部署</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="gate">
+      <strong>下一步：</strong>请看本预览 + 本地 <code>/half-cuts/</code>。满意后回复「可以上线」，再走 Release Manager 部署。
+    </div>
+  </div>
+</body>
+</html>

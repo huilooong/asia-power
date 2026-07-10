@@ -4,67 +4,168 @@
       "chinese": "玛驰",
       "english": "March",
       "source": "manual_seed",
-      "learnedAt": "2026-06-27T21:18:18.857Z"
+      "learnedAt": "2026-07-10T09:32:36.219Z",
+      "years": [
+        "2010"
+      ],
+      "body": "5门5座两厢车",
+      "level": "小型车",
+      "englishSource": "restored_from_git_manual_seed",
+      "enrichedSource": "qxb_auto_decode"
     },
     "天籁": {
       "chinese": "天籁",
       "english": "Teana",
       "source": "manual_seed",
-      "learnedAt": "2026-06-27T21:18:18.857Z"
+      "learnedAt": "2026-07-10T09:32:36.221Z",
+      "years": [
+        "2005",
+        "2006",
+        "2007",
+        "2008",
+        "2009",
+        "2011",
+        "2013",
+        "2016"
+      ],
+      "body": "4门5座三厢车",
+      "level": "中型车",
+      "englishSource": "restored_from_git_manual_seed",
+      "enrichedSource": "qxb_auto_decode"
     },
     "轩逸": {
       "chinese": "轩逸",
       "english": "Sylphy",
       "source": "manual_seed",
-      "learnedAt": "2026-06-27T21:18:18.858Z"
+      "learnedAt": "2026-07-10T09:32:36.221Z",
+      "years": [
+        "2006",
+        "2007",
+        "2009",
+        "2012",
+        "2016"
+      ]
     },
     "骐达": {
       "chinese": "骐达",
       "english": "Tiida",
       "source": "manual_seed",
-      "learnedAt": "2026-06-27T21:18:18.858Z"
+      "learnedAt": "2026-07-10T09:32:36.222Z",
+      "years": [
+        "2005",
+        "2006",
+        "2008",
+        "2011"
+      ]
     },
     "逍客": {
       "chinese": "逍客",
       "english": "Qashqai",
       "source": "manual_seed",
-      "learnedAt": "2026-06-27T21:18:18.858Z"
+      "learnedAt": "2026-07-10T09:32:36.223Z",
+      "years": [
+        "2008",
+        "2010",
+        "2011",
+        "2012"
+      ]
     },
     "楼兰": {
       "chinese": "楼兰",
       "english": "Murano",
       "source": "manual_seed",
-      "learnedAt": "2026-06-27T21:18:18.859Z"
+      "learnedAt": "2026-07-10T09:32:36.224Z"
     },
     "途达": {
       "chinese": "途达",
       "english": "Terra",
       "source": "manual_seed",
-      "learnedAt": "2026-06-27T21:18:18.859Z"
+      "learnedAt": "2026-07-10T09:32:36.225Z"
     },
     "阳光": {
       "chinese": "阳光",
       "english": "Sunny",
       "source": "manual_seed",
-      "learnedAt": "2026-06-27T21:18:18.859Z"
+      "learnedAt": "2026-07-10T09:32:36.226Z",
+      "years": [
+        "2011",
+        "2012"
+      ]
     },
     "西玛": {
       "chinese": "西玛",
       "english": "Cefiro",
       "source": "manual_seed",
-      "learnedAt": "2026-06-27T21:18:18.860Z"
+      "learnedAt": "2026-07-10T09:32:36.226Z"
     },
     "奇骏": {
       "chinese": "奇骏",
       "english": "X-Trail",
       "source": "manual_seed",
-      "learnedAt": "2026-06-27T21:18:18.861Z"
+      "learnedAt": "2026-07-10T09:32:36.227Z",
+      "years": [
+        "2008",
+        "2010"
+      ]
     },
     "骊威": {
       "chinese": "骊威",
       "english": "Livina",
       "source": "manual_seed",
-      "learnedAt": "2026-06-27T21:18:18.862Z"
+      "learnedAt": "2026-07-10T09:32:36.228Z",
+      "years": [
+        "2007",
+        "2010"
+      ]
+    },
+    "途乐": {
+      "chinese": "途乐",
+      "english": null,
+      "years": [
+        "2004"
+      ],
+      "body": "5门7座SUV",
+      "level": "大型SUV",
+      "source": "qxb_auto_decode",
+      "learnedAt": "2026-06-29T06:50:14.467Z"
+    },
+    "颐达": {
+      "chinese": "颐达",
+      "english": "Versa",
+      "years": [
+        "2006",
+        "2008",
+        "2009"
+      ],
+      "source": "qxb_excel_import",
+      "learnedAt": "2026-06-29T09:06:16.488190+00:00",
+      "englishSource": "qxb_wiki_verified_na",
+      "englishVerifiedAt": "2026-06-29T09:18:39.536047+00:00"
+    },
+    "骏逸": {
+      "chinese": "骏逸",
+      "english": "Livina Geniss",
+      "years": [
+        "2006"
+      ],
+      "source": "qxb_excel_import",
+      "learnedAt": "2026-06-29T09:06:16.488294+00:00",
+      "englishSource": "qxb_wiki_verified_na",
+      "englishVerifiedAt": "2026-06-29T09:18:39.536047+00:00"
+    },
+    "帕拉丁": {
+      "chinese": "帕拉丁",
+      "english": "Paladin",
+      "years": [
+        "2006",
+        "2007",
+        "2008",
+        "2013"
+      ],
+      "source": "qxb_excel_import",
+      "learnedAt": "2026-06-29T09:06:16.488300+00:00",
+      "englishSource": "qxb_wiki_verified_na",
+      "englishVerifiedAt": "2026-06-29T09:18:39.536047+00:00"
     }
   },
   "toyota": {
@@ -72,55 +173,262 @@
       "chinese": "卡罗拉",
       "english": "Corolla",
       "source": "manual_seed",
-      "learnedAt": "2026-06-27T21:18:18.862Z"
+      "learnedAt": "2026-07-10T09:32:36.229Z",
+      "years": [
+        "2007",
+        "2008",
+        "2009",
+        "2011",
+        "2012",
+        "2014",
+        "2016",
+        "2019",
+        "2021"
+      ],
+      "body": "4门5座三厢车",
+      "level": "紧凑型车",
+      "englishSource": "restored_from_git_manual_seed",
+      "enrichedSource": "qxb_auto_decode"
     },
     "威驰": {
       "chinese": "威驰",
       "english": "Vios",
       "source": "manual_seed",
-      "learnedAt": "2026-06-27T21:18:18.863Z"
+      "learnedAt": "2026-07-10T09:32:36.230Z",
+      "years": [
+        "2004",
+        "2005",
+        "2006",
+        "2008",
+        "2010"
+      ]
     },
     "雅力士": {
       "chinese": "雅力士",
       "english": "Yaris",
       "source": "manual_seed",
-      "learnedAt": "2026-06-27T21:18:18.863Z"
+      "learnedAt": "2026-07-10T09:32:36.230Z",
+      "years": [
+        "2008",
+        "2011"
+      ]
     },
     "汉兰达": {
       "chinese": "汉兰达",
       "english": "Highlander",
       "source": "manual_seed",
-      "learnedAt": "2026-06-27T21:18:18.863Z"
+      "learnedAt": "2026-07-10T09:32:36.231Z",
+      "years": [
+        "2009",
+        "2012"
+      ]
     },
     "普拉多": {
       "chinese": "普拉多",
       "english": "Land Cruiser Prado",
       "source": "manual_seed",
-      "learnedAt": "2026-06-27T21:18:18.864Z"
+      "learnedAt": "2026-07-10T09:32:36.232Z",
+      "years": [
+        "2004",
+        "2010"
+      ],
+      "body": "5门8座SUV",
+      "level": "中大型SUV",
+      "englishSource": "restored_from_git_manual_seed",
+      "enrichedSource": "qxb_auto_decode"
     },
     "塞纳": {
       "chinese": "塞纳",
       "english": "Sienna",
       "source": "manual_seed",
-      "learnedAt": "2026-06-27T21:18:18.864Z"
+      "learnedAt": "2026-07-10T09:32:36.233Z"
     },
     "海狮": {
       "chinese": "海狮",
       "english": "Hiace",
       "source": "manual_seed",
-      "learnedAt": "2026-06-27T21:18:18.865Z"
+      "learnedAt": "2026-07-10T09:32:36.234Z"
     },
     "海拉克斯": {
       "chinese": "海拉克斯",
       "english": "Hilux",
       "source": "manual_seed",
-      "learnedAt": "2026-06-27T21:18:18.865Z"
+      "learnedAt": "2026-07-10T09:32:36.235Z"
     },
     "陆地巡洋舰": {
       "chinese": "陆地巡洋舰",
       "english": "Land Cruiser",
       "source": "manual_seed",
-      "learnedAt": "2026-06-27T21:18:18.865Z"
+      "learnedAt": "2026-07-10T09:32:36.236Z"
+    },
+    "凯美瑞": {
+      "chinese": "凯美瑞",
+      "english": "Camry",
+      "source": "manual_seed",
+      "learnedAt": "2026-07-10T09:32:36.228Z",
+      "years": [
+        "2006",
+        "2007",
+        "2008",
+        "2009",
+        "2010",
+        "2011",
+        "2012",
+        "2013",
+        "2016",
+        "2019"
+      ],
+      "body": "4门5座三厢车",
+      "level": "中型车"
+    },
+    "普拉多(进口)": {
+      "chinese": "普拉多(进口)",
+      "english": null,
+      "years": [
+        "2003",
+        "2004"
+      ],
+      "body": "5门8座SUV",
+      "level": "中大型SUV",
+      "source": "qxb_auto_decode",
+      "learnedAt": "2026-06-29T06:50:14.470Z"
+    },
+    "锐志": {
+      "chinese": "锐志",
+      "english": "Mark X",
+      "years": [
+        "2006",
+        "2007",
+        "2010"
+      ],
+      "source": "qxb_excel_import",
+      "learnedAt": "2026-06-29T09:06:16.488195+00:00",
+      "englishSource": "qxb_wiki_verified_na",
+      "englishVerifiedAt": "2026-06-29T09:18:39.536047+00:00"
+    },
+    "普瑞维亚": {
+      "chinese": "普瑞维亚",
+      "english": "Previa",
+      "years": [
+        "2006",
+        "2007"
+      ],
+      "source": "qxb_excel_import",
+      "learnedAt": "2026-06-29T09:06:16.488201+00:00",
+      "englishSource": "qxb_wiki_verified_na",
+      "englishVerifiedAt": "2026-06-29T09:18:39.536047+00:00"
+    },
+    "花冠": {
+      "chinese": "花冠",
+      "english": "Corolla",
+      "years": [
+        "2004",
+        "2007",
+        "2009",
+        "2010",
+        "2013"
+      ],
+      "source": "qxb_excel_import",
+      "learnedAt": "2026-06-29T09:06:16.488213+00:00",
+      "englishSource": "qxb_wiki_verified_na",
+      "englishVerifiedAt": "2026-06-29T09:18:39.536047+00:00"
+    },
+    "逸致": {
+      "chinese": "逸致",
+      "english": "Verso",
+      "years": [
+        "2011"
+      ],
+      "source": "qxb_excel_import",
+      "learnedAt": "2026-06-29T09:06:16.488243+00:00",
+      "englishSource": "qxb_wiki_verified_na",
+      "englishVerifiedAt": "2026-06-29T09:18:39.536047+00:00"
+    },
+    "荣放": {
+      "chinese": "荣放",
+      "english": "RAV4",
+      "years": [
+        "2009",
+        "2011",
+        "2016",
+        "2026"
+      ],
+      "source": "qxb_excel_import",
+      "learnedAt": "2026-06-29T09:06:16.488246+00:00"
+    },
+    "亚洲龙": {
+      "chinese": "亚洲龙",
+      "english": "Avalon",
+      "years": [
+        "2019"
+      ],
+      "source": "qxb_excel_import",
+      "learnedAt": "2026-06-29T09:06:16.488248+00:00",
+      "englishSource": "qxb_wiki_verified_na",
+      "englishVerifiedAt": "2026-06-29T09:18:39.536047+00:00"
+    },
+    "皇冠": {
+      "chinese": "皇冠",
+      "english": "Crown",
+      "years": [
+        "2005",
+        "2006",
+        "2010",
+        "2015"
+      ],
+      "source": "qxb_excel_import",
+      "learnedAt": "2026-06-29T09:06:16.488249+00:00",
+      "englishSource": "qxb_wiki_verified_na",
+      "englishVerifiedAt": "2026-06-29T09:18:39.536047+00:00"
+    },
+    "雷凌": {
+      "chinese": "雷凌",
+      "english": "Levin",
+      "years": [
+        "2017"
+      ],
+      "source": "qxb_excel_import",
+      "learnedAt": "2026-06-29T09:06:16.488282+00:00",
+      "englishSource": "qxb_wiki_verified_na",
+      "englishVerifiedAt": "2026-06-29T09:18:39.536047+00:00"
+    },
+    "RAV4": {
+      "chinese": "RAV4",
+      "english": "RAV4",
+      "years": [
+        "2004"
+      ],
+      "variants": [
+        "进口"
+      ],
+      "source": "qxb_excel_import",
+      "learnedAt": "2026-06-29T09:06:16.488325+00:00"
+    },
+    "普锐斯": {
+      "chinese": "普锐斯",
+      "english": "Prius",
+      "years": [
+        "2006"
+      ],
+      "source": "qxb_excel_import",
+      "learnedAt": "2026-06-29T09:06:16.488326+00:00",
+      "englishSource": "qxb_wiki_verified_na",
+      "englishVerifiedAt": "2026-06-29T09:18:39.536047+00:00"
+    },
+    "奕泽": {
+      "chinese": "奕泽",
+      "english": "IZOA",
+      "years": [
+        "2022"
+      ],
+      "source": "qxb_excel_import",
+      "learnedAt": "2026-06-29T09:06:16.488330+00:00"
+    },
+    "霸道": {
+      "chinese": "霸道",
+      "english": "Land Cruiser Prado",
+      "source": "manual_seed",
+      "learnedAt": "2026-07-10T09:32:36.232Z"
     }
   },
   "honda": {
@@ -128,37 +436,203 @@
       "chinese": "雅阁",
       "english": "Accord",
       "source": "manual_seed",
-      "learnedAt": "2026-06-27T21:18:18.866Z"
+      "learnedAt": "2026-07-10T09:32:36.237Z",
+      "years": [
+        "2004",
+        "2005",
+        "2006",
+        "2007",
+        "2008",
+        "2009",
+        "2010",
+        "2011",
+        "2012",
+        "2014",
+        "2016"
+      ],
+      "body": "4门5座三厢车",
+      "level": "中型车",
+      "englishSource": "restored_from_git_manual_seed",
+      "enrichedSource": "qxb_auto_decode"
     },
     "思域": {
       "chinese": "思域",
       "english": "Civic",
       "source": "manual_seed",
-      "learnedAt": "2026-06-27T21:18:18.866Z"
+      "learnedAt": "2026-07-10T09:32:36.237Z",
+      "years": [
+        "2006",
+        "2008",
+        "2009",
+        "2014",
+        "2016"
+      ]
     },
     "飞度": {
       "chinese": "飞度",
       "english": "Fit",
       "source": "manual_seed",
-      "learnedAt": "2026-06-27T21:18:18.866Z"
+      "learnedAt": "2026-07-10T09:32:36.238Z",
+      "years": [
+        "2006",
+        "2007",
+        "2008",
+        "2011",
+        "2012"
+      ]
     },
     "缤智": {
       "chinese": "缤智",
       "english": "HR-V",
       "source": "manual_seed",
-      "learnedAt": "2026-06-27T21:18:18.867Z"
+      "learnedAt": "2026-07-10T09:32:36.239Z"
     },
     "凌派": {
       "chinese": "凌派",
       "english": "Crider",
       "source": "manual_seed",
-      "learnedAt": "2026-06-27T21:18:18.867Z"
+      "learnedAt": "2026-07-10T09:32:36.240Z",
+      "years": [
+        "2013",
+        "2015",
+        "2016"
+      ]
     },
     "本田CR-V": {
       "chinese": "本田CR-V",
       "english": "CR-V",
       "source": "manual_seed",
-      "learnedAt": "2026-06-27T21:18:18.867Z"
+      "learnedAt": "2026-07-10T09:32:36.240Z"
+    },
+    "锋范经典": {
+      "chinese": "锋范经典",
+      "english": "City",
+      "years": [
+        "2008",
+        "2012"
+      ],
+      "source": "qxb_excel_import",
+      "learnedAt": "2026-06-29T09:06:16.488199+00:00",
+      "englishSource": "qxb_wiki_verified_na",
+      "englishVerifiedAt": "2026-06-29T09:18:39.536047+00:00"
+    },
+    "CR-V": {
+      "chinese": "CR-V",
+      "english": "CR-V",
+      "years": [
+        "2005",
+        "2007",
+        "2010",
+        "2012",
+        "2013"
+      ],
+      "source": "qxb_excel_import",
+      "learnedAt": "2026-06-29T09:06:16.488206+00:00"
+    },
+    "奥德赛": {
+      "chinese": "奥德赛",
+      "english": "Odyssey",
+      "years": [
+        "2003",
+        "2005",
+        "2007",
+        "2008",
+        "2009",
+        "2015",
+        "2017"
+      ],
+      "source": "qxb_excel_import",
+      "learnedAt": "2026-06-29T09:06:16.488251+00:00",
+      "englishSource": "qxb_wiki_verified_na",
+      "englishVerifiedAt": "2026-06-29T09:18:39.536047+00:00"
+    },
+    "锋范": {
+      "chinese": "锋范",
+      "english": "City",
+      "years": [
+        "2011"
+      ],
+      "source": "qxb_excel_import",
+      "learnedAt": "2026-06-29T09:06:16.488292+00:00",
+      "englishSource": "qxb_wiki_verified_na",
+      "englishVerifiedAt": "2026-06-29T09:18:39.536047+00:00"
+    },
+    "艾力绅": {
+      "chinese": "艾力绅",
+      "english": "Elysion",
+      "years": [
+        "2012",
+        "2016"
+      ],
+      "source": "qxb_excel_import",
+      "learnedAt": "2026-06-29T09:06:16.488306+00:00",
+      "englishSource": "qxb_wiki_verified_na",
+      "englishVerifiedAt": "2026-06-29T09:18:39.536047+00:00"
+    },
+    "歌诗图": {
+      "chinese": "歌诗图",
+      "english": "Crosstour",
+      "years": [
+        "2012"
+      ],
+      "source": "qxb_excel_import",
+      "learnedAt": "2026-06-29T09:06:16.488308+00:00",
+      "englishSource": "qxb_wiki_verified_na",
+      "englishVerifiedAt": "2026-06-29T09:18:39.536047+00:00"
+    },
+    "思铂睿": {
+      "chinese": "思铂睿",
+      "english": "Spirior",
+      "years": [
+        "2009",
+        "2015"
+      ],
+      "source": "qxb_excel_import",
+      "learnedAt": "2026-06-29T09:06:16.488309+00:00",
+      "englishSource": "qxb_wiki_verified_na",
+      "englishVerifiedAt": "2026-06-29T09:18:39.536047+00:00"
+    },
+    "XR-V": {
+      "chinese": "XR-V",
+      "english": "XR-V",
+      "years": [
+        "2017"
+      ],
+      "source": "qxb_excel_import",
+      "learnedAt": "2026-06-29T09:06:16.488328+00:00"
+    },
+    "杰德": {
+      "chinese": "杰德",
+      "english": "Jade",
+      "years": [
+        "2013"
+      ],
+      "source": "qxb_excel_import",
+      "learnedAt": "2026-06-29T09:06:16.488329+00:00",
+      "englishSource": "qxb_wiki_verified_na",
+      "englishVerifiedAt": "2026-06-29T09:18:39.536047+00:00"
+    },
+    "英仕派": {
+      "chinese": "英仕派",
+      "english": "Inspire",
+      "years": [
+        "2019"
+      ],
+      "source": "qxb_excel_import",
+      "learnedAt": "2026-06-29T09:06:16.488333+00:00",
+      "englishSource": "qxb_wiki_verified_na",
+      "englishVerifiedAt": "2026-06-29T09:18:39.536047+00:00"
+    },
+    "竞瑞": {
+      "chinese": "竞瑞",
+      "english": "Greiz",
+      "years": [
+        "2017"
+      ],
+      "source": "qxb_excel_import",
+      "learnedAt": "2026-06-29T09:06:16.488334+00:00",
+      "englishSource": "qxb_wiki_verified_na",
+      "englishVerifiedAt": "2026-06-29T09:18:39.536047+00:00"
     }
   },
   "hyundai": {
@@ -166,25 +640,248 @@
       "chinese": "途胜",
       "english": "Tucson",
       "source": "manual_seed",
-      "learnedAt": "2026-06-27T21:18:18.868Z"
+      "learnedAt": "2026-07-10T09:32:36.241Z",
+      "years": [
+        "2006",
+        "2007",
+        "2009",
+        "2013"
+      ],
+      "body": "5门5座SUV",
+      "level": "SUV",
+      "englishSource": "restored_from_git_manual_seed",
+      "enrichedSource": "qxb_auto_decode"
     },
     "胜达": {
       "chinese": "胜达",
       "english": "Santa Fe",
       "source": "manual_seed",
-      "learnedAt": "2026-06-27T21:18:18.868Z"
+      "learnedAt": "2026-07-10T09:32:36.242Z",
+      "years": [
+        "2013",
+        "2017"
+      ],
+      "body": "5门7座SUV",
+      "level": "中型SUV",
+      "englishSource": "restored_from_git_manual_seed",
+      "enrichedSource": "qxb_auto_decode"
     },
     "伊兰特": {
       "chinese": "伊兰特",
       "english": "Elantra",
       "source": "manual_seed",
-      "learnedAt": "2026-06-27T21:18:18.869Z"
+      "learnedAt": "2026-07-10T09:32:36.243Z",
+      "years": [
+        "2008"
+      ],
+      "body": "4门5座三厢车",
+      "level": "紧凑型车",
+      "englishSource": "restored_from_git_manual_seed",
+      "enrichedSource": "qxb_auto_decode"
     },
     "索纳塔": {
       "chinese": "索纳塔",
       "english": "Sonata",
       "source": "manual_seed",
-      "learnedAt": "2026-06-27T21:18:18.870Z"
+      "learnedAt": "2026-07-10T09:32:36.245Z",
+      "years": [
+        "2003",
+        "2004",
+        "2011",
+        "2017"
+      ],
+      "body": "4门5座三厢",
+      "level": "轿车",
+      "englishSource": "restored_from_git_manual_seed",
+      "enrichedSource": "qxb_auto_decode"
+    },
+    "胜达经典": {
+      "chinese": "胜达经典",
+      "english": "Santa Fe",
+      "source": "manual_seed",
+      "learnedAt": "2026-07-10T09:32:36.242Z",
+      "years": [
+        "2007",
+        "2008",
+        "2009",
+        "2010",
+        "2011",
+        "2012"
+      ],
+      "body": "5门7座SUV",
+      "level": "SUV"
+    },
+    "御翔": {
+      "chinese": "御翔",
+      "english": "Sonata",
+      "source": "manual_seed",
+      "learnedAt": "2026-07-10T09:32:36.245Z",
+      "years": [
+        "2006"
+      ],
+      "body": "4门5座三厢车",
+      "level": "中型车"
+    },
+    "领翔": {
+      "chinese": "领翔",
+      "english": "Sonata",
+      "source": "manual_seed",
+      "learnedAt": "2026-07-10T09:32:36.246Z",
+      "years": [
+        "2009"
+      ],
+      "body": "4门5座三厢车",
+      "level": "中型车"
+    },
+    "悦动": {
+      "chinese": "悦动",
+      "english": "Elantra",
+      "years": [
+        "2008",
+        "2010",
+        "2011",
+        "2020"
+      ],
+      "body": "4门5座三厢车",
+      "level": "紧凑型车",
+      "source": "manual_seed",
+      "learnedAt": "2026-07-10T09:32:36.244Z"
+    },
+    "北京现代ix35": {
+      "chinese": "北京现代ix35",
+      "english": null,
+      "years": [
+        "2010"
+      ],
+      "body": "5门5座SUV",
+      "level": "紧凑型SUV",
+      "source": "qxb_auto_decode",
+      "learnedAt": "2026-06-29T06:50:14.473Z"
+    },
+    "创虎XCIENT": {
+      "chinese": "创虎XCIENT",
+      "english": null,
+      "years": [
+        "2018"
+      ],
+      "body": "牵引车",
+      "level": null,
+      "source": "qxb_auto_decode",
+      "learnedAt": "2026-06-29T06:50:14.474Z"
+    },
+    "酷派": {
+      "chinese": "酷派",
+      "english": "Tiburon",
+      "years": [
+        "2004",
+        "2007"
+      ],
+      "source": "qxb_excel_import",
+      "learnedAt": "2026-06-29T09:06:16.488180+00:00",
+      "englishSource": "qxb_wiki_verified_na",
+      "englishVerifiedAt": "2026-06-29T09:18:39.536047+00:00"
+    },
+    "ix35": {
+      "chinese": "ix35",
+      "english": "ix35",
+      "years": [
+        "2010",
+        "2013"
+      ],
+      "source": "qxb_excel_import",
+      "learnedAt": "2026-06-29T09:06:16.488194+00:00"
+    },
+    "朗动": {
+      "chinese": "朗动",
+      "english": "Elantra",
+      "years": [
+        "2012",
+        "2013",
+        "2015"
+      ],
+      "source": "qxb_excel_import",
+      "learnedAt": "2026-06-29T09:06:16.488228+00:00",
+      "englishSource": "qxb_wiki_verified_na",
+      "englishVerifiedAt": "2026-06-29T09:18:39.536047+00:00"
+    },
+    "瑞纳": {
+      "chinese": "瑞纳",
+      "english": "Accent",
+      "years": [
+        "2010",
+        "2013",
+        "2017"
+      ],
+      "source": "qxb_excel_import",
+      "learnedAt": "2026-06-29T09:06:16.488229+00:00",
+      "englishSource": "qxb_wiki_verified_na",
+      "englishVerifiedAt": "2026-06-29T09:18:39.536047+00:00"
+    },
+    "维拉克斯": {
+      "chinese": "维拉克斯",
+      "english": "Veracruz",
+      "years": [
+        "2007",
+        "2012"
+      ],
+      "source": "qxb_excel_import",
+      "learnedAt": "2026-06-29T09:06:16.488258+00:00",
+      "englishSource": "qxb_wiki_verified_na",
+      "englishVerifiedAt": "2026-06-29T09:18:39.536047+00:00"
+    },
+    "雅绅特": {
+      "chinese": "雅绅特",
+      "english": "Accent",
+      "years": [
+        "2011"
+      ],
+      "source": "qxb_excel_import",
+      "learnedAt": "2026-06-29T09:06:16.488265+00:00",
+      "englishSource": "qxb_wiki_verified_na",
+      "englishVerifiedAt": "2026-06-29T09:18:39.536047+00:00"
+    },
+    "领动": {
+      "chinese": "领动",
+      "english": "Elantra",
+      "years": [
+        "2016"
+      ],
+      "source": "qxb_excel_import",
+      "learnedAt": "2026-06-29T09:06:16.488295+00:00",
+      "englishSource": "qxb_wiki_verified_na",
+      "englishVerifiedAt": "2026-06-29T09:18:39.536047+00:00"
+    },
+    "名图": {
+      "chinese": "名图",
+      "english": "Mistra",
+      "years": [
+        "2014"
+      ],
+      "source": "qxb_excel_import",
+      "learnedAt": "2026-06-29T09:06:16.488305+00:00",
+      "englishSource": "qxb_wiki_verified_na",
+      "englishVerifiedAt": "2026-06-29T09:18:39.536047+00:00"
+    },
+    "i30": {
+      "chinese": "i30",
+      "english": "i30",
+      "years": [
+        "2009"
+      ],
+      "source": "qxb_excel_import",
+      "learnedAt": "2026-06-29T09:06:16.488314+00:00"
+    },
+    "创虎": {
+      "chinese": "创虎",
+      "english": "Xcient",
+      "source": "manual_seed",
+      "learnedAt": "2026-07-10T09:32:36.247Z"
+    },
+    "瑞越": {
+      "chinese": "瑞越",
+      "english": "Mighty",
+      "source": "manual_seed",
+      "learnedAt": "2026-07-10T09:32:36.248Z"
     }
   },
   "kia": {
@@ -192,19 +889,1486 @@
       "chinese": "智跑",
       "english": "Sportage",
       "source": "manual_seed",
-      "learnedAt": "2026-06-27T21:18:18.870Z"
+      "learnedAt": "2026-07-10T09:32:36.250Z",
+      "years": [
+        "2011",
+        "2012"
+      ]
     },
     "索兰托": {
       "chinese": "索兰托",
       "english": "Sorento",
       "source": "manual_seed",
-      "learnedAt": "2026-06-27T21:18:18.871Z"
+      "learnedAt": "2026-07-10T09:32:36.252Z",
+      "years": [
+        "2009"
+      ]
     },
     "嘉华": {
       "chinese": "嘉华",
       "english": "Carnival",
       "source": "manual_seed",
-      "learnedAt": "2026-06-27T21:18:18.871Z"
+      "learnedAt": "2026-07-10T09:32:36.253Z",
+      "years": [
+        "2006"
+      ]
+    },
+    "起亚K2": {
+      "chinese": "起亚K2",
+      "english": "Rio",
+      "source": "manual_seed",
+      "learnedAt": "2026-07-10T09:32:36.248Z",
+      "years": [
+        "2012"
+      ],
+      "body": "4门5座三厢车",
+      "level": "小型车"
+    },
+    "起亚K5": {
+      "chinese": "起亚K5",
+      "english": "K5",
+      "source": "manual_seed",
+      "learnedAt": "2026-07-10T09:32:36.249Z",
+      "years": [
+        "2012"
+      ],
+      "body": "4门5座三厢车",
+      "level": "中型车"
+    },
+    "赛拉图": {
+      "chinese": "赛拉图",
+      "english": "Cerato",
+      "source": "manual_seed",
+      "learnedAt": "2026-07-10T09:32:36.253Z",
+      "years": [
+        "2006",
+        "2008",
+        "2010"
+      ],
+      "body": "4门5座三厢车",
+      "level": "紧凑型车"
+    },
+    "狮跑": {
+      "chinese": "狮跑",
+      "english": "Sportage",
+      "years": [
+        "2007",
+        "2009",
+        "2011"
+      ],
+      "body": "5门5座SUV",
+      "level": "紧凑型SUV",
+      "source": "manual_seed",
+      "learnedAt": "2026-07-10T09:32:36.251Z"
+    },
+    "欧菲莱斯": {
+      "chinese": "欧菲莱斯",
+      "english": null,
+      "years": [
+        "2005"
+      ],
+      "body": "4门5座三厢车",
+      "level": "中大型车",
+      "source": "qxb_auto_decode",
+      "learnedAt": "2026-06-29T09:06:16.488291+00:00"
+    },
+    "锐欧": {
+      "chinese": "锐欧",
+      "english": "Rio",
+      "years": [
+        "2007"
+      ],
+      "source": "qxb_excel_import",
+      "learnedAt": "2026-06-29T09:06:16.488170+00:00",
+      "englishSource": "qxb_wiki_verified_na",
+      "englishVerifiedAt": "2026-06-29T09:18:39.536047+00:00"
+    },
+    "K2": {
+      "chinese": "K2",
+      "english": "K2",
+      "years": [
+        "2011",
+        "2012",
+        "2015"
+      ],
+      "source": "qxb_excel_import",
+      "learnedAt": "2026-06-29T09:06:16.488174+00:00"
+    },
+    "霸锐": {
+      "chinese": "霸锐",
+      "english": "Borrego",
+      "years": [
+        "2008"
+      ],
+      "source": "qxb_excel_import",
+      "learnedAt": "2026-06-29T09:06:16.488208+00:00",
+      "englishSource": "qxb_wiki_verified_na",
+      "englishVerifiedAt": "2026-06-29T09:18:39.536047+00:00"
+    },
+    "K5": {
+      "chinese": "K5",
+      "english": "K5",
+      "years": [
+        "2011",
+        "2012",
+        "2015"
+      ],
+      "source": "qxb_excel_import",
+      "learnedAt": "2026-06-29T09:06:16.488231+00:00"
+    },
+    "凯尊": {
+      "chinese": "凯尊",
+      "english": "Cadenza",
+      "years": [
+        "2011"
+      ],
+      "source": "qxb_excel_import",
+      "learnedAt": "2026-06-29T09:06:16.488245+00:00",
+      "englishSource": "qxb_wiki_verified_na",
+      "englishVerifiedAt": "2026-06-29T09:18:39.536047+00:00"
+    },
+    "K3": {
+      "chinese": "K3",
+      "english": "K3",
+      "years": [
+        "2013"
+      ],
+      "source": "qxb_excel_import",
+      "learnedAt": "2026-06-29T09:06:16.488259+00:00"
+    },
+    "秀尔": {
+      "chinese": "秀尔",
+      "english": "Soul",
+      "years": [
+        "2010",
+        "2012"
+      ],
+      "source": "qxb_excel_import",
+      "learnedAt": "2026-06-29T09:06:16.488264+00:00",
+      "englishSource": "qxb_wiki_verified_na",
+      "englishVerifiedAt": "2026-06-29T09:18:39.536047+00:00"
+    },
+    "福瑞迪": {
+      "chinese": "福瑞迪",
+      "english": "Forte",
+      "years": [
+        "2011"
+      ],
+      "source": "qxb_excel_import",
+      "learnedAt": "2026-06-29T09:06:16.488270+00:00",
+      "englishSource": "qxb_wiki_verified_na",
+      "englishVerifiedAt": "2026-06-29T09:18:39.536047+00:00"
+    },
+    "佳乐": {
+      "chinese": "佳乐",
+      "english": "Rondo",
+      "years": [
+        "2007"
+      ],
+      "source": "qxb_excel_import",
+      "learnedAt": "2026-06-29T09:06:16.488271+00:00",
+      "englishSource": "qxb_wiki_verified_na",
+      "englishVerifiedAt": "2026-06-29T09:18:39.536047+00:00"
+    },
+    "K3S": {
+      "chinese": "K3S",
+      "english": "K3S",
+      "years": [
+        "2014"
+      ],
+      "source": "qxb_excel_import",
+      "learnedAt": "2026-06-29T09:06:16.488278+00:00"
+    }
+  },
+  "chery": {
+    "瑞虎3": {
+      "chinese": "瑞虎3",
+      "english": "Tiggo 3",
+      "source": "manual_seed",
+      "learnedAt": "2026-07-10T09:32:36.254Z",
+      "years": [
+        "2014"
+      ],
+      "body": "5门5座SUV",
+      "level": "小型SUV"
+    }
+  },
+  "buick": {
+    "昂科雷": {
+      "chinese": "昂科雷",
+      "english": "Enclave",
+      "source": "manual_seed",
+      "learnedAt": "2026-07-10T09:32:36.255Z",
+      "years": [
+        "2009"
+      ],
+      "body": "5门7座SUV",
+      "level": "中大型SUV"
+    },
+    "君越": {
+      "chinese": "君越",
+      "english": "LaCrosse",
+      "years": [
+        "2010"
+      ],
+      "body": "4门5座三厢车",
+      "level": "中型车",
+      "source": "manual_seed",
+      "learnedAt": "2026-07-10T09:32:36.258Z"
+    },
+    "英朗": {
+      "chinese": "英朗",
+      "english": "Excelle GT",
+      "years": [
+        "2010"
+      ],
+      "body": "5门5座两厢车",
+      "level": "紧凑型车",
+      "source": "manual_seed",
+      "learnedAt": "2026-07-10T09:32:36.256Z"
+    },
+    "凯越": {
+      "chinese": "凯越",
+      "english": "Excelle",
+      "source": "manual_seed",
+      "learnedAt": "2026-07-10T09:32:36.257Z"
+    },
+    "君威": {
+      "chinese": "君威",
+      "english": "Regal",
+      "source": "manual_seed",
+      "learnedAt": "2026-07-10T09:32:36.258Z"
+    },
+    "昂科威": {
+      "chinese": "昂科威",
+      "english": "Envision",
+      "source": "manual_seed",
+      "learnedAt": "2026-07-10T09:32:36.259Z"
+    },
+    "GL8": {
+      "chinese": "GL8",
+      "english": "GL8",
+      "source": "manual_seed",
+      "learnedAt": "2026-07-10T09:32:36.260Z"
+    }
+  },
+  "chevrolet": {
+    "赛欧": {
+      "chinese": "赛欧",
+      "english": "Sail",
+      "source": "manual_seed",
+      "learnedAt": "2026-07-10T09:32:36.261Z",
+      "years": [
+        "2010",
+        "2011",
+        "2013"
+      ],
+      "body": "4门5座三厢车",
+      "level": "小型车"
+    },
+    "科帕奇(进口)": {
+      "chinese": "科帕奇(进口)",
+      "english": null,
+      "years": [
+        "2010"
+      ],
+      "body": "5门7座SUV",
+      "level": "中型SUV",
+      "source": "qxb_auto_decode",
+      "learnedAt": "2026-06-29T06:50:14.477Z"
+    },
+    "科鲁兹": {
+      "chinese": "科鲁兹",
+      "english": "Cruze",
+      "years": [
+        "2010"
+      ],
+      "body": "4门5座三厢车",
+      "level": "紧凑型车",
+      "source": "manual_seed",
+      "learnedAt": "2026-07-10T09:32:36.262Z"
+    },
+    "迈锐宝": {
+      "chinese": "迈锐宝",
+      "english": "Malibu",
+      "source": "manual_seed",
+      "learnedAt": "2026-07-10T09:32:36.262Z"
+    },
+    "科帕奇": {
+      "chinese": "科帕奇",
+      "english": "Captiva",
+      "source": "manual_seed",
+      "learnedAt": "2026-07-10T09:32:36.263Z"
+    }
+  },
+  "mitsubishi": {
+    "欧蓝德(进口)": {
+      "chinese": "欧蓝德(进口)",
+      "english": "Outlander",
+      "source": "manual_seed",
+      "learnedAt": "2026-07-10T09:32:36.319Z",
+      "years": [
+        "2007"
+      ],
+      "body": "5门5座SUV",
+      "level": "紧凑型SUV"
+    },
+    "欧蓝德": {
+      "chinese": "欧蓝德",
+      "english": "Outlander",
+      "source": "manual_seed",
+      "learnedAt": "2026-07-10T09:32:36.319Z",
+      "years": [
+        "2008",
+        "2019"
+      ],
+      "variants": [
+        "进口"
+      ]
+    },
+    "帕杰罗": {
+      "chinese": "帕杰罗",
+      "english": "Pajero",
+      "years": [
+        "2008",
+        "2011"
+      ],
+      "source": "qxb_excel_import",
+      "learnedAt": "2026-06-29T09:06:16.488219+00:00",
+      "englishSource": "qxb_wiki_verified_na",
+      "englishVerifiedAt": "2026-06-29T09:18:39.536047+00:00"
+    },
+    "翼神": {
+      "chinese": "翼神",
+      "english": "Lancer",
+      "years": [
+        "2010"
+      ],
+      "source": "qxb_excel_import",
+      "learnedAt": "2026-06-29T09:06:16.488234+00:00",
+      "englishSource": "qxb_wiki_verified_na",
+      "englishVerifiedAt": "2026-06-29T09:18:39.536047+00:00"
+    },
+    "格蓝迪": {
+      "chinese": "格蓝迪",
+      "english": "Grandis",
+      "years": [
+        "2007"
+      ],
+      "source": "qxb_excel_import",
+      "learnedAt": "2026-06-29T09:06:16.488281+00:00",
+      "englishSource": "qxb_wiki_verified_na",
+      "englishVerifiedAt": "2026-06-29T09:18:39.536047+00:00"
+    },
+    "劲炫": {
+      "chinese": "劲炫",
+      "english": "ASX",
+      "years": [
+        "2011",
+        "2013"
+      ],
+      "variants": [
+        "进口"
+      ],
+      "source": "qxb_excel_import",
+      "learnedAt": "2026-06-29T09:06:16.488302+00:00"
+    }
+  },
+  "peugeot": {
+    "标致408": {
+      "chinese": "标致408",
+      "english": "408",
+      "source": "manual_seed",
+      "learnedAt": "2026-07-10T09:32:36.320Z",
+      "years": [
+        "2010"
+      ],
+      "body": "4门5座三厢车",
+      "level": "紧凑型车"
+    }
+  },
+  "hawtai": {
+    "特拉卡": {
+      "chinese": "特拉卡",
+      "english": null,
+      "years": [
+        "2010"
+      ],
+      "body": "5门5座SUV",
+      "level": "中型SUV",
+      "source": "qxb_auto_decode",
+      "learnedAt": "2026-06-29T06:50:14.467Z"
+    }
+  },
+  "wuling": {
+    "五菱宏光": {
+      "chinese": "五菱宏光",
+      "english": "Hongguang",
+      "years": [
+        "2014"
+      ],
+      "body": "5门5-8座客车",
+      "level": "微面",
+      "source": "manual_seed",
+      "learnedAt": "2026-07-10T09:32:36.314Z"
+    },
+    "宏光": {
+      "chinese": "宏光",
+      "english": "Hongguang",
+      "source": "manual_seed",
+      "learnedAt": "2026-07-10T09:32:36.315Z"
+    }
+  },
+  "suzuki": {
+    "北斗星": {
+      "chinese": "北斗星",
+      "english": null,
+      "years": [
+        "2012",
+        "2013"
+      ],
+      "body": "5门5座两厢车",
+      "level": "微型车",
+      "source": "qxb_auto_decode",
+      "learnedAt": "2026-06-29T09:06:16.488313+00:00"
+    },
+    "浪迪": {
+      "chinese": "浪迪",
+      "english": null,
+      "years": [
+        "2009",
+        "2010"
+      ],
+      "body": "5门8座客车",
+      "level": "微面",
+      "source": "qxb_auto_decode",
+      "learnedAt": "2026-06-29T09:06:16.488286+00:00"
+    },
+    "雨燕": {
+      "chinese": "雨燕",
+      "english": "Swift",
+      "years": [
+        "2009"
+      ],
+      "source": "qxb_excel_import",
+      "learnedAt": "2026-06-29T09:06:16.488224+00:00",
+      "englishSource": "qxb_wiki_verified_na",
+      "englishVerifiedAt": "2026-06-29T09:18:39.536047+00:00"
+    },
+    "天语": {
+      "chinese": "天语",
+      "english": "SX4",
+      "years": [
+        "2008",
+        "2009",
+        "2010",
+        "2011"
+      ],
+      "source": "qxb_excel_import",
+      "learnedAt": "2026-06-29T09:06:16.488240+00:00"
+    },
+    "奥拓": {
+      "chinese": "奥拓",
+      "english": "Alto",
+      "years": [
+        "2009",
+        "2013"
+      ],
+      "source": "qxb_excel_import",
+      "learnedAt": "2026-06-29T09:06:16.488288+00:00",
+      "englishSource": "qxb_wiki_verified_na",
+      "englishVerifiedAt": "2026-06-29T09:18:39.536047+00:00"
+    },
+    "天语尚悦": {
+      "chinese": "天语尚悦",
+      "english": "SX4",
+      "years": [
+        "2011"
+      ],
+      "source": "qxb_excel_import",
+      "learnedAt": "2026-06-29T09:06:16.488298+00:00",
+      "englishSource": "qxb_wiki_verified_na",
+      "englishVerifiedAt": "2026-06-29T09:18:39.536047+00:00"
+    },
+    "超级维特拉": {
+      "chinese": "超级维特拉",
+      "english": "Grand Vitara",
+      "years": [
+        "2008"
+      ],
+      "source": "qxb_excel_import",
+      "learnedAt": "2026-06-29T09:06:16.488316+00:00",
+      "englishSource": "qxb_wiki_verified_na",
+      "englishVerifiedAt": "2026-06-29T09:18:39.536047+00:00"
+    }
+  },
+  "changan-kuayue": {
+    "新豹MINI": {
+      "chinese": "新豹MINI",
+      "english": "Xinbao Mini",
+      "years": [
+        "2016"
+      ],
+      "body": "2门2座货车",
+      "level": "微卡",
+      "source": "manual_seed",
+      "learnedAt": "2026-07-10T09:32:36.292Z"
+    },
+    "新豹": {
+      "chinese": "新豹",
+      "english": "Xinbao",
+      "source": "manual_seed",
+      "learnedAt": "2026-07-10T09:32:36.293Z"
+    }
+  },
+  "jac": {
+    "瑞风M5": {
+      "chinese": "瑞风M5",
+      "english": "Refine M5",
+      "years": [
+        "2013"
+      ],
+      "body": "5门7座MPV",
+      "level": "中大型MPV",
+      "source": "manual_seed",
+      "learnedAt": "2026-07-10T09:32:36.307Z"
+    },
+    "瑞风": {
+      "chinese": "瑞风",
+      "english": "Refine",
+      "source": "manual_seed",
+      "learnedAt": "2026-07-10T09:32:36.308Z"
+    }
+  },
+  "citroën": {
+    "雪铁龙C2": {
+      "chinese": "雪铁龙C2",
+      "english": null,
+      "years": [
+        "2012"
+      ],
+      "body": "5门5座两厢车",
+      "level": "小型车",
+      "source": "qxb_auto_decode",
+      "learnedAt": "2026-06-29T06:50:14.475Z"
+    },
+    "世嘉": {
+      "chinese": "世嘉",
+      "english": null,
+      "years": [
+        "2009"
+      ],
+      "body": "4门5座三厢车",
+      "level": "紧凑型车",
+      "source": "qxb_auto_decode",
+      "learnedAt": "2026-06-29T06:50:14.475Z"
+    }
+  },
+  "dongfeng": {
+    "奥丁": {
+      "chinese": "奥丁",
+      "english": null,
+      "years": [
+        "2007"
+      ],
+      "body": "5门5座SUV",
+      "level": "紧凑型SUV",
+      "source": "qxb_auto_decode",
+      "learnedAt": "2026-06-29T06:50:14.479Z"
+    },
+    "锐骐多功能车": {
+      "chinese": "锐骐多功能车",
+      "english": null,
+      "years": [
+        "2013"
+      ],
+      "body": "5门5座皮卡",
+      "level": "皮卡",
+      "source": "qxb_auto_decode",
+      "learnedAt": "2026-06-29T06:50:14.480Z"
+    },
+    "东风": {
+      "chinese": "东风",
+      "english": "Dongfeng",
+      "source": "manual_seed",
+      "learnedAt": "2026-07-10T09:32:36.316Z"
+    }
+  },
+  "dodge": {
+    "酷威": {
+      "chinese": "酷威",
+      "english": "Journey",
+      "years": [
+        "2010"
+      ],
+      "body": "5门7座SUV",
+      "level": "中型SUV",
+      "source": "manual_seed",
+      "learnedAt": "2026-07-10T09:32:36.309Z"
+    }
+  },
+  "volvo": {
+    "沃尔沃S40": {
+      "chinese": "沃尔沃S40",
+      "english": null,
+      "years": [
+        "2011"
+      ],
+      "body": "4门5座三厢车",
+      "level": "紧凑型车",
+      "source": "qxb_auto_decode",
+      "learnedAt": "2026-06-29T06:50:14.480Z"
+    }
+  },
+  "ford": {
+    "福克斯": {
+      "chinese": "福克斯",
+      "english": "Focus",
+      "years": [
+        "2012"
+      ],
+      "body": "5门5座两厢车",
+      "level": "紧凑型车",
+      "source": "manual_seed",
+      "learnedAt": "2026-07-10T09:32:36.264Z"
+    },
+    "款三厢经典手动时尚型": {
+      "chinese": "款三厢经典手动时尚型",
+      "english": "2012 1 8L",
+      "source": "upload_ingest",
+      "learnedAt": "2026-07-08T09:10:58.595577+00:00",
+      "uploadSource": "QXB-0210-R2"
+    },
+    "福睿斯": {
+      "chinese": "福睿斯",
+      "english": "Escort",
+      "source": "manual_seed",
+      "learnedAt": "2026-07-10T09:32:36.265Z"
+    },
+    "蒙迪欧": {
+      "chinese": "蒙迪欧",
+      "english": "Mondeo",
+      "source": "manual_seed",
+      "learnedAt": "2026-07-10T09:32:36.266Z"
+    },
+    "翼虎": {
+      "chinese": "翼虎",
+      "english": "Kuga",
+      "source": "manual_seed",
+      "learnedAt": "2026-07-10T09:32:36.267Z"
+    },
+    "锐界": {
+      "chinese": "锐界",
+      "english": "Edge",
+      "source": "manual_seed",
+      "learnedAt": "2026-07-10T09:32:36.267Z"
+    }
+  },
+  "volkswagen": {
+    "帕萨特": {
+      "chinese": "帕萨特",
+      "english": "Passat",
+      "years": [
+        "2011",
+        "2022"
+      ],
+      "body": "4门5座三厢车",
+      "level": "中型车",
+      "source": "manual_seed",
+      "learnedAt": "2026-07-10T09:32:36.274Z"
+    },
+    "速腾": {
+      "chinese": "速腾",
+      "english": "Sagitar",
+      "years": [
+        "2011",
+        "2012"
+      ],
+      "body": "4门5座三厢车",
+      "level": "紧凑型车",
+      "source": "manual_seed",
+      "learnedAt": "2026-07-10T09:32:36.272Z"
+    },
+    "Tiguan": {
+      "chinese": "Tiguan",
+      "english": null,
+      "years": [
+        "2011"
+      ],
+      "body": "5门5座SUV",
+      "level": "紧凑型SUV",
+      "source": "qxb_auto_decode",
+      "learnedAt": "2026-06-29T06:50:14.482Z"
+    },
+    "途锐": {
+      "chinese": "途锐",
+      "english": null,
+      "years": [
+        "2012"
+      ],
+      "body": "5门5座SUV",
+      "level": "中大型SUV",
+      "source": "qxb_auto_decode",
+      "learnedAt": "2026-06-29T06:50:14.482Z"
+    },
+    "捷达": {
+      "chinese": "捷达",
+      "english": "Jetta",
+      "years": [
+        "2013"
+      ],
+      "body": "4门5座三厢车",
+      "level": "紧凑型车",
+      "source": "manual_seed",
+      "learnedAt": "2026-07-10T09:32:36.269Z"
+    },
+    "朗逸": {
+      "chinese": "朗逸",
+      "english": "Lavida",
+      "source": "manual_seed",
+      "learnedAt": "2026-07-10T09:32:36.268Z"
+    },
+    "宝来": {
+      "chinese": "宝来",
+      "english": "Bora",
+      "source": "manual_seed",
+      "learnedAt": "2026-07-10T09:32:36.269Z"
+    },
+    "Passat领驭": {
+      "chinese": "Passat领驭",
+      "english": "Passat Lingyu",
+      "source": "manual_seed",
+      "learnedAt": "2026-07-10T09:32:36.275Z"
+    },
+    "途观": {
+      "chinese": "途观",
+      "english": "Tiguan",
+      "source": "manual_seed",
+      "learnedAt": "2026-07-10T09:32:36.276Z"
+    },
+    "桑塔纳": {
+      "chinese": "桑塔纳",
+      "english": "Santana",
+      "source": "manual_seed",
+      "learnedAt": "2026-07-10T09:32:36.278Z"
+    },
+    "桑塔纳志俊": {
+      "chinese": "桑塔纳志俊",
+      "english": "Santana Vista",
+      "source": "manual_seed",
+      "learnedAt": "2026-07-10T09:32:36.278Z"
+    },
+    "Polo": {
+      "chinese": "Polo",
+      "english": "Polo",
+      "source": "manual_seed",
+      "learnedAt": "2026-07-10T09:32:36.279Z"
+    }
+  },
+  "geely": {
+    "帝豪": {
+      "chinese": "帝豪",
+      "english": "Emgrand",
+      "years": [
+        "2017"
+      ],
+      "body": "5门5座两厢车",
+      "level": "紧凑型车",
+      "source": "manual_seed",
+      "learnedAt": "2026-07-10T09:32:36.280Z"
+    },
+    "款三厢手动舒适型": {
+      "chinese": "款三厢手动舒适型",
+      "english": "2012 1 5L",
+      "source": "upload_ingest",
+      "learnedAt": "2026-07-08T08:32:11.327571+00:00",
+      "uploadSource": "QXB-0206-R2"
+    },
+    "经典帝豪": {
+      "chinese": "经典帝豪",
+      "english": "Emgrand",
+      "source": "manual_seed",
+      "learnedAt": "2026-07-10T09:32:36.280Z"
+    },
+    "帝豪GL": {
+      "chinese": "帝豪GL",
+      "english": "Emgrand GL",
+      "source": "manual_seed",
+      "learnedAt": "2026-07-10T09:32:36.281Z"
+    },
+    "博越": {
+      "chinese": "博越",
+      "english": "Boyue",
+      "source": "manual_seed",
+      "learnedAt": "2026-07-10T09:32:36.282Z"
+    },
+    "远景": {
+      "chinese": "远景",
+      "english": "Yuanjing",
+      "source": "manual_seed",
+      "learnedAt": "2026-07-10T09:32:36.282Z"
+    }
+  },
+  "maxus": {
+    "大通G10": {
+      "chinese": "大通G10",
+      "english": null,
+      "years": [
+        "2018"
+      ],
+      "body": "4门7座MPV",
+      "level": "中大型MPV",
+      "source": "qxb_auto_decode",
+      "learnedAt": "2026-06-29T06:50:14.483Z"
+    }
+  },
+  "lexus": {
+    "雷克萨斯LX": {
+      "chinese": "雷克萨斯LX",
+      "english": null,
+      "years": [
+        "2009"
+      ],
+      "body": "5门8座SUV",
+      "level": "大型SUV",
+      "source": "qxb_auto_decode",
+      "learnedAt": "2026-06-29T06:50:14.484Z"
+    }
+  },
+  "gmc": {
+    "SAVANA": {
+      "chinese": "SAVANA",
+      "english": null,
+      "years": [
+        "2010"
+      ],
+      "body": "10座MPV",
+      "level": "MPV",
+      "source": "qxb_auto_decode",
+      "learnedAt": "2026-06-29T06:50:14.485Z"
+    }
+  },
+  "changan": {
+    "长安CX20": {
+      "chinese": "长安CX20",
+      "english": null,
+      "years": [
+        "2011"
+      ],
+      "body": "5门5座两厢车",
+      "level": "小型车",
+      "source": "qxb_auto_decode",
+      "learnedAt": "2026-06-29T06:50:14.485Z"
+    },
+    "奔奔": {
+      "chinese": "奔奔",
+      "english": "Benben",
+      "source": "manual_seed",
+      "learnedAt": "2026-07-10T09:32:36.290Z"
+    },
+    "逸动": {
+      "chinese": "逸动",
+      "english": "Eado",
+      "source": "manual_seed",
+      "learnedAt": "2026-07-10T09:32:36.290Z"
+    },
+    "CS75": {
+      "chinese": "CS75",
+      "english": "CS75",
+      "source": "manual_seed",
+      "learnedAt": "2026-07-10T09:32:36.291Z"
+    },
+    "CS35": {
+      "chinese": "CS35",
+      "english": "CS35",
+      "source": "manual_seed",
+      "learnedAt": "2026-07-10T09:32:36.292Z"
+    }
+  },
+  "bmw": {
+    "宝马3系": {
+      "chinese": "宝马3系",
+      "english": null,
+      "years": [
+        "2007"
+      ],
+      "body": "4门5座三厢车",
+      "level": "中型车",
+      "source": "qxb_auto_decode",
+      "learnedAt": "2026-06-29T06:50:14.486Z"
+    },
+    "宝马5系": {
+      "chinese": "宝马5系",
+      "english": null,
+      "years": [
+        "2013"
+      ],
+      "body": "4门5座三厢车",
+      "level": "中大型车",
+      "source": "qxb_auto_decode",
+      "learnedAt": "2026-06-29T06:50:14.486Z"
+    },
+    "7系": {
+      "chinese": "7系",
+      "english": "7 Series",
+      "source": "manual_seed",
+      "learnedAt": "2026-07-10T09:32:36.294Z"
+    },
+    "5系": {
+      "chinese": "5系",
+      "english": "5 Series",
+      "source": "manual_seed",
+      "learnedAt": "2026-07-10T09:32:36.295Z"
+    },
+    "3系": {
+      "chinese": "3系",
+      "english": "3 Series",
+      "source": "manual_seed",
+      "learnedAt": "2026-07-10T09:32:36.296Z"
+    },
+    "X5": {
+      "chinese": "X5",
+      "english": "X5",
+      "source": "manual_seed",
+      "learnedAt": "2026-07-10T09:32:36.297Z"
+    },
+    "X3": {
+      "chinese": "X3",
+      "english": "X3",
+      "source": "manual_seed",
+      "learnedAt": "2026-07-10T09:32:36.297Z"
+    }
+  },
+  "mercedes-benz": {
+    "奔驰B级": {
+      "chinese": "奔驰B级",
+      "english": null,
+      "years": [
+        "2009"
+      ],
+      "body": "5门5座两厢车",
+      "level": "紧凑型车",
+      "source": "qxb_auto_decode",
+      "learnedAt": "2026-06-29T06:50:14.486Z"
+    },
+    "凌特": {
+      "chinese": "凌特",
+      "english": null,
+      "years": [
+        "2012"
+      ],
+      "body": "4门10-20座客车",
+      "level": "轻客",
+      "source": "qxb_auto_decode",
+      "learnedAt": "2026-06-29T06:50:14.487Z"
+    },
+    "奔驰M级": {
+      "chinese": "奔驰M级",
+      "english": null,
+      "years": [
+        "2006"
+      ],
+      "body": "5门5座SUV",
+      "level": "SUV",
+      "source": "qxb_auto_decode",
+      "learnedAt": "2026-06-29T06:50:14.487Z"
+    },
+    "E级": {
+      "chinese": "E级",
+      "english": "E-Class",
+      "years": [
+        "2005",
+        "2006",
+        "2010",
+        "2011"
+      ],
+      "variants": [
+        "进口"
+      ],
+      "source": "qxb_excel_import",
+      "learnedAt": "2026-06-29T09:06:16.488217+00:00",
+      "englishSource": "qxb_wiki_verified_na",
+      "englishVerifiedAt": "2026-06-29T09:18:39.536047+00:00"
+    },
+    "C级": {
+      "chinese": "C级",
+      "english": "C-Class",
+      "years": [
+        "2008",
+        "2010",
+        "2011",
+        "2013"
+      ],
+      "source": "qxb_excel_import",
+      "learnedAt": "2026-06-29T09:06:16.488242+00:00",
+      "englishSource": "qxb_wiki_verified_na",
+      "englishVerifiedAt": "2026-06-29T09:18:39.536047+00:00"
+    },
+    "A级": {
+      "chinese": "A级",
+      "english": "A-Class",
+      "years": [
+        "2011"
+      ],
+      "variants": [
+        "进口"
+      ],
+      "source": "qxb_excel_import",
+      "learnedAt": "2026-06-29T09:06:16.488253+00:00",
+      "englishSource": "qxb_wiki_verified_na",
+      "englishVerifiedAt": "2026-06-29T09:18:39.536047+00:00"
+    },
+    "GL级": {
+      "chinese": "GL级",
+      "english": "GL-Class",
+      "years": [
+        "2006"
+      ],
+      "source": "qxb_excel_import",
+      "learnedAt": "2026-06-29T09:06:16.488275+00:00",
+      "englishSource": "qxb_wiki_verified_na",
+      "englishVerifiedAt": "2026-06-29T09:18:39.536047+00:00"
+    },
+    "GLK级": {
+      "chinese": "GLK级",
+      "english": "GLK-Class",
+      "years": [
+        "2011",
+        "2012"
+      ],
+      "variants": [
+        "进口"
+      ],
+      "source": "qxb_excel_import",
+      "learnedAt": "2026-06-29T09:06:16.488276+00:00",
+      "englishSource": "qxb_wiki_verified_na",
+      "englishVerifiedAt": "2026-06-29T09:18:39.536047+00:00"
+    },
+    "R级": {
+      "chinese": "R级",
+      "english": "R-Class",
+      "years": [
+        "2006",
+        "2007",
+        "2009",
+        "2011"
+      ],
+      "source": "qxb_excel_import",
+      "learnedAt": "2026-06-29T09:06:16.488279+00:00",
+      "englishSource": "qxb_wiki_verified_na",
+      "englishVerifiedAt": "2026-06-29T09:18:39.536047+00:00"
+    },
+    "B级": {
+      "chinese": "B级",
+      "english": "B-Class",
+      "years": [
+        "2009"
+      ],
+      "source": "qxb_excel_import",
+      "learnedAt": "2026-06-29T09:06:16.488289+00:00",
+      "englishSource": "qxb_wiki_verified_na",
+      "englishVerifiedAt": "2026-06-29T09:18:39.536047+00:00"
+    },
+    "唯雅诺": {
+      "chinese": "唯雅诺",
+      "english": "Viano",
+      "years": [
+        "2006"
+      ],
+      "variants": [
+        "进口"
+      ],
+      "source": "qxb_excel_import",
+      "learnedAt": "2026-06-29T09:06:16.488311+00:00",
+      "englishSource": "qxb_wiki_verified_na",
+      "englishVerifiedAt": "2026-06-29T09:18:39.536047+00:00"
+    },
+    "M级": {
+      "chinese": "M级",
+      "english": "M-Class",
+      "years": [
+        "2006",
+        "2008"
+      ],
+      "source": "qxb_excel_import",
+      "learnedAt": "2026-06-29T09:06:16.488319+00:00",
+      "englishSource": "qxb_wiki_verified_na",
+      "englishVerifiedAt": "2026-06-29T09:18:39.536047+00:00"
+    },
+    "S级": {
+      "chinese": "S级",
+      "english": "S-Class",
+      "years": [
+        "2010"
+      ],
+      "source": "qxb_excel_import",
+      "learnedAt": "2026-06-29T09:06:16.488320+00:00",
+      "englishSource": "qxb_wiki_verified_na",
+      "englishVerifiedAt": "2026-06-29T09:18:39.536047+00:00"
+    },
+    "CLS": {
+      "chinese": "CLS",
+      "english": "CLS",
+      "years": [
+        "2007"
+      ],
+      "source": "qxb_excel_import",
+      "learnedAt": "2026-06-29T09:06:16.488322+00:00"
+    },
+    "SLK级": {
+      "chinese": "SLK级",
+      "english": "SLK-Class",
+      "years": [
+        "2004"
+      ],
+      "source": "qxb_excel_import",
+      "learnedAt": "2026-06-29T09:06:16.488323+00:00",
+      "englishSource": "qxb_wiki_verified_na",
+      "englishVerifiedAt": "2026-06-29T09:18:39.536047+00:00"
+    },
+    "级": {
+      "chinese": "级",
+      "english": "E",
+      "source": "upload_ingest",
+      "learnedAt": "2026-06-29T23:16:50.138839+00:00",
+      "uploadSource": "QXB-0032"
+    },
+    "级进口": {
+      "chinese": "级进口",
+      "english": "A",
+      "source": "upload_ingest",
+      "learnedAt": "2026-06-30T18:19:16.604467+00:00",
+      "uploadSource": "QXB-0096"
+    }
+  },
+  "audi": {
+    "奥迪Q3": {
+      "chinese": "奥迪Q3",
+      "english": null,
+      "years": [
+        "2020"
+      ],
+      "body": "5门5座SUV",
+      "level": "紧凑型SUV",
+      "source": "qxb_auto_decode",
+      "learnedAt": "2026-06-29T06:50:14.487Z"
+    },
+    "款手自一体": {
+      "chinese": "款手自一体",
+      "english": "2002 1 8T",
+      "source": "upload_ingest",
+      "learnedAt": "2026-07-08T09:30:19.487835+00:00",
+      "uploadSource": "QXB-0211-R2"
+    }
+  },
+  "cadillac": {
+    "款豪华型": {
+      "chinese": "款豪华型",
+      "english": "2007 2 8",
+      "source": "upload_ingest",
+      "learnedAt": "2026-07-08T09:49:41.789537+00:00",
+      "uploadSource": "QXB-0219-R2"
+    }
+  },
+  "haval": {
+    "款蓝标自动两驱尊贵型": {
+      "chinese": "款蓝标自动两驱尊贵型",
+      "english": "2015 2 0T",
+      "source": "upload_ingest",
+      "learnedAt": "2026-07-08T10:09:33.309732+00:00",
+      "uploadSource": "QXB-0227-R2"
+    },
+    "H6": {
+      "chinese": "H6",
+      "english": "H6",
+      "source": "manual_seed",
+      "learnedAt": "2026-07-10T09:32:36.284Z"
+    },
+    "H2": {
+      "chinese": "H2",
+      "english": "H2",
+      "source": "manual_seed",
+      "learnedAt": "2026-07-10T09:32:36.285Z"
+    },
+    "H6 Coupe": {
+      "chinese": "H6 Coupe",
+      "english": "H6 Coupe",
+      "source": "manual_seed",
+      "learnedAt": "2026-07-10T09:32:36.286Z"
+    }
+  },
+  "mg": {
+    "锐行": {
+      "chinese": "锐行",
+      "english": "GT",
+      "source": "manual_seed",
+      "learnedAt": "2026-07-10T09:32:36.287Z"
+    },
+    "锐腾": {
+      "chinese": "锐腾",
+      "english": "GS",
+      "source": "manual_seed",
+      "learnedAt": "2026-07-10T09:32:36.288Z"
+    },
+    "名爵6": {
+      "chinese": "名爵6",
+      "english": "MG6",
+      "source": "manual_seed",
+      "learnedAt": "2026-07-10T09:32:36.288Z"
+    },
+    "名爵3": {
+      "chinese": "名爵3",
+      "english": "MG3",
+      "source": "manual_seed",
+      "learnedAt": "2026-07-10T09:32:36.289Z"
+    }
+  },
+  "mazda": {
+    "3": {
+      "chinese": "3",
+      "english": "Mazda3",
+      "source": "manual_seed",
+      "learnedAt": "2026-07-10T09:32:36.298Z"
+    },
+    "6": {
+      "chinese": "6",
+      "english": "Mazda6",
+      "source": "manual_seed",
+      "learnedAt": "2026-07-10T09:32:36.299Z"
+    },
+    "3(进口)": {
+      "chinese": "3(进口)",
+      "english": "Mazda3",
+      "source": "manual_seed",
+      "learnedAt": "2026-07-10T09:32:36.299Z"
+    },
+    "CX-5": {
+      "chinese": "CX-5",
+      "english": "CX-5",
+      "source": "manual_seed",
+      "learnedAt": "2026-07-10T09:32:36.300Z"
+    },
+    "CX-9": {
+      "chinese": "CX-9",
+      "english": "CX-9",
+      "source": "manual_seed",
+      "learnedAt": "2026-07-10T09:32:36.301Z"
+    }
+  },
+  "liebao": {
+    "猎豹CS10": {
+      "chinese": "猎豹CS10",
+      "english": "CS10",
+      "source": "manual_seed",
+      "learnedAt": "2026-07-10T09:32:36.301Z"
+    },
+    "CS10": {
+      "chinese": "CS10",
+      "english": "CS10",
+      "source": "manual_seed",
+      "learnedAt": "2026-07-10T09:32:36.302Z"
+    }
+  },
+  "byd": {
+    "速锐": {
+      "chinese": "速锐",
+      "english": "Surui",
+      "source": "manual_seed",
+      "learnedAt": "2026-07-10T09:32:36.303Z"
+    },
+    "秦": {
+      "chinese": "秦",
+      "english": "Qin",
+      "source": "manual_seed",
+      "learnedAt": "2026-07-10T09:32:36.304Z"
+    },
+    "唐": {
+      "chinese": "唐",
+      "english": "Tang",
+      "source": "manual_seed",
+      "learnedAt": "2026-07-10T09:32:36.305Z"
+    },
+    "宋": {
+      "chinese": "宋",
+      "english": "Song",
+      "source": "manual_seed",
+      "learnedAt": "2026-07-10T09:32:36.305Z"
+    }
+  },
+  "citroen": {
+    "世嘉": {
+      "chinese": "世嘉",
+      "english": "C-Quatre",
+      "source": "manual_seed",
+      "learnedAt": "2026-07-10T09:32:36.306Z"
+    },
+    "爱丽舍": {
+      "chinese": "爱丽舍",
+      "english": "Elysee",
+      "source": "manual_seed",
+      "learnedAt": "2026-07-10T09:32:36.307Z"
+    }
+  },
+  "isuzu": {
+    "巨咖": {
+      "chinese": "巨咖",
+      "english": "GIGA",
+      "source": "manual_seed",
+      "learnedAt": "2026-07-10T09:32:36.310Z"
+    },
+    "庆龄皮卡": {
+      "chinese": "庆龄皮卡",
+      "english": "Qingling Pickup",
+      "source": "manual_seed",
+      "learnedAt": "2026-07-10T09:32:36.310Z"
+    }
+  },
+  "sinotruk": {
+    "豪瀚": {
+      "chinese": "豪瀚",
+      "english": "Hohhan",
+      "source": "manual_seed",
+      "learnedAt": "2026-07-10T09:32:36.311Z"
+    },
+    "豪沃": {
+      "chinese": "豪沃",
+      "english": "HOWO",
+      "source": "manual_seed",
+      "learnedAt": "2026-07-10T09:32:36.312Z"
+    }
+  },
+  "hongyan": {
+    "杰狮": {
+      "chinese": "杰狮",
+      "english": "Genlyon",
+      "source": "manual_seed",
+      "learnedAt": "2026-07-10T09:32:36.313Z"
+    }
+  },
+  "great-wall": {
+    "风骏皮卡": {
+      "chinese": "风骏皮卡",
+      "english": "Wingle",
+      "source": "manual_seed",
+      "learnedAt": "2026-07-10T09:32:36.317Z"
+    },
+    "风骏": {
+      "chinese": "风骏",
+      "english": "Wingle",
+      "source": "manual_seed",
+      "learnedAt": "2026-07-10T09:32:36.318Z"
+    }
+  },
+  "land-rover": {
+    "揽胜": {
+      "chinese": "揽胜",
+      "english": "Range Rover",
+      "source": "manual_seed",
+      "learnedAt": "2026-07-10T09:32:36.321Z"
+    },
+    "揽胜运动": {
+      "chinese": "揽胜运动",
+      "english": "Range Rover Sport",
+      "source": "manual_seed",
+      "learnedAt": "2026-07-10T09:32:36.322Z"
+    },
+    "揽胜运动版": {
+      "chinese": "揽胜运动版",
+      "english": "Range Rover Sport",
+      "source": "manual_seed",
+      "learnedAt": "2026-07-10T09:32:36.322Z"
+    },
+    "揽胜极光": {
+      "chinese": "揽胜极光",
+      "english": "Range Rover Evoque",
+      "source": "manual_seed",
+      "learnedAt": "2026-07-10T09:32:36.324Z"
+    },
+    "发现": {
+      "chinese": "发现",
+      "english": "Discovery",
+      "source": "manual_seed",
+      "learnedAt": "2026-07-10T09:32:36.325Z"
+    },
+    "发现神行": {
+      "chinese": "发现神行",
+      "english": "Discovery Sport",
+      "source": "manual_seed",
+      "learnedAt": "2026-07-10T09:32:36.325Z"
+    },
+    "神行者": {
+      "chinese": "神行者",
+      "english": "Freelander",
+      "source": "manual_seed",
+      "learnedAt": "2026-07-10T09:32:36.326Z"
+    },
+    "神行者2": {
+      "chinese": "神行者2",
+      "english": "Freelander 2",
+      "source": "manual_seed",
+      "learnedAt": "2026-07-10T09:32:36.327Z"
+    },
+    "卫士": {
+      "chinese": "卫士",
+      "english": "Defender",
+      "source": "manual_seed",
+      "learnedAt": "2026-07-10T09:32:36.328Z"
+    },
+    "揽胜星脉": {
+      "chinese": "揽胜星脉",
+      "english": "Range Rover Velar",
+      "source": "manual_seed",
+      "learnedAt": "2026-07-10T09:32:36.329Z"
+    }
+  },
+  "jaguar": {
+    "捷豹XJ": {
+      "chinese": "捷豹XJ",
+      "english": "XJ",
+      "source": "manual_seed",
+      "learnedAt": "2026-07-10T09:32:36.329Z"
+    },
+    "捷豹XF": {
+      "chinese": "捷豹XF",
+      "english": "XF",
+      "source": "manual_seed",
+      "learnedAt": "2026-07-10T09:32:36.330Z"
+    },
+    "捷豹XE": {
+      "chinese": "捷豹XE",
+      "english": "XE",
+      "source": "manual_seed",
+      "learnedAt": "2026-07-10T09:32:36.331Z"
+    },
+    "捷豹F-PACE": {
+      "chinese": "捷豹F-PACE",
+      "english": "F-PACE",
+      "source": "manual_seed",
+      "learnedAt": "2026-07-10T09:32:36.331Z"
+    },
+    "F-PACE": {
+      "chinese": "F-PACE",
+      "english": "F-PACE",
+      "source": "manual_seed",
+      "learnedAt": "2026-07-10T09:32:36.332Z"
+    },
+    "XJ": {
+      "chinese": "XJ",
+      "english": "XJ",
+      "source": "manual_seed",
+      "learnedAt": "2026-07-10T09:32:36.333Z"
+    },
+    "XF": {
+      "chinese": "XF",
+      "english": "XF",
+      "source": "manual_seed",
+      "learnedAt": "2026-07-10T09:32:36.334Z"
+    },
+    "XE": {
+      "chinese": "XE",
+      "english": "XE",
+      "source": "manual_seed",
+      "learnedAt": "2026-07-10T09:32:36.335Z"
     }
   }
 }

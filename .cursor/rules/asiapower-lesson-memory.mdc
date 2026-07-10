@@ -1,0 +1,38 @@
+---
+description: AsiaPower lesson capture — write mistakes and decisions into memory files
+alwaysApply: true
+---
+
+# 教训与决策落盘
+
+改编自 ECC「持续学习 / 记忆」思路，对齐本仓库 `AGENTS.md`：Text > Brain。
+
+## 什么时候必须写文件
+
+发生下列情况之一，结束任务前写入文件（不要只靠聊天记忆）：
+
+- CEO 纠正过的业务规则（话术、价格单位、上传流程）
+- 生产事故 / 误部署 / 数据差一步就删错
+- 反复踩坑（429、VIN decode、首页 vs 目录过滤等）
+- 已定稿的产品选择（例如选定 v4 混合首页，未上线）
+
+## 写到哪里
+
+| 内容 | 路径 |
+|------|------|
+| 当日流水 | `memory/YYYY-MM-DD.md` |
+| 长期仍有效的原则 | `MEMORY.md`（主会话） |
+| 可复用操作手册 | `data/knowledge-base/*-runbook.md` 或 `docs/` |
+
+## 怎么写（短）
+
+- 事实：发生了什么
+- 根因：为什么
+- 规则：以后怎么做 / 禁止怎么做
+- 不写密钥、不写完整客户隐私
+
+## 不要
+
+- 把「心理笔记」当已记录
+- 用空占位文件交差
+- 把临时猜测写成定论（标明已知 / 推测）

@@ -13,11 +13,10 @@
   const MediaApi = () => window.HalfCutMediaApi;
   const t = (key) => I18n()?.labelHtml(key) || key;
   const tBtn = (key) => I18n()?.labelInline(key) || key;
-  const tBi = (key) => {
-    const item = I18n()?.L[key];
-    if (!item) return key;
-    return `${item.en}\n${item.zh}`;
-  };
+  const th = (key) => escapeHtml(I18n()?.labelText(key) || key);
+  const tf = (key) => I18n()?.labelText(key) || key;
+  const pubT = (key, fallback) => window.PublicI18n?.t(key, fallback) ?? fallback;
+  const tBi = (key) => I18n()?.labelText(key) || key;
 
   function base() {
     return window.SitePaths?.base?.() || '../';
@@ -32,8 +31,11 @@
   }
 
   const MAX_PHOTO_BYTES = 8 * 1024 * 1024;
-  const PHOTO_COMPRESS_MIN_BYTES = 1024 * 1024;
-  const PHOTO_MAX_DIM = 1600;
+  /** Client pre-compress; server sharp still re-encodes as the source of truth. */
+  const PHOTO_COMPRESS_MIN_BYTES = 500 * 1024;
+  const PHOTO_MAX_DIM = 1920;
+  const PHOTO_JPEG_QUALITY = 0.85;
+  const PHOTO_WEBP_QUALITY = 0.82;
   const HEIC_RE = /\.(heic|heif)$/i;
 
   function isHeicPhoto(file) {
@@ -81,17 +83,20 @@
             canvas.toBlob((jpeg) => {
               if (jpeg) resolve(jpeg);
               else reject(new Error('Could not compress photo'));
-            }, 'image/jpeg', 0.85);
+            }, 'image/jpeg', PHOTO_JPEG_QUALITY);
           }
-        }, outputType, 0.82);
+        }, outputType, PHOTO_WEBP_QUALITY);
       });
-      if (blob.size > MAX_PHOTO_BYTES) {
-        throw new Error(tBi('photoTooLarge'));
+      // Never discard a photo because client compress failed or grew oddly —
+      // fall back to the original file (server sharp still re-encodes).
+      if (!blob?.size || blob.size > MAX_PHOTO_BYTES) {
+        return file;
       }
       const baseName = String(file.name || 'photo.jpg').replace(/\.[^.]+$/, '') || 'photo';
       const ext = blob.type === 'image/webp' ? '.webp' : '.jpg';
       return new File([blob], `${baseName}${ext}`, { type: blob.type });
     } catch (err) {
+      // HEIC / hard validation errors use bilingual messages with newlines — rethrow.
       if (String(err.message || '').includes('\n')) throw err;
       return file;
     }
@@ -146,6 +151,29 @@
 
     let rememberTimer = null;
 
+    function uploadMode() {
+      const fromBody = document.body?.dataset?.uploadMode;
+      if (fromBody === 'parts' || fromBody === 'vehicle') return fromBody;
+      const params = new URLSearchParams(window.location.search);
+      return params.get('mode') === 'parts' ? 'parts' : 'vehicle';
+    }
+
+    function vehicleListingDefault() {
+      const fromBody = document.body?.dataset?.vehicleListing;
+      if (fromBody === 'scrap' || fromBody === 'used') return fromBody;
+      const params = new URLSearchParams(window.location.search);
+      return params.get('type') === 'used' ? 'used' : 'scrap';
+    }
+
+    function uploadPassengerPartType() {
+      const fromBody = document.body?.dataset?.uploadPart;
+      if (fromBody && ['front', 'engine', 'transmission', 'chassis', 'other'].includes(fromBody)) return fromBody;
+      const params = new URLSearchParams(window.location.search);
+      const part = params.get('part');
+      if (['front', 'engine', 'transmission', 'chassis', 'other'].includes(part)) return part;
+      return 'front';
+    }
+
     function uploadCategory() {
       const fromBody = document.body?.dataset?.uploadCategory;
       if (fromBody) return fromBody;
@@ -157,13 +185,62 @@
       const fromBody = document.body?.dataset?.uploadPart;
       if (fromBody) return fromBody;
       const params = new URLSearchParams(window.location.search);
-      return params.get('part') === 'cab' ? 'cab' : 'vehicle';
+      const part = params.get('part');
+      if (['cab', 'engine', 'axle', 'other'].includes(part)) return part;
+      return 'cab';
     }
 
     const defaultCategory = uploadCategory();
     const isTruckUpload = defaultCategory === 'truck';
-    const defaultPartType = isTruckUpload ? uploadPartType() : 'vehicle';
-    let isCabUpload = isTruckUpload && defaultPartType === 'cab';
+    const isPartsUpload = uploadMode() === 'parts';
+    const isVehicleUpload = !isPartsUpload;
+    const isTruckPartsUpload = isTruckUpload && isPartsUpload;
+    const isTruckVehicleUpload = isTruckUpload && isVehicleUpload;
+    const isPassengerPartsUpload = !isTruckUpload && isPartsUpload;
+    const isPassengerVehicleUpload = !isTruckUpload && isVehicleUpload;
+    const defaultVehicleListing = vehicleListingDefault();
+    const defaultPartType = isTruckPartsUpload ? uploadPartType() : 'vehicle';
+    const defaultPassengerPartType = isPassengerPartsUpload ? uploadPassengerPartType() : 'front';
+    const TRUCK_PART_HINTS = {
+      cab: 'truckPartCabHint',
+      engine: 'truckPartEngineHint',
+      axle: 'truckPartAxleHint',
+      other: 'truckPartOtherHint',
+    };
+    const PASSENGER_PART_HINTS = {
+      front: 'passengerPartFrontHint',
+      engine: 'passengerPartEngineHint',
+      transmission: 'passengerPartTransmissionHint',
+      chassis: 'passengerPartChassisHint',
+      other: 'passengerPartOtherHint',
+    };
+    const TRUCK_PART_CONDITIONS = {
+      cab: 'Driver Cab',
+      engine: 'Engine Assembly',
+      axle: 'Axle Assembly',
+      other: 'Truck Part',
+    };
+    const PASSENGER_PART_CONDITIONS = {
+      front: 'Front Cut',
+      engine: 'Engine Assembly',
+      transmission: 'Transmission Assembly',
+      chassis: 'Chassis Part',
+      other: 'Part',
+    };
+    let truckPartType = isTruckPartsUpload ? defaultPartType : (isTruckVehicleUpload ? 'vehicle' : '');
+    let passengerPartType = isPassengerPartsUpload ? defaultPassengerPartType : '';
+    let isCabUpload = truckPartType === 'cab';
+    let isLooseTruckPart = isTruckPartsUpload && ['cab', 'engine', 'axle', 'other'].includes(truckPartType);
+    let isLoosePassengerPart = isPassengerPartsUpload;
+    let isLoosePartUpload = isLooseTruckPart || isLoosePassengerPart;
+
+    function uploadIntroKeys() {
+      if (isTruckPartsUpload) return { title: 'truckUploadTitle', lead: 'truckUploadLead', eyebrowKey: 'supplier.uploadTruckParts', eyebrowFallback: 'Commercial Parts' };
+      if (isTruckVehicleUpload) return { title: 'truckVehicleUploadTitle', lead: 'truckVehicleUploadLead', eyebrowKey: 'supplier.uploadTruckVehicle', eyebrowFallback: 'Commercial Vehicles' };
+      if (isPassengerPartsUpload) return { title: 'passengerPartsUploadTitle', lead: 'passengerPartsUploadLead', eyebrowKey: 'supplier.uploadPassengerParts', eyebrowFallback: 'Passenger Parts' };
+      return { title: 'passengerVehicleUploadTitle', lead: 'passengerVehicleUploadLead', eyebrowKey: 'supplier.uploadPassengerVehicle', eyebrowFallback: 'Passenger Vehicles' };
+    }
+    const introKeys = uploadIntroKeys();
 
     const brandCatalog = isTruckUpload && window.TruckBrandCatalog ? window.TruckBrandCatalog : cat;
     if (isTruckUpload && !window.TruckBrandCatalog) return;
@@ -175,26 +252,92 @@
       ...(isTruckUpload ? [
         ['Truck Half Cut', 'conditionTruckHalfCut'],
         ['Driver Cab', 'conditionDriverCab'],
-      ] : []),
+      ] : [
+        ['Front Cut', 'conditionFrontCut'],
+      ]),
       ['Dismantled', 'conditionDismantled'],
       ['Engine Removed', 'conditionEngineRemoved'],
+      ['Transmission Assembly', 'conditionTransmissionAssembly'],
+      ['Chassis Part', 'conditionChassisPart'],
+      ['Part', 'conditionPart'],
+    ].map(([val, key]) => `<option value="${val}">${I18n().labelInline(key)}</option>`).join('');
+
+    function buildStep1StartHtml() {
+      if (isTruckPartsUpload) {
+        return `
+              <div class="form-row supplier-truck-part-step" id="truck-part-type-row">
+                <label for="truckPartType">${t('truckPartType')} <span class="req">*</span></label>
+                <select id="truckPartType" name="truckPartType" class="supplier-input-lg">
+                  <option value="cab"${defaultPartType === 'cab' ? ' selected' : ''}>${I18n().labelInline('truckPartCab')}</option>
+                  <option value="engine"${defaultPartType === 'engine' ? ' selected' : ''}>${I18n().labelInline('truckPartEngine')}</option>
+                  <option value="axle"${defaultPartType === 'axle' ? ' selected' : ''}>${I18n().labelInline('truckPartAxle')}</option>
+                  <option value="other"${defaultPartType === 'other' ? ' selected' : ''}>${I18n().labelInline('truckPartOther')}</option>
+                </select>
+                <p class="form-hint" id="truck-part-hint">${th(TRUCK_PART_HINTS[defaultPartType] || 'truckPartCabHint')}</p>
+              </div>
+              <p class="supplier-cab-skip-hint${isLooseTruckPart ? '' : ' hidden'}" id="vin-cab-skip-hint">${th('vinCabSkipHint')}</p>`;
+      }
+      if (isPassengerPartsUpload) {
+        return `
+              <div class="form-row supplier-truck-part-step" id="passenger-part-type-row">
+                <label for="passengerPartType">${t('passengerPartType')} <span class="req">*</span></label>
+                <select id="passengerPartType" name="passengerPartType" class="supplier-input-lg">
+                  <option value="front"${defaultPassengerPartType === 'front' ? ' selected' : ''}>${I18n().labelInline('passengerPartFront')}</option>
+                  <option value="engine"${defaultPassengerPartType === 'engine' ? ' selected' : ''}>${I18n().labelInline('passengerPartEngine')}</option>
+                  <option value="transmission"${defaultPassengerPartType === 'transmission' ? ' selected' : ''}>${I18n().labelInline('passengerPartTransmission')}</option>
+                  <option value="chassis"${defaultPassengerPartType === 'chassis' ? ' selected' : ''}>${I18n().labelInline('passengerPartChassis')}</option>
+                  <option value="other"${defaultPassengerPartType === 'other' ? ' selected' : ''}>${I18n().labelInline('passengerPartOther')}</option>
+                </select>
+                <p class="form-hint" id="passenger-part-hint">${th(PASSENGER_PART_HINTS[defaultPassengerPartType] || 'passengerPartFrontHint')}</p>
+              </div>
+              <p class="supplier-cab-skip-hint" id="vin-parts-skip-hint">${th('vinPartsSkipHint')}</p>`;
+      }
+      if (isVehicleUpload) {
+        return `
+              <div class="form-row" id="vehicle-listing-type-row">
+                <label for="vehicleListingType">${t('vehicleListingType')} <span class="req">*</span></label>
+                <select id="vehicleListingType" name="vehicleListingType" class="supplier-input-lg">
+                  <option value="scrap"${defaultVehicleListing === 'scrap' ? ' selected' : ''}>${I18n().labelInline('listingTypeScrap')}</option>
+                  <option value="used"${defaultVehicleListing === 'used' ? ' selected' : ''}>${I18n().labelInline('listingTypeUsed')}</option>
+                </select>
+                <p class="form-hint" id="vehicle-listing-hint">${th(defaultVehicleListing === 'used' ? 'listingTypeUsedHint' : 'listingTypeScrapHint')}</p>
+              </div>
+              <p class="form-hint supplier-vin-lead" id="vin-step-lead">${th(introKeys.lead)}</p>`;
+      }
+      return `
+              <p class="form-hint supplier-vin-lead" id="vin-step-lead">${th(introKeys.lead)}</p>`;
+    }
+
+    const fuelTypeOptions = [
+      ['Petrol', 'fuelPetrol'],
+      ['Diesel', 'fuelDiesel'],
+      ['Hybrid', 'fuelHybrid'],
+      ['Plug-in Hybrid', 'fuelPlugInHybrid'],
+      ['Electric', 'fuelElectric'],
     ].map(([val, key]) => `<option value="${val}">${I18n().labelInline(key)}</option>`).join('');
 
     function getActivePhotoLabels() {
-      if (isCabUpload && Array.isArray(v.CAB_PHOTO_LABELS)) return v.CAB_PHOTO_LABELS;
-      return v.PHOTO_LABELS;
+      const max = isCabUpload
+        ? (v.MAX_PHOTOS_CAB || v.MAX_PHOTOS || 15)
+        : (v.MAX_PHOTOS || 15);
+      const base = (isCabUpload && Array.isArray(v.CAB_PHOTO_LABELS))
+        ? v.CAB_PHOTO_LABELS
+        : v.PHOTO_LABELS;
+      return typeof v.expandPhotoLabels === 'function'
+        ? v.expandPhotoLabels(base, max)
+        : base;
     }
 
     function photosStepLegend() {
-      const maxNote = isCabUpload ? `, max ${v.MAX_PHOTOS_CAB || 10}` : '';
-      return `${t('stepPhotos')} <span class="req">*</span> (min ${v.MIN_PHOTOS}${maxNote})`;
+      const maxCount = isCabUpload
+        ? (v.MAX_PHOTOS_CAB || v.MAX_PHOTOS || 15)
+        : (v.MAX_PHOTOS || 15);
+      return `${t('stepPhotos')} <span class="req">*</span> (min ${v.MIN_PHOTOS}, max ${maxCount})`;
     }
 
     function photosStepHint() {
-      if (isCabUpload) {
-        return `${I18n().labelEn('photosCabHint')}<span class="bi-zh-inline">${I18n().labelZh('photosCabHint')}</span>`;
-      }
-      return `${I18n().labelEn('photosMin')}<span class="bi-zh-inline">${I18n().labelZh('photosMin')}</span>`;
+      const base = isCabUpload ? th('photosCabHint') : th('photosMin');
+      return `${base} ${th('photoCompressHint')}`;
     }
 
     // Do NOT add capture= on photo inputs — mobile browsers then skip the gallery and open the camera only.
@@ -203,7 +346,9 @@
       const photoLabelBi = cabMode ? (I18n().L.cabPhotoLabels || []) : (I18n().L.photoLabels || []);
       return labels.map((label, index) => {
         const bi = photoLabelBi[index];
-        const labelText = bi ? `${bi.en} / ${bi.zh}` : label;
+        const labelDisplay = bi
+          ? I18n().labelFromBi(bi)
+          : `${tf('extraPhoto')} ${index + 1}`;
         const reqTag = index < v.MIN_PHOTOS
           ? `<span class="supplier-photo-slot__req">${I18n().labelInline('required')}</span>`
           : `<span class="supplier-photo-slot__opt">${I18n().labelInline('recommended')}</span>`;
@@ -211,7 +356,7 @@
       <div class="supplier-photo-slot" data-slot="${index}">
         <label class="supplier-photo-slot__label" for="photo-${index}">
           <span class="supplier-photo-slot__num">${index + 1}</span>
-          ${escapeHtml(labelText)}
+          ${escapeHtml(labelDisplay)}
           ${reqTag}
         </label>
         <input type="file" id="photo-${index}" class="supplier-photo-slot__input" accept="image/jpeg,image/png,image/webp,image/gif" data-label="${escapeHtml(label)}">
@@ -241,41 +386,29 @@
     root.innerHTML = `
       <div class="supplier-upload-layout supplier-bilingual supplier-upload-wizard">
         <div class="supplier-upload-intro">
-          <span class="section-eyebrow">${isTruckUpload ? 'Truck Inventory / 卡车库存' : 'Supplier Inventory / 供应商库存'}</span>
-          <h2>${isTruckUpload ? t('truckUploadTitle') : t('supplierUploadTitle')}</h2>
-          <p class="section-lead supplier-instruction-en">${I18n().labelEn(isTruckUpload ? 'truckUploadLead' : 'supplierUploadLead')}</p>
-          <p class="section-lead supplier-instruction-zh">${I18n().labelZh(isTruckUpload ? 'truckUploadLead' : 'supplierUploadLead')}</p>
+          <span class="section-eyebrow">${pubT(introKeys.eyebrowKey, introKeys.eyebrowFallback)}</span>
+          <h2>${t(introKeys.title)}</h2>
+          <p class="section-lead">${th(introKeys.lead)}</p>
           <div class="supplier-upload-warning">
-            <strong>Important / 重要提示：</strong> ${I18n().labelEn('supplierWarning')}<br>
-            <span class="bi-zh-block">${I18n().labelZh('supplierWarning')}</span>
+            <strong>${pubT('supplier.form.important', 'Important')}:</strong> ${th('supplierWarning')}
           </div>
         </div>
 
         <form id="supplier-half-cut-form" class="supplier-upload-form" novalidate>
-          <nav class="supplier-step-progress" aria-label="${I18n().labelEn('stepProgressLabel')} / ${I18n().labelZh('stepProgressLabel')}">
+          <nav class="supplier-step-progress" aria-label="${escapeHtml(tf('stepProgressLabel'))}">
             <ol class="supplier-step-progress__list">${progressSteps}</ol>
           </nav>
 
           <div class="supplier-step-panels">
             <fieldset class="supplier-form-section supplier-step-panel supplier-vin-step is-active" data-step="1">
-              <legend id="vin-step-legend">${isTruckUpload ? t('stepTruckStart') : `${t('stepVin')} <span class="req" id="vin-step-required">*</span>`}</legend>
-              ${isTruckUpload ? `
-              <div class="form-row supplier-truck-part-step" id="truck-part-type-row">
-                <label for="truckPartType">${t('truckPartType')} <span class="req">*</span></label>
-                <select id="truckPartType" name="truckPartType" class="supplier-input-lg">
-                  <option value="vehicle"${defaultPartType === 'vehicle' ? ' selected' : ''}>${I18n().labelInline('truckPartVehicle')}</option>
-                  <option value="cab"${defaultPartType === 'cab' ? ' selected' : ''}>${I18n().labelInline('truckPartCab')}</option>
-                </select>
-                <p class="form-hint" id="truck-part-hint">${I18n().labelEn(defaultPartType === 'cab' ? 'truckPartCabHint' : 'truckPartVehicleHint')}<span class="bi-zh-block">${I18n().labelZh(defaultPartType === 'cab' ? 'truckPartCabHint' : 'truckPartVehicleHint')}</span></p>
-              </div>
-              <p class="supplier-cab-skip-hint${defaultPartType === 'cab' ? '' : ' hidden'}" id="vin-cab-skip-hint">${I18n().labelEn('vinCabSkipHint')}<span class="bi-zh-block">${I18n().labelZh('vinCabSkipHint')}</span></p>` : `
-              <p class="form-hint supplier-vin-lead" id="vin-step-lead">${I18n().labelEn('supplierUploadLead')}<span class="bi-zh-block">${I18n().labelZh('supplierUploadLead')}</span></p>`}
-              <div id="vin-step-block"${isTruckUpload && defaultPartType === 'cab' ? ' class="hidden"' : ''}>
+              <legend id="vin-step-legend">${isPartsUpload ? t('stepTruckStart') : `${t('stepVin')} <span class="req" id="vin-step-required">*</span>`}</legend>
+              ${buildStep1StartHtml()}
+              <div id="vin-step-block"${isLoosePartUpload ? ' class="hidden"' : ''}>
               <div class="supplier-vin-block">
                 <label for="vin">${t('vin')} <span class="req hidden" id="vin-label-required">*</span><span class="supplier-optional-tag hidden" id="vin-optional-tag">${I18n().labelInline('optional')}</span></label>
                 <input type="text" id="vin" name="vin" maxlength="17" placeholder="17-character VIN" autocomplete="off" class="supplier-input-lg supplier-vin-input" inputmode="text" autocapitalize="characters" spellcheck="false">
                 <div class="supplier-vin-meta">
-                  <span id="vin-char-count" class="supplier-vin-counter" aria-live="polite">0/17 ${I18n().labelEn('vinCounter')}</span>
+                  <span id="vin-char-count" class="supplier-vin-counter" aria-live="polite">0/17 ${escapeHtml(tf('vinCounter'))}</span>
                   <span id="vin-confidence-badge" class="supplier-vin-confidence hidden" aria-live="polite"></span>
                 </div>
                 <button type="button" class="btn btn-navy btn-lg btn-bilingual supplier-decode-btn" id="decode-vin-btn">${tBtn('decodeVin')}</button>
@@ -291,21 +424,15 @@
               <legend>${t('stepVehicle')}</legend>
               <div id="decode-confidence-notice" class="supplier-decode-notice hidden" role="status"></div>
               <div id="manual-entry-notice" class="supplier-upload-warning hidden" role="alert">
-                ${I18n().labelEn('decodeUnavailable')}<br><span class="bi-zh-block">${I18n().labelZh('decodeUnavailable')}</span>
+                ${th('decodeUnavailable')}
               </div>
               <div id="decode-success-notice" class="supplier-decode-success hidden" role="status">
-                ${I18n().labelEn('decodeConfirm')}<br><span class="bi-zh-block">${I18n().labelZh('decodeConfirm')}</span>
+                ${th('decodeConfirm')}
               </div>
               <p id="vehicle-missing-hint" class="form-hint supplier-missing-hint hidden"></p>
               ${isTruckUpload ? `
               <input type="hidden" id="vehicleCategory" name="vehicleCategory" value="truck">` : `
-              <div class="form-row">
-                <label for="vehicleCategory">${t('vehicleCategory')}</label>
-                <select id="vehicleCategory" name="vehicleCategory" class="supplier-input-lg">
-                  <option value="passenger" selected>${I18n().labelInline('categoryPassenger')}</option>
-                </select>
-                <p class="form-hint">${I18n().labelEn('passengerUploadOnlyHint')}<span class="bi-zh-block">${I18n().labelZh('passengerUploadOnlyHint')}</span></p>
-              </div>`}
+              <input type="hidden" id="vehicleCategory" name="vehicleCategory" value="passenger">`}
               <div class="form-row supplier-field-row" data-field="brand">
                 <div class="supplier-field-row__head">
                   <label for="brand">${t('brand')} <span class="req">*</span></label>
@@ -327,7 +454,7 @@
                 <select id="model" name="model" class="supplier-input-lg">
                   <option value="">${I18n().labelInline('selectModel')}</option>
                 </select>
-                <input type="text" id="model-other" name="modelOther" class="supplier-input-lg supplier-model-other hidden" placeholder="${escapeHtml(I18n().labelEn('modelOtherPlaceholder'))}">
+                <input type="text" id="model-other" name="modelOther" class="supplier-input-lg supplier-model-other hidden" placeholder="${escapeHtml(tf('modelOtherPlaceholder'))}">
               </div>
               <div class="form-row form-row--2">
                 <div class="supplier-field-row" data-field="year">
@@ -355,6 +482,17 @@
                 </div>
                 <input type="text" id="transmissionCode" name="transmissionCode" class="supplier-input-lg" placeholder="6AT">
               </div>
+              <div class="form-row supplier-field-row" data-field="fuelType" id="fuel-type-row">
+                <div class="supplier-field-row__head">
+                  <label for="fuelType" id="fuel-type-label">${t('fuelType')}</label>
+                  <span class="supplier-field-tag hidden" data-tag="fuelType"></span>
+                  <button type="button" class="supplier-field-unlock hidden" data-unlock="fuelType">${tBtn('editField')}</button>
+                </div>
+                <select id="fuelType" name="fuelType" class="supplier-input-lg">
+                  <option value="">${I18n().labelInline('selectFuelType')}</option>
+                  ${fuelTypeOptions}
+                </select>
+              </div>
               <input type="hidden" id="decodeMethod" name="decodeMethod" value="Manual Entry">
             </fieldset>
 
@@ -371,7 +509,7 @@
               <div class="form-row">
                 <label for="priceUsd">${t('fobPriceUsd')} <span class="req">*</span></label>
                 <input type="number" id="priceUsd" name="priceUsd" required min="1" step="0.01" class="supplier-input-lg" placeholder="8500">
-                <p class="form-hint">${I18n().labelEn('fobPriceHint')}<span class="bi-zh-inline">${I18n().labelZh('fobPriceHint')}</span></p>
+                <p class="form-hint">${th('fobPriceHint')}</p>
               </div>
               <div class="form-row form-row--2">
                 <div>
@@ -383,7 +521,7 @@
                   <input type="text" id="supplierWechat" name="supplierWechat" class="supplier-input-lg" placeholder="WeChat ID">
                 </div>
               </div>
-              <p class="form-hint">${I18n().labelEn('phoneOrWechat')}<span class="bi-zh-inline">${I18n().labelZh('phoneOrWechat')}</span></p>
+              <p class="form-hint">${th('phoneOrWechat')}</p>
               <div class="form-row">
                 <label for="vehicleCondition">${t('vehicleCondition')}</label>
                 <select id="vehicleCondition" name="vehicleCondition" class="supplier-input-lg">${conditionOptions}</select>
@@ -408,7 +546,7 @@
               </div>
               <div class="form-row supplier-video-row">
                 <label for="video-file">${t('videoUpload')}</label>
-                <p class="form-hint">${I18n().labelEn('videoOptional')}<span class="bi-zh-inline">${I18n().labelZh('videoOptional')}</span></p>
+                <p class="form-hint">${th('videoOptional')}</p>
                 <div class="supplier-video-slot" id="supplier-video-slot">
                   <input type="file" id="video-file" class="supplier-video-slot__input" accept="video/mp4,video/webm,video/quicktime,.mp4,.webm,.mov">
                   <div class="supplier-video-slot__preview" id="video-preview" hidden>
@@ -460,6 +598,7 @@
       year: 'year',
       engineCode: 'engineCode',
       transmissionCode: 'transmissionCode',
+      fuelType: 'fuelType',
     };
 
     const els = {
@@ -482,10 +621,15 @@
       year: document.getElementById('year'),
       engineCode: document.getElementById('engineCode'),
       transmissionCode: document.getElementById('transmissionCode'),
+      fuelType: document.getElementById('fuelType'),
       vehicleCondition: document.getElementById('vehicleCondition'),
       vehicleCategory: document.getElementById('vehicleCategory'),
       truckPartType: document.getElementById('truckPartType'),
       truckPartHint: document.getElementById('truck-part-hint'),
+      passengerPartType: document.getElementById('passengerPartType'),
+      passengerPartHint: document.getElementById('passenger-part-hint'),
+      vehicleListingType: document.getElementById('vehicleListingType'),
+      vehicleListingHint: document.getElementById('vehicle-listing-hint'),
       vinStepBlock: document.getElementById('vin-step-block'),
       vinCabSkipHint: document.getElementById('vin-cab-skip-hint'),
       vinStepLegend: document.getElementById('vin-step-legend'),
@@ -504,49 +648,92 @@
       return isTruckUpload && window.TruckBrandCatalog ? window.TruckBrandCatalog : cat;
     }
 
-    function syncCabMode() {
-      isCabUpload = isTruckUpload && els.truckPartType?.value === 'cab';
-      const optional = isCabUpload;
-      const showPowertrainRequired = isTruckUpload && !optional;
-
-      els.vinStepBlock?.classList.toggle('hidden', isTruckUpload && optional);
-      els.vinCabSkipHint?.classList.toggle('hidden', !optional);
-      els.vin?.toggleAttribute('required', isTruckUpload ? !optional : true);
-      els.vinStepRequired?.classList.toggle('hidden', optional || isTruckUpload);
-      els.vinLabelRequired?.classList.toggle('hidden', optional);
-      els.vinOptionalTag?.classList.toggle('hidden', !optional);
-      if (els.vinStepLegend && isTruckUpload) {
-        els.vinStepLegend.textContent = I18n().labelEn('stepTruckStart');
-      } else if (els.vinStepLegend) {
-        els.vinStepLegend.innerHTML = optional
-          ? `${t('stepVinOptional')} <span class="supplier-optional-tag">${I18n().labelInline('optional')}</span>`
-          : `${t('stepVin')} <span class="req" id="vin-step-required">*</span>`;
+    function syncVehicleListingType() {
+      if (!isVehicleUpload || !els.vehicleCondition) return;
+      const listingType = els.vehicleListingType?.value || defaultVehicleListing || 'scrap';
+      if (isTruckVehicleUpload) {
+        els.vehicleCondition.value = listingType === 'used' ? 'Running Vehicle' : 'Truck Half Cut';
+      } else {
+        els.vehicleCondition.value = listingType === 'used' ? 'Running Vehicle' : 'Half Cut';
       }
-      els.engineCodeRequired?.classList.toggle('hidden', !showPowertrainRequired);
-      els.transmissionCodeRequired?.classList.toggle('hidden', !showPowertrainRequired);
-      els.engineCodeRow?.classList.toggle('supplier-field-row--optional', optional);
-      els.transmissionCodeRow?.classList.toggle('supplier-field-row--optional', optional);
-      els.mileage?.toggleAttribute('required', !optional);
-      els.mileageRequired?.classList.toggle('hidden', optional);
+      if (els.vehicleListingHint) {
+        const hintKey = listingType === 'used' ? 'listingTypeUsedHint' : 'listingTypeScrapHint';
+        els.vehicleListingHint.innerHTML = th(hintKey);
+      }
+    }
 
-      if (els.truckPartHint) {
-        const hintKey = optional ? 'truckPartCabHint' : 'truckPartVehicleHint';
-        els.truckPartHint.innerHTML = `${I18n().labelEn(hintKey)}<span class="bi-zh-block">${I18n().labelZh(hintKey)}</span>`;
+    function syncTruckPartMode() {
+      if (isTruckPartsUpload) {
+        truckPartType = els.truckPartType?.value || 'cab';
+        isCabUpload = truckPartType === 'cab';
+        isLooseTruckPart = ['cab', 'engine', 'axle', 'other'].includes(truckPartType);
+      } else {
+        truckPartType = isTruckVehicleUpload ? 'vehicle' : '';
+        isCabUpload = false;
+        isLooseTruckPart = false;
+      }
+      if (isPassengerPartsUpload) {
+        passengerPartType = els.passengerPartType?.value || 'front';
+        isLoosePassengerPart = true;
+      } else {
+        passengerPartType = '';
+        isLoosePassengerPart = false;
+      }
+      isLoosePartUpload = isLooseTruckPart || isLoosePassengerPart;
+      const optionalVin = isLoosePartUpload;
+      const showEngineRequired = (isTruckPartsUpload && truckPartType === 'engine')
+        || (isPassengerPartsUpload && passengerPartType === 'engine');
+      const showTransmissionRequired = isPassengerPartsUpload && passengerPartType === 'transmission';
+      const hidePowertrain = isLoosePartUpload
+        && !showEngineRequired
+        && !showTransmissionRequired
+        && passengerPartType !== 'front';
+
+      els.vinStepBlock?.classList.toggle('hidden', optionalVin);
+      els.vinCabSkipHint?.classList.toggle('hidden', !isLooseTruckPart);
+      els.vin?.toggleAttribute('required', !optionalVin);
+      els.vinStepRequired?.classList.toggle('hidden', optionalVin || isPartsUpload);
+      els.vinLabelRequired?.classList.toggle('hidden', optionalVin);
+      els.vinOptionalTag?.classList.toggle('hidden', !optionalVin);
+      if (els.vinStepLegend) {
+        if (isPartsUpload) {
+          els.vinStepLegend.textContent = tf('stepTruckStart');
+        } else {
+          els.vinStepLegend.innerHTML = `${t('stepVin')} <span class="req" id="vin-step-required">*</span>`;
+        }
+      }
+      els.engineCodeRequired?.classList.toggle('hidden', !showEngineRequired);
+      els.transmissionCodeRequired?.classList.toggle('hidden', !showTransmissionRequired && (isTruckUpload || isPassengerPartsUpload));
+      els.engineCodeRow?.classList.toggle('supplier-field-row--optional', !showEngineRequired);
+      els.transmissionCodeRow?.classList.toggle('supplier-field-row--optional', !showTransmissionRequired && (isTruckUpload || isPassengerPartsUpload || isPassengerVehicleUpload));
+      els.mileage?.toggleAttribute('required', !optionalVin);
+      els.mileageRequired?.classList.toggle('hidden', optionalVin);
+
+      if (els.truckPartHint && isTruckPartsUpload) {
+        const hintKey = TRUCK_PART_HINTS[truckPartType] || 'truckPartCabHint';
+        els.truckPartHint.innerHTML = th(hintKey);
+      }
+      if (els.passengerPartHint && isPassengerPartsUpload) {
+        const hintKey = PASSENGER_PART_HINTS[passengerPartType] || 'passengerPartFrontHint';
+        els.passengerPartHint.innerHTML = th(hintKey);
       }
 
-      if (els.vehicleCondition && isTruckUpload) {
-        if (optional) {
-          els.vehicleCondition.value = 'Driver Cab';
-          const vinNorm = v.normalizeVin(els.vin?.value || '');
-          if (vinNorm.length !== 17) {
-            els.vin.value = '';
-            lastDecodedVin = '';
-            els.decodePreview?.classList.add('hidden');
-            els.confidenceBadge?.classList.add('hidden');
-            if (els.vinStatus) els.vinStatus.textContent = '';
-          }
-        } else if (els.vehicleCondition.value === 'Driver Cab') {
-          els.vehicleCondition.value = 'Truck Half Cut';
+      if (els.vehicleCondition && isTruckPartsUpload) {
+        els.vehicleCondition.value = TRUCK_PART_CONDITIONS[truckPartType] || 'Truck Part';
+      } else if (els.vehicleCondition && isPassengerPartsUpload) {
+        els.vehicleCondition.value = PASSENGER_PART_CONDITIONS[passengerPartType] || 'Part';
+      } else if (isVehicleUpload) {
+        syncVehicleListingType();
+      }
+
+      if (optionalVin) {
+        const vinNorm = v.normalizeVin(els.vin?.value || '');
+        if (vinNorm.length !== 17) {
+          els.vin.value = '';
+          lastDecodedVin = '';
+          els.decodePreview?.classList.add('hidden');
+          els.confidenceBadge?.classList.add('hidden');
+          if (els.vinStatus) els.vinStatus.textContent = '';
         }
       }
 
@@ -554,29 +741,28 @@
     }
 
     if (els.vehicleCondition) {
-      els.vehicleCondition.value = isTruckUpload ? 'Truck Half Cut' : 'Half Cut';
-    }
-
-    function syncTruckCondition() {
-      const category = els.vehicleCategory?.value || 'passenger';
-      if (category === 'truck' && els.vehicleCondition) {
-        const hasTruckOption = Array.from(els.vehicleCondition.options).some((opt) => opt.value === 'Truck Half Cut');
-        if (!hasTruckOption) {
-          const opt = document.createElement('option');
-          opt.value = 'Truck Half Cut';
-          opt.textContent = I18n().labelInline('conditionTruckHalfCut');
-          els.vehicleCondition.insertBefore(opt, els.vehicleCondition.options[1] || null);
-        }
-        if (els.vehicleCondition.value === 'Half Cut') {
-          els.vehicleCondition.value = 'Truck Half Cut';
-        }
+      if (isTruckPartsUpload) {
+        els.vehicleCondition.value = TRUCK_PART_CONDITIONS[defaultPartType] || 'Driver Cab';
+      } else if (isPassengerPartsUpload) {
+        els.vehicleCondition.value = PASSENGER_PART_CONDITIONS[defaultPassengerPartType] || 'Front Cut';
+      } else if (isTruckVehicleUpload) {
+        els.vehicleCondition.value = defaultVehicleListing === 'used' ? 'Running Vehicle' : 'Truck Half Cut';
+      } else {
+        els.vehicleCondition.value = defaultVehicleListing === 'used' ? 'Running Vehicle' : 'Half Cut';
       }
     }
 
-    els.vehicleCategory?.addEventListener('change', syncTruckCondition);
-    els.truckPartType?.addEventListener('change', syncCabMode);
+    function syncTruckCondition() {
+      if (isTruckVehicleUpload && els.vehicleCondition?.value === 'Half Cut') {
+        els.vehicleCondition.value = 'Truck Half Cut';
+      }
+    }
+
+    els.vehicleListingType?.addEventListener('change', syncVehicleListingType);
+    els.truckPartType?.addEventListener('change', syncTruckPartMode);
+    els.passengerPartType?.addEventListener('change', syncTruckPartMode);
     syncTruckCondition();
-    syncCabMode();
+    syncTruckPartMode();
 
     function filterBrandOptions(query) {
       if (!els.brand) return;
@@ -735,13 +921,13 @@
         partial: 'confidencePartialHint',
         manual: 'confidenceManualHint',
       };
-      return `${I18n().labelEn(map[confidence] || 'confidenceManualHint')}<span class="bi-zh-block">${I18n().labelZh(map[confidence] || 'confidenceManualHint')}</span>`;
+      return th(map[confidence] || 'confidenceManualHint');
     }
 
     function updateVinCounter() {
       const len = v.normalizeVin(els.vin.value).length;
       if (!els.vinCounter) return;
-      const suffix = I18n().labelEn('vinCounter');
+      const suffix = tf('vinCounter');
       els.vinCounter.textContent = `${len}/17 ${suffix}`;
       els.vinCounter.classList.toggle('is-ready', len === 17);
     }
@@ -805,7 +991,7 @@
       if (els.missingHint) {
         const count = autoFilledFields.size;
         if (count > 0 && decodeConfidence !== 'manual') {
-          els.missingHint.innerHTML = `<strong>${count}</strong> ${I18n().labelEn('fieldsAutoFilled')} / ${count}${I18n().labelZh('fieldsAutoFilled')}. ${I18n().labelEn('onlyFillMissing')}<span class="bi-zh-inline">${I18n().labelZh('onlyFillMissing')}</span>`;
+          els.missingHint.innerHTML = `<strong>${count}</strong> ${escapeHtml(tf('fieldsAutoFilled'))}. ${escapeHtml(tf('onlyFillMissing'))}`;
           els.missingHint.classList.remove('hidden');
         } else {
           els.missingHint.classList.add('hidden');
@@ -831,6 +1017,7 @@
         ['engineCode', data.engineCode],
         ['transmissionCode', data.transmissionCode],
         ['drivetrain', data.drivetrain],
+        ['fuelType', data.fuelType],
       ].filter(([, val]) => val !== '' && val != null);
 
       if (!result?.success || !items.length) {
@@ -874,14 +1061,32 @@
 
     function setVehicleFields(data, method) {
       if (data.brand) {
-        els.brand.value = data.brand;
-        populateModelSelect(data.brand, data.model || '');
+        const catalog = activeBrandCatalog();
+        const ensuredBrand = catalog.ensureBrandOption?.(data.brand, {
+          slug: data.brandSlug,
+          zhLabel: data.qxbBrand && /[\u4e00-\u9fff]/.test(data.qxbBrand) ? data.qxbBrand : undefined,
+        }) || data.brand;
+        // Inject into <select> if missing (QXB brand not in static catalog)
+        if (els.brand && ensuredBrand) {
+          const exists = Array.from(els.brand.options).some(
+            (opt) => opt.value.toLowerCase() === ensuredBrand.toLowerCase()
+          );
+          if (!exists) {
+            const opt = document.createElement('option');
+            opt.value = ensuredBrand;
+            opt.textContent = catalog.getBrandLabel?.(ensuredBrand) || ensuredBrand;
+            els.brand.appendChild(opt);
+          }
+          els.brand.value = ensuredBrand;
+        }
+        populateModelSelect(ensuredBrand, data.model || '');
       } else if (data.model) {
         populateModelSelect('', data.model);
       }
       if (data.year) els.year.value = data.year;
       if (data.engineCode) els.engineCode.value = data.engineCode;
       if (data.transmissionCode) els.transmissionCode.value = data.transmissionCode;
+      if (data.fuelType && els.fuelType) els.fuelType.value = data.fuelType;
       decodeMethod = method;
       els.decodeMethod.value = method;
     }
@@ -893,6 +1098,7 @@
       els.year.value = '';
       els.engineCode.value = '';
       els.transmissionCode.value = '';
+      if (els.fuelType) els.fuelType.value = '';
       autoFilledFields.clear();
     }
 
@@ -924,21 +1130,54 @@
       els.vinStatus.className = `form-hint supplier-vin-status supplier-vin-status--${result.confidence}`;
     }
 
-    function runVinDecode() {
+    async function decodeViaQxbOrFallback(raw, vinNorm) {
+      try {
+        const res = await fetch('/api/vin/decode', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ vin: vinNorm }),
+        });
+        const body = await res.json();
+        if (body?.ok) {
+          return v.buildResultFromData({
+            brand: body.brand || '',
+            brandSlug: body.brandSlug || '',
+            model: body.model || '',
+            year: body.year || '',
+            engineCode: body.engineCode || '',
+            transmissionCode: body.transmissionCode || '',
+            drivetrain: body.drivetrain || '',
+            fuelType: body.fuelType || '',
+            qxbBrand: body.qxbBrand || '',
+            qxbSeries: body.qxbSeries || '',
+            vin: vinNorm,
+          });
+        }
+      } catch (err) {
+        console.warn('[vin-decode] /api/vin/decode unavailable, falling back to local data', err);
+      }
+      // Covers: network error, QXB not configured, VIN not found in QXB's
+      // database, rate limited — any non-ok response falls back to the
+      // existing local demo/WMI-guess decoder so the form stays usable.
+      return v.decodeVin(raw);
+    }
+
+    async function runVinDecode() {
       const raw = els.vin.value;
       const vinNorm = v.normalizeVin(raw);
       els.vin.value = vinNorm;
       updateVinCounter();
 
       if (vinNorm.length !== 17) {
-        showFeedback(`${I18n().labelEn('vin')} must be 17 characters / ${I18n().labelZh('vin')}必须为17位`, 'error');
+        showFeedback(`${tf('vin')} — 17 ${tf('vinCounter')}`, 'error');
         return;
       }
 
       if (vinNorm === lastDecodedVin) return;
       lastDecodedVin = vinNorm;
 
-      const result = v.decodeVin(raw);
+      showFeedback(tf('decodeVin') || 'Decoding VIN…', 'info');
+      const result = await decodeViaQxbOrFallback(raw, vinNorm);
       applyDecodeResult(result);
       showFeedback('', 'info');
     }
@@ -961,8 +1200,30 @@
     }
 
     function getSubmissionTruckPartType() {
-      if (!isTruckUpload) return '';
-      return els.truckPartType?.value === 'cab' ? 'cab' : 'vehicle';
+      if (isTruckPartsUpload) return String(els.truckPartType?.value || 'cab').trim();
+      if (isTruckVehicleUpload) return 'vehicle';
+      return '';
+    }
+
+    function getSubmissionPassengerPartType() {
+      if (isPassengerPartsUpload) return String(els.passengerPartType?.value || 'front').trim();
+      return '';
+    }
+
+    function getSubmissionVehicleListingType() {
+      if (!isVehicleUpload) return '';
+      return String(els.vehicleListingType?.value || defaultVehicleListing || 'scrap').trim();
+    }
+
+    function buildSubmissionNotes(baseNotes) {
+      let notes = String(baseNotes || '').trim();
+      if (isVehicleUpload && getSubmissionVehicleListingType() === 'used') {
+        const exportTag = '可整车出口';
+        if (!notes.includes(exportTag)) {
+          notes = notes ? `${notes}\n${exportTag}` : exportTag;
+        }
+      }
+      return notes;
     }
 
     function getSubmissionVehicleCategory() {
@@ -974,14 +1235,14 @@
       const raw = String(els.vin?.value || '').trim();
       if (!raw) return '';
       const check = v.validateVin(raw);
-      if (isCabUpload) return check.valid ? check.vin : '';
+      if (isLoosePartUpload) return check.valid ? check.vin : '';
       return check.valid ? check.vin : v.normalizeVin(raw);
     }
 
-    function validateAllSteps() {
-      syncCabMode();
+    async function validateAllSteps() {
+      syncTruckPartMode();
       for (let step = 1; step <= TOTAL_STEPS; step++) {
-        if (!validateStep(step)) {
+        if (!(await validateStep(step))) {
           goToStep(step);
           return false;
         }
@@ -989,28 +1250,24 @@
       return true;
     }
 
-    function validateStep(step) {
+    async function validateStep(step) {
       if (step === 1) {
-        if (isTruckUpload) {
-          syncCabMode();
+        syncTruckPartMode();
+        if (isTruckPartsUpload || isPassengerPartsUpload) {
+          syncTruckPartMode();
         }
         let rawVin = String(els.vin.value || '').trim();
-        if (isCabUpload && rawVin) {
-          const cabVinCheck = v.validateVin(rawVin);
-          if (!cabVinCheck.valid) {
+        if (isLoosePartUpload && rawVin) {
+          const looseVinCheck = v.validateVin(rawVin);
+          if (!looseVinCheck.valid) {
             els.vin.value = '';
             lastDecodedVin = '';
             rawVin = '';
           }
         }
         if (!rawVin) {
-          if (isCabUpload) return true;
-          if (isTruckUpload && !isCabUpload) {
-            showFeedback(`${I18n().labelEn('vin')} required / ${I18n().labelZh('vin')}必填`, 'error');
-            els.vin?.focus();
-            return false;
-          }
-          showFeedback(`${I18n().labelEn('vin')} required / ${I18n().labelZh('vin')}必填`, 'error');
+          if (isLoosePartUpload) return true;
+          showFeedback(`${tf('vin')} — ${tf('required')}`, 'error');
           els.vin.focus();
           return false;
         }
@@ -1020,36 +1277,41 @@
           els.vin.focus();
           return false;
         }
-        if (v.normalizeVin(rawVin) !== lastDecodedVin) runVinDecode();
+        if (v.normalizeVin(rawVin) !== lastDecodedVin) await runVinDecode();
         return true;
       }
       if (step === 2) {
         if (!els.brand.value.trim()) {
-          showFeedback(`${I18n().labelEn('brand')} required / ${I18n().labelZh('brand')}必填`, 'error');
+          showFeedback(`${tf('brand')} — ${tf('required')}`, 'error');
           els.brand.focus();
           return false;
         }
         if (!getModelValue()) {
-          showFeedback(`${I18n().labelEn('model')} required / ${I18n().labelZh('model')}必填`, 'error');
+          showFeedback(`${tf('model')} — ${tf('required')}`, 'error');
           if (els.model.value === MODEL_OTHER && els.modelOther) els.modelOther.focus();
           else els.model.focus();
           return false;
         }
         if (!els.year.value) {
-          showFeedback(`${I18n().labelEn('year')} required / ${I18n().labelZh('year')}必填`, 'error');
+          showFeedback(`${tf('year')} — ${tf('required')}`, 'error');
           els.year.focus();
+          return false;
+        }
+        if (isTruckUpload && truckPartType === 'engine' && !els.engineCode.value.trim()) {
+          showFeedback(`${tf('engineCode')} — ${tf('required')}`, 'error');
+          els.engineCode.focus();
           return false;
         }
         return true;
       }
       if (step === 3) {
         if (!form.supplierName.value.trim()) {
-          showFeedback(`${I18n().labelEn('supplierName')} required / ${I18n().labelZh('supplierName')}必填`, 'error');
+          showFeedback(`${tf('supplierName')} — ${tf('required')}`, 'error');
           form.supplierName.focus();
           return false;
         }
-        if (!isCabUpload && !form.mileage.value.trim()) {
-          showFeedback(`${I18n().labelEn('mileage')} required / ${I18n().labelZh('mileage')}必填`, 'error');
+        if (!isLooseTruckPart && !form.mileage.value.trim()) {
+          showFeedback(`${tf('mileage')} — ${tf('required')}`, 'error');
           form.mileage.focus();
           return false;
         }
@@ -1065,15 +1327,22 @@
           return false;
         }
         if (!form.inventoryStatus.value) {
-          showFeedback(`${I18n().labelEn('inventoryStatus')} required / ${I18n().labelZh('inventoryStatus')}必填`, 'error');
+          showFeedback(`${tf('inventoryStatus')} — ${tf('required')}`, 'error');
           form.inventoryStatus.focus();
           return false;
         }
         return true;
       }
       if (step === 4) {
+        const maxPhotos = isCabUpload
+          ? (v.MAX_PHOTOS_CAB || v.MAX_PHOTOS || 15)
+          : (v.MAX_PHOTOS || 15);
         if (photoData.size < v.MIN_PHOTOS) {
           showFeedback(tBi('photosMin'), 'error');
+          return false;
+        }
+        if (photoData.size > maxPhotos) {
+          showFeedback(`Maximum ${maxPhotos} photos allowed.`, 'error');
           return false;
         }
         return true;
@@ -1164,8 +1433,8 @@
     });
 
     backBtn?.addEventListener('click', () => goToStep(currentStep - 1));
-    nextBtn?.addEventListener('click', () => {
-      if (validateStep(currentStep)) goToStep(currentStep + 1);
+    nextBtn?.addEventListener('click', async () => {
+      if (await validateStep(currentStep)) goToStep(currentStep + 1);
     });
 
     function bindPhotoInput(input) {
@@ -1200,13 +1469,13 @@
             preview.hidden = false;
           }
           slot?.classList.add('has-photo');
-          showUploadToast(`${I18n().labelEn('photoUploaded') || 'Photo uploaded'} / ${I18n().labelZh('photoUploaded') || '照片已上传'}`, 'success');
+          showUploadToast(tf('photoUploaded') || 'Photo uploaded', 'success');
           showFeedback('', 'info');
         } catch (err) {
           showFeedback(err.message || tBi('uploadFailed'), 'error');
           showUploadModal({
             type: 'error',
-            title: `${I18n().labelEn('uploadFailed') || 'Upload failed'} / ${I18n().labelZh('uploadFailed') || '上传失败'}`,
+            title: tf('uploadFailed') || 'Upload failed',
             message: err.message || tBi('uploadFailed'),
           });
           input.value = '';
@@ -1306,13 +1575,13 @@
           size: uploaded.size || file.size,
         };
         showVideoPreview(videoData);
-        showUploadToast(`${I18n().labelEn('videoUploaded') || 'Video uploaded'} / ${I18n().labelZh('videoUploaded') || '视频已上传'}`, 'success');
+        showUploadToast(tf('videoUploaded') || 'Video uploaded', 'success');
         showFeedback('', 'info');
       } catch (err) {
         showFeedback(err.message || tBi('uploadFailed'), 'error');
         showUploadModal({
           type: 'error',
-          title: `${I18n().labelEn('uploadFailed') || 'Upload failed'} / ${I18n().labelZh('uploadFailed') || '上传失败'}`,
+          title: tf('uploadFailed') || 'Upload failed',
           message: err.message || tBi('uploadFailed'),
         });
         videoInput.value = '';
@@ -1343,10 +1612,10 @@
       }
     });
 
-    form.addEventListener('submit', (event) => {
+    form.addEventListener('submit', async (event) => {
       event.preventDefault();
-      syncCabMode();
-      if (!validateAllSteps()) return;
+      syncTruckPartMode();
+      if (!(await validateAllSteps())) return;
 
       const photos = [];
       const activePhotoLabels = getActivePhotoLabels();
@@ -1367,14 +1636,17 @@
         priceUsd: Number(Number(form.priceUsd.value).toFixed(2)),
         engineCode: String(form.engineCode.value || '').trim(),
         transmissionCode: String(form.transmissionCode.value || '').trim(),
+        fuelType: String(form.fuelType?.value || '').trim(),
         vehicleCondition: form.vehicleCondition.value,
         vehicleCategory: getSubmissionVehicleCategory(),
         truckPartType: getSubmissionTruckPartType(),
+        passengerPartType: getSubmissionPassengerPartType(),
+        vehicleListingType: getSubmissionVehicleListingType(),
         inventoryStatus: String(form.inventoryStatus.value || '').trim(),
         decodeMethod: els.decodeMethod.value || decodeMethod,
         decodeConfidence: els.decodeConfidence?.value || decodeConfidence,
         decodedData: decodedSnapshot,
-        notes: String(form.notes.value || '').trim(),
+        notes: buildSubmissionNotes(form.notes.value),
         video: videoData,
         photos,
       };
@@ -1386,7 +1658,7 @@
         showFeedback(errorText, 'error');
         showUploadModal({
           type: 'error',
-          title: `${I18n().labelEn('uploadFailed') || 'Upload failed'} / ${I18n().labelZh('uploadFailed') || '上传失败'}`,
+          title: tf('uploadFailed') || 'Upload failed',
           message: errorText,
         });
         return;
@@ -1418,28 +1690,91 @@
         updateVinCounter();
         goToStep(1);
         const successVin = submission.vin ? `\nVIN: ${submission.vin}` : '';
-        const successText = `${I18n().labelEn('pendingReview')} / ${I18n().labelZh('pendingReview')}: ${submission.submissionId}${successVin}`;
+        const successText = `${tf('pendingReview')}: ${submission.submissionId}${successVin}`;
         showFeedback(successText, 'success');
         showUploadModal({
           type: 'success',
-          title: `${I18n().labelEn('uploadSuccess') || 'Upload successful'} / ${I18n().labelZh('uploadSuccess') || '上传成功'}`,
-          message: `${I18n().labelEn('pendingReview')}\n${I18n().labelZh('pendingReview')}`,
+          title: tf('uploadSuccess') || 'Upload successful',
+          message: tf('pendingReview'),
           details: `ID: ${submission.submissionId}${successVin}`,
         });
       }).catch((err) => {
-        const errorText = `${err.message}\n${I18n().labelZh('submissionFailed')}`;
+        const errorText = err.message || tf('submissionFailed');
         showFeedback(errorText, 'error');
         showUploadModal({
           type: 'error',
-          title: `${I18n().labelEn('uploadFailed') || 'Upload failed'} / ${I18n().labelZh('uploadFailed') || '上传失败'}`,
-          message: err.message || I18n().labelEn('submissionFailed'),
-          details: I18n().labelZh('submissionFailed'),
+          title: tf('uploadFailed') || 'Upload failed',
+          message: err.message || tf('submissionFailed'),
+          details: tf('submissionFailed'),
         });
       });
     });
 
     goToStep(1);
     updateVinCounter();
+
+    function refreshPartSelectLabels(selectEl, keysByValue) {
+      if (!selectEl) return;
+      const selected = selectEl.value;
+      Array.from(selectEl.options).forEach((opt) => {
+        const key = keysByValue[opt.value];
+        if (key) opt.textContent = tf(key);
+      });
+      selectEl.value = selected;
+    }
+
+    function refreshSupplierUploadI18n() {
+      I18n()?.registerFormStrings?.();
+      const intro = root.querySelector('.supplier-upload-intro');
+      if (intro) {
+        const eyebrow = intro.querySelector('.section-eyebrow');
+        if (eyebrow) eyebrow.textContent = pubT(introKeys.eyebrowKey, introKeys.eyebrowFallback);
+        const h2 = intro.querySelector('h2');
+        if (h2) h2.innerHTML = t(introKeys.title);
+        const lead = intro.querySelector('.section-lead');
+        if (lead) lead.innerHTML = th(introKeys.lead);
+        const warn = intro.querySelector('.supplier-upload-warning');
+        if (warn) warn.innerHTML = `<strong>${pubT('supplier.form.important', 'Important')}:</strong> ${th('supplierWarning')}`;
+      }
+      root.querySelector('.supplier-step-progress')?.setAttribute('aria-label', tf('stepProgressLabel'));
+      root.querySelectorAll('.supplier-step-progress__label').forEach((el, i) => {
+        if (stepLabels[i]) el.textContent = tBtn(stepLabels[i].key);
+      });
+      refreshPartSelectLabels(document.getElementById('truckPartType'), {
+        cab: 'truckPartCab', engine: 'truckPartEngine', axle: 'truckPartAxle', other: 'truckPartOther',
+      });
+      refreshPartSelectLabels(document.getElementById('passengerPartType'), {
+        front: 'passengerPartFront', engine: 'passengerPartEngine', transmission: 'passengerPartTransmission',
+        chassis: 'passengerPartChassis', other: 'passengerPartOther',
+      });
+      refreshPartSelectLabels(document.getElementById('vehicleListingType'), {
+        scrap: 'listingTypeScrap', used: 'listingTypeUsed',
+      });
+      refreshPartSelectLabels(document.getElementById('vehicleCondition'), {
+        'Running Vehicle': 'conditionRunning', 'Half Cut': 'conditionHalfCut',
+        'Truck Half Cut': 'conditionTruckHalfCut', 'Driver Cab': 'conditionDriverCab',
+        'Front Cut': 'conditionFrontCut', 'Dismantled': 'conditionDismantled',
+        'Engine Removed': 'conditionEngineRemoved', 'Transmission Assembly': 'conditionTransmissionAssembly',
+        'Chassis Part': 'conditionChassisPart', 'Part': 'conditionPart',
+      });
+      refreshPartSelectLabels(document.getElementById('fuelType'), {
+        Petrol: 'fuelPetrol', Diesel: 'fuelDiesel', Hybrid: 'fuelHybrid',
+        'Plug-in Hybrid': 'fuelPlugInHybrid', Electric: 'fuelElectric',
+      });
+      refreshPartSelectLabels(document.getElementById('inventoryStatus'), {
+        Available: 'available', Reserved: 'reserved', 'In Transit': 'inTransit', Sold: 'sold',
+      });
+      const photosHint = document.getElementById('supplier-photos-hint');
+      if (photosHint) photosHint.innerHTML = photosStepHint();
+      updateVinCounter();
+      syncTruckPartMode?.();
+      syncVehicleListingType?.();
+    }
+
+    if (!root.dataset.langRefreshBound) {
+      root.dataset.langRefreshBound = '1';
+      window.addEventListener('asiapower:langchange', refreshSupplierUploadI18n);
+    }
   }
 
   function showBootState(root, message) {
@@ -1456,7 +1791,7 @@
     const s = store();
     const Media = MediaApi();
     if (!s || !Media) return;
-    showBootState(root, `${I18n()?.labelEn?.('supplierUploadTitle') || 'Half-Cut Upload'} — loading form… / 正在加载表单…`);
+    showBootState(root, `${tf('supplierUploadTitle') || 'Upload'} — ${tf('uploadingMedia') || 'Loading…'}`);
     try {
       await s.whenReady();
       if (!Media.isServerMode()) {

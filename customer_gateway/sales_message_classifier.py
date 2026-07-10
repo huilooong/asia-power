@@ -76,6 +76,11 @@ _INTERNAL_PATTERNS = [
     re.compile(r"^/(?:remember|recall|pipeline|drafts)\b", re.I),
 ]
 
+_GREETING_PATTERNS = [
+    re.compile(r"^(?:hi+|hello+|hey+)[\s!?.]*$", re.I),
+    re.compile(r"^how\s+(?:are\s+you|you\s+doing)[\s!?.]*$", re.I),
+]
+
 _FOLLOWUP_PATTERNS = [
     re.compile(r"\b(?:follow(?:ing)? up|any update|still waiting|checking back|remind)\b", re.I),
     re.compile(r"\b(?:上次|跟进|有消息吗|update on my order)\b", re.I),
@@ -212,6 +217,16 @@ def classify_inbound_message(
 
     intent = _intent_subcategory(body)
     keywords = extract_product_keywords(body)
+
+    for pat in _GREETING_PATTERNS:
+        if pat.search(body) and not keywords:
+            return InboundClassification(
+                classification="customer_followup",
+                confidence=0.9,
+                action=DRAFT_ACTION,
+                reasoning_summary="客户寒暄/打招呼，短回复即可（子敬自动发送低风险）。",
+                intent_category="follow_up",
+            )
 
     for pat in _FOLLOWUP_PATTERNS:
         if pat.search(body):

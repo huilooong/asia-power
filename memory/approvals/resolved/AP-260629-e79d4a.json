@@ -1,0 +1,13 @@
+{
+  "id": "AP-260629-e79d4a",
+  "action": "external_api",
+  "level": "high",
+  "human_only": false,
+  "why": "请求调用访问数据分析接口并生成报告",
+  "request_text": "让子敬分析一下最近的访问数据,告诉我下一步他的工作计划和kpi目标",
+  "agent": "apcoo",
+  "chat_id": "8918522756",
+  "status": "approved",
+  "created_at": "2026-06-29T08:54:30.084635+00:00",
+  "resolved_at": "2026-06-29T08:55:08.909100+00:00"
+}

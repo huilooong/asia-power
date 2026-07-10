@@ -1,7 +1,6 @@
 #!/usr/bin/env node
 /**
- * Write sitemap.xml from static pages + data/half-cut-approved.json (local/dev backup).
- * Production serves a dynamic sitemap from the Node server — run this after bulk content changes if needed.
+ * Write a local dev snapshot of sitemap.xml (not deployed — production uses Node GET /sitemap.xml).
  */
 import fs from 'fs';
 import path from 'path';
@@ -25,6 +24,8 @@ const xml = buildSitemapXml({
   approved,
 });
 
-const out = path.join(ROOT, 'sitemap.xml');
+const out = path.join(ROOT, 'docs/dev-sitemap.xml');
+fs.mkdirSync(path.dirname(out), { recursive: true });
 fs.writeFileSync(out, xml);
-console.log(`[sitemap] wrote ${out} (${approved.filter(i => i?.slug && i.status !== 'Sold').length} half-cut URLs)`);
+const urlCount = (xml.match(/<loc>/g) || []).length;
+console.log(`[sitemap] wrote ${out} (${urlCount} URLs, dev snapshot only)`);

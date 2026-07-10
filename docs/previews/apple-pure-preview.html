@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AsiaPower · 纯 Apple 风格预览</title>
+  <link rel="stylesheet" href="../../css/fonts.css?v=self-hosted-fonts-v1">
+  <!-- 仅 Apple 层：不加载 styles.css / ebay-layout.css -->
+  <link rel="stylesheet" href="../../css/asia-power-apple.css?v=apple-pure-preview">
+  <style>
+    /* 布局骨架（Apple CSS 只管皮肤，不管 grid） */
+    .preview-bar {
+      position: sticky;
+      top: 0;
+      z-index: 9999;
+      background: #1d1d1f;
+      color: #f5f5f7;
+      font: 500 13px/1.4 Inter, system-ui, sans-serif;
+      padding: 10px 20px;
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px 16px;
+    }
+    .preview-bar strong { color: #f5a623; }
+    .preview-bar span { opacity: .75; font-size: 12px; }
+
+    .page-shell { max-width: 1200px; margin: 0 auto; padding: 0 24px; }
+
+    .ap-header {
+      position: sticky;
+      top: 42px;
+      z-index: 100;
+    }
+    .ap-header__row {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+      padding: 14px 24px;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+    .ap-logo {
+      font-size: 20px;
+      text-decoration: none;
+      white-space: nowrap;
+    }
+    .ap-header nav {
+      display: flex;
+      gap: 22px;
+      margin-left: auto;
+      flex-wrap: wrap;
+    }
+    .ap-header nav a.active { font-weight: 600; }
+
+    .hero {
+      padding: 72px 24px 64px;
+      text-align: center;
+    }
+    .hero-inner { max-width: 780px; margin: 0 auto; }
+    .hero-badge { display: inline-block; margin-bottom: 18px; }
+    .hero-cta-row {
+      display: flex;
+      gap: 12px;
+      justify-content: center;
+      flex-wrap: wrap;
+      margin-top: 28px;
+    }
+    .hero-cta, .hero-cta-secondary {
+      display: inline-flex;
+      align-items: center;
+      text-decoration: none;
+    }
+
+    .search-section {
+      padding: 0 24px 48px;
+      max-width: 720px;
+      margin: 0 auto;
+    }
+    .search-form {
+      display: flex;
+      align-items: stretch;
+    }
+    .search-form input {
+      flex: 1;
+      padding: 14px 18px;
+      min-width: 0;
+    }
+    .popular-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      justify-content: center;
+      margin-top: 16px;
+    }
+
+    .section-block { padding: 48px 0 56px; }
+    .section-head {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      gap: 16px;
+      margin-bottom: 24px;
+    }
+    .section-head h2 {
+      font-size: 28px;
+      font-weight: 700;
+      letter-spacing: -.6px;
+      margin: 0;
+    }
+    .section-head a {
+      font-size: 14px;
+      font-weight: 600;
+      text-decoration: none;
+    }
+
+    .product-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+      gap: 18px;
+    }
+    .product-card {
+      text-decoration: none;
+      display: block;
+    }
+    .product-card .card-img {
+      aspect-ratio: 4 / 3;
+      overflow: hidden;
+      position: relative;
+    }
+    .product-card .card-img img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+    /* 预览页展示真图，关闭 shimmer 骨架 */
+    .apple-preview .product-card .card-img {
+      animation: none !important;
+      background: #f5f5f7 !important;
+    }
+    .spec-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin: 8px 0 10px;
+    }
+
+    .cat-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+      gap: 14px;
+    }
+    .cat-card {
+      text-decoration: none;
+      padding: 20px 16px;
+      border-radius: 16px;
+      text-align: center;
+    }
+    .cat-label { font-weight: 600; font-size: 15px; }
+    .cat-count { margin-top: 4px; }
+
+    .trust-row {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 16px;
+      padding: 40px 0 56px;
+    }
+    .trust-badge {
+      text-align: center;
+      padding: 22px 16px;
+    }
+    .trust-badge strong {
+      display: block;
+      font-size: 15px;
+      margin: 8px 0 4px;
+    }
+    .trust-badge span { font-size: 13px; }
+
+    footer.site-footer {
+      border-top: 1px solid #e8e8ed;
+      padding: 32px 24px 48px;
+      text-align: center;
+      font-size: 13px;
+    }
+  </style>
+</head>
+<body class="apple-preview page-home">
+
+  <div class="preview-bar">
+    <div>
+      <strong>纯 Apple 预览</strong>
+      <span> · 只加载 asia-power-apple.css，无 eBay / 旧 navy 层</span>
+    </div>
+    <span>对比现网：index.html 叠了三层 CSS</span>
+  </div>
+
+  <header class="ap-header">
+    <div class="ap-header__row">
+      <a class="ap-logo site-logo" href="#">Asia<span>Power</span></a>
+      <form class="search-form" role="search" style="flex:1;max-width:420px;display:none" aria-hidden="true">
+        <input type="search" placeholder="Search…">
+        <button type="submit">Search</button>
+      </form>
+      <nav aria-label="Main">
+        <a href="#" class="active">Home</a>
+        <a href="#">Half-Cuts</a>
+        <a href="#">Engines</a>
+        <a href="#">Trucks</a>
+        <a href="#">About</a>
+        <a href="https://wa.me/" class="nav-wa">WhatsApp</a>
+      </nav>
+    </div>
+  </header>
+
+  <section class="hero hero-banner">
+    <div class="hero-inner">
+      <span class="hero-badge live-badge">● Live inventory · Zhengzhou hub</span>
+      <h1 class="hero-title">Find What You Need.<br><em>Ship Worldwide.</em></h1>
+      <p class="hero-sub hero-description">Half-cuts, engines &amp; truck parts — video verified, EXW pricing, exported to 110+ countries.</p>
+      <div class="hero-cta-row">
+        <a class="hero-cta btn-primary" href="#">Browse Half-Cuts</a>
+        <a class="hero-cta-secondary btn-outline" href="#">Get Quote</a>
+      </div>
+    </div>
+  </section>
+
+  <div class="search-section">
+    <form class="search-form search-bar" role="search">
+      <input type="search" class="search-input" placeholder="Toyota 2AZ-FE · Isuzu 4JB1 · HC250160…" aria-label="Search inventory">
+      <button type="submit" class="search-btn">Search</button>
+    </form>
+    <div class="popular-tags popular-searches">
+      <a class="popular-tag" href="#">Toyota Camry</a>
+      <a class="popular-tag" href="#">Isuzu 100P</a>
+      <a class="popular-tag" href="#">Hyundai D6CF</a>
+      <a class="popular-tag" href="#">HOWO T7H</a>
+    </div>
+  </div>
+
+  <div class="page-shell">
+    <section class="section-block">
+      <div class="section-head">
+        <h2>Half-Cuts</h2>
+        <a href="#">See all →</a>
+      </div>
+      <div class="product-grid">
+        <a class="product-card listing-card" href="#">
+          <div class="card-img product-img-wrap">
+            <img src="https://images.unsplash.com/photo-1492144534655-ae79c964c9d7?w=600&h=450&fit=crop" alt="Toyota Camry half-cut">
+          </div>
+          <div class="card-body">
+            <div class="product-make">Toyota</div>
+            <div class="product-name card-title">Camry 2007 Half Cut · 2AZ-FE</div>
+            <div class="spec-row">
+              <span class="spec-tag">2007</span>
+              <span class="spec-tag">Auto</span>
+              <span class="spec-tag video">Video</span>
+            </div>
+            <div class="price product-price">$2,850 EXW</div>
+          </div>
+        </a>
+        <a class="product-card listing-card" href="#">
+          <div class="card-img product-img-wrap">
+            <img src="https://images.unsplash.com/photo-1601584115197-04ecc0da31d7?w=600&h=450&fit=crop" alt="Truck half-cut">
+          </div>
+          <div class="card-body">
+            <div class="product-make">Hyundai</div>
+            <div class="product-name card-title">D6CF Truck Half Cut</div>
+            <div class="spec-row">
+              <span class="spec-tag">Manual</span>
+              <span class="spec-tag">120k km</span>
+            </div>
+            <div class="price product-price">$8,500 EXW</div>
+          </div>
+        </a>
+        <a class="product-card listing-card" href="#">
+          <div class="card-img product-img-wrap">
+            <img src="https://images.unsplash.com/photo-1519003722824-194d4455a60c?w=600&h=450&fit=crop" alt="Engine">
+          </div>
+          <div class="card-body">
+            <div class="product-make">Isuzu</div>
+            <div class="product-name card-title">4JB1 Engine · Export Ready</div>
+            <div class="spec-row">
+              <span class="spec-tag video">Inspection</span>
+            </div>
+            <div class="price product-price">Quote</div>
+          </div>
+        </a>
+        <a class="product-card listing-card" href="#">
+          <div class="card-img product-img-wrap">
+            <img src="https://images.unsplash.com/photo-1586528116311-ad8dd3c8310d?w=600&h=450&fit=crop" alt="Truck cab">
+          </div>
+          <div class="card-body">
+            <div class="product-make">HOWO</div>
+            <div class="product-name card-title">T7H Driver Cab</div>
+            <div class="spec-row">
+              <span class="spec-tag">Cab only</span>
+            </div>
+            <div class="price product-price">Quote</div>
+          </div>
+        </a>
+      </div>
+    </section>
+
+    <section class="section-block">
+      <div class="section-head">
+        <h2>Browse by category</h2>
+      </div>
+      <div class="cat-grid">
+        <a class="cat-card category-card" href="#"><div class="cat-label">Engines</div><div class="cat-count">5,000+</div></a>
+        <a class="cat-card category-card" href="#"><div class="cat-label">Half-Cuts</div><div class="cat-count">800+</div></a>
+        <a class="cat-card category-card" href="#"><div class="cat-label">Trucks</div><div class="cat-count">300+</div></a>
+        <a class="cat-card category-card" href="#"><div class="cat-label">Gearboxes</div><div class="cat-count">1,000+</div></a>
+        <a class="cat-card category-card" href="#"><div class="cat-label">Machinery</div><div class="cat-count">Recruiting</div></a>
+      </div>
+    </section>
+
+    <div class="trust-row">
+      <div class="trust-badge"><div>🌍</div><strong>Global Shipping</strong><span>110+ countries</span></div>
+      <div class="trust-badge"><div>✓</div><strong>Video Verified</strong><span>Startup inspection</span></div>
+      <div class="trust-badge"><div>💰</div><strong>EXW Pricing</strong><span>FOB/CIF on request</span></div>
+      <div class="trust-badge"><div>🏭</div><strong>200+ Suppliers</strong><span>Zhengzhou hub</span></div>
+    </div>
+  </div>
+
+  <footer class="site-footer">
+    <p>AsiaPower · Global Powertrain Sourcing · Preview only</p>
+  </footer>
+
+</body>
+</html>

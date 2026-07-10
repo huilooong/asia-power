@@ -57,7 +57,7 @@
 
   function exportStatusLabels() {
     const labels = window.ENGINE_EXPORT_STATUS || [
-      'Available', 'Ready for Export', 'FOB Available', 'CIF Available',
+      'Available', 'Ready for Export', 'EXW Available', 'CIF Available',
     ];
     return labels.map(label => window.PublicI18n?.translateExportStatus?.(label) || label);
   }
@@ -115,6 +115,7 @@
             <span>${engine.code}</span>
           </div>
           <h1>${engine.brand} ${engine.code} ${t('engine.categoryEngines', 'Engine')}</h1>
+          ${window.InquiryCta?.render?.({ context: { product: `${engine.brand} ${engine.code}`, category: 'engine' }, variant: 'catalog-hero' }) || ''}
           <p>${engine.displacement} ${engine.fuel} — ${engine.applications}. ${t('engine.sourcedFor', "Sourced for global export through AsiaPower's China-based supply network.")}</p>
         </div>
       </section>
@@ -163,7 +164,7 @@
         <div class="container cta-block__inner">
           <div>
             <h2>${t('engine.needExportPrefix', 'Need')} ${engine.brand} ${engine.code} ${t('engine.needExportSuffix', 'for Export?')}</h2>
-            <p>${t('engine.quoteLead', 'Send your requirements — FOB/CIF quotation within 24 hours.')}</p>
+            <p>${t('engine.quoteLead', 'Send your requirements — EXW/CIF quotation within 24 hours.')}</p>
           </div>
           ${quoteButton(engine, 'btn btn-accent', t('engine.contactTeam', 'Contact Sourcing Team'))}
         </div>

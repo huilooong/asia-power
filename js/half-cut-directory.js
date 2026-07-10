@@ -114,9 +114,16 @@
     return url;
   }
 
+  function isUnstableThumbUrl(url) {
+    if (!url) return true;
+    return String(url).split('?')[0].includes('/uploads/pending/');
+  }
+
   function thumbPhotoUrl(photo) {
     if (!photo) return '';
-    if (typeof photo === 'object' && photo.thumbUrl) return photo.thumbUrl;
+    if (typeof photo === 'object' && photo.thumbUrl && !isUnstableThumbUrl(photo.thumbUrl)) {
+      return photo.thumbUrl;
+    }
     return photoUrl(photo);
   }
 
@@ -170,6 +177,7 @@
     const meta = window.HalfCutUploadLayer?.resolveListingMeta?.(item);
     if (meta?.vehicleCategory === 'machinery') return 'machinery';
     if (isMachineryLike(item)) return 'machinery';
+    if (looksLikePassengerMisTag(item)) return item?.vehicleCategory === 'machinery' ? 'machinery' : 'passenger';
     if (meta?.vehicleCategory === 'truck') return 'truck';
     if (item?.vehicleCategory === 'truck') return 'truck';
     const slug = String(item?.slug || '');
@@ -178,12 +186,295 @@
     return item?.vehicleCategory || 'passenger';
   }
 
+  function looksLikePassengerMisTag(item) {
+    const brand = String(item?.brand || '');
+    const model = String(item?.model || '');
+    const blob = `${brand} ${model}`.toLowerCase();
+    const passengerOem = ['吉利', '雪佛兰', '别克', '福特', '大众', '马自达', '哈弗', '长安', '猎豹', '宝马', '奥迪', '丰田', '本田', '日产', '现代', '起亚', '荣威', '名爵', '比亚迪', '奇瑞', '长城', '传祺', '五菱', '宝骏', '路虎', '捷豹', 'toyota', 'honda', 'ford', 'chevrolet', 'buick', 'geely', 'haval', 'mazda', 'volkswagen', 'bmw', 'audi', 'lexus', 'jeep', 'porsche', 'jaguar', 'land rover', 'landrover', 'liebao', 'byd', 'mg', 'roewe'];
+    if (!passengerOem.some((b) => brand.includes(b) || blob.includes(b.toLowerCase()))) return false;
+    if (/\b(truck|giga|elf|nqr|npr|howo|t7|f3000|m3000)\b/i.test(blob)) return false;
+    return true;
+  }
+
   function isTruckItem(item) {
     return inventorySegment(item) === 'truck';
   }
 
   function isMachineryItem(item) {
     return inventorySegment(item) === 'machinery';
+  }
+
+  const USED_CAR_EXPORT_REMARK_KEYWORDS = [
+    '可整车出口',
+    '可做整车出口',
+    '整车可出口',
+    '整车可以出口',
+    '整车出口',
+    '可整车出售',
+    '可整车交货',
+    '可整车',
+    '有手续',
+    '手续齐全',
+    '手续全',
+    '正规手续',
+    '可出口',
+  ];
+
+  function itemRemarkText(item) {
+    if (!item) return '';
+    return [
+      item.notes,
+      item.shortDescription,
+      item.qxb?.description,
+    ].filter(Boolean).join('\n');
+  }
+
+  function normalizeRemarkText(text) {
+    return String(text || '')
+      .replace(/\s+/g, '')
+      .replace(/[，,。.；;：:、]/g, '');
+  }
+
+  function hasExportReadyRemark(item) {
+    const text = normalizeRemarkText(itemRemarkText(item));
+    if (!text) return false;
+    return USED_CAR_EXPORT_REMARK_KEYWORDS.some((kw) => text.includes(normalizeRemarkText(kw)));
+  }
+
+  function isHalfCutLikeListing(item) {
+    if (!item) return false;
+    const slug = String(item.slug || '').toLowerCase();
+    if (/(^|-)(half-cut|front-cut|passenger-engine|passenger-transmission|passenger-chassis|passenger-part)(-|$)/.test(slug)) {
+      return true;
+    }
+    const cond = String(item.vehicleCondition || '').trim().toLowerCase();
+    if (cond === 'half cut' || cond.includes('nose cut') || cond.includes('front cut')) return true;
+    const partType = String(item.passengerPartType || '').trim().toLowerCase();
+    if (partType && partType !== 'vehicle') return true;
+    const title = String(item.title || '').toLowerCase();
+    return title.includes('half cut') || title.includes('half-cut') || title.includes('front cut');
+  }
+
+  function isUsedCarItem(item) {
+    if (!item || isTruckItem(item) || isMachineryItem(item)) return false;
+    if (isHalfCutLikeListing(item)) return false;
+    const cond = String(item.vehicleCondition || '').trim().toLowerCase();
+    if (cond === 'running vehicle') return true;
+    const title = String(item.title || '').toLowerCase();
+    return !title.includes('half cut') && !title.includes('half-cut');
+  }
+
+  function isExportableUsedCarItem(item) {
+    if (!item || isTruckItem(item) || isMachineryItem(item)) return false;
+    if (item.isExportUsedCar === true) return true;
+    if (hasExportReadyRemark(item)) return true;
+    if (isHalfCutLikeListing(item)) return false;
+    const cond = String(item.vehicleCondition || '').trim().toLowerCase();
+    return cond === 'running vehicle';
+  }
+
+  function isPassengerHalfCutItem(item) {
+    if (!item || isTruckItem(item) || isMachineryItem(item)) return false;
+    return !isExportableUsedCarItem(item);
+  }
+
+  /** stock-id-search-v1: Stock-ID search must work across categories (HC250551 / 250551 / hc250551). */
+  /** catalog-search-v1: model / engine / VIN / CN aliases also span categories from header search. */
+  function normalizeStockIdQuery(query) {
+    return String(query || '').trim().toUpperCase();
+  }
+
+  function isStockIdQuery(query) {
+    const q = normalizeStockIdQuery(query);
+    if (!q) return false;
+    if (/^(HC|UV)\d{3,}$/i.test(q)) return true;
+    // Pure digits: ≥4 avoids noisy 2–3 digit brand/year hits
+    return /^\d{4,}$/.test(q);
+  }
+
+  function stockIdDigits(stockId) {
+    const sid = String(stockId || '').trim().toUpperCase();
+    const m = sid.match(/^(?:HC|UV)?(\d+)$/i);
+    return m ? m[1] : '';
+  }
+
+  function matchesStockId(item, query) {
+    const q = normalizeStockIdQuery(query);
+    if (!q) return false;
+    const sid = String(item?.stockId || '').trim().toUpperCase();
+    if (!sid) return false;
+    if (sid === q) return true;
+    const digits = stockIdDigits(sid);
+    if (!digits) return false;
+    if (/^\d+$/.test(q)) {
+      if (digits === q) return true;
+      if (q.length >= 4 && digits.endsWith(q)) return true;
+      return false;
+    }
+    if (/^(HC|UV)\d+$/i.test(q)) {
+      return digits === q.replace(/^(HC|UV)/i, '');
+    }
+    return false;
+  }
+
+  function normalizeCatalogSearch(value) {
+    return String(value || '')
+      .toLowerCase()
+      .replace(/[\s-/]+/g, '');
+  }
+
+  function buildCatalogSearchHaystack(item) {
+    return [
+      item?.stockId,
+      item?.brand,
+      item?.brandSlug,
+      item?.model,
+      item?.engineCode,
+      item?.transmissionCode,
+      item?.gearboxModel,
+      item?.title,
+      item?.originalVehicleName,
+      item?.shortDescription,
+      item?.vin,
+      item?.maskedVin,
+      item?.slug,
+      item?.fuelType,
+    ]
+      .map((v) => String(v || ''))
+      .join(' ')
+      .toLowerCase();
+  }
+
+  function catalogSearchAliasMap() {
+    return window.AsiaPowerCatalogSearchAliases || {};
+  }
+
+  function expandCatalogSearchTerms(query) {
+    const raw = String(query || '').trim();
+    if (!raw) return [];
+    const terms = new Set([raw, raw.toLowerCase()]);
+    const aliases = catalogSearchAliasMap();
+    const direct = aliases[raw] || aliases[raw.toLowerCase()];
+    if (direct) {
+      terms.add(direct);
+      terms.add(String(direct).toLowerCase());
+    }
+    // Multi-char Chinese nicknames inside a longer query (e.g. "丰田霸道")
+    Object.keys(aliases).forEach((zh) => {
+      if (!/[\u4e00-\u9fff]/.test(zh)) return;
+      if (zh.length >= 2 && raw.includes(zh)) {
+        const en = aliases[zh];
+        if (en) {
+          terms.add(en);
+          terms.add(String(en).toLowerCase());
+        }
+      }
+    });
+    return [...terms];
+  }
+
+  function matchesCatalogSearch(item, query) {
+    if (!query) return true;
+    if (isStockIdQuery(query) && matchesStockId(item, query)) return true;
+    const hay = buildCatalogSearchHaystack(item);
+    const hayN = normalizeCatalogSearch(hay);
+    for (const term of expandCatalogSearchTerms(query)) {
+      const t = String(term || '').toLowerCase().trim();
+      if (!t) continue;
+      if (hay.includes(t)) return true;
+      // Collapsed match only for longer tokens — short codes like CDL must not
+      // hit "Automatic DLX" after space stripping (…automaticdlx…).
+      const tn = normalizeCatalogSearch(t);
+      if (tn.length >= 4 && hayN.includes(tn)) return true;
+    }
+    return false;
+  }
+
+  function findInventoryByStockIdQuery(query, list) {
+    if (!isStockIdQuery(query)) return [];
+    const items = list || HALF_CUT_LIST || [];
+    return items.filter((item) => matchesStockId(item, query));
+  }
+
+  function findInventoryByCatalogQuery(query, list) {
+    const q = String(query || '').trim();
+    if (!q) return [];
+    const items = list || HALF_CUT_LIST || [];
+    return items.filter((item) => matchesCatalogSearch(item, q));
+  }
+
+  function mergeCatalogSearchHitsIntoInventory(items, query) {
+    const base = Array.isArray(items) ? items.slice() : [];
+    const q = String(query || '').trim();
+    if (!q) return base;
+    const hits = findInventoryByCatalogQuery(q);
+    if (!hits.length) return base;
+    const seen = new Set(base.map((item) => String(item?.stockId || '').toUpperCase()).filter(Boolean));
+    hits.forEach((hit) => {
+      const key = String(hit?.stockId || '').toUpperCase();
+      if (!key || seen.has(key)) return;
+      seen.add(key);
+      base.push(hit);
+    });
+    return base;
+  }
+
+  /** @deprecated use mergeCatalogSearchHitsIntoInventory — kept for callers / deploy markers */
+  function mergeStockIdHitsIntoInventory(items, query) {
+    return mergeCatalogSearchHitsIntoInventory(items, query);
+  }
+
+  function parseCatalogRoute(search) {
+    const pathCategory = categoryFromPathname();
+    const params = new URLSearchParams(search || window.location.search);
+    const catParam = params.get('cat');
+    const brandParam = params.get('brand');
+    const qRaw = params.get('q') || '';
+    const qNorm = decodeURIComponent(qRaw.replace(/\+/g, ' ')).toLowerCase().trim();
+    const categoryAliases = {
+      'used-cars': ['used-cars', 'used car', 'usedcar', 'used-car', '二手车', '出口二手车'],
+      trucks: ['trucks', 'truck', '卡车'],
+      machinery: ['machinery', '工程机械', 'excavator'],
+      halfcuts: ['halfcuts', 'half-cuts', 'half cut', '半切车'],
+    };
+
+    let category = pathCategory || 'halfcuts';
+    if (catParam && categoryAliases[catParam]) {
+      category = catParam;
+    } else if (!pathCategory) {
+      for (const [cat, aliases] of Object.entries(categoryAliases)) {
+        if (aliases.includes(qNorm)) {
+          category = cat;
+          break;
+        }
+      }
+    }
+
+    const isAlias = Object.values(categoryAliases).some((aliases) => aliases.includes(qNorm));
+    const searchQuery = qRaw && !isAlias ? qRaw : '';
+
+    return { category, searchQuery, brand: brandParam || '' };
+  }
+
+  function categoryFromPathname() {
+    const path = String(window.location.pathname || '').toLowerCase();
+    if (/\/trucks\/?$/.test(path) || path.endsWith('/trucks/index.html')) return 'trucks';
+    if (/\/machinery\/?$/.test(path) || path.endsWith('/machinery/index.html')) return 'machinery';
+    return null;
+  }
+
+  function inventoryForCatalogCategory(category) {
+    const list = HALF_CUT_LIST || [];
+    if (category === 'trucks') return filterInventoryBySegment(list, 'truck');
+    if (category === 'machinery') return filterInventoryBySegment(list, 'machinery');
+    if (category === 'used-cars') return filterInventoryBySegment(list, 'passenger').filter(isExportableUsedCarItem);
+    return filterInventoryBySegment(list, 'passenger').filter(isPassengerHalfCutItem);
+  }
+
+  function brandSegmentForCategory(category) {
+    if (category === 'trucks') return 'truck';
+    if (category === 'machinery') return 'machinery';
+    return 'passenger';
   }
 
   function filterInventoryBySegment(list, segment) {
@@ -326,6 +617,19 @@
   const TRUST_COPY = 'Whole-vehicle startup video available before dismantling. Parts can be dismantled according to buyer requirements after confirmation.';
   const INVENTORY_DISCLAIMER = `${TRUST_COPY} Inventory is subject to final confirmation. Photos, price and shipping cost are confirmed on request before export.`;
 
+  function exwPriceLine(item, { prefix = 'EXW Price' } = {}) {
+    const priceLabel = formatFobPrice(item);
+    if (priceLabel) return `${prefix}: ${priceLabel} USD`;
+    return `${prefix}: on enquiry`;
+  }
+
+  function seoPriceSnippet(item) {
+    const priceLabel = formatFobPrice(item);
+    if (!priceLabel) return '';
+    if (isSold(item)) return `Reference EXW ${priceLabel} USD`;
+    return `EXW ${priceLabel} USD`;
+  }
+
   function whatsappMessage(item) {
     const lines = [
       'Hello AsiaPower,',
@@ -334,12 +638,14 @@
       `Model: ${item.model}`,
       `Engine: ${item.engineCode}`,
       `Transmission: ${item.transmissionCode}`,
+      exwPriceLine(item),
+      `Listing: ${listingSharePageUrl(item)}`,
     ];
-    const priceLabel = formatFobPrice(item);
-    if (priceLabel) lines.push(`FOB Price: ${priceLabel} USD`);
     if (isAvailable(item)) {
       lines.push('Destination country: [please advise]');
-      lines.push('Please send price, photos and shipping options.');
+      lines.push(formatFobPrice(item)
+        ? 'Please send photos and shipping options.'
+        : 'Please send price, photos and shipping options.');
     } else if (isReserved(item)) {
       lines.push('This unit is marked Reserved. Please confirm availability or send similar options.');
       lines.push('Destination country: [please advise]');
@@ -358,6 +664,8 @@
       `Model: ${item.model}`,
       `Engine: ${item.engineCode}`,
       `Transmission: ${item.transmissionCode}`,
+      exwPriceLine(item),
+      `Listing: ${listingSharePageUrl(item)}`,
       `Reference listing (${item.status}). Please send similar available units.`,
       'Destination country: [please advise]',
     ].join('\n');
@@ -371,6 +679,8 @@
       `Model: ${item.model}`,
       `Engine: ${item.engineCode}`,
       `Transmission: ${item.transmissionCode}`,
+      exwPriceLine(item),
+      `Listing: ${listingSharePageUrl(item)}`,
       'Please send photos for this half-cut listing.',
       'Destination country: [please advise]',
     ].join('\n');
@@ -398,8 +708,27 @@
     return waUrl(photosMessage(item));
   }
 
-  function leadLink(item, intent, className, label) {
-    return `<a href="#" class="${className}" data-half-cut-lead data-slug="${String(item.slug || '').replace(/"/g, '&quot;')}" data-intent="${String(intent || 'price').replace(/"/g, '&quot;')}">${label}</a>`;
+  function listingSharePageUrl(item) {
+    const base = window.SitePaths?.base?.() || '/';
+    return absoluteUrl(detailUrl(base, item?.slug || ''));
+  }
+
+  function facebookShareUrl(item) {
+    const pageUrl = listingSharePageUrl(item);
+    return `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(pageUrl)}`;
+  }
+
+  function facebookShareLink(item, className, label) {
+    const safeUrl = String(facebookShareUrl(item) || '#').replace(/"/g, '&quot;');
+    const slug = String(item?.slug || '').replace(/"/g, '&quot;');
+    return `<a href="${safeUrl}" class="${className}" data-half-cut-fb data-slug="${slug}" target="_blank" rel="noopener noreferrer">${label}</a>`;
+  }
+
+  function leadLink(item, intent, className, label, partType) {
+    const partAttr = partType
+      ? ` data-part-type="${String(partType).replace(/"/g, '&quot;')}"`
+      : '';
+    return `<a href="#" class="${className}" data-half-cut-lead data-slug="${String(item.slug || '').replace(/"/g, '&quot;')}" data-intent="${String(intent || 'price').replace(/"/g, '&quot;')}"${partAttr}>${label}</a>`;
   }
 
   function waCaptureLink(item, url, className, label, intent) {
@@ -431,10 +760,9 @@
   }
 
   function seoTitle(item) {
-    const typeLabel = listingTypeLabel(item);
-    const enginePart = item.engineCode ? ` ${item.engineCode}` : '';
-    const transPart = item.transmissionCode && item.vehicleCategory !== 'machinery' ? ` ${item.transmissionCode}` : '';
-    const core = `${item.year} ${item.brand} ${item.model} ${typeLabel}${enginePart}${transPart}`.replace(/\s+/g, ' ').trim();
+    const displayTitle = listingTitle(item)
+      || `${item.year} ${item.brand} ${item.model} ${listingTypeLabel(item)}`.replace(/\s+/g, ' ').trim();
+    const core = displayTitle.replace(/\s+/g, ' ').trim();
     if (isReserved(item)) return `${core} — Reserved | AsiaPower`;
     if (isSold(item)) return `${core} — Sold | AsiaPower`;
     return `${core} | AsiaPower`;
@@ -442,24 +770,26 @@
 
   function seoDescription(item) {
     const typeLabel = listingTypeLabel(item).toLowerCase();
+    const priceSnippet = seoPriceSnippet(item);
+    const pricePart = priceSnippet ? `${priceSnippet}. ` : '';
     if (item?.vehicleCategory === 'machinery') {
       const engineHint = item.engineCode ? ` — ${item.engineCode} engine` : '';
       const videoHint = hasVideo(item) ? ' Whole-vehicle startup video available before dismantling.' : '';
       if (isAvailable(item)) {
-        return `${item.brand} ${item.model} ${typeLabel} export from China${engineHint}.${videoHint} Request FOB price and shipping from AsiaPower. Stock ${item.stockId}.`;
+        return `${item.brand} ${item.model} ${typeLabel} export from China${engineHint}.${videoHint} ${pricePart}Photos and shipping on request. Stock ${item.stockId}.`;
       }
       if (isReserved(item)) {
-        return `Reserved ${item.brand} ${item.model} ${typeLabel}${engineHint}. Confirm availability or request similar units. Stock ${item.stockId}.`;
+        return `Reserved ${item.brand} ${item.model} ${typeLabel}${engineHint}. ${pricePart}Confirm availability or request similar units. Stock ${item.stockId}.`;
       }
-      return `Sold ${item.brand} ${item.model} ${typeLabel} reference${engineHint}. Request similar available units. Stock ${item.stockId}.`;
+      return `Sold ${item.brand} ${item.model} ${typeLabel} reference${engineHint}. ${pricePart}Request similar available units. Stock ${item.stockId}.`;
     }
     if (isAvailable(item)) {
-      return `${item.brand} ${item.model} half cut listing with ${item.engineCode} engine and ${item.transmissionCode} transmission. Request price, photos and shipping from AsiaPower. Stock ID ${item.stockId}.`;
+      return `${item.brand} ${item.model} half cut — ${item.engineCode} / ${item.transmissionCode}. ${pricePart}Photos and shipping on request. Stock ID ${item.stockId}.`;
     }
     if (isReserved(item)) {
-      return `Reserved ${item.brand} ${item.model} half cut reference — ${item.engineCode} / ${item.transmissionCode}. Confirm availability or request similar units. Stock ID ${item.stockId}.`;
+      return `Reserved ${item.brand} ${item.model} half cut — ${item.engineCode} / ${item.transmissionCode}. ${pricePart}Confirm availability or request similar units. Stock ID ${item.stockId}.`;
     }
-    return `Sold ${item.brand} ${item.model} half cut reference — ${item.engineCode} / ${item.transmissionCode}. Request similar available units. Stock ID ${item.stockId}.`;
+    return `Sold ${item.brand} ${item.model} half cut — ${item.engineCode} / ${item.transmissionCode}. ${pricePart}Request similar available units. Stock ID ${item.stockId}.`;
   }
 
   function heroIntro(item) {
@@ -509,6 +839,70 @@
     return null;
   }
 
+  function listingSearchHeat(item, trendingQueries) {
+    if (!Array.isArray(trendingQueries) || !trendingQueries.length) return 0;
+    const tokens = [
+      item?.stockId,
+      item?.brand,
+      item?.model,
+      item?.engineCode,
+      item?.transmissionCode,
+      item?.brandSlug,
+    ].filter(Boolean).map((v) => String(v).toLowerCase());
+    const hay = tokens.join(' ');
+    let score = 0;
+    trendingQueries.forEach((query, index) => {
+      const term = String(query || '').trim().toLowerCase();
+      if (term.length < 2) return;
+      const rankBoost = Math.max(1, trendingQueries.length - index);
+      if (tokens.some((token) => token === term || term === token)) {
+        score += 40 + rankBoost * 4;
+        return;
+      }
+      if (hay.includes(term) || term.includes(hay)) {
+        score += 24 + rankBoost * 2;
+        return;
+      }
+      const compact = term.replace(/[\s\-_/]/g, '');
+      const hayCompact = hay.replace(/[\s\-_/]/g, '');
+      if (compact && hayCompact.includes(compact)) {
+        score += 16 + rankBoost;
+      }
+    });
+    return score;
+  }
+
+  function listingHeatScore(item, trendingQueries) {
+    if (!item) return 0;
+    let score = 0;
+    if (item.status === 'Available') score += 40;
+    else if (item.status === 'Reserved') score += 22;
+    else if (item.status === 'In Transit') score += 12;
+
+    if (hasPhotos(item)) score += 10;
+    if (hasVideo(item)) score += 15;
+    if (parsePriceUsd(item) != null) score += 12;
+
+    const ts = Date.parse(item.listedAt || item.approvedAt || item.updatedAt || 0);
+    if (Number.isFinite(ts) && ts > 0) {
+      const days = Math.max(0, (Date.now() - ts) / 86400000);
+      score += Math.max(0, 18 - Math.floor(days / 4));
+    }
+
+    score += listingSearchHeat(item, trendingQueries);
+    return score;
+  }
+
+  function compareListingHeat(a, b, trendingQueries) {
+    const diff = listingHeatScore(b, trendingQueries) - listingHeatScore(a, trendingQueries);
+    if (diff !== 0) return diff;
+    return String(b?.stockId || '').localeCompare(String(a?.stockId || ''), undefined, { numeric: true });
+  }
+
+  function sortByListingHeat(items, trendingQueries) {
+    return (items || []).slice().sort((a, b) => compareListingHeat(a, b, trendingQueries));
+  }
+
   function formatFobPrice(item) {
     const amount = parsePriceUsd(item);
     if (amount == null) return '';
@@ -517,6 +911,295 @@
       currency: 'USD',
       maximumFractionDigits: 0,
     }).format(amount);
+  }
+
+  function formatPartPriceUsd(item, ratio) {
+    const whole = parsePriceUsd(item);
+    if (whole == null || !Number.isFinite(ratio) || ratio <= 0) return '';
+    return new Intl.NumberFormat('en-US', {
+      style: 'currency',
+      currency: 'USD',
+      maximumFractionDigits: 0,
+    }).format(Math.round(whole * ratio));
+  }
+
+  const PART_PRICE_RATIOS = {
+    engine: 0.65,
+    transmission: 0.35,
+    chassis: 0.28,
+    front: 0.25,
+  };
+
+  /**
+   * Parts-catalog display price:
+   * - Dedicated part uploads already store the real part EXW in priceUsd → use full amount.
+   * - Half-cut rows borrowed into a parts catalog estimate via PART_PRICE_RATIOS.
+   * (Bug 2026-07-10: gearboxes showed Math.round(230*0.35)=81 for dedicated HC250546.)
+   */
+  function catalogPartPriceAmount(item, partType) {
+    const whole = parsePriceUsd(item);
+    if (whole == null) return null;
+    if (isDedicatedPartListing(item, partType)) return whole;
+    const ratio = PART_PRICE_RATIOS[partType];
+    if (!Number.isFinite(ratio) || ratio <= 0) return null;
+    return Math.round(whole * ratio);
+  }
+
+  function formatCatalogPartPrice(item, partType) {
+    const amount = catalogPartPriceAmount(item, partType);
+    if (amount == null) return '';
+    return new Intl.NumberFormat('en-US', {
+      style: 'currency',
+      currency: 'USD',
+      maximumFractionDigits: 0,
+    }).format(amount);
+  }
+
+  const PART_LISTING_PHOTO_LABELS = {
+    engine: ['engine', '发动机'],
+    front: ['vehicle front', '车辆前脸', 'cab front', '驾驶室正面', 'front cut', '前头'],
+    transmission: ['transmission', 'gearbox', '变速箱'],
+    chassis: ['chassis', '底盘'],
+  };
+
+  /** Dedicated part uploads (passenger-parts / truck engine) — not half-cut borrowed photos. */
+  function isDedicatedPartListing(display, partType) {
+    if (!display || !partType) return false;
+    const ppt = String(display.passengerPartType || '').trim().toLowerCase();
+    const truckPart = String(display.truckPartType || '').trim().toLowerCase();
+    const slug = String(display.slug || '').toLowerCase();
+    const cond = String(display.vehicleCondition || '').trim().toLowerCase();
+
+    const dedicatedByType = {
+      engine: {
+        ppt: ppt === 'engine' || truckPart === 'engine',
+        slug: slug.includes('-passenger-engine-') || slug.includes('-truck-engine-'),
+        cond: cond === 'engine assembly',
+      },
+      transmission: {
+        ppt: ppt === 'transmission',
+        slug: slug.includes('-passenger-transmission-'),
+        cond: cond === 'transmission assembly',
+      },
+      chassis: {
+        ppt: ppt === 'chassis',
+        slug: slug.includes('-passenger-chassis-'),
+        cond: cond === 'chassis part',
+      },
+      front: {
+        ppt: ppt === 'front',
+        slug: slug.includes('-front-cut-'),
+        cond: cond === 'front cut' || cond.includes('nose cut'),
+      },
+    };
+    const signals = dedicatedByType[partType];
+    if (!signals) return false;
+
+    // Explicit dedicated signals win — even if approve path wrongly wrote a -half-cut- slug.
+    if (signals.ppt || signals.slug || signals.cond) return true;
+
+    // Plain half-cut vehicles (no dedicated part signals) never count as part uploads.
+    if (slug.includes('-half-cut-') || cond === 'half cut') return false;
+    return false;
+  }
+
+  function photoLabelText(photo) {
+    return String(typeof photo === 'object' && photo ? photo.label : '').trim().toLowerCase();
+  }
+
+  function photoLabelMatchesPart(photo, partType) {
+    const tokens = PART_LISTING_PHOTO_LABELS[partType] || [];
+    if (!tokens.length) return false;
+    const label = photoLabelText(photo);
+    return tokens.some((token) => label.includes(token));
+  }
+
+  /**
+   * Parts catalog photo picker — parallel with listing rules:
+   * - Dedicated uploads: labeled part photo, else first real photo
+   * - Rule-based half-cuts: original rule (engine needs Engine label; others label or photos[0])
+   * - Placeholder only when this returns null (truly no usable photo)
+   */
+  function pickPartListingPhoto(display, partType) {
+    const photos = display?.photos || [];
+    if (!photos.length) return null;
+    const match = photos.find((photo) => photoLabelMatchesPart(photo, partType));
+    if (isDedicatedPartListing(display, partType)) {
+      return match || photos[0] || null;
+    }
+    if (partType === 'engine') return match || null;
+    return match || photos[0] || null;
+  }
+
+  function normEngineCatalogCode(value) {
+    return String(value || '').trim().toUpperCase().replace(/[\s-]+/g, '');
+  }
+
+  function lookupEngineCatalogSpec(display) {
+    const code = normEngineCatalogCode(display?.engineCode);
+    if (!code) return null;
+    const brandEntry = window.getBrandEngines?.(display?.brandSlug || '');
+    const brandHit = brandEntry?.models?.find((model) => normEngineCatalogCode(model.code) === code);
+    if (brandHit) return brandHit;
+    const directory = window.ENGINE_DIRECTORY || {};
+    for (const entry of Object.values(directory)) {
+      const hit = entry?.models?.find((model) => normEngineCatalogCode(model.code) === code);
+      if (hit) return hit;
+    }
+    return null;
+  }
+
+  function formatDisplacementLiters(display) {
+    const raw = String(display?.displacement || '').trim();
+    if (raw && raw !== '—') {
+      const match = raw.match(/(\d+(?:\.\d+)?)/);
+      if (match) {
+        const liters = Number(match[1]);
+        if (Number.isFinite(liters) && liters > 0) {
+          return `${liters % 1 === 0 ? liters.toFixed(1) : liters}L`;
+        }
+      }
+    }
+    const spec = lookupEngineCatalogSpec(display);
+    if (spec?.displacement && spec.displacement !== '—') {
+      const match = String(spec.displacement).match(/(\d+(?:\.\d+)?)/);
+      if (match) {
+        const liters = Number(match[1]);
+        if (Number.isFinite(liters) && liters > 0) {
+          return `${liters % 1 === 0 ? liters.toFixed(1) : liters}L`;
+        }
+      }
+    }
+    const title = String(display?.title || display?.originalVehicleName || '').trim();
+    const fromTitle = title.match(/(\d+(?:\.\d+)?)\s*[Ll]\b/);
+    if (fromTitle) return `${fromTitle[1]}L`;
+    return '';
+  }
+
+  function resolveEngineFuelType(display) {
+    const raw = String(display?.fuelType || '').trim();
+    if (raw) return raw.toLowerCase();
+    const spec = lookupEngineCatalogSpec(display);
+    if (spec?.type) return String(spec.type).toLowerCase();
+    if (spec?.fuel) return String(spec.fuel).toLowerCase();
+    return '';
+  }
+
+  function formatPartsCatalogPrimaryTitle(display) {
+    const engine = String(display?.engineCode || '').trim().toUpperCase();
+    const year = listingYear(display);
+    const brand = String(display?.brand || '').trim();
+    const model = String(display?.model || '').trim();
+    return [engine, year, brand, model].filter(Boolean).join(' ');
+  }
+
+  function formatEngineCatalogPrimaryTitle(display) {
+    const year = listingYear(display);
+    const brand = String(display?.brand || '').trim();
+    const model = String(display?.model || '').trim();
+    const engine = String(display?.engineCode || '').trim().toUpperCase();
+    const displacement = formatDisplacementLiters(display);
+    return [year, brand, model, engine, displacement].filter(Boolean).join(' ');
+  }
+
+  function formatPartsCatalogMetaParts(display, translate) {
+    const tFn = typeof translate === 'function'
+      ? translate
+      : (key, fb) => window.PublicI18n?.t(key, fb) ?? fb;
+    const parts = [];
+    const stockId = String(display?.stockId || '').trim().toUpperCase();
+    if (stockId) parts.push(`${tFn('catalog.internalNumber', 'Stock ID')}: ${stockId}`);
+    const mileage = String(display?.mileage || '').trim();
+    if (mileage) parts.push(`${tFn('hc.mileage', 'Mileage')}: ${mileage}`);
+    return parts;
+  }
+
+  /** Category marketing / brand art — never a half-cut listing album. */
+  function partsCatalogPlaceholderSrc(partType) {
+    const base = window.SitePaths?.base?.() || '../';
+    const files = {
+      engine: 'assets/images/supply-engines.webp',
+      transmission: 'assets/images/supply-gearbox.webp',
+      chassis: 'assets/images/supply-chassis.webp',
+      front: 'assets/images/parts-placeholder.svg',
+    };
+    const file = files[partType] || 'assets/images/parts-placeholder.svg';
+    return `${base}${file}?v=parts-ph-v1`;
+  }
+
+  function renderPartListingPhoto(display, partType) {
+    const photo = pickPartListingPhoto(display, partType);
+    // Parts always use contain so dedicated uploads are not cropped in the frame.
+    const fitClass = ' ap-listing-photo--fit-contain';
+    const slugAttr = String(display?.slug || '').replace(/"/g, '&quot;');
+    if (photo && thumbPhotoUrl(photo)) {
+      const thumbUrl = thumbPhotoUrl(photo);
+      return `<div class="ebay-listing-row__photo ap-listing-photo ebay-listing-row__photo--part${fitClass}" data-ap-listing-photo data-slug="${slugAttr}">
+        <img class="ap-listing-photo__img" src="${thumbUrl}" alt="" loading="lazy" decoding="async">
+      </div>`;
+    }
+    const label = t('hc.photosOnRequest', 'Photos on request');
+    const phSrc = partsCatalogPlaceholderSrc(partType);
+    return `<div class="ebay-listing-row__photo ebay-listing-row__photo--placeholder ebay-listing-row__photo--part ebay-listing-row__photo--parts-ph" aria-label="${escapeHtml(label)}">
+      <img class="ap-listing-photo__img ebay-listing-row__photo-ph-img" src="${phSrc}" alt="" loading="lazy" decoding="async">
+      <span class="ebay-listing-row__photo-ph-badge">${escapeHtml(label)}</span>
+    </div>`;
+  }
+
+  function exwBadgeHtml() {
+    const label = t('hc.exwBadge', 'EXW');
+    return `<span class="ap-exw-badge" translate="no">${escapeHtml(label)}</span>`;
+  }
+
+  function priceWithExwLabel(priceLabel, noPriceText) {
+    const fallback = noPriceText || t('hc.priceOnEnquiry', 'Quote on enquiry');
+    const text = priceLabel ? escapeHtml(String(priceLabel)) : escapeHtml(fallback);
+    return `${text} ${exwBadgeHtml()}`;
+  }
+
+  function listingRowPriceHtml(priceLabel, noPriceText) {
+    const cls = priceLabel
+      ? 'ebay-listing-row__price'
+      : 'ebay-listing-row__price ebay-listing-row__price--enquiry';
+    return `<p class="${cls}">${priceWithExwLabel(priceLabel, noPriceText)}</p>`;
+  }
+
+  function listingSpecTagsHtml(display) {
+    const tags = [];
+    const year = listingYear(display);
+    if (year) tags.push(`<span class="ebay-listing-row__tag">${escapeHtml(year)}</span>`);
+    const trans = String(display?.transmissionCode || '').trim().toUpperCase();
+    if (trans) tags.push(`<span class="ebay-listing-row__tag">${escapeHtml(trans)}</span>`);
+    const drive = listingDrivetrainLabel(display);
+    if (drive) tags.push(`<span class="ebay-listing-row__tag">${escapeHtml(drive)}</span>`);
+    if (hasVideo(display)) {
+      tags.push(`<span class="ebay-listing-row__tag ebay-listing-row__tag--video">${escapeHtml(t('hc.video', 'Video'))}</span>`);
+    }
+    if (!tags.length) return '';
+    return `<div class="ebay-listing-row__tags">${tags.join('')}</div>`;
+  }
+
+  function listingSpecsLineHtml(display, item) {
+    const parts = [];
+    const engine = String(display?.engineCode || '').trim();
+    const liters = formatDisplacementLiters?.(display) || '';
+    if (engine && liters) parts.push(`${engine} ${liters}`);
+    else if (engine) parts.push(engine);
+    const drive = listingDrivetrainLabel(display);
+    if (drive) parts.push(drive);
+    if (isPassengerHalfCutItem(item || display)) {
+      parts.push(t('hc.customDismantleShort', 'Custom dismantling'));
+    }
+    if (!parts.length) return '';
+    return `<p class="ebay-listing-row__specs">${parts.map((p) => escapeHtml(p)).join(' · ')}</p>`;
+  }
+
+  function listingRowCtasHtml(item) {
+    const wa = whatsappLink(item, 'ebay-listing-row__wa', 'WhatsApp');
+    const quote = isAvailable(item)
+      ? leadLink(item, 'price', 'ebay-listing-row__quote', t('nav.requestQuote', 'Get Quote'))
+      : leadLink(item, 'similar', 'ebay-listing-row__quote', t('nav.requestQuote', 'Get Quote'));
+    return `<div class="ebay-listing-row__ctas">${wa}${quote}</div>`;
   }
 
   function resolveOfferPrice(item) {
@@ -565,7 +1248,7 @@
     const product = {
       '@context': 'https://schema.org',
       '@type': 'Product',
-      name: item.title,
+      name: listingTitle(item) || item.title,
       description: item.shortDescription,
       sku: item.stockId,
       image: productImages(item, base),
@@ -576,6 +1259,441 @@
     if (offer) product.offers = offer;
 
     return product;
+  }
+
+  function escapeHtml(text) {
+    return String(text || '')
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;');
+  }
+
+  function listingDrivetrainCode(display) {
+    const raw = String(display?.drivetrain || '').trim().toUpperCase();
+    if (!raw) return '';
+    if (raw === '2WD' || raw === 'FWD' || raw === 'RWD') return '2WD';
+    if (raw === '4WD' || raw === 'AWD' || raw === '4MATIC' || raw === 'QUATTRO') return '4WD';
+    return raw;
+  }
+
+  function listingDrivetrainLabel(display) {
+    const code = listingDrivetrainCode(display);
+    if (!code) return '';
+    const lang = window.PublicI18n?.getLang?.() || 'en';
+    if (lang === 'zh') return code === '4WD' ? '四驱车' : '两驱车';
+    return code;
+  }
+
+  function listingNotesText(display) {
+    return window.HalfCutTitle?.listingNotesText?.(display)
+      ?? String(display?.originalVehicleName || display?.notes || display?.shortDescription || '').trim();
+  }
+
+  function extractOriginalVehicleName(text) {
+    return window.HalfCutTitle?.extractOriginalVehicleName?.(text)
+      ?? String(text || '').trim();
+  }
+
+  function listingOriginalVehicleName(display) {
+    return extractOriginalVehicleName(listingNotesText(display));
+  }
+
+  function appendEngineToTitle(base, display) {
+    if (window.HalfCutTitle?.appendEngineToTitle) {
+      return window.HalfCutTitle.appendEngineToTitle(base, display);
+    }
+    const title = String(base || '').trim();
+    const engine = String(display?.engineCode || '').trim();
+    if (!title || !engine) return title;
+    if (title.toUpperCase().includes(engine.toUpperCase())) return title;
+    return `${title} ${engine}`.replace(/\s+/g, ' ').trim();
+  }
+
+  function isRemarkBoilerplate(line) {
+    return window.HalfCutTitle?.isRemarkBoilerplate?.(line) ?? !line;
+  }
+
+  function isRemarkMetadataLine(line) {
+    if (/^原始车型:/.test(line) || /^原始说明:/.test(line)) return false;
+    if (/^VIN /i.test(line) || /^VIN decode:/i.test(line)) return true;
+    if (/^mileage/i.test(line) || /^里程数/.test(line)) return true;
+    if (/子龙预估/.test(line) || /VIN OCR confidence:/i.test(line)) return true;
+    return isRemarkBoilerplate(line);
+  }
+
+  function listingRemarkLine(display) {
+    if (!window.HalfCutTitle?.isQxbListing?.(display)) return '';
+    return listingOriginalVehicleName(display) || (() => {
+      const remark = listingNotesText(display);
+      if (!remark) return '';
+      const line = remark.split('\n')[0].trim();
+      if (isRemarkBoilerplate(line)) return '';
+      if (/supplier-verified listing via AsiaPower/i.test(line)) return '';
+      if (/QXB image set restored/i.test(line)) return '';
+      if (/^原始说明:/.test(line)) return '';
+      return line;
+    })();
+  }
+
+  function listingRemarkTail(display, ymm, drive) {
+    let tail = listingRemarkLine(display).toUpperCase();
+    if (!tail) return drive || '';
+    if (ymm) {
+      if (tail.startsWith(`${ymm} ${ymm}`)) {
+        tail = tail.slice(`${ymm} ${ymm}`.length).trim();
+      } else if (tail.startsWith(ymm)) {
+        tail = tail.slice(ymm.length).trim();
+      }
+    }
+    if (drive && tail.startsWith(drive)) tail = tail.slice(drive.length).trim();
+    return [drive, tail].filter(Boolean).join(' ').trim();
+  }
+
+  function listingPowertrainSegment(display) {
+    const engine = String(display?.engineCode || '').trim().toUpperCase();
+    const trans = String(display?.transmissionCode || '').trim().toUpperCase();
+    if (display?.vehicleCategory === 'machinery') return engine;
+    return [engine, trans].filter(Boolean).join(' ');
+  }
+
+  function listingStructuredTitle(display) {
+    const year = listingYear(display);
+    const brand = String(display?.brand || '').trim();
+    const model = String(display?.model || '').trim();
+    if (!brand && !model) return '';
+
+    const parts = [[year, brand, model].filter(Boolean).join(' ')];
+    const powertrain = listingPowertrainSegment(display);
+    if (powertrain) parts.push(powertrain);
+    const drive = listingDrivetrainCode(display);
+    if (drive) parts.push(drive);
+    return parts.join(' ').toUpperCase();
+  }
+
+  function listingTitle(item) {
+    const display = item?.vin && window.HalfCutInventoryLayer?.toPublicItem
+      ? window.HalfCutInventoryLayer.toPublicItem(item)
+      : item;
+    if (!display) return '';
+
+    const lang = window.PublicI18n?.getLang?.() || 'en';
+    const qxb = window.HalfCutTitle?.isQxbListing?.(display);
+    const originalName = qxb ? listingOriginalVehicleName(display) : '';
+    if (originalName) {
+      if (lang === 'zh') return appendEngineToTitle(originalName, display);
+      const translated = window.HalfCutVehicleTitleI18n?.translateOriginalVehicleName?.(
+        originalName,
+        lang,
+        display
+      );
+      if (translated) return appendEngineToTitle(translated, display);
+    }
+
+    if (String(display?.engineCode || '').trim()) {
+      const structured = listingStructuredTitle(display);
+      if (structured) return structured;
+    }
+
+    const fallbackStructured = window.HalfCutTitle?.buildStructuredTitle?.(display);
+    if (fallbackStructured) return fallbackStructured;
+
+    const year = listingYear(display);
+    const brand = String(display?.brand || '').trim();
+    const model = String(display?.model || '').trim();
+    const ymm = [year, brand, model].filter(Boolean).join(' ').toUpperCase();
+    const drive = listingDrivetrainCode(display);
+    const remarkUpper = listingRemarkLine(display).toUpperCase();
+
+    if (remarkUpper.startsWith(`${ymm} ${ymm}`)) {
+      const rest = remarkUpper.slice(`${ymm} ${ymm}`.length).trim();
+      return rest ? `${ymm} ${rest}` : ymm;
+    }
+
+    if (ymm) {
+      const tail = listingRemarkTail(display, ymm, drive);
+      return tail ? `${ymm} ${tail}`.trim() : ymm;
+    }
+
+    return remarkUpper || String(display?.title || '').trim().toUpperCase();
+  }
+
+  function listingYear(display) {
+    const year = Number(display?.year);
+    if (!Number.isFinite(year) || year < 1900 || year > 2100) return '';
+    return String(Math.round(year));
+  }
+
+  function listingPhotoBadge(display) {
+    const stockId = String(display?.stockId || '').trim();
+    return stockId ? stockId.toUpperCase() : '';
+  }
+
+  function renderPhotoStockBadge(display) {
+    const badge = listingPhotoBadge(display);
+    return badge ? `<span class="ebay-listing-row__year">${escapeHtml(badge)}</span>` : '';
+  }
+
+  function listingPhotoProgressHtml(count, activeIndex) {
+    return Array.from({ length: count }, (_, i) => {
+      let cls = 'ap-listing-photo__progress-seg';
+      if (i < activeIndex) cls += ' is-done';
+      if (i === activeIndex) cls += ' is-active';
+      return `<span class="${cls}" aria-hidden="true"></span>`;
+    }).join('');
+  }
+
+  function listingThumbUrls(display) {
+    return (display.photos || []).map((photo) => thumbPhotoUrl(photo)).filter(Boolean);
+  }
+
+  function listingPhotoUseContain(display) {
+    if (!display) return false;
+    if (display.truckPartType === 'cab') return true;
+    if (display.vehicleCategory === 'truck') return true;
+    if (display.vehicleCategory === 'machinery') return true;
+    if (window.HalfCutUploadLayer?.isTruckCab?.(display)) return true;
+    return false;
+  }
+
+  function listingVinMasked(display) {
+    const preset = String(display?.maskedVin || '').trim();
+    if (preset) return preset;
+    const raw = String(display?.vin || '').trim();
+    if (!raw) return '';
+    return window.HalfCutVin?.maskVin?.(raw) || maskVin(raw) || raw;
+  }
+
+  function listingVinLine(display) {
+    const masked = listingVinMasked(display);
+    if (!masked) return '';
+    return `${t('hc.chassisVin', 'Chassis VIN')}: ${masked}`;
+  }
+
+  function renderInlineListingPhoto(display, className) {
+    const badgeHtml = renderPhotoStockBadge(display);
+    const thumbs = listingThumbUrls(display);
+    const thumbUrl = thumbs[0] || '';
+    const slugAttr = String(display.slug || '').replace(/"/g, '&quot;');
+    const multi = thumbs.length > 1;
+    const thumbsAttr = escapeHtml(JSON.stringify(thumbs));
+    const fitClass = listingPhotoUseContain(display) ? ' ap-listing-photo--fit-contain' : '';
+    const navHtml = multi
+      ? `<button type="button" class="ap-listing-photo__nav ap-listing-photo__nav--prev" data-listing-photo-step="-1" aria-label="${t('hc.prevPhoto', 'Previous photo')}">‹</button><button type="button" class="ap-listing-photo__nav ap-listing-photo__nav--next" data-listing-photo-step="1" aria-label="${t('hc.nextPhoto', 'Next photo')}">›</button>`
+      : '';
+    const zonesHtml = multi
+      ? `<span class="ap-listing-photo__zone ap-listing-photo__zone--prev" data-listing-photo-step="-1" aria-hidden="true"></span><span class="ap-listing-photo__zone ap-listing-photo__zone--next" data-listing-photo-step="1" aria-hidden="true"></span>`
+      : '';
+    const progressHtml = multi
+      ? `<span class="ap-listing-photo__progress" aria-hidden="true"><span class="ap-listing-photo__progress-track">${listingPhotoProgressHtml(thumbs.length, 0)}</span></span>`
+      : '';
+    return `<div class="ap-listing-photo ${className}${fitClass}" data-ap-listing-photo data-listing-thumbs="${thumbsAttr}" data-slug="${slugAttr}">${badgeHtml}<img class="ap-listing-photo__img" src="${thumbUrl}" alt="" loading="lazy" decoding="async">${navHtml}${zonesHtml}${progressHtml}</div>`;
+  }
+
+  function renderListingPhoto(display, detail) {
+    const thumbs = listingThumbUrls(display);
+    if (thumbs.length && hasPhotos(display)) {
+      return renderInlineListingPhoto(display, 'ebay-listing-row__photo');
+    }
+    const badgeHtml = renderPhotoStockBadge(display);
+    return `<a class="ebay-listing-row__photo ebay-listing-row__photo--placeholder" href="${detail}" aria-label="${t('hc.photosOnRequest', 'Photos on request')}">
+      ${badgeHtml}
+      <svg class="ebay-listing-row__photo-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2"/><circle cx="8.5" cy="10.5" r="1.75"/><path d="M21 17l-5-5-4 4-2-2-4 4"/></svg>
+    </a>`;
+  }
+
+  function listingCardPhoto(display, basePath) {
+    const thumbs = listingThumbUrls(display);
+    if (thumbs.length && hasPhotos(display)) {
+      return renderInlineListingPhoto(display, 'ebay-card__photo');
+    }
+    const badgeHtml = renderPhotoStockBadge(display);
+    return `${badgeHtml}<img src="${basePath}assets/images/supply-halfcut.jpg?v=img-v3" alt="" loading="lazy">`;
+  }
+
+  function customDismantleNoteHtml(item, mode) {
+    if (!isPassengerHalfCutItem(item)) return '';
+    const text = t('hc.customDismantleNote', 'Custom Dismantling — Parts on Demand');
+    if (mode === 'card') return `<div class="ebay-card__note">${text}</div>`;
+    return `<p class="ebay-listing-row__note">${text}</p>`;
+  }
+
+  function renderListingCard(item, opts) {
+    const display = window.HalfCutInventoryLayer?.toPublicItem?.(item) ?? item;
+    const basePath = opts?.base || window.SitePaths?.base?.() || '../';
+    const detail = detailUrl(basePath, display.slug);
+    const title = escapeHtml(listingTitle(display));
+    const driveLabel = escapeHtml(listingDrivetrainLabel(display));
+    const priceLabel = formatFobPrice(display);
+    const priceHtml = priceWithExwLabel(priceLabel, 'Quote');
+    const metaHtml = driveLabel
+      ? `<div class="ebay-card__meta ebay-card__meta--drive">${t('hc.drivetrain', 'Drivetrain')}: ${driveLabel}</div>`
+      : '';
+    const noteHtml = customDismantleNoteHtml(item, 'card');
+    const photo = listingCardPhoto(display, basePath);
+    const photoHtml = photo.includes('data-ap-listing-photo')
+      ? photo
+      : `<div class="ebay-card__photo">${photo}</div>`;
+
+    return `<a class="ebay-card ebay-card--catalog" href="${detail}" data-slug="${display.slug}" data-brand="${display.brandSlug}">
+      ${photoHtml}
+      <div class="ebay-card__title">${title}</div>
+      <div class="ebay-card__price">${priceHtml}</div>
+      ${metaHtml}
+      ${noteHtml}
+    </a>`;
+  }
+
+  function renderFeedRow(item, opts) {
+    if (opts?.renderListRow) return opts.renderListRow(item, opts);
+    return renderListingListRow(item, opts);
+  }
+
+  function renderFeedCard(item, opts) {
+    if (opts?.renderListCard) return opts.renderListCard(item, opts);
+    return renderListingCard(item, opts);
+  }
+
+  function renderInventoryFeed(items, opts) {
+    const list = items || [];
+    const rows = list.map((item) => renderFeedRow(item, opts)).join('');
+    if (opts?.listOnly) {
+      return `<div class="ebay-inventory-feed"><div class="ebay-listing-list" aria-live="polite">${rows}</div></div>`;
+    }
+    const cards = list.map((item) => renderFeedCard(item, opts)).join('');
+    return `
+      <div class="ebay-inventory-feed">
+        <div class="ebay-listing-list" aria-live="polite">${rows}</div>
+        <div class="ebay-catalog-card-grid ebay-catalog-card-grid--mobile" aria-live="polite">${cards}</div>
+      </div>`;
+  }
+
+  const CATALOG_PAGE_SIZE = 10;
+
+  function formatCatalogText(key, fallback, vars) {
+    let text = t(key, fallback);
+    if (vars) {
+      Object.entries(vars).forEach(([name, value]) => {
+        text = text.replace(new RegExp(`\\{${name}\\}`, 'g'), String(value));
+      });
+    }
+    return text;
+  }
+
+  function catalogShowingLabel(shown, total) {
+    return formatCatalogText('catalog.showingCount', 'Showing {shown} of {total}', { shown, total });
+  }
+
+  function catalogLoadMoreLabel(remaining) {
+    const lang = window.PublicI18n?.getLang?.() || 'en';
+    const action = t('catalog.loadMore', 'Load more');
+    if (lang === 'zh') return `${action}（还剩 ${remaining} 条）`;
+    if (lang === 'fr') return `${action} (${remaining} restants)`;
+    if (lang === 'ar') return `${action} (${remaining} متبقية)`;
+    return `${action} (${remaining} remaining)`;
+  }
+
+  function renderCatalogFeed(items, opts) {
+    const total = (items || []).length;
+    const shown = Math.min(CATALOG_PAGE_SIZE, total);
+    const visible = (items || []).slice(0, shown);
+    const feedHtml = renderInventoryFeed(visible, opts);
+    const remaining = total - shown;
+    if (remaining <= 0) return feedHtml;
+
+    return `${feedHtml}
+      <div class="ebay-catalog-more" data-catalog-load-more-wrap>
+        <div class="ebay-catalog-more__progress" aria-hidden="true">
+          <span class="ebay-catalog-more__progress-bar" data-catalog-load-progress style="width:${Math.round((shown / total) * 100)}%"></span>
+        </div>
+        <div class="ebay-catalog-more__row">
+          <span class="ebay-catalog-more__label" data-catalog-load-count>${catalogShowingLabel(shown, total)}</span>
+          <button type="button" class="ebay-catalog-more__btn" data-catalog-load-more data-catalog-shown="${shown}">
+            <span class="ebay-catalog-more__btn-text">${t('catalog.loadMore', 'Load more')}</span>
+            <span class="ebay-catalog-more__btn-meta">${catalogLoadMoreLabel(remaining)}</span>
+          </button>
+        </div>
+      </div>`;
+  }
+
+  function bindCatalogLoadMore(root, items, opts) {
+    const btn = root?.querySelector?.('[data-catalog-load-more]');
+    if (!btn || !items?.length) return;
+
+    btn.addEventListener('click', () => {
+      let shown = Number(btn.dataset.catalogShown) || CATALOG_PAGE_SIZE;
+      const next = Math.min(shown + CATALOG_PAGE_SIZE, items.length);
+      const batch = items.slice(shown, next);
+      const feed = root.querySelector('.ebay-inventory-feed');
+      if (!feed || !batch.length) return;
+
+      const listEl = feed.querySelector('.ebay-listing-list');
+      const gridEl = feed.querySelector('.ebay-catalog-card-grid');
+      batch.forEach((item) => {
+        listEl?.insertAdjacentHTML('beforeend', renderFeedRow(item, opts));
+        if (!opts?.listOnly) {
+          gridEl?.insertAdjacentHTML('beforeend', renderFeedCard(item, opts));
+        }
+      });
+
+      shown = next;
+      btn.dataset.catalogShown = String(shown);
+      const countEl = root.querySelector('[data-catalog-load-count]');
+      if (countEl) countEl.textContent = catalogShowingLabel(shown, items.length);
+      const progressEl = root.querySelector('[data-catalog-load-progress]');
+      if (progressEl) {
+        progressEl.style.width = `${Math.round((shown / items.length) * 100)}%`;
+      }
+
+      const remaining = items.length - shown;
+      if (remaining <= 0) {
+        btn.closest('[data-catalog-load-more-wrap]')?.remove();
+      } else {
+        const metaEl = btn.querySelector('.ebay-catalog-more__btn-meta');
+        if (metaEl) metaEl.textContent = catalogLoadMoreLabel(remaining);
+      }
+
+      window.HalfCutGalleryLightbox?.bindListingPhotoCarousels?.(feed);
+    });
+  }
+
+  function renderListingListRow(item, opts) {
+    const display = window.HalfCutInventoryLayer?.toPublicItem?.(item) ?? item;
+    const basePath = opts?.base || window.SitePaths?.base?.() || '../';
+    const detail = detailUrl(basePath, display.slug);
+    const title = escapeHtml(listingTitle(display));
+    const brand = escapeHtml(String(display?.brand || '').trim());
+    const statusClass = statusSlug(display.status);
+    const priceLabel = formatFobPrice(display);
+    const priceHtml = listingRowPriceHtml(priceLabel);
+    const tagsHtml = listingSpecTagsHtml(display);
+    const specsHtml = listingSpecsLineHtml(display, item);
+    const vinLine = listingVinLine(display);
+    const vinHtml = vinLine
+      ? `<span class="ebay-listing-row__vin">${escapeHtml(vinLine)}</span>`
+      : '<span class="ebay-listing-row__vin"></span>';
+    const makeHtml = brand
+      ? `<div class="ebay-listing-row__make">${brand}</div>`
+      : '';
+    const ctasHtml = listingRowCtasHtml(display);
+
+    return `
+      <article class="ebay-listing-row ebay-listing-row--halfcut ebay-listing-row--v4" data-slug="${display.slug}" data-brand="${display.brandSlug}" data-status="${statusClass}">
+        ${renderListingPhoto(display, detail)}
+        <div class="ebay-listing-row__main">
+          <div class="ebay-listing-row__main-body">
+            ${makeHtml}
+            <h3 class="ebay-listing-row__title"><a href="${detail}">${title}</a></h3>
+            ${tagsHtml}
+            ${priceHtml}
+            ${specsHtml}
+          </div>
+          <div class="ebay-listing-row__bot">
+            ${vinHtml}
+            ${ctasHtml}
+          </div>
+        </div>
+      </article>`;
   }
 
   function renderCardActions(item, base) {
@@ -634,11 +1752,35 @@
   window.getHalfCutBrands = getHalfCutBrands;
   window.getTruckInventory = () => filterInventoryBySegment(HALF_CUT_LIST, 'truck');
   window.getMachineryInventory = () => filterInventoryBySegment(HALF_CUT_LIST, 'machinery');
-  window.getPassengerHalfCutInventory = () => filterInventoryBySegment(HALF_CUT_LIST, 'passenger');
+  window.getUsedCarInventory = () => filterInventoryBySegment(HALF_CUT_LIST, 'passenger').filter(isExportableUsedCarItem);
+  window.getPassengerHalfCutInventory = () => filterInventoryBySegment(HALF_CUT_LIST, 'passenger').filter(isPassengerHalfCutItem);
+  window.parseHalfCutCatalogRoute = parseCatalogRoute;
+  window.inventoryForCatalogCategory = inventoryForCatalogCategory;
   window.HalfCutUtils = {
     inventorySegment,
     isTruckItem,
     isMachineryItem,
+    isUsedCarItem,
+    isHalfCutLikeListing,
+    isExportableUsedCarItem,
+    hasExportReadyRemark,
+    itemRemarkText,
+    isPassengerHalfCutItem,
+    normalizeStockIdQuery,
+    isStockIdQuery,
+    stockIdDigits,
+    matchesStockId,
+    normalizeCatalogSearch,
+    buildCatalogSearchHaystack,
+    expandCatalogSearchTerms,
+    matchesCatalogSearch,
+    findInventoryByStockIdQuery,
+    findInventoryByCatalogQuery,
+    mergeCatalogSearchHitsIntoInventory,
+    mergeStockIdHitsIntoInventory,
+    parseCatalogRoute,
+    inventoryForCatalogCategory,
+    brandSegmentForCategory,
     isMachineryLike,
     filterInventoryBySegment,
     listingTypeLabel,
@@ -654,6 +1796,9 @@
     checkAvailabilityLink,
     waCaptureLink,
     requestPhotosUrl,
+    listingSharePageUrl,
+    facebookShareUrl,
+    facebookShareLink,
     requestPriceUrl,
     enginePageUrl,
     statusSlug,
@@ -681,8 +1826,48 @@
     seoDescription,
     heroIntro,
     productJsonLd,
+    productImages,
     parsePriceUsd,
+    listingHeatScore,
+    compareListingHeat,
+    sortByListingHeat,
     formatFobPrice,
+    exwPriceLine,
+    seoPriceSnippet,
+    formatPartPriceUsd,
+    PART_PRICE_RATIOS,
+    catalogPartPriceAmount,
+    formatCatalogPartPrice,
+    formatPartsCatalogPrimaryTitle,
+    formatEngineCatalogPrimaryTitle,
+    formatDisplacementLiters,
+    resolveEngineFuelType,
+    lookupEngineCatalogSpec,
+    formatPartsCatalogMetaParts,
+    isDedicatedPartListing,
+    pickPartListingPhoto,
+    partsCatalogPlaceholderSrc,
+    renderPartListingPhoto,
+    CATALOG_PAGE_SIZE,
+    exwBadgeHtml,
+    priceWithExwLabel,
+    listingRowPriceHtml,
+    listingSpecTagsHtml,
+    listingSpecsLineHtml,
+    listingRowCtasHtml,
+    listingTitle,
+    listingPhotoBadge,
+    renderPhotoStockBadge,
+    renderInlineListingPhoto,
+    listingDrivetrainLabel,
+    listingDrivetrainCode,
+    listingVinMasked,
+    listingVinLine,
+    renderListingListRow,
+    renderListingCard,
+    renderInventoryFeed,
+    renderCatalogFeed,
+    bindCatalogLoadMore,
     renderCardActions,
     renderDetailActions,
   };
@@ -714,7 +1899,7 @@
 
     if (!window.AsiaCountryOptions) loadSyncScript(`${base}js/country-options.js?v=1`);
     if (!window.AsiaPhone) loadSyncScript(`${base}js/phone-utils.js?v=2`);
-    if (!window.SiteFeedback) loadSyncScript(`${base}js/site-feedback.js?v=feedback-v14`);
+    if (!window.SiteFeedback) loadSyncScript(`${base}js/site-feedback.js?v=list-lead-modal-v1`);
 
     if (!window.__HALF_CUT_LEADS_INIT__) {
       loadSyncScript(`${base}js/half-cut-leads.js?v=leads-v10`);

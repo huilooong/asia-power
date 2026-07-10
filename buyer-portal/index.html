@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Buyer Portal · AsiaPower</title>
+  <link rel="stylesheet" href="/css/portal-app.css">
+  <link rel="icon" href="/assets/favicon.png" type="image/png">
+</head>
+<body data-page="buyer-portal" data-portal-shell="v4">
+  <div class="wrap">
+    <div class="hero-mini">
+      <div class="kicker">Buyer Portal · v4</div>
+      <h1>Quotes & deposit orders</h1>
+      <p>Your account info is saved on every login. Guest inquiry still works without signing in.</p>
+    </div>
+
+    <section class="panel" id="login-gate">
+      <h2>Sign in required</h2>
+      <p class="sub">Use the shared login page — Google / Facebook preferred for buyers.</p>
+      <a class="btn btn-primary" href="/login/?role=buyer&next=/buyer-portal/">Go to Sign in</a>
+    </section>
+
+    <section class="panel" style="margin-top:20px" id="portal" hidden>
+      <div style="display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-bottom:8px">
+        <div>
+          <h2 style="margin:0">Welcome, <span id="buyer-name">Buyer</span></h2>
+          <p class="sub" id="buyer-meta" style="margin:4px 0 0"></p>
+        </div>
+        <button class="btn btn-ghost" type="button" id="logout-btn">Sign out</button>
+      </div>
+      <p class="sub" id="deposit-banner"></p>
+      <table class="table">
+        <thead>
+          <tr><th>Order</th><th>Stock</th><th>EXW</th><th>Deposit</th><th>Status</th><th></th></tr>
+        </thead>
+        <tbody id="order-rows"></tbody>
+      </table>
+    </section>
+  </div>
+
+  <div class="toast" id="toast"></div>
+  <script src="/js/v4-portal-shell.js?v=auth-nav-once-v2"></script>
+  <script src="/js/buyer-portal.js"></script>
+  <script>window.AsiaPowerV4PortalShell?.mount('buyer');</script>
+</body>
+</html>

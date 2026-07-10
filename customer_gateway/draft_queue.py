@@ -99,8 +99,10 @@ def list_drafts(*, status: str | None = None, limit: int = 20) -> list[dict[str,
     return drafts
 
 
-def approve_draft(draft_id: str, *, approved_by: str = "CEO") -> dict[str, Any]:
-    """CEO approves draft content — does NOT send WhatsApp (phase 1)."""
+def approve_draft(draft_id: str, *, approved_by: str = "CEO", send: bool = False) -> dict[str, Any]:
+    """CEO approves draft. Email drafts may send when send=True or EMAIL_AUTO_SEND_ON_APPROVE=1."""
+    import os
+
     assert_readonly("approve_draft_record")
     draft = load_draft(draft_id)
     if not draft:
@@ -111,19 +113,38 @@ def approve_draft(draft_id: str, *, approved_by: str = "CEO") -> dict[str, Any]:
     draft["updated_at"] = _now()
     _draft_path(draft_id).write_text(json.dumps(draft, indent=2, ensure_ascii=False), encoding="utf-8")
 
+    is_email = draft.get("channel") == "email" or (draft.get("customer_name") or "").startswith("email:")
+    auto_send = os.getenv("EMAIL_AUTO_SEND_ON_APPROVE", "").strip() == "1"
+    sent_result = None
+    if is_email and (send or auto_send):
+        from customer_gateway.email_outbound import send_email_draft, send_enabled
+
+        if send_enabled():
+            try:
+                sent_result = send_email_draft(draft_id)
+                draft = load_draft(draft_id) or draft
+            except ValueError as exc:
+                draft["send_error"] = str(exc)
+                _draft_path(draft_id).write_text(json.dumps(draft, indent=2, ensure_ascii=False), encoding="utf-8")
+        else:
+            draft["send_error"] = "RESEND_API_KEY / EMAIL_SEND_ENABLED 未配置"
+            _draft_path(draft_id).write_text(json.dumps(draft, indent=2, ensure_ascii=False), encoding="utf-8")
+
     log_approval_granted(
-        action="apsales.whatsapp_draft",
+        action="apsales.email_draft" if is_email else "apsales.whatsapp_draft",
         risk_level=draft.get("risk_level", "medium"),
         command=f"draft:{draft_id}",
         approved_by=approved_by,
-        result="approved_not_sent",
+        result="sent" if sent_result else "approved",
     )
     log_event(
         "draft_approved",
         draft_id=draft_id,
         approved_by=approved_by,
-        note="WhatsApp NOT sent — phase 1",
+        note="email_sent" if sent_result else ("email" if is_email else "whatsapp_not_sent"),
     )
+    if sent_result:
+        draft["_send_result"] = sent_result
     return draft
 
 
@@ -242,9 +263,18 @@ def format_draft_detail(draft: dict[str, Any]) -> str:
         "—— 客户回复草稿（未发送）——",
         draft.get("customer_reply_draft", ""),
         "",
-        "操作: /drafts approve | reject | revise <draft_id> [意见]",
-        "注意: approve 仅表示 CEO 同意草稿，本阶段不发送 WhatsApp。",
+        "操作: /drafts approve [draft_id] [--send] | reject | revise <draft_id> [意见]",
+        "邮件: /drafts approve <id> --send 或 /email send <draft_id>（需 RESEND_API_KEY）",
+        "WhatsApp: approve 仍不自动发送。",
     ]
+    if draft.get("status") == "sent":
+        lines.extend([
+            "",
+            f"✅ 已发送 → {draft.get('sent_to', '')} @ {draft.get('sent_at', '')}",
+            f"Resend ID: {draft.get('resend_id', '')}",
+        ])
+    elif draft.get("status") == "approved":
+        lines.extend(["", "✅ 已批准 — 发送: /email send " + draft["draft_id"]])
     if draft.get("revision_note"):
         lines.extend(["", f"修改意见: {draft['revision_note']}"])
     return "\n".join(lines)

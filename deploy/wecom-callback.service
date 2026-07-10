@@ -1,0 +1,26 @@
+[Unit]
+Description=AsiaPower WeCom Callback (AsiaPower 库存 Agent / 子敬)
+Documentation=file://@@WECOM_ROOT@@/data/knowledge-base/wecom-zijing-setup-runbook.md
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+WorkingDirectory=@@WECOM_ROOT@@
+ExecStart=@@PYTHON@@ integrations/wecom_callback_server.py
+Restart=always
+RestartSec=10
+
+# Secrets in project .env only — never hard-code here.
+EnvironmentFile=-@@WECOM_ROOT@@/.env
+
+StandardOutput=journal
+StandardError=journal
+SyslogIdentifier=wecom-callback
+
+MemoryMax=384M
+MemoryHigh=256M
+TasksMax=32
+
+[Install]
+WantedBy=multi-user.target

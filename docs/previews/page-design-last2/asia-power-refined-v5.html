@@ -1,0 +1,453 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>AsiaPower Refined v5</title>
+<style>:root{--w:#fff;--g1:#f5f5f7;--g2:#e8e8ed;--g3:#d2d2d7;--t1:#1d1d1f;--t2:#6e6e73;--t3:#86868b;--au:#b8850a;--au2:#fef3dc;--gr:#1a7f37;--gr2:#e6f4ea;--bl:#0066cc;--r:12px;--r2:18px;--r3:22px;--font:-apple-system,BlinkMacSystemFont,'SF Pro Display','Helvetica Neue',Arial,sans-serif;--max:1180px}
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+body{font-family:var(--font);background:var(--w);color:var(--t1);line-height:1.5;font-size:16px;-webkit-font-smoothing:antialiased}
+a{color:inherit;text-decoration:none}button,select,input{font-family:var(--font)}
+.shell{position:sticky;top:0;z-index:9999;background:rgba(255,255,255,.92);backdrop-filter:blur(16px);border-bottom:1px solid var(--g2);padding:10px 28px;display:flex;align-items:center;justify-content:space-between}
+.shell-lbl{font-size:12px;color:var(--t2);font-weight:500}.shell-lbl b{color:var(--t1)}
+.tabs{display:flex;gap:3px}.tab{padding:7px 18px;border-radius:100px;font-size:12.5px;font-weight:600;border:none;background:transparent;color:var(--t2);cursor:pointer;transition:all .14s}.tab.on{background:var(--t1);color:#fff}.tab:hover:not(.on){background:var(--g1);color:var(--t1)}
+.pv{display:none}.pv.on{display:block}
+.nav{position:sticky;top:41px;z-index:90;background:rgba(255,255,255,.84);backdrop-filter:blur(20px);border-bottom:1px solid var(--g2)}
+.nav-in{max-width:var(--max);margin:auto;padding:0 28px;height:50px;display:flex;align-items:center}
+.logo{font-size:19px;font-weight:800;letter-spacing:-.5px;flex-shrink:0;margin-right:40px}.logo em{font-style:normal;color:var(--au)}
+.nav-links{display:flex;flex:1;height:100%}.nav-links a{font-size:13.5px;font-weight:500;color:var(--t2);padding:0 15px;display:flex;align-items:center;border-bottom:2px solid transparent;transition:all .14s}.nav-links a:hover{color:var(--t1)}.nav-links a.on{color:var(--t1);border-bottom-color:var(--t1)}
+.nav-r{display:flex;align-items:center;gap:14px;flex-shrink:0;margin-left:auto}
+.lang{display:flex}.lang a{font-size:12px;color:var(--t3);padding:3px 7px;transition:color .12s}.lang a+a{border-left:1px solid var(--g3)}.lang a.on,.lang a:hover{color:var(--t1)}
+.wa-nav{display:inline-flex;align-items:center;gap:6px;background:#25d366;color:#fff;font-size:12.5px;font-weight:700;padding:8px 18px;border-radius:100px;transition:opacity .12s}.wa-nav:hover{opacity:.88}.wa-nav svg{width:13px;height:13px;fill:#fff}
+.hero{background:var(--g1);padding:0 28px;overflow:hidden;border-bottom:1px solid var(--g2)}
+.hero-in{max-width:var(--max);margin:auto;padding:96px 0 0;display:grid;grid-template-columns:1fr 440px;gap:64px;align-items:end}
+.hero-text{padding-bottom:72px}
+.hero-eyebrow{display:inline-flex;align-items:center;gap:8px;font-size:13px;color:var(--t2);font-weight:500;margin-bottom:24px}
+.hero-live{width:7px;height:7px;border-radius:50%;background:#34c759;box-shadow:0 0 0 4px rgba(52,199,89,.15)}
+.hero h1{font-size:clamp(52px,6.5vw,96px);font-weight:700;letter-spacing:-3px;line-height:1.03;color:var(--t1);margin-bottom:22px}.hero h1 em{font-style:normal;color:var(--au)}
+.hero-sub{font-size:clamp(17px,1.8vw,21px);color:var(--t2);line-height:1.65;font-weight:400;max-width:520px;margin-bottom:36px}
+.hero-cta{display:inline-flex;align-items:center;gap:8px;background:var(--t1);color:#fff;font-size:15px;font-weight:600;padding:14px 28px;border-radius:100px;border:none;cursor:pointer;transition:opacity .14s}.hero-cta:hover{opacity:.8}.hero-cta svg{width:14px;height:14px;stroke:#fff;fill:none;stroke-width:2.5}
+.hero-card{background:#fff;border-radius:var(--r3) var(--r3) 0 0;overflow:hidden;box-shadow:0 -4px 24px rgba(0,0,0,.06),0 -1px 0 var(--g2);align-self:flex-end}
+@keyframes sk{0%{background-position:-800px 0}100%{background-position:800px 0}}
+.hero-card-img{height:260px;background:var(--g2);position:relative;display:flex;align-items:center;justify-content:center}
+.hero-card-img.sk{background:linear-gradient(90deg,var(--g1) 25%,var(--g2) 37%,var(--g1) 63%);background-size:800px 100%;animation:sk 1.5s linear infinite}
+.ph{opacity:.18;display:flex;flex-direction:column;align-items:center;gap:7px}.ph svg{width:32px;height:32px;stroke:var(--t2);fill:none;stroke-width:1.5}.ph span{font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:var(--t3)}
+.hcm{padding:20px 22px 24px}.hcm-top{display:flex;justify-content:space-between;margin-bottom:10px}
+.hcm-make{font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--t3)}
+.hcm-stock{font-size:11px;color:var(--t3)}
+.hcm-name{font-size:17px;font-weight:700;letter-spacing:-.3px;margin-bottom:12px}
+.hcm-tags{display:flex;gap:6px;margin-bottom:14px;flex-wrap:wrap}
+.hcm-tag{font-size:11.5px;color:var(--t2);background:var(--g1);border:1px solid var(--g3);padding:3px 10px;border-radius:100px}
+.hcm-bot{display:flex;align-items:center;justify-content:space-between;padding-top:14px;border-top:1px solid var(--g2)}
+.hcm-price{font-size:22px;font-weight:700;letter-spacing:-.6px}
+.hcm-exw{font-size:10px;font-weight:700;background:var(--au2);color:var(--au);border:1px solid #f5d882;padding:2px 8px;border-radius:100px;margin-left:5px}
+.hcm-btn{font-size:13px;font-weight:700;background:var(--t1);color:#fff;padding:8px 18px;border-radius:100px;border:none;cursor:pointer}
+.search-sec{padding:40px 28px}.search-in{max-width:var(--max);margin:auto}
+.search-bar{display:flex;background:#fff;border:1.5px solid var(--g3);border-radius:var(--r2);overflow:hidden;box-shadow:0 2px 8px rgba(0,0,0,.06);max-width:700px;transition:border-color .15s}
+.search-bar:focus-within{border-color:var(--t1)}
+.search-bar input{flex:1;border:none;outline:none;padding:14px 20px;font-size:15px;color:var(--t1);background:transparent}
+.search-bar input::placeholder{color:var(--t3)}
+.search-bar button{background:var(--t1);color:#fff;border:none;padding:0 24px;font-size:14px;font-weight:600;display:flex;align-items:center;gap:7px;cursor:pointer;white-space:nowrap}
+.search-bar button svg{width:14px;height:14px;stroke:#fff;fill:none;stroke-width:2.5}
+.search-tags{display:flex;gap:7px;flex-wrap:wrap;margin-top:14px}
+.stag{font-size:13px;color:var(--t2);padding:6px 14px;border-radius:100px;border:1.5px solid var(--g3);background:#fff;cursor:pointer;transition:all .12s}.stag:hover{border-color:var(--t2);color:var(--t1)}
+.stats-sec{background:var(--g1);border-top:1px solid var(--g2);border-bottom:1px solid var(--g2)}
+.stats-in{max-width:var(--max);margin:auto;padding:0 28px;display:grid;grid-template-columns:repeat(4,1fr)}
+.st{padding:36px 24px;text-align:center;border-right:1px solid var(--g2)}.st:last-child{border-right:none}
+.st-n{font-size:36px;font-weight:700;letter-spacing:-1.5px;line-height:1;margin-bottom:5px}.st-n em{font-style:normal;color:var(--au)}
+.st-l{font-size:13.5px;color:var(--t2)}
+.cats-sec{padding:80px 28px}.cats-in{max-width:var(--max);margin:auto}
+.sec-kicker{font-size:11.5px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--t3);margin-bottom:9px}
+.sec-h{font-size:clamp(24px,3vw,34px);font-weight:700;letter-spacing:-.8px;margin-bottom:32px}
+.cat-strip{display:grid;grid-template-columns:repeat(5,1fr);gap:10px}
+.cc{background:var(--g1);border:1.5px solid transparent;border-radius:var(--r2);padding:24px 18px;text-align:center;cursor:pointer;transition:all .18s}
+.cc:hover{background:#fff;border-color:var(--g2);box-shadow:0 4px 16px rgba(0,0,0,.08)}
+.cc.on{background:var(--t1);border-color:var(--t1)}
+.cc.on .cc-ic{background:rgba(255,255,255,.12);border-color:rgba(255,255,255,.15)}
+.cc.on .cc-ic svg{stroke:#fff}.cc.on .cc-n{color:#fff}.cc.on .cc-c{color:rgba(255,255,255,.55)}
+.cc-ic{width:46px;height:46px;border-radius:13px;margin:0 auto 12px;background:#fff;border:1.5px solid var(--g2);display:grid;place-items:center}
+.cc-ic svg{width:21px;height:21px;stroke:var(--t1);fill:none;stroke-width:1.7}
+.cc-n{font-size:13px;font-weight:600;color:var(--t1);margin-bottom:3px}.cc-c{font-size:11.5px;color:var(--t3)}
+.showcase-sec{padding:0 28px 80px}.showcase-in{max-width:var(--max);margin:auto}
+.showcase-card{background:var(--g1);border-radius:var(--r3);overflow:hidden;border:1.5px solid var(--g2);display:grid;grid-template-columns:1fr 380px}
+.sc-img{position:relative;background:var(--g2);display:flex;align-items:center;justify-content:center;min-height:340px}
+.sc-img.sk{background:linear-gradient(90deg,#ebebeb 25%,#e2e2e2 37%,#ebebeb 63%);background-size:800px 100%;animation:sk 1.5s linear infinite}
+.sc-img .ph{opacity:.15}.sc-img .ph svg{width:36px;height:36px}
+.sc-overlay{position:absolute;top:14px;left:14px;display:flex;gap:7px}
+.sc-badge{display:inline-flex;align-items:center;gap:5px;font-size:11px;font-weight:700;padding:5px 11px;border-radius:100px}
+.sc-badge.vf{background:var(--gr2);color:var(--gr);border:1px solid #b7e4c7}
+.sc-badge.vi{background:rgba(0,0,0,.38);color:#fff;backdrop-filter:blur(4px)}
+.sc-badge.vi::before{content:'▶ ';font-size:8px;color:#fbbf24}
+.sc-hc{position:absolute;bottom:14px;left:14px;background:rgba(0,0,0,.38);color:rgba(255,255,255,.9);font-size:9.5px;font-weight:700;padding:4px 10px;border-radius:100px;backdrop-filter:blur(4px);letter-spacing:.04em}
+.sc-body{padding:36px;display:flex;flex-direction:column;justify-content:space-between;border-left:1px solid var(--g2)}
+.sc-kicker{font-size:11px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;color:var(--t3);margin-bottom:8px}
+.sc-name{font-size:22px;font-weight:700;letter-spacing:-.4px;line-height:1.3;margin-bottom:16px}
+.sc-specs{display:flex;flex-direction:column;gap:10px;margin-bottom:24px}
+.sc-spec{display:flex;align-items:center;justify-content:space-between;padding-bottom:10px;border-bottom:1px solid var(--g2)}.sc-spec:last-child{border-bottom:none;padding-bottom:0}
+.sc-spec-k{font-size:12.5px;color:var(--t2)}.sc-spec-v{font-size:12.5px;font-weight:600;color:var(--t1)}.sc-spec-v.mono{font-family:monospace;font-size:11px;color:var(--t2)}
+.sc-price-row{margin-top:auto;padding-top:20px;border-top:1px solid var(--g2)}
+.sc-price{font-size:28px;font-weight:700;letter-spacing:-.8px;margin-bottom:5px}
+.sc-exw{font-size:11px;font-weight:700;background:var(--au2);color:var(--au);border:1px solid #f5d882;padding:2px 9px;border-radius:100px;margin-left:4px}
+.sc-note{font-size:12.5px;color:var(--t2);margin-bottom:18px}
+.sc-btns{display:flex;gap:8px}
+.sc-btn-wa{display:flex;align-items:center;gap:7px;flex:1;justify-content:center;background:#25d366;color:#fff;font-size:13.5px;font-weight:700;padding:12px;border-radius:var(--r);border:none;cursor:pointer;transition:opacity .12s}.sc-btn-wa:hover{opacity:.88}
+.sc-btn-q{flex:1;background:transparent;border:1.5px solid var(--g3);color:var(--t1);font-size:13.5px;font-weight:600;padding:12px;border-radius:var(--r);cursor:pointer;transition:all .12s}.sc-btn-q:hover{border-color:var(--t1)}
+.grid-sec{padding:0 28px 96px;background:var(--g1)}.grid-sec-in{max-width:var(--max);margin:auto;padding-top:80px}
+.sec-head{display:flex;align-items:flex-end;justify-content:space-between;margin-bottom:32px}
+.see-all{font-size:14px;font-weight:600;color:var(--bl);display:flex;align-items:center;gap:4px}.see-all:hover{text-decoration:underline}
+.prod-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+.pc{background:#fff;border-radius:var(--r2);overflow:hidden;border:1.5px solid var(--g2);transition:all .2s;cursor:pointer}.pc:hover{border-color:var(--g3);box-shadow:0 6px 24px rgba(0,0,0,.09);transform:translateY(-3px)}
+.pc-img{aspect-ratio:16/10;position:relative;background:linear-gradient(90deg,var(--g1) 25%,var(--g2) 37%,var(--g1) 63%);background-size:600px 100%;animation:sk 1.5s linear infinite;border-bottom:1px solid var(--g2);display:flex;align-items:center;justify-content:center}
+.pc-img.rp{background:var(--g1);animation:none}
+.pc-hc{position:absolute;top:9px;left:9px;background:rgba(0,0,0,.38);color:rgba(255,255,255,.95);font-size:9.5px;font-weight:700;padding:3px 9px;border-radius:100px;letter-spacing:.04em}
+.pc-vid{position:absolute;top:9px;right:9px;background:rgba(0,0,0,.38);color:#fff;font-size:10px;font-weight:700;padding:3px 9px;border-radius:100px;display:flex;align-items:center;gap:4px;backdrop-filter:blur(4px)}.pc-vid::before{content:'▶';font-size:7.5px;color:#fbbf24}
+.ph-inner{opacity:.18;display:flex;flex-direction:column;align-items:center;gap:6px}.ph-inner svg{width:26px;height:26px;stroke:var(--t2);fill:none;stroke-width:1.5}.ph-inner span{font-size:9px;letter-spacing:.08em;text-transform:uppercase;color:var(--t3)}
+.pc-body{padding:16px 18px}
+.pc-make{font-size:10.5px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--t3);margin-bottom:3px}
+.pc-name{font-size:14.5px;font-weight:600;color:var(--t1);line-height:1.4;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;min-height:40px;margin-bottom:10px}
+.pc-tags{display:flex;gap:5px;flex-wrap:wrap;margin-bottom:12px}
+.t{font-size:11.5px;color:var(--t2);background:var(--g1);border:1px solid var(--g2);padding:3px 10px;border-radius:100px;font-weight:500}.t.v{background:var(--gr2);color:var(--gr);border-color:#b7e4c7}
+.pc-foot{display:flex;align-items:center;justify-content:space-between;padding-top:12px;border-top:1px solid var(--g2)}
+.pc-price{font-size:17px;font-weight:700;letter-spacing:-.4px}
+.pc-exw{font-size:10px;font-weight:700;background:var(--au2);color:var(--au);border:1px solid #f5d882;padding:2px 7px;border-radius:100px;margin-left:4px}
+.pc-btn{font-size:12px;font-weight:700;background:var(--t1);color:#fff;padding:7px 16px;border-radius:100px;border:none;cursor:pointer;transition:opacity .12s}.pc-btn:hover{opacity:.78}
+.trust-sec{border-top:1px solid var(--g2);border-bottom:1px solid var(--g2);padding:56px 28px}
+.trust-in{max-width:var(--max);margin:auto;display:grid;grid-template-columns:repeat(4,1fr)}
+.ti{text-align:center;padding:0 24px;border-right:1px solid var(--g2)}.ti:last-child{border-right:none}
+.ti-n{font-size:32px;font-weight:700;letter-spacing:-1.5px;line-height:1;margin-bottom:5px}.ti-n em{font-style:normal;color:var(--au)}
+.ti-l{font-size:13.5px;color:var(--t2)}
+.footer{background:var(--g1);border-top:1px solid var(--g2);padding:56px 28px 28px}
+.footer-in{max-width:var(--max);margin:auto}
+.footer-top{display:grid;grid-template-columns:1.6fr 1fr 1fr 1.2fr;gap:48px;margin-bottom:44px}
+.fb .logo{display:block;margin-bottom:12px}.fb p{font-size:13.5px;color:var(--t2);line-height:1.7;max-width:260px;margin-top:8px}
+.fcol h4{font-size:11.5px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;color:var(--t3);margin-bottom:14px}.fcol ul{list-style:none}.fcol li{margin-bottom:9px}.fcol a{font-size:13.5px;color:var(--t2);transition:color .12s}.fcol a:hover{color:var(--t1)}
+.fcta{background:#fff;border:1.5px solid var(--g2);border-radius:var(--r2);padding:20px}
+.fcta h4{font-size:14px;font-weight:700;color:var(--t1);margin-bottom:8px}.fcta p{font-size:13px;color:var(--t2);margin-bottom:14px;line-height:1.6}
+.btn-wa-f{display:flex;align-items:center;justify-content:center;gap:7px;width:100%;background:#25d366;color:#fff;font-size:13.5px;font-weight:700;padding:11px;border-radius:var(--r);border:none;cursor:pointer;transition:opacity .12s}.btn-wa-f svg{width:15px;height:15px;fill:#fff}.btn-wa-f:hover{opacity:.88}
+.footer-btm{border-top:1px solid var(--g2);padding-top:20px;display:flex;justify-content:space-between;font-size:12px;color:var(--t3)}
+.page-banner{background:var(--g1);border-bottom:1px solid var(--g2);padding:32px 28px}
+.pb-in{max-width:var(--max);margin:auto}.crumb{font-size:12.5px;color:var(--t2);display:flex;align-items:center;gap:5px;margin-bottom:7px}.crumb a{color:var(--bl)}.crumb .sep{color:var(--g3)}
+.pb-in h1{font-size:30px;font-weight:700;letter-spacing:-.7px;margin-bottom:3px}.pb-in p{font-size:14px;color:var(--t2)}
+.listing-body{max-width:var(--max);margin:0 auto;padding:24px 28px;display:grid;grid-template-columns:224px 1fr;gap:28px}
+.sb{position:sticky;top:93px;align-self:start}.sb-sec{margin-bottom:4px}
+.sb-lbl{font-size:11px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;color:var(--t3);padding:0 6px;margin-bottom:8px}
+.sb-cats{display:flex;flex-direction:column;gap:2px}
+.scat{display:flex;align-items:center;gap:10px;padding:9px 12px;border-radius:var(--r);cursor:pointer;border:1.5px solid transparent;transition:all .14s;text-decoration:none}.scat:hover{background:var(--g1)}.scat.on{background:var(--g1);border-color:var(--g2)}
+.scat-ic{width:30px;height:30px;border-radius:9px;background:var(--g2);display:grid;place-items:center;flex-shrink:0}.scat-ic svg{width:14px;height:14px;stroke:var(--t2);fill:none;stroke-width:1.8}.scat.on .scat-ic svg{stroke:var(--t1)}
+.scat-n{flex:1;font-size:13px;font-weight:500;color:var(--t1)}.scat.on .scat-n{font-weight:700}.scat-c{font-size:12px;color:var(--t3)}
+.sb-filter{border-top:1px solid var(--g2);padding-top:20px;margin-top:20px}
+.fo{display:flex;align-items:center;gap:9px;padding:7px 8px;border-radius:var(--r);cursor:pointer;transition:background .1s}.fo:hover{background:var(--g1)}
+.fo-box{width:16px;height:16px;border-radius:4px;border:1.5px solid var(--g3);flex-shrink:0;display:grid;place-items:center}.fo.on .fo-box{background:var(--t1);border-color:var(--t1)}.fo.on .fo-box::after{content:'✓';font-size:9px;color:#fff;font-weight:900}
+.fo-n{flex:1;font-size:13px;color:var(--t1)}.fo-c{font-size:12px;color:var(--t3)}
+.lm .lm-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;padding-bottom:14px;border-bottom:1px solid var(--g2)}
+.lm .lm-info{font-size:13.5px;color:var(--t2)}.lm .lm-info strong{color:var(--t1)}
+.lm select{background:#fff;border:1.5px solid var(--g3);color:var(--t1);padding:7px 12px;border-radius:var(--r);font-size:13px}
+.active-f{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:16px}
+.af{display:inline-flex;align-items:center;gap:5px;font-size:12px;font-weight:600;background:var(--g1);border:1.5px solid var(--g3);color:var(--t2);padding:4px 11px;border-radius:100px}.af x{cursor:pointer;opacity:.5;font-size:10px}
+.lrows{display:flex;flex-direction:column;gap:8px}
+.lr{background:#fff;border:1.5px solid var(--g2);border-radius:var(--r2);overflow:hidden;display:grid;grid-template-columns:200px 1fr;transition:all .2s;cursor:pointer}.lr:hover{border-color:var(--g3);box-shadow:0 4px 18px rgba(0,0,0,.08)}
+.lr-img{background:linear-gradient(90deg,var(--g1) 25%,var(--g2) 37%,var(--g1) 63%);background-size:600px 100%;animation:sk 1.5s linear infinite;border-right:1px solid var(--g2);position:relative;display:flex;align-items:center;justify-content:center;min-height:156px}.lr-img.rp{background:var(--g1);animation:none}
+.lr-hc{position:absolute;top:9px;left:9px;background:rgba(0,0,0,.32);color:rgba(255,255,255,.95);font-size:8.5px;font-weight:700;padding:3px 8px;border-radius:100px;letter-spacing:.04em}
+.lr-body{padding:16px 18px;display:flex;flex-direction:column;justify-content:space-between}
+.lr-make{font-size:10px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;color:var(--t3);margin-bottom:3px}
+.lr-name{font-size:15px;font-weight:700;letter-spacing:-.2px;margin-bottom:7px}
+.lr-tags{display:flex;gap:5px;flex-wrap:wrap;margin-bottom:9px}
+.lr-price{font-size:22px;font-weight:700;letter-spacing:-.5px;margin-bottom:4px}
+.lr-exw{font-size:10px;font-weight:700;background:var(--au2);color:var(--au);border:1px solid #f5d882;padding:2px 7px;border-radius:100px;margin-left:4px}
+.lr-specs{font-size:12.5px;color:var(--t2);display:flex;gap:12px;flex-wrap:wrap;margin-bottom:12px}
+.lr-bot{display:flex;align-items:center;justify-content:space-between;padding-top:10px;border-top:1px solid var(--g2)}
+.lr-vin{font-size:11px;color:var(--t3);font-family:monospace}
+.lr-ctas{display:flex;gap:6px}
+.lr-wa-btn{display:flex;align-items:center;gap:5px;background:#f0fdf4;color:var(--gr);border:1px solid #b7e4c7;padding:7px 14px;border-radius:100px;font-size:12px;font-weight:700;transition:all .12s}.lr-wa-btn:hover{background:#25d366;color:#fff;border-color:#25d366}
+.lr-get-btn{background:var(--t1);color:#fff;border:none;padding:7px 18px;border-radius:100px;font-size:12px;font-weight:700;cursor:pointer;transition:opacity .12s}.lr-get-btn:hover{opacity:.78}
+.detail-body{max-width:var(--max);margin:0 auto;padding:28px 28px 80px;display:grid;grid-template-columns:1fr 380px;gap:36px;align-items:start}
+.g-main{aspect-ratio:16/10;background:var(--g1);border:1.5px solid var(--g2);border-radius:var(--r3);display:flex;align-items:center;justify-content:center;margin-bottom:10px;position:relative;overflow:hidden}
+.g-main .ph-inner{opacity:.15}
+.g-ovl{position:absolute;top:12px;right:12px;display:flex;flex-direction:column;gap:7px}
+.g-badge2{display:inline-flex;align-items:center;gap:5px;padding:6px 13px;border-radius:100px;font-size:11.5px;font-weight:700}
+.g-badge2.vf{background:var(--gr2);color:var(--gr);border:1px solid #b7e4c7}
+.g-badge2.vid{background:rgba(0,0,0,.38);color:#fff;backdrop-filter:blur(4px)}.g-badge2.vid::before{content:'▶ ';font-size:8px;color:#fbbf24}
+.thumbs{display:flex;gap:8px;margin-top:10px}
+.thumb{flex:1;aspect-ratio:16/10;border-radius:var(--r);background:var(--g1);border:1.5px solid var(--g2);cursor:pointer;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:4px;transition:all .12s}.thumb:hover{border-color:var(--g3)}.thumb.on{border-color:var(--t1)}
+.thumb span{font-size:9.5px;color:var(--t2);text-align:center;font-weight:500}
+.specs-t{background:#fff;border:1.5px solid var(--g2);border-radius:var(--r2);overflow:hidden;margin-top:20px}
+.sp-head{font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--t3);padding:13px 16px;border-bottom:1px solid var(--g2);background:var(--g1)}
+.sp{display:grid;grid-template-columns:116px 1fr;border-bottom:1px solid var(--g2)}.sp:last-child{border-bottom:none}
+.sp-k{font-size:12.5px;color:var(--t2);padding:11px 14px;border-right:1px solid var(--g2)}.sp-v{font-size:13px;color:var(--t1);padding:11px 14px;font-weight:500}.sp-v.mono{font-family:monospace;font-size:11.5px;color:var(--t2)}
+.dp-make{font-size:11.5px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--t3);margin-bottom:5px}
+.dp-name{font-size:23px;font-weight:700;letter-spacing:-.5px;margin-bottom:11px;line-height:1.2}
+.dp-badges{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:20px}
+.dbg{font-size:12px;font-weight:700;padding:4px 12px;border-radius:100px}.dbg.g{background:var(--gr2);color:var(--gr);border:1px solid #b7e4c7}.dbg.b{background:#e8f0fe;color:#1a56db;border:1px solid #c3d4f7}.dbg.a{background:var(--au2);color:var(--au);border:1px solid #f5d882}
+.price-card{background:var(--g1);border:1.5px solid var(--g2);border-radius:var(--r2);padding:22px;margin-bottom:14px}
+.price-big{font-size:36px;font-weight:700;letter-spacing:-1.3px;line-height:1}
+.price-row{display:flex;align-items:center;gap:8px;margin-top:9px;padding-top:11px;border-top:1px solid var(--g2)}
+.exw-pill{font-size:11px;font-weight:700;background:var(--au2);color:var(--au);border:1px solid #f5d882;padding:3px 10px;border-radius:100px}.exw-note{font-size:12.5px;color:var(--t2)}
+.cif-card{background:#fff;border:1.5px solid var(--g2);border-radius:var(--r2);padding:18px;margin-bottom:14px}
+.cif-lbl{font-size:11.5px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:var(--t2);margin-bottom:14px;display:flex;align-items:center;gap:7px}.cif-lbl svg{width:13px;height:13px;stroke:var(--t2);fill:none;stroke-width:2}
+.cif-row{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:8px}
+.cf label{font-size:11.5px;color:var(--t2);display:block;margin-bottom:4px;font-weight:500}
+.cf select,.cf input{width:100%;background:var(--g1);border:1.5px solid var(--g2);border-radius:var(--r);padding:8px 11px;font-size:13px;color:var(--t1);outline:none}
+.cif-res{background:var(--g1);border:1px solid var(--g2);border-radius:var(--r);padding:12px 14px;margin-top:10px;display:flex;align-items:center;justify-content:space-between}
+.cif-res-l{font-size:12px;color:var(--t2)}.cif-res-v{font-size:18px;font-weight:700;letter-spacing:-.4px}
+.btn-cif{width:100%;margin-top:8px;background:transparent;border:1.5px solid var(--g3);color:var(--t1);font-size:13px;font-weight:600;padding:10px;border-radius:var(--r);cursor:pointer;transition:all .12s}.btn-cif:hover{border-color:var(--t1)}
+.det-ctas{display:flex;flex-direction:column;gap:8px;margin-bottom:14px}
+.btn-wa-det{display:flex;align-items:center;justify-content:center;gap:9px;background:#25d366;color:#fff;border:none;padding:15px;border-radius:var(--r);font-size:15px;font-weight:700;cursor:pointer;transition:opacity .12s}.btn-wa-det:hover{opacity:.88}
+.btn-inq-det{display:flex;align-items:center;justify-content:center;gap:7px;background:var(--g1);border:1.5px solid var(--g2);color:var(--t1);padding:13px;border-radius:var(--r);font-size:14px;font-weight:600;cursor:pointer;transition:all .12s}.btn-inq-det:hover{border-color:var(--g3)}
+.included-box{background:var(--g1);border-radius:var(--r);padding:14px 16px;font-size:13px;color:var(--t2);line-height:1.7}
+.included-box strong{display:block;color:var(--t1);font-size:13.5px;font-weight:600;margin-bottom:5px}
+.contact-head{background:var(--g1);border-bottom:1px solid var(--g2);padding:80px 28px 64px;text-align:center}
+.contact-head h2{font-size:clamp(40px,5vw,64px);font-weight:700;letter-spacing:-2px;margin-bottom:14px}
+.contact-head p{font-size:18px;color:var(--t2);max-width:520px;margin:0 auto;line-height:1.65}
+.contact-body{max-width:860px;margin:0 auto;padding:56px 28px 80px}
+.ch-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:48px}
+.ch{background:#fff;border:1.5px solid var(--g2);border-radius:var(--r3);padding:30px 24px;transition:all .18s}.ch:hover{border-color:var(--g3);box-shadow:0 4px 18px rgba(0,0,0,.08)}
+.ch-ic{width:48px;height:48px;border-radius:14px;margin-bottom:16px;display:grid;place-items:center;border:1.5px solid}.ch-ic svg{width:21px;height:21px;fill:none;stroke-width:1.8}
+.ch-ic.wa{background:#f0fdf4;border-color:#b7e4c7}.ch-ic.wa svg{stroke:var(--gr)}
+.ch-ic.ma{background:var(--au2);border-color:#f5d882}.ch-ic.ma svg{stroke:var(--au)}
+.ch-ic.ph{background:#e8f0fe;border-color:#c3d4f7}.ch-ic.ph svg{stroke:#1a56db}
+.ch h3{font-size:16px;font-weight:700;margin-bottom:5px}.ch p{font-size:13px;color:var(--t2);margin-bottom:12px;line-height:1.6}.ch a{font-size:13.5px;font-weight:700;color:var(--bl)}
+.ofs-lbl{font-size:11px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;color:var(--t3);margin-bottom:14px}
+.offices{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.oc{background:#fff;border:1.5px solid var(--g2);border-radius:var(--r3);padding:30px}.oc-flag{font-size:32px;margin-bottom:13px}.oc h3{font-size:17px;font-weight:700;margin-bottom:4px}.oc-r{font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--t3);margin-bottom:12px}.oc p{font-size:13.5px;color:var(--t2);line-height:1.7}
+</style>
+</head>
+<body>
+<div class="shell">
+  <span class="shell-lbl">AsiaPower — <b>Refined v5</b> · Apple Minimal · Full Site</span>
+  <div class="tabs">
+    <button class="tab on" onclick="go('home',this)">Home</button>
+    <button class="tab" onclick="go('listing',this)">Listing</button>
+    <button class="tab" onclick="go('detail',this)">Detail</button>
+    <button class="tab" onclick="go('contact',this)">Contact</button>
+  </div>
+</div>
+<nav class="nav">
+  <div class="nav-in">
+    <div class="logo">Asia<em>Power</em></div>
+    <div class="nav-links">
+      <a href="#" class="on">Half-Cuts</a><a href="#">Trucks</a><a href="#">Engines &amp; Parts</a><a href="#">Construction</a><a href="#">About</a>
+    </div>
+    <div class="nav-r">
+      <div class="lang"><a href="#" class="on">EN</a><a href="#">中文</a><a href="#">FR</a><a href="#">AR</a></div>
+      <a href="#" class="wa-nav"><svg viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51a5.5 5.5 0 00-.57-.01c-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/></svg>WhatsApp</a>
+    </div>
+  </div>
+</nav>
+
+<!-- HOME -->
+<div id="home" class="pv on">
+  <div class="hero">
+    <div class="hero-in">
+      <div class="hero-text">
+        <div class="hero-eyebrow"><span class="hero-live"></span>Ships to 110+ countries from Zhengzhou</div>
+        <h1>The world's<br>used <em>powertrain</em><br>marketplace.</h1>
+        <p class="hero-sub">Half-cuts, engines and truck parts — video-verified, EXW pricing, 24-hour quotes.</p>
+        <button class="hero-cta">Browse inventory <svg viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg></button>
+      </div>
+      <div class="hero-card">
+        <div class="hero-card-img sk"><div class="ph"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg><span>Product photo</span></div></div>
+        <div class="hcm">
+          <div class="hcm-top"><div class="hcm-make">Toyota</div><div class="hcm-stock">HC250037</div></div>
+          <div class="hcm-name">Land Cruiser Prado 1GR-FE Half-Cut</div>
+          <div class="hcm-tags"><span class="hcm-tag">2003</span><span class="hcm-tag">4AT</span><span class="hcm-tag">4WD</span><span class="hcm-tag" style="background:#f0fdf4;color:#1a7f37;border-color:#b7e4c7">✓ Video</span></div>
+          <div class="hcm-bot"><div><span class="hcm-price">$7,000</span><span class="hcm-exw">EXW</span></div><button class="hcm-btn">Get Quote</button></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="search-sec">
+    <div class="search-in">
+      <div class="search-bar">
+        <input type="text" placeholder="Search by make, model, engine code or HC number…" readonly/>
+        <button><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>Search</button>
+      </div>
+      <div class="search-tags">
+        <span class="stag">Toyota LandCruiser</span><span class="stag">1GR-FE</span><span class="stag">2AZ-FE</span><span class="stag">BMW 3 Series</span><span class="stag">4JB1</span><span class="stag">Nissan Tiida</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="stats-sec"><div class="stats-in">
+    <div class="st"><div class="st-n">394<em>+</em></div><div class="st-l">Items in stock</div></div>
+    <div class="st"><div class="st-n">110<em>+</em></div><div class="st-l">Export destinations</div></div>
+    <div class="st"><div class="st-n">24<em>h</em></div><div class="st-l">Quote turnaround</div></div>
+    <div class="st"><div class="st-n">200<em>+</em></div><div class="st-l">Vehicle brands</div></div>
+  </div></div>
+
+  <div class="cats-sec"><div class="cats-in">
+    <div class="sec-kicker">Browse</div>
+    <div class="sec-h">What are you looking for?</div>
+    <div class="cat-strip">
+      <div class="cc on"><div class="cc-ic"><svg viewBox="0 0 24 24"><rect x="1" y="3" width="15" height="13"/><polygon points="16 8 20 8 23 11 23 16 16 16 16 8"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg></div><div class="cc-n">Half-Cuts</div><div class="cc-c">394</div></div>
+      <div class="cc"><div class="cc-ic"><svg viewBox="0 0 24 24"><path d="M5 17H3a2 2 0 01-2-2V5a2 2 0 012-2h11a2 2 0 012 2v3"/><rect x="9" y="11" width="14" height="10" rx="2"/><circle cx="12" cy="16" r="1"/></svg></div><div class="cc-n">Trucks</div><div class="cc-c">48</div></div>
+      <div class="cc"><div class="cc-ic"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M12 1v4M12 19v4M4.22 4.22l2.83 2.83M16.95 16.95l2.83 2.83M1 12h4M19 12h4"/></svg></div><div class="cc-n">Engines &amp; Parts</div><div class="cc-c">210</div></div>
+      <div class="cc"><div class="cc-ic"><svg viewBox="0 0 24 24"><path d="M14.7 6.3a1 1 0 000 1.4l1.6 1.6a1 1 0 001.4 0l3.77-3.77a6 6 0 01-7.94 7.94l-6.91 6.91a2.12 2.12 0 01-3-3l6.91-6.91a6 6 0 017.94-7.94l-3.76 3.76z"/></svg></div><div class="cc-n">Construction</div><div class="cc-c">23</div></div>
+      <div class="cc"><div class="cc-ic"><svg viewBox="0 0 24 24"><path d="M21 16V8a2 2 0 00-1-1.73l-7-4a2 2 0 00-2 0l-7 4A2 2 0 003 8v8a2 2 0 001 1.73l7 4a2 2 0 002 0l7-4A2 2 0 0021 16z"/></svg></div><div class="cc-n">Chassis Parts</div><div class="cc-c">67</div></div>
+    </div>
+  </div></div>
+
+  <div class="showcase-sec"><div class="showcase-in">
+    <div class="sec-head" style="margin-bottom:18px"><div><div class="sec-kicker">Featured listing</div><div class="sec-h" style="margin-bottom:0">Handpicked this week</div></div></div>
+    <div class="showcase-card">
+      <div class="sc-img sk">
+        <div class="ph"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg><span>Product photo</span></div>
+        <div class="sc-overlay"><span class="sc-badge vf">✓ Video Verified</span><span class="sc-badge vi">Watch Video</span></div>
+        <span class="sc-hc">HC250037</span>
+      </div>
+      <div class="sc-body">
+        <div>
+          <div class="sc-kicker">Toyota · 2003</div>
+          <div class="sc-name">Land Cruiser Prado<br>1GR-FE Half-Cut, 4WD</div>
+          <div class="sc-specs">
+            <div class="sc-spec"><span class="sc-spec-k">Engine</span><span class="sc-spec-v">1GR-FE 4.0L V6</span></div>
+            <div class="sc-spec"><span class="sc-spec-k">Transmission</span><span class="sc-spec-v">4AT Automatic</span></div>
+            <div class="sc-spec"><span class="sc-spec-k">Drivetrain</span><span class="sc-spec-v">4WD</span></div>
+            <div class="sc-spec"><span class="sc-spec-k">VIN</span><span class="sc-spec-v mono">JTEBU17R030****189</span></div>
+          </div>
+        </div>
+        <div class="sc-price-row">
+          <div class="sc-price">$7,000 <span class="sc-exw">EXW</span></div>
+          <div class="sc-note">Ex-Works Zhengzhou · Est. CIF Tema: ~$8,450</div>
+          <div class="sc-btns">
+            <button class="sc-btn-wa"><svg width="15" height="15" viewBox="0 0 24 24" fill="white"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51a5.5 5.5 0 00-.57-.01c-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/></svg>WhatsApp</button>
+            <button class="sc-btn-q">View Details</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div></div>
+
+  <div class="grid-sec"><div class="grid-sec-in">
+    <div class="sec-head">
+      <div><div class="sec-kicker">Latest stock</div><div class="sec-h" style="margin-bottom:0">Half-Cuts</div></div>
+      <a href="#" class="see-all">View all 394 →</a>
+    </div>
+    <div class="prod-grid">
+      <div class="pc"><div class="pc-img"><span class="pc-hc">HC250051</span><div class="ph-inner"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg><span>Photo on request</span></div></div><div class="pc-body"><div class="pc-make">Audi</div><div class="pc-name">Q3 EA211 Half-Cut 2WD</div><div class="pc-tags"><span class="t">2020</span><span class="t">7DCT</span><span class="t">2WD</span></div><div class="pc-foot"><div><span class="pc-price">$7,500</span><span class="pc-exw">EXW</span></div><button class="pc-btn">Quote</button></div></div></div>
+      <div class="pc"><div class="pc-img"><span class="pc-hc">HC250127</span><span class="pc-vid">Video</span><div class="ph-inner"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg><span>Photo on request</span></div></div><div class="pc-body"><div class="pc-make">Lexus</div><div class="pc-name">LX570 3UR-FE Half-Cut 4WD</div><div class="pc-tags"><span class="t">2009</span><span class="t">6AT</span><span class="t">4WD</span><span class="t v">Video</span></div><div class="pc-foot"><div><span class="pc-price">$5,900</span><span class="pc-exw">EXW</span></div><button class="pc-btn">Quote</button></div></div></div>
+      <div class="pc"><div class="pc-img rp" style="background:#e8ecf0"><span class="pc-hc">HC250386</span></div><div class="pc-body"><div class="pc-make">Mercedes-Benz</div><div class="pc-name">V-Class 651 955 Half-Cut 2WD</div><div class="pc-tags"><span class="t">2010</span><span class="t">7AT</span><span class="t">2WD</span></div><div class="pc-foot"><div><span class="pc-price">$5,500</span><span class="pc-exw">EXW</span></div><button class="pc-btn">Quote</button></div></div></div>
+    </div>
+  </div></div>
+
+  <div class="trust-sec"><div class="trust-in">
+    <div class="ti"><div class="ti-n">394<em>+</em></div><div class="ti-l">Items in stock</div></div>
+    <div class="ti"><div class="ti-n">110<em>+</em></div><div class="ti-l">Export destinations</div></div>
+    <div class="ti"><div class="ti-n">200<em>+</em></div><div class="ti-l">Vehicle brands</div></div>
+    <div class="ti"><div class="ti-n">100<em>%</em></div><div class="ti-l">Video-verified</div></div>
+  </div></div>
+
+  <footer class="footer"><div class="footer-in">
+    <div class="footer-top">
+      <div class="fb"><div class="logo">Asia<em>Power</em></div><p>Global B2B marketplace for used powertrains. Sourced in China, exported worldwide.</p></div>
+      <div class="fcol"><h4>Products</h4><ul><li><a href="#">Half-Cuts</a></li><li><a href="#">Trucks</a></li><li><a href="#">Engines &amp; Parts</a></li><li><a href="#">Construction</a></li><li><a href="#">Chassis Parts</a></li></ul></div>
+      <div class="fcol"><h4>Company</h4><ul><li><a href="#">About</a></li><li><a href="#">Become a Supplier</a></li><li><a href="#">Shipping &amp; Logistics</a></li><li><a href="#">Quality Standards</a></li><li><a href="#">Privacy Policy</a></li></ul></div>
+      <div class="fcta"><h4>Get a Quote</h4><p>Offices in Zhengzhou &amp; Accra. We reply within 24 hours.</p><button class="btn-wa-f"><svg viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51a5.5 5.5 0 00-.57-.01c-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/></svg>WhatsApp Now</button></div>
+    </div>
+    <div class="footer-btm"><span>© 2025 AsiaPower. All rights reserved.</span><span>Zhengzhou, China · Accra, Ghana</span></div>
+  </div></footer>
+</div>
+
+<!-- LISTING -->
+<div id="listing" class="pv">
+  <div class="page-banner"><div class="pb-in"><div class="crumb"><a href="#">Home</a><span class="sep">›</span>Half-Cuts</div><h1>Half-Cut Vehicles</h1><p>394 verified units · EXW from Zhengzhou</p></div></div>
+  <div class="listing-body">
+    <aside class="sb">
+      <div class="sb-sec"><div class="sb-lbl">Category</div><div class="sb-cats">
+        <a href="#" class="scat on"><div class="scat-ic"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.8"><rect x="1" y="3" width="15" height="13"/><polygon points="16 8 20 8 23 11 23 16 16 16 16 8"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg></div><span class="scat-n">Half-Cuts</span><span class="scat-c">394</span></a>
+        <a href="#" class="scat"><div class="scat-ic"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.8"><circle cx="12" cy="12" r="3"/><path d="M12 1v4M12 19v4M4.22 4.22l2.83 2.83M16.95 16.95l2.83 2.83M1 12h4M19 12h4"/></svg></div><span class="scat-n">Engines &amp; Parts</span><span class="scat-c">210</span></a>
+        <a href="#" class="scat"><div class="scat-ic"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.8"><path d="M5 17H3a2 2 0 01-2-2V5a2 2 0 012-2h11a2 2 0 012 2v3"/><rect x="9" y="11" width="14" height="10" rx="2"/><circle cx="12" cy="16" r="1"/></svg></div><span class="scat-n">Trucks</span><span class="scat-c">48</span></a>
+      </div></div>
+      <div class="sb-filter"><div class="sb-lbl">Brand</div>
+        <div class="fo on"><div class="fo-box"></div><span class="fo-n">Toyota</span><span class="fo-c">89</span></div>
+        <div class="fo"><div class="fo-box"></div><span class="fo-n">Nissan</span><span class="fo-c">67</span></div>
+        <div class="fo"><div class="fo-box"></div><span class="fo-n">BMW</span><span class="fo-c">44</span></div>
+        <div class="fo"><div class="fo-box"></div><span class="fo-n">Mercedes-Benz</span><span class="fo-c">38</span></div>
+        <div class="fo"><div class="fo-box"></div><span class="fo-n">Audi</span><span class="fo-c">31</span></div>
+      </div>
+      <div class="sb-filter"><div class="sb-lbl">Drivetrain</div>
+        <div class="fo"><div class="fo-box"></div><span class="fo-n">2WD</span><span class="fo-c">267</span></div>
+        <div class="fo"><div class="fo-box"></div><span class="fo-n">4WD</span><span class="fo-c">89</span></div>
+        <div class="fo"><div class="fo-box"></div><span class="fo-n">AWD</span><span class="fo-c">38</span></div>
+      </div>
+    </aside>
+    <div class="lm">
+      <div class="lm-top"><span class="lm-info"><strong>394</strong> results</span><select><option>Newest first</option><option>Price: Low to High</option><option>Price: High to Low</option></select></div>
+      <div class="active-f"><span class="af">Toyota <x>×</x></span></div>
+      <div class="lrows">
+        <div class="lr"><div class="lr-img"><span class="lr-hc">HC250037</span><div class="ph-inner" style="opacity:.14"><svg viewBox="0 0 24 24" style="width:24px;height:24px"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg></div></div><div class="lr-body"><div><div class="lr-make">Toyota</div><div class="lr-name">Land Cruiser Prado 1GR-FE Half-Cut</div><div class="lr-tags"><span class="t">2003</span><span class="t">4AT</span><span class="t">4WD</span><span class="t v">Video</span></div><div><span class="lr-price">$7,000</span><span class="lr-exw">EXW</span></div><div class="lr-specs"><span>1GR-FE 4.0L V6</span><span>4WD</span><span>Custom dismantling</span></div></div><div class="lr-bot"><span class="lr-vin">JTEBU17R030****189</span><div class="lr-ctas"><button class="lr-wa-btn">WhatsApp</button><button class="lr-get-btn">Get Quote</button></div></div></div></div>
+        <div class="lr"><div class="lr-img rp" style="background:#e8ecf0"><span class="lr-hc">HC250176</span></div><div class="lr-body"><div><div class="lr-make">Toyota</div><div class="lr-name">Prado 1GR-FE Half-Cut 2WD</div><div class="lr-tags"><span class="t">2015</span><span class="t">6AT</span><span class="t">2WD</span></div><div><span class="lr-price">$6,200</span><span class="lr-exw">EXW</span></div><div class="lr-specs"><span>1GR-FE 4.0L V6</span><span>2WD</span></div></div><div class="lr-bot"><span class="lr-vin">JTEZU5JR5F5****248</span><div class="lr-ctas"><button class="lr-wa-btn">WhatsApp</button><button class="lr-get-btn">Get Quote</button></div></div></div></div>
+        <div class="lr"><div class="lr-img"><span class="lr-hc">HC250513</span><div class="ph-inner" style="opacity:.14"><svg viewBox="0 0 24 24" style="width:24px;height:24px"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg></div></div><div class="lr-body"><div><div class="lr-make">Nissan</div><div class="lr-name">Tiida HR16DE Half-Cut 2WD</div><div class="lr-tags"><span class="t">2008</span><span class="t">4AT</span><span class="t">2WD</span></div><div><span class="lr-price">$1,300</span><span class="lr-exw">EXW</span></div><div class="lr-specs"><span>Parts on demand</span><span>Custom dismantling</span></div></div><div class="lr-bot"><span class="lr-vin">LGBG22E088****410</span><div class="lr-ctas"><button class="lr-wa-btn">WhatsApp</button><button class="lr-get-btn">Get Quote</button></div></div></div></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- DETAIL -->
+<div id="detail" class="pv">
+  <div class="page-banner"><div class="pb-in"><div class="crumb"><a href="#">Home</a><span class="sep">›</span><a href="#">Half-Cuts</a><span class="sep">›</span>HC250037</div><h1>Toyota Land Cruiser Prado</h1><p>HC250037 · Listed 3 days ago · 47 inquiries</p></div></div>
+  <div class="detail-body">
+    <div>
+      <div class="g-main"><div class="ph-inner" style="opacity:.15"><svg viewBox="0 0 24 24" style="width:36px;height:36px"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg></div><div class="g-ovl"><span class="g-badge2 vf">✓ Video Verified</span><span class="g-badge2 vid">Watch Video</span></div></div>
+      <div class="thumbs"><div class="thumb on"><span>📷</span><span>Main Photo</span></div><div class="thumb"><span>🔧</span><span>Engine Bay</span></div><div class="thumb"><span>⚙️</span><span>Gearbox</span></div><div class="thumb"><span>🎬</span><span>Video</span></div><div class="thumb"><span>📄</span><span>VIN Plate</span></div></div>
+      <div class="specs-t">
+        <div class="sp-head">Full Specifications</div>
+        <div class="sp"><div class="sp-k">Stock No.</div><div class="sp-v mono">HC250037</div></div>
+        <div class="sp"><div class="sp-k">Brand</div><div class="sp-v">Toyota</div></div>
+        <div class="sp"><div class="sp-k">Model</div><div class="sp-v">Land Cruiser Prado</div></div>
+        <div class="sp"><div class="sp-k">Year</div><div class="sp-v">2003</div></div>
+        <div class="sp"><div class="sp-k">Engine</div><div class="sp-v">1GR-FE 4.0L V6 Petrol</div></div>
+        <div class="sp"><div class="sp-k">Transmission</div><div class="sp-v">4AT Automatic</div></div>
+        <div class="sp"><div class="sp-k">Drivetrain</div><div class="sp-v">4WD</div></div>
+        <div class="sp"><div class="sp-k">Chassis VIN</div><div class="sp-v mono">JTEBU17R030****189</div></div>
+      </div>
+    </div>
+    <div>
+      <div class="dp-make">Toyota · Land Cruiser Prado</div>
+      <div class="dp-name">1GR-FE Half-Cut<br>2003, 4WD</div>
+      <div class="dp-badges"><span class="dbg g">✓ Video Verified</span><span class="dbg b">4WD</span><span class="dbg a">In Stock</span></div>
+      <div class="price-card"><div class="price-big">$7,000</div><div class="price-row"><span class="exw-pill">EXW</span><span class="exw-note">Ex-Works · Zhengzhou, China</span></div></div>
+      <div class="cif-card">
+        <div class="cif-lbl"><svg viewBox="0 0 24 24"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>CIF Calculator</div>
+        <div class="cif-row"><div class="cf"><label>Destination</label><select><option>Ghana</option><option>Nigeria</option><option>Kenya</option></select></div><div class="cf"><label>Port</label><select><option>Tema Port</option><option>Lagos</option><option>Mombasa</option></select></div></div>
+        <div class="cif-row"><div class="cf"><label>Shipping</label><select><option>Sea — RoRo</option><option>Container</option><option>Air Freight</option></select></div><div class="cf"><label>Qty</label><input type="number" value="1" min="1"/></div></div>
+        <div class="cif-res"><span class="cif-res-l">Estimated CIF price</span><span class="cif-res-v">~$8,450</span></div>
+        <button class="btn-cif">Get Exact CIF Quote →</button>
+      </div>
+      <div class="det-ctas">
+        <button class="btn-wa-det"><svg width="17" height="17" viewBox="0 0 24 24" fill="white"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51a5.5 5.5 0 00-.57-.01c-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/></svg>Inquire via WhatsApp</button>
+        <button class="btn-inq-det">Send Inquiry via Email</button>
+      </div>
+      <div class="included-box"><strong>What's included</strong>Engine · Gearbox · Front suspension · Axle · Electrical harness · Video inspection certificate · Export documentation</div>
+    </div>
+  </div>
+</div>
+
+<!-- CONTACT -->
+<div id="contact" class="pv">
+  <div class="contact-head"><h2>Get in Touch</h2><p>We source, verify, and export to 110+ destinations. Reply within 24 hours.</p></div>
+  <div class="contact-body">
+    <div class="ch-grid">
+      <div class="ch"><div class="ch-ic wa"><svg viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51a5.5 5.5 0 00-.57-.01c-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/></svg></div><h3>WhatsApp</h3><p>Fastest way — include item number for instant quotes.</p><a href="#">+86 xxx xxxx xxxx →</a></div>
+      <div class="ch"><div class="ch-ic ma"><svg viewBox="0 0 24 24"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg></div><h3>Email</h3><p>For formal inquiries, bulk orders, or partnerships.</p><a href="#">info@asia-power.com →</a></div>
+      <div class="ch"><div class="ch-ic ph"><svg viewBox="0 0 24 24"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07A19.5 19.5 0 013.07 8.81a19.79 19.79 0 01-3.07-8.7A2 2 0 012 0h3a2 2 0 012 1.72 12.84 12.84 0 00.7 2.81 2 2 0 01-.45 2.11L6.09 7.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45 12.84 12.84 0 002.81.7A2 2 0 0122 14.92z"/></svg></div><h3>Phone</h3><p>Mon–Sat, 8am–8pm China Standard Time.</p><a href="#">Call Zhengzhou Office →</a></div>
+    </div>
+    <div class="ofs-lbl">Our Offices</div>
+    <div class="offices">
+      <div class="oc"><div class="oc-flag">🇨🇳</div><h3>Zhengzhou, China</h3><div class="oc-r">Global Sourcing Hub</div><p>Main procurement and logistics office. All inventory is inspected here before shipping.</p></div>
+      <div class="oc"><div class="oc-flag">🇬🇭</div><h3>Accra, Ghana</h3><div class="oc-r">West Africa Office</div><p>Local support for buyers across West Africa — customs, delivery, and after-sales.</p></div>
+    </div>
+  </div>
+</div>
+
+<script>
+function go(id,b){
+  document.querySelectorAll('.pv').forEach(p=>p.classList.remove('on'));
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('on'));
+  document.getElementById(id).classList.add('on');
+  b.classList.add('on');
+  window.scrollTo({top:41,behavior:'smooth'});
+}
+</script>
+</body>
+</html>

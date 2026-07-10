@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="zh-Hans">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Parts photo display · preview</title>
+  <style>
+    :root {
+      --ink: #1d1d1f;
+      --muted: #6e6e73;
+      --line: #e8e8ed;
+      --bg: #f5f5f7;
+      --ok: #15803d;
+      --warn: #b45309;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: "SF Pro Text", "PingFang SC", "Helvetica Neue", sans-serif;
+      color: var(--ink);
+      background: linear-gradient(180deg, #eef1f5 0%, #f7f7f8 40%, #fff 100%);
+      line-height: 1.5;
+    }
+    .wrap { max-width: 980px; margin: 0 auto; padding: 36px 20px 64px; }
+    h1 { font-size: 1.75rem; letter-spacing: -0.03em; margin: 0 0 8px; }
+    .lead { color: var(--muted); margin: 0 0 28px; max-width: 62ch; }
+    .grid { display: grid; gap: 18px; }
+    @media (min-width: 800px) { .grid { grid-template-columns: 1fr 1fr; } }
+    .card {
+      background: #fff;
+      border: 1.5px solid var(--line);
+      border-radius: 18px;
+      overflow: hidden;
+      box-shadow: 0 4px 18px rgba(0,0,0,.05);
+    }
+    .card__head {
+      padding: 12px 16px;
+      border-bottom: 1px solid var(--line);
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: .06em;
+      text-transform: uppercase;
+    }
+    .card__head--bad { background: #fff7ed; color: var(--warn); }
+    .card__head--good { background: #f0fdf4; color: var(--ok); }
+    .row {
+      display: grid;
+      grid-template-columns: 200px minmax(0, 1fr);
+      min-height: 156px;
+    }
+    .photo {
+      background: #eef1f4;
+      border-right: 1px solid var(--line);
+      display: grid;
+      place-items: center;
+      min-height: 156px;
+      position: relative;
+      overflow: hidden;
+    }
+    .photo img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      object-position: center;
+      display: block;
+      min-height: 156px;
+    }
+    .photo--crop {
+      width: 66px;
+      height: 66px;
+      min-height: 66px;
+      margin: 16px;
+      border-radius: 6px;
+      border: 1px solid var(--line);
+      overflow: hidden;
+    }
+    .photo--crop img {
+      object-fit: cover;
+      min-height: 66px;
+    }
+    .photo--ph {
+      color: #9aa3ad;
+      font-size: 13px;
+      text-align: center;
+      padding: 16px;
+    }
+    .body { padding: 16px 18px; }
+    .make { font-size: 10px; font-weight: 700; letter-spacing: .07em; text-transform: uppercase; color: #86868b; }
+    .title { font-size: 15px; font-weight: 700; margin: 4px 0 8px; }
+    .meta { font-size: 12px; color: var(--muted); }
+    .rules {
+      margin-top: 28px;
+      background: #fff;
+      border: 1.5px solid var(--line);
+      border-radius: 18px;
+      padding: 20px 22px;
+    }
+    .rules h2 { margin: 0 0 10px; font-size: 1.1rem; }
+    .rules ul { margin: 0; padding-left: 1.2em; color: var(--muted); }
+    .rules li { margin: 6px 0; }
+    .badge {
+      display: inline-block;
+      margin-top: 14px;
+      padding: 6px 10px;
+      border-radius: 999px;
+      background: #1d1d1f;
+      color: #fff;
+      font-size: 12px;
+      font-weight: 600;
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <h1>发动机及零部件 · 照片显示修复预览</h1>
+    <p class="lead">
+      修两件事：① 专门上传的配件图完整显示（不再 66×66 裁切）；② 从半切车借来的图不再展示。
+    </p>
+
+    <div class="grid">
+      <article class="card">
+        <div class="card__head card__head--bad">Before · 半切借图 + 小框裁切</div>
+        <div class="row" style="grid-template-columns: 98px 1fr;">
+          <div class="photo photo--crop">
+            <img src="https://asia-power.com/uploads/photos/photo-1783673311675-a6f958dc_thumb.webp" alt="cropped engine bay">
+          </div>
+          <div class="body">
+            <div class="make">Volkswagen</div>
+            <div class="title">2011 Lavida CDL …</div>
+            <div class="meta">半切车 Engine 标签图被借到发动机列表，66×66 cover 裁切 → 看不全</div>
+          </div>
+        </div>
+      </article>
+
+      <article class="card">
+        <div class="card__head card__head--good">After · 半切借图 → 无图占位</div>
+        <div class="row">
+          <div class="photo photo--ph">Photos on request<br><span style="font-size:11px;opacity:.75">不展示半切借图</span></div>
+          <div class="body">
+            <div class="make">Volkswagen</div>
+            <div class="title">2011 Lavida CDL …</div>
+            <div class="meta">条目仍可询价；照片仅专门上传发动机/变速箱/底盘/前切才显示</div>
+          </div>
+        </div>
+      </article>
+
+      <article class="card" style="grid-column: 1 / -1;">
+        <div class="card__head card__head--good">After · 专门上传前切 · object-fit: contain 完整显示</div>
+        <div class="row">
+          <div class="photo">
+            <img src="https://asia-power.com/uploads/photos/photo-1783469362423-0ca9a99e_thumb.webp" alt="dedicated front cut">
+          </div>
+          <div class="body">
+            <div class="make">Dedicated front-cut</div>
+            <div class="title">HC250550 · passengerPartType=front</div>
+            <div class="meta">自己上传的图：200px 栏 + contain，整图可见（不裁切过头）</div>
+          </div>
+        </div>
+      </article>
+    </div>
+
+    <section class="rules">
+      <h2>规则（已定稿）</h2>
+      <ul>
+        <li><strong>显示</strong>：engines / gearboxes / chassis-parts / front-cuts 中，仅 <code>passengerPartType</code>（或同类专门上传）匹配的条目显示自己的照片，并用 contain 完整装入框内。</li>
+        <li><strong>不显示</strong>：半切车条目即使有 Engine / Front 标签图，也不再借到零部件列表冒充配件图 → 占位「Photos on request」。</li>
+        <li><strong>现网影响（抽样）</strong>：发动机列表约 172 条借图将改为占位；专门前切约 4 条继续显示自己的图。</li>
+      </ul>
+      <span class="badge">task-id: parts-photo-display</span>
+    </section>
+  </div>
+</body>
+</html>

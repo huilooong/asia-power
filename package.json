@@ -1,0 +1,14 @@
+{
+  "name": "asiapower-inventory",
+  "private": true,
+  "description": "AsiaPower inventory site tooling",
+  "dependencies": {
+    "@aws-sdk/client-s3": "^3.758.0"
+  },
+  "optionalDependencies": {
+    "sharp": "^0.33.5"
+  },
+  "devDependencies": {
+    "@google-analytics/data": "^6.1.0"
+  }
+}

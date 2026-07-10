@@ -1,0 +1,11 @@
+row,model,vin,image_path,confidence
+2,起亚 赛拉图 2008款 欧风 1.6 MT GL,LJDDAA120A0043127,data/qxb-photos/row-0002_起亚_起亚 赛拉图 2008款 欧风 1.6 MT GL/16_e5007b2d77.jpg,very_high:gray:rot0
+3,起亚 锐欧 2007款 1.4L MT GL,LJDEAA294B0158251,data/qxb-photos/row-0003_起亚_起亚 锐欧 2007款 1.4L MT GL/16_fbcb814ac6.jpg,very_high:gray:rot0
+4,起亚 起亚K2 2011款 三厢 1.6L AT Premium,LJDLAA225B0053583,data/qxb-photos/row-0004_起亚_起亚 起亚K2 2011款 三厢 1.6L AT Premium/17_edef30cd8b.jpg,very_high:gray:rot0
+5,丰田 凯美瑞 2009款 200G 豪华版,,,none
+6,现代 酷派 2004款 FX 2.7,KMHHN61F64U123418,data/qxb-photos/row-0006_现代_现代 酷派 2004款 FX 2.7/17_4215f4c59d.jpg,very_high:gray:rot0
+7,现代 索纳塔 2011款 2.4L 自动尊贵版,,,none
+8,丰田 卡罗拉 2007款 1.8L 自动GLX-i,LFMARE0C270018024,data/qxb-photos/row-0008_丰田_丰田 卡罗拉 2007款 1.8L 自动GLX-i/17_f345b4a4eb.jpg,high:contrast:rot0
+9,丰田 凯美瑞 2013款 2.0G 舒适版,LVGBH51K4DG096661,data/qxb-photos/row-0009_丰田_丰田 凯美瑞 2013款 2.0G 舒适版/16_78e3513f74.jpg,very_high:gray:rot0
+10,日产 轩逸 2012款 1.6XE 手动舒适版,LGBH52E28FY103311,data/qxb-photos/row-0010_日产_日产 轩逸 2012款 1.6XE 手动舒适版/16_fa869645eb.jpg,very_high:gray:rot0
+11,丰田 凯美瑞 2009款 240V G-BOOK智能导航版,LVGBE40K09G443897,data/qxb-photos/row-0011_丰田_丰田 凯美瑞 2009款 240V G-BOOK智能导航版/17_9947114507.jpg,very_high:gray:rot0

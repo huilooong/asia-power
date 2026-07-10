@@ -38,6 +38,8 @@
       hialux: 'Hilux',
       hiace: 'Hiace',
       fortuner: 'Fortuner',
+      兰德酷路泽: 'Land Cruiser',
+      兰德酷路泽进口: 'Land Cruiser',
     },
     Nissan: {
       navara: 'Navara',
@@ -51,6 +53,21 @@
       santafe: 'Santa Fe',
       santafé: 'Santa Fe',
     },
+    Volkswagen: {
+      尚酷: 'Scirocco',
+      scirocco: 'Scirocco',
+      途安: 'Touran',
+      touran: 'Touran',
+      凌渡: 'Lamando',
+      lamando: 'Lamando',
+    },
+    Kia: {
+      狮跑: 'Sportage',
+    },
+    Wuling: {
+      五菱之光: 'Sunshine',
+      之光: 'Sunshine',
+    },
   };
 
   function catalog() {
@@ -58,11 +75,13 @@
   }
 
   function normalizeKey(value) {
+    // Keep CJK: stripping them made every Chinese model key === '' and
+    // collide onto the first learned Chinese catalog entry (e.g. 尚酷→朗逸).
     return String(value || '')
       .toLowerCase()
       .normalize('NFKD')
       .replace(/[\u0300-\u036f]/g, '')
-      .replace(/[^a-z0-9]+/g, '');
+      .replace(/[^a-z0-9\u4e00-\u9fff]+/g, '');
   }
 
   function levenshtein(a, b) {
@@ -131,12 +150,16 @@
     const raw = String(rawModel || '').trim();
     if (!raw || !brand) return { model: raw, corrected: false };
 
-    const models = cat?.getModels?.(brand) || [];
-    if (!models.length) return { model: raw, corrected: false };
-
     const key = normalizeKey(raw);
-    const exact = models.find((m) => normalizeKey(m) === key);
-    if (exact) return { model: exact, corrected: exact !== raw };
+    // Empty key = punctuation-only / stripped garbage — never fuzzy-match.
+    if (!key) return { model: raw, corrected: false };
+
+    const models = cat?.getModels?.(brand) || [];
+
+    if (models.length) {
+      const exact = models.find((m) => normalizeKey(m) === key);
+      if (exact) return { model: exact, corrected: exact !== raw };
+    }
 
     const brandAliases = MODEL_ALIASES[brand] || {};
     const aliasTarget = brandAliases[key] || MODEL_ALIASES['*']?.[key];
@@ -145,8 +168,11 @@
       return { model: canonical, corrected: canonical !== raw };
     }
 
+    if (!models.length) return { model: raw, corrected: false };
+
     const contains = models.filter((m) => {
       const mk = normalizeKey(m);
+      if (!mk || !key) return false;
       return mk.includes(key) || (key.length >= 4 && key.includes(mk) && mk.length >= 4);
     });
     if (contains.length === 1) {
@@ -219,6 +245,14 @@
 
   function catalogCutLabel(item) {
     if (item?.truckPartType === 'cab') return 'Driver Cab';
+    if (item?.truckPartType === 'engine') return 'Engine Assembly';
+    if (item?.truckPartType === 'axle') return 'Axle Assembly';
+    if (item?.truckPartType === 'other') return 'Truck Part';
+    if (item?.passengerPartType === 'front') return 'Front Cut';
+    if (item?.passengerPartType === 'engine') return 'Engine Assembly';
+    if (item?.passengerPartType === 'transmission') return 'Transmission Assembly';
+    if (item?.passengerPartType === 'chassis') return 'Chassis Part';
+    if (item?.passengerPartType === 'other') return 'Part';
     if (item?.vehicleCategory === 'truck') return 'Truck Half Cut';
     if (item?.vehicleCategory === 'machinery') {
       return item?.vehicleCondition || window.MachineryBrandCatalog?.typeLabel?.(item?.machineryType) || 'Construction Equipment';
@@ -228,12 +262,21 @@
 
   function catalogSlugCutSegment(item) {
     if (item?.vehicleCategory === 'truck') {
-      return item?.truckPartType === 'cab' ? 'truck-cab' : 'truck-half-cut';
+      if (item?.truckPartType === 'cab') return 'truck-cab';
+      if (item?.truckPartType === 'engine') return 'truck-engine';
+      if (item?.truckPartType === 'axle') return 'truck-axle';
+      if (item?.truckPartType === 'other') return 'truck-part';
+      return 'truck-half-cut';
     }
     if (item?.vehicleCategory === 'machinery') {
       const type = String(item?.machineryType || 'equipment').trim() || 'equipment';
       return `machinery-${type}`;
     }
+    if (item?.passengerPartType === 'front') return 'front-cut';
+    if (item?.passengerPartType === 'engine') return 'passenger-engine';
+    if (item?.passengerPartType === 'transmission') return 'passenger-transmission';
+    if (item?.passengerPartType === 'chassis') return 'passenger-chassis';
+    if (item?.passengerPartType === 'other') return 'passenger-part';
     return 'half-cut';
   }
 

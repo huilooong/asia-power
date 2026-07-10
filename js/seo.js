@@ -52,9 +52,44 @@
     el.textContent = JSON.stringify(data);
   }
 
+  function removeJsonLd(id) {
+    document.getElementById(id)?.remove();
+  }
+
+  function schemaTypes(data) {
+    const types = [];
+    if (!data || typeof data !== 'object') return types;
+    if (data['@graph'] && Array.isArray(data['@graph'])) {
+      data['@graph'].forEach((node) => {
+        const t = node['@type'];
+        if (Array.isArray(t)) types.push(...t);
+        else if (t) types.push(t);
+      });
+      return types;
+    }
+    const t = data['@type'];
+    if (Array.isArray(t)) return t.slice();
+    if (t) types.push(t);
+    return types;
+  }
+
+  /** Skip JS-injected Organization/WebSite when HTML already ships JSON-LD. */
+  function hasStaticOrgOrWebsiteSchema() {
+    const blocks = document.querySelectorAll('script[type="application/ld+json"]:not(#schema-organization):not(#schema-website)');
+    for (const el of blocks) {
+      try {
+        const types = schemaTypes(JSON.parse(el.textContent || ''));
+        if (types.includes('Organization') || types.includes('WebSite')) return true;
+      } catch {
+        /* ignore malformed blocks */
+      }
+    }
+    return false;
+  }
+
   function isInternalPage() {
     const p = window.location.pathname || '';
-    return /\/admin\//i.test(p) || /\/supplier-portal\/(?:half-cut|truck)-upload/i.test(p);
+    return /\/admin\//i.test(p) || /\/supplier-portal\/.*-upload\.html/i.test(p);
   }
 
   function pageMeta() {
@@ -67,11 +102,13 @@
       || 'Global powertrain sourcing platform for engines, gearboxes, chassis parts and half-cuts.';
     const c = window.ASIAPOWER || {};
     const siteUrl = (c.siteUrl || window.location.origin).replace(/\/$/, '');
-    const canonical = window.location.href.split('#')[0].split('?')[0];
+    const slug = new URLSearchParams(window.location.search).get('slug');
+    const canonical = slug
+      ? `${window.location.origin}${window.location.pathname}?slug=${encodeURIComponent(slug)}`
+      : `${window.location.origin}${window.location.pathname}`;
     const image = absoluteUrl(siteBase() + (c.logo || 'assets/logo.png'));
 
     upsertLink('canonical', canonical);
-    upsertLink('sitemap', absoluteUrl(siteBase() + 'sitemap.xml'));
     upsertMeta('name', 'robots', 'index, follow');
     upsertMeta('property', 'og:type', 'website');
     upsertMeta('property', 'og:site_name', c.company || 'AsiaPower');
@@ -82,35 +119,49 @@
     const lang = window.PublicI18n?.getLang?.() || 'en';
     const locale = { en: 'en_US', zh: 'zh_CN', fr: 'fr_FR', ar: 'ar_SA' }[lang] || 'en_US';
     upsertMeta('property', 'og:locale', locale);
-    upsertMeta('name', 'twitter:card', 'summary');
+    const twitterCard = image ? 'summary_large_image' : 'summary';
+    upsertMeta('name', 'twitter:card', twitterCard);
     upsertMeta('name', 'twitter:title', title);
     upsertMeta('name', 'twitter:description', desc);
     upsertMeta('name', 'twitter:image', image);
 
-    upsertJsonLd('schema-organization', {
-      '@context': 'https://schema.org',
-      '@type': 'Organization',
-      name: c.company || 'AsiaPower',
-      url: siteUrl,
-      logo: absoluteUrl(siteBase() + (c.logo || 'assets/logo.png')),
-      description: desc,
-      contactPoint: [{
-        '@type': 'ContactPoint',
-        contactType: 'sales',
-        availableLanguage: ['English', 'Chinese', 'French', 'Arabic'],
-        url: `https://wa.me/${c.whatsapp || ''}`,
-      }],
-      ...(c.merchantListing?.returnPolicy ? { hasMerchantReturnPolicy: c.merchantListing.returnPolicy } : {}),
-      ...(c.merchantListing?.shippingDetails ? { shippingDetails: c.merchantListing.shippingDetails } : {}),
-    });
+    if (hasStaticOrgOrWebsiteSchema()) {
+      removeJsonLd('schema-organization');
+      removeJsonLd('schema-website');
+    } else {
+      upsertJsonLd('schema-organization', {
+        '@context': 'https://schema.org',
+        '@type': 'Organization',
+        name: c.company || 'AsiaPower',
+        url: siteUrl,
+        logo: absoluteUrl(siteBase() + (c.logo || 'assets/logo.png')),
+        description: desc,
+        contactPoint: [{
+          '@type': 'ContactPoint',
+          contactType: 'sales',
+          availableLanguage: ['English', 'Chinese', 'French', 'Arabic'],
+          url: `https://wa.me/${c.whatsapp || ''}`,
+        }],
+        ...(c.merchantListing?.returnPolicy ? { hasMerchantReturnPolicy: c.merchantListing.returnPolicy } : {}),
+        ...(c.merchantListing?.shippingDetails ? { shippingDetails: c.merchantListing.shippingDetails } : {}),
+      });
 
-    upsertJsonLd('schema-website', {
-      '@context': 'https://schema.org',
-      '@type': 'WebSite',
-      name: c.company || 'AsiaPower',
-      url: siteUrl,
-      description: c.tagline || 'Global Powertrain Sourcing Platform',
-    });
+      upsertJsonLd('schema-website', {
+        '@context': 'https://schema.org',
+        '@type': 'WebSite',
+        name: c.company || 'AsiaPower',
+        url: siteUrl,
+        description: c.tagline || 'Global Powertrain Sourcing Platform',
+        potentialAction: {
+          '@type': 'SearchAction',
+          target: {
+            '@type': 'EntryPoint',
+            urlTemplate: `${siteUrl}/half-cuts/?q={search_term_string}`,
+          },
+          'query-input': 'required name=search_term_string',
+        },
+      });
+    }
   }
 
   window.AsiaPowerSEO = { refresh: pageMeta, absoluteUrl };

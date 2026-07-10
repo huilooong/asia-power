@@ -11,11 +11,12 @@ const {
   notifyHalfCutEvents,
   notifyUploadFailure,
 } = require('./half-cut-notifications');
-const { toPublicList } = require('./half-cut-public');
+const { toPublicItem, toPublicCatalogList } = require('./half-cut-public');
 const { createRateLimiter, clientIp } = require('./rate-limit');
 const {
   isAuthorizedSupplierRequest,
   hasValidSupplierKey,
+  isTrustedBatchUploader,
   assertSubmissionMediaUrls,
   isProduction,
   supplierUploadKey,
@@ -23,14 +24,19 @@ const {
 const media = require('./media-storage');
 const r2 = require('./r2-storage');
 const mediaOptimize = require('./media-optimize');
+const chassisBlur = require('./chassis-blur');
 const nameNorm = require('./vehicle-name-normalize');
 const truckBrands = require('./truck-brand-catalog');
 const { createVehicleModelMemory } = require('./vehicle-model-memory');
 const { createPowertrainCatalogMemory } = require('./powertrain-catalog-memory');
 const { loadJson, saveJsonAtomic } = require('./json-store');
 const { createDataIntakeLog } = require('./data-intake-log');
+const { normalizePhone, phonesMatch } = require('./phone-normalize');
 
 const MAX_PHOTO_BYTES = 8 * 1024 * 1024;
+const MAX_PHOTOS_PER_SUBMISSION = 15;
+/** Trusted batch / QXB uploaders may attach full albums (review page shows all). */
+const MAX_PHOTOS_TRUSTED_BATCH = 40;
 const MAX_VIDEO_BYTES = 50 * 1024 * 1024;
 const MAX_JSON_BYTES = 2 * 1024 * 1024;
 const UPLOAD_TOKEN_TTL_MS = 30 * 60 * 1000;
@@ -155,10 +161,32 @@ function sniffVideoMime(buffer) {
   return null;
 }
 
+function inferVideoMime(mimeType, filename) {
+  const mime = String(mimeType || '').toLowerCase();
+  if (ALLOWED_VIDEO_MIMES.has(mime)) return mime;
+  const ext = path.extname(String(filename || '')).toLowerCase();
+  const byExt = {
+    '.mp4': 'video/mp4',
+    '.webm': 'video/webm',
+    '.mov': 'video/quicktime',
+    '.avi': 'video/x-msvideo',
+  };
+  if (byExt[ext]) return byExt[ext];
+  if (!mime || mime === 'application/octet-stream') return 'video/mp4';
+  return mime;
+}
+
+function videoMimeCompatible(declared, sniffed) {
+  if (!sniffed || !declared || declared === 'application/octet-stream') return true;
+  const compatible = new Set(['video/mp4', 'video/quicktime', 'video/webm', 'video/x-msvideo']);
+  return compatible.has(declared) && compatible.has(sniffed);
+}
+
 function createHalfCutApi(rootDir, options = {}) {
   const auth = options.auth || {};
   const requireAdmin = auth.requireAdmin || (() => false);
   const allowUpload = auth.allowUpload || (() => false);
+  const authUser = auth.authUser || (() => null);
 
   const DATA_DIR = path.join(rootDir, 'data');
   const UPLOADS_DIR = path.join(rootDir, 'uploads');
@@ -249,7 +277,7 @@ function createHalfCutApi(rootDir, options = {}) {
     if (!fs.existsSync(DATA_DIR)) fs.mkdirSync(DATA_DIR, { recursive: true });
   }
 
-  async function saveOptimizedPhotoUpload({ dir, publicPrefix, part, maxBytes, pending }) {
+  async function saveOptimizedPhotoUpload({ dir, publicPrefix, part, maxBytes, pending, label = '' }) {
     const declared = part.contentType || 'application/octet-stream';
     const sniffed = sniffImageMime(part.body);
     const mime = sniffed || declared;
@@ -259,7 +287,12 @@ function createHalfCutApi(rootDir, options = {}) {
     }
     if (part.body.length > maxBytes) throw new Error(`File exceeds ${Math.round(maxBytes / (1024 * 1024))} MB limit`);
 
-    const optimized = await mediaOptimize.optimizeImageBuffer(part.body, mime);
+    let uploadBody = part.body;
+    if (chassisBlur.isVinPlateLabel(label)) {
+      uploadBody = await chassisBlur.blurVinSuffixBuffer(uploadBody, mime);
+    }
+
+    const optimized = await mediaOptimize.optimizeImageBuffer(uploadBody, mime);
     if (!optimized?.full?.length || !optimized?.thumb?.length) {
       return saveUpload({
         dir,
@@ -315,7 +348,11 @@ function createHalfCutApi(rootDir, options = {}) {
     const sniffed = sniffFn ? sniffFn(part.body) : null;
     const mime = sniffed || declared;
     if (!allowedMimes.has(mime)) throw new Error(`Unsupported file type: ${mime}`);
-    if (sniffed && declared !== 'application/octet-stream' && sniffed !== declared) {
+    const strictMime = prefix !== 'video';
+    if (strictMime && sniffed && declared !== 'application/octet-stream' && sniffed !== declared) {
+      throw new Error('File content does not match declared type');
+    }
+    if (!strictMime && sniffed && declared !== 'application/octet-stream' && sniffed !== declared && !videoMimeCompatible(declared, sniffed)) {
       throw new Error('File content does not match declared type');
     }
     if (part.body.length > maxBytes) throw new Error(`File exceeds ${Math.round(maxBytes / (1024 * 1024))} MB limit`);
@@ -364,15 +401,75 @@ function createHalfCutApi(rootDir, options = {}) {
     return state;
   }
 
-  async function getPublicCatalog() {
+  let publicCatalogCache = null;
+  let publicCatalogMtime = 0;
+
+  function findApprovedRaw(slug) {
+    const needle = String(slug || '').trim();
+    if (!needle) return null;
     const raw = loadJson(APPROVED_FILE, []);
-    const submissions = loadJson(SUBMISSIONS_FILE, []);
-    const { state, changed } = nameNorm.normalizeState({ submissions, approved: raw }, rootDir);
-    if (changed) {
-      saveJson(APPROVED_FILE, state.approved);
-      console.log('[half-cut] auto-corrected brand/model spellings in approved catalog');
+    let item = raw.find((entry) => entry?.slug === needle
+      || (Array.isArray(entry?.slugAliases) && entry.slugAliases.includes(needle)));
+    if (!item) {
+      const stockMatch = needle.match(/(hc\d+)/i);
+      if (stockMatch) {
+        const stockId = stockMatch[0].toUpperCase();
+        item = raw.find((entry) => String(entry.stockId || '').toUpperCase() === stockId) || null;
+      }
     }
-    return { approved: toPublicList(state.approved) };
+    return item || null;
+  }
+
+  async function getPublicCatalog() {
+    let mtime = 0;
+    try {
+      mtime = fs.statSync(APPROVED_FILE).mtimeMs;
+    } catch {
+      return { approved: [] };
+    }
+    if (publicCatalogCache && mtime === publicCatalogMtime) {
+      return publicCatalogCache;
+    }
+    const raw = loadJson(APPROVED_FILE, []);
+    publicCatalogCache = { approved: toPublicCatalogList(raw, 4) };
+    publicCatalogMtime = mtime;
+    return publicCatalogCache;
+  }
+
+  async function getPublicItemBySlug(slug) {
+    const item = findApprovedRaw(slug);
+    if (!item) return null;
+    const photos = Array.isArray(item.photos)
+      ? item.photos.map((photo) => {
+        const url = String(photo?.url || '').trim();
+        if (!url) return null;
+        const thumbUrl = String(photo?.thumbUrl || '').trim();
+        const label = String(photo?.label || '').trim();
+        const next = { url };
+        if (thumbUrl && thumbUrl !== url) next.thumbUrl = thumbUrl;
+        if (label) next.label = label;
+        return next;
+      }).filter(Boolean)
+      : [];
+    const pub = toPublicItem({ ...item, photos });
+    return pub;
+  }
+
+  function sendPublicJson(req, res, code, payload) {
+    const body = JSON.stringify(payload);
+    const etag = `"${crypto.createHash('sha1').update(body).digest('hex')}"`;
+    const cacheControl = 'public, max-age=120, stale-while-revalidate=300';
+    if (req.headers['if-none-match'] === etag) {
+      res.writeHead(304, { ETag: etag, 'Cache-Control': cacheControl });
+      res.end();
+      return;
+    }
+    res.writeHead(code, {
+      'Content-Type': 'application/json; charset=utf-8',
+      'Cache-Control': cacheControl,
+      ETag: etag,
+    });
+    res.end(body);
   }
 
   function updateApprovedInventory(stockId, rawEdits) {
@@ -397,6 +494,8 @@ function createHalfCutApi(rootDir, options = {}) {
       'status',
       'vehicleCondition',
       'vehicleCategory',
+      'passengerPartType',
+      'truckPartType',
       'origin',
       'shortDescription',
       'notes',
@@ -414,7 +513,7 @@ function createHalfCutApi(rootDir, options = {}) {
     const oldSlug = item.slug || null;
 
     Object.assign(item, edits);
-    if (edits.brand || edits.model) {
+    if (edits.brand || edits.model || edits.passengerPartType !== undefined || edits.vehicleCondition) {
       item = nameNorm.normalizeInventoryRecord(item, rootDir);
     }
     if (edits.year !== undefined && edits.year !== '') {
@@ -465,21 +564,166 @@ function createHalfCutApi(rootDir, options = {}) {
     return item;
   }
 
+  const promoteQueue = new Set();
+  let promoteRunning = false;
+
+  async function drainPromoteQueue() {
+    if (promoteRunning) return;
+    promoteRunning = true;
+    try {
+      while (promoteQueue.size) {
+        const stockId = promoteQueue.values().next().value;
+        promoteQueue.delete(stockId);
+        try {
+          const approved = loadJson(APPROVED_FILE, []);
+          const index = approved.findIndex((item) => item.stockId === stockId);
+          if (index === -1) continue;
+          const item = approved[index];
+          if (!media.recordNeedsMediaPromote(item)) continue;
+          const promoted = await media.promoteRecordMediaAsync(rootDir, item);
+          approved[index] = promoted;
+          saveJson(APPROVED_FILE, approved);
+          console.log('[half-cut] background media promote complete:', stockId);
+        } catch (err) {
+          console.error('[half-cut] background media promote failed:', stockId, err.message);
+        }
+      }
+    } finally {
+      promoteRunning = false;
+      if (promoteQueue.size) void drainPromoteQueue();
+    }
+  }
+
+  function queueBackgroundPromote(stockId) {
+    if (!stockId) return;
+    promoteQueue.add(stockId);
+    void drainPromoteQueue();
+  }
+
+  function queuePromoteForApprovedList(approved) {
+    for (const item of approved || []) {
+      if (media.recordNeedsMediaPromote(item)) queueBackgroundPromote(item.stockId);
+    }
+  }
+
+  async function approveSubmissionById(submissionId, body) {
+    assertNoEmbeddedMedia(body);
+    const previous = getState();
+    const index = previous.submissions.findIndex((item) => item.submissionId === submissionId);
+    if (index === -1) throw new Error('Submission not found');
+
+    const was = previous.submissions[index];
+    if (was.reviewStatus === 'approved') {
+      const existing = previous.approved.find((item) => item.submissionId === submissionId);
+      if (existing) {
+        return { ok: true, submission: was, inventoryItem: existing, promoteQueued: false };
+      }
+    }
+    if (was.reviewStatus !== 'pending') throw new Error('Submission is not pending');
+
+    let submission = body.submission;
+    let inventoryItem = body.inventoryItem;
+    if (!submission || !inventoryItem) throw new Error('submission and inventoryItem required');
+    if (submission.submissionId !== submissionId) throw new Error('submissionId mismatch');
+    if (inventoryItem.submissionId !== submissionId) throw new Error('inventory submissionId mismatch');
+    if (previous.approved.some((item) => item.stockId === inventoryItem.stockId)) {
+      throw new Error('Duplicate stockId');
+    }
+
+    submission = nameNorm.normalizeSubmissionRecord(submission, rootDir);
+    inventoryItem = nameNorm.normalizeInventoryRecord(inventoryItem, rootDir);
+    // Preserve dedicated part type from submission when approve payload omitted it.
+    if (!String(inventoryItem.passengerPartType || '').trim()
+      && String(submission.passengerPartType || '').trim()) {
+      inventoryItem.passengerPartType = String(submission.passengerPartType).trim();
+      inventoryItem = nameNorm.normalizeInventoryRecord(inventoryItem, rootDir);
+    }
+    inventoryItem = nameNorm.rebuildInventoryDerivedFields(inventoryItem);
+
+    const submissions = previous.submissions.slice();
+    submissions[index] = submission;
+    const approved = [
+      inventoryItem,
+      ...previous.approved.filter((item) => item.stockId !== inventoryItem.stockId),
+    ];
+
+    saveJson(SUBMISSIONS_FILE, submissions);
+    saveJson(APPROVED_FILE, approved);
+
+    modelMemory.rememberVehicle(submission);
+    modelMemory.rememberVehicle(inventoryItem);
+    powertrainMemory.rememberFromHalfCut(inventoryItem);
+
+    const next = { submissions, approved };
+    const events = diffHalfCutState(previous, next);
+    notifyHalfCutEvents(events);
+
+    const promoteQueued = media.recordNeedsMediaPromote(inventoryItem);
+    if (promoteQueued) queueBackgroundPromote(inventoryItem.stockId);
+
+    return { ok: true, submission, inventoryItem, promoteQueued };
+  }
+
+  function rejectSubmissionById(submissionId, body) {
+    const previous = getState();
+    const index = previous.submissions.findIndex((item) => item.submissionId === submissionId);
+    if (index === -1) throw new Error('Submission not found');
+
+    const was = previous.submissions[index];
+    if (was.reviewStatus === 'rejected') {
+      return { ok: true, submission: was };
+    }
+    if (was.reviewStatus !== 'pending') throw new Error('Submission is not pending');
+
+    const reason = String(body?.reason || '').trim();
+    const submissions = previous.submissions.slice();
+    submissions[index] = {
+      ...was,
+      reviewStatus: 'rejected',
+      rejectReason: reason,
+      reviewedAt: new Date().toISOString(),
+    };
+
+    saveJson(SUBMISSIONS_FILE, submissions);
+    const next = { submissions, approved: previous.approved };
+    const events = diffHalfCutState(previous, next);
+    notifyHalfCutEvents(events);
+    return { ok: true, submission: submissions[index] };
+  }
+
   async function putState(body) {
     assertNoEmbeddedMedia(body);
     const previous = getState();
     const submissions = Array.isArray(body.submissions) ? body.submissions : [];
     const approvedInput = Array.isArray(body.approved) ? body.approved : [];
+
+    // Guard: bulk price rewrites require explicit CEO/admin confirmation.
+    // Meaning: 一次改很多条价格会被拦住，除非带 allowBulkPriceUpdate=true。
+    const prevPrice = new Map(
+      (previous.approved || []).map((item) => [String(item.stockId || ''), item.priceUsd])
+    );
+    const priceChanged = approvedInput.filter((item) => {
+      const sid = String(item?.stockId || '');
+      if (!sid || !prevPrice.has(sid)) return false;
+      const before = Number(prevPrice.get(sid));
+      const after = Number(item.priceUsd);
+      if (!Number.isFinite(before) || !Number.isFinite(after)) return false;
+      return before !== after;
+    });
+    const allowBulkPrice = body?.allowBulkPriceUpdate === true
+      || String(process.env.ALLOW_BULK_PRICE_UPDATE || '') === '1';
+    if (priceChanged.length >= 3 && !allowBulkPrice) {
+      throw new Error(
+        `Blocked bulk price update (${priceChanged.length} items). `
+        + 'Pass allowBulkPriceUpdate:true only with CEO authorization.'
+      );
+    }
+
     const { state: normalized } = nameNorm.normalizeState(
       { submissions, approved: approvedInput },
       rootDir
     );
-    let approved = normalized.approved;
-    try {
-      approved = await media.promoteApprovedListAsync(rootDir, normalized.approved);
-    } catch (err) {
-      console.error('[half-cut] media promote failed on putState:', err.message);
-    }
+    const approved = normalized.approved;
     saveJson(SUBMISSIONS_FILE, normalized.submissions);
     saveJson(APPROVED_FILE, approved);
     normalized.submissions.forEach((item) => modelMemory.rememberVehicle(item));
@@ -487,6 +731,7 @@ function createHalfCutApi(rootDir, options = {}) {
       modelMemory.rememberVehicle(item);
       powertrainMemory.rememberFromHalfCut(item);
     });
+    queuePromoteForApprovedList(approved);
     const next = { submissions: normalized.submissions, approved };
     const events = diffHalfCutState(previous, next);
     for (const event of events) {
@@ -498,18 +743,232 @@ function createHalfCutApi(rootDir, options = {}) {
     return next;
   }
 
-  function appendSubmission(submission) {
+  function supplierOwnsRecord(user, record) {
+    if (!user || !record) return false;
+    if (user.role === 'admin') return true;
+    if (user.id && record.supplierId && record.supplierId === user.id) return true;
+    const userPhone = normalizePhone(user.phoneNormalized || user.phone, user.countryCode);
+    const recordPhone = normalizePhone(record.supplierPhoneNormalized || record.supplierPhone, '');
+    return Boolean(userPhone && recordPhone && phonesMatch(userPhone, recordPhone));
+  }
+
+  function summarizeUpload(record, source) {
+    return {
+      id: record.stockId || record.approvedStockId || record.submissionId,
+      submissionId: record.submissionId || '',
+      stockId: record.stockId || record.approvedStockId || '',
+      slug: record.slug || record.approvedSlug || '',
+      title: record.title || [record.brand, record.model, record.year].filter(Boolean).join(' '),
+      brand: record.brand || '',
+      model: record.model || '',
+      year: record.year || null,
+      engineCode: record.engineCode || '',
+      transmissionCode: record.transmissionCode || '',
+      drivetrain: record.drivetrain || '',
+      mileage: record.mileage ?? '',
+      priceUsd: record.priceUsd,
+      shortDescription: record.shortDescription || '',
+      notes: record.notes || '',
+      inventoryStatus: record.inventoryStatus || 'Available',
+      reviewStatus: record.reviewStatus || (source === 'approved' ? 'approved' : 'pending'),
+      source,
+      editable: true,
+      supplierId: record.supplierId || '',
+      supplierName: record.supplierName || '',
+      supplierPhone: record.supplierPhone || '',
+      createdAt: record.createdAt || record.approvedAt || null,
+      updatedAt: record.updatedAt || null,
+      photo: Array.isArray(record.photos) && record.photos[0]
+        ? (typeof record.photos[0] === 'string' ? record.photos[0] : record.photos[0].url)
+        : '',
+    };
+  }
+
+  const SUPPLIER_EDITABLE_FIELDS = new Set([
+    'brand',
+    'model',
+    'year',
+    'engineCode',
+    'transmissionCode',
+    'drivetrain',
+    'mileage',
+    'priceUsd',
+    'shortDescription',
+    'notes',
+    'inventoryStatus',
+  ]);
+
+  function findOwnedRecord(user, id) {
+    const key = String(id || '').trim();
+    if (!key) return null;
+    const state = getState();
+    const approved = state.approved.find((item) => (
+      supplierOwnsRecord(user, item)
+      && (item.stockId === key || item.approvedStockId === key || item.slug === key || item.submissionId === key)
+    ));
+    if (approved) return { kind: 'approved', record: approved };
+    const submission = state.submissions.find((item) => (
+      supplierOwnsRecord(user, item)
+      && (item.submissionId === key || item.approvedStockId === key)
+    ));
+    if (submission) return { kind: 'submission', record: submission };
+    return null;
+  }
+
+  function getUploadDetailForSupplier(user, id) {
+    const found = findOwnedRecord(user, id);
+    if (!found) {
+      throw Object.assign(new Error('Listing not found or not owned by you'), { statusCode: 404 });
+    }
+    return {
+      ok: true,
+      item: summarizeUpload(found.record, found.kind === 'approved' ? 'approved' : 'submission'),
+      kind: found.kind,
+    };
+  }
+
+  function updateOwnUpload(user, id, rawEdits) {
+    if (!user || (user.role !== 'supplier' && user.role !== 'admin')) {
+      throw Object.assign(new Error('Supplier authentication required'), { statusCode: 401 });
+    }
+    const found = findOwnedRecord(user, id);
+    if (!found) {
+      throw Object.assign(new Error('Listing not found or not owned by you'), { statusCode: 404 });
+    }
+
+    const edits = {};
+    Object.entries(rawEdits || {}).forEach(([key, value]) => {
+      if (!SUPPLIER_EDITABLE_FIELDS.has(key)) return;
+      if (value === undefined || value === null) return;
+      edits[key] = value;
+    });
+    if (!Object.keys(edits).length) throw new Error('No editable fields provided');
+
+    if (edits.inventoryStatus) {
+      const allowedStatus = new Set(['Available', 'Reserved', 'In Transit', 'Sold']);
+      if (!allowedStatus.has(String(edits.inventoryStatus))) {
+        throw new Error('Invalid inventoryStatus');
+      }
+    }
+
+    if (found.kind === 'approved') {
+      // Reuse admin inventory patch, but only after ownership check above.
+      const item = updateApprovedInventory(found.record.stockId, edits);
+      return { ok: true, item: summarizeUpload(item, 'approved'), kind: 'approved' };
+    }
+
+    const previous = getState();
+    const index = previous.submissions.findIndex((item) => item.submissionId === found.record.submissionId);
+    if (index < 0) throw new Error('Submission not found');
+    let submission = { ...previous.submissions[index], ...edits };
+    if (edits.year !== undefined && edits.year !== '') submission.year = Number(edits.year);
+    if (edits.priceUsd !== undefined && edits.priceUsd !== '') {
+      submission.priceUsd = Number(Number(edits.priceUsd).toFixed(2));
+    }
+    if (edits.brand || edits.model) {
+      submission = nameNorm.normalizeSubmissionRecord(submission, rootDir);
+    }
+    submission.updatedAt = new Date().toISOString();
+    submission.updatedBySupplierId = user.id;
+    const submissions = previous.submissions.slice();
+    submissions[index] = submission;
+    saveJson(SUBMISSIONS_FILE, submissions);
+    return { ok: true, item: summarizeUpload(submission, 'submission'), kind: 'submission' };
+  }
+
+  function listUploadsForSupplier(user) {
+    if (!user || (user.role !== 'supplier' && user.role !== 'admin')) {
+      throw Object.assign(new Error('Supplier authentication required'), { statusCode: 401 });
+    }
+    const state = getState();
+    const submissions = state.submissions
+      .filter((item) => supplierOwnsRecord(user, item))
+      .map((item) => summarizeUpload(item, 'submission'));
+    const approved = state.approved
+      .filter((item) => supplierOwnsRecord(user, item))
+      .map((item) => summarizeUpload(item, 'approved'));
+
+    // Prefer approved row when the same submission was promoted
+    const approvedSubmissionIds = new Set(
+      state.approved.map((item) => item.submissionId).filter(Boolean),
+    );
+    const pendingOrRejected = submissions.filter((item) => !approvedSubmissionIds.has(item.submissionId));
+    const items = [...pendingOrRejected, ...approved]
+      .sort((a, b) => String(b.createdAt || '').localeCompare(String(a.createdAt || '')));
+
+    return {
+      ok: true,
+      supplier: {
+        id: user.id,
+        supplierName: user.supplierName,
+        phone: user.phone,
+        phoneNormalized: normalizePhone(user.phoneNormalized || user.phone, user.countryCode),
+      },
+      counts: {
+        pending: items.filter((i) => i.reviewStatus === 'pending').length,
+        approved: items.filter((i) => i.reviewStatus === 'approved' || i.source === 'approved').length,
+        rejected: items.filter((i) => i.reviewStatus === 'rejected').length,
+        total: items.length,
+      },
+      items,
+    };
+  }
+
+  function bindSupplierIdentity(submission, user) {
+    if (!user || (user.role !== 'supplier' && user.role !== 'admin')) return submission;
+    const phoneNorm = normalizePhone(user.phoneNormalized || user.phone, user.countryCode);
+    submission.supplierId = user.id;
+    if (user.supplierName) submission.supplierName = user.supplierName;
+    if (user.phone && !submission.supplierPhone) submission.supplierPhone = user.phone;
+    if (phoneNorm) {
+      submission.supplierPhoneNormalized = phoneNorm;
+      if (!submission.supplierPhone) {
+        submission.supplierPhone = phoneNorm.startsWith('86') ? phoneNorm.slice(2) : phoneNorm;
+      }
+    }
+    return submission;
+  }
+
+  function reserveApprovedStock(stockId, { orderId, reason } = {}) {
+    const id = String(stockId || '').trim();
+    if (!id) throw new Error('stockId required');
+    const previous = getState();
+    const index = previous.approved.findIndex(
+      (item) => item.stockId === id || item.approvedStockId === id || item.slug === id,
+    );
+    if (index < 0) throw new Error(`Approved stock not found: ${id}`);
+    const item = { ...previous.approved[index] };
+    item.inventoryStatus = 'Reserved';
+    item.reservedAt = new Date().toISOString();
+    if (orderId) item.reservedOrderId = orderId;
+    if (reason) item.reserveReason = reason;
+    const approved = previous.approved.slice();
+    approved[index] = item;
+    saveJson(APPROVED_FILE, approved);
+    return item;
+  }
+
+  function appendSubmission(submission, actor = null, options = {}) {
     assertNoEmbeddedMedia(submission, 'submission');
     if (!submission || typeof submission !== 'object') throw new Error('Invalid submission');
     if (!submission.submissionId) throw new Error('submissionId required');
+    if (actor) submission = bindSupplierIdentity(submission, actor);
     const meta = nameNorm.normalizeListingMeta(submission);
-    const isTruckCab = meta?.vehicleCategory === 'truck' && meta?.truckPartType === 'cab';
+    const isLooseTruckPart = meta?.vehicleCategory === 'truck'
+      && ['cab', 'engine', 'axle', 'other'].includes(meta?.truckPartType);
+    const isLoosePassengerPart = meta?.vehicleCategory === 'passenger'
+      && ['front', 'engine', 'transmission', 'chassis', 'other'].includes(meta?.passengerPartType);
+    const isLoosePart = isLooseTruckPart || isLoosePassengerPart;
     const isMachinery = meta?.vehicleCategory === 'machinery';
     const vin = String(submission.vin || '').trim();
-    if (!isTruckCab && !isMachinery && vin.length !== 17) throw new Error('Valid VIN required');
-    if (isTruckCab && vin && vin.length !== 17) throw new Error('VIN must be 17 characters when provided');
+    if (!isLoosePart && !isMachinery && vin.length !== 17) throw new Error('Valid VIN required');
+    if (isLoosePart && vin && vin.length !== 17) throw new Error('VIN must be 17 characters when provided');
     if (!Array.isArray(submission.photos) || submission.photos.length < (isMachinery ? 4 : 3)) {
       throw new Error(isMachinery ? 'At least 4 photos required for machinery' : 'At least 3 photos required');
+    }
+    const photoCap = options.maxPhotos || MAX_PHOTOS_PER_SUBMISSION;
+    if (submission.photos.length > photoCap) {
+      throw new Error(`At most ${photoCap} photos allowed`);
     }
     assertSubmissionMediaUrls(submission);
 
@@ -570,7 +1029,8 @@ function createHalfCutApi(rootDir, options = {}) {
   }
 
   function issueUploadToken(req) {
-    if (!limitUploadToken(req)) return null;
+    // 仅白名单 IP + 有效 supplier key 的批量工作站跳过 upload-token 配额
+    if (!isTrustedBatchUploader(req) && !limitUploadToken(req)) return null;
     const token = crypto.randomBytes(24).toString('hex');
     uploadTokens.set(token, {
       ip: clientIp(req),
@@ -644,7 +1104,7 @@ function createHalfCutApi(rootDir, options = {}) {
         uploads: true,
         supplierGate: Boolean(supplierUploadKey()),
         r2: r2.isEnabled(),
-        uploadVia: r2.isEnabled() ? 'direct' : 'disk',
+        uploadVia: r2.uploadConfig().directUpload ? 'direct' : (r2.isEnabled() ? 'r2-server' : 'disk'),
         serverUpload: serverUploadLimits(),
         dataSafeguard: {
           intake: intakeLog.stats(),
@@ -656,7 +1116,19 @@ function createHalfCutApi(rootDir, options = {}) {
 
     if (req.method === 'GET' && pathname === '/api/half-cuts/public') {
       const catalog = await getPublicCatalog();
-      json(res, 200, catalog);
+      sendPublicJson(req, res, 200, catalog);
+      return true;
+    }
+
+    if (req.method === 'GET' && pathname === '/api/half-cuts/public/item') {
+      const url = new URL(req.url, `http://${req.headers.host || 'localhost'}`);
+      const slug = url.searchParams.get('slug') || url.searchParams.get('stockId') || '';
+      const item = await getPublicItemBySlug(slug);
+      if (!item) {
+        json(res, 404, { error: 'Listing not found' });
+        return true;
+      }
+      sendPublicJson(req, res, 200, { item });
       return true;
     }
 
@@ -687,8 +1159,8 @@ function createHalfCutApi(rootDir, options = {}) {
         json(res, 403, { error: 'Forbidden' });
         return true;
       }
-      if (!r2.isEnabled()) {
-        json(res, 503, { error: 'Direct upload not configured' });
+      if (!r2.isEnabled() || !r2.uploadConfig().directUpload) {
+        json(res, 503, { error: 'Direct upload not configured — use server upload endpoint' });
         return true;
       }
       if (!consumeUploadToken(req)) {
@@ -698,7 +1170,8 @@ function createHalfCutApi(rootDir, options = {}) {
       try {
         const body = await readJsonBody(req);
         const kind = body.kind === 'video' ? 'video' : 'photo';
-        const mimeType = String(body.mimeType || body.contentType || '').trim();
+        let mimeType = String(body.mimeType || body.contentType || '').trim();
+        if (kind === 'video') mimeType = inferVideoMime(mimeType, body.filename);
         const size = Number(body.size || 0);
         const allowed = kind === 'video' ? ALLOWED_VIDEO_MIMES : ALLOWED_PHOTO_MIMES;
         const maxBytes = kind === 'video' ? MAX_VIDEO_BYTES : MAX_PHOTO_BYTES;
@@ -708,6 +1181,10 @@ function createHalfCutApi(rootDir, options = {}) {
         const filename = safeFilename(body.filename, mimeType, prefix);
         const key = kind === 'video' ? r2.pendingVideoKey(filename) : r2.pendingPhotoKey(filename);
         const uploadUrl = r2.createPresignedPutUrl(key, mimeType);
+        if (!uploadUrl) {
+          json(res, 503, { error: 'Direct upload not configured — use server upload endpoint' });
+          return true;
+        }
         const url = r2.siteRelativeUrl(key);
         const saved = {
           uploadUrl,
@@ -736,17 +1213,80 @@ function createHalfCutApi(rootDir, options = {}) {
         json(res, 401, { error: 'Upload token required' });
         return true;
       }
-      if (!limitSubmission(req)) {
+      if (!isTrustedBatchUploader(req) && !limitSubmission(req)) {
         json(res, 429, { error: 'Too many submissions' });
         return true;
       }
       try {
         const body = await readJsonBody(req);
-        const submission = appendSubmission(body);
+        const actor = authUser(req);
+        const maxPhotos = isTrustedBatchUploader(req)
+          ? MAX_PHOTOS_TRUSTED_BATCH
+          : MAX_PHOTOS_PER_SUBMISSION;
+        const submission = appendSubmission(body, actor, { maxPhotos });
         revokeUploadToken(req);
-        json(res, 201, { ok: true, submissionId: submission.submissionId });
+        json(res, 201, { ok: true, submissionId: submission.submissionId, supplierId: submission.supplierId || null });
       } catch (err) {
         json(res, 400, { error: err.message || 'Request failed' });
+      }
+      return true;
+    }
+
+    if (req.method === 'GET' && pathname === '/api/half-cuts/my-uploads') {
+      const user = authUser(req);
+      if (!user || (user.role !== 'supplier' && user.role !== 'admin')) {
+        json(res, 401, { error: 'Supplier authentication required' });
+        return true;
+      }
+      try {
+        json(res, 200, listUploadsForSupplier(user));
+      } catch (err) {
+        json(res, err.statusCode || 400, { error: err.message || 'Request failed' });
+      }
+      return true;
+    }
+
+    const myUploadMatch = pathname.match(/^\/api\/half-cuts\/my-uploads\/([^/]+)$/);
+    if (myUploadMatch && req.method === 'GET') {
+      const user = authUser(req);
+      if (!user || (user.role !== 'supplier' && user.role !== 'admin')) {
+        json(res, 401, { error: 'Supplier authentication required' });
+        return true;
+      }
+      try {
+        json(res, 200, getUploadDetailForSupplier(user, decodeURIComponent(myUploadMatch[1])));
+      } catch (err) {
+        json(res, err.statusCode || 400, { error: err.message || 'Request failed' });
+      }
+      return true;
+    }
+
+    if (myUploadMatch && req.method === 'PATCH') {
+      const user = authUser(req);
+      if (!user || (user.role !== 'supplier' && user.role !== 'admin')) {
+        json(res, 401, { error: 'Supplier authentication required' });
+        return true;
+      }
+      try {
+        const body = await readJsonBody(req);
+        const result = updateOwnUpload(user, decodeURIComponent(myUploadMatch[1]), body);
+        json(res, 200, result);
+      } catch (err) {
+        json(res, err.statusCode || 400, { error: err.message || 'Request failed' });
+      }
+      return true;
+    }
+
+    if (req.method === 'GET' && pathname === '/api/half-cuts/my-submissions') {
+      const user = authUser(req);
+      if (!user || (user.role !== 'supplier' && user.role !== 'admin')) {
+        json(res, 401, { error: 'Supplier authentication required' });
+        return true;
+      }
+      try {
+        json(res, 200, listUploadsForSupplier(user));
+      } catch (err) {
+        json(res, err.statusCode || 400, { error: err.message || 'Request failed' });
       }
       return true;
     }
@@ -754,6 +1294,32 @@ function createHalfCutApi(rootDir, options = {}) {
     if (req.method === 'GET' && pathname === '/api/half-cuts/state') {
       if (!requireAdmin(req, res)) return true;
       json(res, 200, getState());
+      return true;
+    }
+
+    const approveMatch = pathname.match(/^\/api\/half-cuts\/submissions\/([^/]+)\/approve$/);
+    if (approveMatch && req.method === 'POST') {
+      if (!requireAdmin(req, res)) return true;
+      try {
+        const body = await readJsonBody(req);
+        const result = await approveSubmissionById(decodeURIComponent(approveMatch[1]), body);
+        json(res, 200, result);
+      } catch (err) {
+        json(res, 400, { error: err.message || 'Request failed' });
+      }
+      return true;
+    }
+
+    const rejectMatch = pathname.match(/^\/api\/half-cuts\/submissions\/([^/]+)\/reject$/);
+    if (rejectMatch && req.method === 'POST') {
+      if (!requireAdmin(req, res)) return true;
+      try {
+        const body = await readJsonBody(req, 64 * 1024);
+        const result = rejectSubmissionById(decodeURIComponent(rejectMatch[1]), body);
+        json(res, 200, result);
+      } catch (err) {
+        json(res, 400, { error: err.message || 'Request failed' });
+      }
       return true;
     }
 
@@ -787,7 +1353,7 @@ function createHalfCutApi(rootDir, options = {}) {
         json(res, 403, { error: 'Forbidden' });
         return true;
       }
-      if (!limitUpload(req)) {
+      if (!isTrustedBatchUploader(req) && !limitUpload(req)) {
         json(res, 429, { error: 'Too many uploads' });
         return true;
       }
@@ -819,15 +1385,17 @@ function createHalfCutApi(rootDir, options = {}) {
           json(res, 400, { error: 'Missing file field' });
           return true;
         }
+        const labelPart = parts.find((part) => part.name === 'label');
+        const uploadLabel = labelPart?.body?.length ? labelPart.body.toString('utf8') : '';
         const saved = await saveOptimizedPhotoUpload({
           dir: PENDING_PHOTOS_DIR,
           publicPrefix: media.pendingPhotoPrefix(),
           part: filePart,
           maxBytes: MAX_PHOTO_BYTES,
           pending: true,
+          label: uploadLabel,
         });
-        const labelPart = parts.find((part) => part.name === 'label');
-        if (labelPart?.body?.length) saved.label = labelPart.body.toString('utf8');
+        if (uploadLabel) saved.label = uploadLabel;
         json(res, 201, saved);
       } catch (err) {
         notifyUploadFailure('photo', err.message || 'Photo upload failed');
@@ -843,7 +1411,7 @@ function createHalfCutApi(rootDir, options = {}) {
         json(res, 403, { error: 'Forbidden' });
         return true;
       }
-      if (!limitUpload(req)) {
+      if (!isTrustedBatchUploader(req) && !limitUpload(req)) {
         json(res, 429, { error: 'Too many uploads' });
         return true;
       }
@@ -913,7 +1481,12 @@ function createHalfCutApi(rootDir, options = {}) {
     MAX_PHOTO_BYTES,
     MAX_VIDEO_BYTES,
     getPublicCatalog,
+    getPublicItemBySlug,
     updateApprovedInventory,
+    reserveApprovedStock,
+    listUploadsForSupplier,
+    getUploadDetailForSupplier,
+    updateOwnUpload,
     modelMemory,
     powertrainMemory,
   };

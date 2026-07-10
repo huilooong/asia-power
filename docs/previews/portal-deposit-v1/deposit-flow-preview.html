@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AsiaPower · 定金支付流程预览</title>
+  <link rel="stylesheet" href="portal.css">
+</head>
+<body>
+  <div class="preview-note">
+    <div><strong>预览 · 未上线</strong> — 详情页 Pay Deposit 30% → Stripe Checkout 示意（不接真支付）</div>
+    <div>
+      <a href="index.html">总览</a> ·
+      <a href="buyer-portal-preview.html">采购商门户</a> ·
+      <a href="supplier-portal-preview.html">供应商门户</a>
+    </div>
+  </div>
+
+  <nav class="ap-nav">
+    <div class="nav-w">
+      <a class="ap-logo" href="index.html">Asia<span>Power</span></a>
+      <div class="nav-links">
+        <a href="deposit-flow-preview.html" class="on">Deposit Flow</a>
+        <a href="buyer-portal-preview.html">Buyer Portal</a>
+      </div>
+    </div>
+  </nav>
+
+  <div class="wrap">
+    <div class="hero-mini">
+      <div class="kicker">Stripe · Deposit 30%</div>
+      <h1>Pay deposit → stock becomes Reserved</h1>
+      <p>销售确认报价后生成订单。买家勾选 B2B Terms，经 Stripe Checkout 付定金；webhook 验签后订单变 DepositPaid，对应库存 listingStatus = Reserved。</p>
+    </div>
+
+    <div class="grid-2">
+      <section class="panel">
+        <h2>Listing buy box（示意）</h2>
+        <div class="card-item" style="border:none;padding-top:0">
+          <div class="thumb">LX570</div>
+          <div>
+            <div class="stock">HC250127 · Lexus LX570</div>
+            <div class="muted">Half-cut · Available · EXW Guangzhou</div>
+          </div>
+          <div class="price">$5,900</div>
+        </div>
+        <div style="display:flex;justify-content:space-between;margin:12px 0 4px">
+          <span class="muted">Deposit (30%)</span>
+          <strong>$1,770</strong>
+        </div>
+        <div style="display:flex;justify-content:space-between;margin-bottom:12px">
+          <span class="muted">Balance after deposit</span>
+          <span class="muted">$4,130</span>
+        </div>
+        <label class="checkbox">
+          <input type="checkbox" id="terms" />
+          <span>I agree this is a B2B purchase. Deposit reserves the unit; balance due before shipment. Refund policy per AsiaPower Sale Terms.</span>
+        </label>
+        <button class="btn btn-gold btn-block" type="button" id="pay-deposit">Pay Deposit 30% with Stripe</button>
+        <div class="actions" style="margin-top:12px">
+          <button class="btn btn-wa" type="button" id="wa">WhatsApp instead</button>
+          <button class="btn btn-ghost" type="button" id="inquire">Keep as inquiry</button>
+        </div>
+        <div class="hint">Guest 询价按钮保留。只有已生成订单的采购商才会看到可点的 Pay Deposit。</div>
+      </section>
+
+      <section class="panel">
+        <h2>Checkout simulation</h2>
+        <p class="sub" id="flow-status">等待点击 Pay Deposit…</p>
+        <div class="steps">
+          <div class="step" id="s1"><div class="n">1</div><div class="t">Create session</div><div class="d">Stripe Checkout</div></div>
+          <div class="step" id="s2"><div class="n">2</div><div class="t">Card pay</div><div class="d">USD deposit</div></div>
+          <div class="step" id="s3"><div class="n">3</div><div class="t">Webhook</div><div class="d">验签成功</div></div>
+          <div class="step" id="s4"><div class="n">4</div><div class="t">Reserved</div><div class="d">库存锁定</div></div>
+        </div>
+        <div class="flow-box" id="receipt">
+          <div class="muted">支付成功后将显示：</div>
+          <div style="margin-top:10px" class="stock">Order AP-ORD-2401 · DepositPaid</div>
+          <div class="muted" style="margin-top:4px">Stock HC250127 → Reserved</div>
+          <div class="muted">Stripe session: cs_test_demo_••••</div>
+        </div>
+      </section>
+    </div>
+  </div>
+
+  <div class="toast" id="toast"></div>
+  <script src="mock-data.js"></script>
+  <script src="deposit-flow.js"></script>
+</body>
+</html>

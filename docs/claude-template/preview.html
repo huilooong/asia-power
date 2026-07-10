@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Claude 3A 首页预览</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: system-ui, "PingFang SC", sans-serif; background: #14160f; color: #eef0e6; }
+    header {
+      padding: 16px 20px; background: #1b3a26; border-bottom: 2px solid #c2562f;
+      display: flex; flex-wrap: wrap; align-items: center; gap: 12px;
+    }
+    header h1 { font-size: 18px; }
+    header p { flex: 1; font-size: 13px; color: #c6cbb9; min-width: 200px; }
+    .btn {
+      display: inline-block; padding: 10px 20px; border-radius: 8px;
+      background: #c2562f; color: #fff; font-weight: 700; text-decoration: none; font-size: 14px;
+    }
+    .btn:hover { filter: brightness(1.08); }
+    .frame-wrap { padding: 0; height: calc(100vh - 72px); }
+    iframe { width: 100%; height: 100%; border: 0; background: #fbfaf6; }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Claude 3A Marketplace 首页</h1>
+    <p>下方为可滚动、可点击链接的真实页面预览（不是代码）</p>
+    <a class="btn" href="/index.html" target="_blank">新窗口打开 ↗</a>
+    <a class="btn" href="/docs/preview-hub.html" style="background:#22452f">← 返回预览中心</a>
+  </header>
+  <div class="frame-wrap">
+    <iframe src="/index.html" title="AsiaPower Claude 3A homepage"></iframe>
+  </div>
+</body>
+</html>

@@ -59,7 +59,7 @@ function diffHalfCutState(previous, next) {
 }
 
 function notifyNewSubmission(submission) {
-  notifyAsync(`🔔 新半车待审核\n${submissionSummary(submission)}`);
+  notifyAsync(`🔔 新乘用车待审核\n${submissionSummary(submission)}`);
 }
 
 function notifyHalfCutEvents(events) {
@@ -155,7 +155,7 @@ function notifyContactLead(lead) {
 function notifyHalfCutLead(lead) {
   if (!lead.phone && !lead.email) return;
   notifyAsync([
-    '📝 半车询价已保存（含联系方式）',
+    '📝 乘用车询价已保存（含联系方式）',
     `ID: ${lead.id}`,
     leadSummary(lead),
     lead.page ? `Page: ${lead.page}` : '',
@@ -170,7 +170,7 @@ function notifyProductLead(lead) {
     `ID: ${lead.id}`,
     leadSummary(lead),
     lead.page ? `Page: ${lead.page}` : '',
-    '客户已留联系方式 — 请 24 小时内回复 FOB/CIF 报价。',
+    '客户已留联系方式 — 请 24 小时内回复 EXW/CIF 报价。',
   ].filter(Boolean).join('\n'));
 }
 

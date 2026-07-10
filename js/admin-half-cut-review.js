@@ -237,7 +237,7 @@
               <div><dt>${t('model')}</dt><dd>${escapeHtml(submission.model)}</dd></div>
               <div><dt>${t('year')}</dt><dd>${escapeHtml(submission.year)}</dd></div>
               <div><dt>${t('mileage')}</dt><dd>${escapeHtml(submission.mileage)}</dd></div>
-              <div><dt>${t('fobPriceUsd')}</dt><dd>${submission.priceUsd ? `$${Number(submission.priceUsd).toLocaleString('en-US')} FOB` : '—'}</dd></div>
+              <div><dt>${t('fobPriceUsd')}</dt><dd>${submission.priceUsd ? `$${Number(submission.priceUsd).toLocaleString('en-US')} EXW` : '—'}</dd></div>
               <div><dt>${t('engineCode')}</dt><dd>${escapeHtml(submission.engineCode || '—')}</dd></div>
               <div><dt>${t('transmission')}</dt><dd>${escapeHtml(submission.transmissionCode || '—')}</dd></div>
               <div><dt>${t('vehicleCondition')}</dt><dd>${escapeHtml(conditionOptionLabel(submission.vehicleCondition) || submission.vehicleCondition || '—')}</dd></div>
@@ -375,7 +375,10 @@
           const id = approveBtn.dataset.approve;
           const card = approveBtn.closest('.admin-review-card');
           const edits = card ? collectEdits(card) : null;
-          s.approveSubmission(id, edits).then((item) => {
+          approveBtn.disabled = true;
+          const approvalPromise = s.approveSubmission(id, edits);
+          render();
+          approvalPromise.then((item) => {
             if (item) {
               feedback.hidden = false;
               feedback.innerHTML = `${tBtn('approvalSuccess')} ${escapeHtml(id)} → ${tBtn('stockId')} ${escapeHtml(item.stockId)}. VIN: ${escapeHtml(Vin().maskVin(item.vin))}`;
@@ -388,6 +391,7 @@
             feedback.innerHTML = `${tBtn('approvalFailed')} ${escapeHtml(err.message || '')}`;
             feedback.className = 'admin-page-feedback admin-page-feedback--error';
             feedback.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
+            render();
           });
           return;
         }

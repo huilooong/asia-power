@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AsiaPower · v4 结构 + 现网库存（预览）</title>
+  <link rel="stylesheet" href="v4-live.css">
+  <style>
+    .preview-note {
+      position: sticky; top: 0; z-index: 10000;
+      background: #1d1d1f; color: #f5f5f7;
+      font: 500 13px/1.45 -apple-system, BlinkMacSystemFont, sans-serif;
+      padding: 10px 20px;
+      display: flex; flex-wrap: wrap; gap: 8px 18px; align-items: center; justify-content: space-between;
+    }
+    .preview-note strong { color: #f5a623; }
+    .preview-note a { color: #7dd3fc; }
+    .pc-img.real img, .sc-img.real img {
+      width: 100%; height: 100%; object-fit: cover; display: block;
+    }
+    .sc-img.real { animation: none; background: #e8ecf0; min-height: 320px; }
+    .pc-img.real { animation: none; background: #e8ecf0; }
+    .pcard a, .showcase-card a { color: inherit; text-decoration: none; }
+    .loading-msg { padding: 40px 24px; text-align: center; color: var(--t2); }
+    .ap-nav { top: 42px; }
+    .demo-bar { top: 42px; }
+    .ap-nav.with-demo { top: 83px; }
+  </style>
+</head>
+<body>
+  <div class="preview-note">
+    <div>
+      <strong>预览 · 未上线</strong>
+      — v4 版式结构 + 现网真实库存（快照）
+      · <span id="snap-meta">加载中…</span>
+    </div>
+    <div>
+      <a href="../page-design-last2/asia-power-v4-upgraded.html" target="_blank">对照纯设计稿</a>
+      ·
+      <a href="https://asia-power.com/" target="_blank">对照现网首页</a>
+    </div>
+  </div>
+
+  <div class="demo-bar">
+    <span class="demo-bar-label">AsiaPower — <span>v4 + Live Inventory</span> · 结构定稿预览</span>
+    <div class="tabs">
+      <button class="tab on" data-go="home">首页</button>
+      <button class="tab" data-go="listing">列表页</button>
+      <button class="tab" data-go="detail">产品详情</button>
+      <button class="tab" data-go="contact">联系我们</button>
+    </div>
+  </div>
+
+  <nav class="ap-nav with-demo">
+    <div class="nav-w">
+      <a class="ap-logo" href="https://asia-power.com/" target="_blank" rel="noopener">Asia<span>Power</span></a>
+      <div class="nav-links">
+        <a href="https://asia-power.com/half-cuts/" target="_blank" rel="noopener" class="on">Half-Cuts</a>
+        <a href="https://asia-power.com/trucks/" target="_blank" rel="noopener">Trucks</a>
+        <a href="https://asia-power.com/engines/" target="_blank" rel="noopener">Engines &amp; Parts</a>
+        <a href="https://asia-power.com/half-cuts/?cat=machinery" target="_blank" rel="noopener">Construction</a>
+        <a href="https://asia-power.com/about.html" target="_blank" rel="noopener">About</a>
+      </div>
+      <div class="nav-right">
+        <div class="lang-sw">
+          <a href="#" class="on">EN</a><a href="#">中文</a><a href="#">FR</a><a href="#">AR</a>
+        </div>
+        <a id="nav-wa" href="https://wa.me/8618603773077" class="nav-wa" target="_blank" rel="noopener">
+          <svg viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51a5.5 5.5 0 00-.57-.01c-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/></svg>
+          WhatsApp
+        </a>
+      </div>
+    </div>
+  </nav>
+
+  <div id="home" class="pv on">
+    <div class="hero">
+      <div class="hero-badge"><span class="dot"></span> Video-verified · Ships to 110+ countries</div>
+      <h1>The global marketplace for<br><em>used powertrains.</em></h1>
+      <p class="hero-sub">Half-cuts, engines and truck parts — sourced in China, delivered worldwide. EXW pricing, 24-hour quotes.</p>
+      <div class="hero-search-wrap">
+        <form class="hero-search" action="https://asia-power.com/half-cuts/" method="get" target="_blank">
+          <input type="text" name="q" placeholder="Search by make, model, engine code or HC number…" />
+          <button class="hero-search-btn" type="submit">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+            Search
+          </button>
+        </form>
+      </div>
+      <div class="popular-wrap">
+        <div class="popular-label">Popular searches</div>
+        <div class="popular-tags" id="popular-tags"></div>
+      </div>
+    </div>
+
+    <div style="max-width:var(--max);margin:0 auto;padding:0 24px;transform:translateY(-24px)">
+      <div class="stats-row" id="stats-row"></div>
+    </div>
+
+    <div class="section" style="padding-top:32px">
+      <div class="sec-head">
+        <div>
+          <div class="sec-kicker">Browse</div>
+          <div class="sec-h">What are you looking for?</div>
+        </div>
+      </div>
+      <div class="cat-grid" id="cat-grid"></div>
+    </div>
+
+    <div class="showcase-wrap" style="padding-top:0" id="showcase-wrap"></div>
+
+    <div class="section" style="padding-top:0; background:var(--bg2); padding-bottom:72px">
+      <div class="sec-head" style="padding-top:64px">
+        <div>
+          <div class="sec-kicker">Latest stock</div>
+          <div class="sec-h">Featured Half-Cuts</div>
+        </div>
+        <a id="see-all-half" href="https://asia-power.com/half-cuts/" class="see-all" target="_blank" rel="noopener">View all →</a>
+      </div>
+      <div class="prod-grid" id="prod-grid"><div class="loading-msg">正在接入现网库存…</div></div>
+    </div>
+
+    <div class="trust">
+      <div class="trust-w" id="trust-w"></div>
+    </div>
+  </div>
+
+  <div id="listing" class="pv">
+    <div class="page-head">
+      <div class="page-head-w">
+        <div class="breadcrumb"><a href="https://asia-power.com/" target="_blank">Home</a><span class="s">/</span> Half-Cuts</div>
+        <h1>Half-Cut Vehicles</h1>
+        <p id="listing-sub">Loading live stock…</p>
+      </div>
+    </div>
+    <div class="listing-layout">
+      <aside class="sb">
+        <div class="sb-block">
+          <h3>Category</h3>
+          <div class="sb-cats" id="sb-cats"></div>
+        </div>
+      </aside>
+      <div>
+        <div class="prod-grid" id="listing-grid"></div>
+      </div>
+    </div>
+  </div>
+
+  <div id="detail" class="pv">
+    <div class="page-head">
+      <div class="page-head-w">
+        <div class="breadcrumb"><a href="#" data-go="home">Home</a><span class="s">/</span><a href="#" data-go="listing">Half-Cuts</a><span class="s">/</span> <span id="detail-crumb">…</span></div>
+        <h1 id="detail-title">…</h1>
+        <p id="detail-meta">…</p>
+      </div>
+    </div>
+    <div class="section" id="detail-body"></div>
+  </div>
+
+  <div id="contact" class="pv">
+    <div class="contact-hero">
+      <h2>Get in Touch</h2>
+      <p>We source, verify, and export to 110+ destinations. We reply within 24 hours.</p>
+    </div>
+    <div class="section">
+      <div class="ch-grid">
+        <div class="ch">
+          <div class="ch-ic wa"><svg viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51a5.5 5.5 0 00-.57-.01c-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/></svg></div>
+          <h3>WhatsApp</h3>
+          <p>Fastest way to reach us. Include your item number for instant quotes.</p>
+          <a href="https://wa.me/8618603773077?text=Hello%20AsiaPower%2C%20I%20would%20like%20to%20enquire%20about%20inventory." target="_blank" rel="noopener">Chat on WhatsApp →</a>
+        </div>
+        <div class="ch">
+          <div class="ch-ic mail"><svg viewBox="0 0 24 24"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg></div>
+          <h3>Email</h3>
+          <p>For formal inquiries, bulk orders, or partnership discussions.</p>
+          <a href="mailto:info@asia-power.com">info@asia-power.com →</a>
+        </div>
+        <div class="ch">
+          <div class="ch-ic ph"><svg viewBox="0 0 24 24"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07A19.5 19.5 0 013.07 8.81a19.79 19.79 0 01-3.07-8.7A2 2 0 012 0h3a2 2 0 012 1.72 12.84 12.84 0 00.7 2.81 2 2 0 01-.45 2.11L6.09 7.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45 12.84 12.84 0 002.81.7A2 2 0 0122 14.92z"/></svg></div>
+          <h3>Phone</h3>
+          <p>Available Mon–Sat, 8am–8pm China Standard Time.</p>
+          <a href="https://asia-power.com/contact.html" target="_blank" rel="noopener">Contact page →</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <footer class="ap-footer">
+    <div class="footer-w">
+      <div class="footer-g">
+        <div class="footer-brand">
+          <div class="ap-logo">Asia<span>Power</span></div>
+          <p>Global B2B marketplace for used powertrains. Sourced in China, exported worldwide.</p>
+        </div>
+        <div class="footer-col">
+          <h4>Products</h4>
+          <ul>
+            <li><a href="https://asia-power.com/half-cuts/" target="_blank">Half-Cuts</a></li>
+            <li><a href="https://asia-power.com/trucks/" target="_blank">Trucks</a></li>
+            <li><a href="https://asia-power.com/engines/" target="_blank">Engines &amp; Parts</a></li>
+            <li><a href="https://asia-power.com/half-cuts/?cat=machinery" target="_blank">Construction</a></li>
+          </ul>
+        </div>
+        <div class="footer-col">
+          <h4>Company</h4>
+          <ul>
+            <li><a href="https://asia-power.com/about.html" target="_blank">About</a></li>
+            <li><a href="https://asia-power.com/supplier-portal.html" target="_blank">Become a Supplier</a></li>
+            <li><a href="https://asia-power.com/contact.html" target="_blank">Contact</a></li>
+          </ul>
+        </div>
+        <div>
+          <div class="footer-cta-box">
+            <h4>Get a Quote</h4>
+            <p>Two offices — Zhengzhou &amp; Accra. Reply within 24 hours.</p>
+            <a class="btn-wa-f" href="https://wa.me/8618603773077" target="_blank" rel="noopener">WhatsApp Now</a>
+          </div>
+        </div>
+      </div>
+      <div class="footer-btm">
+        <span>© 2026 AsiaPower. Preview only — not production.</span>
+        <span>Structure: v4 · Data: live snapshot</span>
+      </div>
+    </div>
+  </footer>
+
+  <script src="v4-live.js"></script>
+</body>
+</html>

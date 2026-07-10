@@ -61,7 +61,7 @@ for (const [page, needle] of [
 
 // Supplier portal bilingual link
 const portal = read('supplier-portal.html');
-if (portal.includes('上传半车库存') && portal.includes('Submit Half-Cut Inventory')) {
+if (portal.includes('上传乘用车库存') && portal.includes('Submit Half-Cut Inventory')) {
   pass('supplier-portal half-cut link bilingual');
 } else {
   fail('supplier-portal half-cut link bilingual');

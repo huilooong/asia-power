@@ -165,20 +165,43 @@ function promoteUrl(rootDir, url) {
 }
 
 async function promotePhotoUrlAsync(rootDir, url, existingThumbUrl = '') {
+  let resultUrl = url;
+  let resultThumb = existingThumbUrl || '';
   const parts = pendingParts(url);
-  if (!parts) return { url, thumbUrl: existingThumbUrl || '' };
-  const { clean } = parts;
-  const opt = optimize();
-  if (opt?.optimizePendingPhoto) {
-    try {
-      const optimized = await opt.optimizePendingPhoto(rootDir, clean);
-      if (optimized?.url) return optimized;
-    } catch (err) {
-      console.warn('[media] photo optimize on promote failed:', err.message);
+  if (parts) {
+    const { clean } = parts;
+    const opt = optimize();
+    if (opt?.optimizePendingPhoto) {
+      try {
+        const optimized = await opt.optimizePendingPhoto(rootDir, clean);
+        if (optimized?.url) {
+          resultUrl = optimized.url;
+          resultThumb = optimized.thumbUrl || '';
+        }
+      } catch (err) {
+        console.warn('[media] photo optimize on promote failed:', err.message);
+      }
     }
+    if (recordUrlNeedsPromote(resultUrl)) {
+      resultUrl = await promoteUrlAsync(rootDir, resultUrl);
+    }
+    if (!resultThumb) resultThumb = '';
   }
-  const promoted = await promoteUrlAsync(rootDir, url);
-  return { url: promoted, thumbUrl: '' };
+  if (resultThumb && recordUrlNeedsPromote(resultThumb)) {
+    resultThumb = await promoteUrlAsync(rootDir, resultThumb);
+  }
+  return { url: resultUrl, thumbUrl: resultThumb };
+}
+
+async function syncPublicFileToR2IfNeeded(kind, filename, diskPath) {
+  const r2 = loadR2();
+  if (!r2?.isEnabled?.() || !r2.putObjectFromFile) return;
+  const toKey = kind === 'photos' ? r2.publicPhotoKey(filename) : r2.publicVideoKey(filename);
+  try {
+    await r2.putObjectFromFile(diskPath, toKey);
+  } catch (err) {
+    console.error('[media] R2 public sync failed:', err.message);
+  }
 }
 
 async function promoteUrlAsync(rootDir, url) {
@@ -193,9 +216,13 @@ async function promoteUrlAsync(rootDir, url) {
   if (fs.existsSync(from)) {
     fs.mkdirSync(path.dirname(to), { recursive: true });
     fs.renameSync(from, to);
+    await syncPublicFileToR2IfNeeded(kind, filename, to);
     return publicUrl;
   }
-  if (fs.existsSync(to)) return publicUrl;
+  if (fs.existsSync(to)) {
+    await syncPublicFileToR2IfNeeded(kind, filename, to);
+    return publicUrl;
+  }
 
   const r2 = loadR2();
   if (r2?.isEnabled?.()) {
@@ -220,7 +247,12 @@ function promoteRecordMedia(rootDir, record) {
     copy.photos = copy.photos.map((photo) => {
       if (typeof photo === 'string') return promoteUrl(rootDir, photo);
       if (photo && typeof photo === 'object') {
-        return { ...photo, url: promoteUrl(rootDir, photo.url) };
+        const promotedThumb = photo.thumbUrl ? promoteUrl(rootDir, photo.thumbUrl) : '';
+        return {
+          ...photo,
+          url: promoteUrl(rootDir, photo.url),
+          thumbUrl: promotedThumb || photo.thumbUrl || '',
+        };
       }
       return photo;
     });
@@ -272,6 +304,28 @@ async function promoteApprovedListAsync(rootDir, approved) {
   return out;
 }
 
+function recordUrlNeedsPromote(url) {
+  if (!url || typeof url !== 'string') return false;
+  try {
+    const pathname = url.startsWith('http') ? new URL(url).pathname : url.split('?')[0];
+    return isPendingUploadPath(pathname);
+  } catch {
+    return isPendingUploadPath(stripAccessQuery(url));
+  }
+}
+
+function recordNeedsMediaPromote(record) {
+  if (!record) return false;
+  for (const photo of record.photos || []) {
+    const url = typeof photo === 'string' ? photo : photo?.url;
+    if (recordUrlNeedsPromote(url)) return true;
+    const thumbUrl = typeof photo === 'object' ? photo?.thumbUrl : '';
+    if (recordUrlNeedsPromote(thumbUrl)) return true;
+  }
+  const videoUrl = record.video?.url || record.videoUrl;
+  return recordUrlNeedsPromote(videoUrl);
+}
+
 module.exports = {
   ensureMediaDirs,
   withAccessQuery,
@@ -287,6 +341,7 @@ module.exports = {
   promoteApprovedList,
   promoteRecordMediaAsync,
   promoteApprovedListAsync,
+  recordNeedsMediaPromote,
   promoteUrlAsync,
   pendingPhotoPrefix,
   pendingVideoPrefix,

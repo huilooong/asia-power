@@ -1,0 +1,460 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AsiaPower VI 3.0 · 方案B 工业碳钢</title>
+  <style>
+    :root {
+      --navy-900: #18181b;
+      --navy-800: #27272a;
+      --navy-700: #3f3f46;
+      --accent: #c2762a;
+      --accent-light: #d4954a;
+      --white: #fff;
+      --gray-100: #f4f6f9;
+      --gray-400: #94a3b8;
+      --gray-600: #64748b;
+      --font-display: "Barlow Condensed", "Arial Narrow", sans-serif;
+      --font-body: "Inter", system-ui, sans-serif;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: var(--font-body); background: #111827; color: var(--navy-900); }
+
+    .vi-bar {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+      background: var(--navy-900); color: var(--white);
+      padding: 10px 20px; border-bottom: 2px solid var(--accent);
+      display: flex; align-items: center; gap: 12px; flex-wrap: wrap;
+    }
+    .vi-bar__title { font-family: var(--font-display); font-weight: 800; color: var(--accent); font-size: 15px; }
+    .scheme-nav { display: flex; gap: 4px; }
+    .scheme-pill {
+      padding: 4px 10px; border-radius: 999px; font-size: 11px; text-decoration: none;
+      border: 1px solid rgba(255,255,255,.2); color: rgba(255,255,255,.65);
+    }
+    .scheme-pill.active { background: var(--accent); color: var(--navy-900); font-weight: 700; border-color: var(--accent); }
+    .scheme-pill:hover { border-color: var(--accent); color: var(--accent); }
+    .compare-table { width: 100%; border-collapse: collapse; font-size: 12px; margin-top: 8px; }
+    .compare-table th, .compare-table td { border: 1px solid rgba(255,255,255,.12); padding: 8px 10px; text-align: left; color: rgba(255,255,255,.75); }
+    .compare-table th { color: var(--accent); background: rgba(255,255,255,.04); }
+    .compare-table a { color: var(--accent-light); }
+    .vi-tabs { display: flex; gap: 4px; flex-wrap: wrap; }
+    .vi-tab {
+      padding: 5px 12px; border-radius: 4px; border: 1px solid rgba(255,255,255,.15);
+      background: transparent; color: rgba(255,255,255,.7); cursor: pointer; font-size: 12px;
+    }
+    .vi-tab:hover { border-color: var(--accent); color: var(--accent); }
+    .vi-tab.active { background: var(--accent); color: var(--navy-900); font-weight: 700; border-color: var(--accent); }
+
+    .vi-content { padding-top: 52px; }
+    .panel { display: none; padding: 24px; max-width: 1100px; margin: 0 auto; }
+    .panel.active { display: block; }
+    .panel h2 { font-family: var(--font-display); font-size: 28px; color: var(--white); margin-bottom: 8px; }
+    .panel__lead { color: var(--gray-400); font-size: 14px; margin-bottom: 24px; line-height: 1.6; }
+    .spec-box {
+      background: rgba(255,255,255,.05); border: 1px solid rgba(255,255,255,.1);
+      border-radius: 8px; padding: 14px 16px; margin-bottom: 20px; color: rgba(255,255,255,.75); font-size: 13px; line-height: 1.7;
+    }
+    .spec-box strong { color: var(--accent); }
+    .mock-img { width: 100%; border-radius: 10px; margin-bottom: 16px; border: 1px solid rgba(255,255,255,.1); }
+
+    /* ── Colors ── */
+    .swatch-row { display: flex; gap: 12px; flex-wrap: wrap; margin-bottom: 24px; }
+    .swatch { width: 120px; border-radius: 8px; overflow: hidden; border: 1px solid rgba(255,255,255,.1); }
+    .swatch__color { height: 72px; }
+    .swatch__info { background: rgba(255,255,255,.05); padding: 8px; font-size: 11px; color: rgba(255,255,255,.7); }
+
+    /* ── Logo lockup ── */
+    .logo-demo {
+      background: var(--navy-900); padding: 40px; border-radius: 12px; text-align: center; margin-bottom: 16px;
+    }
+    .logo-demo--light { background: var(--white); }
+    .logo-text { font-family: var(--font-display); font-size: 48px; font-weight: 800; letter-spacing: 1px; }
+    .logo-text em { color: var(--accent); font-style: normal; }
+    .logo-demo--light .logo-text { color: var(--navy-900); }
+    .logo-demo:not(.logo-demo--light) .logo-text { color: var(--white); }
+    .logo-slogan { font-size: 13px; margin-top: 12px; letter-spacing: 2px; text-transform: uppercase; }
+    .logo-demo:not(.logo-demo--light) .logo-slogan { color: var(--accent); }
+    .logo-demo--light .logo-slogan { color: var(--gray-600); }
+
+    /* ── CSS Wall mockup ── */
+    .wall-mock {
+      aspect-ratio: 16/9; background: var(--navy-900); border-radius: 12px;
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+      position: relative; overflow: hidden; margin-bottom: 16px;
+    }
+    .wall-mock::before {
+      content: ''; position: absolute; bottom: 0; left: 0; right: 0; height: 4px; background: var(--accent);
+    }
+    .wall-mock::after {
+      content: ''; position: absolute; top: 20%; left: 10%; right: 10%; height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(194,118,42,.45), transparent);
+    }
+    .wall-mock .logo-text { font-size: 56px; }
+    .wall-mock__cn { color: rgba(255,255,255,.5); font-size: 16px; margin-top: 16px; letter-spacing: 4px; }
+
+    /* ── Storefront CSS mock ── */
+    .storefront-mock {
+      background: #374151; border-radius: 12px; overflow: hidden; margin-bottom: 16px;
+    }
+    .storefront-sign {
+      background: var(--navy-900); padding: 20px 24px; text-align: center;
+      border-bottom: 3px solid var(--accent);
+    }
+    .storefront-sign .logo-text { font-size: 36px; }
+    .storefront-sign__sub { color: var(--accent); font-size: 11px; letter-spacing: 3px; margin-top: 6px; }
+    .storefront-body {
+      padding: 40px; display: flex; justify-content: center; gap: 4px;
+      background: linear-gradient(180deg, #4b5563, #374151);
+    }
+    .storefront-door {
+      width: 100px; height: 140px; background: rgba(10,22,40,.8);
+      border: 2px solid rgba(194,118,42,.35); border-radius: 4px 4px 0 0;
+      display: flex; align-items: center; justify-content: center;
+      color: rgba(255,255,255,.2); font-size: 10px;
+    }
+
+    /* ── Business card ── */
+    .card-row { display: flex; gap: 20px; flex-wrap: wrap; margin-bottom: 20px; }
+    .biz-card {
+      width: 340px; height: 204px; border-radius: 8px; overflow: hidden;
+      box-shadow: 0 8px 32px rgba(0,0,0,.4); flex-shrink: 0;
+    }
+    .biz-card--front {
+      background: var(--navy-900); padding: 24px;
+      display: flex; flex-direction: column; justify-content: space-between;
+    }
+    .biz-card--front .logo-text { font-size: 28px; text-align: left; }
+    .biz-card__name { color: var(--white); font-size: 15px; font-weight: 600; }
+    .biz-card__title { color: var(--accent); font-size: 11px; margin-top: 2px; }
+    .biz-card__contact { color: rgba(255,255,255,.55); font-size: 10px; line-height: 1.6; }
+    .biz-card--back {
+      background: var(--white); padding: 24px;
+      display: flex; flex-direction: column; justify-content: center;
+    }
+    .biz-card--back p { font-size: 10px; color: var(--gray-600); line-height: 1.7; }
+    .biz-card--back .logo-text { font-size: 22px; margin-bottom: 12px; }
+
+    /* ── Letterhead ── */
+    .letterhead {
+      background: var(--white); border-radius: 8px; overflow: hidden;
+      box-shadow: 0 8px 32px rgba(0,0,0,.3); margin-bottom: 16px;
+    }
+    .letterhead__header {
+      background: var(--navy-900); padding: 16px 32px;
+      display: flex; justify-content: space-between; align-items: center;
+      border-bottom: 3px solid var(--accent);
+    }
+    .letterhead__header .logo-text { font-size: 22px; }
+    .letterhead__header-info { text-align: right; font-size: 9px; color: rgba(255,255,255,.5); line-height: 1.6; }
+    .letterhead__body { padding: 32px; min-height: 320px; }
+    .letterhead__body .line { height: 8px; background: var(--gray-100); border-radius: 4px; margin-bottom: 10px; }
+    .letterhead__body .line--short { width: 40%; }
+    .letterhead__body .line--med { width: 70%; }
+    .letterhead__footer {
+      border-top: 1px solid var(--gray-100); padding: 12px 32px;
+      font-size: 9px; color: var(--gray-400); display: flex; justify-content: space-between;
+    }
+
+    /* ── Envelope ── */
+    .envelope-row { display: flex; gap: 24px; flex-wrap: wrap; align-items: flex-start; }
+    .envelope {
+      width: 320px; height: 220px; background: var(--white); border-radius: 4px;
+      position: relative; box-shadow: 0 4px 20px rgba(0,0,0,.3);
+      overflow: hidden;
+    }
+    .envelope__flap {
+      position: absolute; top: 0; left: 0; right: 0; height: 100px;
+      background: linear-gradient(180deg, var(--gray-100), var(--white));
+      clip-path: polygon(0 0, 50% 70%, 100% 0);
+    }
+    .envelope__logo {
+      position: absolute; top: 16px; left: 20px;
+      font-family: var(--font-display); font-size: 14px; font-weight: 800; color: var(--navy-900);
+    }
+    .envelope__logo em { color: var(--accent); font-style: normal; }
+    .envelope__addr {
+      position: absolute; bottom: 24px; left: 24px; font-size: 9px; color: var(--gray-600); line-height: 1.5;
+    }
+    .envelope__stamp {
+      position: absolute; top: 20px; right: 20px; width: 48px; height: 56px;
+      border: 1px dashed var(--gray-400); font-size: 8px; color: var(--gray-400);
+      display: flex; align-items: center; justify-content: center;
+    }
+
+    /* ── Uniform ── */
+    .uniform-row { display: flex; gap: 24px; flex-wrap: wrap; }
+    .uniform-item { text-align: center; }
+    .uniform-shirt {
+      width: 160px; height: 200px; background: var(--navy-900); border-radius: 12px 12px 4px 4px;
+      position: relative; margin: 0 auto 10px;
+      box-shadow: 0 8px 24px rgba(0,0,0,.3);
+    }
+    .uniform-shirt::before {
+      content: ''; position: absolute; top: 0; left: 50%; transform: translateX(-50%);
+      width: 40px; height: 20px; background: var(--navy-800); border-radius: 0 0 8px 8px;
+    }
+    .uniform-shirt__logo {
+      position: absolute; top: 50px; left: 50%; transform: translateX(-50%);
+      font-family: var(--font-display); font-size: 11px; font-weight: 800; color: var(--white); white-space: nowrap;
+    }
+    .uniform-shirt__logo em { color: var(--accent); font-style: normal; }
+    .uniform-shirt__badge {
+      position: absolute; bottom: 30px; left: 50%; transform: translateX(-50%);
+      font-size: 6px; color: var(--accent); letter-spacing: 1px; white-space: nowrap;
+    }
+    .uniform-label { color: rgba(255,255,255,.6); font-size: 12px; }
+
+    /* ── Email sig ── */
+    .email-sig {
+      background: var(--white); border-radius: 8px; padding: 20px 24px; max-width: 480px;
+      border-left: 4px solid var(--accent); margin-bottom: 16px;
+    }
+    .email-sig__name { font-weight: 700; font-size: 14px; color: var(--navy-900); }
+    .email-sig__title { font-size: 12px; color: var(--accent); margin-bottom: 8px; }
+    .email-sig__line { font-size: 11px; color: var(--gray-600); line-height: 1.6; }
+
+    @media (max-width: 768px) {
+      .biz-card { width: 100%; height: auto; min-height: 180px; }
+      .card-row { flex-direction: column; }
+    }
+  </style>
+</head>
+<body>
+
+<div class="vi-bar">
+  <span class="vi-bar__title">VI 3.0</span>
+  <div class="scheme-nav">
+    <a class="scheme-pill" href="index.html">A 海军蓝金</a>
+    <a class="scheme-pill active" href="set-b.html">B 工业碳钢</a>
+    <a class="scheme-pill" href="set-c.html">C 国际白金</a>
+  </div>
+  <div class="vi-tabs">
+    <button class="vi-tab active" data-panel="overview">总览</button>
+    <button class="vi-tab" data-panel="wall">背景墙</button>
+    <button class="vi-tab" data-panel="storefront">门头店招</button>
+    <button class="vi-tab" data-panel="uniform">服装</button>
+    <button class="vi-tab" data-panel="card">名片</button>
+    <button class="vi-tab" data-panel="letterhead">信纸</button>
+    <button class="vi-tab" data-panel="envelope">信封</button>
+    <button class="vi-tab" data-panel="email">邮件签名</button>
+  </div>
+</div>
+
+<div class="vi-content">
+
+<!-- OVERVIEW -->
+<div class="panel active" id="panel-overview">
+  <h2>品牌视觉识别总览</h2>
+  <p class="panel__lead">方案 B · 工业碳钢 · 炭灰 + 铜色 · 仓库/车间/集装箱 · 硬朗、耐脏、工业感</p>
+
+  <div class="spec-box">
+    <strong>方案 B：</strong>Charcoal #18181B + Copper #C2762A · 银灰辅助线 #A1A1AA<br>
+    <strong>Slogan：</strong>物尽其用，价值永续 · Every Used Asset Has Value
+  </div>
+
+  <table class="compare-table">
+    <tr><th>方案</th><th>风格</th><th>主色</th><th>最适合</th></tr>
+    <tr><td><a href="index.html">A 海军蓝金</a></td><td>经典 B2B</td><td>Navy + Gold</td><td>网站、国内办公室</td></tr>
+    <tr><td><strong>B 工业碳钢</strong>（当前）</td><td>仓库工业感</td><td>Charcoal + Copper</td><td>郑州仓库、车间、集装箱贴纸</td></tr>
+    <tr><td><a href="set-c.html">C 国际白金</a></td><td>展会极简</td><td>White + Navy + Gold</td><td>英国客户、展会</td></tr>
+  </table>
+
+  <p style="color:rgba(255,255,255,.5);font-size:12px;margin-bottom:12px;">标准色</p>
+  <div class="swatch-row">
+    <div class="swatch"><div class="swatch__color" style="background:#18181b"></div><div class="swatch__info">Charcoal<br>#18181B</div></div>
+    <div class="swatch"><div class="swatch__color" style="background:#27272a"></div><div class="swatch__info">Zinc 800<br>#27272A</div></div>
+    <div class="swatch"><div class="swatch__color" style="background:#c2762a"></div><div class="swatch__info">Copper<br>#C2762A</div></div>
+    <div class="swatch"><div class="swatch__color" style="background:#a1a1aa"></div><div class="swatch__info">Steel<br>#A1A1AA</div></div>
+  </div>
+
+  <p style="color:rgba(255,255,255,.5);font-size:12px;margin-bottom:12px;">Logo 规范</p>
+  <div class="logo-demo">
+    <div class="logo-text">ASIA<em>POWER</em></div>
+    <div class="logo-slogan">Every Used Asset Has Value</div>
+  </div>
+  <div class="logo-demo logo-demo--light">
+    <div class="logo-text">ASIA<em>POWER</em></div>
+    <div class="logo-slogan">物尽其用，价值永续</div>
+  </div>
+</div>
+
+<!-- WALL -->
+<div class="panel" id="panel-wall">
+  <h2>背景墙 · Reception Wall</h2>
+  <p class="panel__lead">仓库接待区 / 车间入口 / 集装箱贴纸底图 · 炭灰底 + 铜字 · 可配金属拉丝 UV 板</p>
+  <div class="spec-box">
+    <strong>要素：</strong>Logo 居中 · 铜色 POWER · 可加大号 Stock ID 区域（仓库专用）<br>
+    <strong>材质：</strong>铝 composite / 工业 PVC · 耐油污可擦洗
+  </div>
+  <img class="mock-img" src="assets/set-b/set-b-wall-mockup.png" alt="背景墙效果图" loading="lazy">
+  <div class="wall-mock">
+    <div class="logo-text">ASIA<em>POWER</em></div>
+    <div class="logo-slogan">Every Used Asset Has Value</div>
+    <div class="wall-mock__cn">物尽其用 · 价值永续</div>
+  </div>
+</div>
+
+<!-- STOREFRONT -->
+<div class="panel" id="panel-storefront">
+  <h2>门头 · 店招 · Signage</h2>
+  <p class="panel__lead">郑州仓库外立面 · 炭灰铝塑板 + 铜色立体字 · 配反光条安全规范</p>
+  <div class="spec-box">
+    <strong>门头：</strong>炭灰底 · 铜色 ASIA POWER · 副标 POWERTRAIN · USED PARTS EXPORT<br>
+    <strong>店招：</strong>可加「拆车件 · 动力总成」中文 · 高度 50cm 起
+  </div>
+  <img class="mock-img" src="assets/set-b/set-b-storefront-mockup.png" alt="门头效果图" loading="lazy">
+  <div class="storefront-mock">
+    <div class="storefront-sign">
+      <div class="logo-text">ASIA<em>POWER</em></div>
+      <div class="storefront-sign__sub">www.asia-power.com · POWERTRAIN EXPORT</div>
+    </div>
+    <div class="storefront-body">
+      <div class="storefront-door">GLASS<br>DOOR</div>
+      <div class="storefront-door">GLASS<br>DOOR</div>
+    </div>
+  </div>
+</div>
+
+<!-- UNIFORM -->
+<div class="panel" id="panel-uniform">
+  <h2>工作服 · Uniform</h2>
+  <p class="panel__lead">仓库员工 / 供应商拜访 / 展会 · Polo 衫 + 工装夹克 · 左胸 Logo</p>
+  <div class="spec-box">
+    <strong>Polo：</strong>炭灰 #18181B · 左胸铜色 Logo · 后背可选反光 Slogan<br>
+    <strong>夹克：</strong>深锌灰 #52525B · 袖口红黄反光条 · 左胸刺绣<br>
+    <strong>禁止：</strong>大面积图案、非品牌色帽子
+  </div>
+  <img class="mock-img" src="assets/set-b/set-b-uniform-mockup.png" alt="服装效果图" loading="lazy">
+  <div class="uniform-row">
+    <div class="uniform-item">
+      <div class="uniform-shirt">
+        <div class="uniform-shirt__logo">ASIA<em>POWER</em></div>
+        <div class="uniform-shirt__badge">EVERY USED ASSET HAS VALUE</div>
+      </div>
+      <div class="uniform-label">Polo · 仓库/现场</div>
+    </div>
+    <div class="uniform-item">
+      <div class="uniform-shirt" style="background:#52525b;">
+        <div class="uniform-shirt__logo">ASIA<em>POWER</em></div>
+      </div>
+      <div class="uniform-label">夹克 · 拜访/展会</div>
+    </div>
+  </div>
+</div>
+
+<!-- BUSINESS CARD -->
+<div class="panel" id="panel-card">
+  <h2>名片 · Business Card</h2>
+  <p class="panel__lead">90×54mm · 350g 铜版纸哑膜 · 圆角 3mm · 中英双语</p>
+  <img class="mock-img" src="assets/set-b/set-b-stationery-mockup.png" alt="文具效果图" loading="lazy">
+  <div class="card-row">
+    <div class="biz-card biz-card--front">
+      <div class="logo-text">ASIA<em>POWER</em></div>
+      <div>
+        <div class="biz-card__name">Long Hui · 龙惠</div>
+        <div class="biz-card__title">CEO · AsiaPower</div>
+      </div>
+      <div class="biz-card__contact">
+        inquiry@asia-power.com<br>
+        www.asia-power.com<br>
+        Zhengzhou, China
+      </div>
+    </div>
+    <div class="biz-card biz-card--back">
+      <div class="logo-text">ASIA<em>POWER</em></div>
+      <p><strong>BSB Motors</strong> trading as AsiaPower<br>
+      Global powertrain &amp; circular trade platform<br><br>
+      物尽其用，价值永续<br>
+      Every Used Asset Has Value</p>
+    </div>
+  </div>
+</div>
+
+<!-- LETTERHEAD -->
+<div class="panel" id="panel-letterhead">
+  <h2>信纸 · Letterhead</h2>
+  <p class="panel__lead">A4 · 100g 米白或浅灰纸 · 页眉炭灰 + 铜线 · 信封推荐 Kraft 牛皮纸</p>
+  <div class="letterhead">
+    <div class="letterhead__header">
+      <div class="logo-text">ASIA<em>POWER</em></div>
+      <div class="letterhead__header-info">
+        BSB Motors · www.asia-power.com<br>
+        inquiry@asia-power.com · Zhengzhou · Accra
+      </div>
+    </div>
+    <div class="letterhead__body">
+      <div class="line line--short"></div>
+      <div class="line"></div>
+      <div class="line line--med"></div>
+      <div class="line"></div>
+      <div class="line line--short" style="margin-top:40px"></div>
+      <div class="line line--med"></div>
+    </div>
+    <div class="letterhead__footer">
+      <span>Every Used Asset Has Value</span>
+      <span>Page 1</span>
+    </div>
+  </div>
+</div>
+
+<!-- ENVELOPE -->
+<div class="panel" id="panel-envelope">
+  <h2>信封 · Envelope</h2>
+  <p class="panel__lead">C5 (229×162mm) 商务函 · DL 细长型 · 左上角 Logo · 右下角寄件地址</p>
+  <div class="envelope-row">
+    <div class="envelope">
+      <div class="envelope__flap"></div>
+      <div class="envelope__logo">ASIA<em>POWER</em></div>
+      <div class="envelope__stamp">STAMP</div>
+      <div class="envelope__addr">
+        BSB Motors / AsiaPower<br>
+        Zhengzhou, Henan, China<br>
+        www.asia-power.com
+      </div>
+    </div>
+    <div class="spec-box" style="flex:1;max-width:400px;">
+      <strong>印刷规格：</strong><br>
+      · 纸张：120g 牛皮纸 或 白色信封纸<br>
+      · Logo：Copper 871C + Charcoal 专色<br>
+      · 窗口款：右侧透明窗（英式商务）<br>
+      · 自粘条：背面封口
+    </div>
+  </div>
+</div>
+
+<!-- EMAIL -->
+<div class="panel" id="panel-email">
+  <h2>邮件签名 · Email Signature</h2>
+  <p class="panel__lead">全员统一模板 · 询价邮件 / 供应商通信 · 不暴露私人电话（走平台中转）</p>
+  <div class="email-sig">
+    <div class="email-sig__name">Long Hui · 龙惠</div>
+    <div class="email-sig__title">CEO · AsiaPower</div>
+    <div class="email-sig__line">
+      <strong style="color:#18181b">ASIA<span style="color:#c2762a">POWER</span></strong><br>
+      Every Used Asset Has Value<br><br>
+      W: <a href="#">www.asia-power.com</a><br>
+      E: inquiry@asia-power.com<br>
+      Zhengzhou, China · Accra, Ghana
+    </div>
+  </div>
+  <div class="spec-box">
+    <strong>规则：</strong>签名中不放私人 WhatsApp（客户走网站表单）· 供应商可用企业微信二维码（Phase 3）
+  </div>
+</div>
+
+</div>
+
+<script>
+  document.querySelectorAll('.vi-tab').forEach(tab => {
+    tab.addEventListener('click', () => {
+      document.querySelectorAll('.vi-tab').forEach(t => t.classList.remove('active'));
+      document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+      tab.classList.add('active');
+      document.getElementById('panel-' + tab.dataset.panel).classList.add('active');
+    });
+  });
+</script>
+</body>
+</html>

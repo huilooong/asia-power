@@ -1,0 +1,31 @@
+---
+description: AsiaPower AI Engineering Standard v1.0 — directory structure, previews, completion reports, release discipline
+alwaysApply: true
+---
+
+# AsiaPower AI Engineering Standard v1.0
+
+Full doc: `docs/architecture/ai-engineering-standard-v1.md`
+
+## Must follow
+
+1. **Directory structure** — use `docs/ops/`, `docs/architecture/`, `docs/previews/<task-id>/`, etc. No random folders.
+2. **Deliverables first** — every task defines output dir + filenames before work.
+3. **Completion report** — end every task with Status, Deliverables, Paths, Files Added/Modified, Validation, Next Task.
+4. **UI/UX** — Preview in `docs/previews/<task-id>/` → CEO review → then production. Never ship UI without preview approval.
+5. **Scope** — do not touch files outside task scope; explain if extra files are needed.
+6. **CEO gate** — deploy, UI redesign, SEO templates, infra, customer-facing prompts, data model → CEO approval before deployment.
+7. **Release Manager** — all production deploys via `scripts/deploy-production.mjs` with Release ID, backup, validation, rollback (OPS-005). **Gate:** commit → push GitHub → deploy; no routine `--allow-dirty` (CEO 2026-07-10).
+8. **Default preview output** — `docs/previews/<task-id>/` when task does not specify a path.
+9. **Report paths** — relative path, absolute workspace path, file tree, preview URL when applicable.
+
+## Naming
+
+- Reports: `ops-001-xxx.md`, `seo-010-xxx.md`, `apsales-001-xxx.md`
+- Previews: `{slug}-preview.html`
+
+## Workflow
+
+Design → Preview → Review → Implementation → Validation → Deployment
+
+Never deploy first.

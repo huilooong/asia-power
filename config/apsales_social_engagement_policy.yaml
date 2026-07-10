@@ -1,0 +1,227 @@
+# 子敬 · 社媒互动频率策略（FB + X · 非洲市场）
+# 目标：引流 asia-power.com — 小组真人互动优先，时间线发帖停用
+# KPI: asia-power.com + sales@asia-power.com
+# CEO 2026-07-04：平台上限探测模式 — 仅 FB 返回 block/rate limit 时停止该动作类型
+
+version: 4
+updated: "2026-07-04"
+stop_condition: platform_block_only  # 仅平台 block 时暂停该动作类型 24h，其他继续
+
+# CEO 路由（Mac cron / launchd 入口 scripts/apsales-zijing-run.py）
+operating_modes:
+  limited_mode: maps_email       # fb_platform_limits.json 有 active block → 非洲 Maps + 邮件草稿
+  normal_mode: fb_x              # 无限流 → FB 小组+DM + X 交替（apsales-social-alternate-run / --aggressive）
+  limits_file: memory/customer_gateway/fb_platform_limits.json
+  unified_entry: scripts/apsales-zijing-run.py
+  activity_log_action: maps_fallback   # 限流时在 zijing_activity_stream.jsonl 记录此 action
+
+mission_today:
+  focus: "Facebook 小组引流 · 入组+问候+评论+DM · 探测真实平台上限"
+  skip_platforms:
+    - instagram  # INS 今日暂停
+
+engagement_priority:
+  P0: "加入 FB 小组（关键词 tokunbo/half cut/spare parts + 国家名）· 平台限流为止"
+  P1: "入组后真人问候 + 链接（非硬广）· 平台限流为止"
+  P2: "小组内评论他人帖（相关时带链接）· 平台限流为止"
+  P3: "时间线发帖 · 0/日 · 仅 CEO 明确要求时"
+  P4: "好友 DM · 带图链 · 平台限流为止"
+  P5: "X 关注 · 低优先级"
+
+platforms:
+  facebook:
+    enabled: true
+    max_posts_per_day: 0              # 时间线停用 — platform-limited only
+    max_timeline_posts_per_day: 0
+    max_group_joins_per_day: null       # platform-limited only
+    max_group_greetings_per_day: null # platform-limited only
+    max_group_comments_per_day: null  # platform-limited only
+    max_comments_per_hour: null       # platform-limited only
+    max_follows_per_day: null         # platform-limited only
+    max_dms_per_day: null             # platform-limited only
+    max_dms_per_run: null             # platform-limited only — batch size from join_batch_size
+    join_batch_size: 5
+    min_interval_seconds: 30          # 活跃会话内动作间隔 30-90 秒
+    max_interval_seconds: 90
+    min_interval_minutes: null        # deprecated — use seconds in probe mode
+    max_interval_minutes: null        # removed — no long gaps within session
+  x:
+    enabled: true
+    max_posts_per_day: 2
+    max_comments_per_hour: null       # platform-limited only
+    max_follows_per_day: null
+    max_dms_per_day: 0
+    min_interval_seconds: 60
+    max_interval_seconds: 150
+  instagram:
+    enabled: false
+    reason: "paused_today_ins_broken"
+
+# 检测到限流 → 写入 fb_platform_limits.json，仅暂停该动作类型 24h
+rate_limit:
+  detect_patterns:
+    - "temporarily blocked"
+    - "action blocked"
+    - "try again later"
+    - "can't post"
+    - "restricted"
+    - "unusual activity"
+    - "暂时无法"
+    - "操作受限"
+  auto_disable_timeline_posts_hours: 24
+  pause_action_hours: 24
+
+facebook_groups:
+  enabled: true
+  max_searches_per_day: null          # platform-limited only
+  max_joins_per_day: null
+  max_greetings_per_day: null
+  max_comments_per_day: null
+  join_batch_size: 5
+  greeting_template: |
+    Hi everyone 👋 New here — I'm from China, we supply verified half-cuts & engines with photos on our site. Happy to help if you're looking for specific engine codes. https://asia-power.com/half-cuts/
+  mac_script: scripts/apsales-facebook-daily-run.py
+  alternate_mac_script: scripts/apsales-social-alternate-run.py
+  unified_mac_script: scripts/apsales-zijing-run.py
+  note: "Mac 本地 gooddlong 已登录 · 限流→Maps · 正常→FB↔X · launchd 每 45 分钟"
+
+scheduling:
+  rule: "any_market_awake"
+  alternate_platforms: true           # FB ↔ X 交替执行（队列 + cron + Mac 脚本）
+  cron_interval_minutes: 45
+  actions_per_run: 2                  # 每趟 cron = 1 FB + 1 X
+  aggressive_session_max_hours: 3     # 单会话最长 3 小时
+  aggressive_rest_hours: 1            # 达 3h 后休 1h 再继续（防死循环）
+  continuous_session: true            # 会话内连续批次，短间隔，无 120 分钟长等待
+  night_slow_mode:
+    enabled: false                    # 探测模式：夜间也不自我限流
+    note: "platform_block_only — 全球市场均休眠时仍全速探测"
+
+market_timezones:
+  west_africa:
+    label: "西非"
+    display: "加纳"
+    flag: "🇬🇭"
+    timezone: "Africa/Accra"
+    countries: [Ghana, Nigeria, "Côte d'Ivoire", Senegal]
+    active_local:
+      start: "08:00"
+      end: "21:00"
+  east_africa:
+    label: "东非"
+    display: "肯尼亚"
+    flag: "🇰🇪"
+    timezone: "Africa/Nairobi"
+    countries: [Kenya, Tanzania, Uganda]
+    active_local:
+      start: "08:00"
+      end: "21:00"
+  gulf:
+    label: "海湾"
+    display: "阿联酋"
+    flag: "🇦🇪"
+    timezone: "Asia/Dubai"
+    countries: [UAE, Saudi, Qatar, Kuwait, Bahrain, Oman]
+    active_local:
+      start: "09:00"
+      end: "21:00"
+
+active_hours_utc:
+  start: "08:00"
+  end: "20:00"
+  timezone_note: "deprecated — use market_timezones"
+
+approval:
+  auto_run:
+    - scheme_post
+    - templated_comment
+    - reply_to_inbox
+    - group_greeting
+    - group_join
+    - group_comment
+  needs_ceo_approval:
+    - new_post_type
+  ceo_approved:
+    - friend_one_to_one_dm
+
+follow_keywords:
+  hashtags:
+    - Tokunbo
+    - HalfCut
+    - AutoParts
+    - UsedCars
+    - SpareParts
+    - JDMparts
+    - HalfCutJapan
+  markets:
+    - Ghana
+    - Nigeria
+    - Kenya
+    - Tanzania
+    - Uganda
+    - SouthAfrica
+    - CotedIvoire
+    - Senegal
+  search_phrases:
+    - "tokunbo spare parts Ghana"
+    - "Nigeria auto parts importer"
+    - "Kenya half cut Toyota"
+    - "Mombasa used car parts"
+    - "Lagos tokunbo dealer"
+    - "Accra spare parts shop"
+    - "half cut engine Nigeria"
+    - "Toyota spare parts Ghana"
+    - "auto parts Kenya"
+    - "tokunbo half cut Lagos"
+    - "spare parts Accra Ghana"
+    - "used car parts Nairobi"
+
+comment_templates:
+  helpful_no_link:
+    - "Good tip — always match engine code + photos before you buy a half-cut. Verified photos on the supplier listing save headaches at port."
+    - "For rebuild shops in West Africa, 2NZ-FE and HR16DE are steady movers — check gearbox code matches the donor car."
+    - "Tokunbo importers: compression + ECU harness check before payment — photos on the listing help a lot."
+  helpful_with_link_when_relevant:
+    - "We list verified half-cuts with real photos on our site — browse first, no pressure in DMs: https://asia-power.com/half-cuts/"
+    - "Need options with photos? Email sales@asia-power.com after you browse: https://asia-power.com/half-cuts/"
+    - "Custom dismantling on demand — model + engine code, we match supplier stock with photos: https://asia-power.com/half-cuts/"
+
+reply_templates:
+  after_they_engaged:
+    - "Thanks! More photos on the listing: {listing_url} — email sales@asia-power.com with your model/engine code for a quote."
+    - "Appreciate it. Browse verified photos here: {listing_url} then email sales@asia-power.com for options."
+
+scheme_content_ref: "data/knowledge-base/apsales-promotion-schemes-v2.md"
+
+browse_feed:
+  enabled: true
+  platform: facebook
+  sessions_per_day: null              # platform-limited only
+  session_minutes: null
+  note: "Mac 本地 --until-block · 生产服务器不跑浏览器"
+  focus_keywords:
+    - dismantling
+    - half cut
+    - tokunbo
+    - spare parts
+    - engine
+    - gearbox
+  notes_file: memory/customer_gateway/social_research_notes.jsonl
+  optional_comment: false
+  mac_script: scripts/apsales-facebook-browse-friends.py
+
+friend_dm:
+  enabled: true
+  max_per_run: null                   # platform-limited only
+  max_per_day: null
+  delay_seconds_min: 30
+  delay_seconds_max: 90
+  note: "Mac --until-block · 30-90 秒间隔 · 仅 FB block 时停 DM"
+  log_file: memory/customer_gateway/fb_friend_dm_log.jsonl
+  mac_script: scripts/apsales-facebook-dm-friends.py
+  stop_on_captcha: true
+
+outreach_copy:
+  file: config/apsales_outreach_copy.yaml
+  version: human_v2
+  note: "CEO 可编辑话术 · 链接间隔 120 秒 · 每对话最多 2 链接 · DM/小组/X/评论"

@@ -1,14 +1,46 @@
 /**
- * AsiaPower — Admin traffic analytics + inventory review
+ * AsiaPower — Admin traffic analytics only (inventory review lives on inventory.html)
+ * Admin IA reorg v1: 访问统计与库存审核拆开
  */
 (function () {
   'use strict';
 
   const Admin = () => window.AdminCommon;
-  const Hub = () => window.AdminInventoryHub;
 
   const FEEDBACK_ID = 'admin-analytics-feedback';
   const REVIEW_TABS = new Set(['pending', 'approved', 'rejected']);
+  const GHANA_TZ = 'Africa/Accra';
+
+  function formatGhanaTime(iso) {
+    if (!iso) return '—';
+    try {
+      const d = new Date(iso);
+      if (Number.isNaN(d.getTime())) return '—';
+      const parts = new Intl.DateTimeFormat('en-GB', {
+        timeZone: GHANA_TZ,
+        year: 'numeric',
+        month: '2-digit',
+        day: '2-digit',
+        hour: '2-digit',
+        minute: '2-digit',
+        second: '2-digit',
+        hour12: false,
+      }).formatToParts(d);
+      const pick = (type) => parts.find((p) => p.type === type)?.value || '';
+      return `${pick('year')}-${pick('month')}-${pick('day')} ${pick('hour')}:${pick('minute')}:${pick('second')}`;
+    } catch {
+      return '—';
+    }
+  }
+
+  function formatLocation(entry) {
+    const lines = [
+      [entry.city, entry.region].filter(Boolean).join(', '),
+      entry.country || '',
+    ].filter(Boolean);
+    if (!lines.length) return '—';
+    return lines.map((line) => escapeHtml(line)).join('<br>');
+  }
 
   function escapeHtml(str) {
     return Admin()?.escapeHtml?.(str) ?? String(str || '')
@@ -18,49 +50,36 @@
       .replace(/"/g, '&quot;');
   }
 
-  function parseView() {
-    const view = new URLSearchParams(window.location.search).get('view');
-    if (view === 'traffic' || REVIEW_TABS.has(view)) return view;
-    const legacyTab = new URLSearchParams(window.location.search).get('tab');
-    if (REVIEW_TABS.has(legacyTab)) return legacyTab;
-    return 'traffic';
-  }
-
-  function setView(view, replace) {
-    const url = new URL(window.location.href);
-    url.searchParams.set('view', view);
-    url.searchParams.delete('tab');
-    url.hash = '';
-    const method = replace ? 'replaceState' : 'pushState';
-    window.history[method]({ view }, '', url.pathname + url.search);
-  }
-
-  function adminNav() {
-    return [
-      ['leads.html', 'Lead Inbox'],
-      ['inventory.html?tab=pending', 'Inventory Hub (standalone)'],
-    ].map(([href, label]) =>
-      `<a href="${href}" class="btn btn-outline-navy btn-sm">${label}</a>`
-    ).join('\n');
+  /** Old ?view=pending|approved|rejected → inventory hub */
+  function redirectLegacyReviewViews() {
+    const params = new URLSearchParams(window.location.search);
+    const view = params.get('view');
+    const legacyTab = params.get('tab');
+    const review = REVIEW_TABS.has(view) ? view : (REVIEW_TABS.has(legacyTab) ? legacyTab : null);
+    if (!review) return false;
+    window.location.replace(`inventory.html?tab=${review}`);
+    return true;
   }
 
   function renderLogin(root) {
     root.innerHTML = `
       <div class="admin-review-login">
-        <h2>Admin Login</h2>
-        <p class="admin-review-login__hint">Analytics and inventory review require administrator authentication.</p>
+        <h2>管理员登录</h2>
+        <p class="admin-review-login__hint">访问统计需要管理员身份。</p>
+        ${Admin().googleLoginBlockHtml?.() || ''}
         <form id="admin-login-form" class="admin-review-login__form">
-          <label>Username<input type="text" name="username" required autocomplete="username"></label>
-          <label>Password<input type="password" name="password" required autocomplete="current-password"></label>
-          <button type="submit" class="btn btn-accent">Sign In</button>
+          <label>用户名<input type="text" name="username" required autocomplete="username"></label>
+          <label>密码<input type="password" name="password" required autocomplete="current-password"></label>
+          <button type="submit" class="btn btn-accent">登录</button>
         </form>
       </div>`;
     Admin().ensureFeedbackBar(root, FEEDBACK_ID);
+    Admin().bindGoogleAdminButton?.(root, Admin().ensureFeedbackBar(root, FEEDBACK_ID));
 
     document.getElementById('admin-login-form').addEventListener('submit', async (event) => {
       event.preventDefault();
       const bar = Admin().ensureFeedbackBar(root, FEEDBACK_ID);
-      Admin().showFeedback(bar, 'Signing in…', 'info');
+      Admin().showFeedback(bar, '正在登录…', 'info');
       const body = Object.fromEntries(new FormData(event.target));
       try {
         const res = await fetch('/api/login', {
@@ -71,17 +90,17 @@
         });
         const data = await res.json().catch(() => ({}));
         if (!res.ok) throw new Error(data.error || 'Login failed');
-        if (data.role !== 'admin') throw new Error('Admin access required');
+        if (data.role !== 'admin') throw new Error('需要管理员权限');
         window.HalfCutInventoryStore?.resetReady?.();
         boot();
       } catch (err) {
-        Admin().showFeedback(bar, err.message || 'Login failed', 'error');
+        Admin().showFeedback(bar, err.message || '登录失败', 'error');
       }
     });
   }
 
   function renderDayDetail(day) {
-    if (!day) return '<p class="admin-review-empty">No data for this day.</p>';
+    if (!day) return '<p class="admin-review-empty">当日暂无数据。</p>';
 
     const topPaths = (day.topPaths || []).map(([page, count]) =>
       `<tr><td>${escapeHtml(page)}</td><td>${count}</td></tr>`
@@ -92,78 +111,94 @@
     ).join('') || '<tr><td colspan="2">—</td></tr>';
 
     const ips = (day.ips || []).slice(0, 100).map((entry) => {
-      const place = [entry.city, entry.region, entry.country].filter(Boolean).join(', ');
+      const internalTag = entry.internal
+        ? ' <span class="admin-analytics-ip-tag">内测</span>'
+        : '';
       return `<tr>
-        <td><code>${escapeHtml(entry.ip)}</code></td>
-        <td>${entry.hits}</td>
-        <td>${escapeHtml(place || '—')}</td>
-        <td>${escapeHtml(entry.lastPath || '—')}</td>
+        <td class="col-ip"><code>${escapeHtml(entry.ip)}</code>${internalTag}</td>
+        <td class="col-hits">${entry.hits}</td>
+        <td class="col-location">${formatLocation(entry)}</td>
+        <td class="col-time" title="Africa/Accra (GMT)">${formatGhanaTime(entry.firstSeen)}</td>
+        <td class="col-time" title="Africa/Accra (GMT)">${formatGhanaTime(entry.lastSeen)}</td>
+        <td class="col-path">${escapeHtml(entry.lastPath || '—')}</td>
       </tr>`;
-    }).join('') || '<tr><td colspan="4">—</td></tr>';
+    }).join('') || '<tr><td colspan="6">—</td></tr>';
 
     return `
       <section class="admin-analytics-detail">
-        <h3>${escapeHtml(day.day)}</h3>
+        <h3>${escapeHtml(day.day)} <span class="admin-analytics-detail__tz">（加纳时间 GMT）</span></h3>
         <div class="admin-analytics-metrics">
-          <div class="admin-analytics-metric"><span>Page views</span><strong>${day.pageviews || 0}</strong></div>
-          <div class="admin-analytics-metric"><span>Unique IPs</span><strong>${day.uniqueIpCount || 0}</strong></div>
-          <div class="admin-analytics-metric"><span>WhatsApp clicks</span><strong>${day.whatsappClicks || 0}</strong></div>
+          <div class="admin-analytics-metric"><span>浏览量</span><strong>${day.pageviews || 0}</strong></div>
+          <div class="admin-analytics-metric"><span>独立 IP</span><strong>${day.uniqueIpCount || 0}</strong></div>
+          <div class="admin-analytics-metric"><span>WhatsApp</span><strong>${day.whatsappClicks || 0}</strong></div>
         </div>
         <div class="admin-analytics-grid">
           <div>
-            <h4>Top pages</h4>
-            <table class="admin-analytics-table"><thead><tr><th>Page</th><th>Views</th></tr></thead><tbody>${topPaths}</tbody></table>
+            <h4>热门页面</h4>
+            <table class="admin-analytics-table"><thead><tr><th>页面</th><th>浏览</th></tr></thead><tbody>${topPaths}</tbody></table>
           </div>
           <div>
-            <h4>Top countries</h4>
-            <table class="admin-analytics-table"><thead><tr><th>Country</th><th>Hits</th></tr></thead><tbody>${topCountries}</tbody></table>
+            <h4>热门国家</h4>
+            <table class="admin-analytics-table"><thead><tr><th>国家</th><th>次数</th></tr></thead><tbody>${topCountries}</tbody></table>
           </div>
         </div>
-        <h4>IP breakdown</h4>
-        <table class="admin-analytics-table admin-analytics-table--ips">
-          <thead><tr><th>IP</th><th>Hits</th><th>Location</th><th>Last page</th></tr></thead>
-          <tbody>${ips}</tbody>
-        </table>
+        <h4>IP 明细</h4>
+        <div class="admin-analytics-table-wrap">
+          <table class="admin-analytics-table admin-analytics-table--ips">
+            <colgroup>
+              <col class="col-ip">
+              <col class="col-hits">
+              <col class="col-location">
+              <col class="col-time">
+              <col class="col-time">
+              <col class="col-path">
+            </colgroup>
+            <thead><tr>
+              <th>IP</th>
+              <th>次数</th>
+              <th>地区</th>
+              <th>首次</th>
+              <th>最近</th>
+              <th>最后页面</th>
+            </tr></thead>
+            <tbody>${ips}</tbody>
+          </table>
+        </div>
       </section>`;
   }
 
-  function renderTabs(activeView, counts) {
-    const pending = counts?.pending?.length ?? 0;
-    const live = counts?.inventory?.length ?? 0;
-    const rejected = counts?.rejected?.length ?? 0;
-    return `
-      <div class="admin-review-tabs supplier-bilingual" role="tablist">
-        <button type="button" class="admin-review-tab ${activeView === 'traffic' ? 'active' : ''}" data-view="traffic">
-          Traffic Analytics / 访问统计
-        </button>
-        <button type="button" class="admin-review-tab ${activeView === 'pending' ? 'active' : ''}" data-view="pending">
-          Pending Review / 待审核 ${pending ? `<span class="admin-review-tab__count">${pending}</span>` : ''}
-        </button>
-        <button type="button" class="admin-review-tab ${activeView === 'approved' ? 'active' : ''}" data-view="approved">
-          Live Inventory / 已上架 (${live})
-        </button>
-        <button type="button" class="admin-review-tab ${activeView === 'rejected' ? 'active' : ''}" data-view="rejected">
-          Rejected / 已拒绝 (${rejected})
-        </button>
-      </div>`;
-  }
-
-  let hubApi = null;
-  let activeView = 'traffic';
+  let trafficViewMode = 'external';
   let sessionUser = null;
 
   async function renderTrafficPane(pane) {
-    pane.innerHTML = '<p class="admin-review-empty">Loading analytics…</p>';
-    const res = await fetch('/api/analytics/summary?days=14', { credentials: 'include' });
-    if (!res.ok) throw new Error('Failed to load analytics');
+    pane.innerHTML = '<p class="admin-review-empty">加载访问统计…</p>';
+    const res = await fetch(`/api/analytics/summary?days=15&view=${encodeURIComponent(trafficViewMode)}`, { credentials: 'include' });
+    if (!res.ok) throw new Error('加载访问统计失败');
     const data = await res.json();
     const days = Array.isArray(data.days) ? data.days : [];
     const latest = days[0];
+    const totals = data.totals || {};
+    const viewHint = trafficViewMode === 'external'
+      ? '近 15 天外网真实流量（已剔除内测 IP）'
+      : '近 15 天全部流量（含内测）';
 
     pane.innerHTML = `
+      <div class="admin-analytics-view-toggle" role="group" aria-label="流量范围">
+        <button type="button" class="btn btn-sm ${trafficViewMode === 'external' ? 'btn-accent' : 'btn-outline-navy'}" data-traffic-view="external">外网</button>
+        <button type="button" class="btn btn-sm ${trafficViewMode === 'all' ? 'btn-accent' : 'btn-outline-navy'}" data-traffic-view="all">全部</button>
+        <span class="admin-analytics-view-toggle__hint">${escapeHtml(viewHint)}</span>
+      </div>
+      <div class="admin-analytics-metrics admin-analytics-metrics--rollup">
+        <div class="admin-analytics-metric"><span>浏览量</span><strong>${totals.pageviews || 0}</strong></div>
+        <div class="admin-analytics-metric"><span>独立 IP</span><strong>${totals.uniqueIpCount || 0}</strong></div>
+        <div class="admin-analytics-metric"><span>WhatsApp</span><strong>${totals.whatsappClicks || 0}</strong></div>
+        ${trafficViewMode === 'external' && totals.internalHitsExcluded
+          ? `<div class="admin-analytics-metric"><span>已剔除内测</span><strong>${totals.internalHitsExcluded}</strong></div>`
+          : ''}
+      </div>
       <table class="admin-analytics-table">
         <thead>
-          <tr><th>Date</th><th>Page views</th><th>Unique IPs</th><th>WhatsApp clicks</th></tr>
+          <tr><th>日期</th><th>浏览</th><th>独立 IP</th><th>WhatsApp</th></tr>
         </thead>
         <tbody>
           ${days.length ? days.map((day) => `
@@ -172,55 +207,20 @@
               <td>${day.pageviews || 0}</td>
               <td>${day.uniqueIpCount || 0}</td>
               <td>${day.whatsappClicks || 0}</td>
-            </tr>`).join('') : '<tr><td colspan="4">No traffic recorded yet.</td></tr>'}
+            </tr>`).join('') : '<tr><td colspan="4">暂无访问记录。</td></tr>'}
         </tbody>
       </table>
       ${renderDayDetail(latest)}
-      <p class="admin-analytics-note">Timezone: ${escapeHtml(data.timeZone || '—')} · Bots excluded. Daily summary also sent via Telegram when scheduled.</p>`;
-  }
+      <p class="admin-analytics-note">时间均为加纳时间（Africa/Accra, GMT）。日桶时区 ${escapeHtml(data.timeZone || GHANA_TZ)}。机器人已排除。磁盘原始 JSON 不改写——过滤仅用于展示。</p>`;
 
-  async function renderReviewPane(pane, tab) {
-    pane.innerHTML = '<p class="admin-review-empty">Loading inventory…</p>';
-    const hub = Hub();
-    if (!hub) throw new Error('Review module failed to load');
-    hubApi = await hub.mount(pane, {
-      activeTab: tab,
-      embedded: true,
-      feedbackId: FEEDBACK_ID,
-      feedbackRoot: document.getElementById('admin-analytics-root'),
-      onTabChange: (next) => {
-        activeView = next;
-        setView(next);
-        renderShell();
-      },
-      onAuthRequired: () => renderLogin(document.getElementById('admin-analytics-root')),
-      onCountsChange: () => renderShell(),
-    });
-  }
-
-  async function renderPane() {
-    const pane = document.getElementById('admin-analytics-pane');
-    if (!pane) return;
-    try {
-      if (activeView === 'traffic') {
-        hubApi = null;
-        await renderTrafficPane(pane);
-      } else {
-        await renderReviewPane(pane, activeView);
-      }
-    } catch (err) {
-      pane.innerHTML = `<p class="admin-review-empty">${escapeHtml(err.message || 'Failed to load')}</p>`;
-    }
-  }
-
-  function bindTabs(root) {
-    root.querySelectorAll('[data-view]').forEach((btn) => {
+    pane.querySelectorAll('[data-traffic-view]').forEach((btn) => {
       btn.addEventListener('click', () => {
-        const next = btn.dataset.view;
-        if (!next || next === activeView) return;
-        activeView = next;
-        setView(next);
-        renderShell();
+        const next = btn.dataset.trafficView;
+        if (!next || next === trafficViewMode) return;
+        trafficViewMode = next;
+        renderTrafficPane(pane).catch((err) => {
+          pane.innerHTML = `<p class="admin-review-empty">${escapeHtml(err.message || '加载失败')}</p>`;
+        });
       });
     });
   }
@@ -229,53 +229,34 @@
     const root = document.getElementById('admin-analytics-root');
     if (!root) return;
 
-    let counts = { pending: [], inventory: [], rejected: [] };
-    if (window.HalfCutInventoryStore) {
-      try {
-        await window.HalfCutInventoryStore.whenReady();
-        counts = {
-          pending: window.HalfCutInventoryStore.getSubmissionsByStatus('pending'),
-          inventory: window.HalfCutInventoryStore.getApprovedInventory(),
-          rejected: window.HalfCutInventoryStore.getSubmissionsByStatus('rejected'),
-        };
-      } catch {
-        // counts stay empty until store loads in review pane
-      }
-    }
-
     const existingBar = root.querySelector(`#${FEEDBACK_ID}`);
+    const who = sessionUser?.email || sessionUser?.username || '';
     root.innerHTML = `
-      <div class="admin-leads-toolbar supplier-bilingual">
+      <div class="admin-leads-toolbar" data-admin-ia="analytics-only-v1">
         <div>
-          <h2>Admin Dashboard · 管理后台</h2>
-          <p>
-            Traffic analytics and half-cut inventory review in one place.
-            ${sessionUser?.username ? `<span class="admin-review-meta">Signed in as <strong>${escapeHtml(sessionUser.username)}</strong></span>` : ''}
-          </p>
-          <p class="admin-review-counts">
-            <strong>${counts.pending.length}</strong> pending ·
-            <strong>${counts.inventory.length}</strong> live ·
-            <strong>${counts.rejected.length}</strong> rejected
-          </p>
+          <h2>访问统计</h2>
+          <p>只看流量，不审核库存。库存审核请用顶栏「库存」。</p>
+          ${who ? `<p class="admin-review-meta">已登录 <strong>${escapeHtml(who)}</strong></p>` : ''}
         </div>
         <div class="admin-leads-toolbar__links">
-          ${adminNav()}
-          <button type="button" class="btn btn-outline-navy btn-sm" id="admin-analytics-refresh">Refresh</button>
+          <button type="button" class="btn btn-outline-navy btn-sm" id="admin-analytics-refresh">刷新</button>
         </div>
       </div>
-      ${renderTabs(activeView, counts)}
       <div id="admin-analytics-pane" class="admin-review-panel"></div>`;
 
     if (existingBar) root.prepend(existingBar);
     else Admin().ensureFeedbackBar(root, FEEDBACK_ID);
 
-    bindTabs(root);
     document.getElementById('admin-analytics-refresh')?.addEventListener('click', async () => {
-      window.HalfCutInventoryStore?.resetReady?.();
       await renderShell();
     });
 
-    await renderPane();
+    const pane = document.getElementById('admin-analytics-pane');
+    try {
+      await renderTrafficPane(pane);
+    } catch (err) {
+      pane.innerHTML = `<p class="admin-review-empty">${escapeHtml(err.message || '加载失败')}</p>`;
+    }
   }
 
   async function boot() {
@@ -283,32 +264,21 @@
     const admin = Admin();
     if (!root || !admin) return;
 
-    activeView = parseView();
     sessionUser = await admin.ensureAdminSession();
     if (!sessionUser) {
       renderLogin(root);
       return;
     }
 
-    if (!window.__adminAnalyticsPopstate__) {
-      window.__adminAnalyticsPopstate__ = true;
-      window.addEventListener('popstate', () => {
-        const next = parseView();
-        if (next !== activeView) {
-          activeView = next;
-          renderShell();
-        }
-      });
-    }
-
     await renderShell();
   }
 
   function initAdminAnalytics() {
+    if (redirectLegacyReviewViews()) return;
     const root = document.getElementById('admin-analytics-root');
     if (!root) return;
     if (!Admin()) {
-      root.innerHTML = '<p class="admin-review-empty">Admin scripts failed to load. Hard-refresh the page.</p>';
+      root.innerHTML = '<p class="admin-review-empty">管理脚本加载失败，请强制刷新页面。</p>';
       return;
     }
     Admin().ensureAdminSession().then((user) => {

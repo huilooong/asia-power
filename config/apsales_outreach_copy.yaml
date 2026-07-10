@@ -1,0 +1,150 @@
+# 子敬 · 外联话术（CEO 可编辑 · 版本化）
+# 规则：像真人聊天 · 先发文字/图 · 链接间隔 ≥120 秒 · 每对话最多 2 个链接
+
+version: 3
+updated: "2026-07-04"
+active_version: human_v3
+
+rules:
+  min_seconds_between_links: 120
+  max_links_per_conversation: 2
+
+listings:
+  hc250509:
+    sku: HC250509
+    label: "Vios 2NZ-FE"
+    url: "https://asia-power.com/half-cuts/detail.html?slug=toyota-vios-2010-2nz-fe-half-cut-hc250509"
+    image_urls:
+      - "https://asia-power.com/uploads/photos/photo-1783000347587-ffc6bbc7_full.webp"
+      - "https://asia-power.com/uploads/photos/photo-1783000352805-90433487_full.webp"
+  hc250513:
+    sku: HC250513
+    label: "Tiida HR16DE"
+    url: "https://asia-power.com/half-cuts/detail.html?slug=nissan-tiida-2008-hr16de-half-cut-hc250513"
+    image_urls:
+      - "https://asia-power.com/uploads/photos/photo-1783001049889-4579f1ff_full.webp"
+      - "https://asia-power.com/uploads/photos/photo-1783001082173-69683a89_full.webp"
+
+catalog_url: "https://asia-power.com/half-cuts/"
+
+templates:
+  dm_human_v2:
+    default_listing: hc250509
+    messages:
+      - id: opener
+        text: "Hey — saw you're in the parts trade. We're a China supplier, got real half-cuts with photos. Want me to send a couple examples?"
+        has_link: false
+      - id: example
+        delay_after: 120
+        text: "Here's a {listing_label} we have live: {listing_url}"
+        has_link: true
+        attach_image: true
+        use_listing: default
+      - id: catalog
+        delay_after: 120
+        text: "Full catalog if useful: {catalog_url}"
+        has_link: true
+        optional: true
+
+  group_greet_human_v2:
+    default_listing: hc250509
+    intro:
+      text: "Hey everyone — new here 👋 We're a China supplier with real half-cuts, photos on every unit. Happy to help if you're hunting a specific engine code."
+      has_link: false
+    follow_up:
+      delay_after: 120
+      text: "Here's a {listing_label} we have live: {listing_url}"
+      has_link: true
+      attach_image: true
+      use_listing: default
+    catalog_reply:
+      delay_after: 120
+      text: "Full catalog if useful: {catalog_url}"
+      has_link: true
+      optional: true
+
+  # CEO 2026-07-04: intro → pitch → catalog link (120s after pitch)
+  group_greet_human_v3:
+    locale_default: en
+    locales:
+      en:
+        messages:
+          - id: intro
+            text: "Hi everyone 👋 I'm Zijing Lu — nice to meet you all."
+            has_link: false
+          - id: pitch
+            delay_after: 0
+            text: "I run a dismantling yard in China. We do custom dismantling — tell us what you need, we pull the parts for you."
+            has_link: false
+            reply_to_own_post: true
+          - id: catalog
+            delay_after: 120
+            text: "Our live inventory with photos is here: {catalog_url}"
+            has_link: true
+            reply_to_own_post: true
+      zh:
+        messages:
+          - id: intro
+            text: "大家好，我是鲁子敬（Zijing Lu），很高兴认识各位。"
+            has_link: false
+          - id: pitch
+            delay_after: 0
+            text: "我在国内做汽车拆解，提供定制拆解、按需取件服务。"
+            has_link: false
+            reply_to_own_post: true
+          - id: catalog
+            delay_after: 120
+            text: "现车库存和照片在这里：{catalog_url}"
+            has_link: true
+            reply_to_own_post: true
+
+  dm_human_v3:
+    locale_default: en
+    locales:
+      en:
+        messages:
+          - id: opener
+            text: "Hi {first_name} 👋 I'm Zijing Lu — nice to connect."
+            has_link: false
+          - id: pitch
+            delay_after: 0
+            text: "I run a dismantling yard in China. We do custom dismantling — tell us what you need, we pull the parts for you."
+            has_link: false
+          - id: catalog
+            delay_after: 120
+            text: "Our live inventory with photos is here: {catalog_url}"
+            has_link: true
+      zh:
+        messages:
+          - id: opener
+            text: "Hi {first_name}，我是鲁子敬（Zijing Lu），很高兴认识你。"
+            has_link: false
+          - id: pitch
+            delay_after: 0
+            text: "我在国内做汽车拆解，提供定制拆解、按需取件服务。"
+            has_link: false
+          - id: catalog
+            delay_after: 120
+            text: "现车库存和照片在这里：{catalog_url}"
+            has_link: true
+
+  x_short_v2:
+    default_listing: hc250509
+    attach_image: true
+    variants:
+      - "Real half-cuts from China — photos on every unit. {listing_label} live now 👇\n{listing_url}"
+      - "Tokunbo importers — we list verified half-cuts with real photos. Example: {listing_label}\n{listing_url}"
+      - "Need engine codes matched? {listing_label} on site with photos 🇬🇭🇳🇬\n{listing_url}"
+
+  comment_human_v2_no_link:
+    variants:
+      - "Good call — always match engine code + photos before you buy. Saves headaches at port."
+      - "2NZ-FE and HR16DE are steady movers in West Africa — check the gearbox code matches the donor."
+      - "Compression + harness check before payment — listing photos help a lot."
+
+  comment_human_v2_with_link:
+    delay_before_link: 120
+    variants:
+      - "We list verified half-cuts with real photos — browse first, no pressure: {catalog_url}"
+      - "Need options with photos? {catalog_url} then email sales@asia-power.com"
+      - "Custom dismantling on demand — model + engine code, we match stock with photos: {catalog_url}"

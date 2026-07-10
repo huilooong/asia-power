@@ -46,6 +46,7 @@ SUPPLY_AGENTS = frozenset({"apsupply", "apinventory"})
 
 _DRAFT_INSTRUCTIONS: dict[str, str] = {
     "en": "Write the customer draft in professional English only. Never use Chinese.",
+    "zh": "客户草稿使用专业中文，勿混用英文（产品型号、FOB/CIF 等术语除外）。",
     "fr": "Write the customer draft in professional French only. Never use Chinese.",
     "ar": "Write the customer draft in professional Arabic only. Never use Chinese.",
 }
@@ -75,7 +76,7 @@ class LanguageRouter:
     def _default_policy() -> dict[str, Any]:
         return {
             "internal": {"default": "zh", "participants": list(_default_internal_participants())},
-            "buyer": {"default": "en", "auto_detect": True, "supported": ["en", "fr", "ar"]},
+            "buyer": {"default": "en", "auto_detect": True, "supported": ["en", "zh", "fr", "ar"]},
             "supplier": {"default": "zh", "auto_detect": True, "supported": ["zh", "en"]},
             "future": {"extensible": True},
         }
@@ -118,7 +119,7 @@ class LanguageRouter:
 
     def supported_for(self, scenario: str) -> frozenset[str]:
         if scenario == "buyer":
-            return frozenset(self._buyer_cfg.get("supported", ["en", "fr", "ar"]))
+            return frozenset(self._buyer_cfg.get("supported", ["en", "zh", "fr", "ar"]))
         if scenario == "supplier":
             return frozenset(self._supplier_cfg.get("supported", ["zh", "en"]))
         return frozenset({self._policy.get("internal", {}).get("default", "zh")})
@@ -167,7 +168,9 @@ class LanguageRouter:
             if cjk == 0 and latin > 8:
                 return "en"
 
-        if scenario == "buyer" and "en" in supported:
+        if scenario == "buyer" and "en" in supported and not (
+            "zh" in supported and _CJK_RE.search(body)
+        ):
             return "en"
 
         return default
@@ -227,8 +230,8 @@ class LanguageRouter:
             self.language_label(c) for c in sorted(self.supported_for("buyer"))
         )
         return (
-            f"Customer drafts: professional {supported} only — never Chinese, "
-            "never AI disclosure, never approval workflow or internal structure."
+            f"Customer drafts: professional {supported} only — use the resolved buyer language; "
+            "never expose AI, approval workflow, or internal structure."
         )
 
     def internal_rules(self) -> str:

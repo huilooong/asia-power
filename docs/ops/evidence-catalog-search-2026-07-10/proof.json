@@ -1,0 +1,38 @@
+{
+  "release": "REL-20260710111656-chrome-76489479",
+  "cacheKey": "catalog-search-v2",
+  "verifiedAt": "2026-07-10T11:20:49.368Z",
+  "available": 504,
+  "auditPassRate": "100% (2917/2917)",
+  "liveHits": {
+    "250551": [
+      "HC250551"
+    ],
+    "HC250546": [
+      "HC250546"
+    ],
+    "Scirocco": [
+      "HC250552"
+    ],
+    "尚酷": [
+      "HC250552"
+    ],
+    "霸道": [
+      "HC250551",
+      "HC250037",
+      "HC250036"
+    ],
+    "CDL": [
+      "HC250552"
+    ]
+  },
+  "screenshots": {
+    "250551": "docs/ops/evidence-catalog-search-2026-07-10/q-250551.png",
+    "HC250546": "docs/ops/evidence-catalog-search-2026-07-10/q-HC250546.png",
+    "Scirocco": "docs/ops/evidence-catalog-search-2026-07-10/q-Scirocco.png",
+    "尚酷": "docs/ops/evidence-catalog-search-2026-07-10/q-shangku.png",
+    "霸道": "docs/ops/evidence-catalog-search-2026-07-10/q-badao.png",
+    "CDL": "docs/ops/evidence-catalog-search-2026-07-10/q-CDL-v2.png"
+  },
+  "report": "docs/ops/ops-catalog-search-coverage-2026-07-10.md"
+}

@@ -1,0 +1,730 @@
+[
+  {
+    "file": ".env.example",
+    "local": "68a129e86bf3f7f6a9aa6c16c1e9144e",
+    "github": "142be5634e26383a15f7158fda5b14cf",
+    "prod": null,
+    "status": "THREE_WAY_DRIFT"
+  },
+  {
+    "file": "config/language_policy.yaml",
+    "local": "5a06c3028677dd01468c3cc9d7a58aa3",
+    "github": "84ea78956ad705834439eb43bd54831b",
+    "prod": null,
+    "status": "THREE_WAY_DRIFT"
+  },
+  {
+    "file": "config/models.py",
+    "local": "66d339b0bcecf01567a8e8007a0aed0b",
+    "github": "31beb4bc2830199014fb8b40f5bdea2c",
+    "prod": null,
+    "status": "THREE_WAY_DRIFT"
+  },
+  {
+    "file": "config/prompts.py",
+    "local": "ccb8c2a49cd0f279f80513db88def606",
+    "github": "7abbc242cea3dfea2cec542b7fe82960",
+    "prod": null,
+    "status": "THREE_WAY_DRIFT"
+  },
+  {
+    "file": "config/wecom-group-suppliers.json.example",
+    "local": "45661fd5ff8dc329cf8fadf31b86b269",
+    "github": null,
+    "prod": null,
+    "status": "PROD_EQ_GITHUB_LOCAL_AHEAD"
+  },
+  {
+    "file": "config/wecom-zijing.json.example",
+    "local": "76cb2b9e9df837e30feef11c4a5152ff",
+    "github": null,
+    "prod": null,
+    "status": "PROD_EQ_GITHUB_LOCAL_AHEAD"
+  },
+  {
+    "file": "constitution/roles/apinventory.md",
+    "local": "1cb0a9cb8fc08b5309e9c17cc2d82578",
+    "github": null,
+    "prod": null,
+    "status": "PROD_EQ_GITHUB_LOCAL_AHEAD"
+  },
+  {
+    "file": "constitution/roles/apsales.md",
+    "local": "1d0a69795099a8c398e93d13bbba88f3",
+    "github": "45d1da4cb9c1c30e26666d1ee5f22bec",
+    "prod": null,
+    "status": "THREE_WAY_DRIFT"
+  },
+  {
+    "file": "core/language_router.py",
+    "local": "0cde18e2b8d18440417c555fbb5d9caa",
+    "github": "67a5fdcf8d8c8ecd5fc0bbd87383f31e",
+    "prod": null,
+    "status": "THREE_WAY_DRIFT"
+  },
+  {
+    "file": "customer_gateway/approval_notification.py",
+    "local": "f5fd770d4b6a6fdcdcfffb89fa54500e",
+    "github": "14e166603cad48ed7cbe6815f1980826",
+    "prod": null,
+    "status": "THREE_WAY_DRIFT"
+  },
+  {
+    "file": "customer_gateway/conversation_database.py",
+    "local": "e1d198ebe71abf527ec206acaa40f074",
+    "github": "136ebc69f2b904082df73ce09279f622",
+    "prod": null,
+    "status": "THREE_WAY_DRIFT"
+  },
+  {
+    "file": "customer_gateway/draft_queue.py",
+    "local": "6d465098e475916d9fb9680fa5755a92",
+    "github": "805de7e6f37cd59db06116f45416f25a",
+    "prod": null,
+    "status": "THREE_WAY_DRIFT"
+  },
+  {
+    "file": "customer_gateway/gateway_readonly.py",
+    "local": "bbe648c354ac7deb753eb80fb2c17e7f",
+    "github": "51e3da1bf7026f56e687b58dfeeb678e",
+    "prod": null,
+    "status": "THREE_WAY_DRIFT"
+  },
+  {
+    "file": "customer_gateway/history_importer.py",
+    "local": "6d3b2a60b83bfb5ffe76e4377399f844",
+    "github": "43ffd3c3b6f84f687874073b53543cbd",
+    "prod": null,
+    "status": "THREE_WAY_DRIFT"
+  },
+  {
+    "file": "customer_gateway/whatsapp_browser_adapter.py",
+    "local": "33a37c7e5522ef35a39a78033093f38b",
+    "github": "091ce9085c3f30d4149560ea0c3f8251",
+    "prod": null,
+    "status": "THREE_WAY_DRIFT"
+  },
+  {
+    "file": "customer_gateway/whatsapp_sales_intelligence_full_report.py",
+    "local": "2ac067d34ba0be1ae689e5366fad9000",
+    "github": "4dbb7454f9aacf66cd9be95cc65b885a",
+    "prod": null,
+    "status": "THREE_WAY_DRIFT"
+  },
+  {
+    "file": "deploy/asiapower-trusted-upload-ips.map.example",
+    "local": "61882f20dbaa8c8f4edfd798fe3ef8eb",
+    "github": null,
+    "prod": null,
+    "status": "PROD_EQ_GITHUB_LOCAL_AHEAD"
+  },
+  {
+    "file": "deploy/install-wecom-callback.sh",
+    "local": "69a6c40006df6a653f284c80a6249769",
+    "github": null,
+    "prod": null,
+    "status": "PROD_EQ_GITHUB_LOCAL_AHEAD"
+  },
+  {
+    "file": "deploy/install-wecom-domestic.sh",
+    "local": "b86352689541c20fa22c6ade7b570d80",
+    "github": null,
+    "prod": null,
+    "status": "PROD_EQ_GITHUB_LOCAL_AHEAD"
+  },
+  {
+    "file": "deploy/inventory-site-server.js",
+    "local": "0426e13b2c6ea781e090056d783f9d96",
+    "github": "7808eccad00d76210ec64fe930025a68",
+    "prod": null,
+    "status": "THREE_WAY_DRIFT"
+  },
+  {
+    "file": "deploy/nginx-asia-power.cn",
+    "local": "52c1b61ef39af0fa276f0da3c618e393",
+    "github": null,
+    "prod": null,
+    "status": "PROD_EQ_GITHUB_LOCAL_AHEAD"
+  },
+  {
+    "file": "deploy/nginx-asia-power.com",
+    "local": "d4e871708334f0e9df76e051539514ed",
+    "github": "575ea847b868a63814076ce946442cd2",
+    "prod": null,
+    "status": "THREE_WAY_DRIFT"
+  },
+  {
+    "file": "deploy/nginx-rate-limit.conf",
+    "local": "41fb41fcd5f44357a823716aac6d0468",
+    "github": "8e2894db9c1069a299971ffeedfc09b7",
+    "prod": null,
+    "status": "THREE_WAY_DRIFT"
+  },
+  {
+    "file": "deploy/nginx-security.conf",
+    "local": "eac167b3149346a9b76f21be9bccce11",
+    "github": "7411da279cc356b20892437f8db4f270",
+    "prod": null,
+    "status": "THREE_WAY_DRIFT"
+  },
+  {
+    "file": "deploy/wecom-callback.service",
+    "local": "35d85afd0d4b2e9ea512686c3f954837",
+    "github": null,
+    "prod": null,
+    "status": "PROD_EQ_GITHUB_LOCAL_AHEAD"
+  },
+  {
+    "file": "integrations/telegram_coo_bot.py",
+    "local": "5483d70c81fd13c363b07943c91755cb",
+    "github": "f69a1753d79b74405af78cc81d38cdbc",
+    "prod": null,
+    "status": "THREE_WAY_DRIFT"
+  },
+  {
+    "file": "integrations/wecom_access.py",
+    "local": "67afa983f3c7de90340c2d2b13ef4fd4",
+    "github": null,
+    "prod": null,
+    "status": "PROD_EQ_GITHUB_LOCAL_AHEAD"
+  },
+  {
+    "file": "integrations/wecom_callback_server.py",
+    "local": "dfad10ef42834d072b315fc3d5005a2b",
+    "github": null,
+    "prod": null,
+    "status": "PROD_EQ_GITHUB_LOCAL_AHEAD"
+  },
+  {
+    "file": "integrations/wecom_client.py",
+    "local": "cb394726e1e01282d7307bc56c592203",
+    "github": null,
+    "prod": null,
+    "status": "PROD_EQ_GITHUB_LOCAL_AHEAD"
+  },
+  {
+    "file": "integrations/wecom_config.py",
+    "local": "9d0f9ebf28602a8be15170877576fdcb",
+    "github": null,
+    "prod": null,
+    "status": "PROD_EQ_GITHUB_LOCAL_AHEAD"
+  },
+  {
+    "file": "integrations/wecom_crypto.py",
+    "local": "9e5e97e6bd0c81f5ff933acace5cdc9d",
+    "github": null,
+    "prod": null,
+    "status": "PROD_EQ_GITHUB_LOCAL_AHEAD"
+  },
+  {
+    "file": "integrations/wecom_group_upload.py",
+    "local": "5b1ae1ab19d3b696b0009cd18afc6c31",
+    "github": null,
+    "prod": null,
+    "status": "PROD_EQ_GITHUB_LOCAL_AHEAD"
+  },
+  {
+    "file": "integrations/wecom_zijing_handler.py",
+    "local": "1db8ebb0864805e160c086103711a669",
+    "github": null,
+    "prod": null,
+    "status": "PROD_EQ_GITHUB_LOCAL_AHEAD"
+  },
+  {
+    "file": "package.json",
+    "local": "c935eaca691e5b631116a68d12f5d394",
+    "github": null,
+    "prod": "c935eaca691e5b631116a68d12f5d394",
+    "status": "LOCAL_EQ_PROD_GITHUB_BEHIND"
+  },
+  {
+    "file": "profiles/apinventory.yaml",
+    "local": "74ab014b6cbe2812b16517d3f9bf4522",
+    "github": null,
+    "prod": null,
+    "status": "PROD_EQ_GITHUB_LOCAL_AHEAD"
+  },
+  {
+    "file": "profiles/apsales.yaml",
+    "local": "c97510f10193a7c42e6e83a8f81f1760",
+    "github": "e7c7a3f72cb3500825b4bc3adb5d97e1",
+    "prod": null,
+    "status": "THREE_WAY_DRIFT"
+  },
+  {
+    "file": "scripts/README.md",
+    "local": "3409a02f8266b436693620c816a5932b",
+    "github": null,
+    "prod": null,
+    "status": "PROD_EQ_GITHUB_LOCAL_AHEAD"
+  },
+  {
+    "file": "scripts/audit-site-links.mjs",
+    "local": "3da0029b82d19cc50c8dbfdd70419cf7",
+    "github": null,
+    "prod": null,
+    "status": "PROD_EQ_GITHUB_LOCAL_AHEAD"
+  },
+  {
+    "file": "scripts/backfill-lead-context.mjs",
+    "local": "6e5f07233293ecfb9106d52fc72d5f35",
+    "github": null,
+    "prod": "6e5f07233293ecfb9106d52fc72d5f35",
+    "status": "LOCAL_EQ_PROD_GITHUB_BEHIND"
+  },
+  {
+    "file": "scripts/build-vehicle-title-lexicon.mjs",
+    "local": "c3721870c9a2b818340fa9ea7e7865f3",
+    "github": null,
+    "prod": null,
+    "status": "PROD_EQ_GITHUB_LOCAL_AHEAD"
+  },
+  {
+    "file": "scripts/check-admin-js.sh",
+    "local": "81a7dc1aa21f50df28974c9b6202a3ed",
+    "github": null,
+    "prod": null,
+    "status": "PROD_EQ_GITHUB_LOCAL_AHEAD"
+  },
+  {
+    "file": "scripts/deploy-domestic-lighthouse.sh",
+    "local": "e5ec9da11ab58385b11e11a127737ce7",
+    "github": null,
+    "prod": null,
+    "status": "PROD_EQ_GITHUB_LOCAL_AHEAD"
+  },
+  {
+    "file": "scripts/deploy-production.mjs",
+    "local": "e66b56dda26d12901d3aa5c9ba2addb4",
+    "github": "10433aa0fc2600480de5d231af89021a",
+    "prod": null,
+    "status": "THREE_WAY_DRIFT"
+  },
+  {
+    "file": "scripts/download-qxb-photos.py",
+    "local": "8eaccafd7b517f36ab4fa79edd71df5d",
+    "github": null,
+    "prod": null,
+    "status": "PROD_EQ_GITHUB_LOCAL_AHEAD"
+  },
+  {
+    "file": "scripts/generate-sitemap.mjs",
+    "local": "282051269154d29a57e4d211f95539a3",
+    "github": "e8d86ff76c8c40209d65fb0c81eb8da4",
+    "prod": null,
+    "status": "THREE_WAY_DRIFT"
+  },
+  {
+    "file": "scripts/import-qxb-vehicles.py",
+    "local": "08e32e69dfdfab8bc6edf5ec1545ef82",
+    "github": null,
+    "prod": null,
+    "status": "PROD_EQ_GITHUB_LOCAL_AHEAD"
+  },
+  {
+    "file": "scripts/ocr-qxb-vins.py",
+    "local": "02d01a5d03419bb4179195fba33c3bc2",
+    "github": null,
+    "prod": null,
+    "status": "PROD_EQ_GITHUB_LOCAL_AHEAD"
+  },
+  {
+    "file": "scripts/patch-brand-page-scripts.mjs",
+    "local": "b03a0cae5f8887217c376e49cbb729e4",
+    "github": "eaa35d7e6100c43d77216125375a46a0",
+    "prod": null,
+    "status": "THREE_WAY_DRIFT"
+  },
+  {
+    "file": "scripts/patch-server-cif-api.mjs",
+    "local": "4c13bdab921b56f427a4ace746deb2cd",
+    "github": null,
+    "prod": "4c13bdab921b56f427a4ace746deb2cd",
+    "status": "LOCAL_EQ_PROD_GITHUB_BEHIND"
+  },
+  {
+    "file": "scripts/patch-site-layout-assets.mjs",
+    "local": "ffed822e18da183f8a91b38dc0b75985",
+    "github": null,
+    "prod": null,
+    "status": "PROD_EQ_GITHUB_LOCAL_AHEAD"
+  },
+  {
+    "file": "scripts/qxb-batch-remaining.py",
+    "local": "eb964b95ea54789f98be9d3554523acb",
+    "github": null,
+    "prod": null,
+    "status": "PROD_EQ_GITHUB_LOCAL_AHEAD"
+  },
+  {
+    "file": "scripts/qxb-batch-upload.py",
+    "local": "9afbd2341f5d183405814375aecc724f",
+    "github": null,
+    "prod": null,
+    "status": "PROD_EQ_GITHUB_LOCAL_AHEAD"
+  },
+  {
+    "file": "scripts/qxb-mark-parked.py",
+    "local": "cb73a6d73c9dc44673782891e9fc5c54",
+    "github": null,
+    "prod": null,
+    "status": "PROD_EQ_GITHUB_LOCAL_AHEAD"
+  },
+  {
+    "file": "scripts/qxb-retrain-vin-scan.py",
+    "local": "8a7ad49d29b45eedad9818630b23a2ad",
+    "github": null,
+    "prod": null,
+    "status": "PROD_EQ_GITHUB_LOCAL_AHEAD"
+  },
+  {
+    "file": "scripts/qxb-reupload-all-failed.py",
+    "local": "4766f40c6f46e32f7db12c75698b0f77",
+    "github": null,
+    "prod": null,
+    "status": "PROD_EQ_GITHUB_LOCAL_AHEAD"
+  },
+  {
+    "file": "scripts/qxb-reupload-corrected.py",
+    "local": "344c86e05ad44fa7cbc5f64b6c9358eb",
+    "github": null,
+    "prod": null,
+    "status": "PROD_EQ_GITHUB_LOCAL_AHEAD"
+  },
+  {
+    "file": "scripts/qxb-upload-approved-inventory.py",
+    "local": "55f86739a9c54686d89debb1a00d0d5c",
+    "github": null,
+    "prod": null,
+    "status": "PROD_EQ_GITHUB_LOCAL_AHEAD"
+  },
+  {
+    "file": "scripts/sync-seo-static-meta.mjs",
+    "local": "1cc5995508d526df76a96ebfe85cff2b",
+    "github": "b8b817e10a2eac1cdca52a3ebea9da27",
+    "prod": null,
+    "status": "THREE_WAY_DRIFT"
+  },
+  {
+    "file": "scripts/telegram-test.js",
+    "local": "7bfbdb0c7059f019aa485695e2f0970d",
+    "github": "7bfbdb0c7059f019aa485695e2f0970d",
+    "prod": "27086c521b1bf2ee3a993b696944d5dc",
+    "status": "LOCAL_EQ_GITHUB_PROD_DIFF"
+  },
+  {
+    "file": "scripts/test-phase2-local.mjs",
+    "local": "183c189bfe0b0c9f2e39641456b9bd0f",
+    "github": "3bb8fa88df5ae4dfd5f6292733f0e0ba",
+    "prod": null,
+    "status": "THREE_WAY_DRIFT"
+  },
+  {
+    "file": "scripts/test-phase2.1-local.mjs",
+    "local": "4d87d8943e8358c97946ab51be0c7785",
+    "github": "f0a2878bd685b3dab7973e446c71aec6",
+    "prod": null,
+    "status": "THREE_WAY_DRIFT"
+  },
+  {
+    "file": "scripts/test-supplier-i18n-logo.mjs",
+    "local": "b19447a7c1085dba0e18f5d2c2b20332",
+    "github": "16ee946153b6e835027f291d24f968ef",
+    "prod": null,
+    "status": "THREE_WAY_DRIFT"
+  },
+  {
+    "file": "scripts/verify-production.mjs",
+    "local": "2ce01c804e86e0b27414a5e9b94ddb1d",
+    "github": "d7b886f2a0398abc9d5d8239792f7264",
+    "prod": null,
+    "status": "THREE_WAY_DRIFT"
+  },
+  {
+    "file": "scripts/wecom-setup-wizard.py",
+    "local": "d2da1cbedc7b8b43fb0bdfa56752341a",
+    "github": null,
+    "prod": null,
+    "status": "PROD_EQ_GITHUB_LOCAL_AHEAD"
+  },
+  {
+    "file": "scripts/wecom-test-send.py",
+    "local": "3e46c502d4eed7efe9d44e8de187bb85",
+    "github": null,
+    "prod": null,
+    "status": "PROD_EQ_GITHUB_LOCAL_AHEAD"
+  },
+  {
+    "file": "scripts/wecom-verify-config.py",
+    "local": "5c40027fbee2b62b540dc945543ad980",
+    "github": null,
+    "prod": null,
+    "status": "PROD_EQ_GITHUB_LOCAL_AHEAD"
+  },
+  {
+    "file": "server/half-cut-local-server.js",
+    "local": "5b1bc0b547409a067822cb9102dfa658",
+    "github": "c0b1e3ce55bf31a58762ff05edf0a2a4",
+    "prod": null,
+    "status": "THREE_WAY_DRIFT"
+  },
+  {
+    "file": "server/lib/cif-shipping.js",
+    "local": "28feff60cd504e2a604aa30afe29f59b",
+    "github": null,
+    "prod": "28feff60cd504e2a604aa30afe29f59b",
+    "status": "LOCAL_EQ_PROD_GITHUB_BEHIND"
+  },
+  {
+    "file": "server/lib/contact-leads.js",
+    "local": "207ba5bee55d0e80e4e17f81ee08f5f2",
+    "github": "c19b29c8f2c9b06a4605d47276d7cf8d",
+    "prod": "c19b29c8f2c9b06a4605d47276d7cf8d",
+    "status": "PROD_EQ_GITHUB_LOCAL_AHEAD"
+  },
+  {
+    "file": "server/lib/contact-redact.js",
+    "local": "154f94cb203ca377a9f6d7d28eefdaf8",
+    "github": null,
+    "prod": "154f94cb203ca377a9f6d7d28eefdaf8",
+    "status": "LOCAL_EQ_PROD_GITHUB_BEHIND"
+  },
+  {
+    "file": "server/lib/data-intake-log.js",
+    "local": "94e33d71931d18120eb7ef3adf35db9e",
+    "github": null,
+    "prod": "94e33d71931d18120eb7ef3adf35db9e",
+    "status": "LOCAL_EQ_PROD_GITHUB_BEHIND"
+  },
+  {
+    "file": "server/lib/half-cut-api.js",
+    "local": "10888a1460f45a6537ed2ab759828899",
+    "github": "8070c278ccb3a0af7c96e9b0656733db",
+    "prod": "8070c278ccb3a0af7c96e9b0656733db",
+    "status": "PROD_EQ_GITHUB_LOCAL_AHEAD"
+  },
+  {
+    "file": "server/lib/half-cut-notifications.js",
+    "local": "2e5bd8f2689bbe1fbdabfb80eb1c236f",
+    "github": "32ab6047d9ae16e3a44cd6e3503bb610",
+    "prod": "32ab6047d9ae16e3a44cd6e3503bb610",
+    "status": "PROD_EQ_GITHUB_LOCAL_AHEAD"
+  },
+  {
+    "file": "server/lib/half-cut-prerender.js",
+    "local": "a54bbae78f000278cb93d4ae7d48d910",
+    "github": "88f8c0ede8a0acd72929c0c8dcd46c24",
+    "prod": "88f8c0ede8a0acd72929c0c8dcd46c24",
+    "status": "PROD_EQ_GITHUB_LOCAL_AHEAD"
+  },
+  {
+    "file": "server/lib/half-cut-public.js",
+    "local": "5274dee746455e75d15fcf2618b7987d",
+    "github": "29884b4d066282bec97459440a49d370",
+    "prod": "29884b4d066282bec97459440a49d370",
+    "status": "PROD_EQ_GITHUB_LOCAL_AHEAD"
+  },
+  {
+    "file": "server/lib/half-cut-seo.js",
+    "local": "30bd23aa6136bc12f8eceb5ffa852c4e",
+    "github": "8055bb82c56ddcac1093cb71427a40be",
+    "prod": "8055bb82c56ddcac1093cb71427a40be",
+    "status": "PROD_EQ_GITHUB_LOCAL_AHEAD"
+  },
+  {
+    "file": "server/lib/half-cut-title.js",
+    "local": "4aaa638b30a550e368e6d585232cb6de",
+    "github": null,
+    "prod": "4aaa638b30a550e368e6d585232cb6de",
+    "status": "LOCAL_EQ_PROD_GITHUB_BEHIND"
+  },
+  {
+    "file": "server/lib/half-cut-vehicle-title-i18n.js",
+    "local": "3ebe6c76a5c70ffcd8ea69c5d786f100",
+    "github": null,
+    "prod": "3ebe6c76a5c70ffcd8ea69c5d786f100",
+    "status": "LOCAL_EQ_PROD_GITHUB_BEHIND"
+  },
+  {
+    "file": "server/lib/lead-context.js",
+    "local": "0f0686b58cbe6ca02244e7365f8997c5",
+    "github": null,
+    "prod": "0f0686b58cbe6ca02244e7365f8997c5",
+    "status": "LOCAL_EQ_PROD_GITHUB_BEHIND"
+  },
+  {
+    "file": "server/lib/media-optimize.js",
+    "local": "a4dc550e97d4b381a3ea74295cbaf8e4",
+    "github": null,
+    "prod": "a4dc550e97d4b381a3ea74295cbaf8e4",
+    "status": "LOCAL_EQ_PROD_GITHUB_BEHIND"
+  },
+  {
+    "file": "server/lib/media-storage.js",
+    "local": "32187224dc4f0b66cc6e8b31d75d2e70",
+    "github": "839592f619bbd020952f1a93c74724ff",
+    "prod": "839592f619bbd020952f1a93c74724ff",
+    "status": "PROD_EQ_GITHUB_LOCAL_AHEAD"
+  },
+  {
+    "file": "server/lib/phone-utils.js",
+    "local": "b08ceebac521d6ac3b44b03eb0fe63e4",
+    "github": null,
+    "prod": "b08ceebac521d6ac3b44b03eb0fe63e4",
+    "status": "LOCAL_EQ_PROD_GITHUB_BEHIND"
+  },
+  {
+    "file": "server/lib/powertrain-catalog-memory.js",
+    "local": "eb433d4caee8c4cb305abab85f3bee95",
+    "github": null,
+    "prod": "eb433d4caee8c4cb305abab85f3bee95",
+    "status": "LOCAL_EQ_PROD_GITHUB_BEHIND"
+  },
+  {
+    "file": "server/lib/r2-storage.js",
+    "local": "f03fd6084d87b9f9565152369a758c23",
+    "github": null,
+    "prod": "f03fd6084d87b9f9565152369a758c23",
+    "status": "LOCAL_EQ_PROD_GITHUB_BEHIND"
+  },
+  {
+    "file": "server/lib/security-paths.js",
+    "local": "a85f10243949fff14cf85464edd6497c",
+    "github": "88ef47ef426cab92747428dfae932d4c",
+    "prod": "88ef47ef426cab92747428dfae932d4c",
+    "status": "PROD_EQ_GITHUB_LOCAL_AHEAD"
+  },
+  {
+    "file": "server/lib/site-analytics.js",
+    "local": "d26e060a7e7725fdd6d890d4acd4530b",
+    "github": "c189ba5f5a21f66c5110b9afac2c3d89",
+    "prod": "c189ba5f5a21f66c5110b9afac2c3d89",
+    "status": "PROD_EQ_GITHUB_LOCAL_AHEAD"
+  },
+  {
+    "file": "server/lib/sitemap.js",
+    "local": "a5ab65922e858b02c2cce06ffed987e5",
+    "github": "f0f12666eb6f9ec0e0bf2c3f9b84db14",
+    "prod": "f0f12666eb6f9ec0e0bf2c3f9b84db14",
+    "status": "PROD_EQ_GITHUB_LOCAL_AHEAD"
+  },
+  {
+    "file": "server/lib/supplier-gate.js",
+    "local": "6665c8d7ce8e19195d7593197c4120b5",
+    "github": "e489d48f8ccf03717aa7129c527f9b02",
+    "prod": "e489d48f8ccf03717aa7129c527f9b02",
+    "status": "PROD_EQ_GITHUB_LOCAL_AHEAD"
+  },
+  {
+    "file": "server/lib/truck-brand-catalog.js",
+    "local": "2f663a04194893c0948de76de866df97",
+    "github": null,
+    "prod": "2f663a04194893c0948de76de866df97",
+    "status": "LOCAL_EQ_PROD_GITHUB_BEHIND"
+  },
+  {
+    "file": "server/lib/vehicle-name-normalize.js",
+    "local": "8866c1a470e12a7e8af8ea92908b8c9a",
+    "github": "e1066cc55b6602eb32cddcc1dc93ac5a",
+    "prod": "e1066cc55b6602eb32cddcc1dc93ac5a",
+    "status": "PROD_EQ_GITHUB_LOCAL_AHEAD"
+  },
+  {
+    "file": "server/lib/vin/decode-route.js",
+    "local": "6caed2133ca5b289694e03aeb482c843",
+    "github": null,
+    "prod": "6caed2133ca5b289694e03aeb482c843",
+    "status": "LOCAL_EQ_PROD_GITHUB_BEHIND"
+  },
+  {
+    "file": "server/lib/vin/knowledge-base.js",
+    "local": "b8079b68acf88e8d3a7c866a10c9a2ff",
+    "github": "ae617c5642cdc9d6c70ea9112354920a",
+    "prod": "ae617c5642cdc9d6c70ea9112354920a",
+    "status": "PROD_EQ_GITHUB_LOCAL_AHEAD"
+  },
+  {
+    "file": "server/lib/vin/zh-en-seed.js",
+    "local": "b4512b342e432cfc55011f27ed3417b8",
+    "github": "ac9478578c82e75556779a92439987b5",
+    "prod": null,
+    "status": "THREE_WAY_DRIFT"
+  },
+  {
+    "file": "tests/test_apcoo_ops_briefing.py",
+    "local": "28ab2e778d803c84d51852ed619f3888",
+    "github": "867de49eaba677313d86ccdc335d8ec7",
+    "prod": null,
+    "status": "THREE_WAY_DRIFT"
+  },
+  {
+    "file": "tests/test_apinventory_agent.py",
+    "local": "bfa755c1bd96aedb7036d5ca9c5c717a",
+    "github": null,
+    "prod": null,
+    "status": "PROD_EQ_GITHUB_LOCAL_AHEAD"
+  },
+  {
+    "file": "tests/test_knowledge_ingest.py",
+    "local": "bdb6279471beb046444f32f955e112a2",
+    "github": null,
+    "prod": null,
+    "status": "PROD_EQ_GITHUB_LOCAL_AHEAD"
+  },
+  {
+    "file": "tests/test_language_policy.py",
+    "local": "6cca5fb023e0d94cb5f8dad8b91ee522",
+    "github": "893a181435eabf686e1e4d9bbd53eb94",
+    "prod": null,
+    "status": "THREE_WAY_DRIFT"
+  },
+  {
+    "file": "tests/test_qxb_photo_pick.py",
+    "local": "be2f3bc0975a74cf62e5e870587d3d70",
+    "github": null,
+    "prod": null,
+    "status": "PROD_EQ_GITHUB_LOCAL_AHEAD"
+  },
+  {
+    "file": "tests/test_qxb_pipeline.py",
+    "local": "7be2468572b08b08f7e2be219b7f51e9",
+    "github": null,
+    "prod": null,
+    "status": "PROD_EQ_GITHUB_LOCAL_AHEAD"
+  },
+  {
+    "file": "tests/test_qxb_price_estimate.py",
+    "local": "39beb96e7d9a15f39c547d3968a2e864",
+    "github": null,
+    "prod": null,
+    "status": "PROD_EQ_GITHUB_LOCAL_AHEAD"
+  },
+  {
+    "file": "tests/test_wecom_access.py",
+    "local": "a75923dc2291fdb4afe08c24a4d10ca8",
+    "github": null,
+    "prod": null,
+    "status": "PROD_EQ_GITHUB_LOCAL_AHEAD"
+  },
+  {
+    "file": "tests/test_wecom_callback.py",
+    "local": "6233950f5a0e13a85f0ebb8b5f6fe732",
+    "github": null,
+    "prod": null,
+    "status": "PROD_EQ_GITHUB_LOCAL_AHEAD"
+  },
+  {
+    "file": "tests/test_wecom_group_upload.py",
+    "local": "32468f698cb624aa988c953f15d000cb",
+    "github": null,
+    "prod": null,
+    "status": "PROD_EQ_GITHUB_LOCAL_AHEAD"
+  },
+  {
+    "file": "tests/test_whatsapp_browser_adapter.py",
+    "local": "db46c8359cf2029bbf37c4ef0934d0ca",
+    "github": "fd33c7a69dd274802edb2fe88f8e76b9",
+    "prod": null,
+    "status": "THREE_WAY_DRIFT"
+  }
+]

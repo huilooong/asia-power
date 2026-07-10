@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AsiaPower · 供应商门户预览</title>
+  <link rel="stylesheet" href="portal.css">
+</head>
+<body>
+  <div class="preview-note">
+    <div><strong>预览 · 未上线</strong> — 新供应商注册填资料 · 老供应商登录后补资料 · 再进我的上传</div>
+    <div>
+      <a href="index.html">总览</a> ·
+      <a href="buyer-portal-preview.html">采购商门户</a> ·
+      <a href="deposit-flow-preview.html">定金流程</a>
+    </div>
+  </div>
+
+  <nav class="ap-nav">
+    <div class="nav-w">
+      <a class="ap-logo" href="index.html">Asia<span>Power</span></a>
+      <div class="nav-links">
+        <a href="supplier-portal-preview.html" class="on">Supplier Portal</a>
+        <a href="../../supplier-portal/dashboard.html">正式工作台</a>
+      </div>
+    </div>
+  </nav>
+
+  <div class="wrap">
+    <div class="hero-mini">
+      <div class="kicker">Supplier · Register + Profile</div>
+      <h1>新供应商注册，老供应商补资料</h1>
+      <p>手机号验证码登录。新号必须填公司资料才能注册；老号登录后若资料不全，须先补全才能看「我的上传」。</p>
+    </div>
+
+    <div class="steps" style="margin-bottom:20px">
+      <div class="step on" id="step-auth"><div class="n">1</div><div class="t">登录 / 注册</div><div class="d">手机 OTP</div></div>
+      <div class="step" id="step-profile"><div class="n">2</div><div class="t">补全资料</div><div class="d">老客户必做</div></div>
+      <div class="step" id="step-dash"><div class="n">3</div><div class="t">我的上传</div><div class="d">待审 / 已上线</div></div>
+    </div>
+
+    <div class="grid-2" id="auth-grid">
+      <section class="panel">
+        <h2>演示：老供应商登录</h2>
+        <p class="sub">手机 <code>16638801930</code> · 验证码 <code>888888</code></p>
+        <div class="row">
+          <div class="field">
+            <label>手机号</label>
+            <input id="phone" value="16638801930" />
+          </div>
+          <div class="field">
+            <label>验证码</label>
+            <input id="otp" value="888888" />
+          </div>
+        </div>
+        <button class="btn btn-primary btn-block" type="button" id="supplier-login">登录（将进入补资料）</button>
+        <div class="hint">预览用假流程：登录后先出现补资料表单，保存后才进工作台。</div>
+      </section>
+
+      <section class="panel">
+        <h2>必填资料</h2>
+        <div class="muted">
+          · 公司名称<br>
+          · 业务类型<br>
+          · 联系人<br>
+          · 国家/地区<br>
+          · 邮箱<br>
+          · 经营地址<br>
+          · 主营品类<br>
+          <br>
+          选填：品牌、微信、城市、月产能
+        </div>
+      </section>
+    </div>
+
+    <section class="panel" style="margin-top:20px" id="profile-panel" hidden>
+      <h2>补全供应商资料（老客户）</h2>
+      <p class="sub">资料未齐不可进入「我的上传」</p>
+      <div class="field"><label>公司名称 *</label><input id="company" value="汽修宝" /></div>
+      <div class="row">
+        <div class="field">
+          <label>业务类型 *</label>
+          <select id="business"><option value="auto-recycler" selected>汽车回收</option><option value="dismantling-yard">拆车厂</option></select>
+        </div>
+        <div class="field"><label>联系人 *</label><input id="contact" value="张经理" /></div>
+      </div>
+      <div class="row">
+        <div class="field">
+          <label>国家 *</label>
+          <select id="country"><option value="china" selected>中国</option></select>
+        </div>
+        <div class="field"><label>邮箱 *</label><input id="email" value="qxb@example.com" /></div>
+      </div>
+      <div class="field"><label>经营地址 *</label><input id="address" value="广州市白云区…" /></div>
+      <div class="field">
+        <label>主营品类 *</label>
+        <select id="spec"><option value="half-cuts" selected>半切/整车拆解</option><option value="both">发动机+变速箱</option></select>
+      </div>
+      <button class="btn btn-gold btn-block" type="button" id="save-profile">保存并进入工作台</button>
+    </section>
+
+    <section class="panel" style="margin-top:20px" id="dash" hidden>
+      <div style="display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:4px">
+        <div>
+          <h2 style="margin:0" id="sup-name">汽修宝</h2>
+          <p class="sub" style="margin:4px 0 0">资料已完整 · 可查看上传</p>
+        </div>
+        <span class="badge badge-green">Profile OK</span>
+      </div>
+      <div class="steps" style="margin-bottom:16px">
+        <div class="step on"><div class="n">Pending</div><div class="t" id="c-pending">0</div></div>
+        <div class="step on"><div class="n">Live</div><div class="t" id="c-live">0</div></div>
+        <div class="step"><div class="n">Rejected</div><div class="t" id="c-rej">0</div></div>
+      </div>
+      <table class="table">
+        <thead><tr><th>Stock</th><th>车型</th><th>价格</th><th>状态</th><th>时间</th></tr></thead>
+        <tbody id="upload-rows"></tbody>
+      </table>
+    </section>
+  </div>
+
+  <div class="toast" id="toast"></div>
+  <script src="mock-data.js"></script>
+  <script src="supplier-portal.js"></script>
+</body>
+</html>

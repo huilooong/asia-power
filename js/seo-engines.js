@@ -15,7 +15,7 @@
       applications,
       origin: origin || 'Japan',
       title: `${brand} ${code} Engine — Export & Sourcing | AsiaPower`,
-      description: `Source ${brand} ${code} (${displacement} ${fuel}) engines for global export. Applications: ${applications}. FOB/CIF quotes from AsiaPower.`,
+      description: `Source ${brand} ${code} (${displacement} ${fuel}) engines for global export. Applications: ${applications}. EXW/CIF quotes from AsiaPower.`,
     };
   }
 

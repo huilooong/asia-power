@@ -382,6 +382,52 @@
       ['4JJ1', '4JK1', '4HL1', '4HE1', '6HH1', '6HK1', '4LE1', '4LE2'],
       'AsiaPower sources Isuzu diesel engines, transmissions, chassis parts and half-cuts for D-Max, MU-X and commercial vehicle rebuild programs serving Africa, Asia and Middle East export markets.'
     ),
+    // Added 2026-06-28 — newly confirmed brands from real VIN decode during
+    // inventory correction. Engine lists are limited to codes actually seen
+    // in AsiaPower inventory so far (not a guessed full catalog); will grow
+    // as more VINs are decoded.
+    hawtai: brand(
+      'Hawtai', 'hawtai', 'H', 'China',
+      'Hawtai engines, gearboxes, chassis parts and half-cuts — Terracan and related applications.',
+      ['4G64'],
+      'AsiaPower sources Hawtai engines, transmissions, chassis components and half-cuts, including Terracan (the localized Hyundai Terracan platform) applications, through verified supplier channels.'
+    ),
+    wuling: brand(
+      'Wuling', 'wuling', 'W', 'China',
+      'Wuling engines, gearboxes, chassis parts and half-cuts — Hongguang and related applications.',
+      ['LMU'],
+      'AsiaPower sources Wuling engines, transmissions, chassis components and half-cuts for Hongguang and other SAIC-GM-Wuling commercial/passenger applications.'
+    ),
+    volvo: brand(
+      'Volvo', 'volvo', 'V', 'Sweden',
+      'Volvo engines, gearboxes, chassis parts and half-cuts — S40 and related applications.',
+      ['CAF488Q3'],
+      'AsiaPower sources Volvo engines, transmissions, chassis components and half-cuts for S40 and other passenger car applications through verified supplier channels.'
+    ),
+    citroen: brand(
+      'Citroën', 'citroen', 'C', 'France',
+      'Citroën engines, gearboxes, chassis parts and half-cuts — C2, C-Quatre and related applications.',
+      ['TU3AF', 'PSA RFN 10LH3X'],
+      'AsiaPower sources Citroën engines, transmissions, chassis components and half-cuts for C2, C-Quatre and other Dongfeng-PSA joint-venture applications.'
+    ),
+    peugeot: brand(
+      'Peugeot', 'peugeot', 'P', 'France',
+      'Peugeot engines, gearboxes, chassis parts and half-cuts — 408 and related applications.',
+      ['PSARFN10LH3X'],
+      'AsiaPower sources Peugeot engines, transmissions, chassis components and half-cuts for 408 and other Dongfeng-PSA joint-venture applications.'
+    ),
+    dodge: brand(
+      'Dodge', 'dodge', 'D', 'United States',
+      'Dodge engines, gearboxes, chassis parts and half-cuts.',
+      [],
+      'AsiaPower sources Dodge engines, transmissions, chassis components and half-cuts through verified supplier channels.'
+    ),
+    'changan-kuayue': brand(
+      'Changan Kuayue', 'changan-kuayue', 'C', 'China',
+      'Changan Kuayue engines, gearboxes, chassis parts and half-cuts — light commercial van/truck applications.',
+      ['DK12-10'],
+      'AsiaPower sources Changan Kuayue engines, transmissions, chassis components and half-cuts for light commercial van and truck applications.'
+    ),
   };
 
   function normEngineCode(value) {

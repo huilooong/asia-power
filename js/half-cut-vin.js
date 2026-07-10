@@ -11,7 +11,7 @@
     MANUAL: 'manual',
   };
 
-  const VEHICLE_FIELD_KEYS = ['brand', 'model', 'year', 'engineCode', 'transmissionCode', 'drivetrain'];
+  const VEHICLE_FIELD_KEYS = ['brand', 'model', 'year', 'engineCode', 'transmissionCode', 'drivetrain', 'fuelType'];
 
   const BRAND_SLUG_MAP = {
     Toyota: 'toyota',
@@ -267,22 +267,47 @@
     Object.assign(BRAND_SLUG_MAP, window.VehicleCatalog.BRAND_SLUG);
   }
 
+  function expandPhotoLabels(baseLabels, maxCount) {
+    const max = Math.max(1, Number(maxCount) || 15);
+    const labels = Array.isArray(baseLabels) ? baseLabels.slice() : [];
+    while (labels.length < max) {
+      labels.push(`Additional Photo ${labels.length + 1}`);
+    }
+    return labels.slice(0, max);
+  }
+
   window.HalfCutVin = {
     normalizeVin,
     validateVin,
     maskVin,
     decodeVin,
+    buildResultFromData: buildSuccessResult,
     brandToSlug,
     DECODE_CONFIDENCE,
     BRAND_SLUG_MAP,
     containsFullVin,
     MIN_PHOTOS: 3,
-    MAX_PHOTOS_CAB: 10,
+    MAX_PHOTOS: 15,
+    MAX_PHOTOS_CAB: 15,
     MAX_VIDEO_BYTES: 50 * 1024 * 1024,
     ALLOWED_VIDEO_MIMES: ['video/mp4', 'video/webm', 'video/quicktime', 'video/x-msvideo'],
     SUPPLIER_STATUSES: ['Available', 'Reserved'],
     ADMIN_STATUSES: ['Available', 'Reserved', 'In Transit', 'Sold'],
-    VEHICLE_CONDITIONS: ['Running Vehicle', 'Half Cut', 'Truck Half Cut', 'Driver Cab', 'Dismantled', 'Engine Removed'],
+    VEHICLE_CONDITIONS: [
+      'Running Vehicle',
+      'Half Cut',
+      'Front Cut',
+      'Truck Half Cut',
+      'Driver Cab',
+      'Engine Assembly',
+      'Transmission Assembly',
+      'Chassis Part',
+      'Axle Assembly',
+      'Truck Part',
+      'Part',
+      'Dismantled',
+      'Engine Removed',
+    ],
     PHOTO_LABELS: [
       'Vehicle Front',
       'Vehicle Rear',
@@ -302,5 +327,6 @@
       'Cab Overview',
       'Detail',
     ],
+    expandPhotoLabels,
   };
 })();

@@ -6788,6 +6788,334 @@
       },
       "type": "manual_override",
       "rationale": "RE-APPLYING override lost in an earlier batch run (b757d17 transmissionCode gear-count fix) that predated the MANUAL_OVERRIDE_VINS exclusion list in scripts/vin-batch-correct.js. Same rationale as the original override: physical vehicle carries Hyundai badge; Hawtai/Hyundai JV history verified earlier (chejiahao.autohome.com.cn/info/1013588, cn.auto-che.com/b/hawtai-terracan-hyundai)."
+    },
+    {
+      "vin": "LJDLAA291C0108478",
+      "stockId": "HC250151",
+      "submissionId": "SUB-MQUV9ELW-SKXS",
+      "correctedAt": "2026-06-28T00:25:11.682Z",
+      "changes": {
+        "model": {
+          "before": "K5",
+          "after": "Rio"
+        }
+      }
+    },
+    {
+      "vin": "LSGSA52M8ED032198",
+      "stockId": "HC250143",
+      "submissionId": "SUB-MQUUH558-NAGN",
+      "correctedAt": "2026-06-28T00:25:11.690Z",
+      "changes": {
+        "model": {
+          "before": "Spark",
+          "after": "Sail"
+        }
+      }
+    },
+    {
+      "vin": "5GAEV23DX9J162342",
+      "stockId": "HC250146",
+      "submissionId": "SUB-MQUU6W23-XHXR",
+      "correctedAt": "2026-06-28T00:25:11.700Z",
+      "changes": {
+        "model": {
+          "before": "Envision",
+          "after": "Enclave"
+        }
+      }
+    },
+    {
+      "vin": "KMHSH81B0BU717098",
+      "stockId": "HC250128",
+      "submissionId": "SUB-MQT30VNN-2PKZ",
+      "correctedAt": "2026-06-28T00:25:11.779Z",
+      "changes": {
+        "model": {
+          "before": "Tucson",
+          "after": "Santa Fe"
+        }
+      }
+    },
+    {
+      "vin": "JE3AS29W38Z006345",
+      "stockId": "HC250085",
+      "submissionId": "SUB-MQQTS002-04WA",
+      "correctedAt": "2026-06-28T00:25:11.826Z",
+      "changes": {
+        "model": {
+          "before": "Challenger",
+          "after": "Outlander"
+        }
+      }
+    },
+    {
+      "vin": "LSGSA52S0CY032202",
+      "stockId": "HC250083",
+      "submissionId": "SUB-MQQTD0OG-GPAZ",
+      "correctedAt": "2026-06-28T00:25:11.826Z",
+      "changes": {
+        "model": {
+          "before": "Spark",
+          "after": "Sail"
+        }
+      }
+    },
+    {
+      "vin": "LDC943X36A1347417",
+      "stockId": "HC250084",
+      "submissionId": "SUB-MQQT9QZW-W8VN",
+      "correctedAt": "2026-06-28T00:25:11.827Z",
+      "changes": {
+        "model": {
+          "before": "Spark",
+          "after": "408"
+        }
+      }
+    },
+    {
+      "vin": "LSGSA52M3CY271793",
+      "stockId": "HC250061",
+      "submissionId": "SUB-MQOOF79H-K8FG",
+      "correctedAt": "2026-06-28T00:25:11.861Z",
+      "changes": {
+        "model": {
+          "before": "Captiva",
+          "after": "Sail"
+        }
+      }
+    },
+    {
+      "vin": "LSGSA62S4CY110325",
+      "stockId": "HC250053",
+      "submissionId": "SUB-MQMEQMIB-Q19A",
+      "correctedAt": "2026-06-28T00:25:11.898Z",
+      "changes": {
+        "model": {
+          "before": "Spark",
+          "after": "Sail"
+        }
+      }
+    },
+    {
+      "vin": "LJDDAA223A0408415",
+      "stockId": "HC250043",
+      "submissionId": "SUB-MQME468R-THHD",
+      "correctedAt": "2026-06-28T00:25:11.898Z",
+      "changes": {
+        "model": {
+          "before": "Seltos",
+          "after": "Cerato"
+        }
+      }
+    },
+    {
+      "vin": "LFV2B2F30L7713114",
+      "stockId": "HC250051",
+      "submissionId": "SUB-MQLZ9XYI-7YHB",
+      "correctedAt": "2026-06-28T00:25:11.948Z",
+      "changes": {
+        "engineCode": {
+          "before": "EA211",
+          "after": "DJS"
+        }
+      }
+    },
+    {
+      "vin": "LJDLAA291C0108478",
+      "stockId": "HC250151",
+      "submissionId": "SUB-MQUV9ELW-SKXS",
+      "correctedAt": "2026-06-28T00:25:12.049Z",
+      "changes": {
+        "model": {
+          "before": "K5",
+          "after": "Rio"
+        },
+        "title": {
+          "before": "Kia K5 G4FA Half Cut",
+          "after": "Kia Rio G4FA Half Cut"
+        },
+        "shortDescription": {
+          "before": "2012 Kia K5 vehicle with G4FA — supplier-verified listing via AsiaPower.",
+          "after": "2012 Kia Rio vehicle with G4FA — supplier-verified listing via AsiaPower."
+        }
+      }
+    },
+    {
+      "vin": "5GAEV23DX9J162342",
+      "stockId": "HC250146",
+      "submissionId": "SUB-MQUU6W23-XHXR",
+      "correctedAt": "2026-06-28T00:25:12.065Z",
+      "changes": {
+        "model": {
+          "before": "Envision",
+          "after": "Enclave"
+        },
+        "title": {
+          "before": "Buick Envision LLT Half Cut",
+          "after": "Buick Enclave LLT Half Cut"
+        },
+        "shortDescription": {
+          "before": "2009 Buick Envision vehicle with LLT — supplier-verified listing via AsiaPower.",
+          "after": "2009 Buick Enclave vehicle with LLT — supplier-verified listing via AsiaPower."
+        }
+      }
+    },
+    {
+      "vin": "LSGSA52M8ED032198",
+      "stockId": "HC250143",
+      "submissionId": "SUB-MQUUH558-NAGN",
+      "correctedAt": "2026-06-28T00:25:12.073Z",
+      "changes": {
+        "model": {
+          "before": "Spark",
+          "after": "Sail"
+        },
+        "title": {
+          "before": "Chevrolet Spark LCU Half Cut",
+          "after": "Chevrolet Sail LCU Half Cut"
+        },
+        "shortDescription": {
+          "before": "2013 Chevrolet Spark vehicle with LCU — supplier-verified listing via AsiaPower.",
+          "after": "2013 Chevrolet Sail vehicle with LCU — supplier-verified listing via AsiaPower."
+        }
+      }
+    },
+    {
+      "vin": "KMHSH81B0BU717098",
+      "stockId": "HC250128",
+      "submissionId": "SUB-MQT30VNN-2PKZ",
+      "correctedAt": "2026-06-28T00:25:12.148Z",
+      "changes": {
+        "model": {
+          "before": "Tucson",
+          "after": "Santa Fe"
+        },
+        "title": {
+          "before": "Hyundai Tucson G4KE Running Vehicle",
+          "after": "Hyundai Santa Fe G4KE Running Vehicle"
+        }
+      }
+    },
+    {
+      "vin": "JE3AS29W38Z006345",
+      "stockId": "HC250085",
+      "submissionId": "SUB-MQQTS002-04WA",
+      "correctedAt": "2026-06-28T00:25:12.176Z",
+      "changes": {
+        "model": {
+          "before": "Challenger",
+          "after": "Outlander"
+        },
+        "title": {
+          "before": "Mitsubishi Challenger 4B12 Half Cut",
+          "after": "Mitsubishi Outlander 4B12 Half Cut"
+        }
+      }
+    },
+    {
+      "vin": "LDC943X36A1347417",
+      "stockId": "HC250084",
+      "submissionId": "SUB-MQQT9QZW-W8VN",
+      "correctedAt": "2026-06-28T00:25:12.176Z",
+      "changes": {
+        "model": {
+          "before": "Spark",
+          "after": "408"
+        },
+        "title": {
+          "before": "Peugeot Spark PSARFN10LH3X Half Cut",
+          "after": "Peugeot 408 PSARFN10LH3X Half Cut"
+        }
+      }
+    },
+    {
+      "vin": "LSGSA52S0CY032202",
+      "stockId": "HC250083",
+      "submissionId": "SUB-MQQTD0OG-GPAZ",
+      "correctedAt": "2026-06-28T00:25:12.177Z",
+      "changes": {
+        "model": {
+          "before": "Spark",
+          "after": "Sail"
+        },
+        "title": {
+          "before": "Chevrolet Spark LMU Half Cut",
+          "after": "Chevrolet Sail LMU Half Cut"
+        }
+      }
+    },
+    {
+      "vin": "LSGSA52M3CY271793",
+      "stockId": "HC250061",
+      "submissionId": "SUB-MQOOF79H-K8FG",
+      "correctedAt": "2026-06-28T00:25:12.210Z",
+      "changes": {
+        "model": {
+          "before": "Captiva",
+          "after": "Sail"
+        },
+        "title": {
+          "before": "Chevrolet Captiva LCU Running Vehicle",
+          "after": "Chevrolet Sail LCU Running Vehicle"
+        }
+      }
+    },
+    {
+      "vin": "LSGSA62S4CY110325",
+      "stockId": "HC250053",
+      "submissionId": "SUB-MQMEQMIB-Q19A",
+      "correctedAt": "2026-06-28T00:25:12.254Z",
+      "changes": {
+        "model": {
+          "before": "Spark",
+          "after": "Sail"
+        },
+        "title": {
+          "before": "Chevrolet Spark LMU Running Vehicle",
+          "after": "Chevrolet Sail LMU Running Vehicle"
+        },
+        "shortDescription": {
+          "before": "2010 Chevrolet Spark vehicle with LMU — supplier-verified listing via AsiaPower.",
+          "after": "2010 Chevrolet Sail vehicle with LMU — supplier-verified listing via AsiaPower."
+        }
+      }
+    },
+    {
+      "vin": "LFV2B2F30L7713114",
+      "stockId": "HC250051",
+      "submissionId": "SUB-MQLZ9XYI-7YHB",
+      "correctedAt": "2026-06-28T00:25:12.262Z",
+      "changes": {
+        "engineCode": {
+          "before": "EA211",
+          "after": "DJS"
+        },
+        "title": {
+          "before": "Audi Q3 EA211 Half Cut",
+          "after": "Audi Q3 DJS Half Cut"
+        }
+      }
+    },
+    {
+      "vin": "LJDDAA223A0408415",
+      "stockId": "HC250043",
+      "submissionId": "SUB-MQME468R-THHD",
+      "correctedAt": "2026-06-28T00:25:12.295Z",
+      "changes": {
+        "model": {
+          "before": "Seltos",
+          "after": "Cerato"
+        },
+        "title": {
+          "before": "Kia Seltos G4ED Running Vehicle",
+          "after": "Kia Cerato G4ED Running Vehicle"
+        },
+        "shortDescription": {
+          "before": "2010 Kia Seltos vehicle with G4ED — supplier-verified listing via AsiaPower.",
+          "after": "2010 Kia Cerato vehicle with G4ED — supplier-verified listing via AsiaPower."
+        }
+      }
     }
   ]
 }

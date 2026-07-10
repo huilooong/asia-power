@@ -7,6 +7,7 @@ import json
 import os
 import sys
 import time
+import urllib.error
 import urllib.parse
 import urllib.request
 from pathlib import Path
@@ -65,7 +66,25 @@ def run_bot(once: bool = False) -> int:
 
     try:
         while True:
-            result = _api("getUpdates", {"timeout": POLL_TIMEOUT, "offset": offset})
+            try:
+                result = _api("getUpdates", {"timeout": POLL_TIMEOUT, "offset": offset})
+            except urllib.error.HTTPError as exc:
+                if exc.code == 409:
+                    print(
+                        "getUpdates 409 Conflict — another bot instance is polling. "
+                        "Retrying in 5s…",
+                        file=sys.stderr,
+                    )
+                    time.sleep(5)
+                    continue
+                print(f"getUpdates HTTP error: {exc}", file=sys.stderr)
+                time.sleep(3)
+                continue
+            except urllib.error.URLError as exc:
+                print(f"getUpdates network error: {exc}", file=sys.stderr)
+                time.sleep(3)
+                continue
+
             if not result.get("ok"):
                 print(f"getUpdates failed: {result}", file=sys.stderr)
                 time.sleep(3)

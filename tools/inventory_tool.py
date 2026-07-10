@@ -15,6 +15,7 @@ INVENTORY_FILES = (
     DATA / "powertrain-catalog-memory.json",
     DATA / "knowledge-base" / "vin-cache.json",
     DATA / "knowledge-base" / "model-dictionary.json",
+    DATA / "knowledge-base" / "upload-learnings.json",
 )
 
 

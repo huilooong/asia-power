@@ -1,0 +1,6 @@
+# 子敬 idle heartbeat — append to activity stream every 30s when no work running
+# Install (Mac): crontab -l 2>/dev/null; cat deploy/cron/apsales-zijing-heartbeat.cron
+# Install (prod): merged into root crontab via deploy
+
+* * * * * cd /root/.openclaw/workspace/AsiaPower && .venv/bin/python3 scripts/apsales-zijing-idle-heartbeat.py --once >> /var/log/asiapower-zijing-heartbeat.log 2>&1
+* * * * * sleep 30 && cd /root/.openclaw/workspace/AsiaPower && .venv/bin/python3 scripts/apsales-zijing-idle-heartbeat.py --once >> /var/log/asiapower-zijing-heartbeat.log 2>&1

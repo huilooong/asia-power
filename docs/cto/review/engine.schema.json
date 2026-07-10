@@ -1,0 +1,278 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://asia-power.com/knowledge/schema/engine.schema.json",
+  "title": "AsiaPower Engine Knowledge Schema",
+  "description": "Canonical data model for AsiaPower engine knowledge pages. Every knowledge field is wrapped with value, source, last_update, and confidence.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "engine_id",
+    "basic",
+    "applications",
+    "vin",
+    "official_specs",
+    "repair",
+    "faq",
+    "inventory",
+    "half_cuts",
+    "shipping",
+    "related_products",
+    "seo",
+    "references"
+  ],
+  "$defs": {
+    "confidence": {
+      "type": "number",
+      "minimum": 0,
+      "maximum": 1,
+      "description": "0 means unknown/unverified; 1 means confirmed from a primary or directly observed source."
+    },
+    "date": {
+      "type": "string",
+      "pattern": "^\\d{4}-\\d{2}-\\d{2}$"
+    },
+    "evidenceField": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["value", "source", "last_update", "confidence"],
+      "properties": {
+        "value": {
+          "description": "The actual field value. Use null when the field is intentionally reserved but not verified yet."
+        },
+        "source": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Human-readable source name, file path, system, or reference id."
+        },
+        "last_update": {
+          "$ref": "#/$defs/date"
+        },
+        "confidence": {
+          "$ref": "#/$defs/confidence"
+        }
+      }
+    },
+    "reference": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "type", "title", "location", "last_update", "confidence"],
+      "properties": {
+        "id": { "type": "string", "minLength": 1 },
+        "type": {
+          "type": "string",
+          "enum": [
+            "local_file",
+            "inventory_record",
+            "website_page",
+            "service_manual",
+            "manufacturer_spec",
+            "vin_decode",
+            "customer_signal",
+            "analytics_report",
+            "operator_note",
+            "external_url"
+          ]
+        },
+        "title": { "type": "string", "minLength": 1 },
+        "location": { "type": "string", "minLength": 1 },
+        "last_update": { "$ref": "#/$defs/date" },
+        "confidence": { "$ref": "#/$defs/confidence" },
+        "notes": { "type": "string" }
+      }
+    },
+    "faqItem": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["question", "answer"],
+      "properties": {
+        "question": { "$ref": "#/$defs/evidenceField" },
+        "answer": { "$ref": "#/$defs/evidenceField" }
+      }
+    },
+    "inventoryItem": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["stock_id", "title", "status", "url", "record_source"],
+      "properties": {
+        "stock_id": { "$ref": "#/$defs/evidenceField" },
+        "title": { "$ref": "#/$defs/evidenceField" },
+        "status": { "$ref": "#/$defs/evidenceField" },
+        "url": { "$ref": "#/$defs/evidenceField" },
+        "record_source": { "$ref": "#/$defs/evidenceField" }
+      }
+    },
+    "relatedProduct": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["type", "label", "url", "relationship"],
+      "properties": {
+        "type": { "$ref": "#/$defs/evidenceField" },
+        "label": { "$ref": "#/$defs/evidenceField" },
+        "url": { "$ref": "#/$defs/evidenceField" },
+        "relationship": { "$ref": "#/$defs/evidenceField" }
+      }
+    }
+  },
+  "properties": {
+    "schema_version": { "type": "string", "pattern": "^\\d+\\.\\d+\\.\\d+$" },
+    "engine_id": { "type": "string", "pattern": "^[a-z0-9][a-z0-9-]*$" },
+    "basic": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "engine_code",
+        "manufacturer",
+        "engine_family",
+        "displacement",
+        "fuel_type",
+        "aspiration",
+        "configuration",
+        "origin_market",
+        "aliases"
+      ],
+      "properties": {
+        "engine_code": { "$ref": "#/$defs/evidenceField" },
+        "manufacturer": { "$ref": "#/$defs/evidenceField" },
+        "engine_family": { "$ref": "#/$defs/evidenceField" },
+        "displacement": { "$ref": "#/$defs/evidenceField" },
+        "fuel_type": { "$ref": "#/$defs/evidenceField" },
+        "aspiration": { "$ref": "#/$defs/evidenceField" },
+        "configuration": { "$ref": "#/$defs/evidenceField" },
+        "origin_market": { "$ref": "#/$defs/evidenceField" },
+        "aliases": { "$ref": "#/$defs/evidenceField" }
+      }
+    },
+    "applications": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["models", "years", "notes"],
+      "properties": {
+        "models": { "$ref": "#/$defs/evidenceField" },
+        "years": { "$ref": "#/$defs/evidenceField" },
+        "notes": { "$ref": "#/$defs/evidenceField" }
+      }
+    },
+    "vin": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["decode_sources", "known_vin_patterns", "sample_vins", "vin_notes"],
+      "properties": {
+        "decode_sources": { "$ref": "#/$defs/evidenceField" },
+        "known_vin_patterns": { "$ref": "#/$defs/evidenceField" },
+        "sample_vins": { "$ref": "#/$defs/evidenceField" },
+        "vin_notes": { "$ref": "#/$defs/evidenceField" }
+      }
+    },
+    "official_specs": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "power",
+        "torque",
+        "bore",
+        "stroke",
+        "compression_ratio",
+        "oil_capacity",
+        "coolant_capacity",
+        "emissions",
+        "service_interval"
+      ],
+      "properties": {
+        "power": { "$ref": "#/$defs/evidenceField" },
+        "torque": { "$ref": "#/$defs/evidenceField" },
+        "bore": { "$ref": "#/$defs/evidenceField" },
+        "stroke": { "$ref": "#/$defs/evidenceField" },
+        "compression_ratio": { "$ref": "#/$defs/evidenceField" },
+        "oil_capacity": { "$ref": "#/$defs/evidenceField" },
+        "coolant_capacity": { "$ref": "#/$defs/evidenceField" },
+        "emissions": { "$ref": "#/$defs/evidenceField" },
+        "service_interval": { "$ref": "#/$defs/evidenceField" }
+      }
+    },
+    "repair": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["common_issues", "inspection_checklist", "service_manuals", "parts_notes"],
+      "properties": {
+        "common_issues": { "$ref": "#/$defs/evidenceField" },
+        "inspection_checklist": { "$ref": "#/$defs/evidenceField" },
+        "service_manuals": { "$ref": "#/$defs/evidenceField" },
+        "parts_notes": { "$ref": "#/$defs/evidenceField" }
+      }
+    },
+    "faq": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/faqItem" }
+    },
+    "inventory": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["summary", "items"],
+      "properties": {
+        "summary": { "$ref": "#/$defs/evidenceField" },
+        "items": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/inventoryItem" }
+        }
+      }
+    },
+    "half_cuts": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["availability", "items", "buyer_notes"],
+      "properties": {
+        "availability": { "$ref": "#/$defs/evidenceField" },
+        "items": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/inventoryItem" }
+        },
+        "buyer_notes": { "$ref": "#/$defs/evidenceField" }
+      }
+    },
+    "shipping": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["terms", "ports", "packing", "lead_time", "documents"],
+      "properties": {
+        "terms": { "$ref": "#/$defs/evidenceField" },
+        "ports": { "$ref": "#/$defs/evidenceField" },
+        "packing": { "$ref": "#/$defs/evidenceField" },
+        "lead_time": { "$ref": "#/$defs/evidenceField" },
+        "documents": { "$ref": "#/$defs/evidenceField" }
+      }
+    },
+    "related_products": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/relatedProduct" }
+    },
+    "seo": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "canonical_url",
+        "title",
+        "meta_description",
+        "primary_keyword",
+        "secondary_keywords",
+        "search_intent",
+        "internal_links",
+        "structured_data_type"
+      ],
+      "properties": {
+        "canonical_url": { "$ref": "#/$defs/evidenceField" },
+        "title": { "$ref": "#/$defs/evidenceField" },
+        "meta_description": { "$ref": "#/$defs/evidenceField" },
+        "primary_keyword": { "$ref": "#/$defs/evidenceField" },
+        "secondary_keywords": { "$ref": "#/$defs/evidenceField" },
+        "search_intent": { "$ref": "#/$defs/evidenceField" },
+        "internal_links": { "$ref": "#/$defs/evidenceField" },
+        "structured_data_type": { "$ref": "#/$defs/evidenceField" }
+      }
+    },
+    "references": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/reference" }
+    }
+  }
+}

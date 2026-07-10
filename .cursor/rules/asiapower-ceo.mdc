@@ -1,0 +1,39 @@
+---
+description: AsiaPower CEO workflow — QXB upload, review UI, production ops
+alwaysApply: true
+---
+
+# AsiaPower CEO 工作流
+
+## 沟通
+
+- 用户是 CEO、技术小白：结论先行，用表格汇报成功/失败/下一步
+- 同一问题先修再解释，不要只给教程
+
+## 已授权操作（直接执行）
+
+- SSH 生产：`root@159.65.86.24`，站点根 `/root/.openclaw/workspace/inventory-site/`
+- 访问 asia-power.com Admin / API / 公开页做验证
+- QXB 上传、队列重试、VIN 修复部署
+- 启动本地审核页、跑 pipeline 脚本
+
+## QXB 上传
+
+- 审核页：`QXB_REVIEW_PORT=8789 node work/qxb-agent/review_server.js` → http://127.0.0.1:8789/review
+- 确认上传 → 异步队列 `reports/qxb-review-upload-queue.json`
+- 失败常见原因：VIN decode (`getApprovedVinFact`)、429 限流（白名单 IP）
+- 行号 ↔ 库存：Pending 看 QXBxxxx；已批准现网看 HC25xxxx
+- Runbook：`data/knowledge-base/qxb-batch-upload-runbook.md`
+
+## Python 环境
+
+- 优先：`.venv-qxb/bin/python3`（pipeline 依赖）或 `.venv/bin/python3`
+- 勿用系统 python3（缺 openpyxl/PIL/dotenv）
+
+## 销售数据
+
+- 业务数据问题：`python -m truth.verified_sales_intelligence "问题"`，勿猜数字
+
+## 需先问 CEO
+
+- 删数据、force push、对外公开发布

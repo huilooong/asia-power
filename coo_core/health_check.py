@@ -81,6 +81,15 @@ def run_health_checks() -> dict[str, str]:
     except Exception as exc:
         results["reply_queue"] = f"ERROR: {exc}"
 
+    try:
+        from knowledge.runtime import bootstrap_knowledge_runtime
+        kr = bootstrap_knowledge_runtime()
+        results["knowledge_runtime"] = (
+            f"OK ({kr.get('agent_count', 0)} agents)"
+        )
+    except Exception as exc:
+        results["knowledge_runtime"] = f"ERROR: {exc}"
+
     return results
 
 
@@ -97,6 +106,7 @@ def health_response() -> str:
         "sales_intelligence": "Sales Intelligence",
         "browser_adapter": "Browser Adapter",
         "reply_queue": "Reply Queue",
+        "knowledge_runtime": "Knowledge Runtime",
     }
     for key, label in labels.items():
         lines.append(f"- {label}: {checks.get(key, 'UNKNOWN')}")

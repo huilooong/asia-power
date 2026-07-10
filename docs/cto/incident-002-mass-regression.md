@@ -1,0 +1,380 @@
+# INCIDENT-002 — Mass Production Regression
+
+Date: 2026-07-05 (UTC)  
+Priority: **P0**  
+Mode: **READ ONLY** — no file modified, no commit, no push, no deploy
+
+Related: [INCIDENT-001](./incident-001-homepage-regression.md) · [TASK-008 Deploy Log](./task-008-deploy-execution.log)
+
+---
+
+## Executive Summary
+
+Production `public/` was compared against the **newest Local working tree** (MD5, every path where Local has a deployable counterpart).
+
+| Metric | Count |
+| --- | ---: |
+| Production `public/` files total | 1,272 |
+| Local public-path files total | 721 |
+| **Production aligned with Local** | 900 |
+| **Production older/stale vs Local (total inventory)** | **232** |
+| ↳ TASK-008 content regression (prod = GitHub `8536a1d5`, Local = backup 030001) | **128** |
+| ↳ Production diverged (prod ≠ Local, not GitHub rollback pattern) | **12** |
+| ↳ Never on production (Local only, not in 03:00 backup) | **92** |
+| Production files with no Local counterpart (prod-only, e.g. fonts) | 232 |
+
+**Rollback source (128 regressions):** `deploy-production.mjs` rsync from clean worktree **`origin/main @ 8536a1d5`** at **2026-07-05 03:28:19 UTC**.
+
+**Newest intended version for 128 regressions:** Local working tree = **`asia-power-backup-20260705-030001.tar.gz`** (128/128 MD5 match verified).
+
+**Restore status:** NOT executed.
+
+---
+
+## Method
+
+1. Listed all files in production `/root/.openclaw/workspace/inventory-site/public/` (1,272).
+2. Listed all Local files under public web paths (`index.html`, `brands/`, `engines/`, `js/`, `css/`, `assets/`, `admin/`, `docs/`, `half-cuts/`, etc.).
+3. MD5 compared Production vs Local; GitHub `8536a1d5` used to classify rollback vs other drift.
+4. Pre-deploy backup `20260705-030001` cross-checked for the 128 regressions.
+
+**Included as “production older than local”:**
+- Production file exists, MD5 ≠ Local (140 paths)
+- Local file exists, missing on production (92 paths)
+
+**Excluded:** 232 production files with no Local counterpart (cannot establish Local as newer).
+
+---
+
+## Section A — TASK-008 Content Regressions (128 files)
+
+**Definition:** `production_md5 == github_8536a1d5_md5` AND `local_md5 != production_md5`. All 128 match backup `20260705-030001`.
+
+### By directory
+
+| Path | Files |
+| --- | ---: |
+| `brands/` | 53 |
+| `js/` | 30 |
+| `engines/` (legacy hand-crafted pages) | 13 |
+| `pages/` | 3 |
+| `admin/` | 2 |
+| `css/` | 2 |
+| `half-cuts/` | 2 |
+| `trucks/` | 2 |
+| Root / other single files | 21 |
+| **Total** | **128** |
+
+### Complete inventory — all 128 files
+
+| File | Production | Local newest | GitHub | Prod mtime | Deploy 03:28 | Rollback source | Restore |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| `.env.example` | `142be5634e26` | `68a129e86bf3` | `142be5634e26` | 2026-07-05 03:28:19 UTC | Yes | TASK-008 rsync @8536a1d5 (03:28:19 UTC) | Local OR backup 20260705-030001 |
+| `README.md` | `1b1fdd509da3` | `b5a2ff2e6e36` | `1b1fdd509da3` | 2026-07-05 03:28:19 UTC | Yes | TASK-008 rsync @8536a1d5 (03:28:19 UTC) | Local OR backup 20260705-030001 |
+| `about.html` | `50958af8f7cd` | `6d9575bc4b56` | `50958af8f7cd` | 2026-07-05 03:28:19 UTC | Yes | TASK-008 rsync @8536a1d5 (03:28:19 UTC) | Local OR backup 20260705-030001 |
+| `admin/analytics.html` | `704490e72aa8` | `d1b2af92ce43` | `704490e72aa8` | 2026-07-05 03:28:19 UTC | Yes | TASK-008 rsync @8536a1d5 (03:28:19 UTC) | Local OR backup 20260705-030001 |
+| `admin/leads.html` | `77b554ae3a1d` | `04610d32c7d3` | `77b554ae3a1d` | 2026-07-05 03:28:19 UTC | Yes | TASK-008 rsync @8536a1d5 (03:28:19 UTC) | Local OR backup 20260705-030001 |
+| `app.html` | `3ef0fde1d922` | `37143f998104` | `3ef0fde1d922` | 2026-07-05 03:28:19 UTC | Yes | TASK-008 rsync @8536a1d5 (03:28:19 UTC) | Local OR backup 20260705-030001 |
+| `brands.html` | `6efb5b2814ab` | `1804d62a6b3b` | `6efb5b2814ab` | 2026-07-05 03:28:19 UTC | Yes | TASK-008 rsync @8536a1d5 (03:28:19 UTC) | Local OR backup 20260705-030001 |
+| `brands/acura.html` | `00a1ea0e7b01` | `c175eaaeff53` | `00a1ea0e7b01` | 2026-07-05 03:28:19 UTC | Yes | TASK-008 rsync @8536a1d5 (03:28:19 UTC) | Local OR backup 20260705-030001 |
+| `brands/audi.html` | `c3050a529354` | `26bc62f4bf6e` | `c3050a529354` | 2026-07-05 03:28:19 UTC | Yes | TASK-008 rsync @8536a1d5 (03:28:19 UTC) | Local OR backup 20260705-030001 |
+| `brands/bmw.html` | `864dfb7e78b6` | `70e12111fe03` | `864dfb7e78b6` | 2026-07-05 03:28:19 UTC | Yes | TASK-008 rsync @8536a1d5 (03:28:19 UTC) | Local OR backup 20260705-030001 |
+| `brands/buick.html` | `82f2a42a7041` | `e4852c2f1cb8` | `82f2a42a7041` | 2026-07-05 03:28:19 UTC | Yes | TASK-008 rsync @8536a1d5 (03:28:19 UTC) | Local OR backup 20260705-030001 |
+| `brands/byd.html` | `f913cc89e98c` | `7231b28d4aea` | `f913cc89e98c` | 2026-07-05 03:28:19 UTC | Yes | TASK-008 rsync @8536a1d5 (03:28:19 UTC) | Local OR backup 20260705-030001 |
+| `brands/cadillac.html` | `2a0a31e88670` | `ddd425a47b34` | `2a0a31e88670` | 2026-07-05 03:28:19 UTC | Yes | TASK-008 rsync @8536a1d5 (03:28:19 UTC) | Local OR backup 20260705-030001 |
+| `brands/changan.html` | `b0fbec31bd64` | `72b145506fe9` | `b0fbec31bd64` | 2026-07-05 03:28:19 UTC | Yes | TASK-008 rsync @8536a1d5 (03:28:19 UTC) | Local OR backup 20260705-030001 |
+| `brands/chery.html` | `a63e1f596ad0` | `095fd22f2e3e` | `a63e1f596ad0` | 2026-07-05 03:28:19 UTC | Yes | TASK-008 rsync @8536a1d5 (03:28:19 UTC) | Local OR backup 20260705-030001 |
+| `brands/chevrolet.html` | `7238e4a72d3d` | `3b1e5b786965` | `7238e4a72d3d` | 2026-07-05 03:28:19 UTC | Yes | TASK-008 rsync @8536a1d5 (03:28:19 UTC) | Local OR backup 20260705-030001 |
+| `brands/daihatsu.html` | `467de32f9347` | `85d9748363a0` | `467de32f9347` | 2026-07-05 03:28:19 UTC | Yes | TASK-008 rsync @8536a1d5 (03:28:19 UTC) | Local OR backup 20260705-030001 |
+| `brands/dongfeng.html` | `ce8ea18a6252` | `537a764dfd50` | `ce8ea18a6252` | 2026-07-05 03:28:19 UTC | Yes | TASK-008 rsync @8536a1d5 (03:28:19 UTC) | Local OR backup 20260705-030001 |
+| `brands/exeed.html` | `f061b399498a` | `cc471b7ddb80` | `f061b399498a` | 2026-07-05 03:28:19 UTC | Yes | TASK-008 rsync @8536a1d5 (03:28:19 UTC) | Local OR backup 20260705-030001 |
+| `brands/faw.html` | `fb7fb60b0c87` | `4cc1b8f13619` | `fb7fb60b0c87` | 2026-07-05 03:28:19 UTC | Yes | TASK-008 rsync @8536a1d5 (03:28:19 UTC) | Local OR backup 20260705-030001 |
+| `brands/ford.html` | `cbc285d1a990` | `aa707471251a` | `cbc285d1a990` | 2026-07-05 03:28:19 UTC | Yes | TASK-008 rsync @8536a1d5 (03:28:19 UTC) | Local OR backup 20260705-030001 |
+| `brands/foton.html` | `4d05de09c651` | `448c8c119daa` | `4d05de09c651` | 2026-07-05 03:28:19 UTC | Yes | TASK-008 rsync @8536a1d5 (03:28:19 UTC) | Local OR backup 20260705-030001 |
+| `brands/gac.html` | `8e61cc7e2bc6` | `323d614a321e` | `8e61cc7e2bc6` | 2026-07-05 03:28:19 UTC | Yes | TASK-008 rsync @8536a1d5 (03:28:19 UTC) | Local OR backup 20260705-030001 |
+| `brands/geely.html` | `5923e41ea1af` | `26f2a70a0e3b` | `5923e41ea1af` | 2026-07-05 03:28:19 UTC | Yes | TASK-008 rsync @8536a1d5 (03:28:19 UTC) | Local OR backup 20260705-030001 |
+| `brands/genesis.html` | `26eaf605841a` | `d75aafc01d0b` | `26eaf605841a` | 2026-07-05 03:28:19 UTC | Yes | TASK-008 rsync @8536a1d5 (03:28:19 UTC) | Local OR backup 20260705-030001 |
+| `brands/geometry.html` | `4fc4e6a4ce4d` | `d54687f589a8` | `4fc4e6a4ce4d` | 2026-07-05 03:28:19 UTC | Yes | TASK-008 rsync @8536a1d5 (03:28:19 UTC) | Local OR backup 20260705-030001 |
+| `brands/gmc.html` | `0ca67fb70ab1` | `b3f5abeffcf0` | `0ca67fb70ab1` | 2026-07-05 03:28:19 UTC | Yes | TASK-008 rsync @8536a1d5 (03:28:19 UTC) | Local OR backup 20260705-030001 |
+| `brands/great-wall.html` | `0196a3e447e0` | `358adf8f3e0f` | `0196a3e447e0` | 2026-07-05 03:28:19 UTC | Yes | TASK-008 rsync @8536a1d5 (03:28:19 UTC) | Local OR backup 20260705-030001 |
+| `brands/haval.html` | `e6d91f0245ec` | `18c4f8f0ed8b` | `e6d91f0245ec` | 2026-07-05 03:28:19 UTC | Yes | TASK-008 rsync @8536a1d5 (03:28:19 UTC) | Local OR backup 20260705-030001 |
+| `brands/honda.html` | `2ed8b2f9a9d9` | `a032499ba06b` | `2ed8b2f9a9d9` | 2026-07-05 03:28:19 UTC | Yes | TASK-008 rsync @8536a1d5 (03:28:19 UTC) | Local OR backup 20260705-030001 |
+| `brands/hyundai.html` | `725516b7ce48` | `3a1246fc5720` | `725516b7ce48` | 2026-07-05 03:28:19 UTC | Yes | TASK-008 rsync @8536a1d5 (03:28:19 UTC) | Local OR backup 20260705-030001 |
+| `brands/infiniti.html` | `a7dbc65b1178` | `654d6cc515d8` | `a7dbc65b1178` | 2026-07-05 03:28:19 UTC | Yes | TASK-008 rsync @8536a1d5 (03:28:19 UTC) | Local OR backup 20260705-030001 |
+| `brands/isuzu.html` | `ec898102b573` | `b682d99dec92` | `ec898102b573` | 2026-07-05 03:28:19 UTC | Yes | TASK-008 rsync @8536a1d5 (03:28:19 UTC) | Local OR backup 20260705-030001 |
+| `brands/jac.html` | `e35527badeba` | `9d08f73a6777` | `e35527badeba` | 2026-07-05 03:28:19 UTC | Yes | TASK-008 rsync @8536a1d5 (03:28:19 UTC) | Local OR backup 20260705-030001 |
+| `brands/jaecoo.html` | `728c01810204` | `4af53454b182` | `728c01810204` | 2026-07-05 03:28:19 UTC | Yes | TASK-008 rsync @8536a1d5 (03:28:19 UTC) | Local OR backup 20260705-030001 |
+| `brands/jetour.html` | `f385911f496c` | `ba0072ca4acf` | `f385911f496c` | 2026-07-05 03:28:19 UTC | Yes | TASK-008 rsync @8536a1d5 (03:28:19 UTC) | Local OR backup 20260705-030001 |
+| `brands/jmc.html` | `63a0cde8b8e2` | `1a831598f1c2` | `63a0cde8b8e2` | 2026-07-05 03:28:19 UTC | Yes | TASK-008 rsync @8536a1d5 (03:28:19 UTC) | Local OR backup 20260705-030001 |
+| `brands/kia.html` | `e5971b8cd096` | `28023432cabb` | `e5971b8cd096` | 2026-07-05 03:28:19 UTC | Yes | TASK-008 rsync @8536a1d5 (03:28:19 UTC) | Local OR backup 20260705-030001 |
+| `brands/lexus.html` | `c51a37b437f7` | `facce1a29ab0` | `c51a37b437f7` | 2026-07-05 03:28:19 UTC | Yes | TASK-008 rsync @8536a1d5 (03:28:19 UTC) | Local OR backup 20260705-030001 |
+| `brands/lincoln.html` | `51a5bcc05ccd` | `9071392414d1` | `51a5bcc05ccd` | 2026-07-05 03:28:19 UTC | Yes | TASK-008 rsync @8536a1d5 (03:28:19 UTC) | Local OR backup 20260705-030001 |
+| `brands/lynk-co.html` | `34ce02f43173` | `24d409a40b88` | `34ce02f43173` | 2026-07-05 03:28:19 UTC | Yes | TASK-008 rsync @8536a1d5 (03:28:19 UTC) | Local OR backup 20260705-030001 |
+| `brands/maxus.html` | `c9d7397a6a26` | `3a1840bca471` | `c9d7397a6a26` | 2026-07-05 03:28:19 UTC | Yes | TASK-008 rsync @8536a1d5 (03:28:19 UTC) | Local OR backup 20260705-030001 |
+| `brands/mazda.html` | `36eb167f8b07` | `73774c1361f4` | `36eb167f8b07` | 2026-07-05 03:28:19 UTC | Yes | TASK-008 rsync @8536a1d5 (03:28:19 UTC) | Local OR backup 20260705-030001 |
+| `brands/mercedes-benz.html` | `9933e6b9c68a` | `6ab7d645b4d7` | `9933e6b9c68a` | 2026-07-05 03:28:19 UTC | Yes | TASK-008 rsync @8536a1d5 (03:28:19 UTC) | Local OR backup 20260705-030001 |
+| `brands/mg.html` | `8fe7cee43e9e` | `6a2211c7f60d` | `8fe7cee43e9e` | 2026-07-05 03:28:19 UTC | Yes | TASK-008 rsync @8536a1d5 (03:28:19 UTC) | Local OR backup 20260705-030001 |
+| `brands/mini.html` | `43130e5ce784` | `02e3807cb6b8` | `43130e5ce784` | 2026-07-05 03:28:19 UTC | Yes | TASK-008 rsync @8536a1d5 (03:28:19 UTC) | Local OR backup 20260705-030001 |
+| `brands/mitsubishi.html` | `a8012d2a615e` | `8fc3dd5c714e` | `a8012d2a615e` | 2026-07-05 03:28:19 UTC | Yes | TASK-008 rsync @8536a1d5 (03:28:19 UTC) | Local OR backup 20260705-030001 |
+| `brands/nissan.html` | `a4a19977606f` | `92356ec9c527` | `a4a19977606f` | 2026-07-05 03:28:19 UTC | Yes | TASK-008 rsync @8536a1d5 (03:28:19 UTC) | Local OR backup 20260705-030001 |
+| `brands/omoda.html` | `32327c873b43` | `183905f28d5c` | `32327c873b43` | 2026-07-05 03:28:19 UTC | Yes | TASK-008 rsync @8536a1d5 (03:28:19 UTC) | Local OR backup 20260705-030001 |
+| `brands/ora.html` | `9f5561b76e16` | `5f23cbbfeea1` | `9f5561b76e16` | 2026-07-05 03:28:19 UTC | Yes | TASK-008 rsync @8536a1d5 (03:28:19 UTC) | Local OR backup 20260705-030001 |
+| `brands/roewe.html` | `2411c02c65d0` | `2926a831304a` | `2411c02c65d0` | 2026-07-05 03:28:19 UTC | Yes | TASK-008 rsync @8536a1d5 (03:28:19 UTC) | Local OR backup 20260705-030001 |
+| `brands/seat.html` | `c76c68605d67` | `24e98a3e5500` | `c76c68605d67` | 2026-07-05 03:28:19 UTC | Yes | TASK-008 rsync @8536a1d5 (03:28:19 UTC) | Local OR backup 20260705-030001 |
+| `brands/skoda.html` | `4c0ae058748d` | `352ec3b86d3d` | `4c0ae058748d` | 2026-07-05 03:28:19 UTC | Yes | TASK-008 rsync @8536a1d5 (03:28:19 UTC) | Local OR backup 20260705-030001 |
+| `brands/ssangyong.html` | `d567a740214d` | `58f3a2fa6813` | `d567a740214d` | 2026-07-05 03:28:19 UTC | Yes | TASK-008 rsync @8536a1d5 (03:28:19 UTC) | Local OR backup 20260705-030001 |
+| `brands/subaru.html` | `8394d461e2c9` | `bc28ba3d0a7a` | `8394d461e2c9` | 2026-07-05 03:28:19 UTC | Yes | TASK-008 rsync @8536a1d5 (03:28:19 UTC) | Local OR backup 20260705-030001 |
+| `brands/suzuki.html` | `f3177f47dbc0` | `ede0a701ba6b` | `f3177f47dbc0` | 2026-07-05 03:28:19 UTC | Yes | TASK-008 rsync @8536a1d5 (03:28:19 UTC) | Local OR backup 20260705-030001 |
+| `brands/tank.html` | `7a5b08232fcf` | `25fc8c389079` | `7a5b08232fcf` | 2026-07-05 03:28:19 UTC | Yes | TASK-008 rsync @8536a1d5 (03:28:19 UTC) | Local OR backup 20260705-030001 |
+| `brands/toyota.html` | `a114703b9a0e` | `4f9d5bfd1136` | `a114703b9a0e` | 2026-07-05 03:28:19 UTC | Yes | TASK-008 rsync @8536a1d5 (03:28:19 UTC) | Local OR backup 20260705-030001 |
+| `brands/volkswagen.html` | `64ae4bfdc96f` | `d2baf1d0e562` | `64ae4bfdc96f` | 2026-07-05 03:28:19 UTC | Yes | TASK-008 rsync @8536a1d5 (03:28:19 UTC) | Local OR backup 20260705-030001 |
+| `brands/zeekr.html` | `223c782c0864` | `67c692f98bfa` | `223c782c0864` | 2026-07-05 03:28:19 UTC | Yes | TASK-008 rsync @8536a1d5 (03:28:19 UTC) | Local OR backup 20260705-030001 |
+| `chassis-parts.html` | `eda91e8b00d0` | `d3f28afe8a2e` | `eda91e8b00d0` | 2026-07-05 03:28:19 UTC | Yes | TASK-008 rsync @8536a1d5 (03:28:19 UTC) | Local OR backup 20260705-030001 |
+| `chassis-parts/index.html` | `a3e7ea27ee35` | `1eef549dcb57` | `a3e7ea27ee35` | 2026-07-05 03:28:19 UTC | Yes | TASK-008 rsync @8536a1d5 (03:28:19 UTC) | Local OR backup 20260705-030001 |
+| `constitution/roles/apsales.md` | `45d1da4cb9c1` | `1d0a69795099` | `45d1da4cb9c1` | 2026-07-05 03:28:19 UTC | Yes | TASK-008 rsync @8536a1d5 (03:28:19 UTC) | Local OR backup 20260705-030001 |
+| `contact.html` | `272bdad219f8` | `9dd8d3d8a685` | `272bdad219f8` | 2026-07-05 03:28:19 UTC | Yes | TASK-008 rsync @8536a1d5 (03:28:19 UTC) | Local OR backup 20260705-030001 |
+| `css/asia-power-apple.css` | `ba14a0791782` | `cd670f429669` | `ba14a0791782` | 2026-07-05 03:28:19 UTC | Yes | TASK-008 rsync @8536a1d5 (03:28:19 UTC) | Local OR backup 20260705-030001 |
+| `css/styles.css` | `063ddb0ff875` | `e7ec5fbd0746` | `063ddb0ff875` | 2026-07-05 03:28:19 UTC | Yes | TASK-008 rsync @8536a1d5 (03:28:19 UTC) | Local OR backup 20260705-030001 |
+| `engines.html` | `621567344a33` | `646782f039a9` | `621567344a33` | 2026-07-05 03:28:19 UTC | Yes | TASK-008 rsync @8536a1d5 (03:28:19 UTC) | Local OR backup 20260705-030001 |
+| `engines/honda-k24a.html` | `b641eec908a3` | `df419ad6c3e1` | `b641eec908a3` | 2026-07-05 03:28:19 UTC | Yes | TASK-008 rsync @8536a1d5 (03:28:19 UTC) | Local OR backup 20260705-030001 |
+| `engines/hyundai-g4kd.html` | `2453d0c94762` | `e55b7357ada9` | `2453d0c94762` | 2026-07-05 03:28:19 UTC | Yes | TASK-008 rsync @8536a1d5 (03:28:19 UTC) | Local OR backup 20260705-030001 |
+| `engines/hyundai-g4na.html` | `6ebbaab5e914` | `829ae462fbd4` | `6ebbaab5e914` | 2026-07-05 03:28:19 UTC | Yes | TASK-008 rsync @8536a1d5 (03:28:19 UTC) | Local OR backup 20260705-030001 |
+| `engines/index.html` | `4614f78bf376` | `849f3bc02c4a` | `4614f78bf376` | 2026-07-05 03:28:19 UTC | Yes | TASK-008 rsync @8536a1d5 (03:28:19 UTC) | Local OR backup 20260705-030001 |
+| `engines/nissan-hr15de.html` | `1ae9a568eb4d` | `58b836e1c696` | `1ae9a568eb4d` | 2026-07-05 03:28:19 UTC | Yes | TASK-008 rsync @8536a1d5 (03:28:19 UTC) | Local OR backup 20260705-030001 |
+| `engines/nissan-hr16de.html` | `fbab463e6686` | `97ffa352cb13` | `fbab463e6686` | 2026-07-05 03:28:19 UTC | Yes | TASK-008 rsync @8536a1d5 (03:28:19 UTC) | Local OR backup 20260705-030001 |
+| `engines/nissan-qr25de.html` | `e56fe78fce84` | `5a4f5136ec43` | `e56fe78fce84` | 2026-07-05 03:28:19 UTC | Yes | TASK-008 rsync @8536a1d5 (03:28:19 UTC) | Local OR backup 20260705-030001 |
+| `engines/toyota-1kd-ftv.html` | `95d9ba825b40` | `2752a112f38e` | `95d9ba825b40` | 2026-07-05 03:28:19 UTC | Yes | TASK-008 rsync @8536a1d5 (03:28:19 UTC) | Local OR backup 20260705-030001 |
+| `engines/toyota-1nz-fe.html` | `c4ad380c2ba0` | `158000b003f3` | `c4ad380c2ba0` | 2026-07-05 03:28:19 UTC | Yes | TASK-008 rsync @8536a1d5 (03:28:19 UTC) | Local OR backup 20260705-030001 |
+| `engines/toyota-1zz-fe.html` | `6f535c7afa8b` | `8c140371dc08` | `6f535c7afa8b` | 2026-07-05 03:28:19 UTC | Yes | TASK-008 rsync @8536a1d5 (03:28:19 UTC) | Local OR backup 20260705-030001 |
+| `engines/toyota-2kd-ftv.html` | `bf2b16f4d968` | `b64f252d85c8` | `bf2b16f4d968` | 2026-07-05 03:28:19 UTC | Yes | TASK-008 rsync @8536a1d5 (03:28:19 UTC) | Local OR backup 20260705-030001 |
+| `engines/toyota-2nz-fe.html` | `8e0400a9e12f` | `79caeca26154` | `8e0400a9e12f` | 2026-07-05 03:28:19 UTC | Yes | TASK-008 rsync @8536a1d5 (03:28:19 UTC) | Local OR backup 20260705-030001 |
+| `engines/toyota-2tr-fe.html` | `e7fd602059df` | `d1fd53e90635` | `e7fd602059df` | 2026-07-05 03:28:19 UTC | Yes | TASK-008 rsync @8536a1d5 (03:28:19 UTC) | Local OR backup 20260705-030001 |
+| `gearboxes.html` | `a7b9e470052f` | `ad54545af4ee` | `a7b9e470052f` | 2026-07-05 03:28:19 UTC | Yes | TASK-008 rsync @8536a1d5 (03:28:19 UTC) | Local OR backup 20260705-030001 |
+| `gearboxes/index.html` | `7acd425af19c` | `fa3bfae2a28b` | `7acd425af19c` | 2026-07-05 03:28:19 UTC | Yes | TASK-008 rsync @8536a1d5 (03:28:19 UTC) | Local OR backup 20260705-030001 |
+| `half-cuts.html` | `98f64d8293e8` | `7fd2fa4f4ecf` | `98f64d8293e8` | 2026-07-05 03:28:19 UTC | Yes | TASK-008 rsync @8536a1d5 (03:28:19 UTC) | Local OR backup 20260705-030001 |
+| `half-cuts/detail.html` | `5f40237dd3e6` | `6e958f65bfa9` | `5f40237dd3e6` | 2026-07-05 03:28:19 UTC | Yes | TASK-008 rsync @8536a1d5 (03:28:19 UTC) | Local OR backup 20260705-030001 |
+| `half-cuts/index.html` | `ca38c0c23a32` | `db7b70f50b86` | `ca38c0c23a32` | 2026-07-05 03:28:19 UTC | Yes | TASK-008 rsync @8536a1d5 (03:28:19 UTC) | Local OR backup 20260705-030001 |
+| `index.html` | `f3344cefa5e6` | `ffc428263bcc` | `f3344cefa5e6` | 2026-07-05 03:28:19 UTC | Yes | TASK-008 rsync @8536a1d5 (03:28:19 UTC) | Local OR backup 20260705-030001 |
+| `js/admin-analytics.js` | `405130efb682` | `18dc3af527c6` | `405130efb682` | 2026-07-05 03:28:19 UTC | Yes | TASK-008 rsync @8536a1d5 (03:28:19 UTC) | Local OR backup 20260705-030001 |
+| `js/admin-half-cut-review.js` | `171f345a376e` | `5468a1a980ef` | `171f345a376e` | 2026-07-05 03:28:19 UTC | Yes | TASK-008 rsync @8536a1d5 (03:28:19 UTC) | Local OR backup 20260705-030001 |
+| `js/admin-leads.js` | `58161bffd2d6` | `e057e075315b` | `58161bffd2d6` | 2026-07-05 03:28:19 UTC | Yes | TASK-008 rsync @8536a1d5 (03:28:19 UTC) | Local OR backup 20260705-030001 |
+| `js/brand-catalog.js` | `baa1ff23e1aa` | `40240fe41d25` | `baa1ff23e1aa` | 2026-07-05 03:28:19 UTC | Yes | TASK-008 rsync @8536a1d5 (03:28:19 UTC) | Local OR backup 20260705-030001 |
+| `js/brand-page.js` | `7af8d2e9a634` | `62e9180a9415` | `7af8d2e9a634` | 2026-07-05 03:28:19 UTC | Yes | TASK-008 rsync @8536a1d5 (03:28:19 UTC) | Local OR backup 20260705-030001 |
+| `js/components.js` | `2526da9c94b2` | `f732469e89de` | `2526da9c94b2` | 2026-07-05 03:28:19 UTC | Yes | TASK-008 rsync @8536a1d5 (03:28:19 UTC) | Local OR backup 20260705-030001 |
+| `js/config.js` | `3ee26659df15` | `7a7aeb565998` | `3ee26659df15` | 2026-07-05 03:28:19 UTC | Yes | TASK-008 rsync @8536a1d5 (03:28:19 UTC) | Local OR backup 20260705-030001 |
+| `js/engine-catalog.js` | `ffbf8dea8512` | `1efd7897c7de` | `ffbf8dea8512` | 2026-07-05 03:28:19 UTC | Yes | TASK-008 rsync @8536a1d5 (03:28:19 UTC) | Local OR backup 20260705-030001 |
+| `js/engine-detail.js` | `6761a5f396fe` | `3c44f52bf15a` | `6761a5f396fe` | 2026-07-05 03:28:19 UTC | Yes | TASK-008 rsync @8536a1d5 (03:28:19 UTC) | Local OR backup 20260705-030001 |
+| `js/engine-directory.js` | `deb5b11ca868` | `2a0f170bcdf2` | `deb5b11ca868` | 2026-07-05 03:28:19 UTC | Yes | TASK-008 rsync @8536a1d5 (03:28:19 UTC) | Local OR backup 20260705-030001 |
+| `js/half-cut-catalog.js` | `c41055fd890e` | `2fa2e2daca07` | `c41055fd890e` | 2026-07-05 03:28:19 UTC | Yes | TASK-008 rsync @8536a1d5 (03:28:19 UTC) | Local OR backup 20260705-030001 |
+| `js/half-cut-detail.js` | `3a6eaf487830` | `199717d396a3` | `3a6eaf487830` | 2026-07-05 03:28:19 UTC | Yes | TASK-008 rsync @8536a1d5 (03:28:19 UTC) | Local OR backup 20260705-030001 |
+| `js/half-cut-directory.js` | `59a28fa5d64f` | `c7ce4bcd2971` | `59a28fa5d64f` | 2026-07-05 03:28:19 UTC | Yes | TASK-008 rsync @8536a1d5 (03:28:19 UTC) | Local OR backup 20260705-030001 |
+| `js/half-cut-gallery-lightbox.js` | `7b09583d0ea7` | `e75bd4818503` | `7b09583d0ea7` | 2026-07-05 03:28:19 UTC | Yes | TASK-008 rsync @8536a1d5 (03:28:19 UTC) | Local OR backup 20260705-030001 |
+| `js/half-cut-inventory-layer.js` | `8f67918ebb72` | `baffe90f5878` | `8f67918ebb72` | 2026-07-05 03:28:19 UTC | Yes | TASK-008 rsync @8536a1d5 (03:28:19 UTC) | Local OR backup 20260705-030001 |
+| `js/half-cut-inventory-store.js` | `b7ddf533f851` | `b3f334c3d9e7` | `b7ddf533f851` | 2026-07-05 03:28:19 UTC | Yes | TASK-008 rsync @8536a1d5 (03:28:19 UTC) | Local OR backup 20260705-030001 |
+| `js/half-cut-leads.js` | `e2aab2b75ac2` | `3be9f3d466f9` | `e2aab2b75ac2` | 2026-07-05 03:28:19 UTC | Yes | TASK-008 rsync @8536a1d5 (03:28:19 UTC) | Local OR backup 20260705-030001 |
+| `js/half-cut-media-api.js` | `1a715fcf41a5` | `d2ba6adf9879` | `1a715fcf41a5` | 2026-07-05 03:28:19 UTC | Yes | TASK-008 rsync @8536a1d5 (03:28:19 UTC) | Local OR backup 20260705-030001 |
+| `js/half-cut-review-layer.js` | `5750a6c3abdf` | `7758cff2311a` | `5750a6c3abdf` | 2026-07-05 03:28:19 UTC | Yes | TASK-008 rsync @8536a1d5 (03:28:19 UTC) | Local OR backup 20260705-030001 |
+| `js/half-cut-supplier-i18n.js` | `68d262f96ee6` | `c90c76551097` | `68d262f96ee6` | 2026-07-05 03:28:19 UTC | Yes | TASK-008 rsync @8536a1d5 (03:28:19 UTC) | Local OR backup 20260705-030001 |
+| `js/half-cut-upload-layer.js` | `4c13d68f6b76` | `a8a6387b9f73` | `4c13d68f6b76` | 2026-07-05 03:28:19 UTC | Yes | TASK-008 rsync @8536a1d5 (03:28:19 UTC) | Local OR backup 20260705-030001 |
+| `js/half-cut-vin.js` | `d1811d6c5b0f` | `dd7922985356` | `d1811d6c5b0f` | 2026-07-05 03:28:19 UTC | Yes | TASK-008 rsync @8536a1d5 (03:28:19 UTC) | Local OR backup 20260705-030001 |
+| `js/main.js` | `6a8f5761e167` | `8f311104d67e` | `6a8f5761e167` | 2026-07-05 03:28:19 UTC | Yes | TASK-008 rsync @8536a1d5 (03:28:19 UTC) | Local OR backup 20260705-030001 |
+| `js/path-utils.js` | `d74f7cff9156` | `ffe2ee9b3d51` | `d74f7cff9156` | 2026-07-05 03:28:19 UTC | Yes | TASK-008 rsync @8536a1d5 (03:28:19 UTC) | Local OR backup 20260705-030001 |
+| `js/public-i18n.js` | `d953a969e811` | `d6f5028c972e` | `d953a969e811` | 2026-07-05 03:28:19 UTC | Yes | TASK-008 rsync @8536a1d5 (03:28:19 UTC) | Local OR backup 20260705-030001 |
+| `js/seo-engines.js` | `5ba75f6fbdad` | `23ea2fe4fef8` | `5ba75f6fbdad` | 2026-07-05 03:28:19 UTC | Yes | TASK-008 rsync @8536a1d5 (03:28:19 UTC) | Local OR backup 20260705-030001 |
+| `js/seo.js` | `0cd629bf21e5` | `fd0adfeecda6` | `0cd629bf21e5` | 2026-07-05 03:28:19 UTC | Yes | TASK-008 rsync @8536a1d5 (03:28:19 UTC) | Local OR backup 20260705-030001 |
+| `js/supplier-half-cut-upload.js` | `dff23a3feed0` | `4d9db1a6a6ec` | `dff23a3feed0` | 2026-07-05 03:28:19 UTC | Yes | TASK-008 rsync @8536a1d5 (03:28:19 UTC) | Local OR backup 20260705-030001 |
+| `js/vehicle-catalog.js` | `666b5a6cf012` | `a8951a955ddd` | `666b5a6cf012` | 2026-07-05 03:28:19 UTC | Yes | TASK-008 rsync @8536a1d5 (03:28:19 UTC) | Local OR backup 20260705-030001 |
+| `js/vehicle-name-normalize.js` | `d4085b683a7e` | `fc0835cdb4ff` | `d4085b683a7e` | 2026-07-05 03:28:19 UTC | Yes | TASK-008 rsync @8536a1d5 (03:28:19 UTC) | Local OR backup 20260705-030001 |
+| `manifest.json` | `10a5e652d470` | `62e8e91eeaf7` | `10a5e652d470` | 2026-07-05 03:28:19 UTC | Yes | TASK-008 rsync @8536a1d5 (03:28:19 UTC) | Local OR backup 20260705-030001 |
+| `pages/contract.html` | `f5d0bc0e9833` | `075b08473624` | `f5d0bc0e9833` | 2026-07-05 03:28:19 UTC | Yes | TASK-008 rsync @8536a1d5 (03:28:19 UTC) | Local OR backup 20260705-030001 |
+| `pages/index.html` | `9993dc93782e` | `10720465f79e` | `9993dc93782e` | 2026-07-05 03:28:19 UTC | Yes | TASK-008 rsync @8536a1d5 (03:28:19 UTC) | Local OR backup 20260705-030001 |
+| `pages/quote.html` | `32b0ac8c3703` | `fcb2d1312877` | `32b0ac8c3703` | 2026-07-05 03:28:19 UTC | Yes | TASK-008 rsync @8536a1d5 (03:28:19 UTC) | Local OR backup 20260705-030001 |
+| `profiles/apsales.yaml` | `e7c7a3f72cb3` | `c97510f10193` | `e7c7a3f72cb3` | 2026-07-05 03:28:19 UTC | Yes | TASK-008 rsync @8536a1d5 (03:28:19 UTC) | Local OR backup 20260705-030001 |
+| `requirements-ai-os.txt` | `619f36a55a95` | `bd966243211a` | `619f36a55a95` | 2026-07-05 03:28:19 UTC | Yes | TASK-008 rsync @8536a1d5 (03:28:19 UTC) | Local OR backup 20260705-030001 |
+| `robots.txt` | `d88915c924e1` | `a031a2a31fd7` | `d88915c924e1` | 2026-07-05 03:28:19 UTC | Yes | TASK-008 rsync @8536a1d5 (03:28:19 UTC) | Local OR backup 20260705-030001 |
+| `supplier-portal.html` | `48ce6f8d9568` | `33cadca77c8b` | `48ce6f8d9568` | 2026-07-05 03:28:19 UTC | Yes | TASK-008 rsync @8536a1d5 (03:28:19 UTC) | Local OR backup 20260705-030001 |
+| `supplier-portal/half-cut-upload.html` | `7468a039998f` | `1c1e2b33bda0` | `7468a039998f` | 2026-07-05 03:28:19 UTC | Yes | TASK-008 rsync @8536a1d5 (03:28:19 UTC) | Local OR backup 20260705-030001 |
+| `sw.js` | `7bf18012a683` | `ca32f476b854` | `7bf18012a683` | 2026-07-05 03:28:19 UTC | Yes | TASK-008 rsync @8536a1d5 (03:28:19 UTC) | Local OR backup 20260705-030001 |
+| `trucks/detail.html` | `9a4a507848a6` | `57afe2db8a25` | `9a4a507848a6` | 2026-07-05 03:28:19 UTC | Yes | TASK-008 rsync @8536a1d5 (03:28:19 UTC) | Local OR backup 20260705-030001 |
+| `trucks/index.html` | `23f0ac46c40c` | `7be140fd47d1` | `23f0ac46c40c` | 2026-07-05 03:28:19 UTC | Yes | TASK-008 rsync @8536a1d5 (03:28:19 UTC) | Local OR backup 20260705-030001 |
+
+---
+
+## Section B — Production Diverged (12 files)
+
+Production differs from Local but **does not match** the GitHub `8536a1d5` rollback pattern. Treat separately before restore.
+
+| File | Production | Local newest | GitHub | Prod mtime | Deploy 03:28 | Rollback source | Restore |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| `.DS_Store` | `5d67abb5c76d` | `9988715a30a3` | N/A | 2026-07-01 12:42:52 UTC | No | Not in GitHub; prod differs from local | Restore from local if canonical |
+| `docs/.DS_Store` | `04597db20fa3` | `8a92066b7a10` | N/A | 2026-07-04 18:11:31 UTC | No | Not in GitHub; prod differs from local | Restore from local if canonical |
+| `docs/backups/navy-gold-approved-2026-06-30/vi/index.html` | `5bdfc734d15f` | `e86f43eabf9f` | N/A | 2026-06-30 22:55:28 UTC | No | Not in GitHub; prod differs from local | Restore from local if canonical |
+| `docs/backups/navy-gold-approved-2026-06-30/vi/preview.html` | `3f3abf10cc04` | `412bbbcd383d` | N/A | 2026-06-30 22:55:28 UTC | No | Not in GitHub; prod differs from local | Restore from local if canonical |
+| `docs/backups/navy-gold-approved-2026-06-30/website/index-claude-3a-marketplace.html` | `d7afeaa72837` | `06d511499f8e` | N/A | 2026-06-30 23:15:59 UTC | No | Not in GitHub; prod differs from local | Restore from local if canonical |
+| `docs/backups/navy-gold-approved-2026-06-30/website/index-claude-template.html` | `1d7fa5b267a1` | `c7016d8b3e84` | N/A | 2026-06-30 23:05:19 UTC | No | Not in GitHub; prod differs from local | Restore from local if canonical |
+| `docs/backups/navy-gold-approved-2026-06-30/website/index-navy-gold-before-claude-3a.html` | `1d7fa5b267a1` | `c7016d8b3e84` | N/A | 2026-06-30 23:14:43 UTC | No | Not in GitHub; prod differs from local | Restore from local if canonical |
+| `docs/backups/navy-gold-approved-2026-06-30/website/index-pre-claude-template.html` | `a7b973422b6a` | `30732b50808c` | N/A | 2026-06-30 23:04:01 UTC | No | Not in GitHub; prod differs from local | Restore from local if canonical |
+| `docs/backups/navy-gold-approved-2026-06-30/website/index.html` | `1d7fa5b267a1` | `c7016d8b3e84` | N/A | 2026-06-30 23:05:19 UTC | No | Not in GitHub; prod differs from local | Restore from local if canonical |
+| `docs/backups/navy-gold-approved-2026-06-30/website/schemes-preview.html` | `db042667fea3` | `976f259a1f32` | N/A | 2026-06-30 22:55:28 UTC | No | Not in GitHub; prod differs from local | Restore from local if canonical |
+| `reports/analytics-top-pages.csv` | `eaac1eef89d4` | `f35b904408a6` | N/A | 2026-07-04 20:02:47 UTC | No | Not in GitHub; prod differs from local | Restore from local if canonical |
+| `supplier-portal/upload-key.js` | `d99ddb545049` | `feb44fc731d3` | N/A | 2026-07-05 03:28:53 UTC | No | Not in GitHub; prod differs from local | Restore from local if canonical |
+
+| Note |
+| --- |
+| `.DS_Store` entries are macOS metadata — ignore for site restore. |
+| `docs/backups/navy-gold-approved-2026-06-30/**` are design preview HTML on prod with Local drift — not customer routes. |
+| `supplier-portal/upload-key.js` is intentionally excluded from deploy script — handle manually. |
+| `reports/analytics-top-pages.csv` is generated data — refresh from analytics, not backup. |
+
+---
+
+## Section C — Local Newest, Missing on Production (92 files)
+
+Local has these files; production does **not**. None were in backup `20260705-030001` — they are **undeployed Local work**, not TASK-008 rollback victims.
+
+| File | Local newest | GitHub | Restore |
+| --- | --- | --- | --- |
+| `docs/architecture/architecture-overview.md` | `a0df44d371e8` | N/A | Deploy from local |
+| `docs/architecture/customer_gateway_audit.md` | `b2ad4e7a191f` | N/A | Deploy from local |
+| `docs/architecture/executive_summary.md` | `b22fcd5fa0eb` | N/A | Deploy from local |
+| `docs/architecture/growth_map.md` | `cff057445d12` | N/A | Deploy from local |
+| `docs/architecture/integrations_audit.md` | `8b73ba0b120e` | N/A | Deploy from local |
+| `docs/architecture/reports-audit.md` | `b4c72524efcb` | N/A | Deploy from local |
+| `docs/architecture/scripts-audit.md` | `4e96694a4228` | N/A | Deploy from local |
+| `docs/backups/karabiner-karabiner.json.before-f9-20260701.json` | `ead7588b3370` | N/A | Deploy from local |
+| `docs/backups/karabiner-karabiner.json.command-restore-20260701.json` | `f26b4eade1dd` | N/A | Deploy from local |
+| `docs/backups/karabiner-karabiner.json.filco-f9-fix-20260701.json` | `cedb4e092594` | N/A | Deploy from local |
+| `docs/backups/navy-gold-approved-2026-06-30/BACKUP-MANIFEST.txt` | `c0faeef84cef` | N/A | Deploy from local |
+| `docs/backups/navy-gold-approved-2026-06-30/blueprint/asia-power-v3-blueprint.md` | `76d0d076d2cd` | N/A | Deploy from local |
+| `docs/backups/navy-gold-approved-2026-06-30/home-v3-claude.css` | `5f314445b9d6` | N/A | Deploy from local |
+| `docs/backups/navy-gold-approved-2026-06-30/vi/assets/brand-stationery-mockup.png` | `23221fd8976f` | N/A | Deploy from local |
+| `docs/backups/navy-gold-approved-2026-06-30/vi/assets/brand-storefront-mockup.png` | `7f1c4bf7177e` | N/A | Deploy from local |
+| `docs/backups/navy-gold-approved-2026-06-30/vi/assets/brand-uniform-mockup.png` | `e9b1c9293cbc` | N/A | Deploy from local |
+| `docs/backups/navy-gold-approved-2026-06-30/vi/assets/brand-wall-mockup.png` | `73d6ee28cc55` | N/A | Deploy from local |
+| `docs/backups/navy-gold-approved-2026-06-30/vi/brand-guidelines.md` | `00c2aa810c65` | N/A | Deploy from local |
+| `docs/backups/navy-gold-approved-2026-06-30/vi/打开预览.command` | `0c5890545b62` | N/A | Deploy from local |
+| `docs/backups/navy-gold-approved-2026-06-30/website/assets/web-scheme-a-mockup.png` | `431701178a04` | N/A | Deploy from local |
+| `docs/backups/navy-gold-approved-2026-06-30/website/css/home-marketplace-v3.css` | `a211c9c5ab47` | N/A | Deploy from local |
+| `docs/backups/navy-gold-approved-2026-06-30/website/css/home-v3-claude.css` | `5f314445b9d6` | N/A | Deploy from local |
+| `docs/backups/navy-gold-approved-2026-06-30/website/home-v3-claude.css` | `5f314445b9d6` | N/A | Deploy from local |
+| `docs/backups/navy-gold-approved-2026-06-30/website/home-v3.js` | `c9401d50dde0` | N/A | Deploy from local |
+| `docs/backups/navy-gold-approved-2026-06-30/website/js/home-v3.js` | `c9401d50dde0` | N/A | Deploy from local |
+| `docs/backups/navy-gold-approved-2026-06-30/website/打开预览.command` | `785c2ebf4141` | N/A | Deploy from local |
+| `docs/cto/.DS_Store` | `4a8b32d10e87` | N/A | Deploy from local |
+| `docs/cto/.incident002-data.json` | `08b1dead6804` | N/A | Deploy from local |
+| `docs/cto/.incident002-final.json` | `6be8405ddb72` | N/A | Deploy from local |
+| `docs/cto/.incident002-full-inventory.json` | `9d7d70194fb1` | N/A | Deploy from local |
+| `docs/cto/.incident002-regression-table.md` | `7c994e629e62` | N/A | Deploy from local |
+| `docs/cto/.incident002-scope.json` | `8f03e58ba95b` | N/A | Deploy from local |
+| `docs/cto/.incident002-table.md` | `1e12f76b4d42` | N/A | Deploy from local |
+| `docs/cto/incident-001-homepage-regression.md` | `4ebd7e97118c` | N/A | Deploy from local |
+| `docs/cto/incident-002-mass-regression.md` | `d37cd6b0c7ae` | N/A | Deploy from local |
+| `docs/cto/incident-002-restore-filelist.txt` | `9c41139dc7e9` | N/A | Deploy from local |
+| `docs/cto/ops-001-nginx-analysis.md` | `9b802708516a` | N/A | Deploy from local |
+| `docs/cto/ops-002-baseline-audit.md` | `0a91c6a25057` | N/A | Deploy from local |
+| `docs/cto/ops-002a-root-cause.md` | `63823c2b56bf` | N/A | Deploy from local |
+| `docs/cto/production-001.md` | `4d187c4fd3da` | N/A | Deploy from local |
+| `docs/cto/review/TASK-003A-DELIVERY.md` | `9a294c4a5369` | N/A | Deploy from local |
+| `docs/cto/review/engine.schema.json` | `987a93c2b762` | N/A | Deploy from local |
+| `docs/cto/review/g4kd.json` | `64deb4f69063` | N/A | Deploy from local |
+| `docs/cto/review/knowledge-schema.md` | `2eed4c61118d` | N/A | Deploy from local |
+| `docs/cto/task-002-growth-audit.md` | `c5c9b65cc6d0` | N/A | Deploy from local |
+| `docs/cto/task-003A-schema.md` | `0ea28852bde7` | N/A | Deploy from local |
+| `docs/cto/task-004.md` | `c1b7565d00d3` | N/A | Deploy from local |
+| `docs/cto/task-005.md` | `ad0dd6e3dbb8` | N/A | Deploy from local |
+| `docs/cto/task-007-page-audit.md` | `1ce4d2201f53` | N/A | Deploy from local |
+| `docs/cto/task-008-commit-review.md` | `b8026eade921` | N/A | Deploy from local |
+| `docs/cto/task-008-deploy-execution.log` | `e1ec0b7b8673` | N/A | Deploy from local |
+| `docs/cto/task-008-deploy-final.md` | `db42b9230b60` | N/A | Deploy from local |
+| `docs/cto/task-008-deploy-review.md` | `8c0a876c59bc` | N/A | Deploy from local |
+| `docs/cto/task-008-live-validation.md` | `f6fac6e3dcb4` | N/A | Deploy from local |
+| `docs/cto/task-008-page-validation.md` | `534af6d65c60` | N/A | Deploy from local |
+| `docs/cto/task-008-push-diagnostic.md` | `a9f40b3a73ff` | N/A | Deploy from local |
+| `docs/cto/task-008-push-review.md` | `ff3b20d2a616` | N/A | Deploy from local |
+| `docs/engine-opportunity-ranking.md` | `7ed9ca9b4c3b` | N/A | Deploy from local |
+| `docs/inventory-source-model.md` | `d40e952115b9` | N/A | Deploy from local |
+| `docs/knowledge-identity-design.md` | `ade27a787c6a` | N/A | Deploy from local |
+| `docs/knowledge-schema.md` | `2eed4c61118d` | N/A | Deploy from local |
+| `docs/social-content/__pycache__/video_engine.cpython-314.pyc` | `628b45f7325b` | N/A | Deploy from local |
+| `docs/social-content/batch-001/build_all.py` | `ba60c03b5aa5` | N/A | Deploy from local |
+| `docs/social-content/batch-001/videos/build_all_videos.py` | `5de0322e692d` | N/A | Deploy from local |
+| `docs/social-content/batch-001/videos/build_hook_videos.py` | `f343ebb34cb5` | N/A | Deploy from local |
+| `docs/social-content/video_engine.py` | `40f670d00b2b` | N/A | Deploy from local |
+| `docs/tiktok/__pycache__/build_video.cpython-314.pyc` | `fe498aab75eb` | N/A | Deploy from local |
+| `docs/tiktok/build_video.py` | `a2f3cbe1fd4d` | N/A | Deploy from local |
+| `reports/analytics-daily-latest.csv` | `faf7e5f31644` | N/A | Deploy from local |
+| `reports/asia-power-action-plan-standard-2026-07-04.md` | `1b5f9fed6667` | N/A | Deploy from local |
+| `reports/asia-power-traffic-weekly-2026-07-04.md` | `81417c933408` | N/A | Deploy from local |
+| `reports/customer-contact-leads-2026-07-04.csv` | `1d69c02ccd16` | N/A | Deploy from local |
+| `reports/customer-data-export-2026-07-04.md` | `8a19f22d0627` | N/A | Deploy from local |
+| `reports/customer-outreach-queue-2026-07-04.csv` | `d88ce186ce25` | N/A | Deploy from local |
+| `runtime/__init__.py` | `c9315177cc87` | `c9315177cc87` | Deploy from local |
+| `runtime/__pycache__/__init__.cpython-314.pyc` | `5b0fc3a80058` | N/A | Deploy from local |
+| `runtime/__pycache__/bootstrap.cpython-314.pyc` | `e4c4a882ab6d` | N/A | Deploy from local |
+| `runtime/__pycache__/config_loader.cpython-314.pyc` | `9186acf5b4c5` | N/A | Deploy from local |
+| `runtime/__pycache__/healthcheck.cpython-314.pyc` | `4f42b24de6b2` | N/A | Deploy from local |
+| `runtime/__pycache__/heartbeat.cpython-314.pyc` | `a941853b16a1` | N/A | Deploy from local |
+| `runtime/__pycache__/state.cpython-314.pyc` | `98fff4032aae` | N/A | Deploy from local |
+| `runtime/backup.py` | `52cc80f0afa9` | `52cc80f0afa9` | Deploy from local |
+| `runtime/bootstrap.py` | `0cd4917665f2` | `72c00976179d` | Deploy from local |
+| `runtime/config_loader.py` | `6cc0329becab` | `6cc0329becab` | Deploy from local |
+| `runtime/healthcheck.py` | `8771ba3f4d10` | `8771ba3f4d10` | Deploy from local |
+| `runtime/heartbeat.py` | `790473fb6ad5` | `790473fb6ad5` | Deploy from local |
+| `runtime/recovery.py` | `ba5612337a58` | `ba5612337a58` | Deploy from local |
+| `runtime/service.py` | `8d5f0e06067e` | `8d5f0e06067e` | Deploy from local |
+| `runtime/state.py` | `3810072b21b6` | `3810072b21b6` | Deploy from local |
+| `runtime/supervisor.py` | `cb6297075671` | `cb6297075671` | Deploy from local |
+| `work/qxb-agent/__pycache__/qxb_review_api.cpython-314.pyc` | `1cb6383ab88a` | N/A | Deploy from local |
+| `work/qxb-agent/qxb_review_api.py` | `9fa6c06257c6` | N/A | Deploy from local |
+
+---
+
+## Files NOT Regressed (keep current production)
+
+| Category | Count | Examples | Action |
+| --- | ---: | --- | --- |
+| Aligned prod = local | 900 | Most `assets/fonts/*`, new `engines/g4fc.html` slug pages | Keep |
+| Forward fix from TASK-008 | 50 | `engines/1az-fe.html`, `engines/g4fc.html`, … | **Keep** — 404 fix |
+| Survived rsync (not in GitHub tree) | 28+ | `css/ebay-layout.css`, hero composite PNG | Keep |
+| Deploy timestamp only | 32 | Logos, hero JPGs — MD5 unchanged | No action |
+
+---
+
+## Safest Restore Plan (not executed)
+
+### Restore scope: **Section A only (128 files)**
+
+Extract from `backups/scheduled/asia-power-backup-20260705-030001.tar.gz` using [`incident-002-restore-filelist.txt`](./incident-002-restore-filelist.txt).
+
+**Do NOT:**
+- Full backup restore (loses 50 new engine pages)
+- Re-deploy from `8536a1d5`
+- Blind rsync entire Local tree (would push Section C + unreviewed files)
+
+### Post-restore checks
+
+| Check | Expected |
+| --- | --- |
+| `index.html` hero | “Give every reusable asset a second life.” |
+| `engines/g4fc.html` | HTTP 200 |
+| 50-engine smoke | PASS |
+| Brand page sample | hreflang present |
+
+---
+
+## Machine-readable artifacts
+
+| File | Contents |
+| --- | --- |
+| [`.incident002-full-inventory.json`](./.incident002-full-inventory.json) | All 232 inventory records |
+| [`.incident002-full-table.md`](./.incident002-full-table.md) | Combined 232-row table |
+| [`incident-002-restore-filelist.txt`](./incident-002-restore-filelist.txt) | 128 paths for selective restore |
+
+---
+
+## Status
+
+| Step | Status |
+| --- | --- |
+| Complete regression inventory | **Done — 232 paths enumerated above** |
+| Production restore | **Awaiting approval** |

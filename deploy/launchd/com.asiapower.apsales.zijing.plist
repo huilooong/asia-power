@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+  <key>Label</key>
+  <string>com.asiapower.apsales.zijing</string>
+  <key>ProgramArguments</key>
+  <array>
+    <string>/Users/longhui/Desktop/AsiaPower/.venv/bin/python3</string>
+    <string>/Users/longhui/Desktop/AsiaPower/scripts/apsales-zijing-run.py</string>
+  </array>
+  <key>EnvironmentVariables</key>
+  <dict>
+    <key>APSALES_SOCIAL_BROWSER_HEADLESS</key>
+    <string>0</string>
+    <key>APSALES_SOCIAL_ENGAGEMENT</key>
+    <string>1</string>
+    <key>PATH</key>
+    <string>/usr/local/bin:/opt/homebrew/bin:/usr/bin:/bin</string>
+  </dict>
+  <key>WorkingDirectory</key>
+  <string>/Users/longhui/Desktop/AsiaPower</string>
+  <key>StandardOutPath</key>
+  <string>/Users/longhui/Desktop/AsiaPower/reports/zijing-run.log</string>
+  <key>StandardErrorPath</key>
+  <string>/Users/longhui/Desktop/AsiaPower/reports/zijing-run.log</string>
+  <key>StartInterval</key>
+  <integer>2700</integer>
+  <key>RunAtLoad</key>
+  <true/>
+</dict>
+</plist>

@@ -94,6 +94,16 @@ function createSessionAuth({ usersFile, json, limitLogin }) {
     return `${prefix}-${crypto.randomBytes(6).toString('hex')}`;
   }
 
+  function createSession(userId) {
+    const sid = id('sess');
+    sessions.set(sid, userId);
+    return sid;
+  }
+
+  function addSession(sid, userId) {
+    sessions.set(sid, userId);
+  }
+
   async function handleAuthRoutes(req, res, pathname, readBody) {
     if (req.method === 'POST' && pathname === '/api/login') {
       if (limitLogin && !limitLogin(req)) {
@@ -105,8 +115,7 @@ function createSessionAuth({ usersFile, json, limitLogin }) {
       if (!u) return json(res, 401, { error: 'invalid credentials' }), true;
       const test = hashPassword(password, u.salt);
       if (test.hash !== u.hash) return json(res, 401, { error: 'invalid credentials' }), true;
-      const sid = id('sess');
-      sessions.set(sid, u.id);
+      const sid = createSession(u.id);
       res.writeHead(200, {
         'Set-Cookie': sessionCookie(sid, 604800),
         'Content-Type': 'application/json; charset=utf-8',
@@ -129,7 +138,15 @@ function createSessionAuth({ usersFile, json, limitLogin }) {
     if (req.method === 'GET' && pathname === '/api/me') {
       const u = authUser(req);
       return json(res, 200, {
-        user: u ? { id: u.id, role: u.role, supplierName: u.supplierName, username: u.username } : null,
+        user: u ? {
+          id: u.id,
+          role: u.role,
+          supplierName: u.supplierName,
+          username: u.username,
+          phone: u.phone || '',
+          phoneNormalized: u.phoneNormalized || '',
+          email: u.email || '',
+        } : null,
       }), true;
     }
 
@@ -144,6 +161,8 @@ function createSessionAuth({ usersFile, json, limitLogin }) {
     handleAuthRoutes,
     hashPassword,
     sessionCookie,
+    addSession,
+    createSession,
     getUsers: () => users,
     setUsers: (next) => { users = next; },
     saveUsers: () => fs.writeFileSync(usersFile, JSON.stringify(users, null, 2)),

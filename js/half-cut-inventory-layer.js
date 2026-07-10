@@ -30,6 +30,7 @@
     'reviewedAt',
     'approvedStockId',
     'approvedSlug',
+    'notes',
   ];
 
   function stripVin(item) {
@@ -44,6 +45,21 @@
     const pub = stripVin(item);
     if (item.vin) pub.maskedVin = Vin().maskVin(item.vin);
     else if (item.maskedVin) pub.maskedVin = item.maskedVin;
+
+    if (window.HalfCutTitle?.isQxbListing?.(item)) {
+      if (!pub.originalVehicleName) {
+        pub.originalVehicleName = window.HalfCutTitle?.extractOriginalVehicleName?.(item.notes || item.shortDescription || '')
+          || String(item.originalVehicleName || '').trim();
+      }
+    } else {
+      delete pub.originalVehicleName;
+      const structured = window.HalfCutTitle?.buildStructuredTitle?.(item);
+      if (structured) pub.title = structured;
+    }
+
+    if (window.ContactRedact?.redactPublicStrings) {
+      return window.ContactRedact.redactPublicStrings(pub);
+    }
     return pub;
   }
 
@@ -55,7 +71,7 @@
     const meta = Upload()?.resolveListingMeta?.(submission) || {
       vehicleCategory: submission.vehicleCategory === 'truck' ? 'truck' : 'passenger',
       truckPartType: submission.vehicleCategory === 'truck'
-        ? (submission.truckPartType === 'cab' ? 'cab' : 'vehicle')
+        ? (['cab', 'engine', 'axle', 'other', 'vehicle'].includes(submission.truckPartType) ? submission.truckPartType : 'vehicle')
         : '',
       vehicleCondition: submission.vehicleCondition || 'Half Cut',
     };
@@ -91,6 +107,8 @@
       vehicleCondition: meta.vehicleCondition,
       vehicleCategory: meta.vehicleCategory,
       truckPartType: meta.truckPartType,
+      passengerPartType: meta.passengerPartType || submission.passengerPartType || '',
+      vehicleListingType: submission.vehicleListingType || '',
       machineryType: meta.machineryType || submission.machineryType || '',
       brand,
       brandSlug,
@@ -108,7 +126,15 @@
       photos,
       video: Upload()?.normalizeVideo?.(submission.video, submission.videoUrl) || null,
       videoUrl: submission.video?.url || submission.videoUrl || '',
-      includedParts: helpers.parseIncludedParts(submission.notes),
+      includedParts: window.HalfCutTitle?.isQxbListing?.(submission)
+        ? helpers.parseIncludedParts(submission.notes)
+        : (Array.isArray(submission.includedParts) && submission.includedParts.length
+          ? submission.includedParts
+          : helpers.parseIncludedParts('')),
+      notes: String(submission.notes || '').trim(),
+      originalVehicleName: window.HalfCutTitle?.isQxbListing?.(submission)
+        ? (window.HalfCutTitle?.extractOriginalVehicleName?.(submission.notes || '') || '')
+        : '',
       shortDescription: '',
       supplierVerified: true,
       submissionId: submission.submissionId,

@@ -1,0 +1,73 @@
+agent_id: apsales
+display_name: APSales
+language: zh
+default_channel: telegram
+
+lifecycle:
+  health_interval_seconds: 60
+  heartbeat_interval_seconds: 300
+  auto_restart: true
+  supervisor_restart_delay_seconds: 15
+  healthcheck_on_start: true
+
+models:
+  primary: gpt-4.1-mini
+  fallback: gpt-4.1
+  failover_on_errors: 3
+  agents:
+    apsales:
+      primary: gpt-4.1-mini
+      fallback: gpt-4.1
+    apsales_internal:
+      primary: gpt-4.1-mini
+      fallback: gpt-4.1-mini
+
+multi_agent:
+  enabled: true
+  collaborators:
+    - apcoo
+    - apinventory
+  event_routing: true
+
+scheduler:
+  tick_interval_seconds: 30
+  rules:
+    follow_up_24h:
+      delay_hours: 24
+      task_type: follow_up
+    follow_up_3d:
+      delay_hours: 72
+      task_type: follow_up
+    quotation_reminder:
+      delay_hours: 48
+      task_type: reminder
+    supplier_reminder:
+      delay_hours: 24
+      task_type: reminder
+
+task_queue:
+  max_retries: 5
+  retry_backoff_seconds: 300
+  worker_batch_size: 10
+
+tools:
+  enabled:
+    - vin
+    - inventory
+    - whatsapp
+    - email
+    - browser
+    - search
+    - pricing
+    - translation
+    - telegram
+    - memory
+
+recovery:
+  persist_state: true
+  recover_queue_on_start: true
+  recover_schedule_on_start: true
+
+telegram:
+  enabled: true
+  bot: apsales

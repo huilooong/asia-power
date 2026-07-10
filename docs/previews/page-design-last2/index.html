@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>AsiaPower 页面设计 · 最后两个版本</title>
+<style>
+  :root { --bg:#0b1220; --card:#121a2b; --line:#243049; --text:#e8eefc; --muted:#93a0b8; --gold:#d4a017; }
+  *{box-sizing:border-box} body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;background:var(--bg);color:var(--text)}
+  header{padding:28px 32px 12px;border-bottom:1px solid var(--line)}
+  h1{margin:0 0 8px;font-size:22px} p{margin:0;color:var(--muted);font-size:14px;line-height:1.5}
+  .grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;padding:20px}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:14px;overflow:hidden;display:flex;flex-direction:column;min-height:78vh}
+  .card h2{margin:0;padding:14px 16px;font-size:15px;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;align-items:center}
+  .card h2 a{color:var(--gold);text-decoration:none;font-size:13px;font-weight:600}
+  iframe{flex:1;width:100%;border:0;background:#fff;min-height:70vh}
+  @media (max-width:980px){.grid{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<header>
+  <h1>AsiaPower 页面设计效果图 · 最后两个版本</h1>
+  <p>来源：Claude 设计会话输出（本地已同步）。左侧 = Refined v5（最新）；右侧 = v4 全站升级版（倒数第二）。</p>
+</header>
+<div class="grid">
+  <section class="card">
+    <h2><span>① Refined v5（最新）</span><a href="asia-power-refined-v5.html" target="_blank">新窗口打开 →</a></h2>
+    <iframe src="asia-power-refined-v5.html" title="Refined v5"></iframe>
+  </section>
+  <section class="card">
+    <h2><span>② v4 全站升级版</span><a href="asia-power-v4-upgraded.html" target="_blank">新窗口打开 →</a></h2>
+    <iframe src="asia-power-v4-upgraded.html" title="v4 upgraded"></iframe>
+  </section>
+</div>
+</body>
+</html>

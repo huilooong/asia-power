@@ -92,5 +92,9 @@ def route_inbound_message(msg: InboundMessage) -> dict[str, Any] | None:
     })
 
     saved = save_draft(draft_payload)
-    notify_new_draft(saved)
+    from customer_gateway.whatsapp_auto_sender import try_auto_send_low_risk
+
+    auto_send = try_auto_send_low_risk(saved)
+    if not auto_send.get("ok"):
+        notify_new_draft(saved)
     return saved

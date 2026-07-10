@@ -1,6 +1,7 @@
 .DS_Store
 .venv/
 .venv-logo/
+.venv-*/
 output/tiktok/
 *.log
 *.tmp
@@ -29,11 +30,33 @@ data/half-cut-*.json
 data/contact-leads.json
 data/users.json
 data/auth-sessions.json
+data/buyer-orders.json
+data/buyer-login-events.jsonl
+data/phone-otp-challenges.json
 data/vehicle-model-memory.json
 data/site-analytics-daily.json
+data/apsales_runtime/
+data/apsales/
 deploy/test-run/data/
 deploy/test-run/data/**
 .env
 .env.*
 !.env.example
 supplier-portal/upload-key.js
+releases/
+
+
+# Bytecode / caches
+**/__pycache__/
+*.py[cod]
+
+# WhatsApp Web.js local session (secrets)
+.wwebjs_auth/
+.wwebjs_cache/
+
+# Large local QXB photo dumps
+data/qxb-photos/
+
+# Local work dumps
+work/half-cut-approved-prod.json
+runtime/apbd/

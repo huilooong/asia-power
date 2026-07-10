@@ -1,0 +1,9 @@
+# 子敬 · Facebook 好友一对一私信（Mac 本地 · gooddlong 已登录）
+# ⚠️ 已合并到 scripts/apsales-facebook-daily-run.py — 勿单独装此 cron
+# 若仍单独运行，session_manager 会排队，但 daily-run 一条 cron 即可
+
+SHELL=/bin/bash
+PATH=/usr/local/bin:/opt/homebrew/bin:/usr/bin:/bin
+
+# 已废弃 — 改用 deploy/cron/apsales-facebook-daily-mac.cron
+# 0 8,12,16 * * * cd /Users/longhui/Desktop/AsiaPower && APSALES_SOCIAL_BROWSER_HEADLESS=0 /Users/longhui/Desktop/AsiaPower/.venv/bin/python3 scripts/apsales-facebook-dm-friends.py --send --max 5 >> /Users/longhui/Desktop/AsiaPower/reports/fb-friend-dm.log 2>&1

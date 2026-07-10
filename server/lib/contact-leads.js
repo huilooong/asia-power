@@ -6,6 +6,7 @@ const { validatePhone, isValidPhone, isValidPhoneWithCountryCode } = require('./
 const { isPlaceholderOrTestEmail } = require('./lead-spam');
 const { loadJson, saveJsonAtomic } = require('./json-store');
 const { createDataIntakeLog } = require('./data-intake-log');
+const { enrichLeadFields, captureLeadMetaFromBody } = require('./lead-context');
 
 const MAX_LEADS = 5000;
 const REMINDER_AFTER_MS = 2 * 60 * 60 * 1000;
@@ -72,7 +73,10 @@ function hasReachableContact(lead) {
 
 function baseLead(body, meta = {}) {
   const replyChannel = resolveReplyChannel(body);
-  return {
+  const captured = captureLeadMetaFromBody(body);
+  const pageUrl = trim(body.pageUrl || body.page || meta.page || captured.pageUrl, 240);
+  const product = trim(body.product || captured.product || body.model, 120);
+  const draft = {
     id: meta.id || `lead-${crypto.randomBytes(6).toString('hex')}`,
     createdAt: meta.createdAt || new Date().toISOString(),
     source: trim(body.source || meta.source || 'contact-form', 40),
@@ -87,13 +91,19 @@ function baseLead(body, meta = {}) {
     message: trim(body.message, 4000),
     stockId: trim(body.stockId || body.stock_id, 40),
     slug: trim(body.slug, 180),
-    brand: trim(body.brand, 80),
+    brand: trim(body.brand || captured.brand, 80),
     model: trim(body.model, 120),
+    product,
+    productLabel: trim(body.productLabel || captured.productLabel, 120),
     engineCode: trim(body.engineCode || body.engine_code, 40),
     transmissionCode: trim(body.transmissionCode || body.transmission_code, 40),
     listingStatus: trim(body.listingStatus || body.listing_status || body.status, 40),
     replyChannel,
-    page: trim(body.page || meta.page, 240),
+    pageUrl,
+    page: pageUrl,
+    referrer: trim(body.referrer || captured.referrer, 240),
+    inquirySubject: trim(body.inquirySubject || body.inquiry_subject, 160),
+    replySubject: trim(body.replySubject || body.reply_subject, 160),
     whatsappStatus: replyChannel === 'email' ? 'not_applicable' : 'pending_send',
     replyStatus: 'open',
     reminderSentAt: null,
@@ -102,7 +112,13 @@ function baseLead(body, meta = {}) {
     ipCity: trim(meta.ipCity, 80),
     ipRegion: trim(meta.ipRegion, 80),
     ipCountryCode: trim(meta.ipCountryCode, 8),
+    utmSource: trim(body.utm_source || body.utmSource || captured.utmSource, 80),
+    utmMedium: trim(body.utm_medium || body.utmMedium || captured.utmMedium, 80),
+    utmCampaign: trim(body.utm_campaign || body.utmCampaign || captured.utmCampaign, 120),
+    utmContent: trim(body.utm_content || body.utmContent || captured.utmContent, 120),
+    utmTerm: trim(body.utm_term || body.utmTerm || captured.utmTerm, 120),
   };
+  return enrichLeadFields(draft);
 }
 
 function buildContactLead(body, meta = {}) {

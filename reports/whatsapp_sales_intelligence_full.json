@@ -1,0 +1,123 @@
+{
+  "generated_at": "2026-06-29 19:10 UTC",
+  "readonly": true,
+  "auto_send": false,
+  "auto_prompt_update": false,
+  "data_coverage": "unknown",
+  "limitation_reason": "",
+  "browser_import": {
+    "loaded_chats": 0,
+    "processed_chats": 0,
+    "messages_imported": 0,
+    "skipped_private": 0,
+    "failed_chats": 0,
+    "error": null
+  },
+  "totals": {
+    "conversation_count": 2,
+    "message_count": 4,
+    "contact_count": 2,
+    "effective_customers": 1
+  },
+  "customer_classification": {
+    "A级客户": 0,
+    "B级客户": 0,
+    "潜在客户": 1,
+    "浅互动客户": 0,
+    "流失客户": 0,
+    "无法判断客户": 0
+  },
+  "other_roles": {
+    "供应商": 1,
+    "私人": 0,
+    "系统/广告": 0
+  },
+  "classification_types_count": 1,
+  "top_products": [],
+  "top_engines": [
+    [
+      "G4KJ",
+      1
+    ],
+    [
+      "G4KD",
+      1
+    ]
+  ],
+  "country_distribution": [],
+  "top_followup_customers": [],
+  "best_sales_talk": {
+    "effective_replies": [
+      "Thank you. Checking supplier network for G4KJ. Confirm qty and Tema port."
+    ],
+    "high_conversion_openings": [
+      "thank you. checking supplier network for"
+    ],
+    "high_conversion_quotes": []
+  },
+  "failed_talk": {
+    "weak_replies": [],
+    "low_conversion_quotes": [],
+    "failure_reasons": {
+      "no_quote": 1
+    },
+    "sample_failures": [
+      {
+        "contact": "Ghana Motors",
+        "reasons": [
+          "no_quote"
+        ],
+        "message_count": 3,
+        "last_message": "Need 2 units FOB Tema"
+      }
+    ]
+  },
+  "recommended_replies": {
+    "首次询盘回复": "Thank you. Checking supplier network for G4KJ. Confirm qty and Tema port. （历史成功率 100.0%，样本 1）",
+    "有库存回复": "",
+    "无库存回复": "Thank you for your enquiry. We are checking our verified supplier network and will revert with availability shortly. Please confirm model/year/qty/port.",
+    "价格太高回复": "数据不足/未读取到",
+    "客户不回跟进": "数据不足/未读取到",
+    "成交推进": "数据不足/未读取到",
+    "低效报价格式（避免）": "",
+    "高转化开场参考": "thank you. checking supplier network for"
+  },
+  "deal_patterns": {
+    "won_threads": 0,
+    "unconverted_enquiry_threads": 1,
+    "note": "基于历史消息关键词与分类推断，非财务系统实账。"
+  },
+  "engine_inquiry_stats": {
+    "engine_enquiry_threads": 2,
+    "g4kj_mentions": 1,
+    "g4kd_mentions": 1,
+    "top_engine_codes": [
+      [
+        "G4KJ",
+        1
+      ],
+      [
+        "G4KD",
+        1
+      ]
+    ]
+  },
+  "funnel": {
+    "stages": {
+      "enquiry": 1,
+      "reply": 1,
+      "quote": 1,
+      "follow_up": 0,
+      "won": 0
+    },
+    "drop_off_pct": {
+      "enquiry_to_reply": 0.0,
+      "reply_to_quote": 0.0,
+      "quote_to_follow_up": 100.0,
+      "follow_up_to_won": 100.0
+    },
+    "total_contacts": 2
+  },
+  "ceo_summary": "今日从 2 个 WhatsApp 会话、4 条消息中学习。识别有效客户 1 个；A级 0、B级 0、潜在 1。发动机类询盘线程 2 个，G4KJ 提及 1、G4KD 提及 1。未成交主因: no_quote。已生成话术优化建议 1 条，等待 CEO Review，未自动改 Prompt、未自动发送。",
+  "pending_reply_evolution": 1
+}

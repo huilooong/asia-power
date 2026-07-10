@@ -1,6 +1,9 @@
 openai>=1.40.0
 python-dotenv>=1.0.0
 pyyaml>=6.0
+pycryptodome>=3.20.0
+openpyxl>=3.1.0
+pillow>=10.0.0
 
 # WhatsApp Business Web read-only connector (APLIVE-002A)
 # After install: python -m playwright install chromium

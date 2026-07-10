@@ -1,0 +1,5541 @@
+{
+  "version": "1.3",
+  "globalLessons": [
+    "汽修宝 QXB 相册顺序≠前/后/发动机/内饰槽位；禁止用 manifest 前 4 张顺序贴标签。",
+    "CEO 相册序号判读写入 trainingExemplars，供启发式加分学习，不是全局槽位硬规则。",
+    "CEO 已批准上传的固定路径写在 rowOverrides（仅该条 row）。",
+    "VIN 铭牌图通常在后段照片；有训练样本时优先训练 index，不用 OCR 路径硬锁。",
+    "多张底盘号同时存在时选更大序号（如 18>17>16）；App 截图序号不作为铭牌槽位图。",
+    "车尾 vs 内饰启发式易互换；训练样本 + CEO 校正逐步改善。",
+    "发动机舱图通常纹理复杂，当前 heuristic 命中率较高。",
+    "VIN 铭牌图通常在后段照片 + OCR 路径，可优先锁定 VIN 槽。",
+    "车头图之后可能仍是车头；需对全相册打分选 rear/engine/interior。",
+    "CEO 相册序号判读写入 trainingExemplars，供跨行 recognitionModel 学习，不是盲目硬编码。",
+    "CEO 纠错写入 recognitionModel，供未来行自动识图；禁止批量启发式污染训练样本。"
+  ],
+  "trainingExemplars": [
+    {
+      "row": 10,
+      "stockId": "QXB0010",
+      "lesson": "子龙批量 row10 启发式+铭牌优先17",
+      "indexBands": {
+        "VIN / chassis plate": [
+          17,
+          16
+        ],
+        "Front view": [
+          2
+        ],
+        "Interior": [
+          4
+        ],
+        "Engine bay": [
+          7
+        ],
+        "Rear view": [
+          10
+        ]
+      },
+      "recordedAt": "2026-06-29T22:03:12.074172+00:00"
+    },
+    {
+      "row": 11,
+      "stockId": "QXB0011",
+      "lesson": "子龙批量 row11 启发式+铭牌优先18",
+      "indexBands": {
+        "VIN / chassis plate": [
+          18,
+          17,
+          16
+        ],
+        "Front view": [
+          1
+        ],
+        "Rear view": [
+          5
+        ],
+        "Engine bay": [
+          9
+        ],
+        "Interior": [
+          13
+        ]
+      },
+      "recordedAt": "2026-06-29T22:03:33.040485+00:00"
+    },
+    {
+      "row": 15,
+      "stockId": "QXB0015",
+      "lesson": "子龙批量 row15 启发式+铭牌优先18",
+      "indexBands": {
+        "VIN / chassis plate": [
+          18,
+          17,
+          16
+        ],
+        "Front view": [
+          1
+        ],
+        "Rear view": [
+          4
+        ],
+        "Engine bay": [
+          9
+        ],
+        "Interior": [
+          11
+        ]
+      },
+      "recordedAt": "2026-06-29T22:04:44.914854+00:00"
+    },
+    {
+      "row": 13,
+      "stockId": "QXB0013",
+      "lesson": "CEO: #10是内饰非车尾；车尾在4-6段重选，内饰定#10",
+      "indexBands": {
+        "Front view": [
+          1
+        ],
+        "Rear view": [
+          5,
+          4,
+          6
+        ],
+        "Engine bay": [
+          8
+        ],
+        "Interior": [
+          10
+        ],
+        "VIN / chassis plate": [
+          18,
+          17
+        ]
+      },
+      "recordedAt": "2026-06-29T22:13:52.221021+00:00"
+    },
+    {
+      "row": 17,
+      "stockId": "QXB0017",
+      "lesson": "子龙批量 row17 启发式+铭牌优先18",
+      "indexBands": {
+        "VIN / chassis plate": [
+          18,
+          17,
+          16
+        ],
+        "Front view": [
+          3
+        ],
+        "Rear view": [
+          6
+        ],
+        "Engine bay": [
+          7
+        ],
+        "Interior": [
+          11
+        ]
+      },
+      "recordedAt": "2026-06-29T22:17:12.422472+00:00"
+    },
+    {
+      "row": 12,
+      "stockId": "QXB0012",
+      "lesson": "CEO: #4#5#6均为车尾；#10内饰；#09非车尾是发动机段",
+      "indexBands": {
+        "Front view": [
+          3
+        ],
+        "Rear view": [
+          4,
+          5,
+          6
+        ],
+        "Engine bay": [
+          7,
+          8,
+          9
+        ],
+        "Interior": [
+          10
+        ],
+        "VIN / chassis plate": [
+          18,
+          17
+        ]
+      },
+      "recordedAt": "2026-06-29T22:18:53.752020+00:00"
+    },
+    {
+      "row": 19,
+      "stockId": "QXB0019",
+      "lesson": "CEO: #05车尾 #11内饰（原标反）；发动机L15A1",
+      "indexBands": {
+        "Front view": [
+          2
+        ],
+        "Rear view": [
+          5
+        ],
+        "Engine bay": [
+          8
+        ],
+        "Interior": [
+          11
+        ],
+        "VIN / chassis plate": [
+          18,
+          17
+        ]
+      },
+      "recordedAt": "2026-06-29T22:29:47.906409+00:00"
+    },
+    {
+      "row": 18,
+      "stockId": "QXB0018",
+      "lesson": "CEO: 0018 车尾在4-6(#05)、发动机#07、内饰#09；#12非车尾段",
+      "ceoVerified": true,
+      "indexBands": {
+        "Front view": [
+          1
+        ],
+        "Rear view": [
+          4,
+          5,
+          6
+        ],
+        "Engine bay": [
+          7,
+          8
+        ],
+        "Interior": [
+          9,
+          10,
+          11
+        ],
+        "VIN / chassis plate": [
+          18,
+          17
+        ]
+      },
+      "recordedAt": "2026-06-29T22:32:38.376996+00:00"
+    },
+    {
+      "row": 20,
+      "stockId": "QXB0020",
+      "lesson": "CEO: 0017张相册铭牌在#17非#16",
+      "indexBands": {
+        "Front view": [
+          3
+        ],
+        "Rear view": [
+          5
+        ],
+        "Engine bay": [
+          9
+        ],
+        "Interior": [
+          10
+        ],
+        "VIN / chassis plate": [
+          17,
+          16
+        ]
+      },
+      "ceoVerified": true,
+      "recordedAt": "2026-06-29T22:51:04.276569+00:00"
+    },
+    {
+      "row": 3,
+      "stockId": "QXB0003",
+      "lesson": "CEO审核 save_training_only",
+      "indexBands": {
+        "Front view": [
+          1
+        ],
+        "Rear view": [
+          5
+        ],
+        "Engine bay": [
+          9
+        ],
+        "Interior": [
+          15
+        ],
+        "VIN / chassis plate": [
+          17
+        ]
+      },
+      "ceoVerified": true,
+      "recordedAt": "2026-06-30T12:28:35.413006+00:00",
+      "decision": "save_training_only",
+      "authority": "human_confirmed",
+      "note": ""
+    },
+    {
+      "row": 4,
+      "stockId": "QXB0004",
+      "lesson": "CEO审核 save_training_only",
+      "indexBands": {
+        "Front view": [
+          2
+        ],
+        "Rear view": [
+          5
+        ],
+        "Engine bay": [
+          9
+        ],
+        "Interior": [
+          12
+        ],
+        "VIN / chassis plate": [
+          18
+        ]
+      },
+      "ceoVerified": true,
+      "recordedAt": "2026-06-30T12:29:17.636244+00:00",
+      "decision": "save_training_only",
+      "authority": "human_confirmed",
+      "note": ""
+    },
+    {
+      "row": 5,
+      "stockId": "QXB0005",
+      "lesson": "CEO审核 save_training_only",
+      "indexBands": {
+        "Front view": [
+          2
+        ],
+        "Rear view": [
+          5
+        ],
+        "Engine bay": [
+          8
+        ],
+        "Interior": [
+          10
+        ],
+        "VIN / chassis plate": [
+          18
+        ]
+      },
+      "ceoVerified": true,
+      "recordedAt": "2026-06-30T12:29:58.983298+00:00",
+      "decision": "save_training_only",
+      "authority": "human_confirmed",
+      "note": ""
+    },
+    {
+      "row": 6,
+      "stockId": "QXB0006",
+      "lesson": "CEO审核 save_training_only",
+      "indexBands": {
+        "Front view": [
+          3
+        ],
+        "Rear view": [
+          5
+        ],
+        "Engine bay": [
+          9
+        ],
+        "Interior": [
+          12
+        ],
+        "VIN / chassis plate": [
+          18
+        ]
+      },
+      "ceoVerified": true,
+      "recordedAt": "2026-06-30T12:31:02.582932+00:00",
+      "decision": "save_training_only",
+      "authority": "human_confirmed",
+      "note": ""
+    },
+    {
+      "row": 7,
+      "stockId": "QXB0007",
+      "lesson": "CEO审核 save_training_only",
+      "indexBands": {
+        "Front view": [
+          1
+        ],
+        "Rear view": [
+          4
+        ],
+        "Engine bay": [
+          9
+        ],
+        "Interior": [
+          10
+        ],
+        "VIN / chassis plate": [
+          18
+        ]
+      },
+      "ceoVerified": true,
+      "recordedAt": "2026-06-30T12:31:48.492656+00:00",
+      "decision": "save_training_only",
+      "authority": "human_confirmed",
+      "note": ""
+    },
+    {
+      "row": 8,
+      "stockId": "QXB0008",
+      "lesson": "CEO审核 save_training_only",
+      "indexBands": {
+        "Front view": [
+          1
+        ],
+        "Rear view": [
+          4
+        ],
+        "Engine bay": [
+          9
+        ],
+        "Interior": [
+          10
+        ],
+        "VIN / chassis plate": [
+          18
+        ]
+      },
+      "ceoVerified": true,
+      "recordedAt": "2026-06-30T12:32:29.956713+00:00",
+      "decision": "save_training_only",
+      "authority": "human_confirmed",
+      "note": ""
+    },
+    {
+      "row": 9,
+      "stockId": "QXB0009",
+      "lesson": "CEO确认可上传 QXB0009",
+      "indexBands": {
+        "Front view": [
+          1
+        ],
+        "Rear view": [
+          6
+        ],
+        "Engine bay": [
+          8
+        ],
+        "Interior": [
+          10
+        ],
+        "VIN / chassis plate": [
+          17
+        ]
+      },
+      "ceoVerified": true,
+      "recordedAt": "2026-06-30T13:49:08.837551+00:00",
+      "decision": "confirm_and_upload",
+      "authority": "human_confirmed_upload",
+      "note": "",
+      "confirmedUpload": true
+    },
+    {
+      "row": 126,
+      "stockId": "QXB0126",
+      "lesson": "CEO确认可上传 QXB0126",
+      "indexBands": {
+        "Front view": [
+          1
+        ],
+        "Rear view": [
+          5
+        ],
+        "Engine bay": [
+          8
+        ],
+        "Interior": [
+          10
+        ],
+        "VIN / chassis plate": [
+          18
+        ]
+      },
+      "ceoVerified": true,
+      "recordedAt": "2026-06-30T13:54:39.959171+00:00",
+      "decision": "confirm_and_upload",
+      "authority": "human_confirmed_upload",
+      "note": "",
+      "confirmedUpload": true
+    },
+    {
+      "row": 137,
+      "stockId": "QXB0137",
+      "lesson": "CEO确认可上传 QXB0137",
+      "indexBands": {
+        "Front view": [
+          2
+        ],
+        "Rear view": [
+          4
+        ],
+        "Engine bay": [
+          8
+        ],
+        "Interior": [
+          10
+        ],
+        "VIN / chassis plate": [
+          18
+        ]
+      },
+      "ceoVerified": true,
+      "recordedAt": "2026-06-30T16:19:58.383780+00:00",
+      "decision": "confirm_and_upload",
+      "authority": "human_confirmed_upload",
+      "note": "",
+      "confirmedUpload": true
+    },
+    {
+      "row": 196,
+      "stockId": "QXB0196",
+      "lesson": "CEO确认可上传 QXB0196",
+      "indexBands": {
+        "Front view": [
+          1
+        ],
+        "Rear view": [
+          4
+        ],
+        "Engine bay": [
+          9
+        ],
+        "Interior": [
+          10
+        ],
+        "VIN / chassis plate": [
+          16
+        ]
+      },
+      "ceoVerified": true,
+      "recordedAt": "2026-06-30T16:39:39.847078+00:00",
+      "decision": "confirm_and_upload",
+      "authority": "human_confirmed_upload",
+      "note": "",
+      "confirmedUpload": true
+    },
+    {
+      "row": 146,
+      "stockId": "QXB0146",
+      "lesson": "CEO确认可上传 QXB0146",
+      "indexBands": {
+        "Front view": [
+          1
+        ],
+        "Rear view": [
+          5
+        ],
+        "Engine bay": [
+          2
+        ],
+        "Interior": [
+          4
+        ],
+        "VIN / chassis plate": [
+          3
+        ]
+      },
+      "ceoVerified": true,
+      "recordedAt": "2026-06-30T16:51:01.215106+00:00",
+      "decision": "confirm_and_upload",
+      "authority": "human_confirmed_upload",
+      "note": "",
+      "confirmedUpload": true
+    },
+    {
+      "row": 206,
+      "stockId": "QXB0206",
+      "lesson": "CEO审核 skip_missing_photos",
+      "indexBands": {
+        "Front view": [
+          2
+        ],
+        "Rear view": [
+          4
+        ],
+        "Engine bay": [
+          2
+        ],
+        "Interior": [
+          3
+        ]
+      },
+      "ceoVerified": true,
+      "recordedAt": "2026-06-30T16:52:25.290962+00:00",
+      "decision": "skip_missing_photos",
+      "authority": "human_skipped",
+      "note": ""
+    },
+    {
+      "row": 207,
+      "stockId": "QXB0207",
+      "lesson": "CEO审核 skip_missing_photos",
+      "indexBands": {
+        "Front view": [
+          1
+        ],
+        "Rear view": [
+          5
+        ],
+        "Engine bay": [
+          8
+        ],
+        "Interior": [
+          3
+        ],
+        "VIN / chassis plate": [
+          16
+        ]
+      },
+      "ceoVerified": true,
+      "recordedAt": "2026-06-30T16:53:36.854476+00:00",
+      "decision": "skip_missing_photos",
+      "authority": "human_skipped",
+      "note": ""
+    },
+    {
+      "row": 208,
+      "stockId": "QXB0208",
+      "lesson": "CEO审核 skip_missing_photos",
+      "indexBands": {
+        "Front view": [
+          1
+        ],
+        "Rear view": [
+          5
+        ],
+        "Engine bay": [
+          8
+        ],
+        "Interior": [
+          10
+        ],
+        "VIN / chassis plate": [
+          17
+        ]
+      },
+      "ceoVerified": true,
+      "recordedAt": "2026-06-30T16:53:54.380775+00:00",
+      "decision": "skip_missing_photos",
+      "authority": "human_skipped",
+      "note": ""
+    },
+    {
+      "row": 209,
+      "stockId": "QXB0209",
+      "lesson": "CEO确认可上传 QXB0209",
+      "indexBands": {
+        "Front view": [
+          1
+        ],
+        "Rear view": [
+          4
+        ],
+        "Engine bay": [
+          8
+        ],
+        "Interior": [
+          10
+        ],
+        "VIN / chassis plate": [
+          16
+        ]
+      },
+      "ceoVerified": true,
+      "recordedAt": "2026-06-30T16:54:26.267166+00:00",
+      "decision": "confirm_and_upload",
+      "authority": "human_confirmed_upload",
+      "note": "",
+      "confirmedUpload": true
+    },
+    {
+      "row": 211,
+      "stockId": "QXB0211",
+      "lesson": "CEO确认可上传 QXB0211",
+      "indexBands": {
+        "Front view": [
+          1
+        ],
+        "Rear view": [
+          5
+        ],
+        "Engine bay": [
+          8
+        ],
+        "Interior": [
+          10
+        ],
+        "VIN / chassis plate": [
+          17
+        ]
+      },
+      "ceoVerified": true,
+      "recordedAt": "2026-06-30T16:55:01.121605+00:00",
+      "decision": "confirm_and_upload",
+      "authority": "human_confirmed_upload",
+      "note": "",
+      "confirmedUpload": true
+    },
+    {
+      "row": 212,
+      "stockId": "QXB0212",
+      "lesson": "CEO确认可上传 QXB0212",
+      "indexBands": {
+        "Front view": [
+          1
+        ],
+        "Rear view": [
+          6
+        ],
+        "Engine bay": [
+          8
+        ],
+        "Interior": [
+          15
+        ],
+        "VIN / chassis plate": [
+          17
+        ]
+      },
+      "ceoVerified": true,
+      "recordedAt": "2026-06-30T16:55:55.098537+00:00",
+      "decision": "confirm_and_upload",
+      "authority": "human_confirmed_upload",
+      "note": "",
+      "confirmedUpload": true
+    },
+    {
+      "row": 34,
+      "stockId": "QXB0034",
+      "lesson": "CEO确认：第19张是铭牌/VIN（LBENFAJB2AX071149），OCR漏读",
+      "indexBands": {
+        "VIN / chassis plate": [
+          19,
+          18,
+          17
+        ]
+      },
+      "ceoVerified": true,
+      "recordedAt": "2026-07-01T03:22:25.920791+00:00"
+    },
+    {
+      "row": 45,
+      "stockId": "QXB0045",
+      "lesson": "CEO确认：第17张是铭牌/VIN（LBEJMBJB1BX245868），发动机 G4GC",
+      "indexBands": {
+        "VIN / chassis plate": [
+          17,
+          16,
+          18
+        ]
+      },
+      "ceoVerified": true,
+      "recordedAt": "2026-07-01T03:30:36.969180+00:00"
+    },
+    {
+      "row": 46,
+      "stockId": "QXB0046",
+      "lesson": "CEO确认：第17张是铭牌/VIN（LBERCACBXCX320873），发动机 G4FA",
+      "indexBands": {
+        "VIN / chassis plate": [
+          17,
+          16,
+          18
+        ]
+      },
+      "ceoVerified": true,
+      "recordedAt": "2026-07-01T03:32:26.697429+00:00"
+    },
+    {
+      "row": 62,
+      "stockId": "QXB0062",
+      "lesson": "CEO确认：第3张是铭牌/VIN（LHGGE8870C2000286），发动机 L15A7",
+      "indexBands": {
+        "VIN / chassis plate": [
+          3,
+          2,
+          4
+        ]
+      },
+      "ceoVerified": true,
+      "recordedAt": "2026-07-01T03:34:09.419063+00:00"
+    },
+    {
+      "row": 69,
+      "stockId": "QXB0069",
+      "lesson": "CEO确认：第3张是铭牌/VIN（LHGCM567142038761），发动机 K24A4",
+      "indexBands": {
+        "VIN / chassis plate": [
+          3,
+          2,
+          4
+        ]
+      },
+      "ceoVerified": true,
+      "recordedAt": "2026-07-01T03:35:47.110753+00:00"
+    },
+    {
+      "row": 72,
+      "stockId": "QXB0072",
+      "lesson": "CEO确认：第17张是铭牌/VIN（LGBG12E21CY125738），发动机 HR16",
+      "indexBands": {
+        "VIN / chassis plate": [
+          17,
+          16,
+          18
+        ]
+      },
+      "ceoVerified": true,
+      "recordedAt": "2026-07-01T03:37:12.223749+00:00"
+    },
+    {
+      "row": 80,
+      "stockId": "QXB0080",
+      "lesson": "CEO确认：第3张是铭牌/VIN（LJDLAA221C0127616），发动机 G4FC",
+      "indexBands": {
+        "VIN / chassis plate": [
+          3,
+          2,
+          4
+        ]
+      },
+      "ceoVerified": true,
+      "recordedAt": "2026-07-01T03:38:52.791424+00:00"
+    },
+    {
+      "row": 82,
+      "stockId": "QXB0082",
+      "lesson": "CEO确认：第3张是铭牌/VIN（LHGGM2636C2065367），发动机 L15A7",
+      "indexBands": {
+        "VIN / chassis plate": [
+          3,
+          2,
+          4
+        ]
+      },
+      "ceoVerified": true,
+      "recordedAt": "2026-07-01T03:39:55.289841+00:00"
+    },
+    {
+      "row": 110,
+      "stockId": "QXB0110",
+      "lesson": "CEO确认：第19张是铭牌/VIN（LVHRE4803A5010362），发动机 K24Z1",
+      "indexBands": {
+        "VIN / chassis plate": [
+          19,
+          18,
+          17
+        ]
+      },
+      "ceoVerified": true,
+      "recordedAt": "2026-07-01T03:40:34.541089+00:00"
+    },
+    {
+      "row": 2,
+      "stockId": "QXB0002",
+      "lesson": "CEO确认可上传 QXB0002: test1",
+      "indexBands": {
+        "Front view": [
+          2
+        ],
+        "Rear view": [
+          5
+        ],
+        "Engine bay": [
+          8
+        ],
+        "Interior": [
+          10
+        ],
+        "VIN / chassis plate": [
+          17
+        ]
+      },
+      "ceoVerified": true,
+      "recordedAt": "2026-07-01T16:01:41.706668+00:00",
+      "decision": "confirm_and_upload",
+      "authority": "human_confirmed_upload",
+      "note": "test1",
+      "confirmedUpload": true
+    },
+    {
+      "row": 37,
+      "stockId": "QXB0037",
+      "lesson": "CEO确认可上传 QXB0037: autofill-test",
+      "indexBands": {
+        "Front view": [
+          2
+        ],
+        "Rear view": [
+          1
+        ],
+        "Engine bay": [
+          3
+        ],
+        "Interior": [
+          1
+        ],
+        "VIN / chassis plate": [
+          3
+        ]
+      },
+      "ceoVerified": true,
+      "recordedAt": "2026-07-01T16:03:27.012797+00:00",
+      "decision": "confirm_and_upload",
+      "authority": "human_confirmed_upload",
+      "note": "autofill-test",
+      "confirmedUpload": true
+    },
+    {
+      "row": 48,
+      "stockId": "QXB0048",
+      "lesson": "CEO审核 save_training_only: review-fix-test",
+      "indexBands": {
+        "Front view": [
+          1
+        ],
+        "Rear view": [
+          1
+        ],
+        "Engine bay": [
+          1
+        ],
+        "Interior": [
+          1
+        ],
+        "VIN / chassis plate": [
+          1
+        ]
+      },
+      "ceoVerified": true,
+      "recordedAt": "2026-07-01T16:07:56.065193+00:00",
+      "decision": "save_training_only",
+      "authority": "human_confirmed",
+      "note": "review-fix-test"
+    }
+  ],
+  "rowFeedback": [
+    {
+      "at": "2026-06-29T21:45:00.000000+00:00",
+      "source": "ceo_training_exemplar",
+      "row": 2,
+      "stockId": "QXB0002",
+      "lesson": "CEO人工判读 QXB0002：训练子龙认识本条相册各序号实际内容",
+      "indexBands": {
+        "Front view": [
+          2,
+          3
+        ],
+        "Rear view": [
+          4,
+          5,
+          6
+        ],
+        "Engine bay": [
+          7,
+          8,
+          9
+        ],
+        "Interior": [
+          10,
+          11,
+          12,
+          13
+        ],
+        "VIN / chassis plate": [
+          17,
+          16
+        ]
+      }
+    },
+    {
+      "at": "2026-06-29T20:17:15.723386+00:00",
+      "source": "ceo_feedback",
+      "row": 3,
+      "stockId": "QXB0003",
+      "brand": "Kia",
+      "model": "Rio",
+      "lesson": "CEO审核: 仅车头与底盘号正确; 原顺序贴标把02/03当前视、04当内饰实为车尾",
+      "slots": [
+        {
+          "label": "Front view",
+          "path": "01_c1244b65ac.jpg",
+          "assigned_ok": true,
+          "actual": "front"
+        },
+        {
+          "label": "Rear view",
+          "path": "02_a687108efa.jpg",
+          "assigned_ok": false,
+          "actual": "front"
+        },
+        {
+          "label": "Engine bay",
+          "path": "03_f8632f51ed.jpg",
+          "assigned_ok": false,
+          "actual": "front"
+        },
+        {
+          "label": "Interior",
+          "path": "04_205adb6f4f.jpg",
+          "assigned_ok": false,
+          "actual": "rear"
+        },
+        {
+          "label": "VIN / chassis plate",
+          "path": "16_fbcb814ac6.jpg",
+          "assigned_ok": true,
+          "actual": "vin_plate"
+        }
+      ]
+    },
+    {
+      "at": "2026-06-29T20:24:59.221181+00:00",
+      "source": "ceo",
+      "row": 3,
+      "lesson": "manual slot overrides applied",
+      "slots": [
+        {
+          "label": "Front view",
+          "path": "data/qxb-photos/row-0003_起亚_起亚 锐欧 2007款 1.4L MT GL/01_c1244b65ac.jpg"
+        },
+        {
+          "label": "Rear view",
+          "path": "data/qxb-photos/row-0003_起亚_起亚 锐欧 2007款 1.4L MT GL/05_38d0a655d7.jpg"
+        },
+        {
+          "label": "Engine bay",
+          "path": "data/qxb-photos/row-0003_起亚 起亚 锐欧 2007款 1.4L MT GL/09_73cc05e875.jpg"
+        },
+        {
+          "label": "Interior",
+          "path": "data/qxb-photos/row-0003_起亚_起亚 锐欧 2007款 1.4L MT GL/15_36b31598f7.jpg"
+        },
+        {
+          "label": "VIN / chassis plate",
+          "path": "data/qxb-photos/row-0003_起亚_起亚 锐欧 2007款 1.4L MT GL/16_fbcb814ac6.jpg"
+        }
+      ]
+    },
+    {
+      "at": "2026-06-29T20:24:59.221966+00:00",
+      "source": "ceo_feedback",
+      "row": 3,
+      "stockId": "QXB0003",
+      "brand": "Kia",
+      "model": "Rio",
+      "lesson": "CEO round2: 发动机正确; 车尾与内饰互换 — 05=车尾, 15=内饰",
+      "slots": [
+        {
+          "label": "Rear view",
+          "path": "05_38d0a655d7.jpg",
+          "assigned_ok": true
+        },
+        {
+          "label": "Interior",
+          "path": "15_36b31598f7.jpg",
+          "assigned_ok": true
+        },
+        {
+          "label": "Engine bay",
+          "path": "09_73cc05e875.jpg",
+          "assigned_ok": true
+        }
+      ]
+    },
+    {
+      "at": "2026-06-29T21:44:23.871588+00:00",
+      "source": "ceo_training_exemplar",
+      "row": 7,
+      "stockId": "QXB0007",
+      "lesson": "CEO确认 QXB0007：03车头05车尾09发动机13内饰；17/18均为铭牌优先18（16为App截图非槽位图）",
+      "indexBands": {
+        "Front view": [
+          3
+        ],
+        "Rear view": [
+          5
+        ],
+        "Engine bay": [
+          9
+        ],
+        "Interior": [
+          13
+        ],
+        "VIN / chassis plate": [
+          18,
+          17
+        ]
+      }
+    },
+    {
+      "at": "2026-06-29T21:44:23.872281+00:00",
+      "source": "ceo_feedback",
+      "row": 7,
+      "stockId": "QXB0007",
+      "brand": "Hyundai",
+      "model": "Sonata",
+      "lesson": "CEO: 除底盘号外全对；应选18非16；17/18都是铭牌",
+      "slots": [
+        {
+          "label": "Front view",
+          "path": "03_4225600bd5.jpg",
+          "assigned_ok": true
+        },
+        {
+          "label": "Rear view",
+          "path": "05_93eb862c73.jpg",
+          "assigned_ok": true
+        },
+        {
+          "label": "Engine bay",
+          "path": "09_a782c513e3.jpg",
+          "assigned_ok": true
+        },
+        {
+          "label": "Interior",
+          "path": "13_9531cdc490.jpg",
+          "assigned_ok": true
+        },
+        {
+          "label": "VIN / chassis plate",
+          "path": "16_a7c22460c7.jpg",
+          "assigned_ok": false,
+          "actual": "app_screenshot"
+        }
+      ]
+    },
+    {
+      "at": "2026-06-29T21:50:35.037794+00:00",
+      "source": "ceo_training_exemplar",
+      "row": 4,
+      "stockId": "QXB0004",
+      "lesson": "CEO确认 QXB0004：03车头04车尾09发动机12内饰；17/18铭牌优先18",
+      "indexBands": {
+        "Front view": [
+          3
+        ],
+        "Rear view": [
+          4
+        ],
+        "Engine bay": [
+          9
+        ],
+        "Interior": [
+          12
+        ],
+        "VIN / chassis plate": [
+          18,
+          17
+        ]
+      }
+    },
+    {
+      "at": "2026-06-29T21:54:06.136080+00:00",
+      "source": "ceo_training_exemplar",
+      "row": 5,
+      "stockId": "QXB0005",
+      "lesson": "子龙005：启发式选图+铭牌优先18",
+      "indexBands": {
+        "Front view": [
+          3
+        ],
+        "Rear view": [
+          5
+        ],
+        "Engine bay": [
+          9
+        ],
+        "Interior": [
+          15
+        ],
+        "VIN / chassis plate": [
+          18,
+          17
+        ]
+      }
+    },
+    {
+      "at": "2026-06-29T21:58:26.114618+00:00",
+      "source": "ceo_training_exemplar",
+      "row": 6,
+      "stockId": "QXB0006",
+      "lesson": "子龙006：启发式选图+铭牌优先18",
+      "indexBands": {
+        "Front view": [
+          3
+        ],
+        "Rear view": [
+          5
+        ],
+        "Engine bay": [
+          8
+        ],
+        "Interior": [
+          13
+        ],
+        "VIN / chassis plate": [
+          18,
+          17
+        ]
+      }
+    },
+    {
+      "at": "2026-06-29T22:02:29.418771+00:00",
+      "source": "ceo_training_exemplar",
+      "row": 8,
+      "stockId": "QXB0008",
+      "lesson": "子龙批量 row8 启发式+铭牌优先18",
+      "indexBands": {
+        "VIN / chassis plate": [
+          18,
+          17,
+          16
+        ],
+        "Front view": [
+          3
+        ],
+        "Rear view": [
+          6
+        ],
+        "Engine bay": [
+          9
+        ],
+        "Interior": [
+          12
+        ]
+      }
+    },
+    {
+      "at": "2026-06-29T22:02:53.423065+00:00",
+      "source": "ceo_training_exemplar",
+      "row": 9,
+      "stockId": "QXB0009",
+      "lesson": "子龙批量 row9 启发式+铭牌优先17",
+      "indexBands": {
+        "VIN / chassis plate": [
+          17,
+          16
+        ],
+        "Front view": [
+          2
+        ],
+        "Rear view": [
+          6
+        ],
+        "Engine bay": [
+          7
+        ],
+        "Interior": [
+          13
+        ]
+      }
+    },
+    {
+      "at": "2026-06-29T22:03:12.074185+00:00",
+      "source": "ceo_training_exemplar",
+      "row": 10,
+      "stockId": "QXB0010",
+      "lesson": "子龙批量 row10 启发式+铭牌优先17",
+      "indexBands": {
+        "VIN / chassis plate": [
+          17,
+          16
+        ],
+        "Front view": [
+          2
+        ],
+        "Interior": [
+          4
+        ],
+        "Engine bay": [
+          7
+        ],
+        "Rear view": [
+          10
+        ]
+      }
+    },
+    {
+      "at": "2026-06-29T22:03:33.040493+00:00",
+      "source": "ceo_training_exemplar",
+      "row": 11,
+      "stockId": "QXB0011",
+      "lesson": "子龙批量 row11 启发式+铭牌优先18",
+      "indexBands": {
+        "VIN / chassis plate": [
+          18,
+          17,
+          16
+        ],
+        "Front view": [
+          1
+        ],
+        "Rear view": [
+          5
+        ],
+        "Engine bay": [
+          9
+        ],
+        "Interior": [
+          13
+        ]
+      }
+    },
+    {
+      "at": "2026-06-29T22:03:53.426994+00:00",
+      "source": "ceo_training_exemplar",
+      "row": 12,
+      "stockId": "QXB0012",
+      "lesson": "子龙批量 row12 启发式+铭牌优先18",
+      "indexBands": {
+        "VIN / chassis plate": [
+          18,
+          17,
+          16
+        ],
+        "Front view": [
+          3
+        ],
+        "Rear view": [
+          10
+        ],
+        "Engine bay": [
+          7
+        ],
+        "Interior": [
+          11
+        ]
+      }
+    },
+    {
+      "at": "2026-06-29T22:04:13.276637+00:00",
+      "source": "ceo_training_exemplar",
+      "row": 13,
+      "stockId": "QXB0013",
+      "lesson": "子龙批量 row13 启发式+铭牌优先18",
+      "indexBands": {
+        "VIN / chassis plate": [
+          18,
+          17,
+          16
+        ],
+        "Front view": [
+          1
+        ],
+        "Rear view": [
+          10
+        ],
+        "Engine bay": [
+          8
+        ],
+        "Interior": [
+          11
+        ]
+      }
+    },
+    {
+      "at": "2026-06-29T22:04:44.914863+00:00",
+      "source": "ceo_training_exemplar",
+      "row": 15,
+      "stockId": "QXB0015",
+      "lesson": "子龙批量 row15 启发式+铭牌优先18",
+      "indexBands": {
+        "VIN / chassis plate": [
+          18,
+          17,
+          16
+        ],
+        "Front view": [
+          1
+        ],
+        "Rear view": [
+          4
+        ],
+        "Engine bay": [
+          9
+        ],
+        "Interior": [
+          11
+        ]
+      }
+    },
+    {
+      "at": "2026-06-29T22:13:52.221341+00:00",
+      "source": "ceo_training_exemplar",
+      "row": 13,
+      "stockId": "QXB0013",
+      "lesson": "CEO: #10是内饰非车尾；车尾在4-6段重选，内饰定#10",
+      "indexBands": {
+        "Front view": [
+          1
+        ],
+        "Rear view": [
+          5,
+          4,
+          6
+        ],
+        "Engine bay": [
+          8
+        ],
+        "Interior": [
+          10
+        ],
+        "VIN / chassis plate": [
+          18,
+          17
+        ]
+      }
+    },
+    {
+      "at": "2026-06-29T22:13:52.222261+00:00",
+      "source": "ceo_feedback",
+      "row": 13,
+      "stockId": "QXB0013",
+      "brand": "Nissan",
+      "model": "Versa",
+      "lesson": "CEO: 原车尾#10实为内饰，需重选车尾",
+      "slots": [
+        {
+          "label": "Rear view",
+          "path": "10_a7d1c76bd4.jpg",
+          "assigned_ok": false,
+          "actual": "interior"
+        },
+        {
+          "label": "Interior",
+          "path": "10_a7d1c76bd4.jpg",
+          "assigned_ok": true,
+          "actual": "interior"
+        },
+        {
+          "label": "Front view",
+          "path": "01_33653f9b08.jpg",
+          "assigned_ok": true
+        },
+        {
+          "label": "Engine bay",
+          "path": "08_00dc4d9250.jpg",
+          "assigned_ok": true
+        },
+        {
+          "label": "VIN / chassis plate",
+          "path": "18_6a8af143f7.jpg",
+          "assigned_ok": true
+        }
+      ]
+    },
+    {
+      "at": "2026-06-29T22:14:59.492007+00:00",
+      "source": "ceo_training_exemplar",
+      "row": 12,
+      "stockId": "QXB0012",
+      "lesson": "CEO: #10是内饰非车尾；车尾重选#09（启发式车尾分最高）",
+      "indexBands": {
+        "Front view": [
+          3
+        ],
+        "Rear view": [
+          9,
+          5,
+          4,
+          6
+        ],
+        "Engine bay": [
+          7
+        ],
+        "Interior": [
+          10
+        ],
+        "VIN / chassis plate": [
+          18,
+          17
+        ]
+      }
+    },
+    {
+      "at": "2026-06-29T22:14:59.492657+00:00",
+      "source": "ceo_feedback",
+      "row": 12,
+      "stockId": "QXB0012",
+      "brand": "Nissan",
+      "model": "Sylphy",
+      "lesson": "CEO: 原车尾#10实为内饰，重选车尾",
+      "slots": [
+        {
+          "label": "Rear view",
+          "path": "10_29bab67fcf.jpg",
+          "assigned_ok": false,
+          "actual": "interior"
+        },
+        {
+          "label": "Interior",
+          "path": "10_29bab67fcf.jpg",
+          "assigned_ok": true,
+          "actual": "interior"
+        },
+        {
+          "label": "Front view",
+          "path": "03_9afe7007c9.jpg",
+          "assigned_ok": true
+        },
+        {
+          "label": "Engine bay",
+          "path": "07_3e71f120ae.jpg",
+          "assigned_ok": true
+        },
+        {
+          "label": "VIN / chassis plate",
+          "path": "18_48ec92cb08.jpg",
+          "assigned_ok": true
+        }
+      ]
+    },
+    {
+      "at": "2026-06-29T22:17:12.422490+00:00",
+      "source": "ceo_training_exemplar",
+      "row": 17,
+      "stockId": "QXB0017",
+      "lesson": "子龙批量 row17 启发式+铭牌优先18",
+      "indexBands": {
+        "VIN / chassis plate": [
+          18,
+          17,
+          16
+        ],
+        "Front view": [
+          3
+        ],
+        "Rear view": [
+          6
+        ],
+        "Engine bay": [
+          7
+        ],
+        "Interior": [
+          11
+        ]
+      }
+    },
+    {
+      "at": "2026-06-29T22:17:33.320360+00:00",
+      "source": "ceo_training_exemplar",
+      "row": 18,
+      "stockId": "QXB0018",
+      "lesson": "子龙批量 row18 启发式+铭牌优先18",
+      "indexBands": {
+        "VIN / chassis plate": [
+          18,
+          17,
+          16
+        ],
+        "Front view": [
+          1
+        ],
+        "Rear view": [
+          9
+        ],
+        "Engine bay": [
+          7
+        ],
+        "Interior": [
+          12
+        ]
+      }
+    },
+    {
+      "at": "2026-06-29T22:17:54.740159+00:00",
+      "source": "ceo_training_exemplar",
+      "row": 19,
+      "stockId": "QXB0019",
+      "lesson": "子龙批量 row19 启发式+铭牌优先18",
+      "indexBands": {
+        "VIN / chassis plate": [
+          18,
+          17,
+          16
+        ],
+        "Front view": [
+          2
+        ],
+        "Interior": [
+          5
+        ],
+        "Engine bay": [
+          8
+        ],
+        "Rear view": [
+          11
+        ]
+      }
+    },
+    {
+      "at": "2026-06-29T22:18:53.752316+00:00",
+      "source": "ceo_training_exemplar",
+      "row": 12,
+      "stockId": "QXB0012",
+      "lesson": "CEO: #4#5#6均为车尾；#10内饰；#09非车尾是发动机段",
+      "indexBands": {
+        "Front view": [
+          3
+        ],
+        "Rear view": [
+          4,
+          5,
+          6
+        ],
+        "Engine bay": [
+          7,
+          8,
+          9
+        ],
+        "Interior": [
+          10
+        ],
+        "VIN / chassis plate": [
+          18,
+          17
+        ]
+      }
+    },
+    {
+      "at": "2026-06-29T22:19:02.000039+00:00",
+      "source": "ceo_feedback",
+      "row": 12,
+      "stockId": "QXB0012",
+      "brand": "Hyundai",
+      "model": "Tucson",
+      "lesson": "CEO: #4#5#6均为车尾；原#09误当车尾实为发动机段",
+      "slots": [
+        {
+          "label": "Rear view",
+          "path": "09_6a6113001b.jpg",
+          "assigned_ok": false,
+          "actual": "engine"
+        },
+        {
+          "label": "Rear view",
+          "path": "04_6af902d8f4.jpg",
+          "assigned_ok": true,
+          "actual": "rear"
+        },
+        {
+          "label": "Interior",
+          "path": "10_29bab67fcf.jpg",
+          "assigned_ok": true,
+          "actual": "interior"
+        }
+      ]
+    },
+    {
+      "at": "2026-06-29T22:29:47.907170+00:00",
+      "source": "ceo_training_exemplar",
+      "row": 19,
+      "stockId": "QXB0019",
+      "lesson": "CEO: #05车尾 #11内饰（原标反）；发动机L15A1",
+      "indexBands": {
+        "Front view": [
+          2
+        ],
+        "Rear view": [
+          5
+        ],
+        "Engine bay": [
+          8
+        ],
+        "Interior": [
+          11
+        ],
+        "VIN / chassis plate": [
+          18,
+          17
+        ]
+      }
+    },
+    {
+      "at": "2026-06-29T22:29:47.908083+00:00",
+      "source": "ceo_feedback",
+      "row": 19,
+      "stockId": "QXB0019",
+      "brand": "Honda",
+      "model": "City",
+      "lesson": "CEO: 车尾内饰完全标反；发动机R20A3错误",
+      "slots": [
+        {
+          "label": "Rear view",
+          "path": "11_0dd3533e87.jpg",
+          "assigned_ok": false,
+          "actual": "interior"
+        },
+        {
+          "label": "Interior",
+          "path": "05_caf9ecac45.jpg",
+          "assigned_ok": false,
+          "actual": "rear"
+        },
+        {
+          "label": "Engine",
+          "wrong": "R20A3",
+          "correct": "L15A1"
+        }
+      ]
+    },
+    {
+      "at": "2026-06-29T22:32:38.377336+00:00",
+      "source": "ceo_training_exemplar",
+      "row": 18,
+      "stockId": "QXB0018",
+      "lesson": "CEO: #09内饰 #12车尾（原标反，互换）",
+      "indexBands": {
+        "Front view": [
+          1
+        ],
+        "Rear view": [
+          12
+        ],
+        "Engine bay": [
+          7
+        ],
+        "Interior": [
+          9
+        ],
+        "VIN / chassis plate": [
+          18,
+          17
+        ]
+      }
+    },
+    {
+      "at": "2026-06-29T22:32:38.378209+00:00",
+      "source": "ceo_feedback",
+      "row": 18,
+      "stockId": "QXB0018",
+      "brand": "Nissan",
+      "model": "Sylphy",
+      "lesson": "CEO: 车尾内饰标反，互换",
+      "slots": [
+        {
+          "label": "Rear view",
+          "path": "09_845f915f8b.jpg",
+          "assigned_ok": false,
+          "actual": "interior"
+        },
+        {
+          "label": "Interior",
+          "path": "12_c4bb330780.jpg",
+          "assigned_ok": false,
+          "actual": "rear"
+        }
+      ]
+    },
+    {
+      "at": "2026-06-29T22:51:04.276580+00:00",
+      "source": "ceo_training_exemplar",
+      "row": 20,
+      "stockId": "QXB0020",
+      "lesson": "CEO: 0017张相册铭牌在#17非#16",
+      "indexBands": {
+        "Front view": [
+          3
+        ],
+        "Rear view": [
+          5
+        ],
+        "Engine bay": [
+          9
+        ],
+        "Interior": [
+          10
+        ],
+        "VIN / chassis plate": [
+          17,
+          16
+        ]
+      }
+    },
+    {
+      "at": "2026-06-29T22:51:04.278360+00:00",
+      "source": "ceo_feedback",
+      "row": 20,
+      "stockId": "QXB0020",
+      "brand": "Toyota",
+      "model": "Previa",
+      "lesson": "CEO: 铭牌应选#17非#16",
+      "slots": [
+        {
+          "label": "VIN / chassis plate",
+          "path": "data/qxb-photos/row-0020_丰田_丰田 普瑞维亚 2006款 2.4L 7人座豪华版/16_ca688fb10e.jpg",
+          "assigned_ok": false,
+          "actual": "vin"
+        },
+        {
+          "label": "VIN / chassis plate",
+          "path": "data/qxb-photos/row-0020_丰田_丰田 普瑞维亚 2006款 2.4L 7人座豪华版/17_1e7c0046b6.jpg",
+          "assigned_ok": true,
+          "actual": "vin"
+        }
+      ]
+    },
+    {
+      "at": "2026-06-30T12:28:00.532817+00:00",
+      "source": "ceo_training_exemplar",
+      "row": 2,
+      "stockId": "QXB0002",
+      "lesson": "CEO审核 save_training_only",
+      "indexBands": {
+        "Front view": [
+          2
+        ],
+        "Rear view": [
+          5
+        ],
+        "Engine bay": [
+          8
+        ],
+        "Interior": [
+          10
+        ],
+        "VIN / chassis plate": [
+          17
+        ]
+      }
+    },
+    {
+      "at": "2026-06-30T12:28:00.533905+00:00",
+      "source": "ceo",
+      "row": 2,
+      "lesson": "manual slot overrides applied",
+      "slots": [
+        {
+          "label": "Front view",
+          "path": "/Users/longhui/Desktop/AsiaPower/data/qxb-photos/row-0002_起亚_起亚 赛拉图 2008款 欧风 1.6 MT GL/02_769c841a1e.jpg"
+        },
+        {
+          "label": "Rear view",
+          "path": "/Users/longhui/Desktop/AsiaPower/data/qxb-photos/row-0002_起亚_起亚 赛拉图 2008款 欧风 1.6 MT GL/05_91fdd1b53c.jpg"
+        },
+        {
+          "label": "Engine bay",
+          "path": "/Users/longhui/Desktop/AsiaPower/data/qxb-photos/row-0002_起亚_起亚 赛拉图 2008款 欧风 1.6 MT GL/08_6d9c3acdc6.jpg"
+        },
+        {
+          "label": "Interior",
+          "path": "/Users/longhui/Desktop/AsiaPower/data/qxb-photos/row-0002_起亚_起亚 赛拉图 2008款 欧风 1.6 MT GL/10_a324e5b5df.jpg"
+        },
+        {
+          "label": "VIN / chassis plate",
+          "path": "/Users/longhui/Desktop/AsiaPower/data/qxb-photos/row-0002_起亚_起亚 赛拉图 2008款 欧风 1.6 MT GL/17_3719783cfc.jpg"
+        }
+      ],
+      "decision": "save_training_only"
+    },
+    {
+      "at": "2026-06-30T12:28:03.801813+00:00",
+      "source": "ceo_review_ui",
+      "row": 2,
+      "stockId": "QXB0002",
+      "brand": "Kia",
+      "model": "赛拉图",
+      "lesson": "CEO审核 save_training_only",
+      "slots": [
+        {
+          "label": "Front view",
+          "path": "/Users/longhui/Desktop/AsiaPower/data/qxb-photos/row-0002_起亚_起亚 赛拉图 2008款 欧风 1.6 MT GL/02_769c841a1e.jpg",
+          "actual": "front",
+          "assigned_ok": true,
+          "index": 2
+        },
+        {
+          "label": "Rear view",
+          "path": "/Users/longhui/Desktop/AsiaPower/data/qxb-photos/row-0002_起亚_起亚 赛拉图 2008款 欧风 1.6 MT GL/05_91fdd1b53c.jpg",
+          "actual": "rear",
+          "assigned_ok": true,
+          "index": 5
+        },
+        {
+          "label": "Engine bay",
+          "path": "/Users/longhui/Desktop/AsiaPower/data/qxb-photos/row-0002_起亚_起亚 赛拉图 2008款 欧风 1.6 MT GL/08_6d9c3acdc6.jpg",
+          "actual": "engine",
+          "assigned_ok": true,
+          "index": 8
+        },
+        {
+          "label": "Interior",
+          "path": "/Users/longhui/Desktop/AsiaPower/data/qxb-photos/row-0002_起亚_起亚 赛拉图 2008款 欧风 1.6 MT GL/10_a324e5b5df.jpg",
+          "actual": "interior",
+          "assigned_ok": true,
+          "index": 10
+        },
+        {
+          "label": "VIN / chassis plate",
+          "path": "/Users/longhui/Desktop/AsiaPower/data/qxb-photos/row-0002_起亚_起亚 赛拉图 2008款 欧风 1.6 MT GL/17_3719783cfc.jpg",
+          "actual": "vin",
+          "assigned_ok": true,
+          "index": 17
+        }
+      ],
+      "decision": "save_training_only"
+    },
+    {
+      "at": "2026-06-30T12:28:35.413015+00:00",
+      "source": "ceo_training_exemplar",
+      "row": 3,
+      "stockId": "QXB0003",
+      "lesson": "CEO审核 save_training_only",
+      "indexBands": {
+        "Front view": [
+          1
+        ],
+        "Rear view": [
+          5
+        ],
+        "Engine bay": [
+          9
+        ],
+        "Interior": [
+          15
+        ],
+        "VIN / chassis plate": [
+          17
+        ]
+      }
+    },
+    {
+      "at": "2026-06-30T12:28:35.413796+00:00",
+      "source": "ceo",
+      "row": 3,
+      "lesson": "manual slot overrides applied",
+      "slots": [
+        {
+          "label": "Front view",
+          "path": "/Users/longhui/Desktop/AsiaPower/data/qxb-photos/row-0003_起亚_起亚 锐欧 2007款 1.4L MT GL/01_c1244b65ac.jpg"
+        },
+        {
+          "label": "Rear view",
+          "path": "/Users/longhui/Desktop/AsiaPower/data/qxb-photos/row-0003_起亚_起亚 锐欧 2007款 1.4L MT GL/05_38d0a655d7.jpg"
+        },
+        {
+          "label": "Engine bay",
+          "path": "/Users/longhui/Desktop/AsiaPower/data/qxb-photos/row-0003_起亚_起亚 锐欧 2007款 1.4L MT GL/09_73cc05e875.jpg"
+        },
+        {
+          "label": "Interior",
+          "path": "/Users/longhui/Desktop/AsiaPower/data/qxb-photos/row-0003_起亚_起亚 锐欧 2007款 1.4L MT GL/15_36b31598f7.jpg"
+        },
+        {
+          "label": "VIN / chassis plate",
+          "path": "/Users/longhui/Desktop/AsiaPower/data/qxb-photos/row-0003_起亚_起亚 锐欧 2007款 1.4L MT GL/17_c20b5830ee.jpg"
+        }
+      ],
+      "decision": "save_training_only"
+    },
+    {
+      "at": "2026-06-30T12:28:38.703246+00:00",
+      "source": "ceo_review_ui",
+      "row": 3,
+      "stockId": "QXB0003",
+      "brand": "Kia",
+      "model": "Rio",
+      "lesson": "CEO审核 save_training_only",
+      "slots": [
+        {
+          "label": "Front view",
+          "path": "/Users/longhui/Desktop/AsiaPower/data/qxb-photos/row-0003_起亚_起亚 锐欧 2007款 1.4L MT GL/01_c1244b65ac.jpg",
+          "actual": "front",
+          "assigned_ok": true,
+          "index": 1
+        },
+        {
+          "label": "Rear view",
+          "path": "/Users/longhui/Desktop/AsiaPower/data/qxb-photos/row-0003_起亚_起亚 锐欧 2007款 1.4L MT GL/05_38d0a655d7.jpg",
+          "actual": "rear",
+          "assigned_ok": true,
+          "index": 5
+        },
+        {
+          "label": "Engine bay",
+          "path": "/Users/longhui/Desktop/AsiaPower/data/qxb-photos/row-0003_起亚_起亚 锐欧 2007款 1.4L MT GL/09_73cc05e875.jpg",
+          "actual": "engine",
+          "assigned_ok": true,
+          "index": 9
+        },
+        {
+          "label": "Interior",
+          "path": "/Users/longhui/Desktop/AsiaPower/data/qxb-photos/row-0003_起亚_起亚 锐欧 2007款 1.4L MT GL/15_36b31598f7.jpg",
+          "actual": "interior",
+          "assigned_ok": true,
+          "index": 15
+        },
+        {
+          "label": "VIN / chassis plate",
+          "path": "/Users/longhui/Desktop/AsiaPower/data/qxb-photos/row-0003_起亚_起亚 锐欧 2007款 1.4L MT GL/17_c20b5830ee.jpg",
+          "actual": "vin",
+          "assigned_ok": true,
+          "index": 17
+        }
+      ],
+      "decision": "save_training_only"
+    },
+    {
+      "at": "2026-06-30T12:29:17.636254+00:00",
+      "source": "ceo_training_exemplar",
+      "row": 4,
+      "stockId": "QXB0004",
+      "lesson": "CEO审核 save_training_only",
+      "indexBands": {
+        "Front view": [
+          2
+        ],
+        "Rear view": [
+          5
+        ],
+        "Engine bay": [
+          9
+        ],
+        "Interior": [
+          12
+        ],
+        "VIN / chassis plate": [
+          18
+        ]
+      }
+    },
+    {
+      "at": "2026-06-30T12:29:17.637087+00:00",
+      "source": "ceo",
+      "row": 4,
+      "lesson": "manual slot overrides applied",
+      "slots": [
+        {
+          "label": "Front view",
+          "path": "/Users/longhui/Desktop/AsiaPower/data/qxb-photos/row-0004_起亚_起亚 起亚K2 2011款 三厢 1.6L AT Premium/02_aac1f1241c.jpg"
+        },
+        {
+          "label": "Rear view",
+          "path": "/Users/longhui/Desktop/AsiaPower/data/qxb-photos/row-0004_起亚_起亚 起亚K2 2011款 三厢 1.6L AT Premium/05_63e973f9e3.jpg"
+        },
+        {
+          "label": "Engine bay",
+          "path": "/Users/longhui/Desktop/AsiaPower/data/qxb-photos/row-0004_起亚_起亚 起亚K2 2011款 三厢 1.6L AT Premium/09_c7d1e14a71.jpg"
+        },
+        {
+          "label": "Interior",
+          "path": "/Users/longhui/Desktop/AsiaPower/data/qxb-photos/row-0004_起亚_起亚 起亚K2 2011款 三厢 1.6L AT Premium/12_cb5e65c339.jpg"
+        },
+        {
+          "label": "VIN / chassis plate",
+          "path": "/Users/longhui/Desktop/AsiaPower/data/qxb-photos/row-0004_起亚_起亚 起亚K2 2011款 三厢 1.6L AT Premium/18_3d9c96a0cf.jpg"
+        }
+      ],
+      "decision": "save_training_only"
+    },
+    {
+      "at": "2026-06-30T12:29:20.691350+00:00",
+      "source": "ceo_review_ui",
+      "row": 4,
+      "stockId": "QXB0004",
+      "brand": "Kia",
+      "model": "K2",
+      "lesson": "CEO审核 save_training_only",
+      "slots": [
+        {
+          "label": "Front view",
+          "path": "/Users/longhui/Desktop/AsiaPower/data/qxb-photos/row-0004_起亚_起亚 起亚K2 2011款 三厢 1.6L AT Premium/02_aac1f1241c.jpg",
+          "actual": "front",
+          "assigned_ok": true,
+          "index": 2
+        },
+        {
+          "label": "Rear view",
+          "path": "/Users/longhui/Desktop/AsiaPower/data/qxb-photos/row-0004_起亚_起亚 起亚K2 2011款 三厢 1.6L AT Premium/05_63e973f9e3.jpg",
+          "actual": "rear",
+          "assigned_ok": true,
+          "index": 5
+        },
+        {
+          "label": "Engine bay",
+          "path": "/Users/longhui/Desktop/AsiaPower/data/qxb-photos/row-0004_起亚_起亚 起亚K2 2011款 三厢 1.6L AT Premium/09_c7d1e14a71.jpg",
+          "actual": "engine",
+          "assigned_ok": true,
+          "index": 9
+        },
+        {
+          "label": "Interior",
+          "path": "/Users/longhui/Desktop/AsiaPower/data/qxb-photos/row-0004_起亚_起亚 起亚K2 2011款 三厢 1.6L AT Premium/12_cb5e65c339.jpg",
+          "actual": "interior",
+          "assigned_ok": true,
+          "index": 12
+        },
+        {
+          "label": "VIN / chassis plate",
+          "path": "/Users/longhui/Desktop/AsiaPower/data/qxb-photos/row-0004_起亚_起亚 起亚K2 2011款 三厢 1.6L AT Premium/18_3d9c96a0cf.jpg",
+          "actual": "vin",
+          "assigned_ok": true,
+          "index": 18
+        }
+      ],
+      "decision": "save_training_only"
+    },
+    {
+      "at": "2026-06-30T12:29:58.983311+00:00",
+      "source": "ceo_training_exemplar",
+      "row": 5,
+      "stockId": "QXB0005",
+      "lesson": "CEO审核 save_training_only",
+      "indexBands": {
+        "Front view": [
+          2
+        ],
+        "Rear view": [
+          5
+        ],
+        "Engine bay": [
+          8
+        ],
+        "Interior": [
+          10
+        ],
+        "VIN / chassis plate": [
+          18
+        ]
+      }
+    },
+    {
+      "at": "2026-06-30T12:29:58.984193+00:00",
+      "source": "ceo",
+      "row": 5,
+      "lesson": "manual slot overrides applied",
+      "slots": [
+        {
+          "label": "Front view",
+          "path": "/Users/longhui/Desktop/AsiaPower/data/qxb-photos/row-0005_丰田_丰田 凯美瑞 2009款 200G 豪华版/02_52aa07fb14.jpg"
+        },
+        {
+          "label": "Rear view",
+          "path": "/Users/longhui/Desktop/AsiaPower/data/qxb-photos/row-0005_丰田_丰田 凯美瑞 2009款 200G 豪华版/05_0da54ea7ad.jpg"
+        },
+        {
+          "label": "Engine bay",
+          "path": "/Users/longhui/Desktop/AsiaPower/data/qxb-photos/row-0005_丰田_丰田 凯美瑞 2009款 200G 豪华版/08_f8ec6f7a83.jpg"
+        },
+        {
+          "label": "Interior",
+          "path": "/Users/longhui/Desktop/AsiaPower/data/qxb-photos/row-0005_丰田_丰田 凯美瑞 2009款 200G 豪华版/10_e2096d6b1f.jpg"
+        },
+        {
+          "label": "VIN / chassis plate",
+          "path": "/Users/longhui/Desktop/AsiaPower/data/qxb-photos/row-0005_丰田_丰田 凯美瑞 2009款 200G 豪华版/18_5135f88503.jpg"
+        }
+      ],
+      "decision": "save_training_only"
+    },
+    {
+      "at": "2026-06-30T12:30:02.095943+00:00",
+      "source": "ceo_review_ui",
+      "row": 5,
+      "stockId": "QXB0005",
+      "brand": "Toyota",
+      "model": "凯美瑞",
+      "lesson": "CEO审核 save_training_only",
+      "slots": [
+        {
+          "label": "Front view",
+          "path": "/Users/longhui/Desktop/AsiaPower/data/qxb-photos/row-0005_丰田_丰田 凯美瑞 2009款 200G 豪华版/02_52aa07fb14.jpg",
+          "actual": "front",
+          "assigned_ok": true,
+          "index": 2
+        },
+        {
+          "label": "Rear view",
+          "path": "/Users/longhui/Desktop/AsiaPower/data/qxb-photos/row-0005_丰田_丰田 凯美瑞 2009款 200G 豪华版/05_0da54ea7ad.jpg",
+          "actual": "rear",
+          "assigned_ok": true,
+          "index": 5
+        },
+        {
+          "label": "Engine bay",
+          "path": "/Users/longhui/Desktop/AsiaPower/data/qxb-photos/row-0005_丰田_丰田 凯美瑞 2009款 200G 豪华版/08_f8ec6f7a83.jpg",
+          "actual": "engine",
+          "assigned_ok": true,
+          "index": 8
+        },
+        {
+          "label": "Interior",
+          "path": "/Users/longhui/Desktop/AsiaPower/data/qxb-photos/row-0005_丰田_丰田 凯美瑞 2009款 200G 豪华版/10_e2096d6b1f.jpg",
+          "actual": "interior",
+          "assigned_ok": true,
+          "index": 10
+        },
+        {
+          "label": "VIN / chassis plate",
+          "path": "/Users/longhui/Desktop/AsiaPower/data/qxb-photos/row-0005_丰田_丰田 凯美瑞 2009款 200G 豪华版/18_5135f88503.jpg",
+          "actual": "vin",
+          "assigned_ok": true,
+          "index": 18
+        }
+      ],
+      "decision": "save_training_only"
+    },
+    {
+      "at": "2026-06-30T12:31:02.582943+00:00",
+      "source": "ceo_training_exemplar",
+      "row": 6,
+      "stockId": "QXB0006",
+      "lesson": "CEO审核 save_training_only",
+      "indexBands": {
+        "Front view": [
+          3
+        ],
+        "Rear view": [
+          5
+        ],
+        "Engine bay": [
+          9
+        ],
+        "Interior": [
+          12
+        ],
+        "VIN / chassis plate": [
+          18
+        ]
+      }
+    },
+    {
+      "at": "2026-06-30T12:31:02.584200+00:00",
+      "source": "ceo",
+      "row": 6,
+      "lesson": "manual slot overrides applied",
+      "slots": [
+        {
+          "label": "Front view",
+          "path": "/Users/longhui/Desktop/AsiaPower/data/qxb-photos/row-0006_现代_现代 酷派 2004款 FX 2.7/03_1993bb82ee.jpg"
+        },
+        {
+          "label": "Rear view",
+          "path": "/Users/longhui/Desktop/AsiaPower/data/qxb-photos/row-0006_现代_现代 酷派 2004款 FX 2.7/05_5fdfa52757.jpg"
+        },
+        {
+          "label": "Engine bay",
+          "path": "/Users/longhui/Desktop/AsiaPower/data/qxb-photos/row-0006_现代_现代 酷派 2004款 FX 2.7/09_5718cfd32b.jpg"
+        },
+        {
+          "label": "Interior",
+          "path": "/Users/longhui/Desktop/AsiaPower/data/qxb-photos/row-0006_现代_现代 酷派 2004款 FX 2.7/12_bf232e8992.jpg"
+        },
+        {
+          "label": "VIN / chassis plate",
+          "path": "/Users/longhui/Desktop/AsiaPower/data/qxb-photos/row-0006_现代_现代 酷派 2004款 FX 2.7/18_0e24015652.jpg"
+        }
+      ],
+      "decision": "save_training_only"
+    },
+    {
+      "at": "2026-06-30T12:31:05.592562+00:00",
+      "source": "ceo_review_ui",
+      "row": 6,
+      "stockId": "QXB0006",
+      "brand": "Hyundai",
+      "model": "Tiburon",
+      "lesson": "CEO审核 save_training_only",
+      "slots": [
+        {
+          "label": "Front view",
+          "path": "/Users/longhui/Desktop/AsiaPower/data/qxb-photos/row-0006_现代_现代 酷派 2004款 FX 2.7/03_1993bb82ee.jpg",
+          "actual": "front",
+          "assigned_ok": true,
+          "index": 3
+        },
+        {
+          "label": "Rear view",
+          "path": "/Users/longhui/Desktop/AsiaPower/data/qxb-photos/row-0006_现代_现代 酷派 2004款 FX 2.7/05_5fdfa52757.jpg",
+          "actual": "rear",
+          "assigned_ok": true,
+          "index": 5
+        },
+        {
+          "label": "Engine bay",
+          "path": "/Users/longhui/Desktop/AsiaPower/data/qxb-photos/row-0006_现代_现代 酷派 2004款 FX 2.7/09_5718cfd32b.jpg",
+          "actual": "engine",
+          "assigned_ok": true,
+          "index": 9
+        },
+        {
+          "label": "Interior",
+          "path": "/Users/longhui/Desktop/AsiaPower/data/qxb-photos/row-0006_现代_现代 酷派 2004款 FX 2.7/12_bf232e8992.jpg",
+          "actual": "interior",
+          "assigned_ok": true,
+          "index": 12
+        },
+        {
+          "label": "VIN / chassis plate",
+          "path": "/Users/longhui/Desktop/AsiaPower/data/qxb-photos/row-0006_现代_现代 酷派 2004款 FX 2.7/18_0e24015652.jpg",
+          "actual": "vin",
+          "assigned_ok": true,
+          "index": 18
+        }
+      ],
+      "decision": "save_training_only"
+    },
+    {
+      "at": "2026-06-30T12:31:48.492665+00:00",
+      "source": "ceo_training_exemplar",
+      "row": 7,
+      "stockId": "QXB0007",
+      "lesson": "CEO审核 save_training_only",
+      "indexBands": {
+        "Front view": [
+          1
+        ],
+        "Rear view": [
+          4
+        ],
+        "Engine bay": [
+          9
+        ],
+        "Interior": [
+          10
+        ],
+        "VIN / chassis plate": [
+          18
+        ]
+      }
+    },
+    {
+      "at": "2026-06-30T12:31:48.493652+00:00",
+      "source": "ceo",
+      "row": 7,
+      "lesson": "manual slot overrides applied",
+      "slots": [
+        {
+          "label": "Front view",
+          "path": "/Users/longhui/Desktop/AsiaPower/data/qxb-photos/row-0007_现代_现代 索纳塔 2011款 2.4L 自动尊贵版/01_a31fead276.jpg"
+        },
+        {
+          "label": "Rear view",
+          "path": "/Users/longhui/Desktop/AsiaPower/data/qxb-photos/row-0007_现代_现代 索纳塔 2011款 2.4L 自动尊贵版/04_ba3d516e68.jpg"
+        },
+        {
+          "label": "Engine bay",
+          "path": "/Users/longhui/Desktop/AsiaPower/data/qxb-photos/row-0007_现代_现代 索纳塔 2011款 2.4L 自动尊贵版/09_a782c513e3.jpg"
+        },
+        {
+          "label": "Interior",
+          "path": "/Users/longhui/Desktop/AsiaPower/data/qxb-photos/row-0007_现代_现代 索纳塔 2011款 2.4L 自动尊贵版/10_7bed8b2e9c.jpg"
+        },
+        {
+          "label": "VIN / chassis plate",
+          "path": "/Users/longhui/Desktop/AsiaPower/data/qxb-photos/row-0007_现代_现代 索纳塔 2011款 2.4L 自动尊贵版/18_a2c7fc48b7.jpg"
+        }
+      ],
+      "decision": "save_training_only"
+    },
+    {
+      "at": "2026-06-30T12:31:51.699468+00:00",
+      "source": "ceo_review_ui",
+      "row": 7,
+      "stockId": "QXB0007",
+      "brand": "Hyundai",
+      "model": "Sonata",
+      "lesson": "CEO审核 save_training_only",
+      "slots": [
+        {
+          "label": "Front view",
+          "path": "/Users/longhui/Desktop/AsiaPower/data/qxb-photos/row-0007_现代_现代 索纳塔 2011款 2.4L 自动尊贵版/01_a31fead276.jpg",
+          "actual": "front",
+          "assigned_ok": true,
+          "index": 1
+        },
+        {
+          "label": "Rear view",
+          "path": "/Users/longhui/Desktop/AsiaPower/data/qxb-photos/row-0007_现代_现代 索纳塔 2011款 2.4L 自动尊贵版/04_ba3d516e68.jpg",
+          "actual": "rear",
+          "assigned_ok": true,
+          "index": 4
+        },
+        {
+          "label": "Engine bay",
+          "path": "/Users/longhui/Desktop/AsiaPower/data/qxb-photos/row-0007_现代_现代 索纳塔 2011款 2.4L 自动尊贵版/09_a782c513e3.jpg",
+          "actual": "engine",
+          "assigned_ok": true,
+          "index": 9
+        },
+        {
+          "label": "Interior",
+          "path": "/Users/longhui/Desktop/AsiaPower/data/qxb-photos/row-0007_现代_现代 索纳塔 2011款 2.4L 自动尊贵版/10_7bed8b2e9c.jpg",
+          "actual": "interior",
+          "assigned_ok": true,
+          "index": 10
+        },
+        {
+          "label": "VIN / chassis plate",
+          "path": "/Users/longhui/Desktop/AsiaPower/data/qxb-photos/row-0007_现代_现代 索纳塔 2011款 2.4L 自动尊贵版/18_a2c7fc48b7.jpg",
+          "actual": "vin",
+          "assigned_ok": true,
+          "index": 18
+        }
+      ],
+      "decision": "save_training_only"
+    },
+    {
+      "at": "2026-06-30T12:32:29.956722+00:00",
+      "source": "ceo_training_exemplar",
+      "row": 8,
+      "stockId": "QXB0008",
+      "lesson": "CEO审核 save_training_only",
+      "indexBands": {
+        "Front view": [
+          1
+        ],
+        "Rear view": [
+          4
+        ],
+        "Engine bay": [
+          9
+        ],
+        "Interior": [
+          10
+        ],
+        "VIN / chassis plate": [
+          18
+        ]
+      }
+    },
+    {
+      "at": "2026-06-30T12:32:29.957721+00:00",
+      "source": "ceo",
+      "row": 8,
+      "lesson": "manual slot overrides applied",
+      "slots": [
+        {
+          "label": "Front view",
+          "path": "/Users/longhui/Desktop/AsiaPower/data/qxb-photos/row-0008_丰田_丰田 卡罗拉 2007款 1.8L 自动GLX-i/01_91adf17554.jpg"
+        },
+        {
+          "label": "Rear view",
+          "path": "/Users/longhui/Desktop/AsiaPower/data/qxb-photos/row-0008_丰田_丰田 卡罗拉 2007款 1.8L 自动GLX-i/04_681198fdc3.jpg"
+        },
+        {
+          "label": "Engine bay",
+          "path": "/Users/longhui/Desktop/AsiaPower/data/qxb-photos/row-0008_丰田_丰田 卡罗拉 2007款 1.8L 自动GLX-i/09_bd7866a5eb.jpg"
+        },
+        {
+          "label": "Interior",
+          "path": "/Users/longhui/Desktop/AsiaPower/data/qxb-photos/row-0008_丰田_丰田 卡罗拉 2007款 1.8L 自动GLX-i/10_97c8d89728.jpg"
+        },
+        {
+          "label": "VIN / chassis plate",
+          "path": "/Users/longhui/Desktop/AsiaPower/data/qxb-photos/row-0008_丰田_丰田 卡罗拉 2007款 1.8L 自动GLX-i/18_aecdd0e873.jpg"
+        }
+      ],
+      "decision": "save_training_only"
+    },
+    {
+      "at": "2026-06-30T12:32:33.226528+00:00",
+      "source": "ceo_review_ui",
+      "row": 8,
+      "stockId": "QXB0008",
+      "brand": "Toyota",
+      "model": "Corolla",
+      "lesson": "CEO审核 save_training_only",
+      "slots": [
+        {
+          "label": "Front view",
+          "path": "/Users/longhui/Desktop/AsiaPower/data/qxb-photos/row-0008_丰田_丰田 卡罗拉 2007款 1.8L 自动GLX-i/01_91adf17554.jpg",
+          "actual": "front",
+          "assigned_ok": true,
+          "index": 1
+        },
+        {
+          "label": "Rear view",
+          "path": "/Users/longhui/Desktop/AsiaPower/data/qxb-photos/row-0008_丰田_丰田 卡罗拉 2007款 1.8L 自动GLX-i/04_681198fdc3.jpg",
+          "actual": "rear",
+          "assigned_ok": true,
+          "index": 4
+        },
+        {
+          "label": "Engine bay",
+          "path": "/Users/longhui/Desktop/AsiaPower/data/qxb-photos/row-0008_丰田_丰田 卡罗拉 2007款 1.8L 自动GLX-i/09_bd7866a5eb.jpg",
+          "actual": "engine",
+          "assigned_ok": true,
+          "index": 9
+        },
+        {
+          "label": "Interior",
+          "path": "/Users/longhui/Desktop/AsiaPower/data/qxb-photos/row-0008_丰田_丰田 卡罗拉 2007款 1.8L 自动GLX-i/10_97c8d89728.jpg",
+          "actual": "interior",
+          "assigned_ok": true,
+          "index": 10
+        },
+        {
+          "label": "VIN / chassis plate",
+          "path": "/Users/longhui/Desktop/AsiaPower/data/qxb-photos/row-0008_丰田_丰田 卡罗拉 2007款 1.8L 自动GLX-i/18_aecdd0e873.jpg",
+          "actual": "vin",
+          "assigned_ok": true,
+          "index": 18
+        }
+      ],
+      "decision": "save_training_only"
+    },
+    {
+      "at": "2026-06-30T12:33:36.762420+00:00",
+      "source": "ceo_training_exemplar",
+      "row": 9,
+      "stockId": "QXB0009",
+      "lesson": "CEO确认可上传 QXB0009",
+      "indexBands": {
+        "Front view": [
+          1
+        ],
+        "Rear view": [
+          6
+        ],
+        "Engine bay": [
+          8
+        ],
+        "Interior": [
+          10
+        ],
+        "VIN / chassis plate": [
+          17
+        ]
+      }
+    },
+    {
+      "at": "2026-06-30T12:33:36.764322+00:00",
+      "source": "ceo",
+      "row": 9,
+      "lesson": "manual slot overrides applied",
+      "slots": [
+        {
+          "label": "Front view",
+          "path": "/Users/longhui/Desktop/AsiaPower/data/qxb-photos/row-0009_丰田_丰田 凯美瑞 2013款 2.0G 舒适版/01_97d6803ca6.jpg"
+        },
+        {
+          "label": "Rear view",
+          "path": "/Users/longhui/Desktop/AsiaPower/data/qxb-photos/row-0009_丰田_丰田 凯美瑞 2013款 2.0G 舒适版/06_709a41e1fe.jpg"
+        },
+        {
+          "label": "Engine bay",
+          "path": "/Users/longhui/Desktop/AsiaPower/data/qxb-photos/row-0009_丰田_丰田 凯美瑞 2013款 2.0G 舒适版/08_e036575108.jpg"
+        },
+        {
+          "label": "Interior",
+          "path": "/Users/longhui/Desktop/AsiaPower/data/qxb-photos/row-0009_丰田_丰田 凯美瑞 2013款 2.0G 舒适版/10_a2195fbfce.jpg"
+        },
+        {
+          "label": "VIN / chassis plate",
+          "path": "/Users/longhui/Desktop/AsiaPower/data/qxb-photos/row-0009_丰田_丰田 凯美瑞 2013款 2.0G 舒适版/17_9160ccc158.jpg"
+        }
+      ],
+      "decision": "confirm_and_upload"
+    },
+    {
+      "at": "2026-06-30T12:33:39.540050+00:00",
+      "source": "ceo_review_ui",
+      "row": 9,
+      "stockId": "QXB0009",
+      "brand": "Toyota",
+      "model": "凯美瑞",
+      "lesson": "CEO确认可上传 QXB0009",
+      "slots": [
+        {
+          "label": "Front view",
+          "path": "/Users/longhui/Desktop/AsiaPower/data/qxb-photos/row-0009_丰田_丰田 凯美瑞 2013款 2.0G 舒适版/01_97d6803ca6.jpg",
+          "actual": "front",
+          "assigned_ok": true,
+          "index": 1
+        },
+        {
+          "label": "Rear view",
+          "path": "/Users/longhui/Desktop/AsiaPower/data/qxb-photos/row-0009_丰田_丰田 凯美瑞 2013款 2.0G 舒适版/06_709a41e1fe.jpg",
+          "actual": "rear",
+          "assigned_ok": true,
+          "index": 6
+        },
+        {
+          "label": "Engine bay",
+          "path": "/Users/longhui/Desktop/AsiaPower/data/qxb-photos/row-0009_丰田_丰田 凯美瑞 2013款 2.0G 舒适版/08_e036575108.jpg",
+          "actual": "engine",
+          "assigned_ok": true,
+          "index": 8
+        },
+        {
+          "label": "Interior",
+          "path": "/Users/longhui/Desktop/AsiaPower/data/qxb-photos/row-0009_丰田_丰田 凯美瑞 2013款 2.0G 舒适版/10_a2195fbfce.jpg",
+          "actual": "interior",
+          "assigned_ok": true,
+          "index": 10
+        },
+        {
+          "label": "VIN / chassis plate",
+          "path": "/Users/longhui/Desktop/AsiaPower/data/qxb-photos/row-0009_丰田_丰田 凯美瑞 2013款 2.0G 舒适版/17_9160ccc158.jpg",
+          "actual": "vin",
+          "assigned_ok": true,
+          "index": 17
+        }
+      ],
+      "decision": "confirm_and_upload"
+    },
+    {
+      "at": "2026-06-30T13:20:45.873105+00:00",
+      "source": "ceo_training_exemplar",
+      "row": 9,
+      "stockId": "QXB0009",
+      "lesson": "CEO确认可上传 QXB0009",
+      "indexBands": {
+        "Front view": [
+          1
+        ],
+        "Rear view": [
+          6
+        ],
+        "Engine bay": [
+          8
+        ],
+        "Interior": [
+          10
+        ],
+        "VIN / chassis plate": [
+          17
+        ]
+      }
+    },
+    {
+      "at": "2026-06-30T13:20:45.874823+00:00",
+      "source": "ceo",
+      "row": 9,
+      "lesson": "manual slot overrides applied",
+      "slots": [
+        {
+          "label": "Front view",
+          "path": "/Users/longhui/Desktop/AsiaPower/data/qxb-photos/row-0009_丰田_丰田 凯美瑞 2013款 2.0G 舒适版/01_97d6803ca6.jpg"
+        },
+        {
+          "label": "Rear view",
+          "path": "/Users/longhui/Desktop/AsiaPower/data/qxb-photos/row-0009_丰田_丰田 凯美瑞 2013款 2.0G 舒适版/06_709a41e1fe.jpg"
+        },
+        {
+          "label": "Engine bay",
+          "path": "/Users/longhui/Desktop/AsiaPower/data/qxb-photos/row-0009_丰田_丰田 凯美瑞 2013款 2.0G 舒适版/08_e036575108.jpg"
+        },
+        {
+          "label": "Interior",
+          "path": "/Users/longhui/Desktop/AsiaPower/data/qxb-photos/row-0009_丰田_丰田 凯美瑞 2013款 2.0G 舒适版/10_a2195fbfce.jpg"
+        },
+        {
+          "label": "VIN / chassis plate",
+          "path": "/Users/longhui/Desktop/AsiaPower/data/qxb-photos/row-0009_丰田_丰田 凯美瑞 2013款 2.0G 舒适版/17_9160ccc158.jpg"
+        }
+      ],
+      "decision": "confirm_and_upload"
+    },
+    {
+      "at": "2026-06-30T13:20:48.874568+00:00",
+      "source": "ceo_review_ui",
+      "row": 9,
+      "stockId": "QXB0009",
+      "brand": "Toyota",
+      "model": "凯美瑞",
+      "lesson": "CEO确认可上传 QXB0009",
+      "slots": [
+        {
+          "label": "Front view",
+          "path": "/Users/longhui/Desktop/AsiaPower/data/qxb-photos/row-0009_丰田_丰田 凯美瑞 2013款 2.0G 舒适版/01_97d6803ca6.jpg",
+          "actual": "front",
+          "assigned_ok": true,
+          "index": 1
+        },
+        {
+          "label": "Rear view",
+          "path": "/Users/longhui/Desktop/AsiaPower/data/qxb-photos/row-0009_丰田_丰田 凯美瑞 2013款 2.0G 舒适版/06_709a41e1fe.jpg",
+          "actual": "rear",
+          "assigned_ok": true,
+          "index": 6
+        },
+        {
+          "label": "Engine bay",
+          "path": "/Users/longhui/Desktop/AsiaPower/data/qxb-photos/row-0009_丰田_丰田 凯美瑞 2013款 2.0G 舒适版/08_e036575108.jpg",
+          "actual": "engine",
+          "assigned_ok": true,
+          "index": 8
+        },
+        {
+          "label": "Interior",
+          "path": "/Users/longhui/Desktop/AsiaPower/data/qxb-photos/row-0009_丰田_丰田 凯美瑞 2013款 2.0G 舒适版/10_a2195fbfce.jpg",
+          "actual": "interior",
+          "assigned_ok": true,
+          "index": 10
+        },
+        {
+          "label": "VIN / chassis plate",
+          "path": "/Users/longhui/Desktop/AsiaPower/data/qxb-photos/row-0009_丰田_丰田 凯美瑞 2013款 2.0G 舒适版/17_9160ccc158.jpg",
+          "actual": "vin",
+          "assigned_ok": true,
+          "index": 17
+        }
+      ],
+      "decision": "confirm_and_upload"
+    },
+    {
+      "at": "2026-06-30T13:21:42.510191+00:00",
+      "source": "ceo_training_exemplar",
+      "row": 9,
+      "stockId": "QXB0009",
+      "lesson": "CEO确认可上传 QXB0009",
+      "indexBands": {
+        "Front view": [
+          1
+        ],
+        "Rear view": [
+          6
+        ],
+        "Engine bay": [
+          8
+        ],
+        "Interior": [
+          10
+        ],
+        "VIN / chassis plate": [
+          17
+        ]
+      }
+    },
+    {
+      "at": "2026-06-30T13:21:42.511352+00:00",
+      "source": "ceo",
+      "row": 9,
+      "lesson": "manual slot overrides applied",
+      "slots": [
+        {
+          "label": "Front view",
+          "path": "/Users/longhui/Desktop/AsiaPower/data/qxb-photos/row-0009_丰田_丰田 凯美瑞 2013款 2.0G 舒适版/01_97d6803ca6.jpg"
+        },
+        {
+          "label": "Rear view",
+          "path": "/Users/longhui/Desktop/AsiaPower/data/qxb-photos/row-0009_丰田_丰田 凯美瑞 2013款 2.0G 舒适版/06_709a41e1fe.jpg"
+        },
+        {
+          "label": "Engine bay",
+          "path": "/Users/longhui/Desktop/AsiaPower/data/qxb-photos/row-0009_丰田_丰田 凯美瑞 2013款 2.0G 舒适版/08_e036575108.jpg"
+        },
+        {
+          "label": "Interior",
+          "path": "/Users/longhui/Desktop/AsiaPower/data/qxb-photos/row-0009_丰田_丰田 凯美瑞 2013款 2.0G 舒适版/10_a2195fbfce.jpg"
+        },
+        {
+          "label": "VIN / chassis plate",
+          "path": "/Users/longhui/Desktop/AsiaPower/data/qxb-photos/row-0009_丰田_丰田 凯美瑞 2013款 2.0G 舒适版/17_9160ccc158.jpg"
+        }
+      ],
+      "decision": "confirm_and_upload"
+    },
+    {
+      "at": "2026-06-30T13:21:45.375645+00:00",
+      "source": "ceo_review_ui",
+      "row": 9,
+      "stockId": "QXB0009",
+      "brand": "Toyota",
+      "model": "凯美瑞",
+      "lesson": "CEO确认可上传 QXB0009",
+      "slots": [
+        {
+          "label": "Front view",
+          "path": "/Users/longhui/Desktop/AsiaPower/data/qxb-photos/row-0009_丰田_丰田 凯美瑞 2013款 2.0G 舒适版/01_97d6803ca6.jpg",
+          "actual": "front",
+          "assigned_ok": true,
+          "index": 1
+        },
+        {
+          "label": "Rear view",
+          "path": "/Users/longhui/Desktop/AsiaPower/data/qxb-photos/row-0009_丰田_丰田 凯美瑞 2013款 2.0G 舒适版/06_709a41e1fe.jpg",
+          "actual": "rear",
+          "assigned_ok": true,
+          "index": 6
+        },
+        {
+          "label": "Engine bay",
+          "path": "/Users/longhui/Desktop/AsiaPower/data/qxb-photos/row-0009_丰田_丰田 凯美瑞 2013款 2.0G 舒适版/08_e036575108.jpg",
+          "actual": "engine",
+          "assigned_ok": true,
+          "index": 8
+        },
+        {
+          "label": "Interior",
+          "path": "/Users/longhui/Desktop/AsiaPower/data/qxb-photos/row-0009_丰田_丰田 凯美瑞 2013款 2.0G 舒适版/10_a2195fbfce.jpg",
+          "actual": "interior",
+          "assigned_ok": true,
+          "index": 10
+        },
+        {
+          "label": "VIN / chassis plate",
+          "path": "/Users/longhui/Desktop/AsiaPower/data/qxb-photos/row-0009_丰田_丰田 凯美瑞 2013款 2.0G 舒适版/17_9160ccc158.jpg",
+          "actual": "vin",
+          "assigned_ok": true,
+          "index": 17
+        }
+      ],
+      "decision": "confirm_and_upload"
+    },
+    {
+      "at": "2026-06-30T13:28:18.098954+00:00",
+      "source": "ceo_training_exemplar",
+      "row": 9,
+      "stockId": "QXB0009",
+      "lesson": "CEO确认可上传 QXB0009",
+      "indexBands": {
+        "Front view": [
+          1
+        ],
+        "Rear view": [
+          6
+        ],
+        "Engine bay": [
+          8
+        ],
+        "Interior": [
+          10
+        ],
+        "VIN / chassis plate": [
+          17
+        ]
+      }
+    },
+    {
+      "at": "2026-06-30T13:28:18.100154+00:00",
+      "source": "ceo",
+      "row": 9,
+      "lesson": "manual slot overrides applied",
+      "slots": [
+        {
+          "label": "Front view",
+          "path": "/Users/longhui/Desktop/AsiaPower/data/qxb-photos/row-0009_丰田_丰田 凯美瑞 2013款 2.0G 舒适版/01_97d6803ca6.jpg"
+        },
+        {
+          "label": "Rear view",
+          "path": "/Users/longhui/Desktop/AsiaPower/data/qxb-photos/row-0009_丰田_丰田 凯美瑞 2013款 2.0G 舒适版/06_709a41e1fe.jpg"
+        },
+        {
+          "label": "Engine bay",
+          "path": "/Users/longhui/Desktop/AsiaPower/data/qxb-photos/row-0009_丰田_丰田 凯美瑞 2013款 2.0G 舒适版/08_e036575108.jpg"
+        },
+        {
+          "label": "Interior",
+          "path": "/Users/longhui/Desktop/AsiaPower/data/qxb-photos/row-0009_丰田_丰田 凯美瑞 2013款 2.0G 舒适版/10_a2195fbfce.jpg"
+        },
+        {
+          "label": "VIN / chassis plate",
+          "path": "/Users/longhui/Desktop/AsiaPower/data/qxb-photos/row-0009_丰田_丰田 凯美瑞 2013款 2.0G 舒适版/17_9160ccc158.jpg"
+        }
+      ],
+      "decision": "confirm_and_upload"
+    },
+    {
+      "at": "2026-06-30T13:28:20.987310+00:00",
+      "source": "ceo_review_ui",
+      "row": 9,
+      "stockId": "QXB0009",
+      "brand": "Toyota",
+      "model": "凯美瑞",
+      "lesson": "CEO确认可上传 QXB0009",
+      "slots": [
+        {
+          "label": "Front view",
+          "path": "/Users/longhui/Desktop/AsiaPower/data/qxb-photos/row-0009_丰田_丰田 凯美瑞 2013款 2.0G 舒适版/01_97d6803ca6.jpg",
+          "actual": "front",
+          "assigned_ok": true,
+          "index": 1
+        },
+        {
+          "label": "Rear view",
+          "path": "/Users/longhui/Desktop/AsiaPower/data/qxb-photos/row-0009_丰田_丰田 凯美瑞 2013款 2.0G 舒适版/06_709a41e1fe.jpg",
+          "actual": "rear",
+          "assigned_ok": true,
+          "index": 6
+        },
+        {
+          "label": "Engine bay",
+          "path": "/Users/longhui/Desktop/AsiaPower/data/qxb-photos/row-0009_丰田_丰田 凯美瑞 2013款 2.0G 舒适版/08_e036575108.jpg",
+          "actual": "engine",
+          "assigned_ok": true,
+          "index": 8
+        },
+        {
+          "label": "Interior",
+          "path": "/Users/longhui/Desktop/AsiaPower/data/qxb-photos/row-0009_丰田_丰田 凯美瑞 2013款 2.0G 舒适版/10_a2195fbfce.jpg",
+          "actual": "interior",
+          "assigned_ok": true,
+          "index": 10
+        },
+        {
+          "label": "VIN / chassis plate",
+          "path": "/Users/longhui/Desktop/AsiaPower/data/qxb-photos/row-0009_丰田_丰田 凯美瑞 2013款 2.0G 舒适版/17_9160ccc158.jpg",
+          "actual": "vin",
+          "assigned_ok": true,
+          "index": 17
+        }
+      ],
+      "decision": "confirm_and_upload"
+    },
+    {
+      "at": "2026-06-30T13:49:08.837566+00:00",
+      "source": "ceo_training_exemplar",
+      "row": 9,
+      "stockId": "QXB0009",
+      "lesson": "CEO确认可上传 QXB0009",
+      "indexBands": {
+        "Front view": [
+          1
+        ],
+        "Rear view": [
+          6
+        ],
+        "Engine bay": [
+          8
+        ],
+        "Interior": [
+          10
+        ],
+        "VIN / chassis plate": [
+          17
+        ]
+      }
+    },
+    {
+      "at": "2026-06-30T13:49:08.839697+00:00",
+      "source": "ceo",
+      "row": 9,
+      "lesson": "manual slot overrides applied",
+      "slots": [
+        {
+          "label": "Front view",
+          "path": "/Users/longhui/Desktop/AsiaPower/data/qxb-photos/row-0009_丰田_丰田 凯美瑞 2013款 2.0G 舒适版/01_97d6803ca6.jpg"
+        },
+        {
+          "label": "Rear view",
+          "path": "/Users/longhui/Desktop/AsiaPower/data/qxb-photos/row-0009_丰田_丰田 凯美瑞 2013款 2.0G 舒适版/06_709a41e1fe.jpg"
+        },
+        {
+          "label": "Engine bay",
+          "path": "/Users/longhui/Desktop/AsiaPower/data/qxb-photos/row-0009_丰田_丰田 凯美瑞 2013款 2.0G 舒适版/08_e036575108.jpg"
+        },
+        {
+          "label": "Interior",
+          "path": "/Users/longhui/Desktop/AsiaPower/data/qxb-photos/row-0009_丰田_丰田 凯美瑞 2013款 2.0G 舒适版/10_a2195fbfce.jpg"
+        },
+        {
+          "label": "VIN / chassis plate",
+          "path": "/Users/longhui/Desktop/AsiaPower/data/qxb-photos/row-0009_丰田_丰田 凯美瑞 2013款 2.0G 舒适版/17_9160ccc158.jpg"
+        }
+      ],
+      "decision": "confirm_and_upload"
+    },
+    {
+      "at": "2026-06-30T13:49:09.629089+00:00",
+      "source": "ceo_review_ui",
+      "row": 9,
+      "stockId": "QXB0009",
+      "brand": "Toyota",
+      "model": "凯美瑞",
+      "lesson": "CEO确认可上传 QXB0009",
+      "slots": [
+        {
+          "label": "Front view",
+          "path": "/Users/longhui/Desktop/AsiaPower/data/qxb-photos/row-0009_丰田_丰田 凯美瑞 2013款 2.0G 舒适版/01_97d6803ca6.jpg",
+          "actual": "front",
+          "assigned_ok": true,
+          "index": 1
+        },
+        {
+          "label": "Rear view",
+          "path": "/Users/longhui/Desktop/AsiaPower/data/qxb-photos/row-0009_丰田_丰田 凯美瑞 2013款 2.0G 舒适版/06_709a41e1fe.jpg",
+          "actual": "rear",
+          "assigned_ok": true,
+          "index": 6
+        },
+        {
+          "label": "Engine bay",
+          "path": "/Users/longhui/Desktop/AsiaPower/data/qxb-photos/row-0009_丰田_丰田 凯美瑞 2013款 2.0G 舒适版/08_e036575108.jpg",
+          "actual": "engine",
+          "assigned_ok": true,
+          "index": 8
+        },
+        {
+          "label": "Interior",
+          "path": "/Users/longhui/Desktop/AsiaPower/data/qxb-photos/row-0009_丰田_丰田 凯美瑞 2013款 2.0G 舒适版/10_a2195fbfce.jpg",
+          "actual": "interior",
+          "assigned_ok": true,
+          "index": 10
+        },
+        {
+          "label": "VIN / chassis plate",
+          "path": "/Users/longhui/Desktop/AsiaPower/data/qxb-photos/row-0009_丰田_丰田 凯美瑞 2013款 2.0G 舒适版/17_9160ccc158.jpg",
+          "actual": "vin",
+          "assigned_ok": true,
+          "index": 17
+        }
+      ],
+      "decision": "confirm_and_upload"
+    },
+    {
+      "at": "2026-06-30T13:54:39.959178+00:00",
+      "source": "ceo_training_exemplar",
+      "row": 126,
+      "stockId": "QXB0126",
+      "lesson": "CEO确认可上传 QXB0126",
+      "indexBands": {
+        "Front view": [
+          1
+        ],
+        "Rear view": [
+          5
+        ],
+        "Engine bay": [
+          8
+        ],
+        "Interior": [
+          10
+        ],
+        "VIN / chassis plate": [
+          18
+        ]
+      }
+    },
+    {
+      "at": "2026-06-30T13:54:39.960682+00:00",
+      "source": "ceo",
+      "row": 126,
+      "lesson": "manual slot overrides applied",
+      "slots": [
+        {
+          "label": "Front view",
+          "path": "/Users/longhui/Desktop/AsiaPower/data/qxb-photos/row-0126_起亚_起亚 秀尔 2010款 1.6L MT GLS/01_ad89d7955b.jpg"
+        },
+        {
+          "label": "Rear view",
+          "path": "/Users/longhui/Desktop/AsiaPower/data/qxb-photos/row-0126_起亚_起亚 秀尔 2010款 1.6L MT GLS/05_64f0d8cecf.jpg"
+        },
+        {
+          "label": "Engine bay",
+          "path": "/Users/longhui/Desktop/AsiaPower/data/qxb-photos/row-0126_起亚_起亚 秀尔 2010款 1.6L MT GLS/08_9cbb0785c3.jpg"
+        },
+        {
+          "label": "Interior",
+          "path": "/Users/longhui/Desktop/AsiaPower/data/qxb-photos/row-0126_起亚_起亚 秀尔 2010款 1.6L MT GLS/10_49932daa3c.jpg"
+        },
+        {
+          "label": "VIN / chassis plate",
+          "path": "/Users/longhui/Desktop/AsiaPower/data/qxb-photos/row-0126_起亚_起亚 秀尔 2010款 1.6L MT GLS/18_6c8c94353c.jpg"
+        }
+      ],
+      "decision": "confirm_and_upload"
+    },
+    {
+      "at": "2026-06-30T13:54:43.111082+00:00",
+      "source": "ceo_review_ui",
+      "row": 126,
+      "stockId": "QXB0126",
+      "brand": "Kia",
+      "model": "Soul",
+      "lesson": "CEO确认可上传 QXB0126",
+      "slots": [
+        {
+          "label": "Front view",
+          "path": "/Users/longhui/Desktop/AsiaPower/data/qxb-photos/row-0126_起亚_起亚 秀尔 2010款 1.6L MT GLS/01_ad89d7955b.jpg",
+          "actual": "front",
+          "assigned_ok": true,
+          "index": 1
+        },
+        {
+          "label": "Rear view",
+          "path": "/Users/longhui/Desktop/AsiaPower/data/qxb-photos/row-0126_起亚_起亚 秀尔 2010款 1.6L MT GLS/05_64f0d8cecf.jpg",
+          "actual": "rear",
+          "assigned_ok": true,
+          "index": 5
+        },
+        {
+          "label": "Engine bay",
+          "path": "/Users/longhui/Desktop/AsiaPower/data/qxb-photos/row-0126_起亚_起亚 秀尔 2010款 1.6L MT GLS/08_9cbb0785c3.jpg",
+          "actual": "engine",
+          "assigned_ok": true,
+          "index": 8
+        },
+        {
+          "label": "Interior",
+          "path": "/Users/longhui/Desktop/AsiaPower/data/qxb-photos/row-0126_起亚_起亚 秀尔 2010款 1.6L MT GLS/10_49932daa3c.jpg",
+          "actual": "interior",
+          "assigned_ok": true,
+          "index": 10
+        },
+        {
+          "label": "VIN / chassis plate",
+          "path": "/Users/longhui/Desktop/AsiaPower/data/qxb-photos/row-0126_起亚_起亚 秀尔 2010款 1.6L MT GLS/18_6c8c94353c.jpg",
+          "actual": "vin",
+          "assigned_ok": true,
+          "index": 18
+        }
+      ],
+      "decision": "confirm_and_upload"
+    },
+    {
+      "at": "2026-06-30T16:19:58.383791+00:00",
+      "source": "ceo_training_exemplar",
+      "row": 137,
+      "stockId": "QXB0137",
+      "lesson": "CEO确认可上传 QXB0137",
+      "indexBands": {
+        "Front view": [
+          2
+        ],
+        "Rear view": [
+          4
+        ],
+        "Engine bay": [
+          8
+        ],
+        "Interior": [
+          10
+        ],
+        "VIN / chassis plate": [
+          18
+        ]
+      }
+    },
+    {
+      "at": "2026-06-30T16:19:58.385877+00:00",
+      "source": "ceo",
+      "row": 137,
+      "lesson": "manual slot overrides applied",
+      "slots": [
+        {
+          "label": "Front view",
+          "path": "/Users/longhui/Desktop/AsiaPower/data/qxb-photos/row-0137_奔驰_奔驰 奔驰C级 2010款 C 200K 时尚型/02_8375adcc40.jpg"
+        },
+        {
+          "label": "Rear view",
+          "path": "/Users/longhui/Desktop/AsiaPower/data/qxb-photos/row-0137_奔驰_奔驰 奔驰C级 2010款 C 200K 时尚型/04_3d28d43a98.jpg"
+        },
+        {
+          "label": "Engine bay",
+          "path": "/Users/longhui/Desktop/AsiaPower/data/qxb-photos/row-0137_奔驰_奔驰 奔驰C级 2010款 C 200K 时尚型/08_147f345cb4.jpg"
+        },
+        {
+          "label": "Interior",
+          "path": "/Users/longhui/Desktop/AsiaPower/data/qxb-photos/row-0137_奔驰_奔驰 奔驰C级 2010款 C 200K 时尚型/10_57ca578b29.jpg"
+        },
+        {
+          "label": "VIN / chassis plate",
+          "path": "/Users/longhui/Desktop/AsiaPower/data/qxb-photos/row-0137_奔驰_奔驰 奔驰C级 2010款 C 200K 时尚型/18_61b2b75fb4.jpg"
+        }
+      ],
+      "decision": "confirm_and_upload"
+    },
+    {
+      "at": "2026-06-30T16:19:59.363063+00:00",
+      "source": "ceo_review_ui",
+      "row": 137,
+      "stockId": "QXB0137",
+      "brand": "Mercedes-Benz",
+      "model": "E",
+      "lesson": "CEO确认可上传 QXB0137",
+      "slots": [
+        {
+          "label": "Front view",
+          "path": "/Users/longhui/Desktop/AsiaPower/data/qxb-photos/row-0137_奔驰_奔驰 奔驰C级 2010款 C 200K 时尚型/02_8375adcc40.jpg",
+          "actual": "front",
+          "assigned_ok": true,
+          "index": 2
+        },
+        {
+          "label": "Rear view",
+          "path": "/Users/longhui/Desktop/AsiaPower/data/qxb-photos/row-0137_奔驰_奔驰 奔驰C级 2010款 C 200K 时尚型/04_3d28d43a98.jpg",
+          "actual": "rear",
+          "assigned_ok": true,
+          "index": 4
+        },
+        {
+          "label": "Engine bay",
+          "path": "/Users/longhui/Desktop/AsiaPower/data/qxb-photos/row-0137_奔驰_奔驰 奔驰C级 2010款 C 200K 时尚型/08_147f345cb4.jpg",
+          "actual": "engine",
+          "assigned_ok": true,
+          "index": 8
+        },
+        {
+          "label": "Interior",
+          "path": "/Users/longhui/Desktop/AsiaPower/data/qxb-photos/row-0137_奔驰_奔驰 奔驰C级 2010款 C 200K 时尚型/10_57ca578b29.jpg",
+          "actual": "interior",
+          "assigned_ok": true,
+          "index": 10
+        },
+        {
+          "label": "VIN / chassis plate",
+          "path": "/Users/longhui/Desktop/AsiaPower/data/qxb-photos/row-0137_奔驰_奔驰 奔驰C级 2010款 C 200K 时尚型/18_61b2b75fb4.jpg",
+          "actual": "vin",
+          "assigned_ok": true,
+          "index": 18
+        }
+      ],
+      "decision": "confirm_and_upload"
+    },
+    {
+      "at": "2026-06-30T16:39:39.847089+00:00",
+      "source": "ceo_training_exemplar",
+      "row": 196,
+      "stockId": "QXB0196",
+      "lesson": "CEO确认可上传 QXB0196",
+      "indexBands": {
+        "Front view": [
+          1
+        ],
+        "Rear view": [
+          4
+        ],
+        "Engine bay": [
+          9
+        ],
+        "Interior": [
+          10
+        ],
+        "VIN / chassis plate": [
+          16
+        ]
+      }
+    },
+    {
+      "at": "2026-06-30T16:39:39.848771+00:00",
+      "source": "ceo",
+      "row": 196,
+      "lesson": "manual slot overrides applied",
+      "slots": [
+        {
+          "label": "Front view",
+          "path": "/Users/longhui/Desktop/AsiaPower/data/qxb-photos/row-0196_日产_日产 阳光 2011款 1.5XL CVT豪华版/01_17045de283.jpg"
+        },
+        {
+          "label": "Rear view",
+          "path": "/Users/longhui/Desktop/AsiaPower/data/qxb-photos/row-0196_日产_日产 阳光 2011款 1.5XL CVT豪华版/04_82bfa957fe.jpg"
+        },
+        {
+          "label": "Engine bay",
+          "path": "/Users/longhui/Desktop/AsiaPower/data/qxb-photos/row-0196_日产_日产 阳光 2011款 1.5XL CVT豪华版/09_f1c7417371.jpg"
+        },
+        {
+          "label": "Interior",
+          "path": "/Users/longhui/Desktop/AsiaPower/data/qxb-photos/row-0196_日产_日产 阳光 2011款 1.5XL CVT豪华版/10_60eb3b9e23.jpg"
+        },
+        {
+          "label": "VIN / chassis plate",
+          "path": "/Users/longhui/Desktop/AsiaPower/data/qxb-photos/row-0196_日产_日产 阳光 2011款 1.5XL CVT豪华版/16_96e402cc83.jpg"
+        }
+      ],
+      "decision": "confirm_and_upload"
+    },
+    {
+      "at": "2026-06-30T16:39:42.841282+00:00",
+      "source": "ceo_review_ui",
+      "row": 196,
+      "stockId": "QXB0196",
+      "brand": "Nissan",
+      "model": "Sunny",
+      "lesson": "CEO确认可上传 QXB0196",
+      "slots": [
+        {
+          "label": "Front view",
+          "path": "/Users/longhui/Desktop/AsiaPower/data/qxb-photos/row-0196_日产_日产 阳光 2011款 1.5XL CVT豪华版/01_17045de283.jpg",
+          "actual": "front",
+          "assigned_ok": true,
+          "index": 1
+        },
+        {
+          "label": "Rear view",
+          "path": "/Users/longhui/Desktop/AsiaPower/data/qxb-photos/row-0196_日产_日产 阳光 2011款 1.5XL CVT豪华版/04_82bfa957fe.jpg",
+          "actual": "rear",
+          "assigned_ok": true,
+          "index": 4
+        },
+        {
+          "label": "Engine bay",
+          "path": "/Users/longhui/Desktop/AsiaPower/data/qxb-photos/row-0196_日产_日产 阳光 2011款 1.5XL CVT豪华版/09_f1c7417371.jpg",
+          "actual": "engine",
+          "assigned_ok": true,
+          "index": 9
+        },
+        {
+          "label": "Interior",
+          "path": "/Users/longhui/Desktop/AsiaPower/data/qxb-photos/row-0196_日产_日产 阳光 2011款 1.5XL CVT豪华版/10_60eb3b9e23.jpg",
+          "actual": "interior",
+          "assigned_ok": true,
+          "index": 10
+        },
+        {
+          "label": "VIN / chassis plate",
+          "path": "/Users/longhui/Desktop/AsiaPower/data/qxb-photos/row-0196_日产_日产 阳光 2011款 1.5XL CVT豪华版/16_96e402cc83.jpg",
+          "actual": "vin",
+          "assigned_ok": true,
+          "index": 16
+        }
+      ],
+      "decision": "confirm_and_upload"
+    },
+    {
+      "at": "2026-06-30T16:40:37.485819+00:00",
+      "source": "ceo_training_exemplar",
+      "row": 207,
+      "stockId": "QXB0207",
+      "lesson": "CEO审核 skip_missing_photos",
+      "indexBands": {
+        "Front view": [
+          1
+        ],
+        "Rear view": [
+          5
+        ],
+        "Engine bay": [
+          8
+        ],
+        "Interior": [
+          3
+        ],
+        "VIN / chassis plate": [
+          16
+        ]
+      }
+    },
+    {
+      "at": "2026-06-30T16:40:37.487459+00:00",
+      "source": "ceo",
+      "row": 207,
+      "lesson": "manual slot overrides applied",
+      "slots": [
+        {
+          "label": "Front view",
+          "path": "/Users/longhui/Desktop/AsiaPower/data/qxb-photos/row-0207_本田_本田 本田CR-V 2010款 2.4L 自动四驱豪华版/01_ea5de647bb.jpg"
+        },
+        {
+          "label": "Rear view",
+          "path": "/Users/longhui/Desktop/AsiaPower/data/qxb-photos/row-0207_本田_本田 本田CR-V 2010款 2.4L 自动四驱豪华版/05_f321c0e65a.jpg"
+        },
+        {
+          "label": "Engine bay",
+          "path": "/Users/longhui/Desktop/AsiaPower/data/qxb-photos/row-0207_本田_本田 本田CR-V 2010款 2.4L 自动四驱豪华版/08_6bff2095e9.jpg"
+        },
+        {
+          "label": "Interior",
+          "path": "/Users/longhui/Desktop/AsiaPower/data/qxb-photos/row-0207_本田_本田 本田CR-V 2010款 2.4L 自动四驱豪华版/03_f936c3c4ff.jpg"
+        },
+        {
+          "label": "VIN / chassis plate",
+          "path": "/Users/longhui/Desktop/AsiaPower/data/qxb-photos/row-0207_本田_本田 本田CR-V 2010款 2.4L 自动四驱豪华版/16_142a0fc92c.jpg"
+        }
+      ],
+      "decision": "skip_missing_photos"
+    },
+    {
+      "at": "2026-06-30T16:40:37.888420+00:00",
+      "source": "ceo_review_ui",
+      "row": 207,
+      "stockId": "QXB0207",
+      "brand": "Honda",
+      "model": "CR-V",
+      "lesson": "CEO审核 skip_missing_photos",
+      "slots": [
+        {
+          "label": "Front view",
+          "path": "/Users/longhui/Desktop/AsiaPower/data/qxb-photos/row-0207_本田_本田 本田CR-V 2010款 2.4L 自动四驱豪华版/01_ea5de647bb.jpg",
+          "actual": "front",
+          "assigned_ok": true,
+          "index": 1
+        },
+        {
+          "label": "Rear view",
+          "path": "/Users/longhui/Desktop/AsiaPower/data/qxb-photos/row-0207_本田_本田 本田CR-V 2010款 2.4L 自动四驱豪华版/05_f321c0e65a.jpg",
+          "actual": "rear",
+          "assigned_ok": true,
+          "index": 5
+        },
+        {
+          "label": "Engine bay",
+          "path": "/Users/longhui/Desktop/AsiaPower/data/qxb-photos/row-0207_本田_本田 本田CR-V 2010款 2.4L 自动四驱豪华版/08_6bff2095e9.jpg",
+          "actual": "engine",
+          "assigned_ok": true,
+          "index": 8
+        },
+        {
+          "label": "Interior",
+          "path": "/Users/longhui/Desktop/AsiaPower/data/qxb-photos/row-0207_本田_本田 本田CR-V 2010款 2.4L 自动四驱豪华版/03_f936c3c4ff.jpg",
+          "actual": "interior",
+          "assigned_ok": true,
+          "index": 3
+        },
+        {
+          "label": "VIN / chassis plate",
+          "path": "/Users/longhui/Desktop/AsiaPower/data/qxb-photos/row-0207_本田_本田 本田CR-V 2010款 2.4L 自动四驱豪华版/16_142a0fc92c.jpg",
+          "actual": "vin",
+          "assigned_ok": true,
+          "index": 16
+        }
+      ],
+      "decision": "skip_missing_photos"
+    },
+    {
+      "at": "2026-06-30T16:41:02.352127+00:00",
+      "source": "ceo_training_exemplar",
+      "row": 208,
+      "stockId": "QXB0208",
+      "lesson": "CEO审核 skip_missing_photos",
+      "indexBands": {
+        "Front view": [
+          1
+        ],
+        "Rear view": [
+          5
+        ],
+        "Engine bay": [
+          8
+        ],
+        "Interior": [
+          10
+        ],
+        "VIN / chassis plate": [
+          17
+        ]
+      }
+    },
+    {
+      "at": "2026-06-30T16:41:02.353772+00:00",
+      "source": "ceo",
+      "row": 208,
+      "lesson": "manual slot overrides applied",
+      "slots": [
+        {
+          "label": "Front view",
+          "path": "/Users/longhui/Desktop/AsiaPower/data/qxb-photos/row-0208_本田_本田 本田CR-V 2010款 2.4L 自动四驱豪华版/01_69c676527e.jpg"
+        },
+        {
+          "label": "Rear view",
+          "path": "/Users/longhui/Desktop/AsiaPower/data/qxb-photos/row-0208_本田_本田 本田CR-V 2010款 2.4L 自动四驱豪华版/05_aad0d9df40.jpg"
+        },
+        {
+          "label": "Engine bay",
+          "path": "/Users/longhui/Desktop/AsiaPower/data/qxb-photos/row-0208_本田_本田 本田CR-V 2010款 2.4L 自动四驱豪华版/08_a8368e2269.jpg"
+        },
+        {
+          "label": "Interior",
+          "path": "/Users/longhui/Desktop/AsiaPower/data/qxb-photos/row-0208_本田_本田 本田CR-V 2010款 2.4L 自动四驱豪华版/10_8debda89e0.jpg"
+        },
+        {
+          "label": "VIN / chassis plate",
+          "path": "/Users/longhui/Desktop/AsiaPower/data/qxb-photos/row-0208_本田_本田 本田CR-V 2010款 2.4L 自动四驱豪华版/17_a148d1ce11.jpg"
+        }
+      ],
+      "decision": "skip_missing_photos"
+    },
+    {
+      "at": "2026-06-30T16:41:05.614163+00:00",
+      "source": "ceo_review_ui",
+      "row": 208,
+      "stockId": "QXB0208",
+      "brand": "Honda",
+      "model": "CR-V",
+      "lesson": "CEO审核 skip_missing_photos",
+      "slots": [
+        {
+          "label": "Front view",
+          "path": "/Users/longhui/Desktop/AsiaPower/data/qxb-photos/row-0208_本田_本田 本田CR-V 2010款 2.4L 自动四驱豪华版/01_69c676527e.jpg",
+          "actual": "front",
+          "assigned_ok": true,
+          "index": 1
+        },
+        {
+          "label": "Rear view",
+          "path": "/Users/longhui/Desktop/AsiaPower/data/qxb-photos/row-0208_本田_本田 本田CR-V 2010款 2.4L 自动四驱豪华版/05_aad0d9df40.jpg",
+          "actual": "rear",
+          "assigned_ok": true,
+          "index": 5
+        },
+        {
+          "label": "Engine bay",
+          "path": "/Users/longhui/Desktop/AsiaPower/data/qxb-photos/row-0208_本田_本田 本田CR-V 2010款 2.4L 自动四驱豪华版/08_a8368e2269.jpg",
+          "actual": "engine",
+          "assigned_ok": true,
+          "index": 8
+        },
+        {
+          "label": "Interior",
+          "path": "/Users/longhui/Desktop/AsiaPower/data/qxb-photos/row-0208_本田_本田 本田CR-V 2010款 2.4L 自动四驱豪华版/10_8debda89e0.jpg",
+          "actual": "interior",
+          "assigned_ok": true,
+          "index": 10
+        },
+        {
+          "label": "VIN / chassis plate",
+          "path": "/Users/longhui/Desktop/AsiaPower/data/qxb-photos/row-0208_本田_本田 本田CR-V 2010款 2.4L 自动四驱豪华版/17_a148d1ce11.jpg",
+          "actual": "vin",
+          "assigned_ok": true,
+          "index": 17
+        }
+      ],
+      "decision": "skip_missing_photos"
+    },
+    {
+      "at": "2026-06-30T16:41:38.144491+00:00",
+      "source": "ceo_training_exemplar",
+      "row": 209,
+      "stockId": "QXB0209",
+      "lesson": "CEO确认可上传 QXB0209",
+      "indexBands": {
+        "Front view": [
+          1
+        ],
+        "Rear view": [
+          5
+        ],
+        "Engine bay": [
+          8
+        ],
+        "Interior": [
+          10
+        ],
+        "VIN / chassis plate": [
+          16
+        ]
+      }
+    },
+    {
+      "at": "2026-06-30T16:41:38.146400+00:00",
+      "source": "ceo",
+      "row": 209,
+      "lesson": "manual slot overrides applied",
+      "slots": [
+        {
+          "label": "Front view",
+          "path": "/Users/longhui/Desktop/AsiaPower/data/qxb-photos/row-0209_本田_本田 雅阁 2010款 2.0L EX/01_6737385310.jpg"
+        },
+        {
+          "label": "Rear view",
+          "path": "/Users/longhui/Desktop/AsiaPower/data/qxb-photos/row-0209_本田_本田 雅阁 2010款 2.0L EX/05_1502fff8f8.jpg"
+        },
+        {
+          "label": "Engine bay",
+          "path": "/Users/longhui/Desktop/AsiaPower/data/qxb-photos/row-0209_本田_本田 雅阁 2010款 2.0L EX/08_1d2a64cb90.jpg"
+        },
+        {
+          "label": "Interior",
+          "path": "/Users/longhui/Desktop/AsiaPower/data/qxb-photos/row-0209_本田_本田 雅阁 2010款 2.0L EX/10_e98ee24c52.jpg"
+        },
+        {
+          "label": "VIN / chassis plate",
+          "path": "/Users/longhui/Desktop/AsiaPower/data/qxb-photos/row-0209_本田_本田 雅阁 2010款 2.0L EX/16_101815724a.jpg"
+        }
+      ],
+      "decision": "confirm_and_upload"
+    },
+    {
+      "at": "2026-06-30T16:41:41.270373+00:00",
+      "source": "ceo_review_ui",
+      "row": 209,
+      "stockId": "QXB0209",
+      "brand": "Honda",
+      "model": "Accord",
+      "lesson": "CEO确认可上传 QXB0209",
+      "slots": [
+        {
+          "label": "Front view",
+          "path": "/Users/longhui/Desktop/AsiaPower/data/qxb-photos/row-0209_本田_本田 雅阁 2010款 2.0L EX/01_6737385310.jpg",
+          "actual": "front",
+          "assigned_ok": true,
+          "index": 1
+        },
+        {
+          "label": "Rear view",
+          "path": "/Users/longhui/Desktop/AsiaPower/data/qxb-photos/row-0209_本田_本田 雅阁 2010款 2.0L EX/05_1502fff8f8.jpg",
+          "actual": "rear",
+          "assigned_ok": true,
+          "index": 5
+        },
+        {
+          "label": "Engine bay",
+          "path": "/Users/longhui/Desktop/AsiaPower/data/qxb-photos/row-0209_本田_本田 雅阁 2010款 2.0L EX/08_1d2a64cb90.jpg",
+          "actual": "engine",
+          "assigned_ok": true,
+          "index": 8
+        },
+        {
+          "label": "Interior",
+          "path": "/Users/longhui/Desktop/AsiaPower/data/qxb-photos/row-0209_本田_本田 雅阁 2010款 2.0L EX/10_e98ee24c52.jpg",
+          "actual": "interior",
+          "assigned_ok": true,
+          "index": 10
+        },
+        {
+          "label": "VIN / chassis plate",
+          "path": "/Users/longhui/Desktop/AsiaPower/data/qxb-photos/row-0209_本田_本田 雅阁 2010款 2.0L EX/16_101815724a.jpg",
+          "actual": "vin",
+          "assigned_ok": true,
+          "index": 16
+        }
+      ],
+      "decision": "confirm_and_upload"
+    },
+    {
+      "at": "2026-06-30T16:42:22.211413+00:00",
+      "source": "ceo_training_exemplar",
+      "row": 211,
+      "stockId": "QXB0211",
+      "lesson": "CEO确认可上传 QXB0211",
+      "indexBands": {
+        "Front view": [
+          1
+        ],
+        "Rear view": [
+          5
+        ],
+        "Engine bay": [
+          8
+        ],
+        "Interior": [
+          10
+        ],
+        "VIN / chassis plate": [
+          17
+        ]
+      }
+    },
+    {
+      "at": "2026-06-30T16:42:22.213545+00:00",
+      "source": "ceo",
+      "row": 211,
+      "lesson": "manual slot overrides applied",
+      "slots": [
+        {
+          "label": "Front view",
+          "path": "/Users/longhui/Desktop/AsiaPower/data/qxb-photos/row-0211_丰田_丰田 锐志 2006款 2.5V/01_ddeb350ba3.jpg"
+        },
+        {
+          "label": "Rear view",
+          "path": "/Users/longhui/Desktop/AsiaPower/data/qxb-photos/row-0211_丰田_丰田 锐志 2006款 2.5V/05_f99d7f6475.jpg"
+        },
+        {
+          "label": "Engine bay",
+          "path": "/Users/longhui/Desktop/AsiaPower/data/qxb-photos/row-0211_丰田_丰田 锐志 2006款 2.5V/08_4a1a557dff.jpg"
+        },
+        {
+          "label": "Interior",
+          "path": "/Users/longhui/Desktop/AsiaPower/data/qxb-photos/row-0211_丰田_丰田 锐志 2006款 2.5V/10_de99f94d72.jpg"
+        },
+        {
+          "label": "VIN / chassis plate",
+          "path": "/Users/longhui/Desktop/AsiaPower/data/qxb-photos/row-0211_丰田_丰田 锐志 2006款 2.5V/17_37e99edd0a.jpg"
+        }
+      ],
+      "decision": "confirm_and_upload"
+    },
+    {
+      "at": "2026-06-30T16:42:23.363779+00:00",
+      "source": "ceo_review_ui",
+      "row": 211,
+      "stockId": "QXB0211",
+      "brand": "Toyota",
+      "model": "Mark X",
+      "lesson": "CEO确认可上传 QXB0211",
+      "slots": [
+        {
+          "label": "Front view",
+          "path": "/Users/longhui/Desktop/AsiaPower/data/qxb-photos/row-0211_丰田_丰田 锐志 2006款 2.5V/01_ddeb350ba3.jpg",
+          "actual": "front",
+          "assigned_ok": true,
+          "index": 1
+        },
+        {
+          "label": "Rear view",
+          "path": "/Users/longhui/Desktop/AsiaPower/data/qxb-photos/row-0211_丰田_丰田 锐志 2006款 2.5V/05_f99d7f6475.jpg",
+          "actual": "rear",
+          "assigned_ok": true,
+          "index": 5
+        },
+        {
+          "label": "Engine bay",
+          "path": "/Users/longhui/Desktop/AsiaPower/data/qxb-photos/row-0211_丰田_丰田 锐志 2006款 2.5V/08_4a1a557dff.jpg",
+          "actual": "engine",
+          "assigned_ok": true,
+          "index": 8
+        },
+        {
+          "label": "Interior",
+          "path": "/Users/longhui/Desktop/AsiaPower/data/qxb-photos/row-0211_丰田_丰田 锐志 2006款 2.5V/10_de99f94d72.jpg",
+          "actual": "interior",
+          "assigned_ok": true,
+          "index": 10
+        },
+        {
+          "label": "VIN / chassis plate",
+          "path": "/Users/longhui/Desktop/AsiaPower/data/qxb-photos/row-0211_丰田_丰田 锐志 2006款 2.5V/17_37e99edd0a.jpg",
+          "actual": "vin",
+          "assigned_ok": true,
+          "index": 17
+        }
+      ],
+      "decision": "confirm_and_upload"
+    },
+    {
+      "at": "2026-06-30T16:51:01.215117+00:00",
+      "source": "ceo_training_exemplar",
+      "row": 146,
+      "stockId": "QXB0146",
+      "lesson": "CEO确认可上传 QXB0146",
+      "indexBands": {
+        "Front view": [
+          1
+        ],
+        "Rear view": [
+          5
+        ],
+        "Engine bay": [
+          2
+        ],
+        "Interior": [
+          4
+        ],
+        "VIN / chassis plate": [
+          3
+        ]
+      }
+    },
+    {
+      "at": "2026-06-30T16:51:01.217310+00:00",
+      "source": "ceo",
+      "row": 146,
+      "lesson": "manual slot overrides applied",
+      "slots": [
+        {
+          "label": "Front view",
+          "path": "/Users/longhui/Desktop/AsiaPower/data/qxb-photos/row-0146_本田_本田 奥德赛 2008款 2.4L 普通版/01_73ad9f73d0.jpg"
+        },
+        {
+          "label": "Rear view",
+          "path": "/Users/longhui/Desktop/AsiaPower/data/qxb-photos/row-0146_本田_本田 奥德赛 2008款 2.4L 普通版/05_28834b2260.jpg"
+        },
+        {
+          "label": "Engine bay",
+          "path": "/Users/longhui/Desktop/AsiaPower/data/qxb-photos/row-0146_本田_本田 奥德赛 2008款 2.4L 普通版/02_cf1d050c9f.jpg"
+        },
+        {
+          "label": "Interior",
+          "path": "/Users/longhui/Desktop/AsiaPower/data/qxb-photos/row-0146_本田_本田 奥德赛 2008款 2.4L 普通版/04_7585363267.jpg"
+        },
+        {
+          "label": "VIN / chassis plate",
+          "path": "/Users/longhui/Desktop/AsiaPower/data/qxb-photos/row-0146_本田_本田 奥德赛 2008款 2.4L 普通版/03_7a60bf1a6c.jpg"
+        }
+      ],
+      "decision": "confirm_and_upload"
+    },
+    {
+      "at": "2026-06-30T16:51:01.402049+00:00",
+      "source": "ceo_review_ui",
+      "row": 146,
+      "stockId": "QXB0146",
+      "brand": "Honda",
+      "model": "Odyssey",
+      "lesson": "CEO确认可上传 QXB0146",
+      "slots": [
+        {
+          "label": "Front view",
+          "path": "/Users/longhui/Desktop/AsiaPower/data/qxb-photos/row-0146_本田_本田 奥德赛 2008款 2.4L 普通版/01_73ad9f73d0.jpg",
+          "actual": "front",
+          "assigned_ok": true,
+          "index": 1
+        },
+        {
+          "label": "Rear view",
+          "path": "/Users/longhui/Desktop/AsiaPower/data/qxb-photos/row-0146_本田_本田 奥德赛 2008款 2.4L 普通版/05_28834b2260.jpg",
+          "actual": "rear",
+          "assigned_ok": true,
+          "index": 5
+        },
+        {
+          "label": "Engine bay",
+          "path": "/Users/longhui/Desktop/AsiaPower/data/qxb-photos/row-0146_本田_本田 奥德赛 2008款 2.4L 普通版/02_cf1d050c9f.jpg",
+          "actual": "engine",
+          "assigned_ok": true,
+          "index": 2
+        },
+        {
+          "label": "Interior",
+          "path": "/Users/longhui/Desktop/AsiaPower/data/qxb-photos/row-0146_本田_本田 奥德赛 2008款 2.4L 普通版/04_7585363267.jpg",
+          "actual": "interior",
+          "assigned_ok": true,
+          "index": 4
+        },
+        {
+          "label": "VIN / chassis plate",
+          "path": "/Users/longhui/Desktop/AsiaPower/data/qxb-photos/row-0146_本田_本田 奥德赛 2008款 2.4L 普通版/03_7a60bf1a6c.jpg",
+          "actual": "vin",
+          "assigned_ok": true,
+          "index": 3
+        }
+      ],
+      "decision": "confirm_and_upload"
+    },
+    {
+      "at": "2026-06-30T16:52:25.290977+00:00",
+      "source": "ceo_training_exemplar",
+      "row": 206,
+      "stockId": "QXB0206",
+      "lesson": "CEO审核 skip_missing_photos",
+      "indexBands": {
+        "Front view": [
+          2
+        ],
+        "Rear view": [
+          4
+        ],
+        "Engine bay": [
+          2
+        ],
+        "Interior": [
+          3
+        ]
+      }
+    },
+    {
+      "at": "2026-06-30T16:52:25.293224+00:00",
+      "source": "ceo",
+      "row": 206,
+      "lesson": "manual slot overrides applied",
+      "slots": [
+        {
+          "label": "Front view",
+          "path": "/Users/longhui/Desktop/AsiaPower/data/qxb-photos/row-0206_本田_本田 雅阁 2005款 2.0L 标准版/02_b67d82eeb8.jpg"
+        },
+        {
+          "label": "Rear view",
+          "path": "/Users/longhui/Desktop/AsiaPower/data/qxb-photos/row-0206_本田_本田 雅阁 2005款 2.0L 标准版/04_c04d7aa457.jpg"
+        },
+        {
+          "label": "Engine bay",
+          "path": "/Users/longhui/Desktop/AsiaPower/data/qxb-photos/row-0206_本田_本田 雅阁 2005款 2.0L 标准版/02_b67d82eeb8.jpg"
+        },
+        {
+          "label": "Interior",
+          "path": "/Users/longhui/Desktop/AsiaPower/data/qxb-photos/row-0206_本田_本田 雅阁 2005款 2.0L 标准版/03_f6a602e948.jpg"
+        }
+      ],
+      "decision": "skip_missing_photos"
+    },
+    {
+      "at": "2026-06-30T16:52:25.540239+00:00",
+      "source": "ceo_review_ui",
+      "row": 206,
+      "stockId": "QXB0206",
+      "brand": "Honda",
+      "model": "Accord",
+      "lesson": "CEO审核 skip_missing_photos",
+      "slots": [
+        {
+          "label": "Front view",
+          "path": "/Users/longhui/Desktop/AsiaPower/data/qxb-photos/row-0206_本田_本田 雅阁 2005款 2.0L 标准版/02_b67d82eeb8.jpg",
+          "actual": "front",
+          "assigned_ok": true,
+          "index": 2
+        },
+        {
+          "label": "Rear view",
+          "path": "/Users/longhui/Desktop/AsiaPower/data/qxb-photos/row-0206_本田_本田 雅阁 2005款 2.0L 标准版/04_c04d7aa457.jpg",
+          "actual": "rear",
+          "assigned_ok": true,
+          "index": 4
+        },
+        {
+          "label": "Engine bay",
+          "path": "/Users/longhui/Desktop/AsiaPower/data/qxb-photos/row-0206_本田_本田 雅阁 2005款 2.0L 标准版/02_b67d82eeb8.jpg",
+          "actual": "engine",
+          "assigned_ok": true,
+          "index": 2
+        },
+        {
+          "label": "Interior",
+          "path": "/Users/longhui/Desktop/AsiaPower/data/qxb-photos/row-0206_本田_本田 雅阁 2005款 2.0L 标准版/03_f6a602e948.jpg",
+          "actual": "interior",
+          "assigned_ok": true,
+          "index": 3
+        }
+      ],
+      "decision": "skip_missing_photos"
+    },
+    {
+      "at": "2026-06-30T16:53:07.130681+00:00",
+      "source": "ceo_training_exemplar",
+      "row": 207,
+      "stockId": "QXB0207",
+      "lesson": "CEO审核 skip_missing_photos",
+      "indexBands": {
+        "Front view": [
+          1
+        ],
+        "Rear view": [
+          5
+        ],
+        "Engine bay": [
+          8
+        ],
+        "Interior": [
+          3
+        ],
+        "VIN / chassis plate": [
+          16
+        ]
+      }
+    },
+    {
+      "at": "2026-06-30T16:53:07.132558+00:00",
+      "source": "ceo",
+      "row": 207,
+      "lesson": "manual slot overrides applied",
+      "slots": [
+        {
+          "label": "Front view",
+          "path": "/Users/longhui/Desktop/AsiaPower/data/qxb-photos/row-0207_本田_本田 本田CR-V 2010款 2.4L 自动四驱豪华版/01_ea5de647bb.jpg"
+        },
+        {
+          "label": "Rear view",
+          "path": "/Users/longhui/Desktop/AsiaPower/data/qxb-photos/row-0207_本田_本田 本田CR-V 2010款 2.4L 自动四驱豪华版/05_f321c0e65a.jpg"
+        },
+        {
+          "label": "Engine bay",
+          "path": "/Users/longhui/Desktop/AsiaPower/data/qxb-photos/row-0207_本田_本田 本田CR-V 2010款 2.4L 自动四驱豪华版/08_6bff2095e9.jpg"
+        },
+        {
+          "label": "Interior",
+          "path": "/Users/longhui/Desktop/AsiaPower/data/qxb-photos/row-0207_本田_本田 本田CR-V 2010款 2.4L 自动四驱豪华版/03_f936c3c4ff.jpg"
+        },
+        {
+          "label": "VIN / chassis plate",
+          "path": "/Users/longhui/Desktop/AsiaPower/data/qxb-photos/row-0207_本田_本田 本田CR-V 2010款 2.4L 自动四驱豪华版/16_142a0fc92c.jpg"
+        }
+      ],
+      "decision": "skip_missing_photos"
+    },
+    {
+      "at": "2026-06-30T16:53:07.529064+00:00",
+      "source": "ceo_review_ui",
+      "row": 207,
+      "stockId": "QXB0207",
+      "brand": "Honda",
+      "model": "CR-V",
+      "lesson": "CEO审核 skip_missing_photos",
+      "slots": [
+        {
+          "label": "Front view",
+          "path": "/Users/longhui/Desktop/AsiaPower/data/qxb-photos/row-0207_本田_本田 本田CR-V 2010款 2.4L 自动四驱豪华版/01_ea5de647bb.jpg",
+          "actual": "front",
+          "assigned_ok": true,
+          "index": 1
+        },
+        {
+          "label": "Rear view",
+          "path": "/Users/longhui/Desktop/AsiaPower/data/qxb-photos/row-0207_本田_本田 本田CR-V 2010款 2.4L 自动四驱豪华版/05_f321c0e65a.jpg",
+          "actual": "rear",
+          "assigned_ok": true,
+          "index": 5
+        },
+        {
+          "label": "Engine bay",
+          "path": "/Users/longhui/Desktop/AsiaPower/data/qxb-photos/row-0207_本田_本田 本田CR-V 2010款 2.4L 自动四驱豪华版/08_6bff2095e9.jpg",
+          "actual": "engine",
+          "assigned_ok": true,
+          "index": 8
+        },
+        {
+          "label": "Interior",
+          "path": "/Users/longhui/Desktop/AsiaPower/data/qxb-photos/row-0207_本田_本田 本田CR-V 2010款 2.4L 自动四驱豪华版/03_f936c3c4ff.jpg",
+          "actual": "interior",
+          "assigned_ok": true,
+          "index": 3
+        },
+        {
+          "label": "VIN / chassis plate",
+          "path": "/Users/longhui/Desktop/AsiaPower/data/qxb-photos/row-0207_本田_本田 本田CR-V 2010款 2.4L 自动四驱豪华版/16_142a0fc92c.jpg",
+          "actual": "vin",
+          "assigned_ok": true,
+          "index": 16
+        }
+      ],
+      "decision": "skip_missing_photos"
+    },
+    {
+      "at": "2026-06-30T16:53:36.854489+00:00",
+      "source": "ceo_training_exemplar",
+      "row": 207,
+      "stockId": "QXB0207",
+      "lesson": "CEO审核 skip_missing_photos",
+      "indexBands": {
+        "Front view": [
+          1
+        ],
+        "Rear view": [
+          5
+        ],
+        "Engine bay": [
+          8
+        ],
+        "Interior": [
+          3
+        ],
+        "VIN / chassis plate": [
+          16
+        ]
+      }
+    },
+    {
+      "at": "2026-06-30T16:53:36.856471+00:00",
+      "source": "ceo",
+      "row": 207,
+      "lesson": "manual slot overrides applied",
+      "slots": [
+        {
+          "label": "Front view",
+          "path": "/Users/longhui/Desktop/AsiaPower/data/qxb-photos/row-0207_本田_本田 本田CR-V 2010款 2.4L 自动四驱豪华版/01_ea5de647bb.jpg"
+        },
+        {
+          "label": "Rear view",
+          "path": "/Users/longhui/Desktop/AsiaPower/data/qxb-photos/row-0207_本田_本田 本田CR-V 2010款 2.4L 自动四驱豪华版/05_f321c0e65a.jpg"
+        },
+        {
+          "label": "Engine bay",
+          "path": "/Users/longhui/Desktop/AsiaPower/data/qxb-photos/row-0207_本田_本田 本田CR-V 2010款 2.4L 自动四驱豪华版/08_6bff2095e9.jpg"
+        },
+        {
+          "label": "Interior",
+          "path": "/Users/longhui/Desktop/AsiaPower/data/qxb-photos/row-0207_本田_本田 本田CR-V 2010款 2.4L 自动四驱豪华版/03_f936c3c4ff.jpg"
+        },
+        {
+          "label": "VIN / chassis plate",
+          "path": "/Users/longhui/Desktop/AsiaPower/data/qxb-photos/row-0207_本田_本田 本田CR-V 2010款 2.4L 自动四驱豪华版/16_142a0fc92c.jpg"
+        }
+      ],
+      "decision": "skip_missing_photos"
+    },
+    {
+      "at": "2026-06-30T16:53:37.252850+00:00",
+      "source": "ceo_review_ui",
+      "row": 207,
+      "stockId": "QXB0207",
+      "brand": "Honda",
+      "model": "CR-V",
+      "lesson": "CEO审核 skip_missing_photos",
+      "slots": [
+        {
+          "label": "Front view",
+          "path": "/Users/longhui/Desktop/AsiaPower/data/qxb-photos/row-0207_本田_本田 本田CR-V 2010款 2.4L 自动四驱豪华版/01_ea5de647bb.jpg",
+          "actual": "front",
+          "assigned_ok": true,
+          "index": 1
+        },
+        {
+          "label": "Rear view",
+          "path": "/Users/longhui/Desktop/AsiaPower/data/qxb-photos/row-0207_本田_本田 本田CR-V 2010款 2.4L 自动四驱豪华版/05_f321c0e65a.jpg",
+          "actual": "rear",
+          "assigned_ok": true,
+          "index": 5
+        },
+        {
+          "label": "Engine bay",
+          "path": "/Users/longhui/Desktop/AsiaPower/data/qxb-photos/row-0207_本田_本田 本田CR-V 2010款 2.4L 自动四驱豪华版/08_6bff2095e9.jpg",
+          "actual": "engine",
+          "assigned_ok": true,
+          "index": 8
+        },
+        {
+          "label": "Interior",
+          "path": "/Users/longhui/Desktop/AsiaPower/data/qxb-photos/row-0207_本田_本田 本田CR-V 2010款 2.4L 自动四驱豪华版/03_f936c3c4ff.jpg",
+          "actual": "interior",
+          "assigned_ok": true,
+          "index": 3
+        },
+        {
+          "label": "VIN / chassis plate",
+          "path": "/Users/longhui/Desktop/AsiaPower/data/qxb-photos/row-0207_本田_本田 本田CR-V 2010款 2.4L 自动四驱豪华版/16_142a0fc92c.jpg",
+          "actual": "vin",
+          "assigned_ok": true,
+          "index": 16
+        }
+      ],
+      "decision": "skip_missing_photos"
+    },
+    {
+      "at": "2026-06-30T16:53:54.380792+00:00",
+      "source": "ceo_training_exemplar",
+      "row": 208,
+      "stockId": "QXB0208",
+      "lesson": "CEO审核 skip_missing_photos",
+      "indexBands": {
+        "Front view": [
+          1
+        ],
+        "Rear view": [
+          5
+        ],
+        "Engine bay": [
+          8
+        ],
+        "Interior": [
+          10
+        ],
+        "VIN / chassis plate": [
+          17
+        ]
+      }
+    },
+    {
+      "at": "2026-06-30T16:53:54.382841+00:00",
+      "source": "ceo",
+      "row": 208,
+      "lesson": "manual slot overrides applied",
+      "slots": [
+        {
+          "label": "Front view",
+          "path": "/Users/longhui/Desktop/AsiaPower/data/qxb-photos/row-0208_本田_本田 本田CR-V 2010款 2.4L 自动四驱豪华版/01_69c676527e.jpg"
+        },
+        {
+          "label": "Rear view",
+          "path": "/Users/longhui/Desktop/AsiaPower/data/qxb-photos/row-0208_本田_本田 本田CR-V 2010款 2.4L 自动四驱豪华版/05_aad0d9df40.jpg"
+        },
+        {
+          "label": "Engine bay",
+          "path": "/Users/longhui/Desktop/AsiaPower/data/qxb-photos/row-0208_本田_本田 本田CR-V 2010款 2.4L 自动四驱豪华版/08_a8368e2269.jpg"
+        },
+        {
+          "label": "Interior",
+          "path": "/Users/longhui/Desktop/AsiaPower/data/qxb-photos/row-0208_本田_本田 本田CR-V 2010款 2.4L 自动四驱豪华版/10_8debda89e0.jpg"
+        },
+        {
+          "label": "VIN / chassis plate",
+          "path": "/Users/longhui/Desktop/AsiaPower/data/qxb-photos/row-0208_本田_本田 本田CR-V 2010款 2.4L 自动四驱豪华版/17_a148d1ce11.jpg"
+        }
+      ],
+      "decision": "skip_missing_photos"
+    },
+    {
+      "at": "2026-06-30T16:53:57.397402+00:00",
+      "source": "ceo_review_ui",
+      "row": 208,
+      "stockId": "QXB0208",
+      "brand": "Honda",
+      "model": "CR-V",
+      "lesson": "CEO审核 skip_missing_photos",
+      "slots": [
+        {
+          "label": "Front view",
+          "path": "/Users/longhui/Desktop/AsiaPower/data/qxb-photos/row-0208_本田_本田 本田CR-V 2010款 2.4L 自动四驱豪华版/01_69c676527e.jpg",
+          "actual": "front",
+          "assigned_ok": true,
+          "index": 1
+        },
+        {
+          "label": "Rear view",
+          "path": "/Users/longhui/Desktop/AsiaPower/data/qxb-photos/row-0208_本田_本田 本田CR-V 2010款 2.4L 自动四驱豪华版/05_aad0d9df40.jpg",
+          "actual": "rear",
+          "assigned_ok": true,
+          "index": 5
+        },
+        {
+          "label": "Engine bay",
+          "path": "/Users/longhui/Desktop/AsiaPower/data/qxb-photos/row-0208_本田_本田 本田CR-V 2010款 2.4L 自动四驱豪华版/08_a8368e2269.jpg",
+          "actual": "engine",
+          "assigned_ok": true,
+          "index": 8
+        },
+        {
+          "label": "Interior",
+          "path": "/Users/longhui/Desktop/AsiaPower/data/qxb-photos/row-0208_本田_本田 本田CR-V 2010款 2.4L 自动四驱豪华版/10_8debda89e0.jpg",
+          "actual": "interior",
+          "assigned_ok": true,
+          "index": 10
+        },
+        {
+          "label": "VIN / chassis plate",
+          "path": "/Users/longhui/Desktop/AsiaPower/data/qxb-photos/row-0208_本田_本田 本田CR-V 2010款 2.4L 自动四驱豪华版/17_a148d1ce11.jpg",
+          "actual": "vin",
+          "assigned_ok": true,
+          "index": 17
+        }
+      ],
+      "decision": "skip_missing_photos"
+    },
+    {
+      "at": "2026-06-30T16:54:26.267179+00:00",
+      "source": "ceo_training_exemplar",
+      "row": 209,
+      "stockId": "QXB0209",
+      "lesson": "CEO确认可上传 QXB0209",
+      "indexBands": {
+        "Front view": [
+          1
+        ],
+        "Rear view": [
+          4
+        ],
+        "Engine bay": [
+          8
+        ],
+        "Interior": [
+          10
+        ],
+        "VIN / chassis plate": [
+          16
+        ]
+      }
+    },
+    {
+      "at": "2026-06-30T16:54:26.269487+00:00",
+      "source": "ceo",
+      "row": 209,
+      "lesson": "manual slot overrides applied",
+      "slots": [
+        {
+          "label": "Front view",
+          "path": "/Users/longhui/Desktop/AsiaPower/data/qxb-photos/row-0209_本田_本田 雅阁 2010款 2.0L EX/01_6737385310.jpg"
+        },
+        {
+          "label": "Rear view",
+          "path": "/Users/longhui/Desktop/AsiaPower/data/qxb-photos/row-0209_本田_本田 雅阁 2010款 2.0L EX/04_914ee4e106.jpg"
+        },
+        {
+          "label": "Engine bay",
+          "path": "/Users/longhui/Desktop/AsiaPower/data/qxb-photos/row-0209_本田_本田 雅阁 2010款 2.0L EX/08_1d2a64cb90.jpg"
+        },
+        {
+          "label": "Interior",
+          "path": "/Users/longhui/Desktop/AsiaPower/data/qxb-photos/row-0209_本田_本田 雅阁 2010款 2.0L EX/10_e98ee24c52.jpg"
+        },
+        {
+          "label": "VIN / chassis plate",
+          "path": "/Users/longhui/Desktop/AsiaPower/data/qxb-photos/row-0209_本田_本田 雅阁 2010款 2.0L EX/16_101815724a.jpg"
+        }
+      ],
+      "decision": "confirm_and_upload"
+    },
+    {
+      "at": "2026-06-30T16:54:29.304233+00:00",
+      "source": "ceo_review_ui",
+      "row": 209,
+      "stockId": "QXB0209",
+      "brand": "Honda",
+      "model": "Accord",
+      "lesson": "CEO确认可上传 QXB0209",
+      "slots": [
+        {
+          "label": "Front view",
+          "path": "/Users/longhui/Desktop/AsiaPower/data/qxb-photos/row-0209_本田_本田 雅阁 2010款 2.0L EX/01_6737385310.jpg",
+          "actual": "front",
+          "assigned_ok": true,
+          "index": 1
+        },
+        {
+          "label": "Rear view",
+          "path": "/Users/longhui/Desktop/AsiaPower/data/qxb-photos/row-0209_本田_本田 雅阁 2010款 2.0L EX/04_914ee4e106.jpg",
+          "actual": "rear",
+          "assigned_ok": true,
+          "index": 4
+        },
+        {
+          "label": "Engine bay",
+          "path": "/Users/longhui/Desktop/AsiaPower/data/qxb-photos/row-0209_本田_本田 雅阁 2010款 2.0L EX/08_1d2a64cb90.jpg",
+          "actual": "engine",
+          "assigned_ok": true,
+          "index": 8
+        },
+        {
+          "label": "Interior",
+          "path": "/Users/longhui/Desktop/AsiaPower/data/qxb-photos/row-0209_本田_本田 雅阁 2010款 2.0L EX/10_e98ee24c52.jpg",
+          "actual": "interior",
+          "assigned_ok": true,
+          "index": 10
+        },
+        {
+          "label": "VIN / chassis plate",
+          "path": "/Users/longhui/Desktop/AsiaPower/data/qxb-photos/row-0209_本田_本田 雅阁 2010款 2.0L EX/16_101815724a.jpg",
+          "actual": "vin",
+          "assigned_ok": true,
+          "index": 16
+        }
+      ],
+      "decision": "confirm_and_upload"
+    },
+    {
+      "at": "2026-06-30T16:55:01.121615+00:00",
+      "source": "ceo_training_exemplar",
+      "row": 211,
+      "stockId": "QXB0211",
+      "lesson": "CEO确认可上传 QXB0211",
+      "indexBands": {
+        "Front view": [
+          1
+        ],
+        "Rear view": [
+          5
+        ],
+        "Engine bay": [
+          8
+        ],
+        "Interior": [
+          10
+        ],
+        "VIN / chassis plate": [
+          17
+        ]
+      }
+    },
+    {
+      "at": "2026-06-30T16:55:01.123701+00:00",
+      "source": "ceo",
+      "row": 211,
+      "lesson": "manual slot overrides applied",
+      "slots": [
+        {
+          "label": "Front view",
+          "path": "/Users/longhui/Desktop/AsiaPower/data/qxb-photos/row-0211_丰田_丰田 锐志 2006款 2.5V/01_ddeb350ba3.jpg"
+        },
+        {
+          "label": "Rear view",
+          "path": "/Users/longhui/Desktop/AsiaPower/data/qxb-photos/row-0211_丰田_丰田 锐志 2006款 2.5V/05_f99d7f6475.jpg"
+        },
+        {
+          "label": "Engine bay",
+          "path": "/Users/longhui/Desktop/AsiaPower/data/qxb-photos/row-0211_丰田_丰田 锐志 2006款 2.5V/08_4a1a557dff.jpg"
+        },
+        {
+          "label": "Interior",
+          "path": "/Users/longhui/Desktop/AsiaPower/data/qxb-photos/row-0211_丰田_丰田 锐志 2006款 2.5V/10_de99f94d72.jpg"
+        },
+        {
+          "label": "VIN / chassis plate",
+          "path": "/Users/longhui/Desktop/AsiaPower/data/qxb-photos/row-0211_丰田_丰田 锐志 2006款 2.5V/17_37e99edd0a.jpg"
+        }
+      ],
+      "decision": "confirm_and_upload"
+    },
+    {
+      "at": "2026-06-30T16:55:02.305287+00:00",
+      "source": "ceo_review_ui",
+      "row": 211,
+      "stockId": "QXB0211",
+      "brand": "Toyota",
+      "model": "Mark X",
+      "lesson": "CEO确认可上传 QXB0211",
+      "slots": [
+        {
+          "label": "Front view",
+          "path": "/Users/longhui/Desktop/AsiaPower/data/qxb-photos/row-0211_丰田_丰田 锐志 2006款 2.5V/01_ddeb350ba3.jpg",
+          "actual": "front",
+          "assigned_ok": true,
+          "index": 1
+        },
+        {
+          "label": "Rear view",
+          "path": "/Users/longhui/Desktop/AsiaPower/data/qxb-photos/row-0211_丰田_丰田 锐志 2006款 2.5V/05_f99d7f6475.jpg",
+          "actual": "rear",
+          "assigned_ok": true,
+          "index": 5
+        },
+        {
+          "label": "Engine bay",
+          "path": "/Users/longhui/Desktop/AsiaPower/data/qxb-photos/row-0211_丰田_丰田 锐志 2006款 2.5V/08_4a1a557dff.jpg",
+          "actual": "engine",
+          "assigned_ok": true,
+          "index": 8
+        },
+        {
+          "label": "Interior",
+          "path": "/Users/longhui/Desktop/AsiaPower/data/qxb-photos/row-0211_丰田_丰田 锐志 2006款 2.5V/10_de99f94d72.jpg",
+          "actual": "interior",
+          "assigned_ok": true,
+          "index": 10
+        },
+        {
+          "label": "VIN / chassis plate",
+          "path": "/Users/longhui/Desktop/AsiaPower/data/qxb-photos/row-0211_丰田_丰田 锐志 2006款 2.5V/17_37e99edd0a.jpg",
+          "actual": "vin",
+          "assigned_ok": true,
+          "index": 17
+        }
+      ],
+      "decision": "confirm_and_upload"
+    },
+    {
+      "at": "2026-06-30T16:55:55.098547+00:00",
+      "source": "ceo_training_exemplar",
+      "row": 212,
+      "stockId": "QXB0212",
+      "lesson": "CEO确认可上传 QXB0212",
+      "indexBands": {
+        "Front view": [
+          1
+        ],
+        "Rear view": [
+          6
+        ],
+        "Engine bay": [
+          8
+        ],
+        "Interior": [
+          15
+        ],
+        "VIN / chassis plate": [
+          17
+        ]
+      }
+    },
+    {
+      "at": "2026-06-30T16:55:55.100663+00:00",
+      "source": "ceo",
+      "row": 212,
+      "lesson": "manual slot overrides applied",
+      "slots": [
+        {
+          "label": "Front view",
+          "path": "/Users/longhui/Desktop/AsiaPower/data/qxb-photos/row-0212_本田_本田 飞度 2006款 1.3 手动 两厢/01_77b8961e90.jpg"
+        },
+        {
+          "label": "Rear view",
+          "path": "/Users/longhui/Desktop/AsiaPower/data/qxb-photos/row-0212_本田_本田 飞度 2006款 1.3 手动 两厢/06_58324f1243.jpg"
+        },
+        {
+          "label": "Engine bay",
+          "path": "/Users/longhui/Desktop/AsiaPower/data/qxb-photos/row-0212_本田_本田 飞度 2006款 1.3 手动 两厢/08_3443e64188.jpg"
+        },
+        {
+          "label": "Interior",
+          "path": "/Users/longhui/Desktop/AsiaPower/data/qxb-photos/row-0212_本田_本田 飞度 2006款 1.3 手动 两厢/15_6c98aee5e0.jpg"
+        },
+        {
+          "label": "VIN / chassis plate",
+          "path": "/Users/longhui/Desktop/AsiaPower/data/qxb-photos/row-0212_本田_本田 飞度 2006款 1.3 手动 两厢/17_a922f43fd2.jpg"
+        }
+      ],
+      "decision": "confirm_and_upload"
+    },
+    {
+      "at": "2026-06-30T16:55:58.068905+00:00",
+      "source": "ceo_review_ui",
+      "row": 212,
+      "stockId": "QXB0212",
+      "brand": "Honda",
+      "model": "Fit",
+      "lesson": "CEO确认可上传 QXB0212",
+      "slots": [
+        {
+          "label": "Front view",
+          "path": "/Users/longhui/Desktop/AsiaPower/data/qxb-photos/row-0212_本田_本田 飞度 2006款 1.3 手动 两厢/01_77b8961e90.jpg",
+          "actual": "front",
+          "assigned_ok": true,
+          "index": 1
+        },
+        {
+          "label": "Rear view",
+          "path": "/Users/longhui/Desktop/AsiaPower/data/qxb-photos/row-0212_本田_本田 飞度 2006款 1.3 手动 两厢/06_58324f1243.jpg",
+          "actual": "rear",
+          "assigned_ok": true,
+          "index": 6
+        },
+        {
+          "label": "Engine bay",
+          "path": "/Users/longhui/Desktop/AsiaPower/data/qxb-photos/row-0212_本田_本田 飞度 2006款 1.3 手动 两厢/08_3443e64188.jpg",
+          "actual": "engine",
+          "assigned_ok": true,
+          "index": 8
+        },
+        {
+          "label": "Interior",
+          "path": "/Users/longhui/Desktop/AsiaPower/data/qxb-photos/row-0212_本田_本田 飞度 2006款 1.3 手动 两厢/15_6c98aee5e0.jpg",
+          "actual": "interior",
+          "assigned_ok": true,
+          "index": 15
+        },
+        {
+          "label": "VIN / chassis plate",
+          "path": "/Users/longhui/Desktop/AsiaPower/data/qxb-photos/row-0212_本田_本田 飞度 2006款 1.3 手动 两厢/17_a922f43fd2.jpg",
+          "actual": "vin",
+          "assigned_ok": true,
+          "index": 17
+        }
+      ],
+      "decision": "confirm_and_upload"
+    },
+    {
+      "at": "2026-07-01T03:22:25.920801+00:00",
+      "source": "ceo_training_exemplar",
+      "row": 34,
+      "stockId": "QXB0034",
+      "lesson": "CEO确认：第19张是铭牌/VIN（LBENFAJB2AX071149），OCR漏读",
+      "indexBands": {
+        "VIN / chassis plate": [
+          19,
+          18,
+          17
+        ]
+      }
+    },
+    {
+      "at": "2026-07-01T03:22:25.923570+00:00",
+      "source": "ceo",
+      "row": 34,
+      "lesson": "manual slot overrides applied",
+      "slots": [
+        {
+          "label": "vin",
+          "path": "data/qxb-photos/row-0034_现代_现代 领翔 2009款 2.0L MT GL/19_52b14cebb7.jpg"
+        }
+      ]
+    },
+    {
+      "at": "2026-07-01T03:30:36.969190+00:00",
+      "source": "ceo_training_exemplar",
+      "row": 45,
+      "stockId": "QXB0045",
+      "lesson": "CEO确认：第17张是铭牌/VIN（LBEJMBJB1BX245868），发动机 G4GC",
+      "indexBands": {
+        "VIN / chassis plate": [
+          17,
+          16,
+          18
+        ]
+      }
+    },
+    {
+      "at": "2026-07-01T03:30:36.971779+00:00",
+      "source": "ceo",
+      "row": 45,
+      "lesson": "manual slot overrides applied",
+      "slots": [
+        {
+          "label": "vin",
+          "path": "data/qxb-photos/row-0045_现代_现代 途胜 2009款 2.0L 手动两驱时尚型/17_429f7e0a2d.jpg"
+        }
+      ]
+    },
+    {
+      "at": "2026-07-01T03:32:26.697439+00:00",
+      "source": "ceo_training_exemplar",
+      "row": 46,
+      "stockId": "QXB0046",
+      "lesson": "CEO确认：第17张是铭牌/VIN（LBERCACBXCX320873），发动机 G4FA",
+      "indexBands": {
+        "VIN / chassis plate": [
+          17,
+          16,
+          18
+        ]
+      }
+    },
+    {
+      "at": "2026-07-01T03:32:26.699776+00:00",
+      "source": "ceo",
+      "row": 46,
+      "lesson": "manual slot overrides applied",
+      "slots": [
+        {
+          "label": "vin",
+          "path": "data/qxb-photos/row-0046_现代_现代 瑞纳 2010款 三厢 1.4L 手动舒适型GS/17_b177dd2f4c.jpg"
+        }
+      ]
+    },
+    {
+      "at": "2026-07-01T03:34:09.419073+00:00",
+      "source": "ceo_training_exemplar",
+      "row": 62,
+      "stockId": "QXB0062",
+      "lesson": "CEO确认：第3张是铭牌/VIN（LHGGE8870C2000286），发动机 L15A7",
+      "indexBands": {
+        "VIN / chassis plate": [
+          3,
+          2,
+          4
+        ]
+      }
+    },
+    {
+      "at": "2026-07-01T03:34:09.421360+00:00",
+      "source": "ceo",
+      "row": 62,
+      "lesson": "manual slot overrides applied",
+      "slots": [
+        {
+          "label": "vin",
+          "path": "data/qxb-photos/row-0062_本田_本田 飞度 2011款 1.5L 自动全景天窗版/03_32b26b69ff.jpg"
+        }
+      ]
+    },
+    {
+      "at": "2026-07-01T03:35:47.110764+00:00",
+      "source": "ceo_training_exemplar",
+      "row": 69,
+      "stockId": "QXB0069",
+      "lesson": "CEO确认：第3张是铭牌/VIN（LHGCM567142038761），发动机 K24A4",
+      "indexBands": {
+        "VIN / chassis plate": [
+          3,
+          2,
+          4
+        ]
+      }
+    },
+    {
+      "at": "2026-07-01T03:35:47.118282+00:00",
+      "source": "ceo",
+      "row": 69,
+      "lesson": "manual slot overrides applied",
+      "slots": [
+        {
+          "label": "vin",
+          "path": "data/qxb-photos/row-0069_本田_本田 雅阁 2004款 2.4L/03_49405a6ffb.jpg"
+        }
+      ]
+    },
+    {
+      "at": "2026-07-01T03:37:12.223763+00:00",
+      "source": "ceo_training_exemplar",
+      "row": 72,
+      "stockId": "QXB0072",
+      "lesson": "CEO确认：第17张是铭牌/VIN（LGBG12E21CY125738），发动机 HR16",
+      "indexBands": {
+        "VIN / chassis plate": [
+          17,
+          16,
+          18
+        ]
+      }
+    },
+    {
+      "at": "2026-07-01T03:37:12.226077+00:00",
+      "source": "ceo",
+      "row": 72,
+      "lesson": "manual slot overrides applied",
+      "slots": [
+        {
+          "label": "vin",
+          "path": "data/qxb-photos/row-0072_日产_日产 轩逸 2012款 经典 1.6XE 手动舒适版/17_48b41c3f4e.jpg"
+        }
+      ]
+    },
+    {
+      "at": "2026-07-01T03:38:52.791435+00:00",
+      "source": "ceo_training_exemplar",
+      "row": 80,
+      "stockId": "QXB0080",
+      "lesson": "CEO确认：第3张是铭牌/VIN（LJDLAA221C0127616），发动机 G4FC",
+      "indexBands": {
+        "VIN / chassis plate": [
+          3,
+          2,
+          4
+        ]
+      }
+    },
+    {
+      "at": "2026-07-01T03:38:52.793767+00:00",
+      "source": "ceo",
+      "row": 80,
+      "lesson": "manual slot overrides applied",
+      "slots": [
+        {
+          "label": "vin",
+          "path": "data/qxb-photos/row-0080_起亚_起亚 起亚K2 2011款 三厢 1.6L AT Premium/03_453461405b.jpg"
+        }
+      ]
+    },
+    {
+      "at": "2026-07-01T03:39:55.289851+00:00",
+      "source": "ceo_training_exemplar",
+      "row": 82,
+      "stockId": "QXB0082",
+      "lesson": "CEO确认：第3张是铭牌/VIN（LHGGM2636C2065367），发动机 L15A7",
+      "indexBands": {
+        "VIN / chassis plate": [
+          3,
+          2,
+          4
+        ]
+      }
+    },
+    {
+      "at": "2026-07-01T03:39:55.292845+00:00",
+      "source": "ceo",
+      "row": 82,
+      "lesson": "manual slot overrides applied",
+      "slots": [
+        {
+          "label": "vin",
+          "path": "data/qxb-photos/row-0082_本田_本田 锋范经典 2012款 1.5L 自动旗舰版/03_d60b694aaa.jpg"
+        }
+      ]
+    },
+    {
+      "at": "2026-07-01T03:40:34.541102+00:00",
+      "source": "ceo_training_exemplar",
+      "row": 110,
+      "stockId": "QXB0110",
+      "lesson": "CEO确认：第19张是铭牌/VIN（LVHRE4803A5010362），发动机 K24Z1",
+      "indexBands": {
+        "VIN / chassis plate": [
+          19,
+          18,
+          17
+        ]
+      }
+    },
+    {
+      "at": "2026-07-01T03:40:34.543633+00:00",
+      "source": "ceo",
+      "row": 110,
+      "lesson": "manual slot overrides applied",
+      "slots": [
+        {
+          "label": "vin",
+          "path": "data/qxb-photos/row-0110_本田_本田 本田CR-V 2010款 2.4L 自动四驱尊贵版/19_466567e336.jpg"
+        }
+      ]
+    },
+    {
+      "at": "2026-07-01T16:01:40.604681+00:00",
+      "source": "ceo_training_exemplar",
+      "row": 2,
+      "stockId": "QXB0002",
+      "lesson": "CEO确认可上传 QXB0002: test1",
+      "indexBands": {
+        "Front view": [
+          2
+        ],
+        "Rear view": [
+          5
+        ],
+        "Engine bay": [
+          8
+        ],
+        "Interior": [
+          10
+        ],
+        "VIN / chassis plate": [
+          17
+        ]
+      }
+    },
+    {
+      "at": "2026-07-01T16:01:40.608515+00:00",
+      "source": "ceo",
+      "row": 2,
+      "lesson": "manual slot overrides applied",
+      "slots": [
+        {
+          "label": "Front view",
+          "path": "/Users/longhui/Desktop/AsiaPower/data/qxb-photos/row-0002_起亚_起亚 赛拉图 2008款 欧风 1.6 MT GL/02_769c841a1e.jpg"
+        },
+        {
+          "label": "Rear view",
+          "path": "/Users/longhui/Desktop/AsiaPower/data/qxb-photos/row-0002_起亚_起亚 赛拉图 2008款 欧风 1.6 MT GL/05_91fdd1b53c.jpg"
+        },
+        {
+          "label": "Engine bay",
+          "path": "/Users/longhui/Desktop/AsiaPower/data/qxb-photos/row-0002_起亚_起亚 赛拉图 2008款 欧风 1.6 MT GL/08_6d9c3acdc6.jpg"
+        },
+        {
+          "label": "Interior",
+          "path": "/Users/longhui/Desktop/AsiaPower/data/qxb-photos/row-0002_起亚_起亚 赛拉图 2008款 欧风 1.6 MT GL/10_a324e5b5df.jpg"
+        },
+        {
+          "label": "VIN / chassis plate",
+          "path": "/Users/longhui/Desktop/AsiaPower/data/qxb-photos/row-0002_起亚_起亚 赛拉图 2008款 欧风 1.6 MT GL/17_3719783cfc.jpg"
+        }
+      ],
+      "decision": "confirm_and_upload"
+    },
+    {
+      "at": "2026-07-01T16:01:41.148977+00:00",
+      "source": "ceo_review_ui",
+      "row": 2,
+      "stockId": "QXB0002",
+      "brand": "Kia",
+      "model": "赛拉图",
+      "lesson": "CEO确认可上传 QXB0002: test1",
+      "slots": [
+        {
+          "label": "Front view",
+          "path": "/Users/longhui/Desktop/AsiaPower/data/qxb-photos/row-0002_起亚_起亚 赛拉图 2008款 欧风 1.6 MT GL/02_769c841a1e.jpg",
+          "actual": "front",
+          "assigned_ok": true,
+          "index": 2
+        },
+        {
+          "label": "Rear view",
+          "path": "/Users/longhui/Desktop/AsiaPower/data/qxb-photos/row-0002_起亚_起亚 赛拉图 2008款 欧风 1.6 MT GL/05_91fdd1b53c.jpg",
+          "actual": "rear",
+          "assigned_ok": true,
+          "index": 5
+        },
+        {
+          "label": "Engine bay",
+          "path": "/Users/longhui/Desktop/AsiaPower/data/qxb-photos/row-0002_起亚_起亚 赛拉图 2008款 欧风 1.6 MT GL/08_6d9c3acdc6.jpg",
+          "actual": "engine",
+          "assigned_ok": true,
+          "index": 8
+        },
+        {
+          "label": "Interior",
+          "path": "/Users/longhui/Desktop/AsiaPower/data/qxb-photos/row-0002_起亚_起亚 赛拉图 2008款 欧风 1.6 MT GL/10_a324e5b5df.jpg",
+          "actual": "interior",
+          "assigned_ok": true,
+          "index": 10
+        },
+        {
+          "label": "VIN / chassis plate",
+          "path": "/Users/longhui/Desktop/AsiaPower/data/qxb-photos/row-0002_起亚_起亚 赛拉图 2008款 欧风 1.6 MT GL/17_3719783cfc.jpg",
+          "actual": "vin",
+          "assigned_ok": true,
+          "index": 17
+        }
+      ],
+      "decision": "confirm_and_upload"
+    },
+    {
+      "at": "2026-07-01T16:01:41.706682+00:00",
+      "source": "ceo_training_exemplar",
+      "row": 2,
+      "stockId": "QXB0002",
+      "lesson": "CEO确认可上传 QXB0002: test1",
+      "indexBands": {
+        "Front view": [
+          2
+        ],
+        "Rear view": [
+          5
+        ],
+        "Engine bay": [
+          8
+        ],
+        "Interior": [
+          10
+        ],
+        "VIN / chassis plate": [
+          17
+        ]
+      }
+    },
+    {
+      "at": "2026-07-01T16:01:41.710986+00:00",
+      "source": "ceo",
+      "row": 2,
+      "lesson": "manual slot overrides applied",
+      "slots": [
+        {
+          "label": "Front view",
+          "path": "/Users/longhui/Desktop/AsiaPower/data/qxb-photos/row-0002_起亚_起亚 赛拉图 2008款 欧风 1.6 MT GL/02_769c841a1e.jpg"
+        },
+        {
+          "label": "Rear view",
+          "path": "/Users/longhui/Desktop/AsiaPower/data/qxb-photos/row-0002_起亚_起亚 赛拉图 2008款 欧风 1.6 MT GL/05_91fdd1b53c.jpg"
+        },
+        {
+          "label": "Engine bay",
+          "path": "/Users/longhui/Desktop/AsiaPower/data/qxb-photos/row-0002_起亚_起亚 赛拉图 2008款 欧风 1.6 MT GL/08_6d9c3acdc6.jpg"
+        },
+        {
+          "label": "Interior",
+          "path": "/Users/longhui/Desktop/AsiaPower/data/qxb-photos/row-0002_起亚_起亚 赛拉图 2008款 欧风 1.6 MT GL/10_a324e5b5df.jpg"
+        },
+        {
+          "label": "VIN / chassis plate",
+          "path": "/Users/longhui/Desktop/AsiaPower/data/qxb-photos/row-0002_起亚_起亚 赛拉图 2008款 欧风 1.6 MT GL/17_3719783cfc.jpg"
+        }
+      ],
+      "decision": "confirm_and_upload"
+    },
+    {
+      "at": "2026-07-01T16:01:50.373215+00:00",
+      "source": "ceo_review_ui",
+      "row": 2,
+      "stockId": "QXB0002",
+      "brand": "Kia",
+      "model": "赛拉图",
+      "lesson": "CEO确认可上传 QXB0002: test1",
+      "slots": [
+        {
+          "label": "Front view",
+          "path": "/Users/longhui/Desktop/AsiaPower/data/qxb-photos/row-0002_起亚_起亚 赛拉图 2008款 欧风 1.6 MT GL/02_769c841a1e.jpg",
+          "actual": "front",
+          "assigned_ok": true,
+          "index": 2
+        },
+        {
+          "label": "Rear view",
+          "path": "/Users/longhui/Desktop/AsiaPower/data/qxb-photos/row-0002_起亚_起亚 赛拉图 2008款 欧风 1.6 MT GL/05_91fdd1b53c.jpg",
+          "actual": "rear",
+          "assigned_ok": true,
+          "index": 5
+        },
+        {
+          "label": "Engine bay",
+          "path": "/Users/longhui/Desktop/AsiaPower/data/qxb-photos/row-0002_起亚_起亚 赛拉图 2008款 欧风 1.6 MT GL/08_6d9c3acdc6.jpg",
+          "actual": "engine",
+          "assigned_ok": true,
+          "index": 8
+        },
+        {
+          "label": "Interior",
+          "path": "/Users/longhui/Desktop/AsiaPower/data/qxb-photos/row-0002_起亚_起亚 赛拉图 2008款 欧风 1.6 MT GL/10_a324e5b5df.jpg",
+          "actual": "interior",
+          "assigned_ok": true,
+          "index": 10
+        },
+        {
+          "label": "VIN / chassis plate",
+          "path": "/Users/longhui/Desktop/AsiaPower/data/qxb-photos/row-0002_起亚_起亚 赛拉图 2008款 欧风 1.6 MT GL/17_3719783cfc.jpg",
+          "actual": "vin",
+          "assigned_ok": true,
+          "index": 17
+        }
+      ],
+      "decision": "confirm_and_upload"
+    },
+    {
+      "at": "2026-07-01T16:03:27.012807+00:00",
+      "source": "ceo_training_exemplar",
+      "row": 37,
+      "stockId": "QXB0037",
+      "lesson": "CEO确认可上传 QXB0037: autofill-test",
+      "indexBands": {
+        "Front view": [
+          2
+        ],
+        "Rear view": [
+          1
+        ],
+        "Engine bay": [
+          3
+        ],
+        "Interior": [
+          1
+        ],
+        "VIN / chassis plate": [
+          3
+        ]
+      }
+    },
+    {
+      "at": "2026-07-01T16:03:27.016578+00:00",
+      "source": "ceo",
+      "row": 37,
+      "lesson": "manual slot overrides applied",
+      "slots": [
+        {
+          "label": "Front view",
+          "path": "/Users/longhui/Desktop/AsiaPower/data/qxb-photos/row-0037_起亚_起亚 智跑 2011款 2.0L 自动四驱版GLS/02_8f72beb4c8.jpg"
+        },
+        {
+          "label": "Rear view",
+          "path": "/Users/longhui/Desktop/AsiaPower/data/qxb-photos/row-0037_起亚_起亚 智跑 2011款 2.0L 自动四驱版GLS/01_c499c881fa.jpg"
+        },
+        {
+          "label": "Engine bay",
+          "path": "/Users/longhui/Desktop/AsiaPower/data/qxb-photos/row-0037_起亚_起亚 智跑 2011款 2.0L 自动四驱版GLS/03_7ced8d8bd3.jpg"
+        },
+        {
+          "label": "Interior",
+          "path": "/Users/longhui/Desktop/AsiaPower/data/qxb-photos/row-0037_起亚_起亚 智跑 2011款 2.0L 自动四驱版GLS/01_c499c881fa.jpg"
+        },
+        {
+          "label": "VIN / chassis plate",
+          "path": "/Users/longhui/Desktop/AsiaPower/data/qxb-photos/row-0037_起亚_起亚 智跑 2011款 2.0L 自动四驱版GLS/03_7ced8d8bd3.jpg"
+        }
+      ],
+      "decision": "confirm_and_upload"
+    },
+    {
+      "at": "2026-07-01T16:03:27.019723+00:00",
+      "source": "ceo_review_ui",
+      "row": 37,
+      "stockId": "QXB0037",
+      "brand": "Test",
+      "model": "Test",
+      "lesson": "CEO确认可上传 QXB0037: autofill-test",
+      "slots": [
+        {
+          "label": "Front view",
+          "path": "/Users/longhui/Desktop/AsiaPower/data/qxb-photos/row-0037_起亚_起亚 智跑 2011款 2.0L 自动四驱版GLS/02_8f72beb4c8.jpg",
+          "actual": "front",
+          "assigned_ok": true,
+          "index": 2
+        },
+        {
+          "label": "Rear view",
+          "path": "/Users/longhui/Desktop/AsiaPower/data/qxb-photos/row-0037_起亚_起亚 智跑 2011款 2.0L 自动四驱版GLS/01_c499c881fa.jpg",
+          "actual": "rear",
+          "assigned_ok": true,
+          "index": 1
+        },
+        {
+          "label": "Engine bay",
+          "path": "/Users/longhui/Desktop/AsiaPower/data/qxb-photos/row-0037_起亚_起亚 智跑 2011款 2.0L 自动四驱版GLS/03_7ced8d8bd3.jpg",
+          "actual": "engine",
+          "assigned_ok": true,
+          "index": 3
+        },
+        {
+          "label": "Interior",
+          "path": "/Users/longhui/Desktop/AsiaPower/data/qxb-photos/row-0037_起亚_起亚 智跑 2011款 2.0L 自动四驱版GLS/01_c499c881fa.jpg",
+          "actual": "interior",
+          "assigned_ok": true,
+          "index": 1
+        },
+        {
+          "label": "VIN / chassis plate",
+          "path": "/Users/longhui/Desktop/AsiaPower/data/qxb-photos/row-0037_起亚_起亚 智跑 2011款 2.0L 自动四驱版GLS/03_7ced8d8bd3.jpg",
+          "actual": "vin",
+          "assigned_ok": true,
+          "index": 3
+        }
+      ],
+      "decision": "confirm_and_upload"
+    },
+    {
+      "at": "2026-07-01T16:05:56.675804+00:00",
+      "source": "ceo_training_exemplar",
+      "row": 48,
+      "stockId": "QXB0048",
+      "lesson": "CEO审核 save_training_only: review-test",
+      "indexBands": {
+        "VIN / chassis plate": [
+          1
+        ]
+      }
+    },
+    {
+      "at": "2026-07-01T16:05:56.680849+00:00",
+      "source": "ceo",
+      "row": 48,
+      "lesson": "manual slot overrides applied",
+      "slots": [
+        {
+          "label": "VIN / chassis plate",
+          "path": "/Users/longhui/Desktop/AsiaPower/data/qxb-photos/row-0048_丰田_丰田 普拉多 2010款 4.0L 自动VX/01_93d49f3965.jpg"
+        }
+      ],
+      "decision": "save_training_only"
+    },
+    {
+      "at": "2026-07-01T16:05:56.684089+00:00",
+      "source": "ceo_review_ui",
+      "row": 48,
+      "stockId": "QXB0048",
+      "brand": "Honda",
+      "model": "Civic",
+      "lesson": "CEO审核 save_training_only: review-test",
+      "slots": [
+        {
+          "label": "VIN / chassis plate",
+          "path": "/Users/longhui/Desktop/AsiaPower/data/qxb-photos/row-0048_丰田_丰田 普拉多 2010款 4.0L 自动VX/01_93d49f3965.jpg",
+          "actual": "vin",
+          "assigned_ok": true,
+          "index": 1
+        }
+      ],
+      "decision": "save_training_only"
+    },
+    {
+      "at": "2026-07-01T16:06:01.816583+00:00",
+      "source": "ceo_training_exemplar",
+      "row": 48,
+      "stockId": "QXB0048",
+      "lesson": "CEO审核 save_training_only: review-test",
+      "indexBands": {
+        "VIN / chassis plate": [
+          1
+        ]
+      }
+    },
+    {
+      "at": "2026-07-01T16:06:01.824617+00:00",
+      "source": "ceo",
+      "row": 48,
+      "lesson": "manual slot overrides applied",
+      "slots": [
+        {
+          "label": "VIN / chassis plate",
+          "path": "/Users/longhui/Desktop/AsiaPower/data/qxb-photos/row-0048_丰田_丰田 普拉多 2010款 4.0L 自动VX/01_93d49f3965.jpg"
+        }
+      ],
+      "decision": "save_training_only"
+    },
+    {
+      "at": "2026-07-01T16:06:01.829509+00:00",
+      "source": "ceo_review_ui",
+      "row": 48,
+      "stockId": "QXB0048",
+      "brand": "Honda",
+      "model": "Civic",
+      "lesson": "CEO审核 save_training_only: review-test",
+      "slots": [
+        {
+          "label": "VIN / chassis plate",
+          "path": "/Users/longhui/Desktop/AsiaPower/data/qxb-photos/row-0048_丰田_丰田 普拉多 2010款 4.0L 自动VX/01_93d49f3965.jpg",
+          "actual": "vin",
+          "assigned_ok": true,
+          "index": 1
+        }
+      ],
+      "decision": "save_training_only"
+    },
+    {
+      "at": "2026-07-01T16:06:06.601391+00:00",
+      "source": "ceo_training_exemplar",
+      "row": 48,
+      "stockId": "QXB0048",
+      "lesson": "CEO审核 skip_missing_photos: skip-test",
+      "indexBands": {
+        "VIN / chassis plate": [
+          1
+        ]
+      }
+    },
+    {
+      "at": "2026-07-01T16:06:06.606435+00:00",
+      "source": "ceo",
+      "row": 48,
+      "lesson": "manual slot overrides applied",
+      "slots": [
+        {
+          "label": "VIN / chassis plate",
+          "path": "/Users/longhui/Desktop/AsiaPower/data/qxb-photos/row-0048_丰田_丰田 普拉多 2010款 4.0L 自动VX/01_93d49f3965.jpg"
+        }
+      ],
+      "decision": "skip_missing_photos"
+    },
+    {
+      "at": "2026-07-01T16:06:06.611395+00:00",
+      "source": "ceo_review_ui",
+      "row": 48,
+      "stockId": "QXB0048",
+      "brand": "Honda",
+      "model": "Civic",
+      "lesson": "CEO审核 skip_missing_photos: skip-test",
+      "slots": [
+        {
+          "label": "VIN / chassis plate",
+          "path": "/Users/longhui/Desktop/AsiaPower/data/qxb-photos/row-0048_丰田_丰田 普拉多 2010款 4.0L 自动VX/01_93d49f3965.jpg",
+          "actual": "vin",
+          "assigned_ok": true,
+          "index": 1
+        }
+      ],
+      "decision": "skip_missing_photos"
+    },
+    {
+      "at": "2026-07-01T16:06:44.491756+00:00",
+      "source": "ceo_review_ui",
+      "row": 48,
+      "stockId": "QXB0048",
+      "brand": "H",
+      "model": "M",
+      "lesson": "CEO审核 save_training_only: cold",
+      "slots": [],
+      "decision": "save_training_only"
+    },
+    {
+      "at": "2026-07-01T16:06:45.150906+00:00",
+      "source": "ceo_review_ui",
+      "row": 48,
+      "stockId": "QXB0048",
+      "brand": "H",
+      "model": "M",
+      "lesson": "CEO审核 save_training_only: cold",
+      "slots": [],
+      "decision": "save_training_only"
+    },
+    {
+      "at": "2026-07-01T16:07:56.065198+00:00",
+      "source": "ceo_training_exemplar",
+      "row": 48,
+      "stockId": "QXB0048",
+      "lesson": "CEO审核 save_training_only: review-fix-test",
+      "indexBands": {
+        "Front view": [
+          1
+        ],
+        "Rear view": [
+          1
+        ],
+        "Engine bay": [
+          1
+        ],
+        "Interior": [
+          1
+        ],
+        "VIN / chassis plate": [
+          1
+        ]
+      }
+    },
+    {
+      "at": "2026-07-01T16:07:56.069116+00:00",
+      "source": "ceo",
+      "row": 48,
+      "lesson": "manual slot overrides applied",
+      "slots": [
+        {
+          "label": "Front view",
+          "path": "/Users/longhui/Desktop/AsiaPower/data/qxb-photos/row-0048_丰田_丰田 普拉多 2010款 4.0L 自动VX/01_93d49f3965.jpg"
+        },
+        {
+          "label": "Rear view",
+          "path": "/Users/longhui/Desktop/AsiaPower/data/qxb-photos/row-0048_丰田_丰田 普拉多 2010款 4.0L 自动VX/01_93d49f3965.jpg"
+        },
+        {
+          "label": "Engine bay",
+          "path": "/Users/longhui/Desktop/AsiaPower/data/qxb-photos/row-0048_丰田_丰田 普拉多 2010款 4.0L 自动VX/01_93d49f3965.jpg"
+        },
+        {
+          "label": "Interior",
+          "path": "/Users/longhui/Desktop/AsiaPower/data/qxb-photos/row-0048_丰田_丰田 普拉多 2010款 4.0L 自动VX/01_93d49f3965.jpg"
+        },
+        {
+          "label": "VIN / chassis plate",
+          "path": "/Users/longhui/Desktop/AsiaPower/data/qxb-photos/row-0048_丰田_丰田 普拉多 2010款 4.0L 自动VX/01_93d49f3965.jpg"
+        }
+      ],
+      "decision": "save_training_only"
+    },
+    {
+      "at": "2026-07-01T16:07:56.072274+00:00",
+      "source": "ceo_review_ui",
+      "row": 48,
+      "stockId": "QXB0048",
+      "brand": "H",
+      "model": "M",
+      "lesson": "CEO审核 save_training_only: review-fix-test",
+      "slots": [
+        {
+          "label": "Front view",
+          "path": "/Users/longhui/Desktop/AsiaPower/data/qxb-photos/row-0048_丰田_丰田 普拉多 2010款 4.0L 自动VX/01_93d49f3965.jpg",
+          "actual": "front",
+          "assigned_ok": true,
+          "index": 1
+        },
+        {
+          "label": "Rear view",
+          "path": "/Users/longhui/Desktop/AsiaPower/data/qxb-photos/row-0048_丰田_丰田 普拉多 2010款 4.0L 自动VX/01_93d49f3965.jpg",
+          "actual": "rear",
+          "assigned_ok": true,
+          "index": 1
+        },
+        {
+          "label": "Engine bay",
+          "path": "/Users/longhui/Desktop/AsiaPower/data/qxb-photos/row-0048_丰田_丰田 普拉多 2010款 4.0L 自动VX/01_93d49f3965.jpg",
+          "actual": "engine",
+          "assigned_ok": true,
+          "index": 1
+        },
+        {
+          "label": "Interior",
+          "path": "/Users/longhui/Desktop/AsiaPower/data/qxb-photos/row-0048_丰田_丰田 普拉多 2010款 4.0L 自动VX/01_93d49f3965.jpg",
+          "actual": "interior",
+          "assigned_ok": true,
+          "index": 1
+        },
+        {
+          "label": "VIN / chassis plate",
+          "path": "/Users/longhui/Desktop/AsiaPower/data/qxb-photos/row-0048_丰田_丰田 普拉多 2010款 4.0L 自动VX/01_93d49f3965.jpg",
+          "actual": "vin",
+          "assigned_ok": true,
+          "index": 1
+        }
+      ],
+      "decision": "save_training_only"
+    }
+  ],
+  "rowOverrides": {
+    "3": {
+      "Front view": "/Users/longhui/Desktop/AsiaPower/data/qxb-photos/row-0003_起亚_起亚 锐欧 2007款 1.4L MT GL/01_c1244b65ac.jpg",
+      "Rear view": "/Users/longhui/Desktop/AsiaPower/data/qxb-photos/row-0003_起亚_起亚 锐欧 2007款 1.4L MT GL/05_38d0a655d7.jpg",
+      "Engine bay": "/Users/longhui/Desktop/AsiaPower/data/qxb-photos/row-0003_起亚_起亚 锐欧 2007款 1.4L MT GL/09_73cc05e875.jpg",
+      "Interior": "/Users/longhui/Desktop/AsiaPower/data/qxb-photos/row-0003_起亚_起亚 锐欧 2007款 1.4L MT GL/15_36b31598f7.jpg",
+      "VIN / chassis plate": "/Users/longhui/Desktop/AsiaPower/data/qxb-photos/row-0003_起亚_起亚 锐欧 2007款 1.4L MT GL/17_c20b5830ee.jpg"
+    },
+    "2": {
+      "Front view": "/Users/longhui/Desktop/AsiaPower/data/qxb-photos/row-0002_起亚_起亚 赛拉图 2008款 欧风 1.6 MT GL/02_769c841a1e.jpg",
+      "Rear view": "/Users/longhui/Desktop/AsiaPower/data/qxb-photos/row-0002_起亚_起亚 赛拉图 2008款 欧风 1.6 MT GL/05_91fdd1b53c.jpg",
+      "Engine bay": "/Users/longhui/Desktop/AsiaPower/data/qxb-photos/row-0002_起亚_起亚 赛拉图 2008款 欧风 1.6 MT GL/08_6d9c3acdc6.jpg",
+      "Interior": "/Users/longhui/Desktop/AsiaPower/data/qxb-photos/row-0002_起亚_起亚 赛拉图 2008款 欧风 1.6 MT GL/10_a324e5b5df.jpg",
+      "VIN / chassis plate": "/Users/longhui/Desktop/AsiaPower/data/qxb-photos/row-0002_起亚_起亚 赛拉图 2008款 欧风 1.6 MT GL/17_3719783cfc.jpg"
+    },
+    "4": {
+      "Front view": "/Users/longhui/Desktop/AsiaPower/data/qxb-photos/row-0004_起亚_起亚 起亚K2 2011款 三厢 1.6L AT Premium/02_aac1f1241c.jpg",
+      "Rear view": "/Users/longhui/Desktop/AsiaPower/data/qxb-photos/row-0004_起亚_起亚 起亚K2 2011款 三厢 1.6L AT Premium/05_63e973f9e3.jpg",
+      "Engine bay": "/Users/longhui/Desktop/AsiaPower/data/qxb-photos/row-0004_起亚_起亚 起亚K2 2011款 三厢 1.6L AT Premium/09_c7d1e14a71.jpg",
+      "Interior": "/Users/longhui/Desktop/AsiaPower/data/qxb-photos/row-0004_起亚_起亚 起亚K2 2011款 三厢 1.6L AT Premium/12_cb5e65c339.jpg",
+      "VIN / chassis plate": "/Users/longhui/Desktop/AsiaPower/data/qxb-photos/row-0004_起亚_起亚 起亚K2 2011款 三厢 1.6L AT Premium/18_3d9c96a0cf.jpg"
+    },
+    "5": {
+      "Front view": "/Users/longhui/Desktop/AsiaPower/data/qxb-photos/row-0005_丰田_丰田 凯美瑞 2009款 200G 豪华版/02_52aa07fb14.jpg",
+      "Rear view": "/Users/longhui/Desktop/AsiaPower/data/qxb-photos/row-0005_丰田_丰田 凯美瑞 2009款 200G 豪华版/05_0da54ea7ad.jpg",
+      "Engine bay": "/Users/longhui/Desktop/AsiaPower/data/qxb-photos/row-0005_丰田_丰田 凯美瑞 2009款 200G 豪华版/08_f8ec6f7a83.jpg",
+      "Interior": "/Users/longhui/Desktop/AsiaPower/data/qxb-photos/row-0005_丰田_丰田 凯美瑞 2009款 200G 豪华版/10_e2096d6b1f.jpg",
+      "VIN / chassis plate": "/Users/longhui/Desktop/AsiaPower/data/qxb-photos/row-0005_丰田_丰田 凯美瑞 2009款 200G 豪华版/18_5135f88503.jpg"
+    },
+    "6": {
+      "Front view": "/Users/longhui/Desktop/AsiaPower/data/qxb-photos/row-0006_现代_现代 酷派 2004款 FX 2.7/03_1993bb82ee.jpg",
+      "Rear view": "/Users/longhui/Desktop/AsiaPower/data/qxb-photos/row-0006_现代_现代 酷派 2004款 FX 2.7/05_5fdfa52757.jpg",
+      "Engine bay": "/Users/longhui/Desktop/AsiaPower/data/qxb-photos/row-0006_现代_现代 酷派 2004款 FX 2.7/09_5718cfd32b.jpg",
+      "Interior": "/Users/longhui/Desktop/AsiaPower/data/qxb-photos/row-0006_现代_现代 酷派 2004款 FX 2.7/12_bf232e8992.jpg",
+      "VIN / chassis plate": "/Users/longhui/Desktop/AsiaPower/data/qxb-photos/row-0006_现代_现代 酷派 2004款 FX 2.7/18_0e24015652.jpg"
+    },
+    "7": {
+      "Front view": "/Users/longhui/Desktop/AsiaPower/data/qxb-photos/row-0007_现代_现代 索纳塔 2011款 2.4L 自动尊贵版/01_a31fead276.jpg",
+      "Rear view": "/Users/longhui/Desktop/AsiaPower/data/qxb-photos/row-0007_现代_现代 索纳塔 2011款 2.4L 自动尊贵版/04_ba3d516e68.jpg",
+      "Engine bay": "/Users/longhui/Desktop/AsiaPower/data/qxb-photos/row-0007_现代_现代 索纳塔 2011款 2.4L 自动尊贵版/09_a782c513e3.jpg",
+      "Interior": "/Users/longhui/Desktop/AsiaPower/data/qxb-photos/row-0007_现代_现代 索纳塔 2011款 2.4L 自动尊贵版/10_7bed8b2e9c.jpg",
+      "VIN / chassis plate": "/Users/longhui/Desktop/AsiaPower/data/qxb-photos/row-0007_现代_现代 索纳塔 2011款 2.4L 自动尊贵版/18_a2c7fc48b7.jpg"
+    },
+    "8": {
+      "Front view": "/Users/longhui/Desktop/AsiaPower/data/qxb-photos/row-0008_丰田_丰田 卡罗拉 2007款 1.8L 自动GLX-i/01_91adf17554.jpg",
+      "Rear view": "/Users/longhui/Desktop/AsiaPower/data/qxb-photos/row-0008_丰田_丰田 卡罗拉 2007款 1.8L 自动GLX-i/04_681198fdc3.jpg",
+      "Engine bay": "/Users/longhui/Desktop/AsiaPower/data/qxb-photos/row-0008_丰田_丰田 卡罗拉 2007款 1.8L 自动GLX-i/09_bd7866a5eb.jpg",
+      "Interior": "/Users/longhui/Desktop/AsiaPower/data/qxb-photos/row-0008_丰田_丰田 卡罗拉 2007款 1.8L 自动GLX-i/10_97c8d89728.jpg",
+      "VIN / chassis plate": "/Users/longhui/Desktop/AsiaPower/data/qxb-photos/row-0008_丰田_丰田 卡罗拉 2007款 1.8L 自动GLX-i/18_aecdd0e873.jpg"
+    },
+    "9": {
+      "Front view": "/Users/longhui/Desktop/AsiaPower/data/qxb-photos/row-0009_丰田_丰田 凯美瑞 2013款 2.0G 舒适版/01_97d6803ca6.jpg",
+      "Rear view": "/Users/longhui/Desktop/AsiaPower/data/qxb-photos/row-0009_丰田_丰田 凯美瑞 2013款 2.0G 舒适版/06_709a41e1fe.jpg",
+      "Engine bay": "/Users/longhui/Desktop/AsiaPower/data/qxb-photos/row-0009_丰田_丰田 凯美瑞 2013款 2.0G 舒适版/08_e036575108.jpg",
+      "Interior": "/Users/longhui/Desktop/AsiaPower/data/qxb-photos/row-0009_丰田_丰田 凯美瑞 2013款 2.0G 舒适版/10_a2195fbfce.jpg",
+      "VIN / chassis plate": "/Users/longhui/Desktop/AsiaPower/data/qxb-photos/row-0009_丰田_丰田 凯美瑞 2013款 2.0G 舒适版/17_9160ccc158.jpg"
+    },
+    "126": {
+      "Front view": "/Users/longhui/Desktop/AsiaPower/data/qxb-photos/row-0126_起亚_起亚 秀尔 2010款 1.6L MT GLS/01_ad89d7955b.jpg",
+      "Rear view": "/Users/longhui/Desktop/AsiaPower/data/qxb-photos/row-0126_起亚_起亚 秀尔 2010款 1.6L MT GLS/05_64f0d8cecf.jpg",
+      "Engine bay": "/Users/longhui/Desktop/AsiaPower/data/qxb-photos/row-0126_起亚_起亚 秀尔 2010款 1.6L MT GLS/08_9cbb0785c3.jpg",
+      "Interior": "/Users/longhui/Desktop/AsiaPower/data/qxb-photos/row-0126_起亚_起亚 秀尔 2010款 1.6L MT GLS/10_49932daa3c.jpg",
+      "VIN / chassis plate": "/Users/longhui/Desktop/AsiaPower/data/qxb-photos/row-0126_起亚_起亚 秀尔 2010款 1.6L MT GLS/18_6c8c94353c.jpg"
+    },
+    "137": {
+      "Front view": "/Users/longhui/Desktop/AsiaPower/data/qxb-photos/row-0137_奔驰_奔驰 奔驰C级 2010款 C 200K 时尚型/02_8375adcc40.jpg",
+      "Rear view": "/Users/longhui/Desktop/AsiaPower/data/qxb-photos/row-0137_奔驰_奔驰 奔驰C级 2010款 C 200K 时尚型/04_3d28d43a98.jpg",
+      "Engine bay": "/Users/longhui/Desktop/AsiaPower/data/qxb-photos/row-0137_奔驰_奔驰 奔驰C级 2010款 C 200K 时尚型/08_147f345cb4.jpg",
+      "Interior": "/Users/longhui/Desktop/AsiaPower/data/qxb-photos/row-0137_奔驰_奔驰 奔驰C级 2010款 C 200K 时尚型/10_57ca578b29.jpg",
+      "VIN / chassis plate": "/Users/longhui/Desktop/AsiaPower/data/qxb-photos/row-0137_奔驰_奔驰 奔驰C级 2010款 C 200K 时尚型/18_61b2b75fb4.jpg"
+    },
+    "196": {
+      "Front view": "/Users/longhui/Desktop/AsiaPower/data/qxb-photos/row-0196_日产_日产 阳光 2011款 1.5XL CVT豪华版/01_17045de283.jpg",
+      "Rear view": "/Users/longhui/Desktop/AsiaPower/data/qxb-photos/row-0196_日产_日产 阳光 2011款 1.5XL CVT豪华版/04_82bfa957fe.jpg",
+      "Engine bay": "/Users/longhui/Desktop/AsiaPower/data/qxb-photos/row-0196_日产_日产 阳光 2011款 1.5XL CVT豪华版/09_f1c7417371.jpg",
+      "Interior": "/Users/longhui/Desktop/AsiaPower/data/qxb-photos/row-0196_日产_日产 阳光 2011款 1.5XL CVT豪华版/10_60eb3b9e23.jpg",
+      "VIN / chassis plate": "/Users/longhui/Desktop/AsiaPower/data/qxb-photos/row-0196_日产_日产 阳光 2011款 1.5XL CVT豪华版/16_96e402cc83.jpg"
+    },
+    "207": {
+      "Front view": "/Users/longhui/Desktop/AsiaPower/data/qxb-photos/row-0207_本田_本田 本田CR-V 2010款 2.4L 自动四驱豪华版/01_ea5de647bb.jpg",
+      "Rear view": "/Users/longhui/Desktop/AsiaPower/data/qxb-photos/row-0207_本田_本田 本田CR-V 2010款 2.4L 自动四驱豪华版/05_f321c0e65a.jpg",
+      "Engine bay": "/Users/longhui/Desktop/AsiaPower/data/qxb-photos/row-0207_本田_本田 本田CR-V 2010款 2.4L 自动四驱豪华版/08_6bff2095e9.jpg",
+      "Interior": "/Users/longhui/Desktop/AsiaPower/data/qxb-photos/row-0207_本田_本田 本田CR-V 2010款 2.4L 自动四驱豪华版/03_f936c3c4ff.jpg",
+      "VIN / chassis plate": "/Users/longhui/Desktop/AsiaPower/data/qxb-photos/row-0207_本田_本田 本田CR-V 2010款 2.4L 自动四驱豪华版/16_142a0fc92c.jpg"
+    },
+    "208": {
+      "Front view": "/Users/longhui/Desktop/AsiaPower/data/qxb-photos/row-0208_本田_本田 本田CR-V 2010款 2.4L 自动四驱豪华版/01_69c676527e.jpg",
+      "Rear view": "/Users/longhui/Desktop/AsiaPower/data/qxb-photos/row-0208_本田_本田 本田CR-V 2010款 2.4L 自动四驱豪华版/05_aad0d9df40.jpg",
+      "Engine bay": "/Users/longhui/Desktop/AsiaPower/data/qxb-photos/row-0208_本田_本田 本田CR-V 2010款 2.4L 自动四驱豪华版/08_a8368e2269.jpg",
+      "Interior": "/Users/longhui/Desktop/AsiaPower/data/qxb-photos/row-0208_本田_本田 本田CR-V 2010款 2.4L 自动四驱豪华版/10_8debda89e0.jpg",
+      "VIN / chassis plate": "/Users/longhui/Desktop/AsiaPower/data/qxb-photos/row-0208_本田_本田 本田CR-V 2010款 2.4L 自动四驱豪华版/17_a148d1ce11.jpg"
+    },
+    "209": {
+      "Front view": "/Users/longhui/Desktop/AsiaPower/data/qxb-photos/row-0209_本田_本田 雅阁 2010款 2.0L EX/01_6737385310.jpg",
+      "Rear view": "/Users/longhui/Desktop/AsiaPower/data/qxb-photos/row-0209_本田_本田 雅阁 2010款 2.0L EX/04_914ee4e106.jpg",
+      "Engine bay": "/Users/longhui/Desktop/AsiaPower/data/qxb-photos/row-0209_本田_本田 雅阁 2010款 2.0L EX/08_1d2a64cb90.jpg",
+      "Interior": "/Users/longhui/Desktop/AsiaPower/data/qxb-photos/row-0209_本田_本田 雅阁 2010款 2.0L EX/10_e98ee24c52.jpg",
+      "VIN / chassis plate": "/Users/longhui/Desktop/AsiaPower/data/qxb-photos/row-0209_本田_本田 雅阁 2010款 2.0L EX/16_101815724a.jpg"
+    },
+    "211": {
+      "Front view": "/Users/longhui/Desktop/AsiaPower/data/qxb-photos/row-0211_丰田_丰田 锐志 2006款 2.5V/01_ddeb350ba3.jpg",
+      "Rear view": "/Users/longhui/Desktop/AsiaPower/data/qxb-photos/row-0211_丰田_丰田 锐志 2006款 2.5V/05_f99d7f6475.jpg",
+      "Engine bay": "/Users/longhui/Desktop/AsiaPower/data/qxb-photos/row-0211_丰田_丰田 锐志 2006款 2.5V/08_4a1a557dff.jpg",
+      "Interior": "/Users/longhui/Desktop/AsiaPower/data/qxb-photos/row-0211_丰田_丰田 锐志 2006款 2.5V/10_de99f94d72.jpg",
+      "VIN / chassis plate": "/Users/longhui/Desktop/AsiaPower/data/qxb-photos/row-0211_丰田_丰田 锐志 2006款 2.5V/17_37e99edd0a.jpg"
+    },
+    "146": {
+      "Front view": "/Users/longhui/Desktop/AsiaPower/data/qxb-photos/row-0146_本田_本田 奥德赛 2008款 2.4L 普通版/01_73ad9f73d0.jpg",
+      "Rear view": "/Users/longhui/Desktop/AsiaPower/data/qxb-photos/row-0146_本田_本田 奥德赛 2008款 2.4L 普通版/05_28834b2260.jpg",
+      "Engine bay": "/Users/longhui/Desktop/AsiaPower/data/qxb-photos/row-0146_本田_本田 奥德赛 2008款 2.4L 普通版/02_cf1d050c9f.jpg",
+      "Interior": "/Users/longhui/Desktop/AsiaPower/data/qxb-photos/row-0146_本田_本田 奥德赛 2008款 2.4L 普通版/04_7585363267.jpg",
+      "VIN / chassis plate": "/Users/longhui/Desktop/AsiaPower/data/qxb-photos/row-0146_本田_本田 奥德赛 2008款 2.4L 普通版/03_7a60bf1a6c.jpg"
+    },
+    "206": {
+      "Front view": "/Users/longhui/Desktop/AsiaPower/data/qxb-photos/row-0206_本田_本田 雅阁 2005款 2.0L 标准版/02_b67d82eeb8.jpg",
+      "Rear view": "/Users/longhui/Desktop/AsiaPower/data/qxb-photos/row-0206_本田_本田 雅阁 2005款 2.0L 标准版/04_c04d7aa457.jpg",
+      "Engine bay": "/Users/longhui/Desktop/AsiaPower/data/qxb-photos/row-0206_本田_本田 雅阁 2005款 2.0L 标准版/02_b67d82eeb8.jpg",
+      "Interior": "/Users/longhui/Desktop/AsiaPower/data/qxb-photos/row-0206_本田_本田 雅阁 2005款 2.0L 标准版/03_f6a602e948.jpg"
+    },
+    "212": {
+      "Front view": "/Users/longhui/Desktop/AsiaPower/data/qxb-photos/row-0212_本田_本田 飞度 2006款 1.3 手动 两厢/01_77b8961e90.jpg",
+      "Rear view": "/Users/longhui/Desktop/AsiaPower/data/qxb-photos/row-0212_本田_本田 飞度 2006款 1.3 手动 两厢/06_58324f1243.jpg",
+      "Engine bay": "/Users/longhui/Desktop/AsiaPower/data/qxb-photos/row-0212_本田_本田 飞度 2006款 1.3 手动 两厢/08_3443e64188.jpg",
+      "Interior": "/Users/longhui/Desktop/AsiaPower/data/qxb-photos/row-0212_本田_本田 飞度 2006款 1.3 手动 两厢/15_6c98aee5e0.jpg",
+      "VIN / chassis plate": "/Users/longhui/Desktop/AsiaPower/data/qxb-photos/row-0212_本田_本田 飞度 2006款 1.3 手动 两厢/17_a922f43fd2.jpg"
+    },
+    "34": {
+      "vin": "data/qxb-photos/row-0034_现代_现代 领翔 2009款 2.0L MT GL/19_52b14cebb7.jpg"
+    },
+    "45": {
+      "vin": "data/qxb-photos/row-0045_现代_现代 途胜 2009款 2.0L 手动两驱时尚型/17_429f7e0a2d.jpg"
+    },
+    "46": {
+      "vin": "data/qxb-photos/row-0046_现代_现代 瑞纳 2010款 三厢 1.4L 手动舒适型GS/17_b177dd2f4c.jpg"
+    },
+    "62": {
+      "vin": "data/qxb-photos/row-0062_本田_本田 飞度 2011款 1.5L 自动全景天窗版/03_32b26b69ff.jpg"
+    },
+    "69": {
+      "vin": "data/qxb-photos/row-0069_本田_本田 雅阁 2004款 2.4L/03_49405a6ffb.jpg"
+    },
+    "72": {
+      "vin": "data/qxb-photos/row-0072_日产_日产 轩逸 2012款 经典 1.6XE 手动舒适版/17_48b41c3f4e.jpg"
+    },
+    "80": {
+      "vin": "data/qxb-photos/row-0080_起亚_起亚 起亚K2 2011款 三厢 1.6L AT Premium/03_453461405b.jpg"
+    },
+    "82": {
+      "vin": "data/qxb-photos/row-0082_本田_本田 锋范经典 2012款 1.5L 自动旗舰版/03_d60b694aaa.jpg"
+    },
+    "110": {
+      "vin": "data/qxb-photos/row-0110_本田_本田 本田CR-V 2010款 2.4L 自动四驱尊贵版/19_466567e336.jpg"
+    },
+    "37": {
+      "Front view": "/Users/longhui/Desktop/AsiaPower/data/qxb-photos/row-0037_起亚_起亚 智跑 2011款 2.0L 自动四驱版GLS/02_8f72beb4c8.jpg",
+      "Rear view": "/Users/longhui/Desktop/AsiaPower/data/qxb-photos/row-0037_起亚_起亚 智跑 2011款 2.0L 自动四驱版GLS/01_c499c881fa.jpg",
+      "Engine bay": "/Users/longhui/Desktop/AsiaPower/data/qxb-photos/row-0037_起亚_起亚 智跑 2011款 2.0L 自动四驱版GLS/03_7ced8d8bd3.jpg",
+      "Interior": "/Users/longhui/Desktop/AsiaPower/data/qxb-photos/row-0037_起亚_起亚 智跑 2011款 2.0L 自动四驱版GLS/01_c499c881fa.jpg",
+      "VIN / chassis plate": "/Users/longhui/Desktop/AsiaPower/data/qxb-photos/row-0037_起亚_起亚 智跑 2011款 2.0L 自动四驱版GLS/03_7ced8d8bd3.jpg"
+    },
+    "48": {
+      "Front view": "/Users/longhui/Desktop/AsiaPower/data/qxb-photos/row-0048_丰田_丰田 普拉多 2010款 4.0L 自动VX/01_93d49f3965.jpg",
+      "Rear view": "/Users/longhui/Desktop/AsiaPower/data/qxb-photos/row-0048_丰田_丰田 普拉多 2010款 4.0L 自动VX/01_93d49f3965.jpg",
+      "Engine bay": "/Users/longhui/Desktop/AsiaPower/data/qxb-photos/row-0048_丰田_丰田 普拉多 2010款 4.0L 自动VX/01_93d49f3965.jpg",
+      "Interior": "/Users/longhui/Desktop/AsiaPower/data/qxb-photos/row-0048_丰田_丰田 普拉多 2010款 4.0L 自动VX/01_93d49f3965.jpg",
+      "VIN / chassis plate": "/Users/longhui/Desktop/AsiaPower/data/qxb-photos/row-0048_丰田_丰田 普拉多 2010款 4.0L 自动VX/01_93d49f3965.jpg"
+    }
+  },
+  "updated_at": "2026-07-01T16:07:56.082705+00:00",
+  "recognitionModel": {
+    "version": "1.0",
+    "ceoExemplarCount": 34,
+    "slotBands": {
+      "Front view": [
+        1,
+        2,
+        3
+      ],
+      "Rear view": [
+        1,
+        4,
+        5,
+        6
+      ],
+      "Engine bay": [
+        1,
+        2,
+        3,
+        7,
+        8,
+        9
+      ],
+      "Interior": [
+        1,
+        3,
+        4,
+        9,
+        10,
+        11,
+        12,
+        15
+      ],
+      "VIN / chassis plate": [
+        1,
+        2,
+        3,
+        4,
+        16,
+        17,
+        18,
+        19
+      ]
+    },
+    "indexAffinities": {
+      "front": {
+        "2": 15.5,
+        "3": 8.0,
+        "1": 37.0
+      },
+      "rear": {
+        "4": 14.0,
+        "5": 31.5,
+        "6": 12.5,
+        "10": 1.5,
+        "9": 1.0,
+        "11": 0.5,
+        "12": 1.5,
+        "1": 3.0
+      },
+      "engine": {
+        "7": 4.5,
+        "8": 35.0,
+        "9": 14.5,
+        "2": 3.0,
+        "3": 1.5,
+        "1": 1.5
+      },
+      "interior": {
+        "10": 37.5,
+        "11": 4.0,
+        "12": 5.0,
+        "13": 2.5,
+        "15": 3.5,
+        "4": 2.0,
+        "5": 0.5,
+        "9": 1.5,
+        "3": 6.0,
+        "1": 3.0
+      },
+      "vin": {
+        "17": 35.0,
+        "16": 17.5,
+        "18": 21.5,
+        "3": 12.0,
+        "19": 12.0,
+        "2": 2.0,
+        "4": 2.0,
+        "1": 6.0
+      }
+    },
+    "indexPenalties": {
+      "rear": {
+        "2": 1.0,
+        "10": 2.0,
+        "9": 2.0,
+        "11": 1.0
+      },
+      "engine": {
+        "3": 1.0
+      },
+      "interior": {
+        "4": 1.0,
+        "5": 1.0,
+        "12": 1.0
+      },
+      "vin": {
+        "16": 2.0
+      }
+    },
+    "updatedAt": "2026-07-01T16:07:56.074030+00:00"
+  }
+}

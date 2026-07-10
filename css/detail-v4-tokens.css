@@ -1,0 +1,384 @@
+/**
+ * Detail page visual tokens — aligned with homepage v4-hybrid.
+ * Layout (grid, gaps, sticky, section order) is intentionally untouched.
+ * Scope: body[data-page="halfcut-detail"] only.
+ */
+body[data-page="halfcut-detail"] {
+  --bg: #ffffff;
+  --bg2: #f5f5f7;
+  --bg3: #fbfbfd;
+  --t1: #1d1d1f;
+  --t2: #6e6e73;
+  --t3: #86868b;
+  --b1: #d2d2d7;
+  --b2: #e8e8ed;
+  --gold: #d4880a;
+  --gold-bg: #fef3dc;
+  --green: #1d8348;
+  --green-bg: #e9f7ee;
+  --blue: #0066cc;
+  --font: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Helvetica Neue', Arial, 'PingFang SC', sans-serif;
+  --font-mono: 'SF Mono', Menlo, ui-monospace, monospace;
+  --r-sm: 8px;
+  --r-md: 12px;
+  --r-lg: 18px;
+
+  /* Remap eBay tokens used by detail CSS — colors only */
+  --ebay-bg: var(--bg2);
+  --ebay-white: var(--bg);
+  --ebay-text: var(--t1);
+  --ebay-muted: var(--t2);
+  --ebay-border: var(--b2);
+  --ebay-link: var(--blue);
+  --ebay-btn: var(--gold);
+  --ebay-btn-text: var(--t1);
+  --ebay-promo: var(--t1);
+
+  --font-body: var(--font);
+  --font-display: var(--font);
+
+  font-family: var(--font);
+  color: var(--t1);
+  background: var(--bg2);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+body[data-page="halfcut-detail"] h1,
+body[data-page="halfcut-detail"] h2,
+body[data-page="halfcut-detail"] h3,
+body[data-page="halfcut-detail"] h4,
+body[data-page="halfcut-detail"] button,
+body[data-page="halfcut-detail"] input,
+body[data-page="halfcut-detail"] select,
+body[data-page="halfcut-detail"] textarea {
+  font-family: var(--font);
+}
+
+/* ── Detail content: type + color only ── */
+body[data-page="halfcut-detail"] .hc-item-detail {
+  background: var(--bg2);
+  color: var(--t1);
+  font-family: var(--font);
+}
+
+body[data-page="halfcut-detail"] .hc-item-detail__crumb {
+  font-size: 12.5px;
+  color: var(--t2);
+}
+
+body[data-page="halfcut-detail"] .hc-item-detail__crumb a {
+  color: var(--blue);
+  font-weight: 500;
+}
+
+body[data-page="halfcut-detail"] .hc-item-detail__title {
+  font-family: var(--font);
+  font-size: 22px;
+  font-weight: 700;
+  letter-spacing: -0.5px;
+  line-height: 1.25;
+  color: var(--t1);
+}
+
+body[data-page="halfcut-detail"] .hc-item-detail__stock {
+  font-size: 12px;
+  color: var(--t3);
+  font-family: var(--font-mono);
+  letter-spacing: 0.02em;
+}
+
+body[data-page="halfcut-detail"] .hc-item-detail__price {
+  font-family: var(--font);
+  font-size: 34px;
+  font-weight: 700;
+  letter-spacing: -1.2px;
+  line-height: 1;
+  color: var(--t1);
+}
+
+body[data-page="halfcut-detail"] .hc-item-detail__price--enquiry {
+  font-size: 22px;
+  letter-spacing: -0.4px;
+  color: var(--t1);
+}
+
+body[data-page="halfcut-detail"] .hc-item-detail__section-label {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  color: var(--t3);
+}
+
+body[data-page="halfcut-detail"] .hc-item-detail__info dt {
+  font-size: 12.5px;
+  font-weight: 500;
+  color: var(--t2);
+  letter-spacing: 0;
+  text-transform: none;
+}
+
+body[data-page="halfcut-detail"] .hc-item-detail__info dd {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--t1);
+}
+
+body[data-page="halfcut-detail"] .hc-item-detail__info a {
+  color: var(--blue);
+}
+
+body[data-page="halfcut-detail"] .hc-item-detail__disclaimer {
+  font-size: 12px;
+  color: var(--t2);
+}
+
+body[data-page="halfcut-detail"] .hc-item-detail__secure {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--green);
+}
+
+body[data-page="halfcut-detail"] .hc-item-detail__btn {
+  font-family: var(--font);
+  font-size: 14px;
+  font-weight: 700;
+  border-radius: var(--r-md);
+}
+
+body[data-page="halfcut-detail"] .hc-item-detail__btn--primary {
+  background: var(--t1);
+  border-color: var(--t1);
+  color: #fff;
+}
+
+body[data-page="halfcut-detail"] .hc-item-detail__btn--primary:hover {
+  background: #000;
+  border-color: #000;
+  color: #fff;
+  opacity: 0.9;
+}
+
+body[data-page="halfcut-detail"] .hc-item-detail__btn--secondary {
+  background: var(--bg2);
+  color: var(--t1);
+  border-color: var(--b1);
+}
+
+body[data-page="halfcut-detail"] .hc-item-detail__btn--secondary:hover {
+  background: var(--b2);
+  color: var(--t1);
+}
+
+body[data-page="halfcut-detail"] .hc-item-detail__btn--whatsapp {
+  background: #25d366;
+  border-color: #25d366;
+  color: #fff;
+}
+
+body[data-page="halfcut-detail"] .hc-item-detail__btn--whatsapp:hover {
+  background: #1ebe57;
+  border-color: #1ebe57;
+  color: #fff;
+  opacity: 0.95;
+}
+
+body[data-page="halfcut-detail"] .hc-item-detail__btn--facebook {
+  color: var(--blue);
+  border-color: var(--b1);
+  background: #fff;
+}
+
+body[data-page="halfcut-detail"] .hc-item-detail__trust li {
+  font-size: 13px;
+  color: var(--t1);
+}
+
+body[data-page="halfcut-detail"] .hc-item-detail__trust li::before {
+  color: var(--green);
+}
+
+body[data-page="halfcut-detail"] .hc-item-detail__verified {
+  font-size: 12px;
+  color: var(--t1);
+  background: var(--bg2);
+  border-color: var(--b2);
+}
+
+body[data-page="halfcut-detail"] .hc-item-detail__panel-title {
+  font-family: var(--font);
+  font-size: 18px;
+  font-weight: 700;
+  letter-spacing: -0.3px;
+  color: var(--t1);
+}
+
+body[data-page="halfcut-detail"] .hc-item-detail__panel--about .hc-item-detail__about,
+body[data-page="halfcut-detail"] .hc-item-detail__about {
+  font-size: 15px;
+  line-height: 1.55;
+  color: var(--t1);
+}
+
+body[data-page="halfcut-detail"] .half-cut-detail__parts,
+body[data-page="halfcut-detail"] .half-cut-detail__parts-title {
+  font-family: var(--font);
+  color: var(--t1);
+}
+
+body[data-page="halfcut-detail"] .half-cut-detail__parts-title {
+  font-size: 14px;
+  font-weight: 700;
+}
+
+body[data-page="halfcut-detail"] .hc-item-detail__video-title {
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--t1);
+}
+
+body[data-page="halfcut-detail"] .hc-item-detail__placeholder {
+  color: var(--t2);
+  font-size: 14px;
+}
+
+body[data-page="halfcut-detail"] .hc-item-detail__photo-badge {
+  background: rgba(29, 29, 31, 0.84);
+  font-size: 12px;
+  font-weight: 700;
+}
+
+body[data-page="halfcut-detail"] .hc-item-detail__thumb.is-active,
+body[data-page="halfcut-detail"] .hc-item-detail__thumb:hover {
+  border-color: var(--t1);
+  box-shadow: 0 0 0 1px rgba(29, 29, 31, 0.12);
+}
+
+/* EXW badge → homepage gold chip */
+body[data-page="halfcut-detail"] .ap-exw-badge {
+  font-family: var(--font);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  color: var(--gold);
+  background: var(--gold-bg);
+  border: 1px solid #f9d68a;
+}
+
+/* CIF calculator type/color */
+body[data-page="halfcut-detail"] .hc-cif-calc {
+  font-family: var(--font);
+  color: var(--t1);
+}
+
+body[data-page="halfcut-detail"] .hc-cif-calc__title {
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--t1);
+}
+
+body[data-page="halfcut-detail"] .hc-cif-calc__lead,
+body[data-page="halfcut-detail"] .hc-cif-calc__note {
+  font-size: 12px;
+  color: var(--t2);
+}
+
+body[data-page="halfcut-detail"] .hc-cif-calc__notice {
+  border-color: #f9d68a;
+  background: var(--gold-bg);
+  color: #7a4e00;
+}
+
+body[data-page="halfcut-detail"] .hc-cif-calc__notice-badge {
+  background: var(--gold);
+  color: #fff;
+}
+
+body[data-page="halfcut-detail"] .hc-cif-calc__disclaimer {
+  border-color: #f0c36d;
+  background: #fff8eb;
+  color: #7a4e00;
+  font-size: 11px;
+  font-weight: 600;
+}
+
+body[data-page="halfcut-detail"] .hc-cif-calc__field label {
+  font-size: 11.5px;
+  font-weight: 500;
+  color: var(--t2);
+}
+
+body[data-page="halfcut-detail"] .hc-cif-calc__field select,
+body[data-page="halfcut-detail"] .hc-cif-calc__field input {
+  font-family: var(--font);
+  font-size: 13px;
+  color: var(--t1);
+  background: var(--bg2);
+  border-color: var(--b2);
+}
+
+body[data-page="halfcut-detail"] .hc-cif-calc__breakdown dt {
+  font-size: 12px;
+  color: var(--t2);
+}
+
+body[data-page="halfcut-detail"] .hc-cif-calc__breakdown dd,
+body[data-page="halfcut-detail"] .hc-cif-calc__total strong {
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--t1);
+}
+
+body[data-page="halfcut-detail"] .hc-cif-calc__status[data-tone="loading"] {
+  color: var(--blue);
+}
+
+body[data-page="halfcut-detail"] .hc-cif-calc__status[data-tone="warn"] {
+  color: var(--gold);
+}
+
+/* Spec tables / mono values */
+body[data-page="halfcut-detail"] .hc-item-detail__spec dt,
+body[data-page="halfcut-detail"] .hc-item-detail__specs dt {
+  font-size: 12.5px;
+  color: var(--t2);
+}
+
+body[data-page="halfcut-detail"] .hc-item-detail__spec dd,
+body[data-page="halfcut-detail"] .hc-item-detail__specs dd {
+  font-size: 13px;
+  color: var(--t1);
+  font-weight: 500;
+}
+
+body[data-page="halfcut-detail"] .hc-item-detail__spec dd.mono,
+body[data-page="halfcut-detail"] .hc-item-detail .mono {
+  font-family: var(--font-mono);
+  font-size: 11.5px;
+  color: var(--t2);
+}
+
+/* Soften card borders to v4 without changing structure */
+body[data-page="halfcut-detail"] .hc-item-detail__gallery-wrap,
+body[data-page="halfcut-detail"] .hc-item-detail__buybox,
+body[data-page="halfcut-detail"] .hc-item-detail__panel,
+body[data-page="halfcut-detail"] .hc-item-detail__video,
+body[data-page="halfcut-detail"] .hc-item-detail__seller {
+  border-color: var(--b2);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
+}
+
+body[data-page="halfcut-detail"] .hc-item-detail__seller {
+  background: var(--bg3);
+}
+
+@media (max-width: 720px) {
+  body[data-page="halfcut-detail"] .hc-item-detail__title {
+    font-size: 20px;
+  }
+  body[data-page="halfcut-detail"] .hc-item-detail__price {
+    font-size: 28px;
+  }
+}

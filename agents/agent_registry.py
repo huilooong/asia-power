@@ -2,10 +2,9 @@
 
 from __future__ import annotations
 
-SUPPORTED_AGENTS = frozenset({"apcoo", "apsales"})
+SUPPORTED_AGENTS = frozenset({"apcoo", "apsales", "apinventory"})
 
 FUTURE_AGENTS = frozenset({
-    "apinventory",
     "apmarketing",
     "apfinance",
     "apcustomer",
@@ -28,6 +27,7 @@ _ALIASES = {
     "coo": "apcoo",
     "apsales": "apsales",
     "sales": "apsales",
+    "inventory": "apinventory",
     # 三国代号 → canonical id
     "诸葛亮": "apcoo", "孔明": "apcoo", "丞相": "apcoo",
     "鲁肃": "apsales", "子敬": "apsales",
@@ -41,12 +41,14 @@ _ALIASES = {
 _PROFILE_MAP = {
     "apcoo": "coo",
     "apsales": "apsales",
+    "apinventory": "apinventory",
 }
 
 # Canonical id → constitution role id
 _ROLE_MAP = {
     "apcoo": "apcoo",
     "apsales": "apsales",
+    "apinventory": "apinventory",
 }
 
 

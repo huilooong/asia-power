@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AsiaPower · 采购商门户预览</title>
+  <link rel="stylesheet" href="portal.css">
+</head>
+<body>
+  <div class="preview-note">
+    <div><strong>预览 · 未上线</strong> — 采购商轻量门户（假数据）· 询价 / 报价 / 定金订单</div>
+    <div>
+      <a href="index.html">总览</a> ·
+      <a href="supplier-portal-preview.html">供应商门户</a> ·
+      <a href="deposit-flow-preview.html">定金流程</a>
+    </div>
+  </div>
+
+  <nav class="ap-nav">
+    <div class="nav-w">
+      <a class="ap-logo" href="index.html">Asia<span>Power</span></a>
+      <div class="nav-links">
+        <a href="buyer-portal-preview.html" class="on">Buyer Portal</a>
+        <a href="deposit-flow-preview.html">Pay Deposit</a>
+        <a href="https://asia-power.com/half-cuts/" target="_blank" rel="noopener">Browse Inventory</a>
+      </div>
+    </div>
+  </nav>
+
+  <div class="wrap">
+    <div class="hero-mini">
+      <div class="kicker">Buyer Portal · v4</div>
+      <h1>Your quotes & deposit orders</h1>
+      <p>Guest inquiry stays open. After a quote is confirmed, you can log in here, pay a 30% deposit via Stripe, and track stock reservation.</p>
+    </div>
+
+    <div class="grid-2">
+      <section class="panel" id="login-panel">
+        <h2>Sign in</h2>
+        <p class="sub">Email or phone · demo accepts any code <code>123456</code></p>
+        <div class="field">
+          <label>Email or phone</label>
+          <input id="buyer-id" value="buyer@lagos-motors.ng" />
+        </div>
+        <div class="row">
+          <div class="field">
+            <label>Verification code</label>
+            <input id="buyer-otp" placeholder="123456" />
+          </div>
+          <button class="btn btn-ghost" type="button" id="send-otp">Send code</button>
+        </div>
+        <button class="btn btn-primary btn-block" type="button" id="buyer-login">Sign in to portal</button>
+        <div class="hint">访客仍可 WhatsApp / 询价，不必先注册。门户只服务「已报价 / 待付定金」的采购商。</div>
+      </section>
+
+      <section class="panel">
+        <h2>Order status machine</h2>
+        <p class="sub">一期只做到 Deposit Paid → 库存 Reserved</p>
+        <div class="steps">
+          <div class="step on"><div class="n">1</div><div class="t">Inquiry</div><div class="d">询价线索</div></div>
+          <div class="step on"><div class="n">2</div><div class="t">Quoted</div><div class="d">销售确认价</div></div>
+          <div class="step on"><div class="n">3</div><div class="t">DepositPaid</div><div class="d">Stripe 30%</div></div>
+          <div class="step"><div class="n">4</div><div class="t">Shipped</div><div class="d">后续</div></div>
+          <div class="step"><div class="n">5</div><div class="t">Settled</div><div class="d">后续</div></div>
+        </div>
+      </section>
+    </div>
+
+    <section class="panel" style="margin-top:20px" id="portal-body" hidden>
+      <div style="display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:8px">
+        <h2 style="margin:0">Welcome, <span id="buyer-name">Lagos Motors</span></h2>
+        <button class="btn btn-ghost" type="button" id="buyer-logout">Sign out</button>
+      </div>
+      <p class="sub">Demo orders linked to live-style stock IDs</p>
+
+      <table class="table">
+        <thead>
+          <tr>
+            <th>Order</th>
+            <th>Stock</th>
+            <th>EXW</th>
+            <th>Deposit 30%</th>
+            <th>Status</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody id="order-rows"></tbody>
+      </table>
+    </section>
+  </div>
+
+  <div class="toast" id="toast"></div>
+  <script src="mock-data.js"></script>
+  <script src="buyer-portal.js"></script>
+</body>
+</html>

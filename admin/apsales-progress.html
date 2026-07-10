@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#0a1628">
+  <meta name="robots" content="noindex, nofollow">
+  <title>子敬推广进度 | Admin | AsiaPower</title>
+  <link rel="preload" href="../assets/fonts/barlow-condensed-800-latin.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href="../assets/fonts/inter-latin.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="stylesheet" href="../css/fonts.css?v=self-hosted-fonts-v1">
+  <link rel="stylesheet" href="../css/styles.css?v=exw-badge-v1">
+  <link rel="stylesheet" href="../css/admin-v4.css?v=admin-ia-reorg-v1">
+  <link rel="icon" href="../assets/favicon.png" type="image/png">
+  <style>
+    .apsales-progress__header {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 1rem;
+      margin-bottom: 1rem;
+    }
+    .apsales-progress__header h2 {
+      margin: 0 0 .25rem;
+      font-size: 1.15rem;
+    }
+    .apsales-progress__meta-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: .75rem 1.25rem;
+      font-size: .9rem;
+      color: #5c6778;
+      margin-bottom: 1.25rem;
+    }
+    .apsales-progress__stale {
+      background: #fff8e6;
+      border: 1px solid #f0d78c;
+      color: #8a6d1a;
+      border-radius: 8px;
+      padding: .65rem .85rem;
+      margin-bottom: 1rem;
+      font-size: .9rem;
+    }
+    .apsales-progress__section {
+      margin-bottom: 2rem;
+    }
+    .apsales-progress__section > h3 {
+      margin: 0 0 .65rem;
+      font-size: 1rem;
+      font-weight: 700;
+    }
+    .apsales-progress__empty {
+      background: #fff;
+      border: 1px dashed rgba(10, 22, 40, 0.15);
+      border-radius: 10px;
+      padding: 1.25rem;
+      color: #5c6778;
+      font-size: .95rem;
+      line-height: 1.5;
+    }
+    .apsales-progress__table-wrap {
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+      background: #fff;
+      border: 1px solid rgba(10, 22, 40, 0.08);
+      border-radius: 10px;
+    }
+    .apsales-progress__table {
+      width: 100%;
+      min-width: 640px;
+      border-collapse: collapse;
+      font-size: .9rem;
+    }
+    .apsales-progress__table th,
+    .apsales-progress__table td {
+      padding: .65rem .75rem;
+      text-align: left;
+      vertical-align: top;
+      border-bottom: 1px solid rgba(10, 22, 40, 0.06);
+    }
+    .apsales-progress__table th {
+      background: #f7f9fc;
+      font-weight: 600;
+      color: #3d4654;
+      white-space: nowrap;
+    }
+    .apsales-progress__table tr:last-child td {
+      border-bottom: none;
+    }
+    .apsales-progress__table tr[data-expandable="true"] {
+      cursor: pointer;
+    }
+    .apsales-progress__table tr[data-expandable="true"]:hover td {
+      background: #fafbfd;
+    }
+    .apsales-progress__links {
+      display: flex;
+      flex-wrap: wrap;
+      gap: .35rem .5rem;
+    }
+    .apsales-progress__links a {
+      color: #0a6cff;
+      text-decoration: none;
+      white-space: nowrap;
+    }
+    .apsales-progress__links a:hover {
+      text-decoration: underline;
+    }
+    .apsales-progress__badge {
+      display: inline-block;
+      padding: .1rem .45rem;
+      border-radius: 4px;
+      font-size: .75rem;
+      font-weight: 600;
+      background: #eef3ff;
+      color: #0a6cff;
+    }
+    .apsales-progress__badge--example {
+      background: #f0f0f0;
+      color: #666;
+    }
+    .apsales-progress__badge--pending {
+      background: #fff3e0;
+      color: #c77700;
+    }
+    .apsales-progress__badge--blocked {
+      background: #fdecea;
+      color: #b42318;
+    }
+    .apsales-progress__badge--ready {
+      background: #e6f4ea;
+      color: #137333;
+    }
+    .apsales-progress__channels {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+      gap: .75rem;
+      margin-bottom: 1.25rem;
+    }
+    .apsales-progress__channel-card {
+      border: 1px solid #e3e8ef;
+      border-radius: 10px;
+      padding: .75rem .9rem;
+      background: #fff;
+    }
+    .apsales-progress__channel-card h4 {
+      margin: 0 0 .35rem;
+      font-size: .95rem;
+    }
+    .apsales-progress__channel-card p {
+      margin: .2rem 0;
+      font-size: .82rem;
+      color: #4a5568;
+      line-height: 1.4;
+    }
+    .apsales-progress__badge--blocked {
+      background: #fdecea;
+      color: #c62828;
+    }
+    .apsales-progress__detail-row td {
+      background: #f7f9fc;
+      padding: .75rem 1rem;
+    }
+    .apsales-progress__detail-row pre {
+      margin: 0;
+      white-space: pre-wrap;
+      word-break: break-word;
+      font-family: inherit;
+      font-size: .88rem;
+      line-height: 1.55;
+      color: #1a2332;
+    }
+    .apsales-progress__preview {
+      max-width: 280px;
+      line-height: 1.4;
+    }
+    .apsales-progress__error {
+      background: #fff5f5;
+      border: 1px solid #f5c2c7;
+      color: #b42318;
+      border-radius: 10px;
+      padding: 1rem;
+    }
+    .apsales-progress__footer {
+      margin-top: 1.5rem;
+      font-size: .85rem;
+      color: #5c6778;
+    }
+    @media (max-width: 640px) {
+      .apsales-progress__table th,
+      .apsales-progress__table td {
+        padding: .55rem .5rem;
+        font-size: .82rem;
+      }
+      .apsales-progress__preview {
+        max-width: 160px;
+      }
+    }
+  </style>
+</head>
+<body data-page="admin-apsales-progress">
+
+  <div id="site-topbar"></div>
+  <div id="site-header"></div>
+
+  <main id="main-content">
+    <section class="page-hero page-hero--catalog">
+      <div class="container">
+        <div class="page-hero__breadcrumb">
+          <a href="../index.html">Home</a> /
+          <span>Admin</span> /
+          <span>子敬推广进度</span>
+        </div>
+        <h1>子敬 · 推广动作记录<br><span class="page-hero__subtitle-zh">APSales Action Log</span></h1>
+        <p>每条记录含平台、发帖内容、帖文/小组/落地页链接 — 可点击核查，非装饰进度条。</p>
+      </div>
+    </section>
+
+    <section class="section section--gray">
+      <div class="container">
+        <div id="apsales-progress-root">
+          <p>Loading progress…</p>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <div id="site-footer"></div>
+
+  <script src="../js/path-utils.js?v=search-mobile-v1"></script>
+  <script src="../js/config.js?v=contact-20260625"></script>
+  <script src="../js/components.js?v=auth-nav-once-v2" defer></script>
+  <script src="../js/admin-apsales-progress.js?v=3"></script>
+</body>
+</html>

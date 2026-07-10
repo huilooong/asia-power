@@ -33,7 +33,44 @@
     return null;
   }
 
-  window.SitePaths = { base, href, engineSlug, enginePagePath };
+  function normalizeSearchQuery(raw) {
+    return decodeURIComponent(String(raw || '').replace(/\+/g, ' ')).trim();
+  }
+
+  /** Supplier upload intent — search 「上传」 / upload → supplier portal */
+  function isSupplierUploadSearch(raw) {
+    const q = normalizeSearchQuery(raw).toLowerCase();
+    if (!q) return false;
+    const compact = q.replace(/\s+/g, '');
+    const terms = [
+      '上传',
+      'upload',
+      'supplier upload',
+      'supplier portal',
+      '供应商上传',
+      '成为供应商',
+      '供应商',
+      'supplier',
+    ];
+    return terms.some((term) => {
+      const normalized = term.toLowerCase().replace(/\s+/g, '');
+      return compact === normalized || compact.includes(normalized) || q === term.toLowerCase();
+    });
+  }
+
+  function supplierPortalHref() {
+    return href('supplier-portal.html');
+  }
+
+  window.SitePaths = {
+    base,
+    href,
+    engineSlug,
+    enginePagePath,
+    normalizeSearchQuery,
+    isSupplierUploadSearch,
+    supplierPortalHref,
+  };
 
   if (!window.SiteFeedback) {
     const feedbackBase = base();
@@ -53,11 +90,13 @@
     }
     if (!window.AsiaCountryOptions) loadSyncScript(`${feedbackBase}js/country-options.js?v=1`);
     if (!window.AsiaPhone) loadSyncScript(`${feedbackBase}js/phone-utils.js?v=2`);
-    loadSyncScript(`${feedbackBase}js/site-feedback.js?v=feedback-v14`);
+    loadSyncScript(`${feedbackBase}js/site-feedback.js?v=list-lead-modal-v1`);
   }
 
-  if (!window.PublicI18n) {
-    const src = `${base()}js/public-i18n.js?v=i18n-market-v1`;
+  const SITE_I18N_VER = 'home-lang-v1';
+
+  if (!window.PublicI18n || !Array.isArray(window.PublicI18n.SUPPORTED_LANGS) || window.PublicI18n.SUPPORTED_LANGS.length < 4) {
+    const src = `${base()}js/public-i18n.js?v=${SITE_I18N_VER}`;
     try {
       const xhr = new XMLHttpRequest();
       xhr.open('GET', src, false);

@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="zh-Hans">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Parts placeholder · preview</title>
+  <style>
+    :root { --ink:#1d1d1f; --muted:#6e6e73; --line:#e8e8ed; }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: "SF Pro Text", "PingFang SC", "Helvetica Neue", sans-serif;
+      color: var(--ink);
+      background: linear-gradient(180deg, #eef1f5 0%, #f7f7f8 45%, #fff 100%);
+      line-height: 1.5;
+    }
+    .wrap { max-width: 980px; margin: 0 auto; padding: 36px 20px 64px; }
+    h1 { font-size: 1.7rem; letter-spacing: -0.03em; margin: 0 0 8px; }
+    .lead { color: var(--muted); margin: 0 0 28px; max-width: 64ch; }
+    .grid { display: grid; gap: 16px; }
+    @media (min-width: 820px) { .grid { grid-template-columns: 1fr 1fr; } }
+    .card {
+      background: #fff;
+      border: 1.5px solid var(--line);
+      border-radius: 18px;
+      overflow: hidden;
+      box-shadow: 0 4px 18px rgba(0,0,0,.05);
+    }
+    .card__head {
+      padding: 11px 16px;
+      border-bottom: 1px solid var(--line);
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: .05em;
+      text-transform: uppercase;
+      color: #15803d;
+      background: #f0fdf4;
+    }
+    .row { display: grid; grid-template-columns: 200px minmax(0,1fr); min-height: 156px; }
+    .photo {
+      position: relative;
+      background: #e8eef5;
+      border-right: 1px solid var(--line);
+      overflow: hidden;
+      min-height: 156px;
+    }
+    .photo img {
+      width: 100%; height: 100%; min-height: 156px;
+      object-fit: cover; object-position: center; display: block;
+    }
+    .photo--contain img { object-fit: contain; background: #eef1f4; }
+    .badge {
+      position: absolute; left: 8px; bottom: 8px;
+      padding: 4px 8px; border-radius: 6px;
+      font-size: 10px; font-weight: 700; letter-spacing: .04em;
+      color: #fff; background: rgba(10,22,40,.78);
+    }
+    .body { padding: 16px 18px; }
+    .make { font-size: 10px; font-weight: 700; letter-spacing: .07em; text-transform: uppercase; color: #86868b; }
+    .title { font-size: 15px; font-weight: 700; margin: 4px 0 8px; }
+    .meta { font-size: 12px; color: var(--muted); }
+    .rules {
+      margin-top: 28px; background: #fff; border: 1.5px solid var(--line);
+      border-radius: 18px; padding: 20px 22px;
+    }
+    .rules h2 { margin: 0 0 10px; font-size: 1.1rem; }
+    .rules ul { margin: 0; padding-left: 1.2em; color: var(--muted); }
+    .rules li { margin: 6px 0; }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <h1>发动机 / 变速箱 / 底盘 / 前切 · 占位图预览</h1>
+    <p class="lead">无专门上传真图时，用统一好看的占位图（品类营销图或品牌 SVG），并带 Photos on request 角标。仍不借半切车实拍图冒充。</p>
+
+    <div class="grid">
+      <article class="card">
+        <div class="card__head">Engines · 无真图 → 品类占位</div>
+        <div class="row">
+          <div class="photo">
+            <img src="../../assets/images/supply-engines.webp" alt="">
+            <span class="badge">Photos on request</span>
+          </div>
+          <div class="body">
+            <div class="make">Toyota</div>
+            <div class="title">2AZ-FE · 示例无真图条目</div>
+            <div class="meta">用 supply-engines.webp，不是半切借图</div>
+          </div>
+        </div>
+      </article>
+
+      <article class="card">
+        <div class="card__head">Gearboxes · 无真图 → 品类占位</div>
+        <div class="row">
+          <div class="photo">
+            <img src="../../assets/images/supply-gearbox.webp" alt="">
+            <span class="badge">Photos on request</span>
+          </div>
+          <div class="body">
+            <div class="make">Volkswagen</div>
+            <div class="title">HC250546 · 半切不算出图</div>
+            <div class="meta">用 supply-gearbox.webp + 角标</div>
+          </div>
+        </div>
+      </article>
+
+      <article class="card">
+        <div class="card__head">Chassis · 无真图 → 品类占位</div>
+        <div class="row">
+          <div class="photo">
+            <img src="../../assets/images/supply-chassis.webp" alt="">
+            <span class="badge">Photos on request</span>
+          </div>
+          <div class="body">
+            <div class="make">Chassis Parts</div>
+            <div class="title">无专门底盘上传</div>
+            <div class="meta">用 supply-chassis.webp</div>
+          </div>
+        </div>
+      </article>
+
+      <article class="card">
+        <div class="card__head">Front-cuts · 无真图 → 品牌 SVG</div>
+        <div class="row">
+          <div class="photo">
+            <img src="../../assets/images/parts-placeholder.svg" alt="">
+            <span class="badge">Photos on request</span>
+          </div>
+          <div class="body">
+            <div class="make">Front Cut</div>
+            <div class="title">半切借图条目（如 HC250552）</div>
+            <div class="meta">品牌占位 SVG，不展示半切相册</div>
+          </div>
+        </div>
+      </article>
+
+      <article class="card" style="grid-column: 1 / -1;">
+        <div class="card__head">Front-cuts · 有真图 → 完整显示（contain）</div>
+        <div class="row">
+          <div class="photo photo--contain">
+            <img src="https://asia-power.com/uploads/photos/photo-1783469362423-0ca9a99e_thumb.webp" alt="dedicated front cut">
+          </div>
+          <div class="body">
+            <div class="make">Dedicated front-cut</div>
+            <div class="title">HC250550 · passengerPartType=front</div>
+            <div class="meta">专门上传真图：200px + contain，无占位角标</div>
+          </div>
+        </div>
+      </article>
+    </div>
+
+    <section class="rules">
+      <h2>规则</h2>
+      <ul>
+        <li><strong>有真图</strong>：仅专门上传的 engine / transmission / chassis / front 显示自己的图。</li>
+        <li><strong>无真图</strong>：品类占位图 + Photos on request 角标；前切无图用品牌 SVG。</li>
+        <li><strong>禁止</strong>：半切车相册借到零部件列表冒充配件图。</li>
+      </ul>
+    </section>
+  </div>
+</body>
+</html>

@@ -279,7 +279,7 @@ section.hero, div.hero {
 /* ══════════════════════════════════════════
    5. SEARCH BAR
 ══════════════════════════════════════════ */
-.search-form, .search-bar, form[role="search"],
+.search-form, .search-bar,
 .search-container, .search-box {
   background: var(--ap-bg) !important;
   border: 1.5px solid var(--ap-b1) !important;
@@ -287,6 +287,14 @@ section.hero, div.hero {
   overflow: hidden !important;
   box-shadow: var(--ap-sh-sm) !important;
   transition: border-color .15s !important;
+}
+/* ebay-search 保留原生样式，不叠加双重边框/阴影 */
+form.ebay-search, form[role="search"] {
+  background: #fff !important;
+  border: none !important;
+  box-shadow: none !important;
+  border-radius: 26px !important;
+  overflow: hidden !important;
 }
 .search-form:focus-within, .search-bar:focus-within {
   border-color: #b0b0b5 !important;
@@ -336,6 +344,38 @@ section.hero, div.hero {
 .popular-searches a:hover, .popular-tags a:hover {
   border-color: var(--ap-t2) !important;
   color: var(--ap-t1) !important;
+}
+
+/* ── Preserve ebay search bar native styles (overrides general button[type=submit] rule) ── */
+.ebay-search__btn {
+  background: #d4a017 !important;
+  color: #fff !important;
+  border-radius: 0 26px 26px 0 !important;
+  border: none !important;
+  padding: 0 28px !important;
+  font-size: 15px !important;
+  font-weight: 700 !important;
+  box-shadow: none !important;
+}
+.ebay-search__btn:hover { filter: brightness(1.05) !important; opacity: 1 !important; }
+
+/* ── Preserve ebay trending pill tags ── */
+.ebay-trending button,
+.ebay-trending__tags button {
+  background: #fafafa !important;
+  border-radius: 14px !important;
+  border: 1px solid #e8e8ed !important;
+  color: #555 !important;
+  font-weight: 400 !important;
+  font-size: 12px !important;
+  padding: 3px 10px !important;
+  box-shadow: none !important;
+}
+.ebay-trending button:hover,
+.ebay-trending__tags button:hover {
+  border-color: #d4a017 !important;
+  background: #fff8e6 !important;
+  color: #555 !important;
 }
 
 /* ══════════════════════════════════════════
@@ -1089,10 +1129,10 @@ span[class*="video"]:not(video) {
 }
 .btn-cif:hover { background: var(--ap-b2) !important; }
 
-/* Detail CTA — WhatsApp primary */
+/* Detail CTA — WhatsApp primary (排除浮动按钮，避免重影) */
 .btn-whatsapp-main, .wa-cta-btn, .whatsapp-large,
-.btn-wa-det, a[href*="wa.me"],
-a[href*="whatsapp.com"] {
+.btn-wa-det, a[href*="wa.me"]:not(.whatsapp-float__btn),
+a[href*="whatsapp.com"]:not(.whatsapp-float__btn) {
   background: #25d366 !important;
   color: #fff !important;
   border-radius: var(--ap-r-md) !important;
@@ -1108,7 +1148,8 @@ a[href*="whatsapp.com"] {
   gap: 8px !important;
   padding: 14px !important;
 }
-a[href*="wa.me"]:hover, a[href*="whatsapp.com"]:hover {
+a[href*="wa.me"]:not(.whatsapp-float__btn):hover,
+a[href*="whatsapp.com"]:not(.whatsapp-float__btn):hover {
   opacity: .88 !important;
 }
 
@@ -1285,8 +1326,8 @@ label {
   font-weight: 500 !important;
 }
 
-/* Form submit */
-input[type="submit"], button[type="submit"],
+/* Form submit (排除搜索按钮，避免特异性覆盖金色) */
+input[type="submit"]:not(.ebay-search__btn), button[type="submit"]:not(.ebay-search__btn),
 .form-submit, .enquiry-submit {
   background: var(--ap-t1) !important;
   color: #fff !important;
@@ -1299,7 +1340,7 @@ input[type="submit"], button[type="submit"],
   box-shadow: none !important;
   transition: opacity .12s !important;
 }
-input[type="submit"]:hover, button[type="submit"]:hover { opacity: .82 !important; }
+input[type="submit"]:not(.ebay-search__btn):hover, button[type="submit"]:not(.ebay-search__btn):hover { opacity: .82 !important; }
 
 /* ══════════════════════════════════════════
    16. FOOTER
@@ -1467,6 +1508,59 @@ section.about, #about {
 }
 .about-values .value-card:hover { box-shadow: var(--ap-sh-md) !important; }
 
+/* ── About 受众卡片 (For buyers / For suppliers / For investors) ── */
+/* HTML 是双层嵌套: 外层.ebay-about-audiences > 内层.ebay-about-audiences > 三个card */
+/* 外层：改为 block，撑满宽度 */
+.ebay-about-audiences {
+  display: block !important;
+  width: 100% !important;
+}
+/* 内层（实际网格容器）：3列 */
+.ebay-about-audiences > .ebay-about-audiences,
+.ebay-about-audiences .ebay-about-audiences {
+  display: grid !important;
+  grid-template-columns: repeat(3, 1fr) !important;
+  gap: 24px !important;
+  width: 100% !important;
+}
+.ebay-about-audience {
+  width: 100% !important;
+  min-width: 0 !important;
+  justify-self: stretch !important;
+  box-sizing: border-box !important;
+  background: var(--ap-bg) !important;
+  border: 1.5px solid var(--ap-b2) !important;
+  border-radius: var(--ap-r-lg) !important;
+  padding: 24px !important;
+}
+.ebay-about-audience h3 {
+  font-size: 16px !important;
+  font-weight: 700 !important;
+  color: var(--ap-t1) !important;
+  margin-bottom: 14px !important;
+  letter-spacing: -.2px !important;
+}
+.ebay-about-audience ul {
+  list-style: none !important;
+  padding: 0 !important;
+  margin: 0 !important;
+}
+.ebay-about-audience li {
+  font-size: 13.5px !important;
+  color: var(--ap-t2) !important;
+  padding: 6px 0 !important;
+  border-bottom: 1px solid var(--ap-b2) !important;
+  line-height: 1.5 !important;
+}
+.ebay-about-audience li:last-child {
+  border-bottom: none !important;
+}
+.ebay-about-audience li::before {
+  content: '→ ' !important;
+  color: var(--ap-gold) !important;
+  font-weight: 700 !important;
+}
+
 /* Step numbers */
 .step-number, .about-step-n {
   color: var(--ap-gold) !important;
@@ -1619,14 +1713,34 @@ section.about, #about {
   100% { box-shadow: 0 6px 20px rgba(37,211,102,.35), 0 0 0 0 rgba(37,211,102,0); }
 }
 
-.wa-float, [class*="whatsapp-float"], #wa-float,
-.whatsapp-btn-float {
+/* WA 浮动按钮 — 只对实际按钮元素应用脉冲效果，避免容器div重影 */
+.wa-float, #wa-float, .whatsapp-btn-float,
+.whatsapp-float__btn, a[href*="wa.me"].whatsapp-float__btn {
   background: #25d366 !important;
   border-radius: 50% !important;
   animation: ap-wa-pulse 2.5s infinite !important;
   transition: transform .15s !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  padding: 0 !important;
+  text-decoration: none !important;
 }
-.wa-float:hover, [class*="whatsapp-float"]:hover {
+/* 容器div只做定位，不染色，不动画 */
+.whatsapp-float:not(a):not(button):not(.whatsapp-float__btn) {
+  background: transparent !important;
+  border-radius: 0 !important;
+  animation: none !important;
+  box-shadow: none !important;
+}
+/* label文字不染色 */
+.whatsapp-float__label {
+  background: transparent !important;
+  border-radius: 0 !important;
+  animation: none !important;
+  box-shadow: none !important;
+}
+.wa-float:hover, .whatsapp-float__btn:hover {
   transform: scale(1.08) !important;
   animation: none !important;
   box-shadow: 0 8px 28px rgba(37,211,102,.45) !important;

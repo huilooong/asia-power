@@ -37,6 +37,7 @@ function createVehicleKnowledgeBase(dataDir) {
     history: [],
   });
   const vinCache = createJsonRepository(path.join(kbDir, 'vin-cache.json'), {});
+  const approvedVinFacts = createJsonRepository(path.join(kbDir, 'approved-vin-facts.json'), {});
   const unknownQueue = createJsonRepository(path.join(kbDir, 'unknown-queue.json'), { items: [] });
 
   function nowIso() {
@@ -48,6 +49,13 @@ function createVehicleKnowledgeBase(dataDir) {
   function getCachedVin(vin) {
     const store = vinCache.read();
     return store[vin] || null;
+  }
+
+  function getApprovedVinFact(vin) {
+    const key = String(vin || '').trim().toUpperCase();
+    if (key.length !== 17) return null;
+    const store = approvedVinFacts.read();
+    return store[key] || null;
   }
 
   function cacheVinResult(vin, rawResponse, meta = {}) {
@@ -150,8 +158,9 @@ function createVehicleKnowledgeBase(dataDir) {
 
   return {
     dirs: { kbDir },
-    repos: { brandDictionary, modelDictionary, engineDictionary, gearboxDictionary, vehicleMapping, vinCache, unknownQueue },
+    repos: { brandDictionary, modelDictionary, engineDictionary, gearboxDictionary, vehicleMapping, vinCache, approvedVinFacts, unknownQueue },
     getCachedVin,
+    getApprovedVinFact,
     cacheVinResult,
     enqueueUnknown,
     listUnknown,

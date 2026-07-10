@@ -1,0 +1,23 @@
+# asia-power.com 收件邮箱路由
+# agent: apsales=子敬 | apinventory=子龙 | ceo=CEO 私人
+
+domain: asia-power.com
+
+mailboxes:
+  inquiry@asia-power.com:
+    agent: apsales
+    label: 客户询价（历史收件）
+    outbound_from: sales
+  sales@asia-power.com:
+    agent: apsales
+    label: 销售询价（对外统一口径）
+    outbound_from: sales
+  supplier@asia-power.com:
+    agent: apinventory
+    label: 供应商
+  weylon@asia-power.com:
+    agent: ceo
+    label: CEO
+    forward_to: weylonhui@gmail.com
+
+worker: asiapower-email-inbound

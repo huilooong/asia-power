@@ -1,0 +1,11 @@
+name = "asiapower-email-inbound"
+main = "cloudflare-email-worker.js"
+compatibility_date = "2024-01-01"
+account_id = "48f9700232d51daf90f23262ade3bc26"
+workers_dev = false
+
+[vars]
+ASIAPOWER_EMAIL_WEBHOOK = "https://asia-power.com/api/email/inbound"
+ASIAPOWER_CEO_FORWARD_GMAIL = "weylonhui@gmail.com"
+
+# Set secret via: wrangler secret put ASIAPOWER_EMAIL_SECRET

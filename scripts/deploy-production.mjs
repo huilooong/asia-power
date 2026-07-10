@@ -1,77 +1,401 @@
 #!/usr/bin/env node
 /**
- * Deploy static site + API to production.
- * Usage: node scripts/deploy-production.mjs [user@host]
+ * Production deploy — split targets + Release Manager (OPS-004 / OPS-005).
+ *
+ * Usage:
+ *   node scripts/deploy-production.mjs <target> [--yes] [--allow-dirty] [user@host]
+ *
+ * Gate (CEO 2026-07-10): commit → push GitHub → then this script.
+ * Default rejects dirty tree and unpushed HEAD.
+ * Emergency only: DEPLOY_ALLOW_DIRTY=1 + --allow-dirty; DEPLOY_ALLOW_UNPUSHED=1 (both logged).
+ *
+ * Targets: nginx | api | engines | apsales | finalize
  */
 import { spawnSync } from 'child_process';
-import crypto from 'crypto';
 import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
+import {
+  TARGET_REMOTE_PATHS,
+  buildReleaseRecord,
+  generateReleaseId,
+  printDeploymentSummary,
+  runPostDeployValidation,
+  runPreDeployValidation,
+  snapshotRemotePaths,
+  writeReleaseJson,
+} from './lib/release-manager.mjs';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const ROOT = path.join(__dirname, '..');
-const REMOTE = process.argv[2] || 'root@159.65.86.24';
+const rawArgs = process.argv.slice(2);
+const flags = new Set(rawArgs.filter((a) => a.startsWith('--')));
+const args = rawArgs.filter((a) => !a.startsWith('--'));
+const targetArg = args.find((a) => !a.includes('@')) || 'help';
+const REMOTE = args.find((a) => a.includes('@')) || 'root@159.65.86.24';
+const YES = flags.has('--yes');
+const ALLOW_DIRTY = flags.has('--allow-dirty');
 const SITE = `${REMOTE}:/root/.openclaw/workspace/inventory-site`;
+const AP = `${REMOTE}:/root/.openclaw/workspace/AsiaPower`;
+const BASE_URL = process.env.SITE_URL || 'https://asia-power.com';
 
-const EXCLUDES = [
-  '.git', '.venv', '.venv-*', '.venv-faces', '.venv-restore311', '.venv-restore', '.venv-logo', 'gfpgan', 'data', 'server', 'deploy', 'scripts',
-  'uploads', 'node_modules', '.env', '.cursor', 'agent-transcripts', 'tmp',
-  'sitemap.xml',
-  'supplier-portal/upload-key.js',
-  // OpenClaw agent/workspace private files — must never reach the public web root.
-  // NOTE: 'guides' is a real public site section — do NOT exclude it.
-  '.openclaw', 'memory', 'backups',
-  'AGENTS.md', 'SOUL.md', 'MEMORY.md', 'USER.md', 'TOOLS.md', 'IDENTITY.md', 'HEARTBEAT.md', 'BOOTSTRAP.md',
-  // Python backend source — server-side only, must NEVER be web-downloadable.
-  // (line 35 rsyncs the tree into public/; the web root is static assets + node only.)
-  'coo_core', 'customer_gateway', 'truth', 'config', 'agents', 'audit', 'integrations', 'core', 'tools', 'tests',
-  '*.py', '*.pyc', '__pycache__', 'requirements.txt', 'pyproject.toml', '.venv*',
-];
-
-function rsync(local, remote, extra = []) {
-  const args = ['-av', ...EXCLUDES.flatMap((e) => ['--exclude', e]), ...extra, `${local}/`, remote];
-  const r = spawnSync('rsync', args, { stdio: 'inherit' });
+function run(cmd, argv, opts = {}) {
+  const r = spawnSync(cmd, argv, { stdio: 'inherit', ...opts });
   if (r.status !== 0) process.exit(r.status ?? 1);
 }
 
-console.log('[deploy] syncing static site → public/');
-rsync(ROOT, `${SITE}/public/`);
+function rsync(local, remote, extra = []) {
+  run('rsync', ['-av', ...extra, local, remote]);
+}
 
-console.log('[deploy] syncing server.js + lib/');
-spawnSync('rsync', ['-av', `${ROOT}/deploy/inventory-site-server.js`, `${SITE}/server.js`], { stdio: 'inherit' });
-spawnSync('rsync', ['-av', `${ROOT}/server/lib/`, `${SITE}/lib/`], { stdio: 'inherit' });
-spawnSync('rsync', ['-av', `${ROOT}/deploy/inventory-site.service`, `${REMOTE}:/etc/systemd/system/inventory-site.service`], { stdio: 'inherit' });
-spawnSync('rsync', ['-av', `${ROOT}/deploy/health-watch.sh`, `${REMOTE}:/usr/local/bin/asiapower-health-watch.sh`], { stdio: 'inherit' });
+function ssh(script) {
+  run('ssh', [REMOTE, script]);
+}
 
-console.log('[deploy] syncing reminder + backup scripts');
-fs.mkdirSync(path.join(ROOT, 'deploy', 'inventory-site-scripts'), { recursive: true });
-spawnSync('rsync', ['-av', `${ROOT}/deploy/inventory-site-scripts/backup-inventory-site.sh`, `${SITE}/scripts/`], { stdio: 'inherit' });
-spawnSync('rsync', ['-av',
-  `${ROOT}/scripts/telegram-lead-reminder.js`,
-  `${ROOT}/scripts/telegram-daily-report.js`,
-  `${ROOT}/scripts/telegram-hourly-report.js`,
-  `${ROOT}/scripts/telegram-memory-watch.js`,
-  `${ROOT}/scripts/telegram-backup-alert.js`,
-  `${ROOT}/scripts/telegram-whatsapp-inquiry-watch.js`,
-  `${ROOT}/scripts/sync-data-backup-r2.mjs`,
-  `${ROOT}/scripts/telegram-common.js`,
-  `${ROOT}/scripts/fix-inventory-record.mjs`,
-  `${ROOT}/scripts/fix-truck-listing-meta.mjs`,
-  `${ROOT}/scripts/optimize-inventory-photos.mjs`,
-  `${ROOT}/scripts/compress-inventory-videos.mjs`,
-  `${ROOT}/scripts/fix-hc250081-lonking.mjs`,
-  `${ROOT}/scripts/fix-hc250107-machinery.mjs`,
-  `${SITE}/scripts/`,
-], { stdio: 'inherit' });
-spawnSync('rsync', ['-av', `${ROOT}/package.json`, `${ROOT}/package-lock.json`, `${SITE}/`], { stdio: 'inherit' });
-spawnSync('rsync', ['-av', `${ROOT}/scripts/setup-r2-cors.mjs`, `${SITE}/scripts/`], { stdio: 'inherit' });
+function deployNginx() {
+  console.log('[deploy:nginx] syncing rate-limit + vhost templates');
+  rsync(`${ROOT}/deploy/nginx-rate-limit.conf`, `${REMOTE}:/etc/nginx/conf.d/asiapower-rate-limit.conf`);
+  rsync(`${ROOT}/deploy/nginx-asia-power.com`, `${REMOTE}:/etc/nginx/sites-available/asia-power.com`);
+  if (fs.existsSync(path.join(ROOT, 'deploy/nginx-security.conf'))) {
+    rsync(`${ROOT}/deploy/nginx-security.conf`, `${REMOTE}:/etc/nginx/conf.d/asiapower-security.conf`);
+  }
+  rsync(`${ROOT}/deploy/asiapower-trusted-upload-ips.map.example`, `${SITE}/deploy/`);
+  console.log('[deploy:nginx] activate sites-available → sites-enabled (symlink)');
+  ssh(`
+set -e
+ln -sfn /etc/nginx/sites-available/asia-power.com /etc/nginx/sites-enabled/asia-power.com
+nginx -t
+systemctl reload nginx
+echo "[deploy:nginx] nginx reloaded OK"
+`);
+}
 
-console.log('[deploy] syncing nginx config');
-spawnSync('rsync', ['-av', `${ROOT}/deploy/nginx-asia-power.com`, `${REMOTE}:/etc/nginx/sites-available/asia-power.com`], { stdio: 'inherit' });
-spawnSync('rsync', ['-av', `${ROOT}/deploy/nginx-rate-limit.conf`, `${REMOTE}:/etc/nginx/conf.d/asiapower-rate-limit.conf`], { stdio: 'inherit' });
+function deployApi() {
+  console.log('[deploy:api] syncing server.js + lib/ (merge, no --delete)');
+  rsync(`${ROOT}/deploy/inventory-site-server.js`, `${SITE}/server.js`);
+  // Do NOT use --delete: production lib/ may contain hotfix-only modules; deleting breaks approve/normalize.
+  run('rsync', ['-av', `${ROOT}/server/lib/`, `${SITE}/lib/`]);
+  rsync(`${ROOT}/deploy/inventory-site.service`, `${REMOTE}:/etc/systemd/system/inventory-site.service`);
+  rsync(`${ROOT}/deploy/health-watch.sh`, `${REMOTE}:/usr/local/bin/asiapower-health-watch.sh`);
+  if (fs.existsSync(path.join(ROOT, 'package-lock.json'))) {
+    rsync(`${ROOT}/package.json`, `${SITE}/package.json`);
+    rsync(`${ROOT}/package-lock.json`, `${SITE}/package-lock.json`);
+  } else {
+    rsync(`${ROOT}/package.json`, `${SITE}/package.json`);
+  }
+  ssh(`
+set -e
+for f in machinery-brand-catalog.js powertrain-catalog-memory.js powertrain-labels.js static-powertrain-catalog.js; do
+  test -f /root/.openclaw/workspace/inventory-site/lib/"$f" || { echo "missing lib/$f"; exit 1; }
+done
+node --check /root/.openclaw/workspace/inventory-site/server.js
+systemctl daemon-reload
+chmod +x /usr/local/bin/asiapower-health-watch.sh 2>/dev/null || true
+if [ -f /root/.openclaw/workspace/inventory-site/package.json ]; then
+  cd /root/.openclaw/workspace/inventory-site && npm install --omit=dev 2>/dev/null || npm install || true
+fi
+systemctl restart inventory-site.service
+systemctl is-active inventory-site.service
+echo "[deploy:api] inventory-site restarted OK"
+`);
+}
 
-const remoteScript = `
+function deployEngines() {
+  console.log('[deploy:engines] syncing engines/*.html only');
+  run('rsync', ['-av', '--include=*.html', '--exclude=*', `${ROOT}/engines/`, `${SITE}/public/engines/`]);
+  ssh('rm -f /root/.openclaw/workspace/inventory-site/public/sitemap.xml || true');
+}
+
+/** Homepage only — v4-hybrid (does NOT rsync full public/) */
+function deployHome() {
+  console.log('[deploy:home] syncing v4-hybrid homepage files only');
+  const pub = `${SITE}/public`;
+  rsync(`${ROOT}/index.html`, `${pub}/index.html`);
+  rsync(`${ROOT}/css/home-v4-hybrid.css`, `${pub}/css/home-v4-hybrid.css`);
+  rsync(`${ROOT}/css/styles.css`, `${pub}/css/styles.css`);
+  rsync(`${ROOT}/js/home-v4-hybrid.js`, `${pub}/js/home-v4-hybrid.js`);
+  rsync(`${ROOT}/js/components.js`, `${pub}/js/components.js`);
+  rsync(`${ROOT}/js/public-i18n.js`, `${pub}/js/public-i18n.js`);
+  rsync(`${ROOT}/js/path-utils.js`, `${pub}/js/path-utils.js`);
+  rsync(`${ROOT}/sw.js`, `${pub}/sw.js`);
+  rsync(`${ROOT}/assets/home-v4-inventory-snapshot.json`, `${pub}/assets/home-v4-inventory-snapshot.json`);
+  ssh(`
+set -e
+PUB=/root/.openclaw/workspace/inventory-site/public
+test -f "$PUB/index.html"
+test -f "$PUB/css/home-v4-hybrid.css"
+test -f "$PUB/css/styles.css"
+test -f "$PUB/js/home-v4-hybrid.js"
+test -f "$PUB/js/public-i18n.js"
+test -f "$PUB/assets/home-v4-inventory-snapshot.json"
+grep -q 'page-home-v4-hybrid' "$PUB/index.html"
+grep -q 'home-v4-hybrid' "$PUB/index.html"
+grep -q 'home-lang-v1' "$PUB/index.html"
+grep -q 'lang-sync-v2\|auth-nav-once-v2' "$PUB/index.html"
+grep -q 'lang-sync-v2' "$PUB/css/styles.css"
+grep -q 'home.v4.hero.title' "$PUB/index.html"
+grep -q 'data-ap-auth-slot' "$PUB/index.html"
+grep -q 'auth-nav-once-v2' "$PUB/index.html"
+grep -q 'nav-list-direct-v1' "$PUB/index.html"
+grep -q 'href="/half-cuts/"' "$PUB/index.html"
+grep -q 'href="/engines/"' "$PUB/index.html"
+grep -q 'href="/trucks/"' "$PUB/index.html"
+grep -q 'href="/machinery/"' "$PUB/index.html"
+grep -q 'href="/half-cuts/?cat=used-cars"' "$PUB/index.html"
+grep -q 'nav-list-direct-v1' "$PUB/js/home-v4-hybrid.js"
+echo "[deploy:home] files OK on remote"
+`);
+}
+
+/** Login / register / buyer+supplier portals (does NOT rsync full public/) */
+function deployPortal() {
+  console.log('[deploy:portal] syncing login + portal pages');
+  const pub = `${SITE}/public`;
+  ssh('mkdir -p /root/.openclaw/workspace/inventory-site/public/login /root/.openclaw/workspace/inventory-site/public/buyer-portal /root/.openclaw/workspace/inventory-site/public/supplier-portal /root/.openclaw/workspace/inventory-site/public/css /root/.openclaw/workspace/inventory-site/public/js');
+  rsync(`${ROOT}/login/index.html`, `${pub}/login/index.html`);
+  rsync(`${ROOT}/css/login.css`, `${pub}/css/login.css`);
+  rsync(`${ROOT}/css/portal-app.css`, `${pub}/css/portal-app.css`);
+  rsync(`${ROOT}/js/login.js`, `${pub}/js/login.js`);
+  rsync(`${ROOT}/js/buyer-portal.js`, `${pub}/js/buyer-portal.js`);
+  rsync(`${ROOT}/js/supplier-dashboard.js`, `${pub}/js/supplier-dashboard.js`);
+  rsync(`${ROOT}/js/v4-portal-shell.js`, `${pub}/js/v4-portal-shell.js`);
+  rsync(`${ROOT}/js/main.js`, `${pub}/js/main.js`);
+  rsync(`${ROOT}/js/public-i18n.js`, `${pub}/js/public-i18n.js`);
+  rsync(`${ROOT}/buyer-portal/index.html`, `${pub}/buyer-portal/index.html`);
+  rsync(`${ROOT}/supplier-portal/dashboard.html`, `${pub}/supplier-portal/dashboard.html`);
+  rsync(`${ROOT}/supplier-portal.html`, `${pub}/supplier-portal.html`);
+  ssh(`
+set -e
+PUB=/root/.openclaw/workspace/inventory-site/public
+test -f "$PUB/login/index.html"
+test -f "$PUB/js/login.js"
+test -f "$PUB/css/login.css"
+test -f "$PUB/css/portal-app.css"
+test -f "$PUB/buyer-portal/index.html"
+test -f "$PUB/supplier-portal/dashboard.html"
+test -f "$PUB/supplier-portal.html"
+grep -q 'data-ap-auth-slot' "$PUB/js/v4-portal-shell.js"
+grep -E -q 'AsiaPowerAuthNav|data-ap-account' "$PUB/js/v4-portal-shell.js"
+grep -q 'supplier-register-box' "$PUB/login/index.html"
+grep -q 'buyer-password-box' "$PUB/login/index.html"
+grep -q 'supplier-password-box' "$PUB/login/index.html"
+grep -q '/api/auth/phone/password/login' "$PUB/js/login.js"
+grep -q '/api/supplier/register' "$PUB/js/login.js"
+grep -q 'mode=register' "$PUB/supplier-portal.html"
+echo "[deploy:portal] files OK on remote"
+`);
+}
+
+/** Public chrome + catalog listing shells (v4 listing cards / sidebar). Includes about/contact/brands for shared topbar chrome. */
+function deployChrome() {
+  console.log('[deploy:chrome] syncing listing chrome + catalog shells + static chrome pages');
+  const pub = `${SITE}/public`;
+  ssh('mkdir -p /root/.openclaw/workspace/inventory-site/public/css /root/.openclaw/workspace/inventory-site/public/js /root/.openclaw/workspace/inventory-site/public/half-cuts /root/.openclaw/workspace/inventory-site/public/trucks /root/.openclaw/workspace/inventory-site/public/machinery /root/.openclaw/workspace/inventory-site/public/engines /root/.openclaw/workspace/inventory-site/public/gearboxes /root/.openclaw/workspace/inventory-site/public/front-cuts /root/.openclaw/workspace/inventory-site/public/chassis-parts');
+  // Shared listing assets
+  rsync(`${ROOT}/js/components.js`, `${pub}/js/components.js`);
+  rsync(`${ROOT}/js/public-i18n.js`, `${pub}/js/public-i18n.js`);
+  rsync(`${ROOT}/js/ebay-layout.js`, `${pub}/js/ebay-layout.js`);
+  rsync(`${ROOT}/js/half-cut-directory.js`, `${pub}/js/half-cut-directory.js`);
+  rsync(`${ROOT}/js/catalog-search-aliases.js`, `${pub}/js/catalog-search-aliases.js`);
+  rsync(`${ROOT}/js/ebay-catalog-hub.js`, `${pub}/js/ebay-catalog-hub.js`);
+  rsync(`${ROOT}/js/half-cut-catalog.js`, `${pub}/js/half-cut-catalog.js`);
+  rsync(`${ROOT}/js/home-hub.js`, `${pub}/js/home-hub.js`);
+  rsync(`${ROOT}/css/ebay-layout.css`, `${pub}/css/ebay-layout.css`);
+  rsync(`${ROOT}/css/styles.css`, `${pub}/css/styles.css`);
+  rsync(`${ROOT}/css/login.css`, `${pub}/css/login.css`);
+  // Parts catalog placeholders (category marketing + brand SVG) — display only
+  ssh('mkdir -p /root/.openclaw/workspace/inventory-site/public/assets/images');
+  rsync(`${ROOT}/assets/images/parts-placeholder.svg`, `${pub}/assets/images/parts-placeholder.svg`);
+  // Detail shells (chrome header cache-bust)
+  rsync(`${ROOT}/half-cuts/detail.html`, `${pub}/half-cuts/detail.html`);
+  rsync(`${ROOT}/trucks/detail.html`, `${pub}/trucks/detail.html`);
+  rsync(`${ROOT}/machinery/detail.html`, `${pub}/machinery/detail.html`);
+  // Detail page must always upgrade truncated catalog photos → full album
+  rsync(`${ROOT}/js/half-cut-detail.js`, `${pub}/js/half-cut-detail.js`);
+  // Catalog indexes + static chrome (about/contact/countries/brands). engines/*.html SEO → deploy engines.
+  for (const rel of [
+    'half-cuts/index.html',
+    'trucks/index.html',
+    'machinery/index.html',
+    'engines/index.html',
+    'gearboxes/index.html',
+    'front-cuts/index.html',
+    'chassis-parts/index.html',
+    'about.html',
+    'contact.html',
+    'brands.html',
+    'app.html',
+    'ghana.html',
+    'nigeria.html',
+    'kenya.html',
+  ]) {
+    rsync(`${ROOT}/${rel}`, `${pub}/${rel}`);
+  }
+  ssh('mkdir -p /root/.openclaw/workspace/inventory-site/public/brands');
+  run('rsync', ['-av', '--include=*.html', '--exclude=*', `${ROOT}/brands/`, `${pub}/brands/`]);
+  ssh(`
+set -e
+PUB=/root/.openclaw/workspace/inventory-site/public
+test -f "$PUB/js/components.js"
+test -f "$PUB/js/public-i18n.js"
+test -f "$PUB/js/ebay-layout.js"
+test -f "$PUB/js/half-cut-directory.js"
+test -f "$PUB/js/ebay-catalog-hub.js"
+test -f "$PUB/js/half-cut-detail.js"
+test -f "$PUB/css/ebay-layout.css"
+test -f "$PUB/css/styles.css"
+test -f "$PUB/about.html"
+test -f "$PUB/contact.html"
+test -f "$PUB/kenya.html"
+test -f "$PUB/brands.html"
+test -f "$PUB/brands/toyota.html"
+test -f "$PUB/app.html"
+grep -q 'AsiaPowerAuthNav' "$PUB/js/components.js"
+grep -q 'auth-nav-once-v2' "$PUB/js/components.js"
+grep -q 'about-type-v2' "$PUB/js/components.js"
+grep -q 'about-type-v2' "$PUB/js/components.js"
+grep -q 'data-ap-auth-slot' "$PUB/js/components.js"
+! grep -q 'ebay-header__actions' "$PUB/js/components.js"
+grep -q 'integrity-audit-v1' "$PUB/js/components.js"
+grep -q 'parts-photo-v2' "$PUB/js/components.js"
+grep -q 'parts-placeholder-v1' "$PUB/js/components.js"
+grep -q 'partsCatalogPlaceholderSrc' "$PUB/js/half-cut-directory.js"
+grep -q 'Explicit dedicated signals win' "$PUB/js/half-cut-directory.js"
+grep -q 'isDedicatedPartListing' "$PUB/js/half-cut-directory.js"
+grep -q 'rule + dedicated parallel' "$PUB/js/ebay-catalog-hub.js"
+grep -q 'parts-parallel-v1' "$PUB/js/components.js"
+grep -q 'stock-id-search-v1' "$PUB/js/components.js"
+grep -q 'stock-id-search-v1' "$PUB/js/half-cut-directory.js"
+grep -q 'stock-id-search-v1' "$PUB/js/ebay-catalog-hub.js"
+grep -q 'catalog-search-v1' "$PUB/js/components.js"
+grep -q 'catalog-search-v1' "$PUB/js/half-cut-directory.js"
+grep -q 'matchesCatalogSearch' "$PUB/js/half-cut-directory.js"
+grep -q 'mergeCatalogSearchHitsIntoInventory' "$PUB/js/half-cut-directory.js"
+grep -q 'matchesCatalogSearch' "$PUB/js/ebay-catalog-hub.js"
+grep -q 'AsiaPowerCatalogSearchAliases' "$PUB/js/catalog-search-aliases.js"
+grep -q 'isStockIdQuery' "$PUB/js/half-cut-catalog.js"
+grep -q 'mergeStockIdHitsIntoInventory' "$PUB/js/half-cut-directory.js"
+grep -q 'isStockIdQuery' "$PUB/js/half-cut-directory.js"
+grep -q 'dedicated-price-v1' "$PUB/js/components.js"
+grep -q 'formatCatalogPartPrice' "$PUB/js/half-cut-directory.js"
+grep -q 'catalogPartPriceAmount' "$PUB/js/half-cut-directory.js"
+grep -q 'formatCatalogPartPrice' "$PUB/js/ebay-catalog-hub.js"
+grep -E -q 'half-cut-directory\.js\?v=(parts-parallel-v1|stock-id-search-v1|stock-id-search-v2|dedicated-price-v1|catalog-search-v1|catalog-search-v2)' "$PUB/half-cuts/index.html"
+grep -E -q 'ebay-catalog-hub\.js\?v=(parts-parallel-v1|stock-id-search-v1|stock-id-search-v2|dedicated-price-v1|catalog-search-v1|catalog-search-v2)' "$PUB/half-cuts/index.html"
+grep -E -q 'half-cut-directory\.js\?v=(stock-id-search-v2|dedicated-price-v1|catalog-search-v1|catalog-search-v2)' "$PUB/gearboxes/index.html"
+grep -E -q 'ebay-catalog-hub\.js\?v=(stock-id-search-v2|dedicated-price-v1|catalog-search-v1|catalog-search-v2)' "$PUB/gearboxes/index.html"
+grep -E -q 'catalog-search-v1|catalog-search-v2|stock-id-search-v[12]' "$PUB/half-cuts/index.html"
+grep -q 'catalog-search-aliases.js' "$PUB/half-cuts/index.html"
+grep -q 'hc.exwBadge' "$PUB/js/public-i18n.js"
+grep -q 'ebay-sidebar__brands' "$PUB/js/ebay-layout.js"
+grep -q 'exwBadgeHtml' "$PUB/js/half-cut-directory.js"
+grep -q 'productImages,' "$PUB/js/half-cut-directory.js"
+grep -q 'fetchPublicItemBySlug' "$PUB/js/half-cut-detail.js"
+grep -q "params.get('id')" "$PUB/js/half-cut-detail.js"
+grep -q 'parts-parallel-v1' "$PUB/half-cuts/detail.html"
+grep -q 'ebay-sidebar--v4' "$PUB/css/ebay-layout.css"
+grep -qF -- '--ebay-list-photo-w: 200px' "$PUB/css/ebay-layout.css"
+grep -q 'photo--parts-ph' "$PUB/css/ebay-layout.css"
+grep -q 'about-type-v2' "$PUB/css/ebay-layout.css"
+grep -qF -- '--about-ink' "$PUB/css/ebay-layout.css"
+grep -qF -- '--about-muted' "$PUB/css/ebay-layout.css"
+grep -q 'about-type-v2' "$PUB/about.html"
+grep -q 'about-type-v2' "$PUB/contact.html"
+grep -q 'ebay-contact-section' "$PUB/css/ebay-layout.css"
+grep -q 'max-width: 920px' "$PUB/css/ebay-layout.css"
+grep -q 'about-type-v2' "$PUB/kenya.html"
+grep -q 'about-type-v2' "$PUB/brands/toyota.html"
+grep -q 'about-type-v2' "$PUB/half-cuts/index.html"
+grep -E -q 'catalog-search-v1|catalog-search-v2|stock-id-search-v[12]' "$PUB/half-cuts/index.html"
+grep -q 'about-type-v2' "$PUB/engines/index.html"
+grep -E -q 'catalog-search-v1|catalog-search-v2|stock-id-search-v[12]|dedicated-price-v1' "$PUB/engines/index.html"
+test -f "$PUB/assets/images/parts-placeholder.svg"
+echo "[deploy:chrome] listing + static chrome OK on remote"
+`);
+}
+
+/** Admin IA reorg — inventory / leads / analytics / growth (does NOT touch public homepage) */
+function deployAdmin() {
+  console.log('[deploy:admin] syncing admin IA reorg pages + helpers (no index.html)');
+  const pub = `${SITE}/public`;
+  ssh('mkdir -p /root/.openclaw/workspace/inventory-site/public/admin /root/.openclaw/workspace/inventory-site/public/css /root/.openclaw/workspace/inventory-site/public/js');
+  rsync(`${ROOT}/css/admin-v4.css`, `${pub}/css/admin-v4.css`);
+  rsync(`${ROOT}/js/components.js`, `${pub}/js/components.js`);
+  rsync(`${ROOT}/js/admin-common.js`, `${pub}/js/admin-common.js`);
+  rsync(`${ROOT}/js/admin-inventory.js`, `${pub}/js/admin-inventory.js`);
+  rsync(`${ROOT}/js/admin-inventory-hub.js`, `${pub}/js/admin-inventory-hub.js`);
+  rsync(`${ROOT}/js/admin-analytics.js`, `${pub}/js/admin-analytics.js`);
+  rsync(`${ROOT}/js/admin-leads.js`, `${pub}/js/admin-leads.js`);
+  rsync(`${ROOT}/js/admin-apsales-progress.js`, `${pub}/js/admin-apsales-progress.js`);
+  rsync(`${ROOT}/admin/inventory.html`, `${pub}/admin/inventory.html`);
+  rsync(`${ROOT}/admin/analytics.html`, `${pub}/admin/analytics.html`);
+  rsync(`${ROOT}/admin/leads.html`, `${pub}/admin/leads.html`);
+  rsync(`${ROOT}/admin/apsales-progress.html`, `${pub}/admin/apsales-progress.html`);
+  ssh(`
+set -e
+PUB=/root/.openclaw/workspace/inventory-site/public
+test -f "$PUB/css/admin-v4.css"
+test -f "$PUB/js/admin-common.js"
+test -f "$PUB/js/admin-analytics.js"
+test -f "$PUB/js/admin-inventory-hub.js"
+test -f "$PUB/admin/inventory.html"
+test -f "$PUB/admin/analytics.html"
+test -f "$PUB/admin/leads.html"
+test -f "$PUB/admin/apsales-progress.html"
+# IA markers
+grep -q 'admin-ia-reorg-v1' "$PUB/admin/inventory.html"
+grep -q 'admin-ia-reorg-v1' "$PUB/admin/analytics.html"
+grep -q 'data-admin-ia="analytics-only-v1"' "$PUB/js/admin-analytics.js" || grep -q 'analytics-only-v1' "$PUB/js/admin-analytics.js"
+grep -q '访问统计' "$PUB/js/components.js"
+grep -q 'apsales-progress.html' "$PUB/js/components.js"
+grep -q 'data-admin-google-login' "$PUB/js/admin-common.js"
+# Must NOT have embedded inventory review tabs on analytics page scripts list
+! grep -q 'admin-inventory-hub' "$PUB/admin/analytics.html"
+# Homepage must remain untouched by this target (sanity: index still exists, we did not rsync it)
+test -f "$PUB/index.html"
+echo "[deploy:admin] files OK on remote (homepage not in this rsync set)"
+`);
+}
+
+function deployApsales() {
+  console.log('[deploy:apsales] syncing growth autopilot scripts');
+  run('rsync', ['-av',
+    `${ROOT}/scripts/apsales-growth-autopilot.py`,
+    `${ROOT}/scripts/apsales-social-reply-watch.py`,
+    `${ROOT}/scripts/apsales-record-distribution-action.py`,
+    `${ROOT}/scripts/apsales-distribution-daily-digest.py`,
+    `${AP}/scripts/`,
+  ]);
+  run('rsync', ['-av',
+    `${ROOT}/customer_gateway/growth_autopilot.py`,
+    `${ROOT}/customer_gateway/outreach_engine.py`,
+    `${ROOT}/customer_gateway/distribution_progress.py`,
+    `${AP}/customer_gateway/`,
+  ]);
+}
+
+function deployFinalize() {
+  rsync(`${ROOT}/deploy/inventory-site-scripts/backup-inventory-site.sh`, `${SITE}/scripts/`);
+  run('rsync', ['-av',
+    `${ROOT}/scripts/telegram-lead-reminder.js`,
+    `${ROOT}/scripts/telegram-daily-report.js`,
+    `${ROOT}/scripts/telegram-hourly-report.js`,
+    `${ROOT}/scripts/telegram-memory-watch.js`,
+    `${ROOT}/scripts/telegram-backup-alert.js`,
+    `${ROOT}/scripts/telegram-whatsapp-inquiry-watch.js`,
+    `${ROOT}/scripts/sync-data-backup-r2.mjs`,
+    `${ROOT}/scripts/telegram-common.js`,
+    `${ROOT}/scripts/fix-inventory-record.mjs`,
+    `${ROOT}/scripts/fix-truck-listing-meta.mjs`,
+    `${ROOT}/scripts/optimize-inventory-photos.mjs`,
+    `${ROOT}/scripts/compress-inventory-videos.mjs`,
+    `${ROOT}/scripts/fix-hc250081-lonking.mjs`,
+    `${ROOT}/scripts/fix-hc250107-machinery.mjs`,
+    `${SITE}/scripts/`,
+  ]);
+  rsync(`${ROOT}/scripts/setup-r2-cors.mjs`, `${SITE}/scripts/`);
+
+  const remoteScript = `
 set -e
 ENV=/root/.openclaw/workspace/inventory-site/.env
 SITE=/root/.openclaw/workspace/inventory-site
@@ -104,18 +428,17 @@ ensure_env() {
 ensure_env MAX_CONCURRENT_SERVER_PHOTO_UPLOADS 40
 ensure_env MAX_CONCURRENT_SERVER_VIDEO_UPLOADS 4
 ensure_env SERVER_UPLOAD_MEMORY_BUDGET_MB 400
+GEO=/etc/nginx/conf.d/asiapower-trusted-upload-ips.map
+echo "# Auto-generated — empty key exempts IP from upload nginx rate limit" > "$GEO"
+IPS=$(grep "^TRUSTED_SUPPLIER_UPLOAD_IPS=" "$ENV" 2>/dev/null | cut -d= -f2- | tr ',' ' ')
+for ip in $IPS; do
+  ip=$(echo "$ip" | xargs)
+  [ -n "$ip" ] && printf '%s "";\n' "$ip" >> "$GEO"
+done
 KEY=$(grep "^SUPPLIER_UPLOAD_KEY=" "$ENV" | cut -d= -f2-)
 printf "// Temporary supplier upload gate. This is public to the browser; do not treat it as a supplier account credential.\\nwindow.SUPPLIER_UPLOAD_KEY='%s';\\n" "$KEY" > "$SITE/public/supplier-portal/upload-key.js"
 chmod +x "$SITE/scripts/backup-inventory-site.sh" 2>/dev/null || true
-if [ -x "$SITE/scripts/backup-inventory-site.sh" ]; then
-  bash "$SITE/scripts/backup-inventory-site.sh" --data-only || echo "[deploy] pre-deploy data backup failed (non-fatal)"
-fi
 rm -rf "$SITE/public/.git" "$SITE/public/.venv" "$SITE/public/.venv-"* "$SITE/public/gfpgan" 2>/dev/null || true
-node --check "$SITE/server.js"
-chmod +x /usr/local/bin/asiapower-health-watch.sh 2>/dev/null || true
-systemctl daemon-reload
-nginx -t
-# Let nginx serve static assets without proxying through Node
 PUB="$SITE/public"
 UP="$SITE/uploads/photos"
 for DIR in /root /root/.openclaw /root/.openclaw/workspace "$SITE" "$PUB" "$PUB/css" "$PUB/js" "$PUB/assets" "$SITE/uploads" "$UP"; do
@@ -123,28 +446,6 @@ for DIR in /root /root/.openclaw /root/.openclaw/workspace "$SITE" "$PUB" "$PUB/
 done
 [ -d "$PUB/css" ] && find "$PUB/css" "$PUB/js" "$PUB/assets" -type f -exec chmod o+r {} + 2>/dev/null || true
 [ -d "$UP" ] && find "$UP" -type f -exec chmod o+r {} + 2>/dev/null || true
-systemctl reload nginx
-systemctl restart inventory-site.service
-systemctl is-active nginx inventory-site.service
-if [ -f "$SITE/scripts/fix-inventory-record.mjs" ]; then
-  node "$SITE/scripts/fix-inventory-record.mjs" --root "$SITE" --stock HC250051 --engine EA211 && echo "[deploy] patched Audi Q3 engineCode -> EA211" || echo "[deploy] Q3 patch skipped (stock not found or already updated)"
-  node "$SITE/scripts/fix-inventory-record.mjs" --root "$SITE" --stock HC250058 \
-    --brand Isuzu --model "100P" --engine "4JB1" --transmission "MSB-5MT" --year 2013 \
-    --category truck --condition "Truck Half Cut" --drivetrain "4x2" --origin "China (Qingling)" \
-    --description "2013 Qingling Isuzu 100P light truck (庆铃五十铃100P) with 2.771L 4JB1 diesel (~98 hp) and 5-speed MSB-5MT manual. China-built light commercial — VIN prefix LWLDNA indicates Qingling Chongqing assembly. Ideal for engine, cab, chassis and driveline export." \
-    --parts "Engine & turbo,MSB-5MT transmission,Cab/front clip,Front axle & steering,Radiator & intercooler,Front wiring harness" \
-    && echo "[deploy] migrated HC250058 -> Qingling Isuzu 100P truck catalog" \
-    || echo "[deploy] HC250058 truck patch skipped (not found or already updated)"
-fi
-if [ -f "$SITE/scripts/fix-truck-listing-meta.mjs" ]; then
-  node "$SITE/scripts/fix-truck-listing-meta.mjs" --root "$SITE" && echo "[deploy] normalized truck/cab listing metadata" || echo "[deploy] truck/cab metadata fix skipped"
-fi
-if [ -f "$SITE/scripts/fix-hc250107-machinery.mjs" ]; then
-  node "$SITE/scripts/fix-hc250107-machinery.mjs" --root "$SITE" && echo "[deploy] HC250107 -> machinery (mobile crane)" || echo "[deploy] HC250107 machinery patch skipped"
-fi
-if [ -f "$SITE/package.json" ]; then
-  cd "$SITE" && npm install --omit=dev 2>/dev/null || npm install || echo "[deploy] npm install skipped"
-fi
 CRON_MARK="# asiapower-lead-reminder"
 CRON_LINE="*/15 * * * * cd $SITE && /usr/bin/node scripts/telegram-lead-reminder.js >> /var/log/asiapower-lead-reminder.log 2>&1"
 DAILY_MARK="# asiapower-daily-report"
@@ -161,45 +462,146 @@ BACKUP_MARK="# asiapower-daily-backup"
 BACKUP_LINE="0 3 * * * cd $SITE && bash scripts/backup-inventory-site.sh >> /var/log/asiapower-backup.log 2>&1"
 R2BACKUP_MARK="# asiapower-r2-data-backup"
 R2BACKUP_LINE="15 3 * * * cd $SITE && /usr/bin/node scripts/sync-data-backup-r2.mjs --root $SITE >> /var/log/asiapower-r2-data-backup.log 2>&1"
-(crontab -l 2>/dev/null \
-  | grep -v 'telegram-lead-reminder.js' \
-  | grep -v 'telegram-daily-report.js' \
-  | grep -v 'telegram-hourly-report.js' \
-  | grep -v 'telegram-memory-watch.js' \
-  | grep -v 'telegram-whatsapp-inquiry-watch.js' \
-  | grep -v 'backup-inventory-site.sh' \
-  | grep -v 'sync-data-backup-r2.mjs' \
-  | grep -v 'asiapower-health-watch' \
-  | grep -v "$CRON_MARK" | grep -v "$DAILY_MARK" | grep -v "$HOURLY_MARK" | grep -v "$WHATSAPP_MARK" | grep -v "$MEMORY_MARK" | grep -v "$HEALTH_MARK" | grep -v "$BACKUP_MARK" | grep -v "$R2BACKUP_MARK"; \
-  echo "$CRON_MARK"; echo "$CRON_LINE"; \
-  echo "$DAILY_MARK"; echo "$DAILY_LINE"; \
-  echo "$HOURLY_MARK"; echo "$HOURLY_LINE"; \
-  echo "$WHATSAPP_MARK"; echo "$WHATSAPP_LINE"; \
-  echo "$MEMORY_MARK"; echo "$MEMORY_LINE"; \
-  echo "$HEALTH_MARK"; echo "$HEALTH_LINE"; \
-  echo "$BACKUP_MARK"; echo "$BACKUP_LINE"; \
-  echo "$R2BACKUP_MARK"; echo "$R2BACKUP_LINE") | crontab -
-echo "[deploy] done"
-if [ -n "$(grep '^CLOUDFLARE_API_TOKEN=' "$ENV" 2>/dev/null | cut -d= -f2-)" ] && [ -n "$(grep '^CLOUDFLARE_ACCOUNT_ID=' "$ENV" 2>/dev/null | cut -d= -f2-)" ]; then
-  cd "$SITE" && INVENTORY_ENV_FILE="$ENV" /usr/bin/node scripts/setup-r2-cors.mjs || echo "[deploy] r2 cors setup skipped (non-fatal)"
+GROWTH_MARK="# asiapower-apsales-growth"
+GROWTH_LINE="0 9,14,19 * * * cd /root/.openclaw/workspace/AsiaPower && .venv/bin/python3 scripts/apsales-growth-autopilot.py >> /var/log/asiapower-apsales-growth.log 2>&1"
+(crontab -l 2>/dev/null \\
+  | grep -v 'telegram-lead-reminder.js' \\
+  | grep -v 'telegram-daily-report.js' \\
+  | grep -v 'telegram-hourly-report.js' \\
+  | grep -v 'telegram-memory-watch.js' \\
+  | grep -v 'telegram-whatsapp-inquiry-watch.js' \\
+  | grep -v 'apsales-growth-autopilot.py' \\
+  | grep -v 'backup-inventory-site.sh' \\
+  | grep -v 'sync-data-backup-r2.mjs' \\
+  | grep -v 'asiapower-health-watch' \\
+  | grep -v "$CRON_MARK" | grep -v "$DAILY_MARK" | grep -v "$HOURLY_MARK" | grep -v "$WHATSAPP_MARK" | grep -v "$MEMORY_MARK" | grep -v "$HEALTH_MARK" | grep -v "$BACKUP_MARK" | grep -v "$R2BACKUP_MARK" | grep -v "$GROWTH_MARK"; \\
+  echo "$CRON_MARK"; echo "$CRON_LINE"; \\
+  echo "$DAILY_MARK"; echo "$DAILY_LINE"; \\
+  echo "$HOURLY_MARK"; echo "$HOURLY_LINE"; \\
+  echo "$WHATSAPP_MARK"; echo "$WHATSAPP_LINE"; \\
+  echo "$MEMORY_MARK"; echo "$MEMORY_LINE"; \\
+  echo "$HEALTH_MARK"; echo "$HEALTH_LINE"; \\
+  echo "$BACKUP_MARK"; echo "$BACKUP_LINE"; \\
+  echo "$R2BACKUP_MARK"; echo "$R2BACKUP_LINE"; \\
+  echo "$GROWTH_MARK"; echo "$GROWTH_LINE") | crontab -
+PYENV=/root/.openclaw/workspace/AsiaPower/.env
+if grep -q '^APSALES_GROWTH_AUTOPILOT=' "$PYENV" 2>/dev/null; then
+  sed -i 's/^APSALES_GROWTH_AUTOPILOT=.*/APSALES_GROWTH_AUTOPILOT=1/' "$PYENV"
+else
+  echo 'APSALES_GROWTH_AUTOPILOT=1' >> "$PYENV"
 fi
+if ! grep -q '^INVENTORY_SITE_ROOT=' "$PYENV" 2>/dev/null; then
+  echo "INVENTORY_SITE_ROOT=$SITE" >> "$PYENV"
+fi
+echo "[deploy:finalize] done"
 `;
-
-console.log('[deploy] remote finalize');
-const r = spawnSync('ssh', [REMOTE, remoteScript], { stdio: 'inherit' });
-if (r.status !== 0) process.exit(r.status ?? 1);
-
-console.log('[deploy] critical path regression (upload + leads)');
-const critical = spawnSync('node', [path.join(__dirname, 'test-critical-paths.mjs')], { stdio: 'inherit' });
-if (critical.status !== 0) {
-  console.error('[deploy] CRITICAL PATH CHECKS FAILED — fix upload/lead regressions before deploying');
-  process.exit(critical.status ?? 1);
+  ssh(remoteScript);
 }
 
-console.log('[deploy] verify production');
-const verify = spawnSync('node', [path.join(__dirname, 'verify-production.mjs')], { stdio: 'inherit' });
-if (verify.status !== 0) {
-  console.error('[deploy] VERIFY FAILED — site may be unstyled. See deploy/SITE-HEALTH.md');
-  process.exit(verify.status ?? 1);
+function printHelp() {
+  console.log(`AsiaPower deploy (Release Manager enabled):
+  node scripts/deploy-production.mjs <target> [--yes] [--allow-dirty] [user@host]
+
+  nginx | api | engines | apsales | finalize | home | portal | chrome | admin
+
+  REQUIRED: commit → push GitHub → then deploy (CEO red line 2026-07-10)
+  Pre-deploy:  git clean, HEAD on origin, backup, target confirmation
+  Post-deploy: nginx -t, critical URLs, release.json
+
+  Emergency only (logged): DEPLOY_ALLOW_DIRTY=1 + --allow-dirty
+                           DEPLOY_ALLOW_UNPUSHED=1
+
+  Restore:     RESTORE_CONFIRM=<ID> node scripts/release-restore.mjs <ID>`);
 }
-process.exit(0);
+
+const targets = {
+  nginx: deployNginx,
+  api: deployApi,
+  engines: deployEngines,
+  apsales: deployApsales,
+  finalize: deployFinalize,
+  home: deployHome,
+  portal: deployPortal,
+  chrome: deployChrome,
+  admin: deployAdmin,
+};
+
+async function main() {
+  if (!targets[targetArg]) {
+    printHelp();
+    process.exit(targetArg === 'help' ? 0 : 1);
+  }
+
+  const gitShort = spawnSync('git', ['rev-parse', '--short', 'HEAD'], { cwd: ROOT, encoding: 'utf8' }).stdout.trim() || '0000000';
+  const releaseId = generateReleaseId(targetArg, gitShort);
+  const timestamp = new Date().toISOString();
+
+  console.log(`[release] ID=${releaseId}`);
+  console.log(`[deploy] target=${targetArg} remote=${REMOTE}`);
+
+  const pre = runPreDeployValidation({
+    root: ROOT,
+    target: targetArg,
+    remote: REMOTE,
+    allowDirty: ALLOW_DIRTY,
+    yes: YES,
+    releaseId,
+  });
+
+  for (const c of pre.checks) {
+    console.log(`[pre] ${c.status.toUpperCase()} ${c.name}: ${c.detail}`);
+  }
+  if (pre.status === 'fail') {
+    console.error('[release] pre-deploy validation FAILED');
+    process.exit(1);
+  }
+
+  const snapOk = snapshotRemotePaths({
+    remote: REMOTE,
+    releaseId,
+    paths: TARGET_REMOTE_PATHS[targetArg] || [],
+  });
+  console.log(`[release] snapshot ${snapOk ? 'OK' : 'WARN'} → releases/${releaseId}/snapshots/`);
+
+  targets[targetArg]();
+
+  const post = await runPostDeployValidation({
+    root: ROOT,
+    target: targetArg,
+    remote: REMOTE,
+    baseUrl: BASE_URL,
+  });
+
+  for (const c of post.checks) {
+    console.log(`[post] ${c.status.toUpperCase()} ${c.name}: ${c.detail}`);
+  }
+
+  const localReleaseDir = path.join(ROOT, 'releases', releaseId);
+  const localReleaseJson = path.join(localReleaseDir, 'release.json');
+  const release = buildReleaseRecord({
+    releaseId,
+    git: pre.git,
+    target: targetArg,
+    remote: REMOTE,
+    timestamp,
+    changedFiles: pre.changed_files,
+    pre,
+    post,
+    backupPath: pre.backup_path,
+    backupMode: pre.backup_mode,
+    localReleaseJson,
+  });
+
+  writeReleaseJson({ remote: REMOTE, release, localDir: localReleaseDir });
+  printDeploymentSummary(release);
+
+  if (post.status === 'fail') {
+    console.error('[release] post-deploy validation FAILED — consider restore');
+    process.exit(1);
+  }
+}
+
+main().catch((err) => {
+  console.error('[deploy] FAILED:', err.message);
+  process.exit(1);
+});

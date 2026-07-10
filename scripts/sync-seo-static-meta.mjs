@@ -46,10 +46,28 @@ function loadBrandCatalog() {
 function upsertHeadBlock(html, block) {
   const withoutSeo = html
     .replace(/\s*<link rel="canonical"[^>]*>\n?/g, '')
+    .replace(/\s*<link rel="alternate" hreflang="[^"]*"[^>]*>\n?/g, '')
     .replace(/\s*<meta property="og:title"[^>]*>\n?/g, '')
     .replace(/\s*<meta property="og:description"[^>]*>\n?/g, '')
     .replace(/\s*<meta property="og:url"[^>]*>\n?/g, '');
   return withoutSeo.replace('</head>', `${block}\n</head>`);
+}
+
+function hreflangBlock(pageUrl) {
+  return `
+  <link rel="alternate" hreflang="en" href="${pageUrl}">
+  <link rel="alternate" hreflang="zh-Hans" href="${pageUrl}?lang=zh">
+  <link rel="alternate" hreflang="fr" href="${pageUrl}?lang=fr">
+  <link rel="alternate" hreflang="ar" href="${pageUrl}?lang=ar">
+  <link rel="alternate" hreflang="x-default" href="${pageUrl}">`;
+}
+
+function seoHeadBlock({ url, title, description, withHreflang = true }) {
+  return `
+  <link rel="canonical" href="${url}">${withHreflang ? hreflangBlock(url) : ''}
+  <meta property="og:title" content="${escapeAttr(title)}">
+  <meta property="og:description" content="${escapeAttr(description)}">
+  <meta property="og:url" content="${url}">`;
 }
 
 function syncEnginePage(slug, engine) {
@@ -67,11 +85,11 @@ function syncEnginePage(slug, engine) {
   );
   html = html.replace(/<title>[^<]*<\/title>/, `<title>${escapeAttr(engine.title)}</title>`);
 
-  const block = `
-  <link rel="canonical" href="${url}">
-  <meta property="og:title" content="${escapeAttr(engine.title)}">
-  <meta property="og:description" content="${escapeAttr(engine.description)}">
-  <meta property="og:url" content="${url}">`;
+  const block = seoHeadBlock({
+    url,
+    title: engine.title,
+    description: engine.description,
+  });
 
   fs.writeFileSync(file, upsertHeadBlock(html, block));
   return true;
@@ -95,11 +113,7 @@ function syncBrandPage(slug, brand) {
   );
   html = html.replace(/<title>[^<]*<\/title>/, `<title>${escapeAttr(title)}</title>`);
 
-  const block = `
-  <link rel="canonical" href="${url}">
-  <meta property="og:title" content="${escapeAttr(title)}">
-  <meta property="og:description" content="${escapeAttr(description)}">
-  <meta property="og:url" content="${url}">`;
+  const block = seoHeadBlock({ url, title, description });
 
   fs.writeFileSync(file, upsertHeadBlock(html, block));
   return true;

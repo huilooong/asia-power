@@ -58,8 +58,19 @@ async function main() {
   const results = [];
 
   results.push(...await fetchCheck('homepage', `${BASE}/`, {
-    includes: 'styles.css',
+    includes: 'home-v4-hybrid',
     minBytes: 2000,
+  }));
+
+  results.push(...await fetchCheck('css-home-v4', `${BASE}/css/home-v4-hybrid.css`, {
+    contentType: 'text/css',
+    minBytes: 5000,
+  }));
+
+  results.push(...await fetchCheck('js-home-v4', `${BASE}/js/home-v4-hybrid.js`, {
+    contentType: 'javascript',
+    minBytes: 1000,
+    includes: 'half-cuts/public',
   }));
 
   results.push(...await fetchCheck('css', `${BASE}/css/styles.css`, {
@@ -84,6 +95,21 @@ async function main() {
     json: { ok: true },
   }));
 
+  results.push(...await fetchCheck('leads-health', `${BASE}/api/leads/health`, {
+    json: { ok: true, inboxPage: '/admin/leads.html' },
+  }));
+
+  results.push(...await fetchCheck('admin-leads-js', `${BASE}/js/admin-leads.js`, {
+    contentType: 'javascript',
+    minBytes: 8000,
+    includes: 'function renderLeadCard',
+  }));
+
+  results.push(...await fetchCheck('admin-leads-page', `${BASE}/admin/leads.html`, {
+    includes: 'admin-leads-root',
+    minBytes: 1000,
+  }));
+
   results.push(...await fetchCheck('supplier-upload', `${BASE}/supplier-portal/half-cut-upload.html`, {
     includes: 'supplier-half-cut-upload-root',
     minBytes: 1500,
@@ -92,6 +118,31 @@ async function main() {
   results.push(...await fetchCheck('half-cuts', `${BASE}/half-cuts/`, {
     includes: 'half-cut-catalog-root',
     minBytes: 1500,
+  }));
+
+  results.push(...await fetchCheck('login-page', `${BASE}/login/`, {
+    includes: 'supplier-register-box',
+    minBytes: 1500,
+  }));
+
+  results.push(...await fetchCheck('login-js', `${BASE}/js/login.js`, {
+    includes: '/api/supplier/register',
+    minBytes: 1000,
+  }));
+
+  results.push(...await fetchCheck('supplier-dashboard', `${BASE}/supplier-portal/dashboard.html`, {
+    includes: 'supplier-dashboard',
+    minBytes: 1000,
+  }));
+
+  results.push(...await fetchCheck('buyer-portal', `${BASE}/buyer-portal/`, {
+    includes: 'buyer-portal',
+    minBytes: 800,
+  }));
+
+  results.push(...await fetchCheck('oauth-providers', `${BASE}/api/auth/oauth/providers`, {
+    includes: 'google',
+    minBytes: 20,
   }));
 
   for (const line of results) console.log(`  ✓ ${line}`);

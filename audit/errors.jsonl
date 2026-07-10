@@ -1,0 +1,4 @@
+{"timestamp": "2026-06-29T19:50:52Z", "message": "could not convert string to float: 'very_high:gray:rot0'", "context": "tool=qxb_upload action=next", "exc_type": ""}
+{"timestamp": "2026-06-29T19:52:02Z", "message": "could not convert string to float: 'very_high:gray:rot0'", "context": "tool=qxb_upload action=next", "exc_type": ""}
+{"timestamp": "2026-06-29T19:52:06Z", "message": "could not convert string to float: 'very_high:gray:rot0'", "context": "tool=qxb_upload action=next", "exc_type": ""}
+{"timestamp": "2026-06-29T19:57:54Z", "message": "HTTP Error 403: Forbidden", "context": "tool=qxb_upload action=process", "exc_type": ""}

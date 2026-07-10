@@ -1,0 +1,458 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>G4KD Engine Detail V2 Preview | AsiaPower</title>
+  <meta name="description" content="Interactive CEO preview for the AsiaPower G4KD Engine Detail Page V2 template.">
+  <style>
+    :root{
+      --bg:#f4f6f8;--panel:#fff;--ink:#101827;--muted:#647084;--line:#dfe5ee;--line2:#c8d1df;
+      --gold:#c98b1f;--gold2:#f3c766;--green:#18a058;--green2:#e9f8ef;--blue:#173a67;--steel:#202b3d;
+      --radius:10px;--shadow:0 18px 45px rgba(16,24,39,.10);--font:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif;
+    }
+    *{box-sizing:border-box}
+    html{scroll-behavior:smooth}
+    body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--font);-webkit-font-smoothing:antialiased}
+    a{color:inherit}
+    .container{max-width:1240px;margin:0 auto;padding:0 22px}
+    .topline{background:#0b1220;color:#cbd5e1;font-size:13px;border-bottom:1px solid rgba(255,255,255,.09)}
+    .topline .container{display:flex;justify-content:space-between;gap:18px;padding-top:9px;padding-bottom:9px}
+    .header{position:sticky;top:0;z-index:40;background:rgba(255,255,255,.9);backdrop-filter:blur(16px);border-bottom:1px solid var(--line)}
+    .header__inner{height:66px;display:flex;align-items:center;justify-content:space-between;gap:18px}
+    .brand{display:flex;align-items:center;gap:10px;font-weight:900;text-decoration:none}
+    .brand__mark{width:34px;height:34px;border-radius:8px;background:#111827;color:#f3c766;display:grid;place-items:center;font-weight:900}
+    .nav{display:flex;gap:8px;overflow-x:auto}
+    .nav a{text-decoration:none;color:#526071;font-size:13px;font-weight:800;padding:8px 10px;border-radius:999px;white-space:nowrap}
+    .nav a:hover,.nav a.active{background:#eef2f7;color:#101827}
+    .hero{position:relative;background:#0c1424;color:#fff;overflow:hidden}
+    .hero::after{content:"";position:absolute;inset:0;background:linear-gradient(90deg,rgba(12,20,36,.98) 0%,rgba(12,20,36,.86) 42%,rgba(12,20,36,.25) 100%);pointer-events:none}
+    .hero__media{position:absolute;inset:0;background:url("assets/g4kd-industrial-blueprint.svg") center right/cover no-repeat;opacity:.82}
+    .hero__inner{position:relative;z-index:1;min-height:660px;display:grid;grid-template-columns:minmax(0,1fr)370px;gap:32px;align-items:end;padding-top:48px;padding-bottom:34px}
+    .crumb{display:flex;gap:8px;align-items:center;color:rgba(255,255,255,.68);font-size:13px;margin-bottom:24px}
+    .crumb a{text-decoration:none;color:rgba(255,255,255,.78)}
+    .pill{display:inline-flex;align-items:center;gap:8px;border:1px solid rgba(255,255,255,.24);border-radius:999px;background:rgba(255,255,255,.08);padding:8px 12px;color:#f7d88d;font-size:12px;font-weight:900;letter-spacing:.07em;text-transform:uppercase}
+    h1{font-size:clamp(48px,8vw,104px);line-height:.92;margin:22px 0 18px;letter-spacing:-.02em;color:#fff}
+    .hero__lead{max-width:780px;color:rgba(255,255,255,.82);font-size:19px;line-height:1.72;margin:0}
+    .hero__actions{display:flex;flex-wrap:wrap;gap:12px;margin-top:26px}
+    .btn{display:inline-flex;align-items:center;justify-content:center;gap:9px;border:1px solid transparent;border-radius:9px;padding:13px 17px;font-weight:900;text-decoration:none;cursor:pointer;font:inherit;line-height:1.1}
+    .btn svg{width:18px;height:18px;stroke-width:2.3}
+    .btn--wa{background:#25d366;color:white}
+    .btn--dark{background:#111827;color:white}
+    .btn--light{background:white;color:#111827}
+    .btn--ghost{border-color:rgba(255,255,255,.38);color:white;background:rgba(255,255,255,.05)}
+    .btn--outline{border-color:var(--line2);background:white;color:#111827}
+    .hero__facts{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;margin-top:30px}
+    .fact{border:1px solid rgba(255,255,255,.18);border-radius:9px;background:rgba(255,255,255,.08);padding:13px}
+    .fact span{display:block;color:rgba(255,255,255,.58);font-size:11px;font-weight:900;text-transform:uppercase;letter-spacing:.08em}
+    .fact strong{display:block;margin-top:6px;color:white;font-size:15px}
+    .quote-panel{background:rgba(255,255,255,.96);color:#111827;border:1px solid rgba(255,255,255,.7);border-radius:12px;box-shadow:var(--shadow);padding:22px}
+    .quote-panel h2{margin:0 0 8px;font-size:22px}
+    .quote-panel p{color:var(--muted);line-height:1.6}
+    .quote-panel .btn{width:100%;margin-top:10px}
+    .mini-list{list-style:none;padding:0;margin:16px 0;display:grid;gap:8px}
+    .mini-list li{display:flex;gap:9px;color:#39465a;font-size:14px}
+    .mini-list svg{flex:0 0 18px;color:var(--green)}
+    .section-nav{position:sticky;top:66px;z-index:35;background:rgba(255,255,255,.93);backdrop-filter:blur(14px);border-bottom:1px solid var(--line)}
+    .section-nav .container{display:flex;gap:8px;overflow-x:auto;padding-top:10px;padding-bottom:10px}
+    .section-nav a{white-space:nowrap;text-decoration:none;border:1px solid var(--line);background:white;border-radius:999px;padding:8px 11px;color:#405066;font-size:13px;font-weight:900}
+    .main{padding:30px 0}
+    .layout{display:grid;grid-template-columns:minmax(0,1.45fr)340px;gap:24px;align-items:start}
+    .card{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);box-shadow:0 8px 22px rgba(16,24,39,.045);padding:24px;margin-bottom:20px}
+    .card__head{display:flex;align-items:flex-start;justify-content:space-between;gap:18px;margin-bottom:16px}
+    .eyebrow{color:var(--gold);font-size:12px;font-weight:1000;letter-spacing:.08em;text-transform:uppercase}
+    h2{font-size:29px;line-height:1.12;margin:4px 0 0;letter-spacing:-.015em}
+    h3{font-size:17px;margin:18px 0 8px}
+    p{color:var(--muted);line-height:1.72}
+    .icon-box{width:42px;height:42px;border-radius:10px;background:#111827;color:#f3c766;display:grid;place-items:center;flex:0 0 auto}
+    .icon-box svg{width:22px;height:22px}
+    .grid-2{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}
+    .grid-3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}
+    .mini-card{border:1px solid var(--line);border-radius:9px;background:#fbfcfe;padding:16px}
+    .mini-card strong{display:block;margin-bottom:6px;color:#111827}
+    .tag-row{display:flex;flex-wrap:wrap;gap:8px;padding:0;margin:12px 0 0;list-style:none}
+    .tag{display:inline-flex;align-items:center;border:1px solid var(--line);background:#f8fafc;border-radius:999px;padding:7px 10px;color:#2e3b4d;font-size:12px;font-weight:900}
+    .tag--ok{background:var(--green2);border-color:#bde8cd;color:#126b3a}
+    .tag--warn{background:#fff7e6;border-color:#edc76b;color:#7a4d00}
+    .tag--blue{background:#edf5ff;border-color:#c8dbf3;color:#174a7e}
+    .table-wrap{overflow-x:auto;border:1px solid var(--line);border-radius:9px;background:white}
+    table{width:100%;min-width:740px;border-collapse:collapse}
+    th,td{padding:13px 14px;text-align:left;vertical-align:top;border-bottom:1px solid #e8edf4}
+    th{background:#f4f6f9;color:#687386;font-size:11px;text-transform:uppercase;letter-spacing:.08em}
+    td{font-size:14px;color:#243044}
+    tr:last-child td{border-bottom:0}
+    .compare{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}
+    .compare__item{border:1px solid var(--line);border-radius:10px;background:white;padding:16px;position:relative;overflow:hidden}
+    .compare__item::before{content:"";position:absolute;left:0;right:0;top:0;height:4px;background:var(--gold)}
+    .compare__item h3{margin-top:8px}
+    .timeline{position:relative;display:grid;gap:12px}
+    .timeline::before{content:"";position:absolute;left:20px;top:8px;bottom:8px;width:2px;background:#d7dde8}
+    .step{position:relative;display:grid;grid-template-columns:42px 1fr;gap:12px;align-items:start}
+    .step__num{z-index:1;width:42px;height:42px;border-radius:50%;background:#111827;color:white;display:grid;place-items:center;font-weight:1000}
+    .step__body{border:1px solid var(--line);border-radius:9px;background:white;padding:14px}
+    .step__body strong{display:block;color:#111827;margin-bottom:4px}
+    .accordion{display:grid;gap:10px}
+    .acc{border:1px solid var(--line);border-radius:9px;background:white;overflow:hidden}
+    .acc button{width:100%;display:flex;justify-content:space-between;gap:14px;align-items:center;padding:15px 16px;background:white;border:0;color:#111827;font-weight:900;text-align:left;cursor:pointer;font:inherit}
+    .acc__body{display:none;padding:0 16px 16px;color:var(--muted);line-height:1.7}
+    .acc.open .acc__body{display:block}
+    .links{display:grid;gap:10px}
+    .link-card{display:flex;justify-content:space-between;gap:16px;align-items:center;border:1px solid var(--line);border-radius:9px;background:white;padding:15px;text-decoration:none}
+    .link-card span{color:var(--muted);font-size:13px}
+    .trust-band{background:#111827;color:white;border-radius:12px;padding:24px;margin-bottom:20px}
+    .trust-band h2{color:white}
+    .trust-band p{color:rgba(255,255,255,.72)}
+    .trust-band .mini-card{background:rgba(255,255,255,.08);border-color:rgba(255,255,255,.14)}
+    .trust-band .mini-card strong{color:white}
+    .sticky{position:sticky;top:128px}
+    .side-card{background:white;border:1px solid var(--line);border-radius:12px;box-shadow:var(--shadow);padding:18px;margin-bottom:16px}
+    .side-card h2{font-size:21px}
+    .progress{height:9px;background:#edf1f6;border-radius:999px;overflow:hidden;margin:13px 0}
+    .progress span{display:block;height:100%;background:linear-gradient(90deg,var(--gold),var(--green));width:72%}
+    .summary{border:1px dashed #c8d1df;border-radius:9px;background:#fbfcfe;padding:12px;color:#526071;font-size:13px;line-height:1.55}
+    .form-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}
+    .full{grid-column:1/-1}
+    label{display:block;margin-bottom:6px;color:#273449;font-weight:900;font-size:13px}
+    input,select,textarea{width:100%;border:1px solid #cfd8e5;border-radius:8px;background:white;padding:12px;color:#172033;font:inherit}
+    textarea{min-height:120px;resize:vertical}
+    .mobile-actions{display:none;position:fixed;left:0;right:0;bottom:0;z-index:60;background:white;border-top:1px solid var(--line);padding:10px;gap:10px}
+    .mobile-actions .btn{flex:1;padding:12px}
+    @media(max-width:1050px){
+      .hero__inner,.layout{grid-template-columns:1fr}.hero__inner{min-height:auto;padding-top:34px}.sticky{position:static}.compare{grid-template-columns:repeat(2,minmax(0,1fr))}
+    }
+    @media(max-width:760px){
+      .topline .container{display:block}.header__inner{height:auto;min-height:62px;align-items:flex-start;flex-direction:column;padding-top:12px;padding-bottom:12px}.nav{width:100%}
+      .section-nav{top:95px}.hero__facts,.grid-3,.grid-2,.form-grid{grid-template-columns:1fr}.hero__actions .btn{width:100%}.hero__lead{font-size:16px}.quote-panel{padding:18px}.card{padding:18px}.compare{grid-template-columns:1fr}.mobile-actions{display:flex}body{padding-bottom:70px}h2{font-size:24px}
+    }
+    @media(max-width:520px){
+      .container{padding:0 16px}.section-nav{top:112px}.hero__inner{padding-bottom:24px}.crumb{font-size:12px;flex-wrap:wrap}h1{font-size:46px}.btn{font-size:14px}.table-wrap{margin-left:-2px;margin-right:-2px}table{min-width:720px}
+    }
+  </style>
+</head>
+<body>
+  <div class="topline">
+    <div class="container">
+      <span>AsiaPower CEO Preview · Engine Detail Page V2 Prototype</span>
+      <span>Design only · No production integration · No live-stock claim</span>
+    </div>
+  </div>
+  <header class="header">
+    <div class="container header__inner">
+      <a class="brand" href="#">
+        <span class="brand__mark">AP</span>
+        <span>AsiaPower Engine Desk</span>
+      </a>
+      <nav class="nav" aria-label="Preview navigation">
+        <a href="#models">Models</a>
+        <a href="#specs">Specs</a>
+        <a href="#half-cut">Half-cut</a>
+        <a href="#inspection">Inspection</a>
+        <a href="#export">Export</a>
+        <a href="#inquiry">Quote</a>
+      </nav>
+    </div>
+  </header>
+
+  <section class="hero">
+    <div class="hero__media"></div>
+    <div class="container hero__inner">
+      <div>
+        <div class="crumb"><a href="#">Home</a><span>/</span><a href="#">Engines</a><span>/</span><span>G4KD Engine V2</span></div>
+        <span class="pill">Hyundai / Kia · 2.0L petrol · export sourcing</span>
+        <h1>G4KD Engine Buying Page</h1>
+        <p class="hero__lead">A premium engine landing page template built for Google rankings, buyer trust and high-intent WhatsApp inquiries. The page guides buyers through model fitment, engine-vs-half-cut choice, gearbox matching, VIN evidence, inspection and export quote workflow.</p>
+        <div class="hero__actions">
+          <a class="btn btn--wa" href="#inquiry">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M20 11.5a8 8 0 0 1-11.8 7l-4.2 1.1 1.2-4A8 8 0 1 1 20 11.5Z"/><path d="M8.8 8.4c.2-.5.4-.5.7-.5h.6c.2 0 .5 0 .7.5l.5 1.2c.1.3.1.5-.1.8l-.4.5c.8 1.4 1.8 2.3 3.1 2.9l.6-.7c.2-.2.5-.3.8-.2l1.3.6c.4.2.5.4.5.7v.5c0 .7-.6 1.3-1.4 1.3-3.5 0-8-4.1-8-7.2 0-.8.5-1.4 1.1-1.4Z"/></svg>
+            WhatsApp G4KD quote
+          </a>
+          <a class="btn btn--ghost" href="#buyer-guide">Read buyer guide</a>
+        </div>
+        <div class="hero__facts">
+          <div class="fact"><span>Engine code</span><strong>G4KD</strong></div>
+          <div class="fact"><span>Buyer intent</span><strong>Engine · Gearbox · Half-cut</strong></div>
+          <div class="fact"><span>Quote rule</span><strong>Confirm stock first</strong></div>
+          <div class="fact"><span>Export terms</span><strong>EXW / CIF</strong></div>
+        </div>
+      </div>
+      <aside class="quote-panel">
+        <h2>Fast Quote Checklist</h2>
+        <p>Send these details first. The preview demonstrates how V2 converts vague engine-code traffic into structured sales requests.</p>
+        <ul class="mini-list">
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="m5 12 4 4L19 6"/></svg> Vehicle model and year</li>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="m5 12 4 4L19 6"/></svg> Gearbox type or code</li>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="m5 12 4 4L19 6"/></svg> Engine only, engine + gearbox, or half-cut</li>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="m5 12 4 4L19 6"/></svg> Destination country and port</li>
+        </ul>
+        <a class="btn btn--dark" href="#inquiry">Build inquiry</a>
+        <a class="btn btn--outline" href="#inspection">View inspection process</a>
+      </aside>
+    </div>
+  </section>
+
+  <nav class="section-nav" aria-label="Section jump links">
+    <div class="container">
+      <a href="#models">Compatible Models</a>
+      <a href="#specs">Specs</a>
+      <a href="#failures">Failures</a>
+      <a href="#half-cut">Engine vs Half-cut</a>
+      <a href="#gearboxes">Gearboxes</a>
+      <a href="#vin">VIN</a>
+      <a href="#inspection">Inspection</a>
+      <a href="#export">Export</a>
+      <a href="#faq">FAQ</a>
+      <a href="#related">Related</a>
+      <a href="#inquiry">CTA</a>
+    </div>
+  </nav>
+
+  <main class="main">
+    <div class="container layout">
+      <div>
+        <section class="card" id="models">
+          <div class="card__head">
+            <div><span class="eyebrow">Fitment confidence</span><h2>Compatible Models</h2></div>
+            <div class="icon-box"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M3 13h18l-2-5H5l-2 5Z"/><path d="M5 13v5m14-5v5"/><circle cx="7" cy="18" r="2"/><circle cx="17" cy="18" r="2"/></svg></div>
+          </div>
+          <p>G4KD appears across Hyundai and Kia platforms. V2 avoids the common SEO mistake of saying every model fits. It separates repository inventory signals from directory-only applications and asks the buyer for proof.</p>
+          <div class="table-wrap">
+            <table>
+              <thead><tr><th>Brand</th><th>Model</th><th>Year Signal</th><th>Gearbox</th><th>Confidence</th><th>Buyer Evidence Needed</th></tr></thead>
+              <tbody>
+                <tr><td>Hyundai</td><td>ix35</td><td>2010</td><td>6AT</td><td><span class="tag tag--ok">Inventory signal</span></td><td>Engine label, gearbox, drivetrain, accessory list</td></tr>
+                <tr><td>Hyundai</td><td>Sonata</td><td>2009</td><td>4AT</td><td><span class="tag tag--ok">Inventory signal</span></td><td>Market version, ECU/harness need, destination port</td></tr>
+                <tr><td>Kia</td><td>Sportage</td><td>2012</td><td>6AT</td><td><span class="tag tag--ok">Import signal</span></td><td>Half-cut or engine-only choice, model year</td></tr>
+                <tr><td>Kia</td><td>Optima / Sorento</td><td>Not verified yet</td><td>Not verified yet</td><td><span class="tag tag--warn">Application signal</span></td><td>VIN/chassis evidence before quote</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </section>
+
+        <section class="card" id="specs">
+          <div class="card__head">
+            <div><span class="eyebrow">Structured facts</span><h2>Engine Specifications</h2></div>
+            <div class="icon-box"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M14 7h5v5"/><path d="m19 7-7 7"/><path d="M5 5h5v5H5z"/><path d="M5 14h5v5H5z"/><path d="M14 16h5v3h-5z"/></svg></div>
+          </div>
+          <div class="table-wrap">
+            <table>
+              <thead><tr><th>Field</th><th>Value</th><th>Source</th><th>Status</th></tr></thead>
+              <tbody>
+                <tr><td>Engine code</td><td>G4KD</td><td>Repository directory</td><td><span class="tag tag--ok">Verified signal</span></td></tr>
+                <tr><td>Brand</td><td>Hyundai / Kia</td><td>Engine directory and inventory</td><td><span class="tag tag--ok">Verified signal</span></td></tr>
+                <tr><td>Displacement</td><td>2.0L</td><td>Engine directory</td><td><span class="tag tag--blue">Repository value</span></td></tr>
+                <tr><td>Fuel</td><td>Petrol</td><td>Engine directory</td><td><span class="tag tag--blue">Repository value</span></td></tr>
+                <tr><td>Power / torque / bore / stroke</td><td>Not verified yet</td><td>Official source not attached</td><td><span class="tag tag--warn">Do not invent</span></td></tr>
+              </tbody>
+            </table>
+          </div>
+        </section>
+
+        <section class="card" id="failures">
+          <div class="card__head">
+            <div><span class="eyebrow">Buyer trust</span><h2>Common Failures and Inspection Risk Areas</h2></div>
+            <div class="icon-box"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M10.3 3.9 1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0Z"/><path d="M12 9v4"/><path d="M12 17h.01"/></svg></div>
+          </div>
+          <p>The preview uses responsible language: these are inspection risk areas, not unverified official failure claims.</p>
+          <div class="grid-2">
+            <div class="mini-card"><strong>Noise and bottom-end check</strong><p>Ask for startup video or running evidence where available. Abnormal knocking blocks quotation until reviewed.</p></div>
+            <div class="mini-card"><strong>Overheating evidence</strong><p>Check coolant marks, oil contamination, visible leaks and donor vehicle condition.</p></div>
+            <div class="mini-card"><strong>Compression confidence</strong><p>For high-value orders, request compression evidence or supplier condition statement where possible.</p></div>
+            <div class="mini-card"><strong>Accessory mismatch</strong><p>Confirm mounts, harness, ECU, alternator, compressor and starter before comparing prices.</p></div>
+          </div>
+        </section>
+
+        <section class="card" id="half-cut">
+          <div class="card__head">
+            <div><span class="eyebrow">Buying format</span><h2>Engine vs Half-Cut Recommendation</h2></div>
+            <div class="icon-box"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M4 7h16"/><path d="M4 12h16"/><path d="M4 17h16"/></svg></div>
+          </div>
+          <div class="compare">
+            <article class="compare__item"><h3>Bare engine</h3><p>Best when the buyer already has correct gearbox, wiring and accessories.</p><span class="tag tag--warn">Lowest context</span></article>
+            <article class="compare__item"><h3>Complete engine</h3><p>Better when accessories are needed and supplier photos can confirm included parts.</p><span class="tag tag--blue">Common export choice</span></article>
+            <article class="compare__item"><h3>Engine + gearbox</h3><p>Recommended when gearbox pairing risk is high or buyer lacks the correct transmission.</p><span class="tag tag--ok">Higher fitment confidence</span></article>
+            <article class="compare__item"><h3>Half-cut</h3><p>Best for ECU, wiring, mounts, dashboard-side context and donor proof.</p><span class="tag tag--ok">Best proof package</span></article>
+          </div>
+        </section>
+
+        <section class="card" id="gearboxes">
+          <div class="card__head">
+            <div><span class="eyebrow">Matching logic</span><h2>Matching Gearboxes</h2></div>
+            <div class="icon-box"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="12" cy="12" r="3"/><path d="M12 2v4"/><path d="M12 18v4"/><path d="m4.9 4.9 2.8 2.8"/><path d="m16.3 16.3 2.8 2.8"/><path d="M2 12h4"/><path d="M18 12h4"/><path d="m4.9 19.1 2.8-2.8"/><path d="m16.3 7.7 2.8-2.8"/></svg></div>
+          </div>
+          <div class="grid-3">
+            <div class="mini-card"><strong>6AT signal</strong><p>Seen in Hyundai ix35 and Kia Sportage records. Confirm donor year and drivetrain.</p></div>
+            <div class="mini-card"><strong>4AT signal</strong><p>Seen in Hyundai Sonata record. Confirm market version before quoting engine + gearbox.</p></div>
+            <div class="mini-card"><strong>Future link route</strong><p>V2 can link to a filtered gearbox path like <strong>/gearboxes/?engine=g4kd</strong>.</p></div>
+          </div>
+        </section>
+
+        <section class="card" id="vin">
+          <div class="card__head">
+            <div><span class="eyebrow">Fitment proof</span><h2>VIN Matching</h2></div>
+            <div class="icon-box"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M4 4h16v16H4z"/><path d="M8 9h8"/><path d="M8 13h8"/><path d="M8 17h5"/></svg></div>
+          </div>
+          <div class="grid-2">
+            <div class="mini-card"><strong>What the buyer sends</strong><p>Vehicle model, year, gearbox, drivetrain and VIN/chassis evidence privately when available.</p></div>
+            <div class="mini-card"><strong>What AsiaPower checks</strong><p>Engine code, market version, gearbox pairing, harness/ECU requirements and buying format.</p></div>
+          </div>
+          <ul class="tag-row"><li class="tag tag--warn">Do not expose full VIN publicly</li><li class="tag tag--blue">Private APSales workflow</li><li class="tag tag--ok">Reduces wrong quotes</li></ul>
+        </section>
+
+        <section class="card" id="inspection">
+          <div class="card__head">
+            <div><span class="eyebrow">Operational proof</span><h2>Inspection Process Timeline</h2></div>
+            <div class="icon-box"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M9 11 12 14 22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg></div>
+          </div>
+          <div class="timeline">
+            <div class="step"><div class="step__num">1</div><div class="step__body"><strong>Capture buyer requirement</strong><p>APSales collects model, year, gearbox, destination port and buying format.</p></div></div>
+            <div class="step"><div class="step__num">2</div><div class="step__body"><strong>Check supply signal</strong><p>APInventory checks whether current supplier or inventory records can support a quote.</p></div></div>
+            <div class="step"><div class="step__num">3</div><div class="step__body"><strong>Request evidence</strong><p>Photos, engine label, included accessories, donor vehicle context or video where available.</p></div></div>
+            <div class="step"><div class="step__num">4</div><div class="step__body"><strong>Confirm quote package</strong><p>Engine only, complete engine, engine + gearbox or half-cut is locked before formal quote.</p></div></div>
+            <div class="step"><div class="step__num">5</div><div class="step__body"><strong>Return formal offer</strong><p>APSales quotes only after availability, condition, price and included parts are confirmed.</p></div></div>
+          </div>
+        </section>
+
+        <section class="card" id="export">
+          <div class="card__head">
+            <div><span class="eyebrow">Export workflow</span><h2>Export Process</h2></div>
+            <div class="icon-box"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M3 18h18"/><path d="M5 18 8 6h8l3 12"/><path d="M8 10h8"/><path d="M7 14h10"/></svg></div>
+          </div>
+          <div class="grid-3">
+            <div class="mini-card"><strong>EXW quote</strong><p>For buyers who arrange China-side logistics or consolidate multiple products.</p></div>
+            <div class="mini-card"><strong>CIF quote</strong><p>For buyers who need port-based pricing to Tema, Lagos, Cotonou, Douala, Abidjan or Mombasa.</p></div>
+            <div class="mini-card"><strong>Packing plan</strong><p>Different packing assumptions for bare engine, engine + gearbox and half-cut.</p></div>
+          </div>
+        </section>
+
+        <section class="card" id="faq">
+          <div class="card__head">
+            <div><span class="eyebrow">FAQ schema-ready</span><h2>FAQ</h2></div>
+            <div class="icon-box"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M21 15a4 4 0 0 1-4 4H7l-4 3V7a4 4 0 0 1 4-4h10a4 4 0 0 1 4 4z"/></svg></div>
+          </div>
+          <div class="accordion" data-accordion>
+            <div class="acc open"><button type="button">Can AsiaPower quote a G4KD engine now?<span>+</span></button><div class="acc__body">Yes, after APInventory confirms availability, condition, included parts and price. The page does not promise live stock.</div></div>
+            <div class="acc"><button type="button">Should I buy engine only or half-cut?<span>+</span></button><div class="acc__body">Choose engine only when fitment is clear. Choose half-cut when ECU, wiring, mounts, gearbox context or donor proof matters.</div></div>
+            <div class="acc"><button type="button">What do I send for fast quotation?<span>+</span></button><div class="acc__body">Send model, year, gearbox, destination port, buying format and VIN/chassis evidence privately if available.</div></div>
+            <div class="acc"><button type="button">Can G4KD fit every Hyundai or Kia model listed?<span>+</span></button><div class="acc__body">No. Each model year, transmission and market version needs confirmation before quote.</div></div>
+          </div>
+        </section>
+
+        <section class="card" id="buyer-guide">
+          <div class="card__head">
+            <div><span class="eyebrow">Conversion content</span><h2>Buyer Guide</h2></div>
+            <div class="icon-box"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M4 19.5V4a2 2 0 0 1 2-2h12v20H6a2 2 0 0 1-2-2.5Z"/><path d="M8 6h6"/><path d="M8 10h6"/></svg></div>
+          </div>
+          <div class="grid-3">
+            <div class="mini-card"><strong>Before asking price</strong><p>Do not send only "G4KD price". Include model, year, gearbox, destination port and desired format.</p></div>
+            <div class="mini-card"><strong>Before comparing offers</strong><p>Separate bare engine, complete engine, engine + gearbox and half-cut. Included parts change the real value.</p></div>
+            <div class="mini-card"><strong>Before payment</strong><p>Confirm photos, included parts, condition, packing and EXW/CIF terms.</p></div>
+          </div>
+        </section>
+
+        <section class="card" id="related">
+          <div class="card__head">
+            <div><span class="eyebrow">Internal links</span><h2>Related Engines and Half-Cuts</h2></div>
+            <div class="icon-box"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M10 13a5 5 0 0 0 7.5.5l2-2a5 5 0 0 0-7-7l-1.2 1.2"/><path d="M14 11a5 5 0 0 0-7.5-.5l-2 2a5 5 0 0 0 7 7l1.2-1.2"/></svg></div>
+          </div>
+          <div class="grid-2">
+            <div>
+              <h3>Related Engines</h3>
+              <div class="links">
+                <a class="link-card" href="#"><strong>G4NA Engine</strong><span>Hyundai / Kia 2.0L alternative</span></a>
+                <a class="link-card" href="#"><strong>G4KE Engine</strong><span>Hyundai / Kia 2.4L family signal</span></a>
+                <a class="link-card" href="#"><strong>G4FC Engine</strong><span>Compact petrol buyer alternative</span></a>
+              </div>
+            </div>
+            <div>
+              <h3>Related Half-Cuts</h3>
+              <div class="links">
+                <a class="link-card" href="#"><strong>Hyundai ix35 G4KD</strong><span>6AT · needs confirmation</span></a>
+                <a class="link-card" href="#"><strong>Hyundai Sonata G4KD</strong><span>4AT · needs confirmation</span></a>
+                <a class="link-card" href="#"><strong>Kia Sportage G4KD</strong><span>6AT · needs confirmation</span></a>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section class="trust-band" id="trust">
+          <span class="eyebrow">Trust section</span>
+          <h2>Why this page converts better</h2>
+          <p>V2 turns an engine-code SEO page into a guided buying workflow. It builds trust by being explicit about what is verified, what needs confirmation and what the buyer must send before quote.</p>
+          <div class="grid-3">
+            <div class="mini-card"><strong>Supply confirmation first</strong><p>No unverified live-stock promise.</p></div>
+            <div class="mini-card"><strong>Fitment proof workflow</strong><p>VIN, gearbox and donor evidence reduce wrong quotes.</p></div>
+            <div class="mini-card"><strong>Export-ready CTA</strong><p>Port and buying format are collected before sales follow-up.</p></div>
+          </div>
+        </section>
+      </div>
+
+      <aside class="sticky">
+        <div class="side-card">
+          <h2>Inquiry Quality</h2>
+          <p>Prototype interaction shows how buyer inputs improve quote readiness.</p>
+          <div class="progress"><span data-progress></span></div>
+          <div class="summary" data-summary>Choose buying format and enter destination port to build a better G4KD inquiry.</div>
+          <a class="btn btn--wa" href="#inquiry">Start quote</a>
+        </div>
+        <div class="side-card">
+          <h2>Page Modules</h2>
+          <ul class="mini-list">
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="m5 12 4 4L19 6"/></svg> FAQ schema-ready</li>
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="m5 12 4 4L19 6"/></svg> Product JSON-LD-ready</li>
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="m5 12 4 4L19 6"/></svg> Internal link strategy</li>
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="m5 12 4 4L19 6"/></svg> Mobile sticky CTA</li>
+          </ul>
+        </div>
+      </aside>
+    </div>
+
+    <section class="container" id="inquiry">
+      <div class="card">
+        <div class="card__head">
+          <div><span class="eyebrow">Inquiry CTA</span><h2>Build a G4KD Quote Request</h2></div>
+          <div class="icon-box"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M22 2 11 13"/><path d="m22 2-7 20-4-9-9-4 20-7Z"/></svg></div>
+        </div>
+        <form>
+          <div class="form-grid">
+            <div><label for="name">Name</label><input id="name" placeholder="Your name"></div>
+            <div><label for="phone">WhatsApp</label><input id="phone" placeholder="+233 ..."></div>
+            <div><label for="model">Vehicle model / year</label><input id="model" data-preview-field placeholder="Hyundai ix35 2010"></div>
+            <div><label for="gearbox">Gearbox</label><input id="gearbox" data-preview-field placeholder="6AT / 4AT / manual"></div>
+            <div><label for="format">Buying format</label><select id="format" data-preview-field><option value="">Select</option><option>Bare engine</option><option>Complete engine</option><option>Engine + gearbox</option><option>Half-cut</option></select></div>
+            <div><label for="port">Destination port</label><input id="port" data-preview-field placeholder="Tema / Lagos / Cotonou"></div>
+            <div class="full"><label for="message">Requirement</label><textarea id="message" placeholder="Tell AsiaPower what proof, accessories and export terms you need."></textarea></div>
+          </div>
+          <div class="hero__actions">
+            <button class="btn btn--dark" type="button">Submit prototype inquiry</button>
+            <a class="btn btn--wa" href="https://wa.me/233540911111?text=I%20need%20a%20G4KD%20engine%20quote.%20Model%3A%20%5Bmodel%5D.%20Gearbox%3A%20%5Bgearbox%5D.%20Port%3A%20%5Bport%5D.%20Format%3A%20%5Bengine%2Fhalf-cut%5D." target="_blank" rel="noopener noreferrer">WhatsApp CTA</a>
+          </div>
+        </form>
+      </div>
+    </section>
+  </main>
+
+  <div class="mobile-actions">
+    <a class="btn btn--wa" href="#inquiry">WhatsApp</a>
+    <a class="btn btn--dark" href="#inquiry">Inquiry</a>
+  </div>
+
+  <script>
+    document.querySelectorAll('.acc button').forEach((button) => {
+      button.addEventListener('click', () => {
+        button.closest('.acc').classList.toggle('open');
+      });
+    });
+    const fields = Array.from(document.querySelectorAll('[data-preview-field]'));
+    const summary = document.querySelector('[data-summary]');
+    const progress = document.querySelector('[data-progress]');
+    function updateSummary(){
+      const values = Object.fromEntries(fields.map((field) => [field.id, field.value.trim()]));
+      const filled = fields.filter((field) => field.value.trim()).length;
+      progress.style.width = `${Math.max(18, Math.round((filled / fields.length) * 100))}%`;
+      summary.textContent = `G4KD request${values.model ? ` for ${values.model}` : ''}${values.gearbox ? `, ${values.gearbox}` : ''}${values.format ? `, ${values.format}` : ''}${values.port ? ` to ${values.port}` : ''}. ${filled === fields.length ? 'Ready for APSales triage.' : 'Add more details to improve quote readiness.'}`;
+    }
+    fields.forEach((field) => field.addEventListener('input', updateSummary));
+    updateSummary();
+  </script>
+</body>
+</html>

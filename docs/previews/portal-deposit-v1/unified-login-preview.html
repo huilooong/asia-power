@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>统一登录预览 · AsiaPower</title>
+  <link rel="stylesheet" href="portal.css">
+  <link rel="stylesheet" href="../../css/login.css">
+</head>
+<body>
+  <div class="preview-note">
+    <div><strong>预览 · 未上线</strong> — 买家 / 供应商同一登录页 · Google / Facebook（演示）</div>
+    <div>
+      <a href="index.html">总览</a> ·
+      <a href="../../login/">正式登录页</a>
+    </div>
+  </div>
+
+  <div class="login-shell" style="margin-top:24px">
+    <div class="login-card">
+      <div class="login-brand">Asia<span>Power</span></div>
+      <h1>Sign in</h1>
+      <p class="login-lead">网站顶栏有明显「登录」入口。买家优先 Google / Facebook；供应商用手机号。</p>
+
+      <div class="role-tabs">
+        <button type="button" class="role-tab on" data-role="buyer">Buyer</button>
+        <button type="button" class="role-tab" data-role="supplier">Supplier</button>
+      </div>
+
+      <div id="buyer-pane" class="role-pane on">
+        <div class="oauth-stack">
+          <button type="button" class="btn-oauth btn-google" id="demo-google">Continue with Google</button>
+          <button type="button" class="btn-oauth btn-facebook" id="demo-facebook">Continue with Facebook</button>
+        </div>
+        <div class="hint">演示：点击后模拟授权成功，进入采购商门户。</div>
+      </div>
+
+      <div id="supplier-pane" class="role-pane">
+        <div class="hint" style="margin-top:0">供应商：手机号登录 / 注册（与正式页相同）。老客户登录后补资料。</div>
+        <a class="btn btn-primary btn-block" href="supplier-portal-preview.html" style="margin-top:14px">打开供应商流程预览</a>
+      </div>
+    </div>
+  </div>
+
+  <div class="toast" id="toast"></div>
+  <script src="mock-data.js"></script>
+  <script>
+    document.querySelectorAll('.role-tab').forEach((btn) => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('.role-tab').forEach((b) => b.classList.toggle('on', b === btn));
+        document.getElementById('buyer-pane').classList.toggle('on', btn.dataset.role === 'buyer');
+        document.getElementById('supplier-pane').classList.toggle('on', btn.dataset.role === 'supplier');
+      });
+    });
+    function go(provider) {
+      window.AP_toast(provider + ' 授权成功（演示）');
+      setTimeout(() => { location.href = 'buyer-portal-preview.html'; }, 700);
+    }
+    document.getElementById('demo-google').onclick = () => go('Google');
+    document.getElementById('demo-facebook').onclick = () => go('Facebook');
+  </script>
+</body>
+</html>

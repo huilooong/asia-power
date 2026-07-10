@@ -7,14 +7,20 @@
 
   <meta name="description" content="AsiaPower is building an AI-powered global circular economy platform — connecting suppliers, buyers, data and AI so vehicles, parts and industrial equipment flow with trust.">
   <title>About Us | AsiaPower</title>
+  <link rel="preconnect" href="https://www.googletagmanager.com">
   <link rel="preload" href="assets/fonts/barlow-condensed-800-latin.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="preload" href="assets/fonts/inter-latin.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="stylesheet" href="css/fonts.css?v=self-hosted-fonts-v1">
-  <link rel="stylesheet" href="css/styles.css?v=exw-badge-v1">
-  <link rel="stylesheet" href="css/ebay-layout.css?v=78" data-ebay-layout="1">
+  <link rel="stylesheet" href="css/styles.css?v=lang-sync-v2">
+  <link rel="stylesheet" href="css/ebay-layout.css?v=about-type-v2" data-ebay-layout="1">
   <link rel="icon" href="assets/favicon.png" type="image/png">
   <link rel="apple-touch-icon" href="assets/favicon.png">
   <link rel="canonical" href="https://asia-power.com/about.html">
+  <link rel="alternate" hreflang="en" href="https://asia-power.com/about.html">
+  <link rel="alternate" hreflang="zh-Hans" href="https://asia-power.com/about.html?lang=zh">
+  <link rel="alternate" hreflang="fr" href="https://asia-power.com/about.html?lang=fr">
+  <link rel="alternate" hreflang="ar" href="https://asia-power.com/about.html?lang=ar">
+  <link rel="alternate" hreflang="x-default" href="https://asia-power.com/about.html">
   <!-- Google tag (gtag.js) -->
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-PB2J3VRX5J"></script>
   <script>
@@ -28,10 +34,10 @@
   <meta property="og:image:height" content="630">
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:image" content="https://asia-power.com/assets/asia-power-og.svg">
-  <link rel="stylesheet" href="css/asia-power-apple.css">
 </head>
 <body data-page="about" class="scheme-ebay">
 
+  <!-- deploy-marker: auth-nav-sitewide-v1 auth-nav-once-v1 about-type-v2 -->
   <div id="site-topbar"></div>
   <div id="site-header"></div>
 
@@ -186,10 +192,15 @@
       </div>
     </section>
 
-    <section class="ebay-about-section ebay-about-audiences" id="about-supplier">
+    <section class="ebay-about-section" id="about-supplier">
+      <h2 class="ebay-about-section__title" data-i18n="about.audiencesTitle">Platform value by role</h2>
+      <p class="ebay-about-section__lead" data-i18n="about.audiencesLead">Whether you buy, supply or invest — AsiaPower is built to reduce friction and increase trust in cross-border parts trade.</p>
       <div class="ebay-about-audiences">
         <div class="ebay-about-audience">
-          <h3 data-i18n="about.audBuyersTitle">For buyers</h3>
+          <div class="ebay-about-audience__head">
+            <span class="ebay-about-audience__icon" aria-hidden="true">🛒</span>
+            <h3 data-i18n="about.audBuyersTitle">For buyers</h3>
+          </div>
           <ul>
             <li data-i18n="about.audBuyers1">Clearer product information</li>
             <li data-i18n="about.audBuyers2">More trusted sources and photos</li>
@@ -198,7 +209,10 @@
           </ul>
         </div>
         <div class="ebay-about-audience">
-          <h3 data-i18n="about.audSuppliersTitle">For suppliers</h3>
+          <div class="ebay-about-audience__head">
+            <span class="ebay-about-audience__icon" aria-hidden="true">🏭</span>
+            <h3 data-i18n="about.audSuppliersTitle">For suppliers</h3>
+          </div>
           <ul>
             <li data-i18n="about.audSuppliers1">Digital inventory showcase</li>
             <li data-i18n="about.audSuppliers2">Access to global buyer demand</li>
@@ -207,7 +221,10 @@
           </ul>
         </div>
         <div class="ebay-about-audience">
-          <h3 data-i18n="about.audInvestorsTitle">For investors</h3>
+          <div class="ebay-about-audience__head">
+            <span class="ebay-about-audience__icon" aria-hidden="true">📈</span>
+            <h3 data-i18n="about.audInvestorsTitle">For investors</h3>
+          </div>
           <ul>
             <li data-i18n="about.audInvestors1">From trade to platform</li>
             <li data-i18n="about.audInvestors2">From automotive aftermarket to circular economy</li>
@@ -278,11 +295,29 @@
   <div id="site-footer"></div>
   <div id="site-whatsapp"></div>
 
-  <script src="js/path-utils.js?v=listing-layout-v1"></script>
+  <script src="js/path-utils.js?v=about-i18n-v1"></script>
+  <script src="js/public-i18n.js?v=about-i18n-v1"></script>
   <script src="js/config.js?v=contact-20260625"></script>
-  <script src="js/seo.js"></script>
-  <script src="js/components.js?v=about-layout-v2" defer></script>
+  <script src="js/seo.js?v=p3-seo-v1"></script>
+  <script src="js/components.js?v=about-type-v2" defer></script>
   <script src="js/main.js?v=wa-lead-v1" defer></script>
+  <script>
+    (function () {
+      function applyAboutI18n() {
+        var root = document.querySelector('.ebay-about-page');
+        if (root && window.PublicI18n && window.PublicI18n.applyDataI18n) {
+          window.PublicI18n.applyDataI18n(root);
+        }
+      }
+      window.addEventListener('asiapower:layoutrefresh', applyAboutI18n);
+      window.addEventListener('asiapower:langchange', applyAboutI18n);
+      if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', applyAboutI18n);
+      } else {
+        applyAboutI18n();
+      }
+    })();
+  </script>
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",

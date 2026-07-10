@@ -1,0 +1,19 @@
+{
+  "agent": "apsales",
+  "wecom_app_name": "AsiaPower 库存 Agent",
+  "display_name": "子敬",
+  "description": "AsiaPower 企业微信群销售助理 — 询价草稿、CRM、销售统计",
+  "callback_path": "/wecom/callback",
+  "default_port": 8790,
+  "routing": {
+    "sales_keywords": ["询价", "报价", "客户", "quote", "price", "子敬", "鲁肃"],
+    "inventory_keywords": ["上传", "库存", "VIN", "HC25", "子龙", "赵云"],
+    "stats_commands": ["/sales-intelligence", "/customer", "/pipeline"]
+  },
+  "security": {
+    "require_at_mention_in_group": true,
+    "auto_send_external_messages": false,
+    "approval_required_for": ["final_quote", "payment_terms", "delivery_commitment"]
+  },
+  "notes": "wecom_app_name = 管理后台应用名（群里 @ 用此名）；display_name = 内部昵称。可选 .env: WECOM_AGENT_DISPLAY_NAME=AsiaPower 库存 Agent。Copy secrets to .env — never commit. See data/knowledge-base/wecom-zijing-setup-runbook.md"
+}

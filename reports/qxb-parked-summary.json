@@ -1,0 +1,115 @@
+{
+  "marked": [
+    {
+      "row": 24,
+      "category": "submit_ghost",
+      "tier": "easy"
+    },
+    {
+      "row": 25,
+      "category": "submit_ghost",
+      "tier": "easy"
+    },
+    {
+      "row": 27,
+      "category": "submit_ghost",
+      "tier": "easy"
+    },
+    {
+      "row": 14,
+      "category": "no_vin",
+      "tier": "later"
+    },
+    {
+      "row": 16,
+      "category": "no_vin",
+      "tier": "later"
+    },
+    {
+      "row": 23,
+      "category": "no_vin",
+      "tier": "later"
+    },
+    {
+      "row": 26,
+      "category": "no_vin",
+      "tier": "later"
+    },
+    {
+      "row": 28,
+      "category": "no_vin",
+      "tier": "later"
+    },
+    {
+      "row": 30,
+      "category": "album_incomplete",
+      "tier": "later"
+    },
+    {
+      "row": 3,
+      "category": "awaiting_ceo",
+      "tier": "later"
+    },
+    {
+      "row": 5,
+      "category": "awaiting_ceo",
+      "tier": "later"
+    },
+    {
+      "row": 6,
+      "category": "awaiting_ceo",
+      "tier": "later"
+    },
+    {
+      "row": 8,
+      "category": "awaiting_ceo",
+      "tier": "later"
+    },
+    {
+      "row": 9,
+      "category": "awaiting_ceo",
+      "tier": "later"
+    },
+    {
+      "row": 10,
+      "category": "awaiting_ceo",
+      "tier": "later"
+    },
+    {
+      "row": 11,
+      "category": "awaiting_ceo",
+      "tier": "later"
+    },
+    {
+      "row": 18,
+      "category": "awaiting_ceo",
+      "tier": "later"
+    },
+    {
+      "row": 19,
+      "category": "awaiting_ceo",
+      "tier": "later"
+    },
+    {
+      "row": 20,
+      "category": "awaiting_ceo",
+      "tier": "later"
+    },
+    {
+      "row": 21,
+      "category": "awaiting_ceo",
+      "tier": "later"
+    },
+    {
+      "row": 22,
+      "category": "awaiting_ceo",
+      "tier": "later"
+    },
+    {
+      "row": 31,
+      "category": "awaiting_ceo",
+      "tier": "later"
+    }
+  ],
+  "report": "QXB 暂缓标记 (22 行) — 先处理容易的，这些稍后再来\n\n【easy — 补推/小修即可】\n  QXB0024 [submit_ghost] 本地已标记提交，Admin 无记录 — 待补推 — 批量提交未进 Admin，待补推\n  QXB0025 [submit_ghost] 本地已标记提交，Admin 无记录 — 待补推 — 批量提交未进 Admin，待补推\n  QXB0027 [submit_ghost] 本地已标记提交，Admin 无记录 — 待补推 — 批量提交未进 Admin，待补推\n\n【later — 需 VIN/相册/CEO 操作】\n  QXB0003 [awaiting_ceo] Admin Pending — 待 CEO 审核/操作 — QXB-0003-R1 待 Admin 操作\n  QXB0005 [awaiting_ceo] Admin Pending — 待 CEO 审核/操作 — QXB-0005 待 Admin 操作\n  QXB0006 [awaiting_ceo] Admin Pending — 待 CEO 审核/操作 — QXB-0006 待 Admin 操作\n  QXB0008 [awaiting_ceo] Admin Pending — 待 CEO 审核/操作 — QXB-0008 待 Admin 操作\n  QXB0009 [awaiting_ceo] Admin Pending — 待 CEO 审核/操作 — QXB-0009 待 Admin 操作\n  QXB0010 [awaiting_ceo] Admin Pending — 待 CEO 审核/操作 — QXB-0010 待 Admin 操作\n  QXB0011 [awaiting_ceo] Admin Pending — 待 CEO 审核/操作 — QXB-0011 待 Admin 操作\n  QXB0014 [no_vin] 无 VIN OCR — 稍后处理 — OCR 未识别 VIN\n  QXB0016 [no_vin] 无 VIN OCR — 稍后处理 — OCR 未识别 VIN\n  QXB0018 [awaiting_ceo] Admin Pending — 待 CEO 审核/操作 — QXB-0018-R2 待 Admin 操作\n  QXB0019 [awaiting_ceo] Admin Pending — 待 CEO 审核/操作 — QXB-0019 待 Admin 操作\n  QXB0020 [awaiting_ceo] Admin Pending — 待 CEO 审核/操作 — QXB-0020-R1 待 Admin 操作\n  QXB0021 [awaiting_ceo] Admin Pending — 待 CEO 审核/操作 — QXB-0021 待 Admin 操作\n  QXB0022 [awaiting_ceo] Admin Pending — 待 CEO 审核/操作 — QXB-0022 待 Admin 操作\n  QXB0023 [no_vin] 无 VIN OCR — 稍后处理 — OCR 未识别 VIN\n  QXB0026 [no_vin] 无 VIN OCR — 稍后处理 — OCR 未识别 VIN\n  QXB0028 [no_vin] 无 VIN OCR — 稍后处理 — OCR 未识别 VIN\n  QXB0030 [album_incomplete] 相册不全 — 待补图或 CEO 标注 — 仅 #12–#18 尾段相册，缺车头/车尾/发动机段\n  QXB0031 [awaiting_ceo] Admin Pending — 待 CEO 审核/操作 — QXB-0031-R1 待 Admin 操作\n\n解除暂缓: /qxb unpark <row>"
+}

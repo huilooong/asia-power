@@ -1,0 +1,24 @@
+{
+  "version": "2026-06-30.1",
+  "purpose": "QXB CEO review UI policy — merged with 子龙 training pipeline.",
+  "hardStops": [
+    "never_delete_server_records",
+    "never_overwrite_approved_inventory",
+    "never_mark_unreviewed_pending_as_authoritative_vin_fact",
+    "never_upload_when_vehicle_identity_or_required_photo_set_is_unclear",
+    "never_treat_429_as_vin_decode_failure"
+  ],
+  "photoSlots": ["front", "rear", "engine", "interior", "vin"],
+  "learningRules": {
+    "humanDecisionAlwaysCreatesTrainingExample": true,
+    "confirm_and_upload_is_highest_value_training": true,
+    "writesTo": "data/knowledge-base/qxb-photo-slot-learnings.json",
+    "doNotUseBrowserLocalStorageForTraining": true
+  },
+  "humanPopupActions": [
+    "confirm_and_upload",
+    "save_training_only",
+    "skip_missing_photos",
+    "not_same_vehicle"
+  ]
+}

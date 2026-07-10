@@ -104,7 +104,7 @@ class APCOOOpsBriefingTests(unittest.TestCase):
     def test_dispatcher_website_mode_uses_llm(self) -> None:
         captured: dict[str, str] = {}
 
-        def fake_openai(_client, _model, system_prompt: str, _user: str) -> str:
+        def fake_openai(_client, _model, system_prompt: str, _user: str, **_) -> str:
             captured["system"] = system_prompt
             return "AsiaPower 是一个全球动力总成采购平台，建议优化首页文案。"
 

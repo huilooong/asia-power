@@ -1,0 +1,160 @@
+# 子敬 · 向西逐波互动时间线（Follow the sun westward）
+# 2026-07-04 晚间：小组引流主导，时间线 0
+# 引擎：customer_gateway/social_engagement_engine.py
+
+version: 4
+updated: "2026-07-04"
+strategy: "follow_sun_westward_fb_x_alternate"
+note: "PRIMARY 波次 = 当前 UTC 窗口内 priority 最高者；每波 FB+X 双平台交替 · 小组动作占 70-85%"
+platforms_per_wave: [facebook, x]
+
+waves:
+  - wave_id: wave_se_asia
+    label: "东南亚"
+    label_ceo: "东南亚"
+    utc_start: "00:00"
+    utc_end: "03:00"
+    timezone: "Asia/Bangkok"
+    markets: [Thailand, Vietnam, Malaysia, Indonesia, Philippines]
+    languages: [en, th, vi]
+    priority: 5
+    priority_schemes: [A]
+    focus: "浏览情报、轻量 X · FB 动态 + X 关注/评论交替"
+    platforms_active: [facebook, x]
+    action_mix:
+      browse_feed: 0.35
+      follow: 0.25
+      comment: 0.15
+      post: 0.05
+      group_join: 0.0
+      group_greeting: 0.0
+      group_comment: 0.0
+      dm: 0.0
+      x_follow: 0.10
+      x_comment: 0.10
+
+  - wave_id: wave_east_africa
+    label: "东非"
+    label_ceo: "东非（肯尼亚/坦桑/乌干达）"
+    utc_start: "03:00"
+    utc_end: "08:00"
+    timezone: "Africa/Nairobi"
+    markets: [Kenya, Tanzania, Uganda]
+    languages: [en]
+    priority: 10
+    priority_schemes: [D, A]
+    focus: "FB 小组 + X 关注/评论 · 双平台交替"
+    platforms_active: [facebook, x]
+    action_mix:
+      group_join: 0.30
+      group_greeting: 0.25
+      group_comment: 0.15
+      browse_feed: 0.08
+      post: 0.0
+      comment: 0.05
+      follow: 0.05
+      x_follow: 0.07
+      x_comment: 0.05
+      dm: 0.0
+
+  - wave_id: wave_west_africa_am
+    label: "西非上午"
+    label_ceo: "西非加纳/尼日利亚"
+    utc_start: "08:00"
+    utc_end: "12:00"
+    timezone: "Africa/Accra"
+    markets: [Ghana, Nigeria]
+    languages: [en]
+    priority: 10
+    priority_schemes: [A, B]
+    focus: "FB 小组主战场 + X 评论/关注 · 好友私信"
+    platforms_active: [facebook, x]
+    action_mix:
+      group_join: 0.25
+      group_greeting: 0.25
+      group_comment: 0.18
+      dm: 0.10
+      browse_feed: 0.05
+      post: 0.0
+      comment: 0.05
+      follow: 0.04
+      x_comment: 0.05
+      x_follow: 0.03
+
+  - wave_id: wave_francophone
+    label: "法语西非"
+    label_ceo: "法语西非（科特迪瓦/塞内加尔）"
+    utc_start: "12:00"
+    utc_end: "16:00"
+    timezone: "Africa/Abidjan"
+    markets: ["Côte d'Ivoire", Senegal, Mali, Burkina Faso]
+    languages: [fr]
+    priority: 10
+    priority_schemes: [A, E]
+    focus: "FB 法语小组 + X 轻量互动"
+    platforms_active: [facebook, x]
+    action_mix:
+      group_join: 0.30
+      group_greeting: 0.25
+      group_comment: 0.18
+      browse_feed: 0.08
+      post: 0.0
+      comment: 0.05
+      follow: 0.05
+      x_follow: 0.05
+      x_comment: 0.04
+      dm: 0.0
+
+  - wave_id: wave_gulf_overlap
+    label: "海湾/东非重叠"
+    label_ceo: "海湾 + 东非重叠"
+    utc_start: "14:00"
+    utc_end: "18:00"
+    timezone: "Asia/Dubai"
+    markets: [UAE, Saudi, Qatar, Kenya]
+    languages: [en, ar]
+    priority: 5
+    priority_schemes: [A, C]
+    focus: "小组评论+问候 · 浏览情报 · X 关注"
+    platforms_active: [facebook, x]
+    action_mix:
+      group_comment: 0.25
+      group_greeting: 0.22
+      group_join: 0.12
+      browse_feed: 0.18
+      follow: 0.05
+      x_follow: 0.10
+      post: 0.0
+      comment: 0.05
+      x_comment: 0.03
+      dm: 0.0
+
+  - wave_id: wave_west_africa_pm
+    label: "西非下午+南非"
+    label_ceo: "西非下午 + 南非"
+    utc_start: "16:00"
+    utc_end: "21:00"
+    timezone: "Africa/Lagos"
+    markets: [Ghana, Nigeria, South Africa]
+    languages: [en]
+    priority: 10
+    priority_schemes: [A, B, C]
+    focus: "小组问候+评论+入组 · 私信 · X 发帖/评论"
+    platforms_active: [facebook, x]
+    action_mix:
+      group_greeting: 0.26
+      group_comment: 0.22
+      group_join: 0.18
+      dm: 0.12
+      browse_feed: 0.05
+      post: 0.0
+      comment: 0.04
+      follow: 0.03
+      x_comment: 0.05
+      x_follow: 0.03
+      x_post: 0.02
+
+regeneration:
+  utc_hour: 0
+  utc_minute: 0
+  note: "每日 UTC 00:00 按时间线重排当日队列 · 小组动作优先 · 高容量"

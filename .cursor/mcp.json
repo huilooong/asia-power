@@ -1,0 +1,15 @@
+{
+  "mcpServers": {
+    "github": {
+      "command": "bash",
+      "args": [
+        "-lc",
+        "export GITHUB_PERSONAL_ACCESS_TOKEN=\"$(gh auth token 2>/dev/null)\" && exec npx -y @modelcontextprotocol/server-github"
+      ]
+    },
+    "fetch": {
+      "command": "npx",
+      "args": ["-y", "@modelcontextprotocol/server-fetch"]
+    }
+  }
+}

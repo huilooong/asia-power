@@ -61,6 +61,21 @@
     'Porsche': 'porsche',
     'Ssangyong': 'ssangyong',
     'Isuzu': 'isuzu',
+    // Added 2026-06-28 — confirmed via real VIN decode during inventory
+    // correction (not previously in AsiaPower's catalog, no /brands/*.html yet).
+    'Hawtai': 'hawtai',
+    'Wuling': 'wuling',
+    'Volvo': 'volvo',
+    'Citroën': 'citroen',
+    'Peugeot': 'peugeot',
+    'Dodge': 'dodge',
+    'Jeep': 'jeep',
+    'Changan Kuayue': 'changan-kuayue',
+    'Land Rover': 'land-rover',
+    'Jaguar': 'jaguar',
+    'Chrysler': 'chrysler',
+    'Liebao': 'liebao',
+    'Baojun': 'baojun',
   };
 
   /** Chinese display names for supplier / admin brand pickers */
@@ -89,6 +104,11 @@
     'Foton': '福田',
     'JMC': '江铃',
     'Maxus': '大通',
+    'Hawtai': '华泰',
+    'Wuling': '五菱',
+    'Changan Kuayue': '长安跨越',
+    'Land Rover': '路虎',
+    'Jaguar': '捷豹',
   };
 
   const CHINESE_BRANDS = new Set(Object.keys(BRAND_ZH));
@@ -436,6 +456,7 @@
       'Forte',
       'Optima',
       'K5',
+      'K2',
       'Picanto',
       'Stonic',
       'Seltos',
@@ -1196,6 +1217,8 @@
       'Sagitar',
       'Bora',
       'Scirocco',
+      'Touran',
+      'Lamando',
       'Arteon',
       'ID.4',
       'ID.6',
@@ -1458,6 +1481,38 @@
       'Panther',
       'Crosswind',
     ],
+    'Jeep': [
+      'Grand Cherokee',
+      'Cherokee',
+      'Wrangler',
+      'Compass',
+      'Patriot',
+      'Commander',
+      'Renegade',
+      'Gladiator',
+      'Liberty',
+      'Grand Wagoneer',
+    ],
+    'Land Rover': [
+      'Range Rover',
+      'Range Rover Sport',
+      'Range Rover Evoque',
+      'Range Rover Velar',
+      'Discovery',
+      'Discovery Sport',
+      'Defender',
+      'Freelander',
+      'Freelander 2',
+    ],
+    'Jaguar': [
+      'XJ',
+      'XF',
+      'XE',
+      'F-PACE',
+      'E-PACE',
+      'I-PACE',
+      'F-TYPE',
+    ],
   };
 
   function brandToSlug(brand) {
@@ -1529,6 +1584,26 @@
     return model;
   }
 
+  /**
+   * Dynamically register a brand from QXB decode when it is missing from the
+   * static catalog so supplier upload can select and save it.
+   */
+  function ensureBrandOption(brandName, options = {}) {
+    const brand = String(brandName || '').trim();
+    if (!brand) return '';
+    const existingKey = Object.keys(BRAND_SLUG).find((name) => name.toLowerCase() === brand.toLowerCase());
+    if (existingKey) return existingKey;
+
+    const slug = String(options.slug || brandToSlug(brand)).trim() || brandToSlug(brand);
+    BRAND_SLUG[brand] = slug;
+    if (!BRAND_MODELS[brand]) BRAND_MODELS[brand] = [];
+    if (options.zhLabel) {
+      BRAND_ZH[brand] = String(options.zhLabel).trim();
+      CHINESE_BRANDS.add(brand);
+    }
+    return brand;
+  }
+
   window.VehicleCatalog = {
     BRAND_SLUG,
     BRAND_MODELS,
@@ -1543,5 +1618,6 @@
     brandToSlug,
     slugToBrand,
     ensureModelOption,
+    ensureBrandOption,
   };
 })();

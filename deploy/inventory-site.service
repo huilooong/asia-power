@@ -1,0 +1,21 @@
+[Unit]
+Description=Inventory Site Node App
+After=network.target
+
+[Service]
+Type=simple
+WorkingDirectory=/root/.openclaw/workspace/inventory-site
+ExecStart=/usr/bin/node /root/.openclaw/workspace/inventory-site/server.js
+Restart=always
+RestartSec=5
+EnvironmentFile=-/root/.openclaw/workspace/inventory-site/.env
+Environment=ASIAPOWER_ROOT=/root/.openclaw/workspace/AsiaPower
+Environment=PORT=8080
+Environment=NODE_ENV=production
+# 2 GB VPS — cap memory so a runaway process cannot take the whole machine
+MemoryMax=768M
+MemoryHigh=640M
+TasksMax=128
+
+[Install]
+WantedBy=multi-user.target

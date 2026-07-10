@@ -56,7 +56,7 @@
     const labels = window.ENGINE_EXPORT_STATUS || [
       'Available',
       'Ready for Export',
-      'FOB Available',
+      'EXW Available',
       'CIF Available',
     ];
     return labels.map(label => window.PublicI18n?.translateExportStatus?.(label) || label);
@@ -69,8 +69,38 @@
       </ul>`;
   }
 
-  function renderEngineModelCard(brandSlug, brandName, model) {
+  function renderEngineModelCard(brandSlug, brandName, model, opts) {
+    const options = opts || {};
     const url = modelUrl(brandSlug, model.code);
+    if (options.listMode) {
+      const hub = window.AsiaPowerEbayCatalogHub;
+      const fullTitle = `${brandName} ${model.code}`.trim();
+      if (hub?.renderPartsListRow) {
+        const fuelKey = { petrol: 'engines.petrol', diesel: 'engines.diesel', hybrid: 'engines.hybrid' }[model.type];
+        const fuelLabel = fuelKey ? t(fuelKey, model.fuel || model.type) : (model.fuel || '');
+        const metaParts = [fuelLabel, model.displacement].filter(Boolean);
+        return hub.renderPartsListRow({
+          brandSlug,
+          brandName,
+          title: fullTitle,
+          url,
+          filterTags: `${model.type} ${brandSlug}`,
+          meta: metaParts.join(' · '),
+        });
+      }
+      return `
+      <article class="engine-model ebay-listing-row ebay-listing-row--parts" data-filter-tags="${model.type} ${brandSlug}">
+        <a class="ebay-listing-row__photo ebay-listing-row__photo--placeholder" href="${url}" aria-hidden="true">
+          <svg class="ebay-listing-row__photo-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="5" width="18" height="14" rx="2"/><circle cx="8.5" cy="10.5" r="1.75"/><path d="M21 17l-5-5-4 4-2-2-4 4"/></svg>
+        </a>
+        <div class="ebay-listing-row__main">
+          <h3 class="ebay-listing-row__title"><a href="${url}">${fullTitle}</a></h3>
+        </div>
+        <div class="ebay-listing-row__aside">
+          <p class="ebay-listing-row__price ebay-listing-row__price--enquiry">${t('hc.priceOnEnquiry', 'Quote on enquiry')} <span class="ap-exw-badge" translate="no">EXW</span></p>
+        </div>
+      </article>`;
+    }
     const hasPage = window.SitePaths?.enginePagePath?.(brandSlug, model.code);
     const ctaLabel = hasPage ? t('engine.viewModel', 'View Model →') : t('engine.requestQuote', 'Request Quote');
     return `
@@ -95,22 +125,24 @@
     const showHeader = opts.showHeader !== false;
 
     const cards = brandData.models
-      .map(m => renderEngineModelCard(brandData.slug, brandData.name, m))
+      .map(m => renderEngineModelCard(brandData.slug, brandData.name, m, opts))
       .join('');
 
     const header = showHeader ? `
       <div class="engine-catalog__brand-header">
         <div>
           <h2 class="engine-catalog__brand-name">${brandData.name}</h2>
-          <p class="engine-catalog__brand-meta">${brandData.origin} · ${brandData.models.length} ${t('engine.modelsListed', 'engine models listed')}</p>
+          ${opts.listMode ? '' : `<p class="engine-catalog__brand-meta">${brandData.origin} · ${brandData.models.length} ${t('engine.modelsListed', 'engine models listed')}</p>`}
         </div>
-        <a href="${base()}${brandData.landingPage || 'brands.html'}" class="engine-catalog__brand-link">${t('engine.viewBrand', 'View')} ${brandData.name} →</a>
+        ${opts.listMode ? '' : `<a href="${base()}${brandData.landingPage || 'brands.html'}" class="engine-catalog__brand-link">${t('engine.viewBrand', 'View')} ${brandData.name} →</a>`}
       </div>` : '';
+
+    const gridClass = opts.listMode ? 'ebay-listing-list' : 'engine-catalog__grid';
 
     return `
       <section class="engine-catalog" id="engines-${brandData.slug}" data-brand="${brandData.slug}">
         ${header}
-        <div class="engine-catalog__grid">
+        <div class="${gridClass}">
           ${cards}
         </div>
       </section>`;

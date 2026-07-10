@@ -8,5 +8,6 @@ AGENT_MODELS = {
     "sales": "gpt-4.1-mini",
     "apsales": "gpt-4.1-mini",
     "inventory": "gpt-4.1-mini",
+    "apinventory": "gpt-4.1-mini",
     "whatsapp": "gpt-4.1-mini",
 }

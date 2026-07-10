@@ -1,0 +1,5 @@
+Campaign,Status,Type,Budget,Budget type,Bid strategy type,Networks,Languages,Locations,Location options,Start date,End date
+GH_Search_Engines_HighIntent,Paused,Search,21,Daily,Manual CPC,Google search,English,Ghana,Presence: People in or regularly in your targeted locations,,
+GH_Search_Gearboxes_HighIntent,Paused,Search,5,Daily,Manual CPC,Google search,English,Ghana,Presence: People in or regularly in your targeted locations,,
+GH_Search_HalfCuts_Import,Paused,Search,3,Daily,Manual CPC,Google search,English,Ghana,Presence: People in or regularly in your targeted locations,,
+GH_Search_Import_FromChina,Paused,Search,1.5,Daily,Manual CPC,Google search,English,Ghana,Presence: People in or regularly in your targeted locations,,

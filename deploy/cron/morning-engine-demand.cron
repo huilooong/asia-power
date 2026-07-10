@@ -1,0 +1,9 @@
+# CEO 晨间发动机需求报告 — 每日 UTC 08:00（无废话版）
+# 安装: crontab -e 粘贴下面一行
+#
+# 输出: reports/morning-engine-demand-YYYY-MM-DD.md
+
+SHELL=/bin/bash
+PATH=/usr/local/bin:/opt/homebrew/bin:/usr/bin:/bin
+
+0 8 * * * cd /Users/longhui/Desktop/AsiaPower && /Users/longhui/Desktop/AsiaPower/.venv/bin/python3 scripts/generate-morning-market-report.py --mark-deprecated >> /Users/longhui/Desktop/AsiaPower/reports/morning-report.log 2>&1

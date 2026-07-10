@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>QXB 上传进度</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: system-ui, "PingFang SC", sans-serif; background: #0f172a; color: #e2e8f0; line-height: 1.5; }
+    header {
+      padding: 20px 24px; background: #0a1628; border-bottom: 3px solid #d4a017;
+    }
+    header h1 { font-size: 20px; color: #d4a017; margin-bottom: 6px; }
+    header p { font-size: 13px; color: #94a3b8; max-width: 720px; }
+    header .note { margin-top: 10px; font-size: 12px; color: #64748b; }
+    main { max-width: 1100px; margin: 0 auto; padding: 24px 16px 48px; }
+    .cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 14px; margin-bottom: 24px; }
+    .card {
+      background: #1e293b; border: 1px solid #334155; border-radius: 12px; padding: 16px 18px;
+    }
+    .card__label { font-size: 12px; color: #94a3b8; margin-bottom: 6px; }
+    .card__value { font-size: 28px; font-weight: 800; }
+    .card__value.ok { color: #4ade80; }
+    .card__value.fail { color: #f87171; }
+    .card__value.warn { color: #fbbf24; }
+    .card__sub { font-size: 12px; color: #64748b; margin-top: 4px; }
+    .bar-wrap { background: #1e293b; border: 1px solid #334155; border-radius: 12px; padding: 16px 18px; margin-bottom: 24px; }
+    .bar-wrap h2 { font-size: 15px; margin-bottom: 12px; }
+    .bar { height: 14px; background: #334155; border-radius: 999px; overflow: hidden; display: flex; }
+    .bar span { display: block; height: 100%; }
+    .bar .ok { background: #22c55e; }
+    .bar .fail { background: #ef4444; }
+    .bar .pending { background: #64748b; }
+    section { margin-bottom: 28px; }
+    section h2 { font-size: 16px; color: #d4a017; margin-bottom: 10px; }
+    table { width: 100%; border-collapse: collapse; font-size: 13px; background: #1e293b; border-radius: 10px; overflow: hidden; }
+    th, td { border: 1px solid #334155; padding: 8px 10px; text-align: left; vertical-align: top; }
+    th { background: #0a1628; color: #d4a017; }
+    td.err { color: #fca5a5; font-size: 12px; max-width: 420px; word-break: break-word; }
+    .links { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 16px; }
+    .btn {
+      display: inline-block; padding: 9px 16px; border-radius: 8px; text-decoration: none;
+      font-size: 13px; font-weight: 600;
+    }
+    .btn-gold { background: #d4a017; color: #0a1628; }
+    .btn-ghost { border: 1px solid #475569; color: #cbd5e1; }
+    .err-box { background: rgba(239,68,68,.1); border: 1px solid rgba(239,68,68,.4); color: #fecaca; padding: 14px; border-radius: 8px; font-size: 13px; }
+    .muted { color: #64748b; font-size: 12px; margin-top: 8px; }
+  </style>
+</head>
+<body>
+<header>
+  <h1>QXB 批量上传进度</h1>
+  <p>看<strong>汽修宝库存上传到 asia-power.com</strong>的进度。不是子龙识图训练页。</p>
+  <p class="note">子龙培养页 = <code>http://127.0.0.1:8789/review</code>（CEO 逐行审图、训练识图） · 本页 = 批量上传跑批结果</p>
+</header>
+<main>
+  <div id="loadErr" class="err-box" style="display:none"></div>
+  <div class="cards" id="cards"></div>
+  <div class="bar-wrap" id="barSection" style="display:none">
+    <h2>批量跑批进度（388 行目标区间）</h2>
+    <div class="bar" id="bar"></div>
+    <p class="muted" id="barLegend"></p>
+  </div>
+  <section id="queueSection" style="display:none">
+    <h2>CEO 审核页确认上传队列（最近 10 条）</h2>
+    <table><thead><tr><th>行号</th><th>编号</th><th>状态</th><th>说明</th></tr></thead><tbody id="queueBody"></tbody></table>
+  </section>
+  <section id="failSection" style="display:none">
+    <h2>批量失败摘要（前 30 条）</h2>
+    <table><thead><tr><th>行</th><th>编号</th><th>失败原因</th></tr></thead><tbody id="failBody"></tbody></table>
+  </section>
+  <div class="links">
+    <a class="btn btn-gold" href="https://asia-power.com/admin/inventory.html?tab=pending" target="_blank">打开 Admin 待审队列 ↗</a>
+    <a class="btn btn-ghost" href="http://127.0.0.1:8789/review" target="_blank">子龙审核页（不是进度）↗</a>
+    <button class="btn btn-ghost" type="button" onclick="location.reload()">刷新</button>
+  </div>
+  <p class="muted" id="updated"></p>
+</main>
+<script>
+async function loadJson(url) {
+  const res = await fetch(url);
+  if (!res.ok) throw new Error(url + ' HTTP ' + res.status);
+  return res.json();
+}
+
+function pct(n, d) { return d ? Math.round(n * 100 / d) : 0; }
+
+async function main() {
+  const errEl = document.getElementById('loadErr');
+  try {
+    const [batch, queue] = await Promise.all([
+      loadJson('/reports/qxb-batch-progress.json'),
+      loadJson('/reports/qxb-review-upload-queue.json').catch(() => ({ items: [] })),
+    ]);
+
+    const ok = batch.ok || 0;
+    const fail = batch.fail || 0;
+    const total = batch.total || 0;
+    const done = batch.done || 0;
+    const pending = Math.max(0, total - done);
+
+    document.getElementById('cards').innerHTML = `
+      <div class="card"><div class="card__label">批量状态</div><div class="card__value warn">${batch.status || '—'}</div><div class="card__sub">updated ${batch.updatedAt || '—'}</div></div>
+      <div class="card"><div class="card__label">已处理行数</div><div class="card__value">${done} / ${total}</div></div>
+      <div class="card"><div class="card__label">上传成功</div><div class="card__value ok">${ok}</div><div class="card__sub">${pct(ok, total)}%</div></div>
+      <div class="card"><div class="card__label">失败跳过</div><div class="card__value fail">${fail}</div><div class="card__sub">${pct(fail, total)}%</div></div>
+    `;
+
+    const bar = document.getElementById('bar');
+    bar.innerHTML = `
+      <span class="ok" style="width:${pct(ok,total)}%"></span>
+      <span class="fail" style="width:${pct(fail,total)}%"></span>
+      ${pending ? `<span class="pending" style="width:${pct(pending,total)}%"></span>` : ''}
+    `;
+    document.getElementById('barLegend').textContent =
+      `绿=成功 ${ok} · 红=失败 ${fail}` + (pending ? ` · 灰=未跑 ${pending}` : '');
+    document.getElementById('barSection').style.display = 'block';
+
+    const items = queue.items || [];
+    if (items.length) {
+      document.getElementById('queueBody').innerHTML = items.map(i => `
+        <tr>
+          <td>${i.row ?? '—'}</td>
+          <td>${i.stockId ?? '—'}</td>
+          <td>${i.status ?? '—'}</td>
+          <td class="err">${i.lastError || i.submissionId || '—'}</td>
+        </tr>`).join('');
+      document.getElementById('queueSection').style.display = 'block';
+    }
+
+    const failRows = batch.failRows || [];
+    if (failRows.length) {
+      document.getElementById('failBody').innerHTML = failRows.slice(0, 30).map(r => `
+        <tr><td>${r.row}</td><td>${r.stockId || '—'}</td><td class="err">${r.error || '—'}</td></tr>
+      `).join('');
+      document.getElementById('failSection').style.display = 'block';
+    }
+
+    document.getElementById('updated').textContent =
+      '数据源：reports/qxb-batch-progress.json · reports/qxb-review-upload-queue.json';
+  } catch (e) {
+    errEl.style.display = 'block';
+    errEl.textContent = '加载失败：' + e.message + ' — 请先双击 docs/打开QXB上传进度.command 启动本地服务。';
+  }
+}
+main();
+</script>
+</body>
+</html>

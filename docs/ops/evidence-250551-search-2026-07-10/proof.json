@@ -1,0 +1,21 @@
+{
+  "url": "https://asia-power.com/half-cuts/?q=250551",
+  "hc250551_in_dom": 3,
+  "has_0_results": false,
+  "has_1_results": false,
+  "cdn_js": {
+    "directory": "https://asia-power.com/js/half-cut-directory.js?v=stock-id-search-v2",
+    "ebay": "https://asia-power.com/js/ebay-catalog-hub.js?v=stock-id-search-v2",
+    "catalog": "https://asia-power.com/js/half-cut-catalog.js?v=stock-id-search-v2"
+  },
+  "release": "REL-20260710105422-chrome-76489479 / stock-id-search-v2 cache bust",
+  "api_item": {
+    "stockId": "HC250551",
+    "brand": "Toyota",
+    "model": "Land Cruiser Prado",
+    "year": 2013,
+    "priceUsd": 14500,
+    "status": "Available",
+    "isExportUsedCar": true
+  }
+}

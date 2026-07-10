@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>预览 · 详情头对齐 v4 · AsiaPower</title>
+  <style>
+    :root {
+      --t1:#1d1d1f; --t2:#6e6e73; --t3:#86868b; --b1:#d2d2d7; --b2:#e8e8ed;
+      --gold:#d4880a; --bg:#f5f5f7; --font:-apple-system,BlinkMacSystemFont,'SF Pro Display','Helvetica Neue',Arial,'PingFang SC',sans-serif;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: var(--font); background: var(--bg); color: var(--t1); line-height: 1.5; }
+    .preview-note {
+      background: #1d1d1f; color: #f5f5f7; padding: 12px 20px;
+      display: flex; justify-content: space-between; gap: 16px; flex-wrap: wrap; font-size: 13px;
+    }
+    .preview-note a { color: #f5c542; }
+    .wrap { max-width: 1100px; margin: 0 auto; padding: 28px 20px 60px; }
+    h1 { font-size: 1.6rem; font-weight: 800; letter-spacing: -.3px; margin-bottom: 8px; }
+    .sub { color: var(--t2); margin-bottom: 28px; }
+    .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+    @media (max-width: 860px) { .grid { grid-template-columns: 1fr; } }
+    .panel {
+      background: #fff; border: 1px solid var(--b2); border-radius: 16px; overflow: hidden;
+      box-shadow: 0 2px 10px rgba(0,0,0,.04);
+    }
+    .panel__label {
+      padding: 10px 16px; font-size: 12px; font-weight: 700; letter-spacing: .04em;
+      text-transform: uppercase; border-bottom: 1px solid var(--b2); color: var(--t2);
+    }
+    .panel__label--old { background: #fff5f5; color: #9b1c1c; }
+    .panel__label--new { background: #f0faf3; color: #1d8348; }
+    .mock-header { background: #fff; border-bottom: 1px solid #e5e5e5; padding: 12px 16px; }
+    .mock-row { display: flex; align-items: flex-start; gap: 16px; }
+    .old-logo {
+      width: 120px; height: 36px; border-radius: 6px;
+      background: linear-gradient(90deg, #0a1628, #1a3a5c);
+      color: #f5c542; font-size: 11px; font-weight: 700;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .ap-logo { font-size: 18px; font-weight: 800; letter-spacing: -.4px; color: var(--t1); white-space: nowrap; padding-top: 8px; }
+    .ap-logo span { color: var(--gold); }
+    .old-search { display: flex; flex: 1; }
+    .old-search input {
+      flex: 1; padding: 11px 14px; border: 2px solid #191919; border-right: none;
+      border-radius: 26px 0 0 26px; font-size: 14px;
+    }
+    .old-search button {
+      padding: 0 22px; border: none; border-radius: 0 26px 26px 0;
+      background: #d4a017; color: #0a1628; font-weight: 700; font-size: 14px;
+    }
+    .new-search {
+      display: flex; flex: 1; background: #fff; border: 1.5px solid #d2d2d7;
+      border-radius: 18px; overflow: hidden; box-shadow: 0 2px 8px rgba(0,0,0,.06);
+    }
+    .new-search input {
+      flex: 1; border: none; outline: none; padding: 12px 16px; font-size: 14px; background: transparent;
+    }
+    .new-search button {
+      border: none; background: #1d1d1f; color: #fff; padding: 0 20px;
+      font-weight: 600; font-size: 13px;
+    }
+    .mock-body { padding: 20px 16px; background: #f7f7f7; min-height: 120px; }
+    .mock-body p { color: var(--t2); font-size: 13px; }
+    .checklist { margin-top: 28px; background: #fff; border: 1px solid var(--b2); border-radius: 14px; padding: 18px 20px; }
+    .checklist h2 { font-size: 15px; margin-bottom: 10px; }
+    .checklist li { margin: 6px 0 6px 18px; color: var(--t2); font-size: 14px; }
+    .links { margin-top: 18px; display: flex; gap: 14px; flex-wrap: wrap; font-size: 14px; }
+    .links a { color: #0066cc; }
+  </style>
+</head>
+<body>
+  <div class="preview-note">
+    <div><strong>预览 · 未上线确认用</strong> — 详情/目录共享头：文字 logo + 首页风搜索</div>
+    <div>
+      <a href="admin-v4-preview.html">Admin v4 预览</a> ·
+      <a href="unsynced-inventory.md">未同步清单</a> ·
+      <a href="https://asia-power.com/half-cuts/" target="_blank" rel="noopener">对照现网目录</a>
+    </div>
+  </div>
+
+  <div class="wrap">
+    <h1>公开页 chrome 对齐首页 v4</h1>
+    <p class="sub">左边是旧 eBay 头（PNG logo + 橙边搜索），右边是本轮新头（文字 AsiaPower + 浅灰边黑按钮）。改共享注入点后，详情/目录/About 等约 130+ 页一次对齐。</p>
+
+    <div class="grid">
+      <section class="panel">
+        <div class="panel__label panel__label--old">旧 · eBay 壳</div>
+        <div class="mock-header">
+          <div class="mock-row">
+            <div class="old-logo">PNG LOGO</div>
+            <form class="old-search" onsubmit="return false">
+              <input type="search" value="Toyota Camry" readonly>
+              <button type="submit">Search</button>
+            </form>
+          </div>
+        </div>
+        <div class="mock-body">
+          <p>橙边半圆搜索 · 图片 logo · 与首页 v4-hybrid 不一致</p>
+        </div>
+      </section>
+
+      <section class="panel">
+        <div class="panel__label panel__label--new">新 · v4 chrome sync</div>
+        <div class="mock-header">
+          <div class="mock-row">
+            <a class="ap-logo" href="#">Asia<span>Power</span></a>
+            <form class="new-search" onsubmit="return false">
+              <input type="search" value="Toyota Camry" readonly>
+              <button type="submit">Search</button>
+            </form>
+          </div>
+        </div>
+        <div class="mock-body">
+          <p>文字 logo · 浅灰边圆角框 · 黑色 Search（对齐首页 hero-search）</p>
+        </div>
+      </section>
+    </div>
+
+    <div class="checklist">
+      <h2>CEO 确认点</h2>
+      <ul>
+        <li>品牌一眼是 AsiaPower 文字，不是旧 PNG</li>
+        <li>搜索框观感接近首页，不是橙色半圆</li>
+        <li>搜索仍跳转 half-cuts/?q=（逻辑不变）</li>
+      </ul>
+      <div class="links">
+        <a href="admin-v4-preview.html">下一步：看 Admin v4 皮肤 →</a>
+        <a href="../../ops/ops-v4-chrome-sync-audit.md">审计报告</a>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

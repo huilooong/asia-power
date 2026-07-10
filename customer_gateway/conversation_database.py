@@ -39,12 +39,14 @@ def _slug(contact: str) -> str:
     return (slug[:48] or "unknown")
 
 
-def conversation_path(contact: str) -> Path:
-    return sip.CONVERSATIONS_DIR / f"{_slug(contact)}.json"
+def conversation_path(contact: str, conversation_id: str | None = None) -> Path:
+    slug = (conversation_id or _slug(contact)).strip() or "unknown"
+    return sip.CONVERSATIONS_DIR / f"{slug}.json"
 
 
-def timeline_path(contact: str) -> Path:
-    return sip.TIMELINES_DIR / f"{_slug(contact)}.json"
+def timeline_path(contact: str, conversation_id: str | None = None) -> Path:
+    slug = (conversation_id or _slug(contact)).strip() or "unknown"
+    return sip.TIMELINES_DIR / f"{slug}.json"
 
 
 def _parse_ts(ts: str) -> datetime | None:
@@ -183,9 +185,16 @@ def build_timeline(messages: list[dict[str, Any]]) -> list[dict[str, Any]]:
     return events
 
 
-def save_conversation(contact: str, messages: list[dict[str, Any]], *, source: str = "import") -> dict[str, Any]:
+def save_conversation(
+    contact: str,
+    messages: list[dict[str, Any]],
+    *,
+    source: str = "import",
+    conversation_id: str | None = None,
+) -> dict[str, Any]:
     sip.ensure_dirs()
-    path = conversation_path(contact)
+    conv_id = conversation_id or _slug(contact)
+    path = conversation_path(contact, conv_id)
     existing: list[dict[str, Any]] = []
     if path.is_file():
         try:
@@ -205,7 +214,7 @@ def save_conversation(contact: str, messages: list[dict[str, Any]], *, source: s
 
     record = {
         "contact": contact,
-        "conversation_id": _slug(contact),
+        "conversation_id": conv_id,
         "message_count": len(merged),
         "messages": merged,
         "sources": sources,
@@ -215,7 +224,7 @@ def save_conversation(contact: str, messages: list[dict[str, Any]], *, source: s
     path.write_text(json.dumps(record, indent=2, ensure_ascii=False), encoding="utf-8")
 
     timeline = build_timeline(merged)
-    timeline_path(contact).write_text(
+    timeline_path(contact, conv_id).write_text(
         json.dumps({
             "contact": contact,
             "timeline": timeline,

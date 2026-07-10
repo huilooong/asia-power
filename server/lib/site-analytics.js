@@ -4,6 +4,7 @@ const fs = require('fs');
 const path = require('path');
 const { clientIp } = require('./rate-limit');
 const { lookupIpGeo } = require('./ip-geo');
+const { isInternalTestIp } = require('./analytics-internal-ips');
 
 const MAX_PATH_LENGTH = 240;
 const MAX_DAILY_IPS = 5000;
@@ -23,9 +24,14 @@ function dayKey(date = new Date(), timeZone = process.env.TZ || 'Africa/Accra') 
 function createSiteAnalytics(dataDir, options = {}) {
   const timeZone = options.timeZone || process.env.TZ || 'Africa/Accra';
   const dailyFile = path.join(dataDir, 'site-analytics-daily.json');
+  const searchTrendsFile = path.join(dataDir, 'site-search-trends.json');
+  const MAX_SEARCH_TERMS = 500;
+  const MAX_SEARCH_QUERY_LEN = 80;
   const geoPending = new Set();
   let store = null;
+  let searchTrends = null;
   let dirty = false;
+  let searchDirty = false;
   let flushTimer = null;
 
   function loadDailyFromDisk() {
@@ -44,11 +50,98 @@ function createSiteAnalytics(dataDir, options = {}) {
   }
 
   function flushDaily() {
-    flushTimer = null;
-    if (!dirty || !store) return;
-    dirty = false;
-    fs.mkdirSync(path.dirname(dailyFile), { recursive: true });
-    fs.writeFileSync(dailyFile, JSON.stringify(store, null, 2));
+    if (flushTimer) flushTimer = null;
+    if (dirty && store) {
+      dirty = false;
+      fs.mkdirSync(path.dirname(dailyFile), { recursive: true });
+      fs.writeFileSync(dailyFile, JSON.stringify(store, null, 2));
+    }
+    flushSearchTrends();
+  }
+
+  function loadSearchTrendsFromDisk() {
+    if (!fs.existsSync(searchTrendsFile)) return { queries: {} };
+    try {
+      const data = JSON.parse(fs.readFileSync(searchTrendsFile, 'utf8'));
+      return data && typeof data === 'object' && data.queries ? data : { queries: {} };
+    } catch {
+      return { queries: {} };
+    }
+  }
+
+  function getSearchTrendsStore() {
+    if (!searchTrends) searchTrends = loadSearchTrendsFromDisk();
+    if (!searchTrends.queries) searchTrends.queries = {};
+    return searchTrends;
+  }
+
+  function flushSearchTrends() {
+    if (!searchDirty || !searchTrends) return;
+    searchDirty = false;
+    fs.mkdirSync(path.dirname(searchTrendsFile), { recursive: true });
+    fs.writeFileSync(searchTrendsFile, JSON.stringify(searchTrends, null, 2));
+  }
+
+  function normalizeSearchQuery(raw) {
+    const term = String(raw || '').trim().replace(/\s+/g, ' ').slice(0, MAX_SEARCH_QUERY_LEN);
+    return term.length >= 2 ? term : '';
+  }
+
+  function recordSearchQuery(raw) {
+    const term = normalizeSearchQuery(raw);
+    if (!term) return;
+    const key = term.toLowerCase();
+    const data = getSearchTrendsStore();
+    if (!data.queries[key]) data.queries[key] = { q: term, n: 0 };
+    data.queries[key].n += 1;
+    data.queries[key].q = term;
+    data.queries[key].last = new Date().toISOString();
+    const keys = Object.keys(data.queries);
+    if (keys.length > MAX_SEARCH_TERMS) {
+      keys.sort((a, b) => (data.queries[a].n || 0) - (data.queries[b].n || 0));
+      keys.slice(0, keys.length - MAX_SEARCH_TERMS).forEach((k) => delete data.queries[k]);
+    }
+    searchDirty = true;
+    scheduleFlush();
+  }
+
+  function bootstrapSearchTrendsFromPaths() {
+    const data = getStore();
+    const out = getSearchTrendsStore();
+    let changed = false;
+    Object.values(data).forEach((bucket) => {
+      Object.entries(bucket.paths || {}).forEach(([pagePath, count]) => {
+        const match = String(pagePath).match(/[?&]q=([^&]+)/i);
+        if (!match) return;
+        let q = '';
+        try {
+          q = normalizeSearchQuery(decodeURIComponent(match[1].replace(/\+/g, ' ')));
+        } catch {
+          q = normalizeSearchQuery(match[1]);
+        }
+        if (!q) return;
+        const key = q.toLowerCase();
+        if (!out.queries[key]) {
+          out.queries[key] = { q, n: 0, last: null };
+          changed = true;
+        }
+        out.queries[key].n += Number(count) || 1;
+      });
+    });
+    if (changed) {
+      searchDirty = true;
+      scheduleFlush();
+    }
+  }
+
+  function getSearchTrending(limit = 15) {
+    flushDaily();
+    const data = getSearchTrendsStore();
+    if (!Object.keys(data.queries).length) bootstrapSearchTrendsFromPaths();
+    return Object.values(data.queries || {})
+      .sort((a, b) => (b.n || 0) - (a.n || 0))
+      .slice(0, Math.max(1, Math.min(30, Number(limit) || 15)))
+      .map(({ q, n }) => ({ q, count: n }));
   }
 
   function scheduleFlush() {
@@ -72,7 +165,7 @@ function createSiteAnalytics(dataDir, options = {}) {
     const p = String(pagePath || '').split('?')[0];
     if (!p || p.startsWith('/api/') || p.startsWith('/uploads/')) return false;
     if (p.startsWith('/admin/')) return false;
-    if (p.includes('/supplier-portal/half-cut-upload') || p.includes('/supplier-portal/truck-upload')) return false;
+    if (p.includes('/supplier-portal/half-cut-upload') || p.includes('/supplier-portal/truck-upload') || p.includes('/supplier-portal/truck-vehicle-upload') || p.includes('/supplier-portal/passenger-parts-upload')) return false;
     if (p.endsWith('.js') || p.endsWith('.css') || p.endsWith('.png') || p.endsWith('.webp')) return false;
     return p.endsWith('.html') || p === '/' || p.endsWith('/') || !path.extname(p.replace(/\/$/, ''));
   }
@@ -85,10 +178,38 @@ function createSiteAnalytics(dataDir, options = {}) {
         uniqueIps: {},
         paths: {},
         countries: {},
+        utmSources: {},
+        utmCampaigns: {},
         updatedAt: new Date().toISOString(),
       };
     }
+    if (!data[day].utmSources) data[day].utmSources = {};
+    if (!data[day].utmCampaigns) data[day].utmCampaigns = {};
     return data[day];
+  }
+
+  function parseUtmFromPage(page) {
+    const raw = String(page || '');
+    const qIndex = raw.indexOf('?');
+    if (qIndex < 0) return {};
+    try {
+      const params = new URLSearchParams(raw.slice(qIndex + 1));
+      return {
+        utmSource: String(params.get('utm_source') || '').trim().slice(0, 80),
+        utmMedium: String(params.get('utm_medium') || '').trim().slice(0, 80),
+        utmCampaign: String(params.get('utm_campaign') || '').trim().slice(0, 120),
+      };
+    } catch {
+      return {};
+    }
+  }
+
+  function recordUtm(bucket, page) {
+    const { utmSource, utmMedium, utmCampaign } = parseUtmFromPage(page);
+    if (utmSource) bumpMapCounter(bucket.utmSources, utmSource);
+    if (utmCampaign) bumpMapCounter(bucket.utmCampaigns, utmCampaign);
+    if (utmMedium && !bucket.utmMediums) bucket.utmMediums = {};
+    if (utmMedium) bumpMapCounter(bucket.utmMediums || (bucket.utmMediums = {}), utmMedium);
   }
 
   function bumpMapCounter(map, key, amount = 1) {
@@ -141,6 +262,7 @@ function createSiteAnalytics(dataDir, options = {}) {
 
     bucket.pageviews += 1;
     bumpMapCounter(bucket.paths, page || '/');
+    recordUtm(bucket, page);
 
     if (!bucket.uniqueIps[ip]) {
       if (Object.keys(bucket.uniqueIps).length >= MAX_DAILY_IPS) return;
@@ -170,6 +292,10 @@ function createSiteAnalytics(dataDir, options = {}) {
   }
 
   function recordEvent(req, eventType, meta = {}) {
+    if (eventType === 'search_query') {
+      recordSearchQuery(meta.q || meta.query);
+      return;
+    }
     if (eventType !== 'whatsapp_click') return;
     const day = dayKey(new Date(), timeZone);
     const data = getStore();
@@ -183,8 +309,36 @@ function createSiteAnalytics(dataDir, options = {}) {
     if (req) recordPageView(req, meta.page || '/');
   }
 
-  function summarizeDay(day, bucket) {
-    if (!bucket) {
+  function filterBucketForExternal(bucket) {
+    if (!bucket) return bucket;
+    const uniqueIps = {};
+    let internalHits = 0;
+    Object.entries(bucket.uniqueIps || {}).forEach(([ip, info]) => {
+      const hits = info.hits || 0;
+      if (isInternalTestIp(ip, hits)) {
+        internalHits += hits;
+        return;
+      }
+      uniqueIps[ip] = info;
+    });
+    const countries = {};
+    Object.values(uniqueIps).forEach((info) => {
+      if (info.country) bumpMapCounter(countries, info.country);
+    });
+    const pageviews = Math.max(0, (bucket.pageviews || 0) - internalHits);
+    return {
+      ...bucket,
+      pageviews,
+      uniqueIps,
+      countries,
+      _internalHitsExcluded: internalHits,
+    };
+  }
+
+  function summarizeDay(day, bucket, options = {}) {
+    const view = options.view || 'all';
+    const source = view === 'external' ? filterBucketForExternal(bucket) : bucket;
+    if (!source) {
       return {
         day,
         pageviews: 0,
@@ -192,11 +346,14 @@ function createSiteAnalytics(dataDir, options = {}) {
         whatsappClicks: 0,
         topPaths: [],
         topCountries: [],
+        topUtmSources: [],
+        topUtmCampaigns: [],
         ips: [],
+        view,
       };
     }
 
-    const ips = Object.entries(bucket.uniqueIps || {})
+    const ips = Object.entries(source.uniqueIps || {})
       .map(([ip, info]) => ({
         ip,
         hits: info.hits || 0,
@@ -206,30 +363,47 @@ function createSiteAnalytics(dataDir, options = {}) {
         lastPath: info.lastPath || null,
         firstSeen: info.firstSeen || null,
         lastSeen: info.lastSeen || null,
+        internal: isInternalTestIp(ip, info.hits || 0),
       }))
       .sort((a, b) => b.hits - a.hits);
 
     return {
       day,
-      pageviews: bucket.pageviews || 0,
+      pageviews: source.pageviews || 0,
       uniqueIpCount: ips.length,
-      whatsappClicks: bucket.whatsappClicks || 0,
-      topPaths: topEntries(bucket.paths, 10),
-      topCountries: topEntries(bucket.countries, 10),
+      whatsappClicks: source.whatsappClicks || 0,
+      topPaths: topEntries(source.paths, 10),
+      topCountries: topEntries(source.countries, 10),
+      topUtmSources: topEntries(source.utmSources, 8),
+      topUtmCampaigns: topEntries(source.utmCampaigns, 8),
       ips,
-      updatedAt: bucket.updatedAt || null,
+      updatedAt: source.updatedAt || null,
+      view,
+      internalHitsExcluded: source._internalHitsExcluded || 0,
     };
   }
 
-  function getSummary({ days = 7, day = null } = {}) {
+  function getSummary({ days = 7, day = null, view = 'all' } = {}) {
     flushDaily();
     const data = getStore();
-    if (day) return summarizeDay(day, data[day]);
+    const viewMode = view === 'external' ? 'external' : 'all';
+    if (day) return summarizeDay(day, data[day], { view: viewMode });
 
     const keys = Object.keys(data).sort().reverse().slice(0, Math.max(1, Number(days) || 7));
+    const daySummaries = keys.map((key) => summarizeDay(key, data[key], { view: viewMode }));
+    const totals = daySummaries.reduce((acc, d) => {
+      acc.pageviews += d.pageviews || 0;
+      acc.uniqueIpCount += d.uniqueIpCount || 0;
+      acc.whatsappClicks += d.whatsappClicks || 0;
+      acc.internalHitsExcluded += d.internalHitsExcluded || 0;
+      return acc;
+    }, { pageviews: 0, uniqueIpCount: 0, whatsappClicks: 0, internalHitsExcluded: 0 });
+
     return {
       timeZone,
-      days: keys.map((key) => summarizeDay(key, data[key])),
+      view: viewMode,
+      totals,
+      days: daySummaries,
     };
   }
 
@@ -268,9 +442,12 @@ function createSiteAnalytics(dataDir, options = {}) {
 
   return {
     dailyFile,
+    searchTrendsFile,
     dayKey: (date) => dayKey(date, timeZone),
     recordPageView,
     recordEvent,
+    recordSearchQuery,
+    getSearchTrending,
     getSummary,
     buildDailyReportText,
     shouldTrackPage,

@@ -1,0 +1,11 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "asiapower-local",
+      "runtimeExecutable": "node",
+      "runtimeArgs": ["server/half-cut-local-server.js"],
+      "port": 8787
+    }
+  ]
+}

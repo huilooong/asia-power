@@ -1,0 +1,41 @@
+{"timestamp": "2026-06-29T08:54:30Z", "event": "approval_required", "action": "apcoo.external_api", "risk_level": "high", "command": "让子敬分析一下最近的访问数据,告诉我下一步他的工作计划和kpi目标", "approval_id": "AP-260629-e79d4a"}
+{"timestamp": "2026-06-29T08:55:08Z", "event": "approval_granted", "action": "apcoo.external_api", "risk_level": "high", "approved_by": "CEO", "command": "让子敬分析一下最近的访问数据,告诉我下一步他的工作计划和kpi目标", "result": "granted"}
+{"timestamp": "2026-06-29T19:10:21Z", "event": "tool_call", "tool": "inventory", "action": "search", "ok": true, "risk_level": "low"}
+{"timestamp": "2026-06-29T19:10:21Z", "event": "tool_call", "tool": "inventory", "action": "search", "ok": true, "risk_level": "low"}
+{"timestamp": "2026-06-29T19:10:21Z", "event": "draft_notification", "draft_id": "d1", "customer": "X"}
+{"timestamp": "2026-06-29T19:10:27Z", "event": "tool_call", "tool": "inventory", "action": "search", "ok": true, "risk_level": "low"}
+{"timestamp": "2026-06-29T19:10:27Z", "event": "tool_call", "tool": "inventory", "action": "search", "ok": true, "risk_level": "low"}
+{"timestamp": "2026-06-29T19:10:27Z", "event": "tool_call", "tool": "inventory", "action": "search", "ok": true, "risk_level": "low"}
+{"timestamp": "2026-06-29T19:10:27Z", "event": "draft_created", "draft_id": "draft-2026-06-29T1910TUTC-2de1c767", "customer": "inquiry-intelligence"}
+{"timestamp": "2026-06-29T19:10:27Z", "event": "draft_created", "draft_id": "draft-2026-06-29T1910TUTC-8decfb80", "customer": "Ghana Motors"}
+{"timestamp": "2026-06-29T19:10:27Z", "event": "draft_rejected", "draft_id": "draft-2026-06-29T1910TUTC-2de1c767", "rejected_by": "system"}
+{"timestamp": "2026-06-29T19:42:39Z", "event": "approval_required", "action": "status", "risk_level": "medium", "command": "/tool qxb_upload status", "tool": "qxb_upload"}
+{"timestamp": "2026-06-29T19:43:09Z", "event": "tool_call", "tool": "qxb_upload", "action": "status", "ok": true, "risk_level": "medium"}
+{"timestamp": "2026-06-29T19:48:27Z", "event": "tool_call", "tool": "qxb_upload", "action": "status", "ok": true, "risk_level": "medium"}
+{"timestamp": "2026-06-29T19:50:52Z", "event": "error", "message": "could not convert string to float: 'very_high:gray:rot0'", "context": "tool=qxb_upload action=next"}
+{"timestamp": "2026-06-29T19:51:46Z", "event": "tool_call", "tool": "qxb_upload", "action": "next", "ok": true, "risk_level": "low"}
+{"timestamp": "2026-06-29T19:52:02Z", "event": "error", "message": "could not convert string to float: 'very_high:gray:rot0'", "context": "tool=qxb_upload action=next"}
+{"timestamp": "2026-06-29T19:52:06Z", "event": "error", "message": "could not convert string to float: 'very_high:gray:rot0'", "context": "tool=qxb_upload action=next"}
+{"timestamp": "2026-06-29T19:52:51Z", "event": "tool_call", "tool": "qxb_upload", "action": "next", "ok": true, "risk_level": "low"}
+{"timestamp": "2026-06-29T19:54:48Z", "event": "tool_call", "tool": "qxb_upload", "action": "status", "ok": true, "risk_level": "medium"}
+{"timestamp": "2026-06-29T19:54:59Z", "event": "tool_call", "tool": "qxb_upload", "action": "next", "ok": true, "risk_level": "low"}
+{"timestamp": "2026-06-29T19:56:15Z", "event": "tool_call", "tool": "qxb_upload", "action": "prepare", "ok": true, "risk_level": "low"}
+{"timestamp": "2026-06-29T19:57:41Z", "event": "tool_call", "tool": "qxb_upload", "action": "process", "ok": true, "risk_level": "low"}
+{"timestamp": "2026-06-29T19:57:54Z", "event": "error", "message": "HTTP Error 403: Forbidden", "context": "tool=qxb_upload action=process"}
+{"timestamp": "2026-06-29T20:01:25Z", "event": "tool_call", "tool": "qxb_upload", "action": "check-upload", "ok": false, "risk_level": "low"}
+{"timestamp": "2026-06-29T20:06:15Z", "event": "tool_call", "tool": "qxb_upload", "action": "check-upload", "ok": false, "risk_level": "low"}
+{"timestamp": "2026-06-29T20:08:43Z", "event": "tool_call", "tool": "qxb_upload", "action": "check-upload", "ok": true, "risk_level": "low"}
+{"timestamp": "2026-06-29T20:08:53Z", "event": "tool_call", "tool": "qxb_upload", "action": "process", "ok": true, "risk_level": "medium"}
+{"timestamp": "2026-06-29T20:10:44Z", "event": "tool_call", "tool": "qxb_upload", "action": "inspect", "ok": true, "risk_level": "low"}
+{"timestamp": "2026-06-29T20:10:44Z", "event": "tool_call", "tool": "qxb_upload", "action": "prepare", "ok": true, "risk_level": "low"}
+{"timestamp": "2026-06-29T20:11:33Z", "event": "tool_call", "tool": "qxb_upload", "action": "process", "ok": true, "risk_level": "medium"}
+{"timestamp": "2026-06-29T20:11:57Z", "event": "tool_call", "tool": "qxb_upload", "action": "next", "ok": true, "risk_level": "low"}
+{"timestamp": "2026-06-29T20:36:03Z", "event": "tool_call", "tool": "qxb_upload", "action": "process", "ok": true, "risk_level": "medium"}
+{"timestamp": "2026-06-29T20:40:35Z", "event": "tool_call", "tool": "qxb_upload", "action": "audit", "ok": true, "risk_level": "low"}
+{"timestamp": "2026-06-29T20:55:52Z", "event": "tool_call", "tool": "qxb_upload", "action": "inspect", "ok": true, "risk_level": "low"}
+{"timestamp": "2026-06-29T20:56:04Z", "event": "tool_call", "tool": "qxb_upload", "action": "process", "ok": true, "risk_level": "medium"}
+{"timestamp": "2026-06-29T20:56:29Z", "event": "tool_call", "tool": "qxb_upload", "action": "submit-review", "ok": false, "risk_level": "low"}
+{"timestamp": "2026-06-29T20:58:40Z", "event": "tool_call", "tool": "qxb_upload", "action": "inspect", "ok": true, "risk_level": "low"}
+{"timestamp": "2026-06-29T20:58:44Z", "event": "tool_call", "tool": "qxb_upload", "action": "process", "ok": true, "risk_level": "medium"}
+{"timestamp": "2026-06-29T20:58:46Z", "event": "tool_call", "tool": "qxb_upload", "action": "submit-review", "ok": true, "risk_level": "low"}
+{"timestamp": "2026-06-29T21:34:31Z", "event": "tool_call", "tool": "qxb_upload", "action": "reupload", "ok": true, "risk_level": "low"}

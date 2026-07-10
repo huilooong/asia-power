@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>预览 · 供应商上传页 v4 · AsiaPower</title>
+  <style>
+    :root {
+      --t1:#1d1d1f; --t2:#6e6e73; --t3:#86868b; --b1:#d2d2d7; --b2:#e8e8ed;
+      --gold:#d4880a; --gold-bg:#fef3dc; --bg:#f5f5f7;
+      --navy:#0f2140; --navy-deep:#0a1628; --accent-old:#d4a017;
+      --font:-apple-system,BlinkMacSystemFont,'SF Pro Display','Helvetica Neue',Arial,'PingFang SC',sans-serif;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: var(--font); background: var(--bg); color: var(--t1); line-height: 1.5; }
+    .preview-note {
+      background: #1d1d1f; color: #f5f5f7; padding: 12px 20px;
+      display: flex; justify-content: space-between; gap: 16px; flex-wrap: wrap; font-size: 13px;
+      position: sticky; top: 0; z-index: 50;
+    }
+    .preview-note a { color: #f5c542; }
+    .wrap { max-width: 1180px; margin: 0 auto; padding: 28px 20px 70px; }
+    h1 { font-size: 1.55rem; font-weight: 800; letter-spacing: -.3px; margin-bottom: 8px; }
+    .sub { color: var(--t2); margin-bottom: 22px; max-width: 720px; }
+    .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; }
+    @media (max-width: 900px) { .grid { grid-template-columns: 1fr; } }
+    .panel {
+      background: #fff; border: 1px solid var(--b2); border-radius: 16px; overflow: hidden;
+      box-shadow: 0 2px 10px rgba(0,0,0,.04);
+    }
+    .panel__label {
+      padding: 10px 16px; font-size: 12px; font-weight: 700; letter-spacing: .04em;
+      text-transform: uppercase; border-bottom: 1px solid var(--b2);
+    }
+    .panel__label--old { background: #fff5f5; color: #9b1c1c; }
+    .panel__label--new { background: #f0faf3; color: #1d8348; }
+
+    /* —— 现网旧壳 —— */
+    .old-header {
+      background: #fff; border-bottom: 1px solid #e2e8f0;
+      padding: 10px 14px; display: flex; align-items: center; gap: 12px;
+    }
+    .old-logo {
+      width: 118px; height: 34px; border-radius: 6px;
+      background: linear-gradient(90deg, #0a1628, #1a3a5c);
+      color: #f5c542; font-size: 11px; font-weight: 700;
+      display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+    }
+    .old-nav { display: flex; gap: 10px; flex-wrap: wrap; font-size: 12px; color: #64748b; }
+    .old-hero {
+      background: var(--navy); color: #fff; padding: 28px 16px 24px;
+    }
+    .old-hero .crumb { font-size: 12px; color: #94a3b8; margin-bottom: 10px; }
+    .old-hero .crumb span { color: var(--accent-old); }
+    .old-hero h2 {
+      font-size: 1.35rem; text-transform: uppercase; letter-spacing: .02em; margin-bottom: 8px;
+    }
+    .old-hero p { color: #cbd5e1; font-size: 13px; max-width: 420px; }
+    .old-body { background: #f1f5f9; padding: 16px; }
+    .old-card {
+      background: #fff; border: 1px solid #e2e8f0; border-radius: 10px; padding: 14px;
+    }
+    .old-steps { display: flex; gap: 8px; margin-bottom: 12px; overflow: auto; }
+    .old-step {
+      font-size: 11px; padding: 6px 10px; border-radius: 999px;
+      background: #e2e8f0; color: #64748b; white-space: nowrap;
+    }
+    .old-step.on { background: var(--navy); color: #fff; }
+    .old-input {
+      width: 100%; padding: 10px 12px; border: 1.5px solid #cbd5e1; border-radius: 8px;
+      font-size: 13px; margin-top: 6px;
+    }
+    .old-btn {
+      margin-top: 12px; background: var(--accent-old); color: var(--navy-deep);
+      border: none; border-radius: 8px; padding: 10px 16px; font-weight: 700; font-size: 13px;
+    }
+
+    /* —— 拟上线 v4 —— */
+    .ap-logo { font-size: 18px; font-weight: 800; letter-spacing: -.4px; color: var(--t1); text-decoration: none; }
+    .ap-logo span { color: var(--gold); }
+    .new-header {
+      background: #fff; border-bottom: 1px solid var(--b2);
+      padding: 10px 14px; display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap;
+    }
+    .new-nav a {
+      font-size: 13px; font-weight: 600; color: var(--t2); text-decoration: none;
+      padding: 7px 11px; border-radius: 8px;
+    }
+    .new-nav a.on { background: var(--gold-bg); color: var(--t1); }
+    .new-hero {
+      background: #fff; border-bottom: 1px solid var(--b2); padding: 26px 16px 22px;
+    }
+    .new-hero .crumb { font-size: 13px; color: var(--t3); margin-bottom: 8px; }
+    .new-hero h2 {
+      font-size: 1.4rem; font-weight: 800; letter-spacing: -.3px; text-transform: none;
+    }
+    .new-hero h2 em {
+      display: block; font-style: normal; color: var(--t2); font-size: .9em; font-weight: 600; margin-top: 4px;
+    }
+    .new-hero p { color: var(--t2); font-size: 13px; margin-top: 8px; max-width: 440px; }
+    .badge {
+      display: inline-flex; margin-top: 10px; padding: 4px 10px; border-radius: 999px;
+      background: var(--gold-bg); color: #8a5a00; font-size: 11px; font-weight: 700;
+      letter-spacing: .04em; text-transform: uppercase;
+    }
+    .new-body { background: var(--bg); padding: 16px; }
+    .new-card {
+      background: #fff; border: 1px solid var(--b2); border-radius: 12px; padding: 16px;
+      box-shadow: 0 2px 8px rgba(0,0,0,.04);
+    }
+    .new-steps { display: flex; gap: 8px; margin-bottom: 14px; overflow: auto; }
+    .new-step {
+      font-size: 12px; font-weight: 600; padding: 7px 12px; border-radius: 10px;
+      border: 1px solid var(--b1); background: #fff; color: var(--t2); white-space: nowrap;
+    }
+    .new-step.on { background: #1d1d1f; color: #fff; border-color: #1d1d1f; }
+    .new-label { font-size: 12px; font-weight: 600; color: var(--t2); }
+    .new-input {
+      width: 100%; margin-top: 6px; padding: 11px 12px; border: 1.5px solid var(--b1);
+      border-radius: 10px; font-size: 14px; background: #fff; color: var(--t1);
+    }
+    .new-btn {
+      margin-top: 14px; background: #1d1d1f; color: #fff; border: none;
+      border-radius: 10px; padding: 11px 18px; font-weight: 700; font-size: 13px;
+    }
+    .new-btn-gold {
+      margin-left: 8px; background: var(--gold); color: #1d1d1f; border: none;
+      border-radius: 10px; padding: 11px 18px; font-weight: 700; font-size: 13px;
+    }
+    .new-footer {
+      margin-top: 12px; padding: 14px 16px; background: #fff; border-top: 1px solid var(--b2);
+      display: flex; justify-content: space-between; gap: 10px; flex-wrap: wrap;
+      font-size: 12px; color: var(--t3);
+    }
+
+    .checklist {
+      margin-top: 26px; background: #fff; border: 1px solid var(--b2);
+      border-radius: 14px; padding: 18px 20px;
+    }
+    .checklist h2 { font-size: 15px; margin-bottom: 10px; }
+    .checklist table { width: 100%; border-collapse: collapse; font-size: 14px; }
+    .checklist th, .checklist td {
+      text-align: left; padding: 8px 6px; border-bottom: 1px solid var(--b2); vertical-align: top;
+    }
+    .checklist th { color: var(--t3); font-size: 12px; font-weight: 700; text-transform: uppercase; }
+    .ok { color: #1d8348; font-weight: 700; }
+    .bad { color: #9b1c1c; font-weight: 700; }
+    .paths {
+      margin-top: 16px; background: #fff; border: 1px solid var(--b2);
+      border-radius: 14px; padding: 16px 18px; font-size: 14px; color: var(--t2);
+    }
+    .paths code {
+      display: block; background: var(--bg); border-radius: 8px; padding: 10px 12px;
+      margin: 8px 0; color: var(--t1); font-size: 12.5px; overflow-x: auto;
+    }
+    .warn {
+      margin-top: 14px; padding: 12px 14px; border-radius: 12px;
+      background: #fff8e6; border: 1px solid #f0d78c; color: #7a5a00; font-size: 13px;
+    }
+  </style>
+</head>
+<body>
+  <div class="preview-note">
+    <div><strong>预览 · 未上线</strong> — 供应商上传页对齐 v4 配色（白底 / 文字 logo / 黑金按钮）</div>
+    <div>
+      <a href="../v4-chrome-sync/admin-v4-preview.html">Admin v4 对照</a> ·
+      <a href="https://asia-power.com/supplier-portal/half-cut-upload.html" target="_blank" rel="noopener">现网上传页</a>
+    </div>
+  </div>
+
+  <div class="wrap">
+    <h1>供应商上传页 → v4.0</h1>
+    <p class="sub">
+      CEO 说的「上传页面」= 供应商门户里的 4 个上传表单（不是 QXB 审核工具、也不是 Admin）。
+      左边是现网旧样（深蓝头图 + PNG logo），右边是拟上线 v4（与 Admin/首页同系白底配色）。
+      <strong>上传步骤与 VIN 逻辑不变</strong>，只换壳与配色。
+    </p>
+
+    <div class="grid">
+      <section class="panel">
+        <div class="panel__label panel__label--old">现网 · 旧壳</div>
+        <div class="old-header">
+          <div class="old-logo">PNG LOGO</div>
+          <div class="old-nav">Half-Cuts · Engines · Trucks · Contact</div>
+        </div>
+        <div class="old-hero">
+          <div class="crumb">Home / Supplier Portal / <span>Passenger Vehicle Upload</span></div>
+          <h2>Passenger Vehicle Upload</h2>
+          <p>Upload whole passenger vehicles — scrap or export used car. Enter the VIN first…</p>
+        </div>
+        <div class="old-body">
+          <div class="old-card">
+            <div class="old-steps">
+              <span class="old-step on">1 VIN</span>
+              <span class="old-step">2 Vehicle</span>
+              <span class="old-step">3 Listing</span>
+              <span class="old-step">4 Photos</span>
+            </div>
+            <label style="font-size:12px;color:#64748b">VIN</label>
+            <input class="old-input" value="LFVxxxxxxxxxx" readonly>
+            <button class="old-btn" type="button">Decode VIN</button>
+          </div>
+        </div>
+      </section>
+
+      <section class="panel">
+        <div class="panel__label panel__label--new">拟上线 · Upload · v4</div>
+        <div class="new-header">
+          <a class="ap-logo" href="#">Asia<span>Power</span></a>
+          <nav class="new-nav">
+            <a href="#">Portal</a>
+            <a class="on" href="#">Passenger</a>
+            <a href="#">Truck</a>
+            <a href="#">Parts</a>
+            <a href="#">Home</a>
+          </nav>
+        </div>
+        <div class="new-hero">
+          <div class="crumb">Home / Supplier Portal / Passenger Vehicle Upload</div>
+          <h2>Passenger Vehicle Upload<em>乘用车整车上传</em></h2>
+          <p>先填 VIN，系统尽量识别品牌/车型/年份；至少上传 3 张清晰照片。</p>
+          <span class="badge">Upload · v4</span>
+        </div>
+        <div class="new-body">
+          <div class="new-card">
+            <div class="new-steps">
+              <span class="new-step on">1 VIN</span>
+              <span class="new-step">2 Vehicle</span>
+              <span class="new-step">3 Listing</span>
+              <span class="new-step">4 Photos</span>
+            </div>
+            <div class="new-label">VIN</div>
+            <input class="new-input" value="LFVxxxxxxxxxx" readonly>
+            <button class="new-btn" type="button">Decode VIN</button>
+            <button class="new-btn-gold" type="button">Next</button>
+          </div>
+          <div class="new-footer">
+            <span>Asia<span style="color:var(--gold)">Power</span> · Upload · v4</span>
+            <span>Portal · Home · 不展示 Admin 菜单</span>
+          </div>
+        </div>
+      </section>
+    </div>
+
+    <div class="checklist">
+      <h2>差异清单（对照已同步的 v4 壳）</h2>
+      <table>
+        <thead>
+          <tr><th>项</th><th>现网上传页</th><th>详情/Admin 已同步</th><th>本预览拟改</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Logo</td>
+            <td class="bad">PNG 图片 logo</td>
+            <td class="ok">文字 AsiaPower</td>
+            <td class="ok">文字 AsiaPower</td>
+          </tr>
+          <tr>
+            <td>顶栏</td>
+            <td class="bad">旧公开导航 / 未挂 admin-v4</td>
+            <td class="ok">文字头 + 工具导航</td>
+            <td class="ok">供应商导航（Portal / 车型入口），不露 Admin</td>
+          </tr>
+          <tr>
+            <td>搜索</td>
+            <td class="bad">无首页风黑搜索（工具页不需要）</td>
+            <td class="ok">公开页有浅灰边+黑按钮</td>
+            <td>上传页保持无大搜索（工具页）</td>
+          </tr>
+          <tr>
+            <td>页头配色</td>
+            <td class="bad">深蓝 navy hero</td>
+            <td class="ok">白底浅灰</td>
+            <td class="ok">白底浅灰 + Upload · v4 徽章</td>
+          </tr>
+          <tr>
+            <td>字体</td>
+            <td>Barlow/Inter 旧工业风</td>
+            <td class="ok">SF / 系统字体</td>
+            <td class="ok">与 Admin v4 同系</td>
+          </tr>
+          <tr>
+            <td>页脚</td>
+            <td class="bad">旧营销页脚 / PNG</td>
+            <td class="ok">精简工具页脚</td>
+            <td class="ok">精简 Upload 页脚</td>
+          </tr>
+          <tr>
+            <td>资源版本</td>
+            <td class="bad">components.js?v=trust-bar-v1 · ebay-layout?v=56</td>
+            <td class="ok">v4-chrome-sync</td>
+            <td>上线时挂 upload-v4.css + 新 components 分支</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="paths">
+      <strong>这 4 个才是「上传页面」</strong>
+      <code>supplier-portal/half-cut-upload.html　　　乘用车整车</code>
+      <code>supplier-portal/passenger-parts-upload.html　乘用车配件</code>
+      <code>supplier-portal/truck-vehicle-upload.html　　商用车整车</code>
+      <code>supplier-portal/truck-upload.html　　　　　卡车配件</code>
+      入口页：<code>supplier-portal.html</code>（选类型，本身仍是深蓝 hero；本轮可先不动，或随上传一并换）
+    </div>
+
+    <div class="warn">
+      ⚠️ 本文件只是预览，<strong>尚未改生产、也未部署</strong>。
+      请 CEO 确认右边样式后，再改代码并走 Release Manager 上线。
+      注意：本地若直接用现有 Admin 头，会把「Inventory / Analytics」露给供应商——上线方案必须用<strong>供应商专用导航</strong>。
+    </div>
+  </div>
+</body>
+</html>

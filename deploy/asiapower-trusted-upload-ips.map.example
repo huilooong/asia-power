@@ -1,0 +1,7 @@
+# Trusted CEO / QXB batch upload egress IPs — empty key = no nginx upload rate limit.
+# Deploy writes /etc/nginx/conf.d/asiapower-trusted-upload-ips.map from server .env:
+#   TRUSTED_SUPPLIER_UPLOAD_IPS=203.0.113.10,198.51.100.42
+#
+# Find your public IP: curl -s https://ifconfig.me
+#
+# 203.0.113.10 "";

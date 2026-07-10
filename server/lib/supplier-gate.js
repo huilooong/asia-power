@@ -1,6 +1,7 @@
 'use strict';
 
 const crypto = require('crypto');
+const { clientIp } = require('./rate-limit');
 
 function isProduction() {
   return process.env.NODE_ENV === 'production' || process.env.SUPPLIER_GATE === '1';
@@ -16,6 +17,24 @@ function hasValidSupplierKey(req) {
   const header = String(req.headers['x-supplier-key'] || '');
   if (!header || header.length !== expected.length) return false;
   return crypto.timingSafeEqual(Buffer.from(header), Buffer.from(expected));
+}
+
+function trustedSupplierUploadIps() {
+  const raw = process.env.TRUSTED_SUPPLIER_UPLOAD_IPS || '';
+  return new Set(
+    raw.split(/[,\s]+/).map((part) => part.trim()).filter(Boolean),
+  );
+}
+
+function isTrustedSupplierUploadIp(req) {
+  const allowed = trustedSupplierUploadIps();
+  if (!allowed.size) return false;
+  return allowed.has(clientIp(req));
+}
+
+/** CEO / 汽修宝批量工作站：有效 key + IP 在白名单内，才跳过 upload 限流。 */
+function isTrustedBatchUploader(req) {
+  return hasValidSupplierKey(req) && isTrustedSupplierUploadIp(req);
 }
 
 function isAuthorizedSupplierRequest(req, allowUpload) {
@@ -50,6 +69,8 @@ module.exports = {
   isProduction,
   supplierUploadKey,
   hasValidSupplierKey,
+  isTrustedSupplierUploadIp,
+  isTrustedBatchUploader,
   isAuthorizedSupplierRequest,
   assertSubmissionMediaUrls,
 };

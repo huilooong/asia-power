@@ -1,0 +1,491 @@
+/**
+ * AsiaPower · eBay Motors 类目页结构
+ * 参照 ebay.com/b/Auto-Parts-and-Vehicles/6000/bn_1865334
+ */
+.scheme-ebay {
+  --ebay-bg: #f7f7f7;
+  --ebay-white: #ffffff;
+  --ebay-text: #191919;
+  --ebay-muted: #707070;
+  --ebay-border: #e5e5e5;
+  --ebay-link: #0654ba;
+  --ebay-btn: #d4a017;
+  --ebay-btn-text: #0a1628;
+  --ebay-promo: #0a1628;
+  --ebay-sidebar-w: 220px;
+  background: var(--ebay-bg);
+  color: var(--ebay-text);
+  font-family: var(--font-body, system-ui, sans-serif);
+}
+
+.scheme-preview-bar {
+  position: sticky;
+  top: 0;
+  z-index: 200;
+  background: #111827;
+  color: #e5e7eb;
+  padding: 10px 20px;
+  font-size: 13px;
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+  border-bottom: 2px solid #d4a017;
+}
+.scheme-preview-bar strong { color: #d4a017; }
+.scheme-preview-bar nav {
+  margin-left: auto;
+  display: flex;
+  gap: 8px;
+}
+.scheme-preview-bar a {
+  color: #e8bc3a;
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.ebay-promo {
+  background: var(--ebay-promo);
+  color: rgba(255, 255, 255, 0.9);
+  font-size: 12px;
+  text-align: center;
+  padding: 7px 16px;
+}
+.ebay-promo a { color: var(--ebay-btn); font-weight: 600; text-decoration: none; }
+
+/* ── Header ── */
+.ebay-header {
+  background: var(--ebay-white);
+  border-bottom: 1px solid var(--ebay-border);
+  position: sticky;
+  top: 36px;
+  z-index: 100;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.06);
+}
+.ebay-header__inner {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 12px 16px 10px;
+  display: flex;
+  align-items: flex-start;
+  gap: 20px;
+}
+.ebay-header__logo {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  padding-top: 6px;
+}
+.ebay-header__logo img { height: 38px; width: auto; display: block; }
+.ebay-header__main { flex: 1; min-width: 0; }
+
+.ebay-search { display: flex; width: 100%; min-width: 0; }
+.ebay-search input {
+  flex: 1;
+  min-width: 0;
+  padding: 11px 16px;
+  border: 2px solid var(--ebay-text);
+  border-right: none;
+  border-radius: 26px 0 0 26px;
+  font-size: 15px;
+  outline: none;
+}
+.ebay-search input:focus { box-shadow: inset 0 0 0 1px var(--ebay-btn); }
+.ebay-search__btn {
+  flex-shrink: 0;
+  padding: 0 28px;
+  border: none;
+  border-radius: 0 26px 26px 0;
+  background: var(--ebay-btn);
+  color: var(--ebay-btn-text);
+  font-weight: 700;
+  font-size: 15px;
+  cursor: pointer;
+}
+.ebay-search__btn:hover { filter: brightness(1.05); }
+
+.ebay-trending--header {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 0 0;
+  font-size: 12px;
+}
+.ebay-trending span { color: var(--ebay-muted); font-weight: 600; flex-shrink: 0; }
+.ebay-trending button {
+  padding: 3px 10px;
+  border-radius: 14px;
+  border: 1px solid var(--ebay-border);
+  background: #fafafa;
+  font-size: 12px;
+  cursor: pointer;
+  color: var(--ebay-link);
+  line-height: 1.4;
+}
+.ebay-trending button:hover { border-color: var(--ebay-btn); background: #fff8e6; }
+
+/* ── 页面：面包屑 + 双栏 ── */
+.ebay-page {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 0 16px 24px;
+}
+.ebay-page__intro {
+  padding: 16px 0 12px;
+}
+.ebay-breadcrumb ol {
+  list-style: none;
+  margin: 0 0 8px;
+  padding: 0;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  color: var(--ebay-muted);
+}
+.ebay-breadcrumb li + li::before {
+  content: "›";
+  margin-right: 6px;
+  color: var(--ebay-muted);
+}
+.ebay-breadcrumb a {
+  color: var(--ebay-link);
+  text-decoration: none;
+}
+.ebay-breadcrumb a:hover { text-decoration: underline; }
+.ebay-page-title {
+  font-size: clamp(1.5rem, 3vw, 2rem);
+  font-weight: 700;
+  line-height: 1.15;
+  margin: 0;
+}
+
+.ebay-page__body {
+  display: grid;
+  grid-template-columns: var(--ebay-sidebar-w) 1fr;
+  gap: 24px;
+  align-items: start;
+}
+
+/* ── 左侧类目栏 ── */
+.ebay-sidebar {
+  background: var(--ebay-white);
+  border: 1px solid var(--ebay-border);
+  border-radius: 8px;
+  padding: 16px 0 12px;
+  position: sticky;
+  top: 120px;
+}
+.ebay-sidebar__title {
+  font-size: 14px;
+  font-weight: 700;
+  margin: 0 16px 10px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid var(--ebay-border);
+}
+.ebay-sidebar__list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+.ebay-sidebar__list a {
+  display: block;
+  padding: 8px 16px;
+  font-size: 13px;
+  color: var(--ebay-text);
+  text-decoration: none;
+  line-height: 1.35;
+}
+.ebay-sidebar__list a:hover {
+  color: var(--ebay-link);
+  background: #f5f5f5;
+}
+
+/* ── 主内容区 ── */
+.ebay-main { min-width: 0; }
+
+.ebay-banner-main {
+  position: relative;
+  display: block;
+  border-radius: 16px;
+  overflow: hidden;
+  aspect-ratio: 1280 / 460;
+  width: 100%;
+  max-height: 360px;
+  background: var(--ebay-promo);
+  text-decoration: none;
+  color: inherit;
+  margin-bottom: 24px;
+}
+.ebay-banner-main:hover { box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1); }
+.ebay-banner-main img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center 42%;
+}
+.ebay-banner-main__overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(90deg, rgba(10, 22, 40, 0.88) 0%, rgba(10, 22, 40, 0.4) 42%, transparent 68%);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 0 28px;
+  color: #fff;
+  pointer-events: none;
+}
+.ebay-banner-main__overlay h2 {
+  font-family: var(--font-display, sans-serif);
+  font-size: clamp(1rem, 2vw, 1.5rem);
+  font-weight: 800;
+  line-height: 1.15;
+  margin-bottom: 6px;
+  max-width: 320px;
+}
+.ebay-banner-main__overlay h2 em { color: var(--ebay-btn); font-style: normal; }
+.ebay-banner-main__overlay p {
+  font-size: 12px;
+  opacity: 0.9;
+  max-width: 300px;
+  margin-bottom: 10px;
+  line-height: 1.4;
+}
+.ebay-banner-main__cta {
+  display: inline-block;
+  padding: 7px 16px;
+  border: 2px solid #fff;
+  border-radius: 20px;
+  font-weight: 700;
+  font-size: 12px;
+  width: fit-content;
+  background: transparent;
+}
+
+/* ── 横向轮播区块 ── */
+.ebay-carousel-section { margin-bottom: 28px; }
+.ebay-section__head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  margin-bottom: 12px;
+  gap: 12px;
+}
+.ebay-section__head h2 {
+  font-size: 20px;
+  font-weight: 700;
+  margin: 0;
+}
+.ebay-section__head a {
+  font-size: 13px;
+  color: var(--ebay-link);
+  text-decoration: none;
+  font-weight: 600;
+  white-space: nowrap;
+}
+.ebay-section__head a:hover { text-decoration: underline; }
+
+.ebay-carousel {
+  position: relative;
+}
+.ebay-carousel__track {
+  display: flex;
+  gap: 12px;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  scroll-behavior: smooth;
+  scrollbar-width: none;
+  padding: 2px 0 6px;
+}
+.ebay-carousel__track::-webkit-scrollbar { display: none; }
+
+.ebay-carousel__nav {
+  position: absolute;
+  top: 50%;
+  transform: translateY(calc(-50% + 12px));
+  z-index: 2;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  border: 1px solid var(--ebay-border);
+  background: var(--ebay-white);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.12);
+  font-size: 22px;
+  line-height: 1;
+  color: var(--ebay-text);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.ebay-carousel__nav:hover { background: #f5f5f5; }
+.ebay-carousel__nav--prev { left: -8px; }
+.ebay-carousel__nav--next { right: -8px; }
+
+/* ── eBay 商品卡（横向） ── */
+.ebay-card {
+  flex: 0 0 168px;
+  scroll-snap-align: start;
+  text-decoration: none;
+  color: inherit;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.ebay-card:hover .ebay-card__title { text-decoration: underline; }
+.ebay-card__photo {
+  aspect-ratio: 1;
+  background: #f0f0f0;
+  border-radius: 4px;
+  overflow: hidden;
+}
+.ebay-card__photo img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+.ebay-card__title {
+  font-size: 13px;
+  line-height: 1.35;
+  color: var(--ebay-text);
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+.ebay-card__meta {
+  font-size: 11px;
+  color: var(--ebay-muted);
+}
+.ebay-card__meta--rec {
+  font-size: 11px;
+  color: #059669;
+  line-height: 1.3;
+}
+.ebay-card__stars { color: #e53238; letter-spacing: -1px; }
+.ebay-card__price {
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--ebay-text);
+  line-height: 1.2;
+}
+.ebay-card__price span:not(.ebay-card__was) {
+  font-size: 12px;
+  font-weight: 400;
+  color: var(--ebay-muted);
+}
+.ebay-card__was {
+  font-size: 12px !important;
+  font-weight: 400 !important;
+  color: var(--ebay-muted) !important;
+  text-decoration: line-through;
+  margin-left: 4px;
+}
+.ebay-card__deal {
+  font-size: 11px;
+  color: #cc0000;
+  font-weight: 600;
+}
+
+/* ── Related searches ── */
+.ebay-related {
+  margin-top: 8px;
+  padding-top: 20px;
+  border-top: 1px solid var(--ebay-border);
+}
+.ebay-related h2 {
+  font-size: 20px;
+  font-weight: 700;
+  margin: 0 0 12px;
+}
+.ebay-related__tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.ebay-related__tags a {
+  padding: 6px 14px;
+  border-radius: 20px;
+  border: 1px solid var(--ebay-border);
+  background: var(--ebay-white);
+  font-size: 13px;
+  color: var(--ebay-link);
+  text-decoration: none;
+}
+.ebay-related__tags a:hover {
+  border-color: var(--ebay-link);
+  background: #f0f6ff;
+}
+
+/* ── 信任条 ── */
+.ebay-trust {
+  background: var(--ebay-white);
+  border-top: 1px solid var(--ebay-border);
+  margin-top: 8px;
+}
+.ebay-trust__inner {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 24px 16px;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 20px;
+  text-align: center;
+}
+.ebay-trust__icon { font-size: 24px; margin-bottom: 6px; }
+.ebay-trust__label { font-size: 13px; font-weight: 700; }
+.ebay-trust__sub { font-size: 11px; color: var(--ebay-muted); margin-top: 2px; }
+
+@media (max-width: 1024px) {
+  .ebay-page__body {
+    grid-template-columns: 1fr;
+  }
+  .ebay-sidebar {
+    position: static;
+    padding: 12px 0;
+  }
+  .ebay-sidebar__title {
+    margin: 0 12px 8px;
+    padding-bottom: 8px;
+  }
+  .ebay-sidebar__list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px;
+    padding: 0 8px 4px;
+  }
+  .ebay-sidebar__list a {
+    padding: 6px 12px;
+    border: 1px solid var(--ebay-border);
+    border-radius: 16px;
+    background: #fafafa;
+    font-size: 12px;
+  }
+}
+
+@media (max-width: 768px) {
+  .ebay-header { top: 36px; }
+  .ebay-header__inner { padding: 10px 12px 8px; gap: 12px; }
+  .ebay-header__logo img { height: 30px; }
+  .ebay-search input { font-size: 14px; padding: 10px 12px; }
+  .ebay-search__btn { padding: 0 18px; font-size: 14px; }
+  .ebay-banner-main {
+    aspect-ratio: 1280 / 320;
+    max-height: 280px;
+    border-radius: 12px;
+  }
+  .ebay-banner-main img { object-fit: cover; object-position: center 42%; }
+  .ebay-banner-main__overlay {
+    background: linear-gradient(180deg, rgba(10, 22, 40, 0.82) 0%, transparent 70%);
+    justify-content: flex-end;
+    padding: 16px;
+  }
+  .ebay-banner-main__overlay p { display: none; }
+  .ebay-carousel__nav { display: none; }
+  .ebay-card { flex-basis: 140px; }
+  .ebay-trust__inner { grid-template-columns: repeat(2, 1fr); }
+}

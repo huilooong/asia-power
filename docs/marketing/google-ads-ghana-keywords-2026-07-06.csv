@@ -1,0 +1,61 @@
+Campaign,Ad group,Keyword,Match type,Final URL,Priority,Intent note
+GH_Search_Engines_HighIntent,Corolla 2009-2013 Engine,"corolla 2009 engine",Phrase,https://asia-power.com/ghana.html,S,Customer-language search; Ghana listings show Corolla 2009-2013 engine demand
+GH_Search_Engines_HighIntent,Corolla 2009-2013 Engine,"corolla 2010 engine",Phrase,https://asia-power.com/ghana.html,S,Customer-language search
+GH_Search_Engines_HighIntent,Corolla 2009-2013 Engine,"corolla 2011 engine",Phrase,https://asia-power.com/ghana.html,S,Customer-language search
+GH_Search_Engines_HighIntent,Corolla 2009-2013 Engine,"corolla 2012 engine",Phrase,https://asia-power.com/ghana.html,S,Customer-language search
+GH_Search_Engines_HighIntent,Corolla 2009-2013 Engine,"corolla 2009 2010 2011 engine",Phrase,https://asia-power.com/ghana.html,S,Matches local seller wording
+GH_Search_Engines_HighIntent,Corolla 2009-2013 Engine,"toyota corolla engine ghana",Phrase,https://asia-power.com/ghana.html,S,High intent plus geography
+GH_Search_Engines_HighIntent,Corolla 2009-2013 Engine,"toyota corolla engine accra",Phrase,https://asia-power.com/ghana.html,S,Accra intent
+GH_Search_Engines_HighIntent,Corolla 2009-2013 Engine,"toyota corolla engine for sale ghana",Phrase,https://asia-power.com/ghana.html,S,Transactional
+GH_Search_Engines_HighIntent,Corolla 2009-2013 Engine,"corolla engine with gearbox",Phrase,https://asia-power.com/ghana.html,A,Useful bundle query
+GH_Search_Engines_HighIntent,Corolla 2009-2013 Engine,"corolla 1zr engine",Phrase,https://asia-power.com/engines/1zr-fe.html,A,Backend code plus customer model
+GH_Search_Engines_HighIntent,Camry Engine,"camry 2007 engine",Phrase,https://asia-power.com/ghana.html,S,Customer-language search
+GH_Search_Engines_HighIntent,Camry Engine,"camry 2008 engine",Phrase,https://asia-power.com/ghana.html,S,Customer-language search
+GH_Search_Engines_HighIntent,Camry Engine,"camry 2009 engine",Phrase,https://asia-power.com/ghana.html,S,Customer-language search
+GH_Search_Engines_HighIntent,Camry Engine,"toyota camry engine ghana",Phrase,https://asia-power.com/ghana.html,S,High intent plus geography
+GH_Search_Engines_HighIntent,Camry Engine,"toyota camry engine accra",Phrase,https://asia-power.com/ghana.html,S,Accra intent
+GH_Search_Engines_HighIntent,Camry Engine,"camry engine with gearbox",Phrase,https://asia-power.com/ghana.html,A,Bundle query
+GH_Search_Engines_HighIntent,Camry Engine,"1az camry engine",Phrase,https://asia-power.com/engines/1az-fe.html,A,Observed local listing language
+GH_Search_Engines_HighIntent,Camry Engine,"2az camry engine",Phrase,https://asia-power.com/engines/2az-fe.html,A,Engine-code plus model
+GH_Search_Engines_HighIntent,Vitz Yaris Engine,"toyota vitz engine ghana",Phrase,https://asia-power.com/ghana.html,S,Common Ghana model-language query
+GH_Search_Engines_HighIntent,Vitz Yaris Engine,"vitz engine for sale ghana",Phrase,https://asia-power.com/ghana.html,S,Transactional
+GH_Search_Engines_HighIntent,Vitz Yaris Engine,"toyota vitz engine accra",Phrase,https://asia-power.com/ghana.html,A,Accra intent
+GH_Search_Engines_HighIntent,Vitz Yaris Engine,"toyota yaris engine ghana",Phrase,https://asia-power.com/ghana.html,A,Related model
+GH_Search_Engines_HighIntent,Vitz Yaris Engine,"1nz engine ghana",Phrase,https://asia-power.com/engines/1nz-fe.html,A,Engine-code query
+GH_Search_Engines_HighIntent,Vitz Yaris Engine,"2nz engine ghana",Phrase,https://asia-power.com/engines/2nz-fe.html,A,Engine-code query
+GH_Search_Engines_HighIntent,Hyundai Kia SUV Engine,"hyundai ix35 engine ghana",Phrase,https://asia-power.com/ghana.html,S,Customer-language search
+GH_Search_Engines_HighIntent,Hyundai Kia SUV Engine,"hyundai tucson engine ghana",Phrase,https://asia-power.com/ghana.html,S,Customer-language search
+GH_Search_Engines_HighIntent,Hyundai Kia SUV Engine,"kia sportage engine ghana",Phrase,https://asia-power.com/ghana.html,S,Customer-language search
+GH_Search_Engines_HighIntent,Hyundai Kia SUV Engine,"g4na engine ghana",Phrase,https://asia-power.com/engines/g4na.html,S,High stock count and code search
+GH_Search_Engines_HighIntent,Hyundai Kia SUV Engine,"g4kd engine ghana",Phrase,https://asia-power.com/engines/g4kd.html,A,Common Hyundai/Kia code
+GH_Search_Engines_HighIntent,Hyundai Kia SUV Engine,"g4fg engine ghana",Phrase,https://asia-power.com/engines/g4fg.html,A,Code query
+GH_Search_Engines_HighIntent,Hyundai Kia Sedan Engine,"hyundai elantra engine ghana",Phrase,https://asia-power.com/ghana.html,A,Model-language query
+GH_Search_Engines_HighIntent,Hyundai Kia Sedan Engine,"hyundai accent engine ghana",Phrase,https://asia-power.com/ghana.html,A,Model-language query
+GH_Search_Engines_HighIntent,Hyundai Kia Sedan Engine,"kia rio engine ghana",Phrase,https://asia-power.com/ghana.html,A,Model-language query
+GH_Search_Engines_HighIntent,Hyundai Kia Sedan Engine,"g4fc engine ghana",Phrase,https://asia-power.com/engines/g4fc.html,A,Code query
+GH_Search_Engines_HighIntent,Nissan Engine,"nissan tiida engine ghana",Phrase,https://asia-power.com/ghana.html,A,Model-language query
+GH_Search_Engines_HighIntent,Nissan Engine,"nissan x trail engine ghana",Phrase,https://asia-power.com/ghana.html,A,Model-language query
+GH_Search_Engines_HighIntent,Nissan Engine,"nissan qashqai engine ghana",Phrase,https://asia-power.com/ghana.html,A,Model-language query
+GH_Search_Engines_HighIntent,Nissan Engine,"hr16de engine ghana",Phrase,https://asia-power.com/engines/hr16de.html,A,Code query
+GH_Search_Engines_HighIntent,Nissan Engine,"qr25de engine ghana",Phrase,https://asia-power.com/engines/qr25de.html,A,Code query
+GH_Search_Engines_HighIntent,Honda Engine,"honda crv engine ghana",Phrase,https://asia-power.com/ghana.html,A,Model-language query
+GH_Search_Engines_HighIntent,Honda Engine,"honda accord engine ghana",Phrase,https://asia-power.com/ghana.html,A,Model-language query
+GH_Search_Engines_HighIntent,Honda Engine,"k24 engine ghana",Phrase,https://asia-power.com/engines/k24a.html,A,Code query
+GH_Search_Gearboxes_HighIntent,Corolla Gearbox,"corolla gearbox ghana",Phrase,https://asia-power.com/gearboxes/,S,Transactional gearbox query
+GH_Search_Gearboxes_HighIntent,Corolla Gearbox,"corolla 2009 gearbox",Phrase,https://asia-power.com/gearboxes/,S,Customer-language gearbox query
+GH_Search_Gearboxes_HighIntent,Corolla Gearbox,"corolla 2010 gearbox",Phrase,https://asia-power.com/gearboxes/,S,Customer-language gearbox query
+GH_Search_Gearboxes_HighIntent,Corolla Gearbox,"toyota corolla gearbox accra",Phrase,https://asia-power.com/gearboxes/,A,Accra intent
+GH_Search_Gearboxes_HighIntent,Camry Gearbox,"camry gearbox ghana",Phrase,https://asia-power.com/gearboxes/,S,Transactional gearbox query
+GH_Search_Gearboxes_HighIntent,Camry Gearbox,"toyota camry gearbox accra",Phrase,https://asia-power.com/gearboxes/,A,Accra intent
+GH_Search_Gearboxes_HighIntent,Hyundai Kia Gearbox,"hyundai ix35 gearbox ghana",Phrase,https://asia-power.com/gearboxes/,A,Model gearbox query
+GH_Search_Gearboxes_HighIntent,Hyundai Kia Gearbox,"kia sportage gearbox ghana",Phrase,https://asia-power.com/gearboxes/,A,Model gearbox query
+GH_Search_HalfCuts_Import,Half Cut Ghana,"half cut cars ghana",Phrase,https://asia-power.com/half-cuts/,S,Category buyer
+GH_Search_HalfCuts_Import,Half Cut Ghana,"half cut car parts ghana",Phrase,https://asia-power.com/half-cuts/,S,Category buyer
+GH_Search_HalfCuts_Import,Half Cut Ghana,"front cut cars ghana",Phrase,https://asia-power.com/half-cuts/,A,Local category variant
+GH_Search_HalfCuts_Import,Half Cut Ghana,"nose cut cars ghana",Phrase,https://asia-power.com/half-cuts/,A,Local category variant
+GH_Search_HalfCuts_Import,Half Cut Ghana,"half cut supplier ghana",Phrase,https://asia-power.com/half-cuts/,A,Supplier intent
+GH_Search_Import_FromChina,China To Ghana Auto Parts,"auto parts from china to ghana",Phrase,https://asia-power.com/ghana.html,A,Service proposition
+GH_Search_Import_FromChina,China To Ghana Auto Parts,"import car parts from china to ghana",Phrase,https://asia-power.com/ghana.html,A,Import intent
+GH_Search_Import_FromChina,China To Ghana Auto Parts,"used engines from china to ghana",Phrase,https://asia-power.com/ghana.html,S,Matches business model
+GH_Search_Import_FromChina,China To Ghana Auto Parts,"used car parts from china to ghana",Phrase,https://asia-power.com/ghana.html,A,Service proposition
+GH_Search_Import_FromChina,China To Ghana Auto Parts,"engine importers in ghana",Phrase,https://asia-power.com/ghana.html,A,Buyer/importer intent

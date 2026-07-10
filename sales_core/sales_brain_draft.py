@@ -111,6 +111,8 @@ def build_sales_brain_draft(
     """Build draft with Sales Brain v1 audit fields."""
     import os
 
+    from sales_core.zijing_reply_context import zijing_quick_reply
+
     keywords = extract_product_keywords(message)
     inventory_hit, _ = check_inventory_for_enquiry(message)
     lang = communication_language or resolve_target_language("apsales", "buyer", message)
@@ -120,7 +122,16 @@ def build_sales_brain_draft(
         classification=classification.classification,
     )
 
-    if os.getenv("OPENAI_API_KEY"):
+    quick = zijing_quick_reply(message, contact_name=customer_name) if channel == "whatsapp_live" else None
+    if quick:
+        internal = (
+            "【内部分析】\n"
+            f"- 分类: {classification.classification}\n"
+            f"- 推理: {classification.reasoning_summary}\n"
+            f"- 子敬快速规则: 已匹配训练话术，无需 LLM\n"
+        )
+        draft = quick
+    elif os.getenv("OPENAI_API_KEY"):
         reply = process_apsales_enquiry(message, channel=channel)
         internal, draft = parse_enquiry_sections(reply)
         if keywords and "G4KJ" in " ".join(keywords).upper():
@@ -157,14 +168,15 @@ def build_sales_brain_draft(
             pass
 
     intent = classification.intent_category or "unknown"
+    risk = "low" if quick else _risk_for_classification(classification.classification, intent)
     return {
         "customer_name": customer_name,
         "customer_hash": customer_hash,
         "detected_language": detected_language,
         "internal_analysis_zh": internal,
         "customer_reply_draft": draft,
-        "risk_level": _risk_for_classification(classification.classification, intent),
-        "approval_required": True,
+        "risk_level": risk,
+        "approval_required": not bool(quick),
         "next_action": _next_action(classification.classification, intent),
         "category": intent,
         "classification": classification.classification,

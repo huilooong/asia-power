@@ -1,0 +1,681 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#0a1628">
+  <meta name="robots" content="noindex, nofollow">
+  <title>子敬 · 实时工作状态 | AsiaPower</title>
+  <link rel="icon" href="../assets/favicon.png" type="image/png">
+  <style>
+    :root {
+      --bg: #0a1628;
+      --card: #132238;
+      --card-border: rgba(255,255,255,.08);
+      --text: #eef2f7;
+      --muted: #94a3b8;
+      --ok: #34d399;
+      --warn: #fbbf24;
+      --bad: #f87171;
+      --accent: #60a5fa;
+      --term-bg: #060d18;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.5;
+      min-height: 100vh;
+    }
+    .wrap { max-width: 960px; margin: 0 auto; padding: 1rem 1rem 2.5rem; }
+    .topbar {
+      display: flex;
+      flex-wrap: wrap;
+      gap: .5rem;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: .75rem;
+      font-size: .85rem;
+    }
+    .topbar a, .topbar button {
+      color: var(--accent);
+      background: none;
+      border: 1px solid rgba(96,165,250,.35);
+      border-radius: 8px;
+      padding: .35rem .65rem;
+      cursor: pointer;
+      font-size: .85rem;
+    }
+    .topbar button:hover { background: rgba(96,165,250,.12); }
+    .hero {
+      text-align: center;
+      padding: .75rem 0 1rem;
+      border-bottom: 1px solid var(--card-border);
+      margin-bottom: 1rem;
+    }
+    .hero h1 {
+      margin: 0 0 .25rem;
+      font-size: clamp(1.25rem, 4vw, 1.65rem);
+      font-weight: 800;
+    }
+    .hero .sub { color: var(--muted); font-size: .88rem; }
+    .now-banner {
+      background: linear-gradient(135deg, #1e3a5f 0%, #132238 100%);
+      border: 2px solid var(--accent);
+      border-radius: 16px;
+      padding: 1.1rem 1.25rem;
+      margin-bottom: 1rem;
+      text-align: center;
+    }
+    .now-banner .label {
+      font-size: .78rem;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: .08em;
+      margin-bottom: .35rem;
+    }
+    .now-banner .action {
+      font-size: clamp(1.1rem, 3.5vw, 1.45rem);
+      font-weight: 800;
+      color: var(--ok);
+      word-break: break-word;
+    }
+    .now-banner.idle .action { color: var(--warn); }
+    .now-banner .meta {
+      margin-top: .45rem;
+      font-size: .82rem;
+      color: var(--muted);
+    }
+    .next-banner {
+      background: rgba(96,165,250,.08);
+      border: 1px solid rgba(96,165,250,.28);
+      border-radius: 12px;
+      padding: .85rem 1rem;
+      margin-bottom: 1rem;
+      font-size: .9rem;
+    }
+    .next-banner strong { color: var(--accent); }
+    .probe-banner {
+      background: linear-gradient(135deg, #4a2c00 0%, #132238 100%);
+      border: 2px solid var(--warn);
+      border-radius: 16px;
+      padding: 1rem 1.25rem;
+      margin-bottom: 1rem;
+      text-align: center;
+      font-size: clamp(.95rem, 2.8vw, 1.05rem);
+      font-weight: 700;
+      color: var(--warn);
+      word-break: break-word;
+    }
+    .probe-banner .sub {
+      margin-top: .35rem;
+      font-size: .82rem;
+      font-weight: 500;
+      color: var(--muted);
+    }
+    .mode-banner {
+      border-radius: 12px;
+      padding: .65rem 1rem;
+      margin-bottom: .75rem;
+      font-size: .92rem;
+      text-align: center;
+      font-weight: 700;
+      background: rgba(52, 211, 153, .12);
+      border: 1px solid rgba(52, 211, 153, .45);
+      color: var(--ok);
+    }
+    .mode-banner.limited {
+      background: rgba(251, 191, 36, .12);
+      border-color: rgba(251, 191, 36, .45);
+      color: var(--warn);
+    }
+    .wave-banner {
+      background: linear-gradient(135deg, #1a4d3e 0%, #132238 100%);
+      border: 1px solid rgba(52,211,153,.45);
+      border-radius: 12px;
+      padding: .9rem 1.1rem;
+      margin-bottom: 1rem;
+      font-size: clamp(.95rem, 2.8vw, 1.1rem);
+      font-weight: 700;
+      text-align: center;
+      color: var(--ok);
+      word-break: break-word;
+    }
+    .reasons-list {
+      margin: 0;
+      padding-left: 1.1rem;
+      font-size: .85rem;
+      color: var(--muted);
+    }
+    .reasons-list li { margin: .25rem 0; }
+    .pulse {
+      display: inline-flex;
+      align-items: center;
+      gap: .45rem;
+      font-size: .82rem;
+      color: var(--ok);
+    }
+    .pulse::before {
+      content: "";
+      width: .5rem;
+      height: .5rem;
+      border-radius: 50%;
+      background: var(--ok);
+      animation: blink 1.2s ease-in-out infinite;
+    }
+    @keyframes blink { 0%,100% { opacity: 1; } 50% { opacity: .25; } }
+    .term {
+      background: var(--term-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 12px;
+      font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+      font-size: .82rem;
+      max-height: 420px;
+      overflow-y: auto;
+      padding: .65rem 0;
+    }
+    .term-line {
+      padding: .22rem 1rem;
+      border-bottom: 1px solid rgba(255,255,255,.03);
+      display: flex;
+      gap: .65rem;
+      align-items: flex-start;
+    }
+    .term-line:hover { background: rgba(255,255,255,.03); }
+    .term-time { color: var(--muted); flex-shrink: 0; min-width: 4.5rem; }
+    .term-action { color: var(--accent); flex-shrink: 0; min-width: 5.5rem; }
+    .plat-badge {
+      display: inline-block;
+      font-size: .68rem;
+      font-weight: 700;
+      padding: .1rem .35rem;
+      border-radius: 4px;
+      margin-right: .35rem;
+      vertical-align: middle;
+    }
+    .plat-badge--fb { background: #1877f2; color: #fff; }
+    .plat-badge--x { background: #e7e9ea; color: #0f1419; }
+    .plat-badge--alt { background: linear-gradient(90deg, #1877f2 50%, #e7e9ea 50%); color: #fff; text-shadow: 0 0 2px #000; }
+    .term-detail { color: var(--text); flex: 1; word-break: break-word; }
+    .term-status { flex-shrink: 0; font-size: .75rem; }
+    .term-status--running { color: var(--warn); }
+    .term-status--completed { color: var(--ok); }
+    .term-status--failed { color: var(--bad); }
+    .term-status--idle { color: var(--muted); }
+    .stats-row {
+      display: flex;
+      gap: 1rem;
+      flex-wrap: wrap;
+      margin-bottom: 1rem;
+      font-size: .88rem;
+    }
+    .stats-row span { color: var(--muted); }
+    .stats-row strong { color: var(--text); }
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 1rem;
+      margin-top: 1rem;
+    }
+    .card {
+      background: var(--card);
+      border: 1px solid var(--card-border);
+      border-radius: 14px;
+      padding: 1rem 1.1rem;
+    }
+    .card h2 {
+      margin: 0 0 .75rem;
+      font-size: .95rem;
+      font-weight: 700;
+      color: var(--accent);
+    }
+    .row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: .75rem;
+      padding: .4rem 0;
+      border-bottom: 1px solid rgba(255,255,255,.04);
+      font-size: .88rem;
+    }
+    .row:last-child { border-bottom: none; }
+    .badge { font-weight: 700; font-size: .85rem; white-space: nowrap; }
+    .badge--ok { color: var(--ok); }
+    .badge--bad { color: var(--bad); }
+    .badge--warn { color: var(--warn); }
+    .err {
+      background: rgba(248,113,113,.12);
+      border: 1px solid rgba(248,113,113,.35);
+      color: #fecaca;
+      border-radius: 10px;
+      padding: .85rem 1rem;
+      margin-bottom: 1rem;
+      font-size: .9rem;
+    }
+    .footer {
+      text-align: center;
+      margin-top: 1.5rem;
+      font-size: .82rem;
+      color: var(--muted);
+    }
+    .footer a { color: var(--accent); }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="topbar">
+      <span class="pulse" id="refresh-indicator">正在连接…</span>
+      <button type="button" id="copy-url-btn">📋 复制 CEO 监控链接</button>
+    </div>
+
+    <header class="hero">
+      <h1>子敬 · 实时工作状态</h1>
+      <p class="sub">CEO 监督面板 · 每 2 秒自动刷新 · 真实进度请用终端: docs/打开-子敬工作状态.command</p>
+    </header>
+
+    <div id="mode-banner" class="mode-banner" hidden>—</div>
+    <div id="wave-banner" class="wave-banner" hidden>🌏 向西逐波 · 加载中…</div>
+    <div id="probe-banner" class="probe-banner" hidden>
+      🔬 平台上限探测模式
+      <div class="sub" id="probe-block-detail">—</div>
+    </div>
+
+    <div id="error-box" class="err" hidden></div>
+
+    <div id="now-banner" class="now-banner idle">
+      <div class="label">正在做</div>
+      <div class="action" id="current-action">加载中…</div>
+      <div class="meta" id="current-meta"></div>
+    </div>
+
+    <div id="next-banner" class="next-banner" hidden>
+      <strong>下一动作</strong> <span id="next-action-text">—</span>
+    </div>
+
+    <div id="alt-seq-banner" class="next-banner" hidden style="border-color:#34d399">
+      <strong>FB↔X 交替队列</strong> <span id="alt-seq-text">—</span>
+    </div>
+
+    <div id="reasons-box" class="card" style="margin-bottom:1rem" hidden>
+      <h2>为何暂停 / 何时继续</h2>
+      <ul class="reasons-list" id="reasons-list"></ul>
+    </div>
+
+    <div class="stats-row" id="stats-row">
+      <span>事件/分钟：<strong id="epm">—</strong></span>
+      <span>队列待执行：<strong id="queue-pending">—</strong></span>
+      <span>刷新：<strong id="last-refresh">—</strong></span>
+    </div>
+
+    <section class="card" style="margin-bottom:1rem;padding:.75rem 0 .75rem">
+      <h2 style="padding:0 1.1rem;margin-bottom:.5rem">实时动作流（最新在上）</h2>
+      <div class="term" id="activity-term">
+        <div class="term-line"><span class="term-time">—</span><span class="term-detail" style="color:var(--muted)">等待数据…</span></div>
+      </div>
+    </section>
+
+    <div id="dashboard"></div>
+
+    <p class="footer">
+      真实动作进度 → 双击 <strong>docs/打开-子敬工作状态.command</strong> 或在终端运行
+      <code>.venv/bin/python3 scripts/apsales-zijing-watch.py --loop</code>
+      · <a href="apsales-progress.html">推广进度页</a>
+    </p>
+  </div>
+
+  <script>
+  (function () {
+    'use strict';
+
+    const REFRESH_MS = 2000;
+    const root = document.getElementById('dashboard');
+    const errBox = document.getElementById('error-box');
+    const indicator = document.getElementById('refresh-indicator');
+    const nowBanner = document.getElementById('now-banner');
+    const currentActionEl = document.getElementById('current-action');
+    const currentMetaEl = document.getElementById('current-meta');
+    const activityTerm = document.getElementById('activity-term');
+    const epmEl = document.getElementById('epm');
+    const queuePendingEl = document.getElementById('queue-pending');
+    const lastRefreshEl = document.getElementById('last-refresh');
+    const copyBtn = document.getElementById('copy-url-btn');
+    const nextBanner = document.getElementById('next-banner');
+    const nextActionText = document.getElementById('next-action-text');
+    const reasonsBox = document.getElementById('reasons-box');
+    const reasonsList = document.getElementById('reasons-list');
+    const waveBanner = document.getElementById('wave-banner');
+    const altSeqBanner = document.getElementById('alt-seq-banner');
+    const altSeqText = document.getElementById('alt-seq-text');
+    const probeBanner = document.getElementById('probe-banner');
+    const probeBlockDetail = document.getElementById('probe-block-detail');
+    const modeBanner = document.getElementById('mode-banner');
+
+    const ACTION_LABELS = {
+      idle: '空闲',
+      accept_friends: '通过好友',
+      group_actions: '小组动作',
+      group_join: '加入小组',
+      group_greeting: '小组问候',
+      group_comment: '小组评论',
+      browse_feed: '浏览动态',
+      friend_dm: '好友私信',
+      timeline_post: '时间线发帖',
+      autopilot: 'Autopilot',
+      engage: '互动队列',
+      scan_replies: '扫描回复',
+      publish: '发布帖文',
+      daily_run: '每日一体运行',
+      alternate_run: 'FB↔X 交替',
+      maps_fallback: '限流 · Maps获客',
+      africa_maps_scrape: '非洲 Maps',
+      maps_prospect: 'Google Maps',
+      sleep: '批次休息',
+      zijing_run: '子敬运行',
+    };
+
+    function platformBadge(platform) {
+      const p = String(platform || '').toLowerCase();
+      if (p === 'facebook') return '<span class="plat-badge plat-badge--fb">FB</span>';
+      if (p === 'x') return '<span class="plat-badge plat-badge--x">X</span>';
+      if (p === 'fb+x') return '<span class="plat-badge plat-badge--alt">FB↔X</span>';
+      return platform ? `<span class="plat-badge">${esc(platform)}</span>` : '';
+    }
+
+    function getToken() {
+      const params = new URLSearchParams(window.location.search);
+      const fromUrl = params.get('token');
+      if (fromUrl) {
+        try { sessionStorage.setItem('apsales_zijing_live_token', fromUrl); } catch (_) {}
+        return fromUrl;
+      }
+      try { return sessionStorage.getItem('apsales_zijing_live_token') || ''; } catch (_) { return ''; }
+    }
+
+    function buildPageUrl() {
+      const token = getToken();
+      const url = new URL(window.location.href.split('?')[0], window.location.origin);
+      if (token) url.searchParams.set('token', token);
+      return url.toString();
+    }
+
+    function apiUrl(path) {
+      const token = getToken();
+      const url = new URL(path, window.location.origin);
+      if (token) url.searchParams.set('token', token);
+      return url.toString();
+    }
+
+    function esc(s) {
+      return String(s || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+    }
+
+    function fmtTime(ts) {
+      const t = String(ts || '');
+      if (t.length >= 19) return t.slice(11, 19);
+      if (t.length >= 8) return t.slice(-8);
+      return t || '—';
+    }
+
+    function actionLabel(action) {
+      return ACTION_LABELS[action] || action || '—';
+    }
+
+    function renderStream(stream) {
+      const filtered = (stream || []).filter((ev) => {
+        if (ev.action === 'idle' && ev.status === 'idle') return false;
+        return true;
+      });
+      if (!filtered.length) {
+        activityTerm.innerHTML = '<div class="term-line"><span class="term-time">—</span><span class="term-detail" style="color:var(--muted)">尚无动作记录 — 用终端看板: .venv/bin/python3 scripts/apsales-zijing-watch.py --loop</span></div>';
+        return;
+      }
+      activityTerm.innerHTML = filtered.map((ev) => {
+        const st = ev.status || '';
+        const stClass = 'term-status term-status--' + (st || 'idle');
+        const dur = ev.duration_ms != null ? ` · ${ev.duration_ms}ms` : '';
+        const plat = ev.platform ? platformBadge(ev.platform) : '';
+        const altHint = (ev.action === 'alternate_run' || String(ev.detail || '').includes('FB↔X')) ? ' ↔ ' : '';
+        return `<div class="term-line">
+          <span class="term-time">${esc(fmtTime(ev.ts))}</span>
+          <span class="term-action">${esc(actionLabel(ev.action))}${altHint}</span>
+          <span class="term-detail">${plat}${esc(ev.detail || '')}${dur}</span>
+          <span class="${stClass}">${esc(st)}</span>
+        </div>`;
+      }).join('');
+    }
+
+    function renderModeBanner(live) {
+      const om = (live && live.operating_mode) || {};
+      const mode = om.mode || '';
+      if (!mode) {
+        modeBanner.hidden = true;
+        return;
+      }
+      modeBanner.hidden = false;
+      modeBanner.classList.toggle('limited', mode === 'limited');
+      const label = om.mode_label || (mode === 'limited' ? '限流 · Maps+邮件' : '正常 · FB+X');
+      const pauses = om.active_pauses || {};
+      const pauseText = Object.keys(pauses).length
+        ? ' · 暂停: ' + Object.keys(pauses).join(', ')
+        : '';
+      modeBanner.textContent = (mode === 'limited' ? '🗺 ' : '📱 ') + label + pauseText;
+    }
+
+    function renderProbeBanner(live) {
+      const probe = Boolean(live && live.platform_probe_mode);
+      probeBanner.hidden = !probe;
+      if (!probe) return;
+      const limits = (live && live.platform_limits) || {};
+      const last = limits.last_block || {};
+      if (last.action_type) {
+        const hit = last.hit_at ? String(last.hit_at).slice(0, 16) : '—';
+        const msg = last.message ? String(last.message).slice(0, 80) : '—';
+        probeBlockDetail.textContent = `最近 block：${last.action_type} · ${hit} · ${msg}`;
+      } else {
+        probeBlockDetail.textContent = '尚无 block 记录 — 持续探测 FB 真实上限';
+      }
+    }
+
+    function renderWaveBanner(waveCtx) {
+      const banner = waveCtx && waveCtx.banner;
+      if (banner) {
+        waveBanner.hidden = false;
+        waveBanner.textContent = banner;
+      } else if (waveCtx && waveCtx.current_wave) {
+        const cur = waveCtx.current_wave.label_ceo || waveCtx.current_wave.label || '—';
+        const nxt = waveCtx.next_wave;
+        const nxtLabel = nxt ? (nxt.label_ceo || nxt.label) + ' ' + (nxt.utc_start || '') + ' UTC' : '—';
+        waveBanner.hidden = false;
+        waveBanner.textContent = '🌏 当前主攻：' + cur + ' · 下一波：' + nxtLabel;
+      } else {
+        waveBanner.hidden = true;
+      }
+    }
+
+    function renderCurrent(cur, nextAction) {
+      const isIdle = !cur || cur.action === 'idle' || cur.status === 'idle';
+      const isSleep = cur && (cur.action === 'sleep' || cur.status === 'sleep');
+      let label = (cur && cur.label) ? cur.label : '空闲 · 等待下一趟任务';
+      if (isSleep) {
+        label = '批次休息 · ' + (cur.detail || '等待下一批');
+      } else if (isIdle) {
+        label = '空闲 · 等待下一趟任务';
+        // 不再把「下一动作」伪装成「正在做」
+      }
+      currentActionEl.textContent = label;
+      nowBanner.classList.toggle('idle', isIdle || isSleep);
+      const parts = [];
+      if (cur && cur.ts) parts.push('更新 ' + fmtTime(cur.ts));
+      if (cur && cur.platform) parts.push(cur.platform);
+      if (isIdle && nextAction && nextAction.wait_label) {
+        parts.push(nextAction.wait_label);
+      }
+      currentMetaEl.textContent = parts.join(' · ');
+    }
+
+    function renderNextAction(nextAction, waitingReasons) {
+      const text = (nextAction && nextAction.label)
+        ? nextAction.label
+        : ((waitingReasons || []).find((r) => String(r).includes('下一条计划动作')) || '');
+      if (text) {
+        nextBanner.hidden = false;
+        nextActionText.textContent = text.replace(/^下一动作：?/, '').trim() || text;
+      } else {
+        nextBanner.hidden = true;
+      }
+    }
+
+    function renderWaitingReasons(reasons) {
+      const list = (reasons || []).filter(Boolean);
+      if (!list.length) {
+        reasonsBox.hidden = true;
+        return;
+      }
+      reasonsBox.hidden = false;
+      reasonsList.innerHTML = list.map((r) => `<li>${esc(r)}</li>`).join('');
+    }
+
+    function loginBadge(logged) {
+      return logged
+        ? '<span class="badge badge--ok">✅ 已登录</span>'
+        : '<span class="badge badge--bad">❌ 需登录</span>';
+    }
+
+    function renderSummary(data) {
+      const login = data.login || {};
+      const queue = data.queue || {};
+      const totals = queue.totals || {};
+      const browse = data.browse || {};
+      const friendDm = data.friend_dm || {};
+      const hours = data.active_hours || {};
+      const cron = data.cron || [];
+      const altSeq = data.next_alternate_sequence || [];
+      if (altSeq.length && altSeqBanner && altSeqText) {
+        altSeqBanner.hidden = false;
+        altSeqText.textContent = altSeq.map((r) => r.label || r.platform_label || '?').join(' → ');
+      } else if (altSeqBanner) {
+        altSeqBanner.hidden = true;
+      }
+
+      let loginRows = '';
+      for (const key of ['facebook', 'x', 'instagram']) {
+        const p = login[key] || {};
+        loginRows += `<div class="row"><span>${esc(p.label || key)}</span>${loginBadge(p.logged_in)}</div>`;
+      }
+
+      const activeBadge = data.platform_probe_mode
+        ? '<span class="badge badge--warn">🔬 平台上限探测</span>'
+        : hours.any_market_awake || hours.in_active_hours === true
+        ? '<span class="badge badge--ok">✅ 有市场营业</span>'
+        : hours.in_night_slow_mode === true
+          ? '<span class="badge badge--warn">🌙 夜间慢速</span>'
+          : '<span class="badge badge--warn">⏸ 全球休眠</span>';
+
+      const markets = hours.markets || [];
+      let marketRows = '';
+      for (const m of markets) {
+        const badge = m.awake
+          ? '<span class="badge badge--ok">✅ 营业中</span>'
+          : '<span class="badge badge--bad">❌ 休眠</span>';
+        const name = (m.flag ? m.flag + ' ' : '') + (m.label || m.display || m.id || '—');
+        const local = m.local_time ? ` · ${esc(m.local_time)} 本地` : '';
+        marketRows += `<div class="row"><span>${esc(name)}${local}</span>${badge}</div>`;
+      }
+      if (!marketRows) {
+        marketRows = '<div class="row"><span>—</span><span class="badge badge--warn">加载中</span></div>';
+      }
+
+      let cronRows = '';
+      for (const item of cron) {
+        cronRows += `<div class="row"><span>${esc(item.label || '—')}</span><span>${esc(item.next || '—')}</span></div>`;
+      }
+      if (!cronRows) {
+        cronRows = '<div class="row"><span>Autopilot</span><span>每 30 分钟</span></div>';
+      }
+
+      root.innerHTML = `
+        <div class="grid">
+          <section class="card">
+            <h2>登录 FB / X / IG</h2>
+            ${loginRows}
+          </section>
+          <section class="card">
+            <h2>今日队列 · ${esc(queue.date || '')}</h2>
+            <div class="row"><span>待执行</span><strong>${totals.pending||0}</strong></div>
+            <div class="row"><span>已完成</span><span class="badge badge--ok">${totals.completed||0}</span></div>
+            <div class="row"><span>模式</span>${activeBadge}</div>
+            <div class="row"><span>规则</span><span>${esc(hours.label || hours.timezone_note || '任一市场营业')}</span></div>
+            ${hours.next_market_wake_utc ? `<div class="row"><span>下轮营业</span><span>${esc(hours.next_market_wake_utc)}</span></div>` : ''}
+          </section>
+          <section class="card">
+            <h2>市场营业状态</h2>
+            ${marketRows}
+          </section>
+          <section class="card">
+            <h2>定时任务</h2>
+            ${cronRows}
+          </section>
+          <section class="card">
+            <h2>FB 私信</h2>
+            <div class="row"><span>今日已发</span><span>${friendDm.sent_today||0}${data.platform_probe_mode ? ' · 无日上限' : ' / ' + (friendDm.max_per_day||15)}</span></div>
+            <div class="row"><span>上次运行</span><span>${esc(friendDm.last_run_at)}</span></div>
+          </section>
+          <section class="card">
+            <h2>FB 浏览</h2>
+            <div class="row"><span>上次</span><span>${esc(browse.last_session_at)}</span></div>
+            <div class="row"><span>发动机线索</span><span>${browse.last_engine_leads||0} 条</span></div>
+          </section>
+        </div>`;
+
+      queuePendingEl.textContent = totals.pending != null ? totals.pending : '—';
+    }
+
+    async function refresh() {
+      try {
+        const liveRes = await fetch(apiUrl('/api/apsales/zijing-live-status'), { credentials: 'include' });
+        if (!liveRes.ok) {
+          const err = await liveRes.json().catch(() => ({}));
+          throw new Error(err.error || ('HTTP ' + liveRes.status));
+        }
+        const live = await liveRes.json();
+        errBox.hidden = true;
+        renderCurrent(live.current_action, live.next_action);
+        renderModeBanner(live);
+        renderProbeBanner(live);
+        renderWaveBanner(live.wave_context);
+        renderNextAction(live.next_action, live.waiting_reasons);
+        renderWaitingReasons(live.waiting_reasons);
+        renderStream(live.activity_stream || []);
+        if (live.alternate_mode && waveBanner && !waveBanner.hidden) {
+          waveBanner.textContent = (waveBanner.textContent || '') + ' · FB↔X 交替';
+        }
+        epmEl.textContent = live.events_per_minute != null ? live.events_per_minute : '0';
+        renderSummary(live);
+        const now = new Date();
+        lastRefreshEl.textContent = now.toTimeString().slice(0, 8);
+        indicator.textContent = `已连接 · 每 ${REFRESH_MS/1000} 秒刷新`;
+      } catch (e) {
+        errBox.hidden = false;
+        errBox.textContent = '加载失败：' + (e.message || e) + ' — URL 需加 ?token=你的只读令牌';
+        indicator.textContent = '连接失败 · 重试中';
+      }
+    }
+
+    copyBtn.addEventListener('click', () => {
+      const url = buildPageUrl();
+      navigator.clipboard.writeText(url).then(() => {
+        copyBtn.textContent = '✅ 已复制';
+        setTimeout(() => { copyBtn.textContent = '📋 复制 CEO 监控链接'; }, 2000);
+      }).catch(() => {
+        prompt('复制此链接（CEO 监控）:', url);
+      });
+    });
+
+    refresh();
+    setInterval(refresh, REFRESH_MS);
+  })();
+  </script>
+</body>
+</html>

@@ -209,12 +209,28 @@
   function buildSlug(record) {
     let cutSegment = 'half-cut';
     if (record.vehicleCategory === 'truck') {
-      cutSegment = record.truckPartType === 'cab' ? 'truck-cab' : 'truck-half-cut';
+      if (record.truckPartType === 'cab') cutSegment = 'truck-cab';
+      else if (record.truckPartType === 'engine') cutSegment = 'truck-engine';
+      else if (record.truckPartType === 'axle') cutSegment = 'truck-axle';
+      else if (record.truckPartType === 'other') cutSegment = 'truck-part';
+      else cutSegment = 'truck-half-cut';
     } else if (record.vehicleCategory === 'machinery') {
       const type = String(record.machineryType || 'equipment').trim() || 'equipment';
       cutSegment = `machinery-${type}`;
+    } else if (record.passengerPartType === 'front') {
+      cutSegment = 'front-cut';
+    } else if (record.passengerPartType === 'engine') {
+      cutSegment = 'passenger-engine';
+    } else if (record.passengerPartType === 'transmission') {
+      cutSegment = 'passenger-transmission';
+    } else if (record.passengerPartType === 'chassis') {
+      cutSegment = 'passenger-chassis';
+    } else if (record.passengerPartType === 'other') {
+      cutSegment = 'passenger-part';
     }
-    const enginePart = slugifyPart(record.engineCode) || (record.truckPartType === 'cab' ? 'cab' : '');
+    const enginePart = slugifyPart(record.engineCode)
+      || (record.truckPartType === 'cab' ? 'cab' : '')
+      || (record.passengerPartType === 'transmission' ? slugifyPart(record.transmissionCode) : '');
     const parts = [
       record.brandSlug,
       slugifyPart(record.model),
@@ -230,6 +246,36 @@
     if (record.truckPartType === 'cab') {
       return `${record.brand} ${record.model} Driver Cab`;
     }
+    if (record.truckPartType === 'engine') {
+      const engine = record.engineCode ? ` ${record.engineCode}` : '';
+      return `${record.brand} ${record.model}${engine} Engine Assembly`;
+    }
+    if (record.truckPartType === 'axle') {
+      return `${record.brand} ${record.model} Axle Assembly`;
+    }
+    if (record.truckPartType === 'other') {
+      return `${record.brand} ${record.model} Truck Part`;
+    }
+    if (record.passengerPartType === 'front') {
+      return `${record.brand} ${record.model} Front Cut`;
+    }
+    if (record.passengerPartType === 'engine') {
+      const engine = record.engineCode ? ` ${record.engineCode}` : '';
+      return `${record.brand} ${record.model}${engine} Engine Assembly`;
+    }
+    if (record.passengerPartType === 'transmission') {
+      const trans = record.transmissionCode ? ` ${record.transmissionCode}` : '';
+      return `${record.brand} ${record.model}${trans} Transmission Assembly`;
+    }
+    if (record.passengerPartType === 'chassis') {
+      return `${record.brand} ${record.model} Chassis Part`;
+    }
+    if (record.passengerPartType === 'other') {
+      return `${record.brand} ${record.model} Part`;
+    }
+    const fromRemark = window.HalfCutTitle?.buildDisplayTitle?.(record)
+      || window.HalfCutUtils?.listingTitle?.(record);
+    if (fromRemark) return fromRemark;
     const cutLabel = record.vehicleCategory === 'truck'
       ? 'Truck Half Cut'
       : (record.vehicleCategory === 'machinery'
@@ -243,12 +289,44 @@
 
   function buildShortDescription(submission) {
     const notes = String(submission.notes || '').trim();
-    if (notes) return notes.split('\n')[0].slice(0, 220);
-    if (submission.truckPartType === 'cab') {
-      return `${submission.year} ${submission.brand} ${submission.model} driver cab — supplier-verified listing via AsiaPower.`;
-    }
-    const engineHint = submission.engineCode ? ` with ${submission.engineCode}` : '';
-    return `${submission.year} ${submission.brand} ${submission.model}${engineHint} — supplier-verified listing via AsiaPower.`;
+    const autoDesc = () => {
+      if (submission.truckPartType === 'cab') {
+        return `${submission.year} ${submission.brand} ${submission.model} driver cab — supplier-verified listing via AsiaPower.`;
+      }
+      if (submission.truckPartType === 'engine') {
+        const engineHint = submission.engineCode ? ` ${submission.engineCode}` : '';
+        return `${submission.year} ${submission.brand} ${submission.model}${engineHint} engine assembly — supplier-verified listing via AsiaPower.`;
+      }
+      if (submission.truckPartType === 'axle') {
+        return `${submission.year} ${submission.brand} ${submission.model} axle assembly — supplier-verified listing via AsiaPower.`;
+      }
+      if (submission.truckPartType === 'other') {
+        return `${submission.year} ${submission.brand} ${submission.model} truck part — supplier-verified listing via AsiaPower.`;
+      }
+      if (submission.passengerPartType === 'front') {
+        return `${submission.year} ${submission.brand} ${submission.model} front cut — supplier-verified listing via AsiaPower.`;
+      }
+      if (submission.passengerPartType === 'engine') {
+        const engineHint = submission.engineCode ? ` ${submission.engineCode}` : '';
+        return `${submission.year} ${submission.brand} ${submission.model}${engineHint} engine assembly — supplier-verified listing via AsiaPower.`;
+      }
+      if (submission.passengerPartType === 'transmission') {
+        const transHint = submission.transmissionCode ? ` ${submission.transmissionCode}` : '';
+        return `${submission.year} ${submission.brand} ${submission.model}${transHint} transmission assembly — supplier-verified listing via AsiaPower.`;
+      }
+      if (submission.passengerPartType === 'chassis') {
+        return `${submission.year} ${submission.brand} ${submission.model} chassis part — supplier-verified listing via AsiaPower.`;
+      }
+      if (submission.passengerPartType === 'other') {
+        return `${submission.year} ${submission.brand} ${submission.model} part — supplier-verified listing via AsiaPower.`;
+      }
+      const engineHint = submission.engineCode ? ` with ${submission.engineCode}` : '';
+      return `${submission.year} ${submission.brand} ${submission.model}${engineHint} — supplier-verified listing via AsiaPower.`;
+    };
+    const fromNotes = window.HalfCutTitle?.buildShortDescriptionFromNotes?.(notes, autoDesc(), submission);
+    if (fromNotes) return fromNotes;
+    if (notes && window.HalfCutTitle?.isQxbListing?.(submission)) return notes.split('\n')[0].slice(0, 220);
+    return autoDesc();
   }
 
   function normalizePhotos(photos) {
@@ -266,6 +344,7 @@
   };
 
   function syncLiveInventory() {
+    if (!Inventory()?.syncToCatalog) return;
     const seedList = serverMode ? [] : (window.SEED_HALF_CUT_LIST || []);
     Inventory().syncToCatalog(seedList, approvedCache);
   }
@@ -328,6 +407,8 @@
     if (index === -1) return null;
 
     let submission = submissionsCache[index];
+    const priorSubmission = submission;
+    const priorApproved = approvedCache.slice();
     if (edits) submission = Review().applyEdits(submission, edits);
 
     if (submission.reviewStatus === 'approved') {
@@ -343,17 +424,44 @@
     submission = Review().markApproved(submission, inventoryItem);
     submissionsCache[index] = submission;
     approvedCache.unshift(inventoryItem);
-    await persistState();
     syncLiveInventory();
-    await window.PowertrainCatalog?.rememberFromHalfCut?.(inventoryItem);
+
+    try {
+      if (serverMode) {
+        await MediaApi().approveSubmission(submissionId, { submission, inventoryItem });
+      } else {
+        stripEmbeddedMediaFromState();
+        writeJson(SUBMISSIONS_KEY, submissionsCache);
+        writeJson(APPROVED_KEY, approvedCache);
+      }
+    } catch (err) {
+      submissionsCache[index] = priorSubmission;
+      approvedCache = priorApproved;
+      syncLiveInventory();
+      throw err;
+    }
+
+    void window.PowertrainCatalog?.rememberFromHalfCut?.(inventoryItem);
     return inventoryItem;
   }
 
   async function rejectSubmission(submissionId, reason) {
     const index = submissionsCache.findIndex(s => s.submissionId === submissionId);
     if (index === -1) return false;
+
+    const priorSubmission = submissionsCache[index];
     submissionsCache[index] = Review().markRejected(submissionsCache[index], reason);
-    await persistState();
+
+    try {
+      if (serverMode) {
+        await MediaApi().rejectSubmission(submissionId, { reason: reason || '' });
+      } else {
+        await persistState();
+      }
+    } catch (err) {
+      submissionsCache[index] = priorSubmission;
+      throw err;
+    }
     return true;
   }
 
@@ -517,4 +625,11 @@
     resetReady,
     toPublicItem: (item) => Inventory().toPublicItem(item),
   };
+
+  const CATALOG_PAGES = new Set([
+    'home', 'halfcuts', 'engines', 'gearboxes', 'chassis', 'frontcuts', 'trucks', 'machinery',
+  ]);
+  if (typeof document !== 'undefined' && CATALOG_PAGES.has(document.body?.dataset?.page || '')) {
+    whenReady();
+  }
 })();

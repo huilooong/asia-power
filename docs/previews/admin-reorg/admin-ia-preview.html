@@ -1,0 +1,375 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>预览 · Admin 后台精简 · AsiaPower</title>
+  <style>
+    :root {
+      --t1:#1d1d1f; --t2:#6e6e73; --t3:#86868b; --b1:#d2d2d7; --b2:#e8e8ed;
+      --gold:#d4880a; --gold-bg:#fef3dc; --bg:#f5f5f7; --ok:#1d8348; --warn:#9b1c1c;
+      --navy:#0b1f33; --font:-apple-system,BlinkMacSystemFont,'SF Pro Display','Helvetica Neue',Arial,'PingFang SC',sans-serif;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: var(--font); background: var(--bg); color: var(--t1); line-height: 1.45; }
+    .preview-note {
+      background: #1d1d1f; color: #f5f5f7; padding: 12px 20px;
+      display: flex; justify-content: space-between; gap: 16px; flex-wrap: wrap; font-size: 13px;
+    }
+    .preview-note a { color: #f5c542; }
+    .banner-cancel {
+      background: #fff5f5; border-bottom: 1px solid #f0c4c4; color: var(--warn);
+      padding: 10px 20px; font-size: 13px; font-weight: 600;
+    }
+    .wrap { max-width: 1080px; margin: 0 auto; padding: 28px 20px 72px; }
+    h1 { font-size: 1.55rem; font-weight: 800; margin-bottom: 8px; }
+    .sub { color: var(--t2); margin-bottom: 22px; max-width: 720px; }
+    .ap-logo { font-size: 17px; font-weight: 800; letter-spacing: -.4px; color: var(--t1); text-decoration: none; }
+    .ap-logo span { color: var(--gold); }
+    .badge {
+      display: inline-flex; padding: 4px 10px; border-radius: 999px;
+      background: var(--gold-bg); color: #8a5a00; font-size: 11px; font-weight: 700;
+      letter-spacing: .04em; text-transform: uppercase;
+    }
+    .badge-ok { background: #e8f7ee; color: var(--ok); }
+    .badge-warn { background: #fdecea; color: var(--warn); }
+    .card {
+      background: #fff; border: 1px solid var(--b2); border-radius: 12px;
+      padding: 18px; margin-bottom: 14px;
+    }
+    .card h2 { font-size: 1.05rem; margin: 8px 0; }
+    .card p, .card li { color: var(--t2); font-size: 14px; }
+    .card ul { padding-left: 18px; margin-top: 8px; }
+    .card li { margin: 6px 0; }
+    table { width: 100%; border-collapse: collapse; font-size: 13px; margin-top: 10px; }
+    th, td { text-align: left; padding: 8px 10px; border-bottom: 1px solid var(--b2); vertical-align: top; }
+    th { color: var(--t3); font-weight: 700; font-size: 12px; }
+    .compare { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin: 18px 0; }
+    @media (max-width: 820px) { .compare { grid-template-columns: 1fr; } }
+    .box { border-radius: 12px; padding: 16px; font-size: 14px; }
+    .old { background: #fff5f5; color: var(--warn); }
+    .neu { background: #f0faf3; color: var(--ok); }
+    .box h2 { font-size: 14px; margin-bottom: 10px; color: inherit; }
+    .box ul { padding-left: 18px; }
+    .box li { margin: 6px 0; }
+
+    /* Mock shells */
+    .mock {
+      background: #fff; border: 1px solid var(--b2); border-radius: 14px;
+      overflow: hidden; margin-bottom: 14px;
+    }
+    .mock__bar {
+      display: flex; justify-content: space-between; align-items: center; gap: 12px; flex-wrap: wrap;
+      padding: 12px 16px; border-bottom: 1px solid var(--b2); background: #fafafa;
+    }
+    .mock__account {
+      font-size: 12px; font-weight: 700; color: #8a5a00; background: var(--gold-bg);
+      padding: 5px 10px; border-radius: 999px;
+    }
+    .mock__body { padding: 16px; }
+    .mock__title { font-size: 1.15rem; font-weight: 800; margin-bottom: 4px; }
+    .mock__meta { font-size: 13px; color: var(--t2); margin-bottom: 12px; }
+    .nav-primary {
+      display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 14px;
+    }
+    .nav-primary a {
+      text-decoration: none; font-size: 13px; font-weight: 700; color: var(--t1);
+      padding: 8px 12px; border-radius: 10px; border: 1px solid var(--b1); background: #fff;
+    }
+    .nav-primary a.on { background: var(--navy); color: #fff; border-color: var(--navy); }
+    .nav-primary a .dot {
+      display: inline-block; min-width: 18px; height: 18px; line-height: 18px; text-align: center;
+      background: #e67e22; color: #fff; border-radius: 999px; font-size: 11px; margin-left: 4px;
+    }
+    .btn-row { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 10px; }
+    .btn-ghost {
+      padding: 10px 14px; border: 1.5px solid var(--b1); border-radius: 8px;
+      font-size: 12px; font-weight: 800; letter-spacing: .03em; color: var(--t2); background: #fff;
+    }
+    .tabs { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 10px; }
+    .tab {
+      padding: 8px 12px; border-radius: 999px; font-size: 12px; font-weight: 700;
+      border: 1px solid var(--b1); background: #fff; color: var(--t2);
+    }
+    .tab.on { background: #111; color: #fff; border-color: #111; }
+    .tab .n { background: #e67e22; color: #fff; border-radius: 999px; padding: 1px 6px; margin-left: 4px; font-size: 11px; }
+    .subfilt { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; margin-bottom: 12px; }
+    .chip {
+      padding: 6px 10px; border-radius: 8px; font-size: 12px; font-weight: 700;
+      border: 1px solid #2c5aa0; color: #2c5aa0; background: #fff;
+    }
+    .chip.on { background: #e67e22; color: #fff; border-color: #e67e22; }
+    .hint { font-size: 12px; color: var(--t3); }
+    .metrics { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; margin-bottom: 12px; }
+    @media (max-width: 720px) { .metrics { grid-template-columns: 1fr 1fr; } }
+    .metric {
+      border: 1px solid var(--b2); border-radius: 10px; padding: 12px;
+      background: #fafafa;
+    }
+    .metric span { display: block; font-size: 11px; color: var(--t3); font-weight: 700; text-transform: uppercase; margin-bottom: 4px; }
+    .metric strong { font-size: 1.35rem; }
+    .fake-table { width: 100%; border-collapse: collapse; font-size: 12px; }
+    .fake-table th, .fake-table td { text-align: left; padding: 8px; border-bottom: 1px solid var(--b2); }
+    .fake-table th { color: var(--t3); font-size: 11px; }
+    .noise { outline: 2px dashed #e8a0a0; outline-offset: 2px; border-radius: 8px; }
+    .label-tag {
+      display: inline-block; font-size: 11px; font-weight: 800; color: var(--warn);
+      background: #fdecea; padding: 2px 8px; border-radius: 6px; margin-bottom: 6px;
+    }
+    .label-tag.ok { color: var(--ok); background: #e8f7ee; }
+    .groups { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-top: 10px; }
+    @media (max-width: 820px) { .groups { grid-template-columns: 1fr 1fr; } }
+    @media (max-width: 520px) { .groups { grid-template-columns: 1fr; } }
+    .group {
+      background: var(--bg); border: 1px solid var(--b2); border-radius: 12px; padding: 12px;
+    }
+    .group h3 { font-size: 12px; text-transform: uppercase; letter-spacing: .04em; color: var(--t3); margin-bottom: 8px; }
+    .group a {
+      display: block; font-size: 13px; font-weight: 600; color: var(--t1); text-decoration: none;
+      padding: 7px 8px; border-radius: 8px; margin: 2px 0;
+    }
+    .group a.on { background: var(--gold-bg); }
+    .group p { font-size: 12px; color: var(--t2); margin-top: 4px; padding: 0 8px; }
+    .seg {
+      display: inline-flex; border: 1px solid var(--b1); border-radius: 10px; overflow: hidden; margin-bottom: 12px;
+    }
+    .seg button {
+      border: 0; background: #fff; padding: 7px 12px; font-size: 12px; font-weight: 700; color: var(--t2); cursor: default;
+    }
+    .seg button.on { background: var(--navy); color: #fff; }
+    .two-mocks { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+    @media (max-width: 900px) { .two-mocks { grid-template-columns: 1fr; } }
+  </style>
+</head>
+<body>
+  <div class="preview-note">
+    <div><strong>预览 · Admin 后台精简</strong> — 仅管理后台；公开主页不动 · 未上生产</div>
+    <div>
+      <a href="file:///Users/longhui/Desktop/AsiaPower/docs/previews/admin-reorg/admin-ia-preview.html">本页</a> ·
+      <a href="https://asia-power.com/admin/analytics.html" target="_blank" rel="noopener">现网 Analytics（对照）</a>
+    </div>
+  </div>
+  <div class="banner-cancel">
+    澄清：之前 refined-v5 首页精简是发错图，作废对公开主页的改版意图。asia-power.com 公开首页不改、不上 refined-v5。本预览只针对 Admin Dashboard。
+  </div>
+
+  <div class="wrap">
+    <p><span class="badge">预览 · 不上生产</span> <span class="badge badge-ok">权限已挂 gooddlong@gmail.com</span></p>
+    <h1>Admin 后台 · 去掉多层导航臃肿</h1>
+    <p class="sub">您截图里的「Admin Dashboard · 管理后台」：大按钮 + Tab + 子过滤 + 中英双写 + 访问统计与库存审核挤一页。下面是对照精简方案——等您说「可以上线」再改现网 Admin UI。</p>
+
+    <!-- ========== BEFORE ========== -->
+    <div class="card">
+      <span class="badge badge-warn">现在（对照您的截图）</span>
+      <h2>一层叠一层，两件事挤一页</h2>
+    </div>
+
+    <div class="mock">
+      <div class="mock__bar">
+        <a class="ap-logo" href="#">Asia<span>Power</span> · Admin</a>
+        <span class="mock__account">Signed in as gooddlong@gmail.com</span>
+      </div>
+      <div class="mock__body">
+        <div class="mock__title">Admin Dashboard · 管理后台</div>
+        <p class="mock__meta">Traffic analytics and half-cut inventory review in one place. · 1 pending · 505 live · 10 rejected</p>
+
+        <div class="label-tag">第 1 层 · 大按钮（与下面 Tab 抢入口）</div>
+        <div class="btn-row noise">
+          <span class="btn-ghost">LEAD INBOX</span>
+          <span class="btn-ghost">INVENTORY HUB (STANDALONE)</span>
+          <span class="btn-ghost">REFRESH</span>
+        </div>
+
+        <div class="label-tag">第 2 层 · Tab（统计 + 审核混在一起）</div>
+        <div class="tabs noise">
+          <span class="tab on">Traffic Analytics / 访问统计</span>
+          <span class="tab">Pending Review / 待审核 <span class="n">1</span></span>
+          <span class="tab">Live Inventory / 已上架 (505)</span>
+          <span class="tab">Rejected / 已拒绝 (10)</span>
+        </div>
+
+        <div class="label-tag">第 3 层 · 子过滤（又中英双写）</div>
+        <div class="subfilt noise">
+          <span class="chip on">EXTERNAL / 外网</span>
+          <span class="chip">ALL / 全部</span>
+          <span class="hint">External traffic / 外网真实流量（已剔除 7 个加纳内测 IP）</span>
+        </div>
+
+        <div class="metrics">
+          <div class="metric"><span>15-day page views</span><strong>8094</strong></div>
+          <div class="metric"><span>15-day unique IPs</span><strong>2399</strong></div>
+          <div class="metric"><span>15-day WhatsApp</span><strong>109</strong></div>
+          <div class="metric"><span>Internal hits excluded</span><strong>3137</strong></div>
+        </div>
+        <table class="fake-table">
+          <thead><tr><th>DATE</th><th>PAGE VIEWS</th><th>UNIQUE IPS</th><th>WHATSAPP</th></tr></thead>
+          <tbody>
+            <tr><td>2026-07-09</td><td>612</td><td>188</td><td>9</td></tr>
+            <tr><td>2026-07-08</td><td>540</td><td>171</td><td>7</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="compare">
+      <div class="box old">
+        <h2>乱在哪</h2>
+        <ul>
+          <li>大按钮（Lead / Inventory Hub）和 Tab 重复指路</li>
+          <li>访问统计与库存审核（待审/已上架/已拒绝）挤同一页</li>
+          <li>库存数字写两遍：副标题一行 + Tab 上再写一遍</li>
+          <li>几乎每处中英双写（Admin Dashboard · 管理后台 / EXTERNAL · 外网…）吵</li>
+          <li>Analytics 页里再嵌一套审核，和独立 Inventory Hub 功能重复</li>
+        </ul>
+      </div>
+      <div class="box neu">
+        <h2>怎么收</h2>
+        <ul>
+          <li>顶栏只留 4 个业务入口：库存 / 客户 / 访问 / 推广</li>
+          <li>访问统计单独一页；库存审核只在「库存」一处</li>
+          <li>外网/全部改成短切换，说明文字一行中文即可</li>
+          <li>界面默认中文；英文仅保留必要专名（WhatsApp、IP）</li>
+          <li>Refresh 收到页内小按钮，不再和大入口抢视线</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- ========== AFTER ========== -->
+    <div class="card">
+      <span class="badge badge-ok">整理后（预览）</span>
+      <h2>两页各干一件事 · 顶栏一次说清</h2>
+      <p>登录身份不变：<strong>gooddlong@gmail.com</strong> · 管理员（权限已在生产；本预览只改布局示意）。</p>
+    </div>
+
+    <div class="mock">
+      <div class="mock__bar">
+        <a class="ap-logo" href="#">Asia<span>Power</span> · 管理后台</a>
+        <span class="mock__account">gooddlong@gmail.com · 管理员</span>
+      </div>
+      <div class="mock__body">
+        <div class="label-tag ok">统一顶栏 · 不再叠大按钮</div>
+        <div class="nav-primary">
+          <a href="#inventory">库存 <span class="dot">1</span></a>
+          <a href="#leads">询价</a>
+          <a class="on" href="#analytics">访问统计</a>
+          <a href="#growth">推广</a>
+        </div>
+
+        <div class="two-mocks">
+          <!-- Analytics clean -->
+          <div>
+            <div class="mock__title">访问统计</div>
+            <p class="mock__meta">近 15 天外网真实流量（已剔除内测 IP）</p>
+            <div class="seg">
+              <button type="button" class="on">外网</button>
+              <button type="button">全部</button>
+            </div>
+            <div class="metrics" style="grid-template-columns:1fr 1fr;">
+              <div class="metric"><span>浏览量</span><strong>8094</strong></div>
+              <div class="metric"><span>独立 IP</span><strong>2399</strong></div>
+              <div class="metric"><span>WhatsApp</span><strong>109</strong></div>
+              <div class="metric"><span>已剔除内测</span><strong>3137</strong></div>
+            </div>
+            <table class="fake-table">
+              <thead><tr><th>日期</th><th>浏览</th><th>IP</th><th>WhatsApp</th></tr></thead>
+              <tbody>
+                <tr><td>07-09</td><td>612</td><td>188</td><td>9</td></tr>
+                <tr><td>07-08</td><td>540</td><td>171</td><td>7</td></tr>
+              </tbody>
+            </table>
+            <p class="hint" style="margin-top:8px;">本页不再出现待审/已上架/已拒绝。</p>
+          </div>
+
+          <!-- Inventory clean -->
+          <div id="inventory">
+            <div class="mock__title">库存审核</div>
+            <p class="mock__meta">待审 1 · 已上架 505 · 已拒绝 10</p>
+            <div class="seg">
+              <button type="button" class="on">待审 1</button>
+              <button type="button">已上架</button>
+              <button type="button">已拒绝</button>
+            </div>
+            <div style="border:1px dashed var(--b1); border-radius:10px; padding:16px; background:#fafafa;">
+              <p style="font-size:13px; color:var(--t2); margin:0;">这里只放审核表格 / 通过拒绝操作。<br>不再和访问统计挤在同一屏。</p>
+            </div>
+            <p class="hint" style="margin-top:8px;">原「Inventory Hub (standalone)」并入本页，不再另开大按钮。</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Groups map -->
+    <div class="card">
+      <span class="badge">信息架构</span>
+      <h2>四个入口，各管一块</h2>
+      <div class="groups">
+        <div class="group">
+          <h3>库存</h3>
+          <a class="on" href="#">待审队列</a>
+          <a href="#">已上架编辑</a>
+          <a href="#">已拒绝</a>
+          <p>唯一审核入口</p>
+        </div>
+        <div class="group">
+          <h3>客户</h3>
+          <a href="#">询价收件箱</a>
+          <p>原 Lead Inbox</p>
+        </div>
+        <div class="group">
+          <h3>增长</h3>
+          <a href="#">访问统计</a>
+          <a href="#">推广进度</a>
+          <a href="#">子敬看板</a>
+          <p>统计不再嵌审核</p>
+        </div>
+        <div class="group">
+          <h3>系统</h3>
+          <a href="#">账号说明</a>
+          <a href="#">返回官网</a>
+          <p>谁能进后台</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <span class="badge">权限（已落地，与本预览无关）</span>
+      <h2>挂在您的 Google 账号</h2>
+      <table>
+        <thead><tr><th>项目</th><th>说明</th></tr></thead>
+        <tbody>
+          <tr><td>登录邮箱</td><td><strong>gooddlong@gmail.com</strong>（白名单另含 googddlong 防打错）</td></tr>
+          <tr><td>权限</td><td>role = admin：库存、线索、统计、买家列表等</td></tr>
+          <tr><td>其他人</td><td>不在白名单仍是买家，进不了 Admin</td></tr>
+          <tr><td>报告</td><td><code>docs/ops/ops-admin-reorg-ceo-permissions.md</code></td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="card">
+      <span class="badge">对照表</span>
+      <h2>旧入口 → 新位置</h2>
+      <table>
+        <thead><tr><th>现在</th><th>整理后</th><th>备注</th></tr></thead>
+        <tbody>
+          <tr><td>Analytics 页顶大按钮 Lead Inbox</td><td>顶栏「询价」</td><td>去掉重复大按钮</td></tr>
+          <tr><td>Analytics 页顶 Inventory Hub</td><td>顶栏「库存」</td><td>审核只此一处</td></tr>
+          <tr><td>Analytics 内 Pending/Live/Rejected Tab</td><td>移出，只留在库存页</td><td>统计页专注流量</td></tr>
+          <tr><td>EXTERNAL / ALL 双语芯片</td><td>「外网 | 全部」短切换</td><td>说明用一行中文</td></tr>
+          <tr><td>标题 Admin Dashboard · 管理后台</td><td>「管理后台」或页名</td><td>少双写</td></tr>
+          <tr><td>apsales / 子敬看板</td><td>顶栏「推广」</td><td>补进导航</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="card">
+      <h2>请您拍板（先预览，不上生产 Admin UI）</h2>
+      <ul>
+        <li>公开主页：确认<strong>不改</strong>（refined-v5 精简作废对主页意图）</li>
+        <li>Admin：按本预览拆开「访问统计」与「库存审核」？</li>
+        <li>文案：默认中文、少中英双写？</li>
+        <li>您说「可以上线」后，再改现网 Admin 导航与 analytics 页（走 Release Manager）</li>
+      </ul>
+    </div>
+  </div>
+</body>
+</html>

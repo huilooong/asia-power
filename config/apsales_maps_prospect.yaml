@@ -1,0 +1,95 @@
+# 子敬 · Google Maps 客户开发（FB 受限时备用）
+# CEO 可编辑搜索词；每日上限防过量
+
+version: 1
+updated: "2026-07-04"
+
+daily_caps:
+  leads: 10
+  email_drafts: 5
+
+# 触发条件：fb_platform_limits 有 active pause，或 APSALES_MAPS_FALLBACK=1
+fallback:
+  enabled: true
+  skip_if_no_fb_block: false  # alternate-run 空闲时也允许跑
+
+ceo_voice:
+  name: "Zijing Lu"
+  title: "AsiaPower"
+  from_email: "sales@asia-power.com"
+  catalog_url: "https://asia-power.com/half-cuts/"
+  whatsapp: "+233 54 091 1111"
+
+markets:
+  - id: nigeria_lagos
+    country: Nigeria
+    city: Lagos
+    queries:
+      - "auto parts dealer Lagos"
+      - "tokunbo spare parts Lagos"
+      - "car dismantling yard Lagos"
+
+  - id: nigeria_abuja
+    country: Nigeria
+    city: Abuja
+    queries:
+      - "auto parts dealer Abuja"
+      - "tokunbo spare parts Abuja"
+
+  - id: ghana_accra
+    country: Ghana
+    city: Accra
+    queries:
+      - "auto parts dealer Accra"
+      - "tokunbo spare parts Accra"
+
+  - id: kenya_nairobi
+    country: Kenya
+    city: Nairobi
+    queries:
+      - "auto parts dealer Nairobi"
+      - "car dismantling Kenya"
+
+  - id: tanzania_dar
+    country: Tanzania
+    city: Dar es Salaam
+    queries:
+      - "auto parts dealer Dar es Salaam"
+      - "spare parts importer Tanzania"
+
+  - id: uae_dubai
+    country: UAE
+    city: Dubai
+    queries:
+      - "auto parts wholesale Dubai"
+      - "used car parts dealer Dubai"
+
+  - id: saudi_riyadh
+    country: Saudi Arabia
+    city: Riyadh
+    queries:
+      - "auto spare parts Riyadh"
+
+  - id: malaysia_kl
+    country: Malaysia
+    city: Kuala Lumpur
+    queries:
+      - "half cut car parts Malaysia"
+      - "auto parts dealer Kuala Lumpur"
+
+  - id: indonesia_jakarta
+    country: Indonesia
+    city: Jakarta
+    queries:
+      - "auto parts dealer Jakarta"
+      - "bekas mobil spare parts Jakarta"
+
+search:
+  max_results_per_query: 5
+  prefer_places_api: true
+  browser_headless: true  # never auto-open visible Maps on Mac; set ASIAPOWER_ALLOW_VISIBLE_BROWSER=1 to override
+
+email:
+  only_with_email: true
+  scrape_website_for_email: true
+  subject_template: "Custom dismantling from China — half-cuts for {city} dealers"

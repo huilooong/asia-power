@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>预览 · Admin v4 皮肤 · AsiaPower</title>
+  <style>
+    :root {
+      --t1:#1d1d1f; --t2:#6e6e73; --t3:#86868b; --b1:#d2d2d7; --b2:#e8e8ed;
+      --gold:#d4880a; --gold-bg:#fef3dc; --bg:#f5f5f7;
+      --font:-apple-system,BlinkMacSystemFont,'SF Pro Display','Helvetica Neue',Arial,'PingFang SC',sans-serif;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: var(--font); background: var(--bg); color: var(--t1); }
+    .preview-note {
+      background: #1d1d1f; color: #f5f5f7; padding: 12px 20px;
+      display: flex; justify-content: space-between; gap: 16px; flex-wrap: wrap; font-size: 13px;
+    }
+    .preview-note a { color: #f5c542; }
+    .wrap { max-width: 960px; margin: 0 auto; padding: 28px 20px 60px; }
+    h1 { font-size: 1.55rem; font-weight: 800; margin-bottom: 8px; }
+    .sub { color: var(--t2); margin-bottom: 22px; }
+    .ap-logo { font-size: 18px; font-weight: 800; letter-spacing: -.4px; color: var(--t1); text-decoration: none; }
+    .ap-logo span { color: var(--gold); }
+    .admin-header {
+      background: #fff; border: 1px solid var(--b2); border-radius: 14px;
+      padding: 12px 18px; display: flex; justify-content: space-between; align-items: center;
+      gap: 16px; flex-wrap: wrap; margin-bottom: 16px;
+    }
+    .nav a {
+      font-size: 13px; font-weight: 600; color: var(--t2); text-decoration: none;
+      padding: 8px 12px; border-radius: 8px; margin-left: 2px;
+    }
+    .nav a.on { background: var(--gold-bg); color: var(--t1); }
+    .hero {
+      background: #fff; border: 1px solid var(--b2); border-radius: 14px;
+      padding: 28px 24px; margin-bottom: 16px;
+    }
+    .crumb { font-size: 13px; color: var(--t3); margin-bottom: 10px; }
+    .hero h2 { font-size: 1.45rem; font-weight: 800; letter-spacing: -.3px; }
+    .hero h2 span { display: block; color: var(--t2); font-size: .92em; font-weight: 600; margin-top: 4px; }
+    .hero p { color: var(--t2); margin-top: 10px; max-width: 560px; }
+    .badge {
+      display: inline-flex; margin-top: 12px; padding: 4px 10px; border-radius: 999px;
+      background: var(--gold-bg); color: #8a5a00; font-size: 11px; font-weight: 700;
+      letter-spacing: .04em; text-transform: uppercase;
+    }
+    .card {
+      background: #fff; border: 1px solid var(--b2); border-radius: 12px;
+      padding: 18px; box-shadow: 0 2px 8px rgba(0,0,0,.04); margin-bottom: 12px;
+    }
+    .card__top { display: flex; justify-content: space-between; gap: 12px; margin-bottom: 10px; }
+    .id { font-weight: 800; }
+    .status { font-size: 12px; font-weight: 700; padding: 3px 8px; border-radius: 999px; background: #fff3cd; color: #856404; }
+    .tabs { display: flex; gap: 8px; margin-bottom: 14px; }
+    .tab {
+      padding: 8px 14px; border: 1px solid var(--b1); border-radius: 10px;
+      background: #fff; font-size: 13px; font-weight: 600;
+    }
+    .tab.on { background: #1d1d1f; color: #fff; border-color: #1d1d1f; }
+    .note {
+      margin-top: 20px; background: #fff; border: 1px solid var(--b2);
+      border-radius: 12px; padding: 16px 18px; color: var(--t2); font-size: 14px;
+    }
+    .compare {
+      display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-top: 18px;
+    }
+    @media (max-width: 720px) { .compare { grid-template-columns: 1fr; } }
+    .compare .box { border-radius: 12px; padding: 14px; font-size: 13px; }
+    .compare .old { background: #fff5f5; color: #9b1c1c; }
+    .compare .neu { background: #f0faf3; color: #1d8348; }
+  </style>
+</head>
+<body>
+  <div class="preview-note">
+    <div><strong>预览 · Admin · v4</strong> — 白底工具皮肤；审核逻辑不变</div>
+    <div>
+      <a href="chrome-sync-preview.html">详情头预览</a> ·
+      <a href="https://asia-power.com/admin/inventory.html" target="_blank" rel="noopener">对照现网审批</a>
+    </div>
+  </div>
+
+  <div class="wrap">
+    <h1>Admin 审批升到 v4（不再停在 2.0）</h1>
+    <p class="sub">顶栏文字 logo + Inventory / Analytics / Leads；页面标「Admin · v4」。VIN 选填与批准流程保持原样。</p>
+
+    <header class="admin-header">
+      <a class="ap-logo" href="#">Asia<span>Power</span></a>
+      <nav class="nav">
+        <a class="on" href="#">Inventory</a>
+        <a href="#">Analytics</a>
+        <a href="#">Leads</a>
+        <a href="#">Home</a>
+      </nav>
+    </header>
+
+    <section class="hero">
+      <div class="crumb">Home / Admin / Inventory Hub</div>
+      <h2>Inventory Hub<span>库存审核与编辑</span></h2>
+      <p>Review supplier submissions, approve listings, and edit live inventory in one place.</p>
+      <span class="badge">Admin · v4</span>
+    </section>
+
+    <div class="tabs">
+      <button class="tab on" type="button">Pending <span style="opacity:.8">3</span></button>
+      <button class="tab" type="button">Approved</button>
+      <button class="tab" type="button">Rejected</button>
+    </div>
+
+    <article class="card">
+      <div class="card__top">
+        <div><span class="id">QXBxxxx</span> · Toyota Camry Half Cut</div>
+        <span class="status">pending</span>
+      </div>
+      <p style="color:var(--t2);font-size:13px">审核卡片样式示例 — 白底、浅灰边、金强调；业务按钮与字段不变。</p>
+    </article>
+
+    <div class="compare">
+      <div class="box old"><strong>旧 2.0</strong><br>navy styles.css · PNG logo · 无版本标记</div>
+      <div class="box neu"><strong>新 v4</strong><br>白底 SF 系 · 文字 logo · Admin · v4 徽章</div>
+    </div>
+
+    <p class="note">正式页：<code>admin/inventory.html</code>、<code>analytics.html</code>、<code>leads.html</code> 已挂 <code>admin-v4.css</code>。页头 + 页脚均为浅色文字 AsiaPower，不再用旧 navy PNG 页脚。</p>
+  </div>
+</body>
+</html>

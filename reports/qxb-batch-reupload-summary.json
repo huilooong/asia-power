@@ -1,0 +1,1123 @@
+{
+  "updatedAt": "2026-07-01T07:53:09Z",
+  "phase": "reupload-all-complete",
+  "resume": true,
+  "originalFailCount": 305,
+  "inspectReadyCount": 154,
+  "inspectBlockedCount": 151,
+  "uploadSessionOk": 64,
+  "uploadSessionFail": 6,
+  "uploadCumulativeOk": 90,
+  "uploadRemainingFail": 6,
+  "skippedOnServer": [
+    268,
+    279,
+    353,
+    382,
+    387,
+    388,
+    389,
+    392,
+    394,
+    401,
+    402,
+    403,
+    404,
+    405,
+    406,
+    407,
+    408,
+    416,
+    419,
+    421,
+    428,
+    434,
+    439,
+    442,
+    444,
+    446,
+    449,
+    457,
+    458,
+    467,
+    468,
+    470,
+    472,
+    473,
+    475,
+    476,
+    477,
+    479,
+    480,
+    481,
+    488,
+    495,
+    501,
+    508,
+    510,
+    511,
+    514,
+    522,
+    524,
+    525,
+    529,
+    530,
+    533,
+    535,
+    537,
+    538,
+    541,
+    542
+  ],
+  "okRows": [
+    34,
+    39,
+    45,
+    46,
+    62,
+    69,
+    72,
+    80,
+    82,
+    92,
+    110,
+    123,
+    131,
+    140,
+    143,
+    153,
+    163,
+    170,
+    174,
+    178,
+    184,
+    192,
+    197,
+    214,
+    215,
+    220,
+    234,
+    244,
+    246,
+    250,
+    253,
+    255,
+    260,
+    261,
+    264,
+    267,
+    271,
+    272,
+    277,
+    280,
+    282,
+    288,
+    290,
+    294,
+    296,
+    300,
+    304,
+    308,
+    309,
+    316,
+    323,
+    324,
+    326,
+    328,
+    334,
+    336,
+    338,
+    341,
+    350,
+    360,
+    364,
+    368,
+    370,
+    378,
+    393,
+    395,
+    397,
+    400,
+    410,
+    411,
+    413,
+    414,
+    417,
+    423,
+    426,
+    435,
+    438,
+    451,
+    454,
+    456,
+    464,
+    471,
+    482,
+    486,
+    489,
+    492,
+    519,
+    523,
+    531,
+    534
+  ],
+  "failRows": [
+    {
+      "row": 190,
+      "stockId": "QXB0190",
+      "error": "OCR found no VIN (Excel row 190 / 起亚 起亚K5 2015款 2.0L 自动GL — 原始表无 VIN 列，已扫描全部 18 张照片)",
+      "category": "ocr_no_vin"
+    },
+    {
+      "row": 227,
+      "stockId": "QXB0227",
+      "error": "OCR found no VIN (Excel row 227 / 奔驰 奔驰B级 2009款 B 200 豪华型 — 原始表无 VIN 列，已扫描全部 21 张照片)",
+      "category": "ocr_no_vin"
+    },
+    {
+      "row": 399,
+      "stockId": "QXB0399",
+      "error": "提交审核失败: HTTP 400 on https://asia-power.com/api/half-cuts/submissions: Pending submission already exists for this VIN",
+      "category": "duplicate_vin_pending"
+    },
+    {
+      "row": 445,
+      "stockId": "QXB0445",
+      "error": "提交审核失败: QXB0445 not in /Users/longhui/Desktop/AsiaPower/reports/qxb-approved-import.json — run /qxb process 445 --live approved first",
+      "category": "other"
+    },
+    {
+      "row": 452,
+      "stockId": "QXB0452",
+      "error": "HTTP Error 500: Internal Server Error",
+      "category": "other"
+    },
+    {
+      "row": 503,
+      "stockId": "QXB0503",
+      "error": "提交审核失败: HTTP 400 on https://asia-power.com/api/half-cuts/submissions: At least 3 photos required",
+      "category": "other"
+    }
+  ],
+  "inspectBlockedRows": [
+    {
+      "row": 37,
+      "stockId": "QXB0037",
+      "category": "ocr_no_vin",
+      "error": "no VIN — cannot derive engine/transmission (Manual Entry not allowed for QXB live upload)"
+    },
+    {
+      "row": 48,
+      "stockId": "QXB0048",
+      "category": "ocr_no_vin",
+      "error": "no VIN — cannot derive engine/transmission (Manual Entry not allowed for QXB live upload)"
+    },
+    {
+      "row": 49,
+      "stockId": "QXB0049",
+      "category": "vin_decode_failed",
+      "error": "VIN decode failed for ABZCYPBZC757SNSAU: decode skipped (batch mode)"
+    },
+    {
+      "row": 68,
+      "stockId": "QXB0068",
+      "category": "vin_decode_rate_limit",
+      "error": "VIN decode failed for ANSSEANKAYVAYPSTN: asia-power.com VIN 接口限流（60次/小时）— 稍后重试或走 trim 推断"
+    },
+    {
+      "row": 73,
+      "stockId": "QXB0073",
+      "category": "ocr_no_vin",
+      "error": "no VIN — cannot derive engine/transmission (Manual Entry not allowed for QXB live upload)"
+    },
+    {
+      "row": 75,
+      "stockId": "QXB0075",
+      "category": "vin_decode_qxb_quota",
+      "error": "VIN decode failed for JNS5NSBBKLL75PF1Z: 汽修宝 VinDecoder 不可用（凭证/网络/配额） (您访问的接口次数已达到限额)"
+    },
+    {
+      "row": 77,
+      "stockId": "QXB0077",
+      "category": "ocr_no_vin",
+      "error": "no VIN — cannot derive engine/transmission (Manual Entry not allowed for QXB live upload)"
+    },
+    {
+      "row": 86,
+      "stockId": "QXB0086",
+      "category": "ocr_no_vin",
+      "error": "no VIN — cannot derive engine/transmission (Manual Entry not allowed for QXB live upload)"
+    },
+    {
+      "row": 88,
+      "stockId": "QXB0088",
+      "category": "ocr_no_vin",
+      "error": "no VIN — cannot derive engine/transmission (Manual Entry not allowed for QXB live upload)"
+    },
+    {
+      "row": 91,
+      "stockId": "QXB0091",
+      "category": "ocr_no_vin",
+      "error": "no VIN — cannot derive engine/transmission (Manual Entry not allowed for QXB live upload)"
+    },
+    {
+      "row": 94,
+      "stockId": "QXB0094",
+      "category": "vin_decode_failed",
+      "error": "VIN decode failed for N4SP24DWNSVFYXLAD: decode skipped (batch mode)"
+    },
+    {
+      "row": 95,
+      "stockId": "QXB0095",
+      "category": "vin_decode_failed",
+      "error": "VIN decode failed for JSSMM1LALNDAWMYFN: decode skipped (batch mode)"
+    },
+    {
+      "row": 134,
+      "stockId": "QXB0134",
+      "category": "vin_decode_failed",
+      "error": "VIN decode failed for LHGRB184752021508: decode skipped (batch mode)"
+    },
+    {
+      "row": 136,
+      "stockId": "QXB0136",
+      "category": "vin_decode_failed",
+      "error": "VIN decode failed for LGBF1DE049R222288: decode skipped (batch mode)"
+    },
+    {
+      "row": 144,
+      "stockId": "QXB0144",
+      "category": "vin_decode_failed",
+      "error": "VIN decode failed for LGBF1AE099R127966: decode skipped (batch mode)"
+    },
+    {
+      "row": 145,
+      "stockId": "QXB0145",
+      "category": "vin_decode_failed",
+      "error": "VIN decode failed for LGBF1CE065R130054: decode skipped (batch mode)"
+    },
+    {
+      "row": 146,
+      "stockId": "QXB0146",
+      "category": "vin_decode_failed",
+      "error": "VIN decode failed for ALSBA44B4STHHYP7P: decode skipped (batch mode)"
+    },
+    {
+      "row": 149,
+      "stockId": "QXB0149",
+      "category": "vin_decode_failed",
+      "error": "VIN decode failed for LGBF1AE046R002739: decode skipped (batch mode)"
+    },
+    {
+      "row": 150,
+      "stockId": "QXB0150",
+      "category": "vin_decode_failed",
+      "error": "VIN decode failed for KNAFG521397222462: decode skipped (batch mode)"
+    },
+    {
+      "row": 160,
+      "stockId": "QXB0160",
+      "category": "ocr_no_vin",
+      "error": "no VIN — cannot derive engine/transmission (Manual Entry not allowed for QXB live upload)"
+    },
+    {
+      "row": 161,
+      "stockId": "QXB0161",
+      "category": "vin_decode_failed",
+      "error": "VIN decode failed for LVGBE40K58G277309: decode skipped (batch mode)"
+    },
+    {
+      "row": 165,
+      "stockId": "QXB0165",
+      "category": "vin_decode_failed",
+      "error": "VIN decode failed for LGBF1CE015R141690: decode skipped (batch mode)"
+    },
+    {
+      "row": 166,
+      "stockId": "QXB0166",
+      "category": "vin_decode_failed",
+      "error": "VIN decode failed for LGBF1CE067R220646: decode skipped (batch mode)"
+    },
+    {
+      "row": 168,
+      "stockId": "QXB0168",
+      "category": "vin_decode_failed",
+      "error": "VIN decode failed for A8RS0ZALSSASSJPSB: decode skipped (batch mode)"
+    },
+    {
+      "row": 169,
+      "stockId": "QXB0169",
+      "category": "vin_decode_failed",
+      "error": "VIN decode failed for LVGBE42K16G040598: decode skipped (batch mode)"
+    },
+    {
+      "row": 172,
+      "stockId": "QXB0172",
+      "category": "vin_decode_failed",
+      "error": "VIN decode failed for JE3AA58HX8Z502721: decode skipped (batch mode)"
+    },
+    {
+      "row": 176,
+      "stockId": "QXB0176",
+      "category": "vin_decode_failed",
+      "error": "VIN decode failed for LGBH1AE077Y022886: decode skipped (batch mode)"
+    },
+    {
+      "row": 177,
+      "stockId": "QXB0177",
+      "category": "vin_decode_failed",
+      "error": "VIN decode failed for LVGBY80E2JG083819: decode skipped (batch mode)"
+    },
+    {
+      "row": 180,
+      "stockId": "QXB0180",
+      "category": "vin_decode_failed",
+      "error": "VIN decode failed for LVFAD1AD39G054513: decode skipped (batch mode)"
+    },
+    {
+      "row": 185,
+      "stockId": "QXB0185",
+      "category": "ocr_no_vin",
+      "error": "no VIN — cannot derive engine/transmission (Manual Entry not allowed for QXB live upload)"
+    },
+    {
+      "row": 195,
+      "stockId": "QXB0195",
+      "category": "vin_decode_failed",
+      "error": "VIN decode failed for KNAKN8111A5052321: decode skipped (batch mode)"
+    },
+    {
+      "row": 199,
+      "stockId": "QXB0199",
+      "category": "vin_decode_failed",
+      "error": "VIN decode failed for ABKRJ32BRR2012030: decode skipped (batch mode)"
+    },
+    {
+      "row": 210,
+      "stockId": "QXB0210",
+      "category": "vin_decode_failed",
+      "error": "VIN decode failed for LGBF1CE045R132594: decode skipped (batch mode)"
+    },
+    {
+      "row": 211,
+      "stockId": "QXB0211",
+      "category": "vin_decode_failed",
+      "error": "VIN decode failed for LFMBE22D760040068: decode skipped (batch mode)"
+    },
+    {
+      "row": 219,
+      "stockId": "QXB0219",
+      "category": "vin_decode_failed",
+      "error": "VIN decode failed for KNALD221465002810: decode skipped (batch mode)"
+    },
+    {
+      "row": 222,
+      "stockId": "QXB0222",
+      "category": "ocr_no_vin",
+      "error": "no VIN — cannot derive engine/transmission (Manual Entry not allowed for QXB live upload)"
+    },
+    {
+      "row": 223,
+      "stockId": "QXB0223",
+      "category": "vin_decode_failed",
+      "error": "VIN decode failed for ARHEFC2510ST20087: decode skipped (batch mode)"
+    },
+    {
+      "row": 233,
+      "stockId": "QXB0233",
+      "category": "vin_decode_failed",
+      "error": "VIN decode failed for A1CSFM2CSPSFXXVEN: decode skipped (batch mode)"
+    },
+    {
+      "row": 237,
+      "stockId": "QXB0237",
+      "category": "ocr_no_vin",
+      "error": "no VIN — cannot derive engine/transmission (Manual Entry not allowed for QXB live upload)"
+    },
+    {
+      "row": 248,
+      "stockId": "QXB0248",
+      "category": "ocr_no_vin",
+      "error": "no VIN — cannot derive engine/transmission (Manual Entry not allowed for QXB live upload)"
+    },
+    {
+      "row": 254,
+      "stockId": "QXB0254",
+      "category": "vin_decode_failed",
+      "error": "VIN decode failed for A2013F09ABMCBARTA: decode skipped (batch mode)"
+    },
+    {
+      "row": 262,
+      "stockId": "QXB0262",
+      "category": "vin_decode_failed",
+      "error": "VIN decode failed for LVGBE40K78G203227: decode skipped (batch mode)"
+    },
+    {
+      "row": 263,
+      "stockId": "QXB0263",
+      "category": "vin_decode_failed",
+      "error": "VIN decode failed for ANCHESSEDSSNMWWSC: decode skipped (batch mode)"
+    },
+    {
+      "row": 265,
+      "stockId": "QXB0265",
+      "category": "vin_decode_failed",
+      "error": "VIN decode failed for LGBF1DE039R180731: decode skipped (batch mode)"
+    },
+    {
+      "row": 270,
+      "stockId": "QXB0270",
+      "category": "vin_decode_failed",
+      "error": "VIN decode failed for LVGBH40K8AG386022: decode skipped (batch mode)"
+    },
+    {
+      "row": 273,
+      "stockId": "QXB0273",
+      "category": "vin_decode_failed",
+      "error": "VIN decode failed for LJNMEWAG1BN096383: decode skipped (batch mode)"
+    },
+    {
+      "row": 274,
+      "stockId": "QXB0274",
+      "category": "vin_decode_failed",
+      "error": "VIN decode failed for LFMBE85B770057712: decode skipped (batch mode)"
+    },
+    {
+      "row": 276,
+      "stockId": "QXB0276",
+      "category": "vin_decode_failed",
+      "error": "VIN decode failed for LFMBE85B570058325: decode skipped (batch mode)"
+    },
+    {
+      "row": 284,
+      "stockId": "QXB0284",
+      "category": "vin_decode_failed",
+      "error": "VIN decode failed for A3TEMSGS4YMAG4BYS: decode skipped (batch mode)"
+    },
+    {
+      "row": 287,
+      "stockId": "QXB0287",
+      "category": "vin_decode_failed",
+      "error": "VIN decode failed for A4PAYDP28SNLESSSE: decode skipped (batch mode)"
+    },
+    {
+      "row": 289,
+      "stockId": "QXB0289",
+      "category": "vin_decode_failed",
+      "error": "VIN decode failed for KNAKU8118C5226603: decode skipped (batch mode)"
+    },
+    {
+      "row": 299,
+      "stockId": "QXB0299",
+      "category": "vin_decode_failed",
+      "error": "VIN decode failed for AHANNNLK5FFXSFZ22: decode skipped (batch mode)"
+    },
+    {
+      "row": 301,
+      "stockId": "QXB0301",
+      "category": "ocr_no_vin",
+      "error": "no VIN — cannot derive engine/transmission (Manual Entry not allowed for QXB live upload)"
+    },
+    {
+      "row": 302,
+      "stockId": "QXB0302",
+      "category": "vin_decode_failed",
+      "error": "VIN decode failed for LVGBY80E7HG057906: decode skipped (batch mode)"
+    },
+    {
+      "row": 307,
+      "stockId": "QXB0307",
+      "category": "vin_decode_failed",
+      "error": "VIN decode failed for LHGTF3855D8043811: decode skipped (batch mode)"
+    },
+    {
+      "row": 310,
+      "stockId": "QXB0310",
+      "category": "vin_decode_failed",
+      "error": "VIN decode failed for LJNMEW1G75N014242: decode skipped (batch mode)"
+    },
+    {
+      "row": 311,
+      "stockId": "QXB0311",
+      "category": "vin_decode_failed",
+      "error": "VIN decode failed for LVGBE40KX8G203576: decode skipped (batch mode)"
+    },
+    {
+      "row": 312,
+      "stockId": "QXB0312",
+      "category": "vin_decode_failed",
+      "error": "VIN decode failed for LJNMEW1G78N007697: decode skipped (batch mode)"
+    },
+    {
+      "row": 313,
+      "stockId": "QXB0313",
+      "category": "vin_decode_failed",
+      "error": "VIN decode failed for LFMBE22D660038778: decode skipped (batch mode)"
+    },
+    {
+      "row": 314,
+      "stockId": "QXB0314",
+      "category": "vin_decode_failed",
+      "error": "VIN decode failed for LFMBE20D270107468: decode skipped (batch mode)"
+    },
+    {
+      "row": 315,
+      "stockId": "QXB0315",
+      "category": "vin_decode_failed",
+      "error": "VIN decode failed for ABAP2TSSS4WV7ASYS: decode skipped (batch mode)"
+    },
+    {
+      "row": 318,
+      "stockId": "QXB0318",
+      "category": "vin_decode_failed",
+      "error": "VIN decode failed for PATN4SSLSSS417JSJ: decode skipped (batch mode)"
+    },
+    {
+      "row": 319,
+      "stockId": "QXB0319",
+      "category": "vin_decode_failed",
+      "error": "VIN decode failed for LGBF1DE008R113017: decode skipped (batch mode)"
+    },
+    {
+      "row": 322,
+      "stockId": "QXB0322",
+      "category": "vin_decode_failed",
+      "error": "VIN decode failed for A5BSPGEACM5SEAPPS: decode skipped (batch mode)"
+    },
+    {
+      "row": 327,
+      "stockId": "QXB0327",
+      "category": "vin_decode_failed",
+      "error": "VIN decode failed for KMHSH81B9AU632937: decode skipped (batch mode)"
+    },
+    {
+      "row": 329,
+      "stockId": "QXB0329",
+      "category": "vin_decode_failed",
+      "error": "VIN decode failed for A7L4YV7SESW1MAE44: decode skipped (batch mode)"
+    },
+    {
+      "row": 332,
+      "stockId": "QXB0332",
+      "category": "vin_decode_failed",
+      "error": "VIN decode failed for WD4WA582683453226: decode skipped (batch mode)"
+    },
+    {
+      "row": 333,
+      "stockId": "QXB0333",
+      "category": "vin_decode_failed",
+      "error": "VIN decode failed for KMHNU81C4DU203470: decode skipped (batch mode)"
+    },
+    {
+      "row": 335,
+      "stockId": "QXB0335",
+      "category": "vin_decode_failed",
+      "error": "VIN decode failed for KMHSH81B9AU632937: decode skipped (batch mode)"
+    },
+    {
+      "row": 340,
+      "stockId": "QXB0340",
+      "category": "vin_decode_failed",
+      "error": "VIN decode failed for LVFAB2AB3CG076836: decode skipped (batch mode)"
+    },
+    {
+      "row": 347,
+      "stockId": "QXB0347",
+      "category": "vin_decode_failed",
+      "error": "VIN decode failed for LVHCU2626A5017260: decode skipped (batch mode)"
+    },
+    {
+      "row": 357,
+      "stockId": "QXB0357",
+      "category": "vin_decode_failed",
+      "error": "VIN decode failed for ARVN40UE1ANW444V4: decode skipped (batch mode)"
+    },
+    {
+      "row": 358,
+      "stockId": "QXB0358",
+      "category": "vin_decode_failed",
+      "error": "VIN decode failed for AAN2NSSNN4LAV141A: decode skipped (batch mode)"
+    },
+    {
+      "row": 363,
+      "stockId": "QXB0363",
+      "category": "vin_decode_failed",
+      "error": "VIN decode failed for A1DSM7JKHPN5FP4FA: decode skipped (batch mode)"
+    },
+    {
+      "row": 365,
+      "stockId": "QXB0365",
+      "category": "vin_decode_failed",
+      "error": "VIN decode failed for C4LEESSG4ERTSKTSA: decode skipped (batch mode)"
+    },
+    {
+      "row": 367,
+      "stockId": "QXB0367",
+      "category": "vin_decode_failed",
+      "error": "VIN decode failed for LGBF1DE079R203735: decode skipped (batch mode)"
+    },
+    {
+      "row": 372,
+      "stockId": "QXB0372",
+      "category": "vin_decode_failed",
+      "error": "VIN decode failed for LVHRM2839C5012640: decode skipped (batch mode)"
+    },
+    {
+      "row": 373,
+      "stockId": "QXB0373",
+      "category": "vin_decode_failed",
+      "error": "VIN decode failed for LGBL2AE24BS002664: decode skipped (batch mode)"
+    },
+    {
+      "row": 374,
+      "stockId": "QXB0374",
+      "category": "vin_decode_failed",
+      "error": "VIN decode failed for KNAKN8112B5059246: decode skipped (batch mode)"
+    },
+    {
+      "row": 375,
+      "stockId": "QXB0375",
+      "category": "vin_decode_failed",
+      "error": "VIN decode failed for SLYVS1BV4SNSELNFF: decode skipped (batch mode)"
+    },
+    {
+      "row": 377,
+      "stockId": "QXB0377",
+      "category": "vin_decode_failed",
+      "error": "VIN decode failed for KNAKN8112C5090465: decode skipped (batch mode)"
+    },
+    {
+      "row": 380,
+      "stockId": "QXB0380",
+      "category": "vin_decode_failed",
+      "error": "VIN decode failed for AYZ44SSNSS7BS9SSS: decode skipped (batch mode)"
+    },
+    {
+      "row": 381,
+      "stockId": "QXB0381",
+      "category": "vin_decode_failed",
+      "error": "VIN decode failed for JE3AP59U0BZ006070: decode skipped (batch mode)"
+    },
+    {
+      "row": 384,
+      "stockId": "QXB0384",
+      "category": "vin_decode_failed",
+      "error": "VIN decode failed for JS3TD04V684100018: decode skipped (batch mode)"
+    },
+    {
+      "row": 385,
+      "stockId": "QXB0385",
+      "category": "vin_decode_failed",
+      "error": "VIN decode failed for KNAKU8110C5205468: decode skipped (batch mode)"
+    },
+    {
+      "row": 390,
+      "stockId": "QXB0390",
+      "category": "vin_decode_failed",
+      "error": "VIN decode failed for BFM1TSUB1SHTKYAR7: decode skipped (batch mode)"
+    },
+    {
+      "row": 391,
+      "stockId": "QXB0391",
+      "category": "vin_decode_failed",
+      "error": "VIN decode failed for A7S4AWPMMAFFWYPAN: decode skipped (batch mode)"
+    },
+    {
+      "row": 396,
+      "stockId": "QXB0396",
+      "category": "vin_decode_failed",
+      "error": "VIN decode failed for A1GTYAEP44SS6A8LE: decode skipped (batch mode)"
+    },
+    {
+      "row": 398,
+      "stockId": "QXB0398",
+      "category": "vin_decode_failed",
+      "error": "VIN decode failed for KMHSH81B4BU778034: decode skipped (batch mode)"
+    },
+    {
+      "row": 409,
+      "stockId": "QXB0409",
+      "category": "vin_decode_failed",
+      "error": "VIN decode failed for KMHSH81D99U469770: decode skipped (batch mode)"
+    },
+    {
+      "row": 412,
+      "stockId": "QXB0412",
+      "category": "vin_decode_failed",
+      "error": "VIN decode failed for LVHCU2664A5001187: decode skipped (batch mode)"
+    },
+    {
+      "row": 415,
+      "stockId": "QXB0415",
+      "category": "vin_decode_failed",
+      "error": "VIN decode failed for KNAKN8116C5090310: decode skipped (batch mode)"
+    },
+    {
+      "row": 418,
+      "stockId": "QXB0418",
+      "category": "vin_decode_failed",
+      "error": "VIN decode failed for A2SS2FLN2SS140ATT: decode skipped (batch mode)"
+    },
+    {
+      "row": 422,
+      "stockId": "QXB0422",
+      "category": "vin_decode_failed",
+      "error": "VIN decode failed for T4G322SSRSSESRSTY: decode skipped (batch mode)"
+    },
+    {
+      "row": 424,
+      "stockId": "QXB0424",
+      "category": "vin_decode_failed",
+      "error": "VIN decode failed for ME00SPPFTNPCSMALG: decode skipped (batch mode)"
+    },
+    {
+      "row": 425,
+      "stockId": "QXB0425",
+      "category": "vin_decode_failed",
+      "error": "VIN decode failed for Y1M9MERLEASRESSBE: decode skipped (batch mode)"
+    },
+    {
+      "row": 427,
+      "stockId": "QXB0427",
+      "category": "vin_decode_failed",
+      "error": "VIN decode failed for A551PZ74S759CMASJ: decode skipped (batch mode)"
+    },
+    {
+      "row": 429,
+      "stockId": "QXB0429",
+      "category": "vin_decode_failed",
+      "error": "VIN decode failed for A1SCEBBRKSP4SJASL: decode skipped (batch mode)"
+    },
+    {
+      "row": 430,
+      "stockId": "QXB0430",
+      "category": "vin_decode_failed",
+      "error": "VIN decode failed for ABYYSLSPP6MAY2SSS: decode skipped (batch mode)"
+    },
+    {
+      "row": 431,
+      "stockId": "QXB0431",
+      "category": "vin_decode_failed",
+      "error": "VIN decode failed for A4XSNESZ4ASMEASSA: decode skipped (batch mode)"
+    },
+    {
+      "row": 432,
+      "stockId": "QXB0432",
+      "category": "vin_decode_failed",
+      "error": "VIN decode failed for AS1LPAS4A4AZ24VFP: decode skipped (batch mode)"
+    },
+    {
+      "row": 433,
+      "stockId": "QXB0433",
+      "category": "vin_decode_failed",
+      "error": "VIN decode failed for A1P1VZ2E4PNYPS744: decode skipped (batch mode)"
+    },
+    {
+      "row": 436,
+      "stockId": "QXB0436",
+      "category": "vin_decode_failed",
+      "error": "VIN decode failed for RAUANBA1GDSE100KW: decode skipped (batch mode)"
+    },
+    {
+      "row": 437,
+      "stockId": "QXB0437",
+      "category": "vin_decode_failed",
+      "error": "VIN decode failed for SF5NA8MYWT0ANERRA: decode skipped (batch mode)"
+    },
+    {
+      "row": 440,
+      "stockId": "QXB0440",
+      "category": "vin_decode_failed",
+      "error": "VIN decode failed for AARFBUL1F7LSSLSB9: decode skipped (batch mode)"
+    },
+    {
+      "row": 441,
+      "stockId": "QXB0441",
+      "category": "vin_decode_failed",
+      "error": "VIN decode failed for BRYASERBWVL0A0LBE: decode skipped (batch mode)"
+    },
+    {
+      "row": 443,
+      "stockId": "QXB0443",
+      "category": "vin_decode_failed",
+      "error": "VIN decode failed for LVHRM1815D5034161: decode skipped (batch mode)"
+    },
+    {
+      "row": 447,
+      "stockId": "QXB0447",
+      "category": "vin_decode_failed",
+      "error": "VIN decode failed for LVGDC46A7DG500621: decode skipped (batch mode)"
+    },
+    {
+      "row": 448,
+      "stockId": "QXB0448",
+      "category": "vin_decode_failed",
+      "error": "VIN decode failed for EA1D4LA11U140F02A: decode skipped (batch mode)"
+    },
+    {
+      "row": 450,
+      "stockId": "QXB0450",
+      "category": "vin_decode_failed",
+      "error": "VIN decode failed for A4LNWSS4PTTSSSPNA: decode skipped (batch mode)"
+    },
+    {
+      "row": 453,
+      "stockId": "QXB0453",
+      "category": "vin_decode_failed",
+      "error": "VIN decode failed for ACAZ22K2YEWVAVV2A: decode skipped (batch mode)"
+    },
+    {
+      "row": 455,
+      "stockId": "QXB0455",
+      "category": "vin_decode_failed",
+      "error": "VIN decode failed for A20160750WTM500VP: decode skipped (batch mode)"
+    },
+    {
+      "row": 459,
+      "stockId": "QXB0459",
+      "category": "vin_decode_failed",
+      "error": "VIN decode failed for ASN4Y1S32S71B2SSS: decode skipped (batch mode)"
+    },
+    {
+      "row": 460,
+      "stockId": "QXB0460",
+      "category": "vin_decode_failed",
+      "error": "VIN decode failed for A23AESSNSLS3PHEER: decode skipped (batch mode)"
+    },
+    {
+      "row": 461,
+      "stockId": "QXB0461",
+      "category": "vin_decode_failed",
+      "error": "VIN decode failed for A1SSREFYUANCHEHAN: decode skipped (batch mode)"
+    },
+    {
+      "row": 462,
+      "stockId": "QXB0462",
+      "category": "vin_decode_failed",
+      "error": "VIN decode failed for A1GBAN1XBNYJNJWFP: decode skipped (batch mode)"
+    },
+    {
+      "row": 463,
+      "stockId": "QXB0463",
+      "category": "vin_decode_failed",
+      "error": "VIN decode failed for WGEANRRAURSAMSAP2: decode skipped (batch mode)"
+    },
+    {
+      "row": 465,
+      "stockId": "QXB0465",
+      "category": "vin_decode_failed",
+      "error": "VIN decode failed for SSNSANSSFBSDRNGSY: decode skipped (batch mode)"
+    },
+    {
+      "row": 466,
+      "stockId": "QXB0466",
+      "category": "vin_decode_failed",
+      "error": "VIN decode failed for AJSNPSTTSSR5S8SRS: decode skipped (batch mode)"
+    },
+    {
+      "row": 469,
+      "stockId": "QXB0469",
+      "category": "vin_decode_failed",
+      "error": "VIN decode failed for DS7MT1HYPMYV3B2YB: decode skipped (batch mode)"
+    },
+    {
+      "row": 478,
+      "stockId": "QXB0478",
+      "category": "vin_decode_failed",
+      "error": "VIN decode failed for A1JEDC837SSSDBSY2: decode skipped (batch mode)"
+    },
+    {
+      "row": 483,
+      "stockId": "QXB0483",
+      "category": "vin_decode_failed",
+      "error": "VIN decode failed for NSVAWN4BSS4NFPXKN: decode skipped (batch mode)"
+    },
+    {
+      "row": 484,
+      "stockId": "QXB0484",
+      "category": "vin_decode_failed",
+      "error": "VIN decode failed for ESL2CSAE74S5ASYRB: decode skipped (batch mode)"
+    },
+    {
+      "row": 485,
+      "stockId": "QXB0485",
+      "category": "ocr_no_vin",
+      "error": "no VIN — cannot derive engine/transmission (Manual Entry not allowed for QXB live upload)"
+    },
+    {
+      "row": 490,
+      "stockId": "QXB0490",
+      "category": "vin_decode_failed",
+      "error": "VIN decode failed for EEWW1JN0SNSSSS3SX: decode skipped (batch mode)"
+    },
+    {
+      "row": 491,
+      "stockId": "QXB0491",
+      "category": "vin_decode_failed",
+      "error": "VIN decode failed for A1SVS1RYSAWAGASSN: decode skipped (batch mode)"
+    },
+    {
+      "row": 493,
+      "stockId": "QXB0493",
+      "category": "vin_decode_failed",
+      "error": "VIN decode failed for AESSSNSWWZZGCSSSA: decode skipped (batch mode)"
+    },
+    {
+      "row": 494,
+      "stockId": "QXB0494",
+      "category": "vin_decode_failed",
+      "error": "VIN decode failed for ALWYSSASBAGN7SVDS: decode skipped (batch mode)"
+    },
+    {
+      "row": 497,
+      "stockId": "QXB0497",
+      "category": "ocr_no_vin",
+      "error": "no VIN — cannot derive engine/transmission (Manual Entry not allowed for QXB live upload)"
+    },
+    {
+      "row": 498,
+      "stockId": "QXB0498",
+      "category": "vin_decode_failed",
+      "error": "VIN decode failed for ASSGY4ASSNAZSSEN1: decode skipped (batch mode)"
+    },
+    {
+      "row": 499,
+      "stockId": "QXB0499",
+      "category": "vin_decode_failed",
+      "error": "VIN decode failed for ASSSLT4PS1WM24REE: decode skipped (batch mode)"
+    },
+    {
+      "row": 500,
+      "stockId": "QXB0500",
+      "category": "vin_decode_failed",
+      "error": "VIN decode failed for ASSSLT22SSSSWN7AY: decode skipped (batch mode)"
+    },
+    {
+      "row": 502,
+      "stockId": "QXB0502",
+      "category": "vin_decode_failed",
+      "error": "VIN decode failed for LF1SZSNVPAFNDRAMF: decode skipped (batch mode)"
+    },
+    {
+      "row": 506,
+      "stockId": "QXB0506",
+      "category": "vin_decode_failed",
+      "error": "VIN decode failed for AWCSSHWSTFAALASEA: decode skipped (batch mode)"
+    },
+    {
+      "row": 507,
+      "stockId": "QXB0507",
+      "category": "ocr_no_vin",
+      "error": "no VIN — cannot derive engine/transmission (Manual Entry not allowed for QXB live upload)"
+    },
+    {
+      "row": 509,
+      "stockId": "QXB0509",
+      "category": "vin_decode_failed",
+      "error": "VIN decode failed for ANESNWE2SSEYLZESS: decode skipped (batch mode)"
+    },
+    {
+      "row": 512,
+      "stockId": "QXB0512",
+      "category": "vin_decode_failed",
+      "error": "VIN decode failed for LHGRB3860B8021582: decode skipped (batch mode)"
+    },
+    {
+      "row": 513,
+      "stockId": "QXB0513",
+      "category": "vin_decode_failed",
+      "error": "VIN decode failed for J2NYVPPLSGMSSN4HA: decode skipped (batch mode)"
+    },
+    {
+      "row": 515,
+      "stockId": "QXB0515",
+      "category": "vin_decode_failed",
+      "error": "VIN decode failed for ANADZS1ARLLFLSFSA: decode skipped (batch mode)"
+    },
+    {
+      "row": 516,
+      "stockId": "QXB0516",
+      "category": "vin_decode_failed",
+      "error": "VIN decode failed for LVGBE42K07G056759: decode skipped (batch mode)"
+    },
+    {
+      "row": 517,
+      "stockId": "QXB0517",
+      "category": "vin_decode_failed",
+      "error": "VIN decode failed for LVGBH42K2AG362490: decode skipped (batch mode)"
+    },
+    {
+      "row": 518,
+      "stockId": "QXB0518",
+      "category": "vin_decode_failed",
+      "error": "VIN decode failed for LVGBE42K46G022967: decode skipped (batch mode)"
+    },
+    {
+      "row": 520,
+      "stockId": "QXB0520",
+      "category": "vin_decode_failed",
+      "error": "VIN decode failed for LVGBE40K48G271422: decode skipped (batch mode)"
+    },
+    {
+      "row": 521,
+      "stockId": "QXB0521",
+      "category": "vin_decode_failed",
+      "error": "VIN decode failed for LVGBE42K86G029744: decode skipped (batch mode)"
+    },
+    {
+      "row": 526,
+      "stockId": "QXB0526",
+      "category": "vin_decode_failed",
+      "error": "VIN decode failed for LHGRB3803A8026429: decode skipped (batch mode)"
+    },
+    {
+      "row": 527,
+      "stockId": "QXB0527",
+      "category": "ocr_no_vin",
+      "error": "no VIN — cannot derive engine/transmission (Manual Entry not allowed for QXB live upload)"
+    },
+    {
+      "row": 528,
+      "stockId": "QXB0528",
+      "category": "ocr_no_vin",
+      "error": "no VIN — cannot derive engine/transmission (Manual Entry not allowed for QXB live upload)"
+    },
+    {
+      "row": 532,
+      "stockId": "QXB0532",
+      "category": "vin_decode_failed",
+      "error": "VIN decode failed for BSSNNSSCSZSN7US2S: decode skipped (batch mode)"
+    },
+    {
+      "row": 536,
+      "stockId": "QXB0536",
+      "category": "vin_decode_failed",
+      "error": "VIN decode failed for A59CJ4DHHBY2AZNS0: decode skipped (batch mode)"
+    },
+    {
+      "row": 539,
+      "stockId": "QXB0539",
+      "category": "vin_decode_failed",
+      "error": "VIN decode failed for ASLSH0EPSBEUSSSAN: decode skipped (batch mode)"
+    },
+    {
+      "row": 540,
+      "stockId": "QXB0540",
+      "category": "vin_decode_failed",
+      "error": "VIN decode failed for ALLSXNNFXXSVMDSA4: decode skipped (batch mode)"
+    }
+  ],
+  "categoryCounts": {
+    "upload": {
+      "ocr_no_vin": 2,
+      "duplicate_vin_pending": 1,
+      "other": 3
+    },
+    "inspectBlocked": {
+      "ocr_no_vin": 18,
+      "vin_decode_failed": 131,
+      "vin_decode_rate_limit": 1,
+      "vin_decode_qxb_quota": 1
+    }
+  }
+}

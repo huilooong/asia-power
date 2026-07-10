@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>供应商工作台 · AsiaPower</title>
+  <link rel="stylesheet" href="/css/portal-app.css">
+  <style>body { background: var(--bg2) }</style>
+</head>
+<body data-page="supplier-dashboard" data-portal-shell="v4">
+  <div class="wrap">
+    <div class="hero-mini">
+      <div class="kicker">Supplier Dashboard · v4</div>
+      <h1>我的上传</h1>
+      <p>请先在统一登录页登录。新供应商须注册填资料；老供应商资料不全须先补全。</p>
+      <div class="actions" style="margin-top:12px">
+        <a class="btn btn-primary" href="/login/?role=supplier&next=/supplier-portal/dashboard.html">去登录 / 注册</a>
+      </div>
+    </div>
+
+    <div id="auth-grid" hidden></div>
+    <div id="login-panel" hidden></div>
+    <div id="register-panel" hidden></div>
+    <div id="help-panel" hidden></div>
+    <!-- legacy form fields kept as hidden stubs so profile completion still works -->
+    <section class="panel" style="margin-top:20px" id="profile-panel" hidden>
+      <h2>请补全供应商资料</h2>
+      <p class="sub" id="profile-sub">老账号资料不完整，补全后即可使用工作台</p>
+      <div class="field">
+        <label>公司名称 *</label>
+        <input id="prof-company" />
+      </div>
+      <div class="row">
+        <div class="field">
+          <label>业务类型 *</label>
+          <select id="prof-business">
+            <option value="">请选择</option>
+            <option value="dismantling-yard">拆车厂</option>
+            <option value="auto-recycler">汽车回收</option>
+            <option value="reconditioner">翻新/再制造</option>
+            <option value="export-dealer">出口贸易商</option>
+            <option value="other">其他</option>
+          </select>
+        </div>
+        <div class="field">
+          <label>联系人 *</label>
+          <input id="prof-contact" />
+        </div>
+      </div>
+      <div class="row">
+        <div class="field">
+          <label>国家/地区 *</label>
+          <select id="prof-country">
+            <option value="">请选择</option>
+            <option value="china">中国</option>
+            <option value="japan">日本</option>
+            <option value="korea">韩国</option>
+            <option value="other">其他</option>
+          </select>
+        </div>
+        <div class="field">
+          <label>邮箱 *</label>
+          <input id="prof-email" type="email" />
+        </div>
+      </div>
+      <div class="field">
+        <label>经营地址 *</label>
+        <input id="prof-address" />
+      </div>
+      <div class="row">
+        <div class="field">
+          <label>主营品类 *</label>
+          <select id="prof-spec">
+            <option value="">请选择</option>
+            <option value="engines">发动机</option>
+            <option value="gearboxes">变速箱</option>
+            <option value="both">发动机+变速箱</option>
+            <option value="half-cuts">半切/整车拆解</option>
+            <option value="full-vehicle">整车拆解</option>
+            <option value="trucks">商用车</option>
+            <option value="other">其他</option>
+          </select>
+        </div>
+        <div class="field">
+          <label>经营品牌</label>
+          <input id="prof-brands" />
+        </div>
+      </div>
+      <div class="row">
+        <div class="field">
+          <label>微信</label>
+          <input id="prof-wechat" />
+        </div>
+        <div class="field">
+          <label>城市</label>
+          <input id="prof-city" />
+        </div>
+      </div>
+      <button class="btn btn-primary btn-block" type="button" id="save-profile">保存并进入工作台</button>
+      <button class="btn btn-ghost btn-block" type="button" id="profile-logout" style="margin-top:10px">退出</button>
+    </section>
+
+    <section class="panel" style="margin-top:20px" id="dash" hidden>
+      <div style="display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:8px">
+        <div>
+          <h2 style="margin:0" id="sup-name">供应商</h2>
+          <p class="sub" style="margin:4px 0 0" id="sup-meta"></p>
+        </div>
+        <div class="actions">
+          <button class="btn btn-ghost" type="button" id="edit-company-btn">编辑公司资料</button>
+          <a class="btn btn-gold" href="/supplier-portal/half-cut-upload.html">继续上传</a>
+          <button class="btn btn-ghost" type="button" id="logout-btn">退出</button>
+        </div>
+      </div>
+      <div class="steps" style="margin-bottom:16px">
+        <div class="step on"><div class="n">Pending</div><div class="t" id="c-pending">0</div><div class="d">待审</div></div>
+        <div class="step on"><div class="n">Live</div><div class="t" id="c-live">0</div><div class="d">已上线</div></div>
+        <div class="step"><div class="n">Rejected</div><div class="t" id="c-rej">0</div><div class="d">已拒</div></div>
+      </div>
+      <table class="table">
+        <thead>
+          <tr><th>Stock / 提交</th><th>车型</th><th>价格</th><th>状态</th><th>时间</th><th></th></tr>
+        </thead>
+        <tbody id="upload-rows"></tbody>
+      </table>
+    </section>
+
+    <section class="panel" style="margin-top:20px" id="edit-panel" hidden>
+      <div style="display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:8px">
+        <div>
+          <h2 style="margin:0">编辑商品详情</h2>
+          <p class="sub" style="margin:4px 0 0" id="edit-sub">只能编辑自己名下的库存</p>
+        </div>
+        <button class="btn btn-ghost" type="button" id="edit-cancel">返回列表</button>
+      </div>
+      <input type="hidden" id="edit-id" />
+      <div class="row">
+        <div class="field"><label>品牌</label><input id="edit-brand" /></div>
+        <div class="field"><label>型号</label><input id="edit-model" /></div>
+      </div>
+      <div class="row">
+        <div class="field"><label>年份</label><input id="edit-year" type="number" /></div>
+        <div class="field"><label>价格 USD</label><input id="edit-price" type="number" step="0.01" /></div>
+      </div>
+      <div class="row">
+        <div class="field"><label>发动机号</label><input id="edit-engine" /></div>
+        <div class="field"><label>变速箱号</label><input id="edit-trans" /></div>
+      </div>
+      <div class="row">
+        <div class="field"><label>驱动</label><input id="edit-drive" placeholder="2WD / 4WD" /></div>
+        <div class="field"><label>里程</label><input id="edit-mileage" /></div>
+      </div>
+      <div class="field">
+        <label>库存状态</label>
+        <select id="edit-status">
+          <option value="Available">Available</option>
+          <option value="Reserved">Reserved</option>
+          <option value="In Transit">In Transit</option>
+          <option value="Sold">Sold</option>
+        </select>
+      </div>
+      <div class="field"><label>短描述</label><input id="edit-desc" /></div>
+      <div class="field"><label>备注</label><input id="edit-notes" /></div>
+      <button class="btn btn-primary btn-block" type="button" id="edit-save">保存详情</button>
+    </section>
+  </div>
+
+  <div class="toast" id="toast"></div>
+  <script src="/js/v4-portal-shell.js?v=auth-nav-once-v2"></script>
+  <script src="/js/supplier-dashboard.js"></script>
+  <script>window.AsiaPowerV4PortalShell?.mount('supplier');</script>
+</body>
+</html>

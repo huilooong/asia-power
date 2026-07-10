@@ -1,0 +1,12 @@
+{
+  "version": "1.0",
+  "notes": "Map WeCom group chat_id to supplier identity. Copy to config/wecom-group-suppliers.json — never commit secrets.",
+  "groups": {
+    "wrEXAMPLE001": {
+      "supplier_id": "supplier-demo-1",
+      "supplier_name": "示例汽配（南阳）",
+      "supplier_wechat": "wrEXAMPLE001",
+      "notes": "CEO: replace wrEXAMPLE001 with real ChatId from WeCom callback logs"
+    }
+  }
+}

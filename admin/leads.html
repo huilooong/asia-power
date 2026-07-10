@@ -1,18 +1,19 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="zh-CN">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="theme-color" content="#0a1628">
   <meta name="robots" content="noindex, nofollow">
-  <title>Lead Inbox | Admin | AsiaPower</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700;800&family=Inter:wght@400;500;600&display=swap" media="print" onload="this.media='all'">
-  <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700;800&family=Inter:wght@400;500;600&display=swap"></noscript>
-  <link rel="stylesheet" href="../css/styles.css?v=mobile-rtl-fix-v1">
+  <title>询价收件箱 | 管理后台 | AsiaPower</title>
+    <link rel="preload" href="../assets/fonts/barlow-condensed-800-latin.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href="../assets/fonts/inter-latin.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="stylesheet" href="../css/fonts.css?v=self-hosted-fonts-v1">
+<link rel="stylesheet" href="../css/styles.css?v=exw-badge-v1">
+<link rel="stylesheet" href="../css/admin-v4.css?v=admin-ia-reorg-v1">
   <link rel="icon" href="../assets/favicon.png" type="image/png">
 </head>
+<!-- Customer enquiries live here (NOT inventory.html). JS: js/admin-leads.js — run scripts/check-admin-js.sh before deploy. -->
 <body data-page="admin-leads">
 
   <div id="site-topbar"></div>
@@ -22,12 +23,13 @@
     <section class="page-hero page-hero--catalog">
       <div class="container">
         <div class="page-hero__breadcrumb">
-          <a href="../index.html">Home</a> /
-          <span>Admin</span> /
-          <span>Lead Inbox</span>
+          <a href="../index.html">官网</a> /
+          <span>管理后台</span> /
+          <span>询价</span>
         </div>
-        <h1>Lead Inbox<br><span class="page-hero__subtitle-zh">询价收件箱</span></h1>
-        <p>Contact form and half-cut enquiries saved on the server — even if WhatsApp Send was not tapped.</p>
+        <h1>询价收件箱</h1>
+        <p>网站表单与半切询价（即使未点 WhatsApp 发送也会落库）。</p>
+        <span class="admin-v4-badge">Admin · IA reorg</span>
       </div>
     </section>
 
@@ -40,9 +42,11 @@
 
   <div id="site-footer"></div>
 
-  <script src="../js/path-utils.js?v=i18n-v2"></script>
-  <script src="../js/config.js?v=nav-v4"></script>
-  <script src="../js/components.js?v=seo-v1" defer></script>
-  <script src="../js/admin-leads.js?v=leads-v6"></script>
+  <script src="../js/path-utils.js?v=search-mobile-v1"></script>
+  <script src="../js/config.js?v=contact-20260625"></script>
+  <script src="../js/admin-common.js?v=admin-google-v1"></script>
+  <script src="../js/components.js?v=auth-nav-once-v2" defer></script>
+  <script src="../js/lead-context.js?v=lead-context-v1"></script>
+  <script src="../js/admin-leads.js?v=admin-ia-reorg-v1"></script>
 </body>
 </html>

@@ -1,0 +1,17 @@
+[Unit]
+Description=APSales AI Runtime (24/7)
+After=network.target
+
+[Service]
+Type=simple
+WorkingDirectory=/root/.openclaw/workspace/AsiaPower
+ExecStart=/root/.openclaw/workspace/AsiaPower/.venv/bin/python3 -m apsales_runtime.service
+Restart=always
+RestartSec=10
+EnvironmentFile=-/root/.openclaw/workspace/AsiaPower/.env
+Environment=PYTHONUNBUFFERED=1
+MemoryMax=512M
+TasksMax=64
+
+[Install]
+WantedBy=multi-user.target

@@ -1,0 +1,285 @@
+.login-page { background: #f5f5f7; }
+.login-shell {
+  max-width: 520px;
+  margin: 28px auto 64px;
+  padding: 0 20px;
+}
+.login-card {
+  background: #fff;
+  border: 1px solid #e8e8ed;
+  border-radius: 18px;
+  padding: 28px 24px 22px;
+  box-shadow: 0 2px 12px rgba(0,0,0,.06);
+}
+.login-brand {
+  font-size: 20px;
+  font-weight: 800;
+  letter-spacing: -.4px;
+  margin-bottom: 8px;
+}
+.login-brand span { color: #d4880a; }
+.login-card h1 {
+  font-size: 26px;
+  letter-spacing: -.5px;
+  margin-bottom: 6px;
+}
+.login-lead {
+  color: #6e6e73;
+  font-size: 14px;
+  margin-bottom: 18px;
+}
+.oauth-banner {
+  background: #fff8e8;
+  border: 1px solid #f0d9a0;
+  color: #6b4e00;
+  font-size: 13px;
+  line-height: 1.45;
+  padding: 12px 14px;
+  border-radius: 12px;
+  margin-bottom: 16px;
+}
+.oauth-banner code {
+  background: #fff;
+  padding: 1px 6px;
+  border-radius: 6px;
+  font-size: 12px;
+}
+.session-panel {
+  background: #f0faf3;
+  border: 1px solid #b7e0c2;
+  border-radius: 12px;
+  padding: 14px;
+  margin-bottom: 16px;
+}
+.session-panel p { margin: 0 0 10px; font-size: 14px; color: #1d3b28; }
+.session-actions { display: flex; gap: 8px; flex-wrap: wrap; }
+.role-tabs {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 6px;
+  background: #f5f5f7;
+  padding: 4px;
+  border-radius: 999px;
+  margin-bottom: 18px;
+}
+.role-tab {
+  border: none;
+  background: transparent;
+  height: 40px;
+  border-radius: 999px;
+  font-size: 13px;
+  font-weight: 700;
+  color: #6e6e73;
+}
+.role-tab.on {
+  background: #1d1d1f;
+  color: #fff;
+}
+.role-pane { display: none; }
+.role-pane.on { display: block; }
+
+.oauth-stack { display: grid; gap: 10px; margin-bottom: 14px; }
+.btn-oauth {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  height: 46px;
+  border-radius: 12px;
+  border: 1px solid #d2d2d7;
+  background: #fff;
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+}
+.btn-oauth:hover { background: #fbfbfd; }
+.btn-google .oauth-icon {
+  width: 22px; height: 22px; border-radius: 50%;
+  display: inline-flex; align-items: center; justify-content: center;
+  background: #fff; border: 1px solid #dadce0; color: #4285f4; font-weight: 800;
+}
+.btn-facebook {
+  background: #1877f2;
+  border-color: #1877f2;
+  color: #fff;
+}
+.btn-facebook:hover { filter: brightness(.96); background: #1877f2; }
+.btn-facebook .oauth-icon {
+  width: 22px; height: 22px; border-radius: 50%;
+  display: inline-flex; align-items: center; justify-content: center;
+  background: rgba(255,255,255,.18); font-weight: 800;
+}
+
+.divider {
+  display: flex; align-items: center; gap: 12px;
+  color: #86868b; font-size: 12px; margin: 8px 0 14px;
+}
+.divider::before, .divider::after {
+  content: ''; flex: 1; height: 1px; background: #e8e8ed;
+}
+
+.supplier-mode-tabs,
+.buyer-mode-tabs {
+  display: flex; gap: 8px; margin-bottom: 14px; flex-wrap: wrap;
+}
+.mini-tab {
+  border: 1px solid #d2d2d7;
+  background: #fff;
+  border-radius: 999px;
+  padding: 7px 14px;
+  font-size: 12px;
+  font-weight: 700;
+  color: #6e6e73;
+}
+.mini-tab.on {
+  background: #1d1d1f;
+  border-color: #1d1d1f;
+  color: #fff;
+}
+
+.login-foot {
+  margin-top: 18px;
+  text-align: center;
+  font-size: 12px;
+  color: #86868b;
+}
+.login-foot a { color: #0066cc; text-decoration: none; }
+
+/* Nav login CTA */
+.ebay-header__actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-shrink: 0;
+  margin-left: 12px;
+}
+.ap-login-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  height: 36px;
+  padding: 0 16px;
+  border-radius: 999px;
+  background: #1d1d1f;
+  color: #fff !important;
+  font-size: 13px;
+  font-weight: 700;
+  text-decoration: none !important;
+  white-space: nowrap;
+}
+.ap-login-btn:hover { opacity: .9; color: #fff !important; }
+.ap-login-btn--ghost {
+  background: transparent;
+  color: #1d1d1f !important;
+  border: 1px solid #d2d2d7;
+}
+.ap-login-btn--account {
+  gap: 6px;
+  max-width: 180px;
+}
+.ap-auth-slot { display: inline-flex; align-items: center; position: relative; }
+.ap-account { position: relative; display: inline-flex; align-items: center; }
+.ap-account__toggle {
+  cursor: pointer;
+  border: none;
+  font: inherit;
+}
+.ap-account__toggle--portal {
+  background: transparent;
+  color: inherit;
+  font-size: 13px;
+  font-weight: 700;
+  padding: 4px 0;
+}
+.ap-account__name {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  max-width: 140px;
+}
+.ap-account__caret {
+  font-size: 10px;
+  opacity: .75;
+  line-height: 1;
+}
+.ap-account__menu {
+  position: absolute;
+  top: calc(100% + 6px);
+  right: 0;
+  min-width: 140px;
+  background: #fff;
+  border: 1px solid #e5e5ea;
+  border-radius: 10px;
+  box-shadow: 0 8px 24px rgba(0,0,0,.12);
+  padding: 6px;
+  z-index: 80;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+.ap-account__menu[hidden] { display: none !important; }
+.ap-account__menu a,
+.ap-account__menu button {
+  display: block;
+  width: 100%;
+  text-align: left;
+  padding: 8px 10px;
+  border: 0;
+  border-radius: 8px;
+  background: transparent;
+  color: #1d1d1f;
+  font-size: 13px;
+  font-weight: 600;
+  text-decoration: none;
+  cursor: pointer;
+}
+.ap-account__menu a:hover,
+.ap-account__menu button:hover {
+  background: #f5f5f7;
+}
+.ebay-toolbar__right {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.ebay-toolbar__login {
+  font-size: 12px;
+  font-weight: 700;
+  color: #1d1d1f;
+  text-decoration: none;
+}
+.ebay-toolbar__login:hover { text-decoration: underline; }
+
+.reg-intro {
+  font-size: 13px;
+  color: #6e6e73;
+  margin: 0 0 12px;
+  line-height: 1.45;
+}
+.reg-terms {
+  display: flex;
+  gap: 10px;
+  align-items: flex-start;
+  font-size: 12px;
+  color: #424245;
+  line-height: 1.45;
+  margin: 8px 0 14px;
+}
+.reg-terms input {
+  margin-top: 3px;
+  flex-shrink: 0;
+}
+.reg-terms span[lang="zh-CN"] {
+  display: block;
+  color: #6e6e73;
+  margin-top: 2px;
+}
+#reg-submit:disabled {
+  opacity: .6;
+  cursor: not-allowed;
+}
+
+@media (max-width: 720px) {
+  .ebay-header__actions { margin-left: 0; }
+  .ap-login-btn { height: 34px; padding: 0 12px; font-size: 12px; }
+}

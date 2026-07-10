@@ -1,0 +1,402 @@
+[
+  {
+    "stockId": "QXB0002",
+    "vin": "LJDDAA120A0043127",
+    "decodeMethod": "QXB OCR",
+    "decodeConfidence": "very_high:gray:rot0",
+    "vehicleCondition": "Half Cut",
+    "vehicleCategory": "passenger",
+    "truckPartType": "",
+    "machineryType": "",
+    "brand": "Kia",
+    "brandSlug": "kia",
+    "model": "赛拉图",
+    "year": 2008,
+    "engineCode": "",
+    "transmissionCode": "",
+    "drivetrain": "2WD",
+    "mileage": "99,999 km",
+    "priceUsd": null,
+    "origin": "China",
+    "status": "Available",
+    "title": "Kia 赛拉图 Half Cut",
+    "slug": "kia-2008-half-cut-qxb0002",
+    "photos": [
+      {
+        "label": "Front view",
+        "url": "data/qxb-photos/row-0002_起亚_起亚 赛拉图 2008款 欧风 1.6 MT GL/01_32d7056133.jpg",
+        "fileName": "01_32d7056133.jpg",
+        "mimeType": "image/jpeg",
+        "size": 386632
+      },
+      {
+        "label": "Rear view",
+        "url": "data/qxb-photos/row-0002_起亚_起亚 赛拉图 2008款 欧风 1.6 MT GL/02_769c841a1e.jpg",
+        "fileName": "02_769c841a1e.jpg",
+        "mimeType": "image/jpeg",
+        "size": 366189
+      },
+      {
+        "label": "Engine bay",
+        "url": "data/qxb-photos/row-0002_起亚_起亚 赛拉图 2008款 欧风 1.6 MT GL/03_f6bc7dfe5d.jpg",
+        "fileName": "03_f6bc7dfe5d.jpg",
+        "mimeType": "image/jpeg",
+        "size": 366859
+      },
+      {
+        "label": "Interior",
+        "url": "data/qxb-photos/row-0002_起亚_起亚 赛拉图 2008款 欧风 1.6 MT GL/04_1d875b4162.jpg",
+        "fileName": "04_1d875b4162.jpg",
+        "mimeType": "image/jpeg",
+        "size": 375734
+      },
+      {
+        "label": "VIN / chassis plate",
+        "url": "data/qxb-photos/row-0002_起亚_起亚 赛拉图 2008款 欧风 1.6 MT GL/16_e5007b2d77.jpg",
+        "fileName": "16_e5007b2d77.jpg",
+        "mimeType": "image/jpeg",
+        "size": 300125
+      }
+    ],
+    "video": null,
+    "videoUrl": "",
+    "includedParts": [
+      "Engine & gearbox assembly",
+      "Front clip"
+    ],
+    "shortDescription": "2008 Kia 赛拉图 — QXB sourced listing via AsiaPower.",
+    "supplierVerified": true,
+    "supplierName": "汽修宝",
+    "supplierPhone": "16638801930",
+    "supplierCity": "",
+    "submissionId": "QXB-0002",
+    "approvedAt": "2026-06-29T19:00:06Z",
+    "notes": "汽修宝批量导入。\n里程数为系统默认 99,999 km，仅为占位，不代表真实里程。\n原始车型: 起亚 赛拉图 2008款 欧风 1.6 MT GL\n原始说明: 起亚 赛拉图 2008款 欧风\nVIN OCR confidence: very_high:gray:rot0",
+    "qxb": {
+      "row": 2,
+      "brandCn": "起亚",
+      "modelKey": "赛拉图",
+      "description": "起亚 赛拉图 2008款 欧风"
+    }
+  },
+  {
+    "stockId": "QXB0003",
+    "vin": "LJDEAA294B0158251",
+    "decodeMethod": "QXB OCR",
+    "decodeConfidence": "very_high:gray:rot0",
+    "vehicleCondition": "Half Cut",
+    "vehicleCategory": "passenger",
+    "truckPartType": "",
+    "machineryType": "",
+    "brand": "Kia",
+    "brandSlug": "kia",
+    "model": "Rio",
+    "year": 2007,
+    "engineCode": "",
+    "transmissionCode": "",
+    "drivetrain": "2WD",
+    "mileage": "99,999 km",
+    "priceUsd": null,
+    "origin": "China",
+    "status": "Available",
+    "title": "Kia Rio Half Cut",
+    "slug": "kia-rio-2007-half-cut-qxb0003",
+    "photos": [
+      {
+        "label": "Front view",
+        "url": "data/qxb-photos/row-0003_起亚_起亚 锐欧 2007款 1.4L MT GL/01_c1244b65ac.jpg",
+        "fileName": "01_c1244b65ac.jpg",
+        "mimeType": "image/jpeg",
+        "size": 390961
+      },
+      {
+        "label": "Rear view",
+        "url": "data/qxb-photos/row-0003_起亚_起亚 锐欧 2007款 1.4L MT GL/02_a687108efa.jpg",
+        "fileName": "02_a687108efa.jpg",
+        "mimeType": "image/jpeg",
+        "size": 352213
+      },
+      {
+        "label": "Engine bay",
+        "url": "data/qxb-photos/row-0003_起亚_起亚 锐欧 2007款 1.4L MT GL/03_f8632f51ed.jpg",
+        "fileName": "03_f8632f51ed.jpg",
+        "mimeType": "image/jpeg",
+        "size": 356915
+      },
+      {
+        "label": "Interior",
+        "url": "data/qxb-photos/row-0003_起亚_起亚 锐欧 2007款 1.4L MT GL/04_205adb6f4f.jpg",
+        "fileName": "04_205adb6f4f.jpg",
+        "mimeType": "image/jpeg",
+        "size": 364965
+      },
+      {
+        "label": "VIN / chassis plate",
+        "url": "data/qxb-photos/row-0003_起亚_起亚 锐欧 2007款 1.4L MT GL/16_fbcb814ac6.jpg",
+        "fileName": "16_fbcb814ac6.jpg",
+        "mimeType": "image/jpeg",
+        "size": 262113
+      }
+    ],
+    "video": null,
+    "videoUrl": "",
+    "includedParts": [
+      "Engine & gearbox assembly",
+      "Front clip"
+    ],
+    "shortDescription": "2007 Kia Rio — QXB sourced listing via AsiaPower.",
+    "supplierVerified": true,
+    "supplierName": "汽修宝",
+    "supplierPhone": "16638801930",
+    "supplierCity": "",
+    "submissionId": "QXB-0003",
+    "approvedAt": "2026-06-29T19:00:06Z",
+    "notes": "汽修宝批量导入。\n里程数为系统默认 99,999 km，仅为占位，不代表真实里程。\n原始车型: 起亚 锐欧 2007款 1.4L MT GL\n原始说明: 起亚 锐欧 2007款 1.4L\nVIN OCR confidence: very_high:gray:rot0",
+    "qxb": {
+      "row": 3,
+      "brandCn": "起亚",
+      "modelKey": "锐欧",
+      "description": "起亚 锐欧 2007款 1.4L"
+    }
+  },
+  {
+    "stockId": "QXB0004",
+    "vin": "LJDLAA225B0053583",
+    "decodeMethod": "QXB OCR",
+    "decodeConfidence": "very_high:gray:rot0",
+    "vehicleCondition": "Half Cut",
+    "vehicleCategory": "passenger",
+    "truckPartType": "",
+    "machineryType": "",
+    "brand": "Kia",
+    "brandSlug": "kia",
+    "model": "K2",
+    "year": 2011,
+    "engineCode": "",
+    "transmissionCode": "",
+    "drivetrain": "2WD",
+    "mileage": "99,999 km",
+    "priceUsd": null,
+    "origin": "China",
+    "status": "Available",
+    "title": "Kia K2 Half Cut",
+    "slug": "kia-k2-2011-half-cut-qxb0004",
+    "photos": [
+      {
+        "label": "Front view",
+        "url": "data/qxb-photos/row-0004_起亚_起亚 起亚K2 2011款 三厢 1.6L AT Premium/01_4f48860154.jpg",
+        "fileName": "01_4f48860154.jpg",
+        "mimeType": "image/jpeg",
+        "size": 161361
+      },
+      {
+        "label": "Rear view",
+        "url": "data/qxb-photos/row-0004_起亚_起亚 起亚K2 2011款 三厢 1.6L AT Premium/02_aac1f1241c.jpg",
+        "fileName": "02_aac1f1241c.jpg",
+        "mimeType": "image/jpeg",
+        "size": 161880
+      },
+      {
+        "label": "Engine bay",
+        "url": "data/qxb-photos/row-0004_起亚_起亚 起亚K2 2011款 三厢 1.6L AT Premium/03_3e4a1ad82c.jpg",
+        "fileName": "03_3e4a1ad82c.jpg",
+        "mimeType": "image/jpeg",
+        "size": 167231
+      },
+      {
+        "label": "Interior",
+        "url": "data/qxb-photos/row-0004_起亚_起亚 起亚K2 2011款 三厢 1.6L AT Premium/04_df1a382e9c.jpg",
+        "fileName": "04_df1a382e9c.jpg",
+        "mimeType": "image/jpeg",
+        "size": 165998
+      },
+      {
+        "label": "VIN / chassis plate",
+        "url": "data/qxb-photos/row-0004_起亚_起亚 起亚K2 2011款 三厢 1.6L AT Premium/17_edef30cd8b.jpg",
+        "fileName": "17_edef30cd8b.jpg",
+        "mimeType": "image/jpeg",
+        "size": 100928
+      }
+    ],
+    "video": null,
+    "videoUrl": "",
+    "includedParts": [
+      "Engine & gearbox assembly",
+      "Front clip"
+    ],
+    "shortDescription": "2011 Kia K2 — QXB sourced listing via AsiaPower.",
+    "supplierVerified": true,
+    "supplierName": "汽修宝",
+    "supplierPhone": "16638801930",
+    "supplierCity": "",
+    "submissionId": "QXB-0004",
+    "approvedAt": "2026-06-29T19:00:06Z",
+    "notes": "汽修宝批量导入。\n里程数为系统默认 99,999 km，仅为占位，不代表真实里程。\n原始车型: 起亚 起亚K2 2011款 三厢 1.6L AT Premium\n原始说明: 起亚 K2 2011款\nVIN OCR confidence: very_high:gray:rot0",
+    "qxb": {
+      "row": 4,
+      "brandCn": "起亚",
+      "modelKey": "K2",
+      "description": "起亚 K2 2011款"
+    }
+  },
+  {
+    "stockId": "QXB0005",
+    "vin": "",
+    "decodeMethod": "Manual Entry",
+    "decodeConfidence": null,
+    "vehicleCondition": "Half Cut",
+    "vehicleCategory": "passenger",
+    "truckPartType": "",
+    "machineryType": "",
+    "brand": "Toyota",
+    "brandSlug": "toyota",
+    "model": "凯美瑞",
+    "year": 2009,
+    "engineCode": "",
+    "transmissionCode": "",
+    "drivetrain": "2WD",
+    "mileage": "99,999 km",
+    "priceUsd": null,
+    "origin": "China",
+    "status": "Available",
+    "title": "Toyota 凯美瑞 Half Cut",
+    "slug": "toyota-2009-half-cut-qxb0005",
+    "photos": [
+      {
+        "label": "Front view",
+        "url": "data/qxb-photos/row-0005_丰田_丰田 凯美瑞 2009款 200G 豪华版/01_bb9776e2a6.jpg",
+        "fileName": "01_bb9776e2a6.jpg",
+        "mimeType": "image/jpeg",
+        "size": 144888
+      },
+      {
+        "label": "Rear view",
+        "url": "data/qxb-photos/row-0005_丰田_丰田 凯美瑞 2009款 200G 豪华版/02_52aa07fb14.jpg",
+        "fileName": "02_52aa07fb14.jpg",
+        "mimeType": "image/jpeg",
+        "size": 143755
+      },
+      {
+        "label": "Engine bay",
+        "url": "data/qxb-photos/row-0005_丰田_丰田 凯美瑞 2009款 200G 豪华版/03_a17f26e4b9.jpg",
+        "fileName": "03_a17f26e4b9.jpg",
+        "mimeType": "image/jpeg",
+        "size": 157268
+      },
+      {
+        "label": "Interior",
+        "url": "data/qxb-photos/row-0005_丰田_丰田 凯美瑞 2009款 200G 豪华版/04_98f0f84f22.jpg",
+        "fileName": "04_98f0f84f22.jpg",
+        "mimeType": "image/jpeg",
+        "size": 142622
+      },
+      {
+        "label": "Interior",
+        "url": "data/qxb-photos/row-0005_丰田_丰田 凯美瑞 2009款 200G 豪华版/05_0da54ea7ad.jpg",
+        "fileName": "05_0da54ea7ad.jpg",
+        "mimeType": "image/jpeg",
+        "size": 139927
+      }
+    ],
+    "video": null,
+    "videoUrl": "",
+    "includedParts": [
+      "Engine & gearbox assembly",
+      "Front clip"
+    ],
+    "shortDescription": "2009 Toyota 凯美瑞 — QXB sourced listing via AsiaPower.",
+    "supplierVerified": true,
+    "supplierName": "汽修宝",
+    "supplierPhone": "16638801930",
+    "supplierCity": "",
+    "submissionId": "QXB-0005",
+    "approvedAt": "2026-06-29T19:00:06Z",
+    "notes": "汽修宝批量导入。\n里程数为系统默认 99,999 km，仅为占位，不代表真实里程。\n原始车型: 丰田 凯美瑞 2009款 200G 豪华版\n原始说明: 丰田凯美瑞  09年",
+    "qxb": {
+      "row": 5,
+      "brandCn": "丰田",
+      "modelKey": "凯美瑞",
+      "description": "丰田凯美瑞  09年"
+    }
+  },
+  {
+    "stockId": "QXB0006",
+    "vin": "KMHHN61F64U123418",
+    "decodeMethod": "QXB OCR",
+    "decodeConfidence": "very_high:gray:rot0",
+    "vehicleCondition": "Half Cut",
+    "vehicleCategory": "passenger",
+    "truckPartType": "",
+    "machineryType": "",
+    "brand": "Hyundai",
+    "brandSlug": "hyundai",
+    "model": "Tiburon",
+    "year": 2004,
+    "engineCode": "",
+    "transmissionCode": "",
+    "drivetrain": "2WD",
+    "mileage": "99,999 km",
+    "priceUsd": null,
+    "origin": "China",
+    "status": "Available",
+    "title": "Hyundai Tiburon Half Cut",
+    "slug": "hyundai-tiburon-2004-half-cut-qxb0006",
+    "photos": [
+      {
+        "label": "Front view",
+        "url": "data/qxb-photos/row-0006_现代_现代 酷派 2004款 FX 2.7/01_b80ba184a9.jpg",
+        "fileName": "01_b80ba184a9.jpg",
+        "mimeType": "image/jpeg",
+        "size": 190719
+      },
+      {
+        "label": "Rear view",
+        "url": "data/qxb-photos/row-0006_现代_现代 酷派 2004款 FX 2.7/02_3ab13ed6fb.jpg",
+        "fileName": "02_3ab13ed6fb.jpg",
+        "mimeType": "image/jpeg",
+        "size": 168176
+      },
+      {
+        "label": "Engine bay",
+        "url": "data/qxb-photos/row-0006_现代_现代 酷派 2004款 FX 2.7/03_1993bb82ee.jpg",
+        "fileName": "03_1993bb82ee.jpg",
+        "mimeType": "image/jpeg",
+        "size": 181219
+      },
+      {
+        "label": "Interior",
+        "url": "data/qxb-photos/row-0006_现代_现代 酷派 2004款 FX 2.7/04_759e41d9ef.jpg",
+        "fileName": "04_759e41d9ef.jpg",
+        "mimeType": "image/jpeg",
+        "size": 174499
+      },
+      {
+        "label": "VIN / chassis plate",
+        "url": "data/qxb-photos/row-0006_现代_现代 酷派 2004款 FX 2.7/17_4215f4c59d.jpg",
+        "fileName": "17_4215f4c59d.jpg",
+        "mimeType": "image/jpeg",
+        "size": 82791
+      }
+    ],
+    "video": null,
+    "videoUrl": "",
+    "includedParts": [
+      "Engine & gearbox assembly",
+      "Front clip"
+    ],
+    "shortDescription": "2004 Hyundai Tiburon — QXB sourced listing via AsiaPower.",
+    "supplierVerified": true,
+    "supplierName": "汽修宝",
+    "supplierPhone": "16638801930",
+    "supplierCity": "",
+    "submissionId": "QXB-0006",
+    "approvedAt": "2026-06-29T19:00:06Z",
+    "notes": "汽修宝批量导入。\n里程数为系统默认 99,999 km，仅为占位，不代表真实里程。\n原始车型: 现代 酷派 2004款 FX 2.7\n原始说明: 现代 酷派 2004款\nVIN OCR confidence: very_high:gray:rot0",
+    "qxb": {
+      "row": 6,
+      "brandCn": "现代",
+      "modelKey": "酷派",
+      "description": "现代 酷派 2004款"
+    }
+  }
+]

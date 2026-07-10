@@ -135,11 +135,19 @@
   function shouldFallbackToServer(err) {
     if (uploadConfig.serverFallback === false) return false;
     const msg = String(err?.message || err || '').toLowerCase();
-    return /direct upload|failed to fetch|network error|storage failed|cors|load failed/i.test(msg);
+    return /direct upload|failed to fetch|network error|storage failed|cors|load failed|parse url|invalid url|null/i.test(msg);
+  }
+
+  function resolveUploadMime(file, kind) {
+    if (kind === 'video') {
+      return window.HalfCutUploadLayer?.resolveVideoMime?.(file) || file.type || 'video/mp4';
+    }
+    return file.type || 'image/jpeg';
   }
 
   async function uploadViaR2(file, kind, label) {
     const token = await ensureUploadToken();
+    const mimeType = resolveUploadMime(file, kind);
     const presignRes = await fetch(apiUrl('/api/half-cuts/upload/presign'), {
       method: 'POST',
       headers: {
@@ -149,7 +157,7 @@
       },
       body: JSON.stringify({
         kind,
-        mimeType: file.type || 'application/octet-stream',
+        mimeType,
         filename: file.name,
         size: file.size,
         label,
@@ -159,7 +167,7 @@
     if (!presignRes.ok) throw new Error(presign.error || 'Upload presign failed');
     const putRes = await fetch(presign.uploadUrl, {
       method: 'PUT',
-      headers: { 'Content-Type': presign.mimeType || file.type || 'application/octet-stream' },
+      headers: { 'Content-Type': presign.mimeType || mimeType },
       body: file,
     });
     if (!putRes.ok) throw new Error('Direct upload to storage failed');
@@ -261,6 +269,32 @@
     return data;
   }
 
+  async function approveSubmission(submissionId, payload) {
+    requireServer();
+    const res = await fetch(apiUrl(`/api/half-cuts/submissions/${encodeURIComponent(submissionId)}/approve`), {
+      method: 'POST',
+      credentials: 'include',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload || {}),
+    });
+    const data = await res.json().catch(() => ({}));
+    if (!res.ok) throw new Error(data.error || 'Failed to approve submission');
+    return data;
+  }
+
+  async function rejectSubmission(submissionId, payload) {
+    requireServer();
+    const res = await fetch(apiUrl(`/api/half-cuts/submissions/${encodeURIComponent(submissionId)}/reject`), {
+      method: 'POST',
+      credentials: 'include',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload || {}),
+    });
+    const data = await res.json().catch(() => ({}));
+    if (!res.ok) throw new Error(data.error || 'Failed to reject submission');
+    return data;
+  }
+
   async function postSubmission(submission) {
     requireServer();
     for (let attempt = 0; attempt < 2; attempt += 1) {
@@ -308,6 +342,8 @@
     fetchPublic,
     fetchState,
     saveState,
+    approveSubmission,
+    rejectSubmission,
     patchInventory,
     postSubmission,
     ensureUploadToken,

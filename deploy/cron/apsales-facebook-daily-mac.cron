@@ -1,0 +1,12 @@
+# 子敬 · Facebook aggressive 小组引流（Mac 本地 · gooddlong 已登录）
+# 每 45 分钟一轮 · 循环至日上限或 2h · 遇 FB 限流自动停
+# 安装 Mac cron: crontab -e 粘贴下面一行
+#
+# 日上限: 入组 18 · 问候 25 · 评论 15 · 私信 25 · 时间线 0
+# CEO 无需手动关 Chrome — 子敬自动管锁
+
+SHELL=/bin/bash
+PATH=/usr/local/bin:/opt/homebrew/bin:/usr/bin:/bin
+
+# 每 45 分钟 — 模式感知入口（限流→Maps · 正常→FB+X）
+*/45 * * * * cd /Users/longhui/Desktop/AsiaPower && APSALES_SOCIAL_BROWSER_HEADLESS=0 APSALES_SOCIAL_ENGAGEMENT=1 /Users/longhui/Desktop/AsiaPower/.venv/bin/python3 scripts/apsales-zijing-run.py >> /Users/longhui/Desktop/AsiaPower/reports/zijing-run.log 2>&1

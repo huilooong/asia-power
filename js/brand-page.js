@@ -73,7 +73,7 @@
               <p class="brand-overview__text">${brand.overview}</p>
               <ul class="brand-overview__points">
                 <li>${t('brand.point1', 'Engines, gearboxes, chassis parts and half-cuts')}</li>
-                <li>${t('brand.point2', 'FOB and CIF export to global destinations')}</li>
+                <li>${t('brand.point2', 'EXW and CIF export to global destinations')}</li>
                 <li>${t('brand.point3', 'Inspection documentation on request')}</li>
                 <li>${t('brand.point4', 'Availability depends on supplier network and current stock')}</li>
               </ul>
@@ -147,7 +147,6 @@
           <div class="brand-detail-section__header">
             <span class="section-eyebrow">${t('brand.categoriesEyebrow', 'Product Lines')}</span>
             <h2>${t('brand.categoriesTitle', 'Available Product Categories')}</h2>
-            <p>${t('brand.categoriesLeadStart', 'Four sourcing categories for')} ${brand.name} — ${t('brand.categoriesLeadEnd', 'select a product line to request FOB/CIF pricing.')}</p>
           </div>
           <div class="brand-category-grid">${cards}</div>
         </div>
@@ -200,7 +199,6 @@
           <div class="brand-detail-section__header">
             <span class="section-eyebrow">${t('brand.halfCutEyebrow', 'Half-Cut Inventory')}</span>
             <h2>${brand.name} ${t('brand.gearboxesTitle', 'Gearboxes')}</h2>
-            <p>${t('brand.inventoryGearboxLead', 'Transmission units referenced from approved half-cut inventory — named by model year when no factory code is listed.')}</p>
           </div>
           <div class="brand-engine-grid">${cards}</div>
         </div>
@@ -222,7 +220,6 @@
           <div class="brand-detail-section__header">
             <span class="section-eyebrow">${t('brand.halfCutEyebrow', 'Half-Cut Inventory')}</span>
             <h2>${brand.name} ${t('brand.chassisTitle', 'Chassis Parts')}</h2>
-            <p>${t('brand.inventoryChassisLead', 'Full chassis sets referenced from approved half-cut inventory — listed by model year and vehicle name.')}</p>
           </div>
           <div class="brand-engine-grid">${cards}</div>
         </div>
@@ -245,18 +242,18 @@
       </section>`;
     }
 
-    const cards = items.map(item => window.renderHalfCutCard?.(item) || '').join('');
-    const disclaimer = window.HalfCutUtils?.INVENTORY_DISCLAIMER || '';
+    const feedOpts = { base: base() };
+    const feed = window.HalfCutUtils?.renderCatalogFeed?.(items, feedOpts)
+      || window.HalfCutUtils?.renderInventoryFeed?.(items, feedOpts)
+      || items.map((item) => window.renderHalfCutCard?.(item) || '').join('');
     return `
-      <section class="brand-detail-section brand-detail-section--alt" id="halfcuts-inventory">
+      <section class="brand-detail-section brand-detail-section--alt" id="halfcuts-inventory" data-brand-halfcut-list data-brand-slug="${brand.slug}">
         <div class="container">
           <div class="brand-detail-section__header">
             <span class="section-eyebrow">${t('brand.halfCutEyebrow', 'Half-Cut Inventory')}</span>
             <h2>${brand.name} ${t('brand.halfCutListings', 'Half-Cut Listings')}</h2>
-            <p>${brand.name} — ${t('brand.halfCutLead', 'Reference listings for half-cut export — availability is confirmed on enquiry before quotation.')}</p>
-            <p class="half-cut-disclaimer">${window.PublicI18n?.inventoryDisclaimer?.() || disclaimer}</p>
           </div>
-          <div class="half-cut-grid brand-halfcut-grid engine-catalog__grid">${cards}</div>
+          <div class="brand-halfcut-list">${feed}</div>
           <p class="brand-halfcut-more"><a href="${base()}half-cuts/">${t('brand.viewAllHalfCuts', 'View all half-cut inventory →')}</a></p>
         </div>
       </section>`;
@@ -272,7 +269,6 @@
           <div class="brand-detail-section__header">
             <span class="section-eyebrow">${t('brand.engineCatalogEyebrow', 'Engine Catalog')}</span>
             <h2>${brand.name} ${t('brand.popularEnginesTitle', 'Popular Engine Models')}</h2>
-            <p>${t('brand.popularEnginesLead', 'Commonly requested engine codes for global export. All units are available on request — send your code for FOB/CIF quotation.')}</p>
           </div>
           <div class="brand-engine-grid">${cards}</div>
         </div>
@@ -286,7 +282,7 @@
           <div class="brand-quote-block__text">
             <span class="section-eyebrow">${t('brand.quoteEyebrow', 'Get Started')}</span>
             <h2>${t('brand.quoteTitle', 'Request a Sourcing Quote')}</h2>
-            <p>${t('brand.quoteLead', 'Send your engine code, VIN, vehicle model or container requirements. Our sourcing team responds within 24 hours with FOB/CIF pricing.')}</p>
+            <p>${t('brand.quoteLead', 'Send your engine code, VIN, vehicle model or container requirements. Our sourcing team responds within 24 hours with EXW/CIF pricing.')}</p>
           </div>
           <div class="brand-quote-block__actions">
             <a href="${quoteUrl(brand.slug)}" class="btn btn-accent">${t('brand.requestQuote', 'Request Quote')}</a>
@@ -390,6 +386,14 @@
       ${renderQuoteSection(brand)}`;
 
     initBrandDetailNav();
+
+    const halfcutSection = document.getElementById('halfcuts-inventory');
+    const halfcutItems = window.getHalfCutsByBrandSlug?.(brand.slug) || [];
+    if (halfcutSection && halfcutItems.length) {
+      const feedOpts = { base: base() };
+      window.HalfCutUtils?.bindCatalogLoadMore?.(halfcutSection, halfcutItems, feedOpts);
+      window.HalfCutGalleryLightbox?.bindListingPhotoCarousels?.(halfcutSection);
+    }
   }
 
   function initBrandDetailNav() {

@@ -1,0 +1,889 @@
+{
+  "nissan": {
+    "玛驰": {
+      "chinese": "玛驰",
+      "english": null,
+      "source": "qxb_auto_decode",
+      "learnedAt": "2026-06-29T06:50:14.466Z",
+      "years": [
+        "2010"
+      ],
+      "body": "5门5座两厢车",
+      "level": "小型车"
+    },
+    "天籁": {
+      "chinese": "天籁",
+      "english": null,
+      "source": "qxb_auto_decode",
+      "learnedAt": "2026-06-29T06:50:14.466Z",
+      "years": [
+        "2011"
+      ],
+      "body": "4门5座三厢车",
+      "level": "中型车"
+    },
+    "轩逸": {
+      "chinese": "轩逸",
+      "english": "Sylphy",
+      "source": "manual_seed",
+      "learnedAt": "2026-06-28T00:25:11.605Z"
+    },
+    "骐达": {
+      "chinese": "骐达",
+      "english": "Tiida",
+      "source": "manual_seed",
+      "learnedAt": "2026-06-28T00:25:11.605Z"
+    },
+    "逍客": {
+      "chinese": "逍客",
+      "english": "Qashqai",
+      "source": "manual_seed",
+      "learnedAt": "2026-06-28T00:25:11.606Z"
+    },
+    "楼兰": {
+      "chinese": "楼兰",
+      "english": "Murano",
+      "source": "manual_seed",
+      "learnedAt": "2026-06-28T00:25:11.606Z"
+    },
+    "途达": {
+      "chinese": "途达",
+      "english": "Terra",
+      "source": "manual_seed",
+      "learnedAt": "2026-06-28T00:25:11.606Z"
+    },
+    "阳光": {
+      "chinese": "阳光",
+      "english": "Sunny",
+      "source": "manual_seed",
+      "learnedAt": "2026-06-28T00:25:11.607Z"
+    },
+    "西玛": {
+      "chinese": "西玛",
+      "english": "Cefiro",
+      "source": "manual_seed",
+      "learnedAt": "2026-06-28T00:25:11.607Z"
+    },
+    "奇骏": {
+      "chinese": "奇骏",
+      "english": "X-Trail",
+      "source": "manual_seed",
+      "learnedAt": "2026-06-28T00:25:11.607Z"
+    },
+    "骊威": {
+      "chinese": "骊威",
+      "english": "Livina",
+      "source": "manual_seed",
+      "learnedAt": "2026-06-28T00:25:11.607Z"
+    },
+    "途乐": {
+      "chinese": "途乐",
+      "english": null,
+      "years": [
+        "2004"
+      ],
+      "body": "5门7座SUV",
+      "level": "大型SUV",
+      "source": "qxb_auto_decode",
+      "learnedAt": "2026-06-29T06:50:14.467Z"
+    }
+  },
+  "toyota": {
+    "卡罗拉": {
+      "chinese": "卡罗拉",
+      "english": null,
+      "source": "qxb_auto_decode",
+      "learnedAt": "2026-06-29T06:50:14.469Z",
+      "years": [
+        "2012"
+      ],
+      "body": "4门5座三厢车",
+      "level": "紧凑型车"
+    },
+    "威驰": {
+      "chinese": "威驰",
+      "english": "Vios",
+      "source": "manual_seed",
+      "learnedAt": "2026-06-28T00:25:11.608Z"
+    },
+    "雅力士": {
+      "chinese": "雅力士",
+      "english": "Yaris",
+      "source": "manual_seed",
+      "learnedAt": "2026-06-28T00:25:11.609Z"
+    },
+    "汉兰达": {
+      "chinese": "汉兰达",
+      "english": "Highlander",
+      "source": "manual_seed",
+      "learnedAt": "2026-06-28T00:25:11.609Z"
+    },
+    "普拉多": {
+      "chinese": "普拉多",
+      "english": null,
+      "source": "qxb_auto_decode",
+      "learnedAt": "2026-06-29T06:50:14.470Z",
+      "years": [
+        "2004"
+      ],
+      "body": "5门8座SUV",
+      "level": "中大型SUV"
+    },
+    "塞纳": {
+      "chinese": "塞纳",
+      "english": "Sienna",
+      "source": "manual_seed",
+      "learnedAt": "2026-06-28T00:25:11.609Z"
+    },
+    "海狮": {
+      "chinese": "海狮",
+      "english": "Hiace",
+      "source": "manual_seed",
+      "learnedAt": "2026-06-28T00:25:11.610Z"
+    },
+    "海拉克斯": {
+      "chinese": "海拉克斯",
+      "english": "Hilux",
+      "source": "manual_seed",
+      "learnedAt": "2026-06-28T00:25:11.610Z"
+    },
+    "陆地巡洋舰": {
+      "chinese": "陆地巡洋舰",
+      "english": "Land Cruiser",
+      "source": "manual_seed",
+      "learnedAt": "2026-06-28T00:25:11.610Z"
+    },
+    "凯美瑞": {
+      "chinese": "凯美瑞",
+      "english": null,
+      "source": "qxb_auto_decode",
+      "learnedAt": "2026-06-29T06:50:14.469Z",
+      "years": [
+        "2007",
+        "2009",
+        "2011"
+      ],
+      "body": "4门5座三厢车",
+      "level": "中型车"
+    },
+    "普拉多(进口)": {
+      "chinese": "普拉多(进口)",
+      "english": null,
+      "years": [
+        "2003",
+        "2004"
+      ],
+      "body": "5门8座SUV",
+      "level": "中大型SUV",
+      "source": "qxb_auto_decode",
+      "learnedAt": "2026-06-29T06:50:14.470Z"
+    }
+  },
+  "honda": {
+    "雅阁": {
+      "chinese": "雅阁",
+      "english": null,
+      "source": "qxb_auto_decode",
+      "learnedAt": "2026-06-29T06:50:14.479Z",
+      "years": [
+        "2006",
+        "2008"
+      ],
+      "body": "4门5座三厢车",
+      "level": "中型车"
+    },
+    "思域": {
+      "chinese": "思域",
+      "english": "Civic",
+      "source": "manual_seed",
+      "learnedAt": "2026-06-28T00:25:11.611Z"
+    },
+    "飞度": {
+      "chinese": "飞度",
+      "english": "Fit",
+      "source": "manual_seed",
+      "learnedAt": "2026-06-28T00:25:11.611Z"
+    },
+    "缤智": {
+      "chinese": "缤智",
+      "english": "HR-V",
+      "source": "manual_seed",
+      "learnedAt": "2026-06-28T00:25:11.611Z"
+    },
+    "凌派": {
+      "chinese": "凌派",
+      "english": "Crider",
+      "source": "manual_seed",
+      "learnedAt": "2026-06-28T00:25:11.612Z"
+    },
+    "本田CR-V": {
+      "chinese": "本田CR-V",
+      "english": "CR-V",
+      "source": "manual_seed",
+      "learnedAt": "2026-06-28T00:25:11.612Z"
+    }
+  },
+  "hyundai": {
+    "途胜": {
+      "chinese": "途胜",
+      "english": null,
+      "source": "qxb_auto_decode",
+      "learnedAt": "2026-06-29T06:50:14.471Z",
+      "years": [
+        "2007"
+      ],
+      "body": "5门5座SUV",
+      "level": "SUV"
+    },
+    "胜达": {
+      "chinese": "胜达",
+      "english": null,
+      "source": "qxb_auto_decode",
+      "learnedAt": "2026-06-29T06:50:14.472Z",
+      "years": [
+        "2017"
+      ],
+      "body": "5门7座SUV",
+      "level": "中型SUV"
+    },
+    "伊兰特": {
+      "chinese": "伊兰特",
+      "english": null,
+      "source": "qxb_auto_decode",
+      "learnedAt": "2026-06-29T06:50:14.471Z",
+      "years": [
+        "2008"
+      ],
+      "body": "4门5座三厢车",
+      "level": "紧凑型车"
+    },
+    "索纳塔": {
+      "chinese": "索纳塔",
+      "english": null,
+      "source": "qxb_auto_decode",
+      "learnedAt": "2026-06-29T06:50:14.470Z",
+      "years": [
+        "2003"
+      ],
+      "body": "4门5座三厢",
+      "level": "轿车"
+    },
+    "胜达经典": {
+      "chinese": "胜达经典",
+      "english": null,
+      "source": "qxb_auto_decode",
+      "learnedAt": "2026-06-29T06:50:14.472Z",
+      "years": [
+        "2011"
+      ],
+      "body": "5门7座SUV",
+      "level": "SUV"
+    },
+    "御翔": {
+      "chinese": "御翔",
+      "english": null,
+      "source": "qxb_auto_decode",
+      "learnedAt": "2026-06-29T06:50:14.472Z",
+      "years": [
+        "2006"
+      ],
+      "body": "4门5座三厢车",
+      "level": "中型车"
+    },
+    "领翔": {
+      "chinese": "领翔",
+      "english": null,
+      "source": "qxb_auto_decode",
+      "learnedAt": "2026-06-29T06:50:14.473Z",
+      "years": [
+        "2009"
+      ],
+      "body": "4门5座三厢车",
+      "level": "中型车"
+    },
+    "悦动": {
+      "chinese": "悦动",
+      "english": null,
+      "years": [
+        "2008"
+      ],
+      "body": "4门5座三厢车",
+      "level": "紧凑型车",
+      "source": "qxb_auto_decode",
+      "learnedAt": "2026-06-29T06:50:14.471Z"
+    },
+    "北京现代ix35": {
+      "chinese": "北京现代ix35",
+      "english": null,
+      "years": [
+        "2010"
+      ],
+      "body": "5门5座SUV",
+      "level": "紧凑型SUV",
+      "source": "qxb_auto_decode",
+      "learnedAt": "2026-06-29T06:50:14.473Z"
+    },
+    "创虎XCIENT": {
+      "chinese": "创虎XCIENT",
+      "english": null,
+      "years": [
+        "2018"
+      ],
+      "body": "牵引车",
+      "level": null,
+      "source": "qxb_auto_decode",
+      "learnedAt": "2026-06-29T06:50:14.474Z"
+    }
+  },
+  "kia": {
+    "智跑": {
+      "chinese": "智跑",
+      "english": "Sportage",
+      "source": "manual_seed",
+      "learnedAt": "2026-06-28T00:25:11.616Z"
+    },
+    "索兰托": {
+      "chinese": "索兰托",
+      "english": "Sorento",
+      "source": "manual_seed",
+      "learnedAt": "2026-06-28T00:25:11.617Z"
+    },
+    "嘉华": {
+      "chinese": "嘉华",
+      "english": "Carnival",
+      "source": "manual_seed",
+      "learnedAt": "2026-06-28T00:25:11.617Z"
+    },
+    "起亚K2": {
+      "chinese": "起亚K2",
+      "english": null,
+      "source": "qxb_auto_decode",
+      "learnedAt": "2026-06-29T06:50:14.475Z",
+      "years": [
+        "2012"
+      ],
+      "body": "4门5座三厢车",
+      "level": "小型车"
+    },
+    "起亚K5": {
+      "chinese": "起亚K5",
+      "english": null,
+      "source": "qxb_auto_decode",
+      "learnedAt": "2026-06-29T06:50:14.477Z",
+      "years": [
+        "2012"
+      ],
+      "body": "4门5座三厢车",
+      "level": "中型车"
+    },
+    "赛拉图": {
+      "chinese": "赛拉图",
+      "english": null,
+      "source": "qxb_auto_decode",
+      "learnedAt": "2026-06-29T06:50:14.476Z",
+      "years": [
+        "2010"
+      ],
+      "body": "4门5座三厢车",
+      "level": "紧凑型车"
+    },
+    "狮跑": {
+      "chinese": "狮跑",
+      "english": null,
+      "years": [
+        "2011"
+      ],
+      "body": "5门5座SUV",
+      "level": "紧凑型SUV",
+      "source": "qxb_auto_decode",
+      "learnedAt": "2026-06-29T06:50:14.476Z"
+    },
+    "欧菲莱斯": {
+      "chinese": "欧菲莱斯",
+      "english": null,
+      "years": [
+        "2005"
+      ],
+      "body": "4门5座三厢车",
+      "level": "中大型车",
+      "source": "qxb_auto_decode",
+      "learnedAt": "2026-06-29T06:50:14.476Z"
+    }
+  },
+  "chery": {
+    "瑞虎3": {
+      "chinese": "瑞虎3",
+      "english": null,
+      "source": "qxb_auto_decode",
+      "learnedAt": "2026-06-29T06:50:14.467Z",
+      "years": [
+        "2014"
+      ],
+      "body": "5门5座SUV",
+      "level": "小型SUV"
+    }
+  },
+  "buick": {
+    "昂科雷": {
+      "chinese": "昂科雷",
+      "english": null,
+      "source": "qxb_auto_decode",
+      "learnedAt": "2026-06-29T06:50:14.478Z",
+      "years": [
+        "2009"
+      ],
+      "body": "5门7座SUV",
+      "level": "中大型SUV"
+    },
+    "君越": {
+      "chinese": "君越",
+      "english": null,
+      "years": [
+        "2010"
+      ],
+      "body": "4门5座三厢车",
+      "level": "中型车",
+      "source": "qxb_auto_decode",
+      "learnedAt": "2026-06-29T06:50:14.478Z"
+    },
+    "英朗": {
+      "chinese": "英朗",
+      "english": null,
+      "years": [
+        "2010"
+      ],
+      "body": "5门5座两厢车",
+      "level": "紧凑型车",
+      "source": "qxb_auto_decode",
+      "learnedAt": "2026-06-29T06:50:14.479Z"
+    }
+  },
+  "chevrolet": {
+    "赛欧": {
+      "chinese": "赛欧",
+      "english": null,
+      "source": "qxb_auto_decode",
+      "learnedAt": "2026-06-29T06:50:14.477Z",
+      "years": [
+        "2010",
+        "2011",
+        "2013"
+      ],
+      "body": "4门5座三厢车",
+      "level": "小型车"
+    },
+    "科帕奇(进口)": {
+      "chinese": "科帕奇(进口)",
+      "english": null,
+      "years": [
+        "2010"
+      ],
+      "body": "5门7座SUV",
+      "level": "中型SUV",
+      "source": "qxb_auto_decode",
+      "learnedAt": "2026-06-29T06:50:14.477Z"
+    },
+    "科鲁兹": {
+      "chinese": "科鲁兹",
+      "english": null,
+      "years": [
+        "2010"
+      ],
+      "body": "4门5座三厢车",
+      "level": "紧凑型车",
+      "source": "qxb_auto_decode",
+      "learnedAt": "2026-06-29T06:50:14.478Z"
+    }
+  },
+  "mitsubishi": {
+    "欧蓝德(进口)": {
+      "chinese": "欧蓝德(进口)",
+      "english": null,
+      "source": "qxb_auto_decode",
+      "learnedAt": "2026-06-29T06:50:14.484Z",
+      "years": [
+        "2007"
+      ],
+      "body": "5门5座SUV",
+      "level": "紧凑型SUV"
+    },
+    "欧蓝德": {
+      "chinese": "欧蓝德",
+      "english": "Outlander",
+      "source": "manual_seed",
+      "learnedAt": "2026-06-28T00:25:11.619Z"
+    }
+  },
+  "peugeot": {
+    "标致408": {
+      "chinese": "标致408",
+      "english": null,
+      "source": "qxb_auto_decode",
+      "learnedAt": "2026-06-29T06:50:14.484Z",
+      "years": [
+        "2010"
+      ],
+      "body": "4门5座三厢车",
+      "level": "紧凑型车"
+    }
+  },
+  "hawtai": {
+    "特拉卡": {
+      "chinese": "特拉卡",
+      "english": null,
+      "years": [
+        "2010"
+      ],
+      "body": "5门5座SUV",
+      "level": "中型SUV",
+      "source": "qxb_auto_decode",
+      "learnedAt": "2026-06-29T06:50:14.467Z"
+    }
+  },
+  "wuling": {
+    "五菱宏光": {
+      "chinese": "五菱宏光",
+      "english": null,
+      "years": [
+        "2014"
+      ],
+      "body": "5门5-8座客车",
+      "level": "微面",
+      "source": "qxb_auto_decode",
+      "learnedAt": "2026-06-29T06:50:14.467Z"
+    }
+  },
+  "suzuki": {
+    "北斗星": {
+      "chinese": "北斗星",
+      "english": null,
+      "years": [
+        "2013"
+      ],
+      "body": "5门5座两厢车",
+      "level": "微型车",
+      "source": "qxb_auto_decode",
+      "learnedAt": "2026-06-29T06:50:14.468Z"
+    },
+    "浪迪": {
+      "chinese": "浪迪",
+      "english": null,
+      "years": [
+        "2010"
+      ],
+      "body": "5门8座客车",
+      "level": "微面",
+      "source": "qxb_auto_decode",
+      "learnedAt": "2026-06-29T06:50:14.468Z"
+    }
+  },
+  "changan-kuayue": {
+    "新豹MINI": {
+      "chinese": "新豹MINI",
+      "english": null,
+      "years": [
+        "2016"
+      ],
+      "body": "2门2座货车",
+      "level": "微卡",
+      "source": "qxb_auto_decode",
+      "learnedAt": "2026-06-29T06:50:14.474Z"
+    }
+  },
+  "jac": {
+    "瑞风M5": {
+      "chinese": "瑞风M5",
+      "english": null,
+      "years": [
+        "2013"
+      ],
+      "body": "5门7座MPV",
+      "level": "中大型MPV",
+      "source": "qxb_auto_decode",
+      "learnedAt": "2026-06-29T06:50:14.474Z"
+    }
+  },
+  "citroën": {
+    "雪铁龙C2": {
+      "chinese": "雪铁龙C2",
+      "english": null,
+      "years": [
+        "2012"
+      ],
+      "body": "5门5座两厢车",
+      "level": "小型车",
+      "source": "qxb_auto_decode",
+      "learnedAt": "2026-06-29T06:50:14.475Z"
+    },
+    "世嘉": {
+      "chinese": "世嘉",
+      "english": null,
+      "years": [
+        "2009"
+      ],
+      "body": "4门5座三厢车",
+      "level": "紧凑型车",
+      "source": "qxb_auto_decode",
+      "learnedAt": "2026-06-29T06:50:14.475Z"
+    }
+  },
+  "dongfeng": {
+    "奥丁": {
+      "chinese": "奥丁",
+      "english": null,
+      "years": [
+        "2007"
+      ],
+      "body": "5门5座SUV",
+      "level": "紧凑型SUV",
+      "source": "qxb_auto_decode",
+      "learnedAt": "2026-06-29T06:50:14.479Z"
+    },
+    "锐骐多功能车": {
+      "chinese": "锐骐多功能车",
+      "english": null,
+      "years": [
+        "2013"
+      ],
+      "body": "5门5座皮卡",
+      "level": "皮卡",
+      "source": "qxb_auto_decode",
+      "learnedAt": "2026-06-29T06:50:14.480Z"
+    }
+  },
+  "dodge": {
+    "酷威": {
+      "chinese": "酷威",
+      "english": null,
+      "years": [
+        "2010"
+      ],
+      "body": "5门7座SUV",
+      "level": "中型SUV",
+      "source": "qxb_auto_decode",
+      "learnedAt": "2026-06-29T06:50:14.480Z"
+    }
+  },
+  "volvo": {
+    "沃尔沃S40": {
+      "chinese": "沃尔沃S40",
+      "english": null,
+      "years": [
+        "2011"
+      ],
+      "body": "4门5座三厢车",
+      "level": "紧凑型车",
+      "source": "qxb_auto_decode",
+      "learnedAt": "2026-06-29T06:50:14.480Z"
+    }
+  },
+  "ford": {
+    "福克斯": {
+      "chinese": "福克斯",
+      "english": null,
+      "years": [
+        "2012"
+      ],
+      "body": "5门5座两厢车",
+      "level": "紧凑型车",
+      "source": "qxb_auto_decode",
+      "learnedAt": "2026-06-29T06:50:14.481Z"
+    }
+  },
+  "volkswagen": {
+    "帕萨特": {
+      "chinese": "帕萨特",
+      "english": null,
+      "years": [
+        "2011",
+        "2022"
+      ],
+      "body": "4门5座三厢车",
+      "level": "中型车",
+      "source": "qxb_auto_decode",
+      "learnedAt": "2026-06-29T06:50:14.481Z"
+    },
+    "速腾": {
+      "chinese": "速腾",
+      "english": null,
+      "years": [
+        "2011",
+        "2012"
+      ],
+      "body": "4门5座三厢车",
+      "level": "紧凑型车",
+      "source": "qxb_auto_decode",
+      "learnedAt": "2026-06-29T06:50:14.481Z"
+    },
+    "Tiguan": {
+      "chinese": "Tiguan",
+      "english": null,
+      "years": [
+        "2011"
+      ],
+      "body": "5门5座SUV",
+      "level": "紧凑型SUV",
+      "source": "qxb_auto_decode",
+      "learnedAt": "2026-06-29T06:50:14.482Z"
+    },
+    "途锐": {
+      "chinese": "途锐",
+      "english": null,
+      "years": [
+        "2012"
+      ],
+      "body": "5门5座SUV",
+      "level": "中大型SUV",
+      "source": "qxb_auto_decode",
+      "learnedAt": "2026-06-29T06:50:14.482Z"
+    },
+    "捷达": {
+      "chinese": "捷达",
+      "english": null,
+      "years": [
+        "2013"
+      ],
+      "body": "4门5座三厢车",
+      "level": "紧凑型车",
+      "source": "qxb_auto_decode",
+      "learnedAt": "2026-06-29T06:50:14.483Z"
+    }
+  },
+  "geely": {
+    "帝豪": {
+      "chinese": "帝豪",
+      "english": null,
+      "years": [
+        "2017"
+      ],
+      "body": "5门5座两厢车",
+      "level": "紧凑型车",
+      "source": "qxb_auto_decode",
+      "learnedAt": "2026-06-29T06:50:14.483Z"
+    }
+  },
+  "maxus": {
+    "大通G10": {
+      "chinese": "大通G10",
+      "english": null,
+      "years": [
+        "2018"
+      ],
+      "body": "4门7座MPV",
+      "level": "中大型MPV",
+      "source": "qxb_auto_decode",
+      "learnedAt": "2026-06-29T06:50:14.483Z"
+    }
+  },
+  "lexus": {
+    "雷克萨斯LX": {
+      "chinese": "雷克萨斯LX",
+      "english": null,
+      "years": [
+        "2009"
+      ],
+      "body": "5门8座SUV",
+      "level": "大型SUV",
+      "source": "qxb_auto_decode",
+      "learnedAt": "2026-06-29T06:50:14.484Z"
+    }
+  },
+  "gmc": {
+    "SAVANA": {
+      "chinese": "SAVANA",
+      "english": null,
+      "years": [
+        "2010"
+      ],
+      "body": "10座MPV",
+      "level": "MPV",
+      "source": "qxb_auto_decode",
+      "learnedAt": "2026-06-29T06:50:14.485Z"
+    }
+  },
+  "changan": {
+    "长安CX20": {
+      "chinese": "长安CX20",
+      "english": null,
+      "years": [
+        "2011"
+      ],
+      "body": "5门5座两厢车",
+      "level": "小型车",
+      "source": "qxb_auto_decode",
+      "learnedAt": "2026-06-29T06:50:14.485Z"
+    }
+  },
+  "bmw": {
+    "宝马3系": {
+      "chinese": "宝马3系",
+      "english": null,
+      "years": [
+        "2007"
+      ],
+      "body": "4门5座三厢车",
+      "level": "中型车",
+      "source": "qxb_auto_decode",
+      "learnedAt": "2026-06-29T06:50:14.486Z"
+    },
+    "宝马5系": {
+      "chinese": "宝马5系",
+      "english": null,
+      "years": [
+        "2013"
+      ],
+      "body": "4门5座三厢车",
+      "level": "中大型车",
+      "source": "qxb_auto_decode",
+      "learnedAt": "2026-06-29T06:50:14.486Z"
+    }
+  },
+  "mercedes-benz": {
+    "奔驰B级": {
+      "chinese": "奔驰B级",
+      "english": null,
+      "years": [
+        "2009"
+      ],
+      "body": "5门5座两厢车",
+      "level": "紧凑型车",
+      "source": "qxb_auto_decode",
+      "learnedAt": "2026-06-29T06:50:14.486Z"
+    },
+    "凌特": {
+      "chinese": "凌特",
+      "english": null,
+      "years": [
+        "2012"
+      ],
+      "body": "4门10-20座客车",
+      "level": "轻客",
+      "source": "qxb_auto_decode",
+      "learnedAt": "2026-06-29T06:50:14.487Z"
+    },
+    "奔驰M级": {
+      "chinese": "奔驰M级",
+      "english": null,
+      "years": [
+        "2006"
+      ],
+      "body": "5门5座SUV",
+      "level": "SUV",
+      "source": "qxb_auto_decode",
+      "learnedAt": "2026-06-29T06:50:14.487Z"
+    }
+  },
+  "audi": {
+    "奥迪Q3": {
+      "chinese": "奥迪Q3",
+      "english": null,
+      "years": [
+        "2020"
+      ],
+      "body": "5门5座SUV",
+      "level": "紧凑型SUV",
+      "source": "qxb_auto_decode",
+      "learnedAt": "2026-06-29T06:50:14.487Z"
+    }
+  }
+}

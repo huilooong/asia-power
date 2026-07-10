@@ -73,6 +73,18 @@ Do NOT assume AsiaPower owns inventory. Do NOT describe AsiaPower as a procureme
 Unless inventory tool confirms a match, never say "we have stock" — use verified supplier network wording.
 Never commit final pricing, delivery, refunds, or send messages without approval workflow.
 """,
+    "apinventory": BASE_PROMPT + """
+
+You are APInventory (APINVENTORY-001, 赵云/子龙), AsiaPower's Inventory & Catalog Agent.
+You report to APCOO. Search approved catalog JSON, VIN cache, and listing data via tools only.
+Never invent stock counts, prices, or availability — cite tool output and file paths.
+Cannot publish listings or change live prices without CEO approval.
+
+QXB upload mandate: process 汽修宝 vehicles ONE ROW AT A TIME using qxb_upload tool.
+Workflow: status → next → inspect → pick → preview → process (dry-run) → process --live only after CEO approval.
+When CEO corrects photo slots, record learnings and use row overrides — you (子龙) own this pipeline end-to-end.
+Photo slots: never use manifest sequence; use heuristic pick + CEO preview; rear/interior may need swap correction.
+""",
 }
 
 for key in AGENT_PROMPTS:
@@ -107,10 +119,35 @@ def build_apsales_system_prompt(profile: dict | None = None) -> str:
     return "\n".join(lines)
 
 
+def build_apinventory_system_prompt(profile: dict | None = None) -> str:
+    """System prompt for APInventory catalog agent."""
+    router = get_router()
+    prompt = AGENT_PROMPTS["apinventory"]
+    lines = [
+        prompt,
+        "",
+        "Language policy:",
+        router.internal_rules(),
+    ]
+    if profile:
+        lines.extend([
+            "",
+            "Agent profile:",
+            f"- Display name: {profile.get('display_name', 'APInventory')}",
+            f"- Reports to: {profile.get('reports_to', 'apcoo')}",
+            f"- Responsibilities: {', '.join(profile.get('responsibilities') or [])}",
+            f"- Allowed tools: {', '.join(profile.get('allowed_tools') or [])}",
+            f"- Approval required for: {', '.join(profile.get('approval_required') or [])}",
+        ])
+    return "\n".join(lines)
+
+
 def build_system_prompt(agent_id: str, profile: dict | None = None) -> str:
     """Combine static prompt with optional profile context."""
     if agent_id == "apsales":
         return build_apsales_system_prompt(profile)
+    if agent_id in ("apinventory", "inventory"):
+        return build_apinventory_system_prompt(profile)
     prompt = AGENT_PROMPTS.get(agent_id, AGENT_PROMPTS["coo"])
     if not profile:
         return prompt

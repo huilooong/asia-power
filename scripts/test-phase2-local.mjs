@@ -39,7 +39,7 @@ const sandbox = {
 };
 
 sandbox.window = sandbox;
-sandbox.window.ASIAPOWER = { whatsapp: '8618603773077' };
+sandbox.window.ASIAPOWER = { whatsapp: '233540911111' };
 
 loadScript('js/half-cut-directory.js');
 loadScript('js/half-cut-inventory-store.js');

@@ -1,0 +1,77 @@
+# AsiaPower — domestic Lighthouse nginx (asia-power.cn)
+# Purpose: HTTPS + WeCom callback only. Main site stays on asia-power.com (DO).
+#
+# Deploy:
+#   cp deploy/nginx-asia-power.cn /etc/nginx/sites-available/asia-power.cn
+#   ln -sf /etc/nginx/sites-available/asia-power.cn /etc/nginx/sites-enabled/
+#   nginx -t && systemctl reload nginx
+#   certbot --nginx -d asia-power.cn -d www.asia-power.cn --non-interactive --agree-tos -m YOUR_EMAIL
+#
+# Before certbot: DNS A record for asia-power.cn → this server's public IP.
+
+server {
+    listen 80;
+    listen [::]:80;
+    server_name asia-power.cn www.asia-power.cn;
+
+    # certbot webroot (optional if using certbot --nginx)
+    location ^~ /.well-known/acme-challenge/ {
+        root /var/www/certbot;
+        default_type text/plain;
+    }
+
+    location = /wecom/callback {
+        proxy_pass http://127.0.0.1:8791;
+        proxy_http_version 1.1;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+        proxy_connect_timeout 10s;
+        proxy_read_timeout 60s;
+        proxy_send_timeout 60s;
+        client_max_body_size 2m;
+    }
+
+    # Minimal landing page (备案审核 / health check)
+    location / {
+        default_type text/html;
+        return 200 '<!DOCTYPE html><html lang="zh-CN"><head><meta charset="utf-8"><title>AsiaPower</title></head><body><h1>AsiaPower</h1><p>南阳芃芃信息科技有限公司 · 企业微信服务</p></body></html>';
+        add_header Content-Type text/html;
+    }
+}
+
+# After certbot, it will add a similar block on 443 with ssl_certificate paths.
+# Or uncomment and adjust after manual cert issuance:
+#
+# server {
+#     listen 443 ssl http2;
+#     listen [::]:443 ssl http2;
+#     server_name asia-power.cn www.asia-power.cn;
+#
+#     ssl_certificate /etc/letsencrypt/live/asia-power.cn/fullchain.pem;
+#     ssl_certificate_key /etc/letsencrypt/live/asia-power.cn/privkey.pem;
+#     include /etc/letsencrypt/options-ssl-nginx.conf;
+#     ssl_dhparam /etc/letsencrypt/ssl-dhparams.pem;
+#
+#     add_header Strict-Transport-Security "max-age=31536000" always;
+#
+#     location = /wecom/callback {
+#         proxy_pass http://127.0.0.1:8791;
+#         proxy_http_version 1.1;
+#         proxy_set_header Host $host;
+#         proxy_set_header X-Real-IP $remote_addr;
+#         proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+#         proxy_set_header X-Forwarded-Proto $scheme;
+#         proxy_connect_timeout 10s;
+#         proxy_read_timeout 60s;
+#         proxy_send_timeout 60s;
+#         client_max_body_size 2m;
+#     }
+#
+#     location / {
+#         default_type text/html;
+#         return 200 '<!DOCTYPE html><html lang="zh-CN"><head><meta charset="utf-8"><title>AsiaPower</title></head><body><h1>AsiaPower</h1><p>南阳芃芃信息科技有限公司 · 企业微信服务</p></body></html>';
+#         add_header Content-Type text/html;
+#     }
+# }

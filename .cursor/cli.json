@@ -1,0 +1,11 @@
+{
+  "permissions": {
+    "allow": [
+      "Shell(**)",
+      "Read(**)",
+      "Write(**)",
+      "Mcp(**)"
+    ],
+    "deny": []
+  }
+}

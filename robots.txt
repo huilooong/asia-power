@@ -3,6 +3,9 @@ Allow: /
 
 Disallow: /admin/
 Disallow: /supplier-portal/half-cut-upload.html
+Disallow: /supplier-portal/truck-upload.html
+Disallow: /supplier-portal/truck-vehicle-upload.html
+Disallow: /supplier-portal/passenger-parts-upload.html
 Disallow: /api/
 Disallow: /uploads/pending/
 Disallow: /data/
