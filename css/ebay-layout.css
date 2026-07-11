@@ -1084,6 +1084,69 @@ a.ebay-contact-channel:hover {
   letter-spacing: 0;
   color: #6e6e73;
 }
+.ebay-contact-regions {
+  margin: 0 0 16px;
+  padding: 16px;
+  border: 1px solid var(--ebay-border);
+  border-radius: 8px;
+  background: #f7f8fa;
+}
+.ebay-contact-regions__header {
+  max-width: 720px;
+}
+.ebay-contact-regions__kicker {
+  margin: 0 0 5px;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #9a6a00;
+}
+.ebay-contact-regions h2 {
+  margin: 0 0 6px;
+  font-size: 17px;
+  line-height: 1.25;
+  color: #0a1628;
+}
+.ebay-contact-regions p {
+  margin: 0;
+  font-size: 13px;
+  line-height: 1.55;
+  color: #5c6670;
+}
+.ebay-contact-region-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 8px;
+  margin-top: 12px;
+}
+.ebay-contact-region {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  min-height: 76px;
+  padding: 11px 12px;
+  border: 1px solid #dfe3e8;
+  border-radius: 8px;
+  background: #ffffff;
+  color: inherit;
+  text-decoration: none;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+.ebay-contact-region:hover {
+  border-color: #cbd5e1;
+  box-shadow: 0 2px 8px rgba(10, 22, 40, 0.06);
+}
+.ebay-contact-region strong {
+  font-size: 13px;
+  line-height: 1.25;
+  color: #0a1628;
+}
+.ebay-contact-region span {
+  font-size: 11px;
+  line-height: 1.35;
+  color: #6e6e73;
+}
 .ebay-contact-form-wrap {
   max-width: none;
   width: 100%;
@@ -2151,6 +2214,9 @@ body[data-page="about"] .ebay-page-title {
   }
   .ebay-contact-channels {
     grid-template-columns: 1fr;
+  }
+  .ebay-contact-region-grid {
+    grid-template-columns: 1fr 1fr;
   }
   .scheme-ebay .ebay-contact-form__actions {
     flex-direction: column;
