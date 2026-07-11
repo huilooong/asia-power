@@ -880,4 +880,29 @@
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
+  <url>
+    <loc>https://asia-power.com/engines/honda-accord-r20a3-half-cut-donor-inventory.html</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://asia-power.com/engines/nissan-qashqai-mr20de-half-cut-donor-inventory.html</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://asia-power.com/engines/kia-k5-g4na-half-cut-donor-inventory.html</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://asia-power.com/engines/toyota-corolla-1az-fe-half-cut-donor-inventory.html</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://asia-power.com/engines/mitsubishi-pajero-6g72-half-cut-donor-inventory.html</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
 </urlset>
