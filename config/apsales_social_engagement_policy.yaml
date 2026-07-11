@@ -1,58 +1,58 @@
 # 子敬 · 社媒互动频率策略（FB + X · 非洲市场）
-# 目标：引流 asia-power.com — 小组真人互动优先，时间线发帖停用
+# 目标：引流 asia-power.com — 买家需求优先，先发现真实需求，再人工批准互动
 # KPI: asia-power.com + sales@asia-power.com
-# CEO 2026-07-04：平台上限探测模式 — 仅 FB 返回 block/rate limit 时停止该动作类型
+# CEO 2026-07-11：预算有限，停止平台极限探测；只保留能找到精准客户和询盘的动作
 
-version: 4
-updated: "2026-07-04"
-stop_condition: platform_block_only  # 仅平台 block 时暂停该动作类型 24h，其他继续
+version: 5
+updated: "2026-07-11"
+stop_condition: demand_first_human_approval
 
 # CEO 路由（Mac cron / launchd 入口 scripts/apsales-zijing-run.py）
 operating_modes:
-  limited_mode: maps_email       # fb_platform_limits.json 有 active block → 非洲 Maps + 邮件草稿
-  normal_mode: fb_x              # 无限流 → FB 小组+DM + X 交替（apsales-social-alternate-run / --aggressive）
+  limited_mode: demand_drafts    # 只处理已有社媒情报 → 草稿队列
+  normal_mode: demand_discovery  # 浏览/发现公开需求 → 社媒需求草稿 → CEO 批准后互动
   limits_file: memory/customer_gateway/fb_platform_limits.json
   unified_entry: scripts/apsales-zijing-run.py
-  activity_log_action: maps_fallback   # 限流时在 zijing_activity_stream.jsonl 记录此 action
+  activity_log_action: social_demand_drafts
 
 mission_today:
-  focus: "Facebook 小组引流 · 入组+问候+评论+DM · 探测真实平台上限"
+  focus: "发现 engine / gearbox / half-cut 买家需求，生成回复草稿，引导到 asia-power.com，不做泛群发"
   skip_platforms:
     - instagram  # INS 今日暂停
 
 engagement_priority:
-  P0: "加入 FB 小组（关键词 tokunbo/half cut/spare parts + 国家名）· 平台限流为止"
-  P1: "入组后真人问候 + 链接（非硬广）· 平台限流为止"
-  P2: "小组内评论他人帖（相关时带链接）· 平台限流为止"
+  P0: "浏览公开/已加入社媒信息流，识别真实买家求购帖"
+  P1: "为高意图求购帖生成 APSales 回复草稿"
+  P2: "CEO/APSales 批准后再回复，导流到对应国家/产品页面"
   P3: "时间线发帖 · 0/日 · 仅 CEO 明确要求时"
-  P4: "好友 DM · 带图链 · 平台限流为止"
-  P5: "X 关注 · 低优先级"
+  P4: "好友 DM 默认关闭，只有明确买家互动后人工批准"
+  P5: "X 低优先级，仅保留监听/草稿"
 
 platforms:
   facebook:
     enabled: true
     max_posts_per_day: 0              # 时间线停用 — platform-limited only
     max_timeline_posts_per_day: 0
-    max_group_joins_per_day: null       # platform-limited only
-    max_group_greetings_per_day: null # platform-limited only
-    max_group_comments_per_day: null  # platform-limited only
-    max_comments_per_hour: null       # platform-limited only
-    max_follows_per_day: null         # platform-limited only
-    max_dms_per_day: null             # platform-limited only
-    max_dms_per_run: null             # platform-limited only — batch size from join_batch_size
-    join_batch_size: 5
-    min_interval_seconds: 30          # 活跃会话内动作间隔 30-90 秒
-    max_interval_seconds: 90
+    max_group_joins_per_day: 3
+    max_group_greetings_per_day: 0
+    max_group_comments_per_day: 3
+    max_comments_per_hour: 2
+    max_follows_per_day: 0
+    max_dms_per_day: 0
+    max_dms_per_run: 0
+    join_batch_size: 3
+    min_interval_seconds: 90
+    max_interval_seconds: 240
     min_interval_minutes: null        # deprecated — use seconds in probe mode
     max_interval_minutes: null        # removed — no long gaps within session
   x:
     enabled: true
-    max_posts_per_day: 2
-    max_comments_per_hour: null       # platform-limited only
-    max_follows_per_day: null
+    max_posts_per_day: 0
+    max_comments_per_hour: 1
+    max_follows_per_day: 0
     max_dms_per_day: 0
-    min_interval_seconds: 60
-    max_interval_seconds: 150
+    min_interval_seconds: 120
+    max_interval_seconds: 300
   instagram:
     enabled: false
     reason: "paused_today_ins_broken"
@@ -73,13 +73,13 @@ rate_limit:
 
 facebook_groups:
   enabled: true
-  max_searches_per_day: null          # platform-limited only
-  max_joins_per_day: null
-  max_greetings_per_day: null
-  max_comments_per_day: null
-  join_batch_size: 5
+  max_searches_per_day: 5
+  max_joins_per_day: 3
+  max_greetings_per_day: 0
+  max_comments_per_day: 3
+  join_batch_size: 3
   greeting_template: |
-    Hi everyone 👋 New here — I'm from China, we supply verified half-cuts & engines with photos on our site. Happy to help if you're looking for specific engine codes. https://asia-power.com/half-cuts/
+    Hi — if you are checking engines, gearboxes or half-cuts, please match engine code, gearbox type and donor photos before payment. AsiaPower can help confirm options from China after model/year/port are known.
   mac_script: scripts/apsales-facebook-daily-run.py
   alternate_mac_script: scripts/apsales-social-alternate-run.py
   unified_mac_script: scripts/apsales-zijing-run.py
@@ -87,12 +87,12 @@ facebook_groups:
 
 scheduling:
   rule: "any_market_awake"
-  alternate_platforms: true           # FB ↔ X 交替执行（队列 + cron + Mac 脚本）
+  alternate_platforms: false
   cron_interval_minutes: 45
-  actions_per_run: 2                  # 每趟 cron = 1 FB + 1 X
-  aggressive_session_max_hours: 3     # 单会话最长 3 小时
-  aggressive_rest_hours: 1            # 达 3h 后休 1h 再继续（防死循环）
-  continuous_session: true            # 会话内连续批次，短间隔，无 120 分钟长等待
+  actions_per_run: 1
+  aggressive_session_max_hours: 0
+  aggressive_rest_hours: 0
+  continuous_session: false
   night_slow_mode:
     enabled: false                    # 探测模式：夜间也不自我限流
     note: "platform_block_only — 全球市场均休眠时仍全速探测"
@@ -133,16 +133,19 @@ active_hours_utc:
 
 approval:
   auto_run:
+    - browse_feed
+    - demand_draft
+  needs_ceo_approval:
+    - new_post_type
     - scheme_post
     - templated_comment
     - reply_to_inbox
     - group_greeting
     - group_join
     - group_comment
-  needs_ceo_approval:
-    - new_post_type
-  ceo_approved:
     - friend_one_to_one_dm
+  ceo_approved:
+    - none_by_default
 
 follow_keywords:
   hashtags:
@@ -196,9 +199,9 @@ scheme_content_ref: "data/knowledge-base/apsales-promotion-schemes-v2.md"
 browse_feed:
   enabled: true
   platform: facebook
-  sessions_per_day: null              # platform-limited only
-  session_minutes: null
-  note: "Mac 本地 --until-block · 生产服务器不跑浏览器"
+  sessions_per_day: 3
+  session_minutes: 10
+  note: "Mac 本地浏览公开/已加入信息流；只保存情报，不自动评论"
   focus_keywords:
     - dismantling
     - half cut
@@ -211,12 +214,12 @@ browse_feed:
   mac_script: scripts/apsales-facebook-browse-friends.py
 
 friend_dm:
-  enabled: true
-  max_per_run: null                   # platform-limited only
-  max_per_day: null
+  enabled: false
+  max_per_run: 0
+  max_per_day: 0
   delay_seconds_min: 30
   delay_seconds_max: 90
-  note: "Mac --until-block · 30-90 秒间隔 · 仅 FB block 时停 DM"
+  note: "默认关闭；只有明确买家互动且 CEO 批准后才手动/受控发送"
   log_file: memory/customer_gateway/fb_friend_dm_log.jsonl
   mac_script: scripts/apsales-facebook-dm-friends.py
   stop_on_captcha: true

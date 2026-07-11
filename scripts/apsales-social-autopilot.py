@@ -13,9 +13,12 @@ ROOT = Path(__file__).resolve().parent.parent
 if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
 
-from dotenv import load_dotenv
+try:
+    from dotenv import load_dotenv
 
-load_dotenv(ROOT / ".env")
+    load_dotenv(ROOT / ".env")
+except ModuleNotFoundError:
+    pass
 
 
 def build_parser() -> argparse.ArgumentParser:
@@ -31,6 +34,8 @@ def build_parser() -> argparse.ArgumentParser:
     p.add_argument("--json", action="store_true", help="JSON output")
     p.add_argument("--browse", action="store_true", help="Run Facebook friends feed browse (Mac local)")
     p.add_argument("--browse-status", action="store_true", help="Show last browse session summary")
+    p.add_argument("--demand-drafts", action="store_true", help="Build reply drafts from saved social buyer-demand intel")
+    p.add_argument("--create-demand-drafts", action="store_true", help="Write selected social demand replies to draft_queue")
     return p
 
 
@@ -60,6 +65,37 @@ def main() -> int:
             except Exception:
                 pass
         print(json.dumps(payload, ensure_ascii=False, indent=2))
+        return 0
+
+    if args.demand_drafts or args.create_demand_drafts:
+        import importlib.util
+        spec = importlib.util.spec_from_file_location(
+            "social_demand_drafts",
+            ROOT / "scripts" / "apsales-social-demand-drafts.py",
+        )
+        mod = importlib.util.module_from_spec(spec)
+        assert spec and spec.loader
+        spec.loader.exec_module(mod)
+        rows = mod._iter_jsonl(mod.INTEL_FILE)
+        candidates = mod.select_candidates(rows, limit=10, min_score=70)
+        created = mod.create_drafts(candidates) if args.create_demand_drafts else []
+        mod.write_report(rows=rows, candidates=candidates, created=created)
+        payload = {
+            "ok": True,
+            "reviewed": len(rows),
+            "candidates": len(candidates),
+            "drafts_created": len(created),
+            "report": str(mod.REPORT_FILE),
+            "created": created,
+        }
+        if args.json:
+            print(json.dumps(payload, ensure_ascii=False, indent=2))
+        else:
+            print("=== 子敬社媒需求草稿 ===")
+            print(f"已读取情报: {len(rows)}")
+            print(f"高意图需求: {len(candidates)}")
+            print(f"已创建草稿: {len(created)}")
+            print(f"报告: {mod.REPORT_FILE}")
         return 0
 
     do_publish = args.publish or args.all

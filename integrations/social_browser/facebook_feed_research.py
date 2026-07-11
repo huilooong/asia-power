@@ -98,6 +98,44 @@ LEAD_KEYWORDS = (
     "available",
 )
 
+BUYER_INTENT_PATTERNS = (
+    r"\blooking for\b",
+    r"\bneed(?:ed|s)?\b",
+    r"\bwant to buy\b",
+    r"\bwho has\b",
+    r"\banyone (?:selling|has|have)\b",
+    r"\bwhere can i (?:buy|find|get)\b",
+    r"\bquote\b",
+    r"\bprice for\b",
+    r"\bhow much\b",
+    r"\bsupplier needed\b",
+    r"\bplease.*(?:engine|gearbox|half[- ]?cut|spare parts)\b",
+)
+
+SELLER_INTENT_PATTERNS = (
+    r"\bfor sale\b",
+    r"\bavailable\b",
+    r"\bin stock\b",
+    r"\bnow instock\b",
+    r"\bcall or whatsapp\b",
+    r"\bclean sharp\b",
+    r"\bdistress sale\b",
+    r"\bprice[: ]",
+    r"\bkes\s*[\d,]+",
+    r"\bngn\s*[\d,]+",
+    r"\bzwl\s*[\d,]+",
+)
+
+SELF_PROMOTION_PATTERNS = (
+    "asia-power.com",
+    "asiapower",
+    "we supply verified",
+    "i'm a supplier from china",
+    "we list verified real inventory",
+    "our live inventory",
+    "sales@asia-power.com",
+)
+
 COUNTRY_PATTERNS: list[tuple[str, re.Pattern[str]]] = [
     ("Ghana", re.compile(r"\bghana\b|accra|tema|kumasi|\+233", re.I)),
     ("Nigeria", re.compile(r"\bnigeria\b|lagos|abuja|port harcourt|\+234", re.I)),
@@ -344,8 +382,95 @@ def _is_sponsored(text: str) -> bool:
     return any(m.lower() in lower for m in SPONSORED_MARKERS)
 
 
+def _is_self_promotion(text: str, author: str = "") -> bool:
+    lower = f"{author}\n{text}".lower()
+    return any(marker in lower for marker in SELF_PROMOTION_PATTERNS)
+
+
+def _intent_matches(text: str, patterns: tuple[str, ...]) -> int:
+    return sum(1 for pat in patterns if re.search(pat, text, re.I))
+
+
+def score_buyer_intent(text: str, *, author: str = "") -> dict[str, Any]:
+    """Classify social feed text for practical sales action.
+
+    This intentionally separates buyer demand from seller listings and our own
+    promotion so APSales does not waste follow-up time on the wrong records.
+    """
+    if not text:
+        return {
+            "score": 0,
+            "intent_type": "empty",
+            "recommended_action": "ignore",
+            "reasons": [],
+        }
+
+    lower = text.lower()
+    reasons: list[str] = []
+    buyer_hits = _intent_matches(text, BUYER_INTENT_PATTERNS)
+    seller_hits = _intent_matches(text, SELLER_INTENT_PATTERNS)
+    signals = _match_keywords(text, SIGNAL_KEYWORDS)
+    engines = detect_engine_codes(text)
+    country = detect_country(text)
+    prices = detect_prices(text)
+
+    if _is_self_promotion(text, author):
+        return {
+            "score": 0,
+            "intent_type": "self_promotion",
+            "recommended_action": "ignore",
+            "reasons": ["AsiaPower/self promotion content"],
+        }
+
+    score = 0
+    if buyer_hits:
+        score += min(45, buyer_hits * 18)
+        reasons.append(f"buyer_intent_terms={buyer_hits}")
+    if any(k in lower for k in ("engine", "gearbox", "transmission", "half cut", "half-cut", "spare part", "auto part")):
+        score += 20
+        reasons.append("product_category")
+    if engines:
+        score += 20
+        reasons.append("engine_code")
+    if country:
+        score += 10
+        reasons.append(f"country={country}")
+    if any(k in lower for k in ("cif", "fob", "port", "tema", "lagos", "mombasa", "nairobi", "dubai")):
+        score += 10
+        reasons.append("logistics_signal")
+    if prices and buyer_hits:
+        score += 5
+        reasons.append("price_context")
+    if seller_hits and buyer_hits == 0:
+        score -= min(35, seller_hits * 12)
+        reasons.append(f"seller_listing_terms={seller_hits}")
+
+    score = max(0, min(100, score))
+    if score >= 70:
+        intent_type = "buyer_demand"
+        action = "create_reply_draft"
+    elif seller_hits and score < 55:
+        intent_type = "seller_listing"
+        action = "monitor_market_price"
+    elif len(signals) >= 2:
+        intent_type = "market_signal"
+        action = "save_for_learning"
+    else:
+        intent_type = "noise"
+        action = "ignore"
+
+    return {
+        "score": score,
+        "intent_type": intent_type,
+        "recommended_action": action,
+        "reasons": reasons,
+    }
+
+
 def _is_relevant_post(text: str) -> bool:
     if _is_sponsored(text):
+        return False
+    if _is_self_promotion(text):
         return False
     keywords = _match_keywords(text, SIGNAL_KEYWORDS)
     if len(keywords) >= 2:
@@ -373,6 +498,7 @@ def _build_intel_record(
     prices = detect_prices(text)
     country = detect_country(text)
     keywords = _match_keywords(text, SIGNAL_KEYWORDS)
+    intent = score_buyer_intent(text, author=author)
     return {
         "scraped_at": _now_str(),
         "session_id": session_id,
@@ -383,7 +509,11 @@ def _build_intel_record(
         "detected_country": country,
         "specialty": infer_specialty(text),
         "market_signal": _infer_market_signal(text, keywords),
-        "potential_lead": len(_match_keywords(text, LEAD_KEYWORDS)) >= 2,
+        "potential_lead": intent["intent_type"] == "buyer_demand",
+        "buyer_intent_score": intent["score"],
+        "intent_type": intent["intent_type"],
+        "recommended_action": intent["recommended_action"],
+        "intent_reasons": intent["reasons"],
         "keywords_matched": keywords[:10],
         "post_url": post_url or "",
         "source": source,
