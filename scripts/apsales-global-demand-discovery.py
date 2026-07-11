@@ -22,7 +22,7 @@ from html.parser import HTMLParser
 from pathlib import Path
 from typing import Any
 from urllib.error import HTTPError, URLError
-from urllib.parse import parse_qs, quote_plus, unquote, urlparse
+from urllib.parse import parse_qs, quote_plus, unquote, urljoin, urlparse
 from urllib.request import Request, urlopen
 
 ROOT = Path(__file__).resolve().parent.parent
@@ -101,6 +101,10 @@ PRODUCT_PATTERNS = [
 SELLER_PATTERNS = [
     r"\bfor sale\b",
     r"\bavailable\b",
+    r"\bstore for\b",
+    r"\bgenuine .*spare parts\b",
+    r"\bhot deal\b",
+    r"\bforeign used\b",
     r"\bwe sell\b",
     r"\bsupplier\b",
     r"\bwholesale\b",
@@ -252,7 +256,7 @@ def allowed_result(source: dict[str, Any], url: str) -> bool:
     host = parsed.netloc.lower()
     path = parsed.path.lower()
     if "nairaland" in platform:
-        return host.endswith("nairaland.com")
+        return host.endswith("nairaland.com") and re.match(r"^/\d+/", path) is not None
     if platform == "jiji":
         return host.endswith("jiji.ng")
     if platform == "tonaton":
@@ -294,14 +298,14 @@ def extract_target(href: str) -> str:
     return href
 
 
-def parse_search_results(html_text: str, *, engine: str, max_results: int) -> list[dict[str, str]]:
+def parse_search_results(html_text: str, *, engine: str, base_url: str, max_results: int) -> list[dict[str, str]]:
     parser = LinkExtractor()
     parser.feed(html_text)
     rows: list[dict[str, str]] = []
     seen: set[str] = set()
 
     for link in parser.links:
-        href = extract_target(link.get("href") or "")
+        href = urljoin(base_url, extract_target(link.get("href") or ""))
         title = clean_text(link.get("text") or "")
         if not href.startswith("http") or not title or len(title) < 8:
             continue
@@ -329,7 +333,7 @@ def search_query(source: dict[str, Any], query: str, *, max_results: int) -> tup
         notes.append(f"{engine} HTTP {status} {final_url}")
         if status != 200:
             continue
-        rows = parse_search_results(html_text, engine=engine, max_results=max_results)
+        rows = parse_search_results(html_text, engine=engine, base_url=final_url, max_results=max_results)
         if rows:
             return rows, notes
 
@@ -338,7 +342,7 @@ def search_query(source: dict[str, Any], query: str, *, max_results: int) -> tup
         notes.append(f"{engine} HTTP {status} {final_url}")
         if status != 200:
             continue
-        rows = parse_search_results(html_text, engine=engine, max_results=max_results)
+        rows = parse_search_results(html_text, engine=engine, base_url=final_url, max_results=max_results)
         if rows:
             return rows, notes
     return [], notes
@@ -394,6 +398,9 @@ def discover(args: argparse.Namespace) -> dict[str, Any]:
                 if key in seen_keys:
                     continue
                 score, intent, reasons, detected_codes = score_intent(text, countries, known_codes)
+                if source.get("type") == "classifieds" and intent == "buyer_demand":
+                    intent = "market_signal"
+                    reasons.append("classifieds_market_signal_only")
                 if score < args.min_score:
                     continue
                 country = detect_country(f"{query} {text}", countries)
