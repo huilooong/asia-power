@@ -266,13 +266,32 @@
   flex-shrink: 0;
 }
 .ebay-toolbar__login {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 28px;
+  padding: 0 12px;
+  border: 1px solid #d2d2d7;
+  border-radius: 999px;
+  background: #fff;
   font-size: 12px;
   font-weight: 700;
   color: var(--ebay-text, #1d1d1f);
   text-decoration: none;
   white-space: nowrap;
+  line-height: 1;
+  cursor: pointer;
+  box-sizing: border-box;
 }
-.ebay-toolbar__login:hover { text-decoration: underline; }
+.ebay-toolbar__login:hover {
+  text-decoration: none;
+  background: #f5f5f7;
+  border-color: #b0b0b5;
+}
+button.ebay-toolbar__login.ap-account__toggle {
+  font: inherit;
+  gap: 4px;
+}
 .ebay-carousel__empty {
   flex: 0 0 auto;
   padding: 24px 16px;
@@ -2655,12 +2674,17 @@ body[data-page="frontcuts"] .ebay-parts-main .ebay-listing-list {
   -webkit-user-drag: none;
 }
 .ap-listing-photo--fit-contain .ap-listing-photo__img,
-.ap-listing-photo--fit-contain img,
-.ebay-listing-row--halfcut .ap-listing-photo__img,
-.ebay-listing-row--halfcut .ap-listing-photo img {
+.ap-listing-photo--fit-contain img {
   object-fit: contain;
   object-position: center center;
   background: #eef1f4;
+}
+/* Half-cut / vehicle list: fill the frame so row heights stay even (contain + auto aspect made portrait cards taller). */
+.ebay-listing-row--halfcut .ap-listing-photo__img,
+.ebay-listing-row--halfcut .ap-listing-photo img {
+  object-fit: cover;
+  object-position: center center;
+  background: #f5f5f7;
 }
 .ap-listing-photo__zone {
   position: absolute;
@@ -2919,9 +2943,9 @@ body[data-page="frontcuts"] .ebay-parts-main .ebay-listing-row__photo--parts-ph 
 .ebay-card--catalog .ap-listing-photo img,
 .ebay-card--catalog .ebay-card__photo img,
 .ebay-card--engine .ebay-card__photo img {
-  object-fit: contain;
+  object-fit: cover;
   object-position: center center;
-  background: #eef1f4;
+  background: #f5f5f7;
 }
 .ebay-listing-row__meta {
   margin: 6px 0 0;
@@ -4133,14 +4157,20 @@ body:has(.page-hero--catalog-v4) .cta-block {
 .ebay-listing-row--v4 .ebay-listing-row__photo,
 .ebay-listing-row--v4 .ap-listing-photo {
   width: 100%;
-  min-height: 156px;
-  height: 100%;
-  aspect-ratio: auto;
+  min-height: 0;
+  height: auto;
+  aspect-ratio: 4 / 3;
   border: none;
   border-radius: 0;
   border-right: 1px solid #e8e8ed;
   background: #f5f5f7;
   align-self: stretch;
+}
+.ebay-listing-row--v4 .ap-listing-photo__img,
+.ebay-listing-row--v4 .ap-listing-photo img {
+  object-fit: cover;
+  object-position: center center;
+  background: #f5f5f7;
 }
 .ebay-listing-row--v4 .ebay-listing-row__year {
   top: 9px;
@@ -4448,7 +4478,8 @@ body:has(.page-hero--catalog-v4) .cta-block {
   }
   .ebay-listing-row--v4 .ebay-listing-row__photo,
   .ebay-listing-row--v4 .ap-listing-photo {
-    min-height: 180px;
+    min-height: 0;
+    aspect-ratio: 4 / 3;
     border-right: none;
     border-bottom: 1px solid #e8e8ed;
   }

@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="zh-Hans">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>列表页照片统一 · preview</title>
+  <style>
+    :root { --ink:#1d1d1f; --muted:#6e6e73; --line:#e8e8ed; --ok:#15803d; --bad:#b91c1c; }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: "SF Pro Text", "PingFang SC", "Helvetica Neue", sans-serif;
+      color: var(--ink);
+      background: linear-gradient(180deg, #eef1f5 0%, #f7f7f8 45%, #fff 100%);
+      line-height: 1.5;
+    }
+    .wrap { max-width: 980px; margin: 0 auto; padding: 36px 20px 64px; }
+    h1 { font-size: 1.7rem; letter-spacing: -0.03em; margin: 0 0 8px; }
+    .lead { color: var(--muted); margin: 0 0 24px; max-width: 68ch; }
+    .grid { display: grid; gap: 18px; }
+    @media (min-width: 860px) { .grid { grid-template-columns: 1fr 1fr; } }
+    .card {
+      background: #fff;
+      border: 1.5px solid var(--line);
+      border-radius: 18px;
+      overflow: hidden;
+      box-shadow: 0 4px 18px rgba(0,0,0,.05);
+    }
+    .card__head {
+      padding: 12px 16px;
+      border-bottom: 1px solid var(--line);
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: .04em;
+      text-transform: uppercase;
+    }
+    .card__head--bad { color: var(--bad); background: #fef2f2; }
+    .card__head--good { color: var(--ok); background: #f0fdf4; }
+    .demo { padding: 16px; display: grid; gap: 10px; }
+    .row {
+      display: grid;
+      grid-template-columns: 120px 1fr;
+      gap: 12px;
+      border: 1.5px solid var(--line);
+      border-radius: 14px;
+      overflow: hidden;
+      background: #fff;
+    }
+    .photo {
+      background: #f5f5f7;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+      position: relative;
+    }
+    .photo img { width: 100%; height: 100%; display: block; }
+    .photo--before-sq { height: 132px; }
+    .photo--before-tall { height: 159px; }
+    .photo--after { aspect-ratio: 4 / 3; height: auto; }
+    .photo--before-sq img,
+    .photo--before-tall img { object-fit: contain; background: #eef1f4; }
+    .photo--after img { object-fit: cover; }
+    .meta { padding: 12px 12px 12px 0; }
+    .title { font-size: 14px; font-weight: 700; margin: 0 0 6px; }
+    .sub { margin: 0; font-size: 12px; color: var(--muted); }
+    .badge {
+      position: absolute; top: 8px; left: 8px;
+      font-size: 10px; font-weight: 700; color: #fff;
+      background: rgba(0,0,0,.35); padding: 3px 7px; border-radius: 999px;
+    }
+    .note {
+      margin-top: 22px;
+      padding: 14px 16px;
+      border-radius: 14px;
+      background: #fff;
+      border: 1.5px solid var(--line);
+      font-size: 14px;
+    }
+    .note strong { color: var(--ink); }
+    ul { margin: 8px 0 0; padding-left: 1.2em; color: var(--muted); }
+    .fake-car {
+      width: 100%; height: 100%;
+      background:
+        linear-gradient(135deg, #dbe4ee, #c5d0dc 40%, #9aa8b5);
+    }
+    .fake-car--portrait {
+      width: 72%;
+      height: 100%;
+      margin: 0 auto;
+      background: linear-gradient(180deg, #f3d2c5, #c27b6a 55%, #8d5144);
+    }
+    .fake-car--cover {
+      width: 100%; height: 100%;
+      background:
+        radial-gradient(circle at 35% 45%, #fff 0 8%, transparent 9%),
+        linear-gradient(135deg, #e8eef4, #b7c4d1 45%, #7f8f9e);
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <h1>列表页照片统一预览</h1>
+    <p class="lead">
+      现网半切列表图框高度跟着原图比例走（竖图更高、方图更矮），再叠加
+      <code>object-fit: contain</code>（意思是：整张图塞进框里，两边可能留灰边），
+      列表看起来一高一低、参差不齐。
+    </p>
+
+    <div class="grid">
+      <section class="card">
+        <div class="card__head card__head--bad">Before · 高度不齐</div>
+        <div class="demo">
+          <article class="row">
+            <div class="photo photo--before-sq"><span class="badge">方图</span><div class="fake-car"></div></div>
+            <div class="meta"><p class="title">HC250361 · 方图</p><p class="sub">框高跟着图走 → 约 219px</p></div>
+          </article>
+          <article class="row">
+            <div class="photo photo--before-tall"><span class="badge">竖图</span><div class="fake-car--portrait"></div></div>
+            <div class="meta"><p class="title">HC250167 · 竖图</p><p class="sub">框高跟着图走 → 约 265px，整行被撑高</p></div>
+          </article>
+        </div>
+      </section>
+
+      <section class="card">
+        <div class="card__head card__head--good">After · 统一 4:3 + cover</div>
+        <div class="demo">
+          <article class="row">
+            <div class="photo photo--after"><span class="badge">方图</span><div class="fake-car--cover"></div></div>
+            <div class="meta"><p class="title">HC250361 · 方图</p><p class="sub">固定 4:3，铺满裁切，高度一致</p></div>
+          </article>
+          <article class="row">
+            <div class="photo photo--after"><span class="badge">竖图</span><div class="fake-car--cover" style="background:linear-gradient(180deg,#f3d2c5,#8d5144);"></div></div>
+            <div class="meta"><p class="title">HC250167 · 竖图</p><p class="sub">同样 4:3，不再把卡片撑高</p></div>
+          </article>
+        </div>
+      </section>
+    </div>
+
+    <div class="note">
+      <strong>改动说明（未上线，等你批）</strong>
+      <ul>
+        <li>半切/车辆列表：固定 <code>aspect-ratio: 4/3</code>，图片改 <code>object-fit: cover</code>（意思是：铺满框，必要时裁边）。</li>
+        <li>零部件列表仍用 contain 完整显示（发动机等不裁切），不改。</li>
+        <li>本地已改：<code>css/ebay-layout.css</code> + 目录页缓存版本 <code>list-photo-uniform-v1</code>。</li>
+        <li>现网验证数字：修前桌面抽样框高 200×219 / 200×265；注入修复后全部 200×219。</li>
+      </ul>
+    </div>
+  </div>
+</body>
+</html>
