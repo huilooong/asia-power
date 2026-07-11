@@ -1,10 +1,10 @@
 # Codex Report
 
-Generated: 2026-07-11 09:30 Africa/Accra
+Generated: 2026-07-11 09:39 Africa/Accra
 
 ## Task
 
-Continue AsiaPower growth execution without stopping at partial sections. Focus on measurable organic traffic and inquiry improvements within the current safety rules.
+Continue AsiaPower growth execution until the current growth loop has real deployed progress, not only planning.
 
 ## Files Reviewed
 
@@ -12,46 +12,50 @@ Continue AsiaPower growth execution without stopping at partial sections. Focus 
 - `docs/agent-commands/cursor.md`
 - `docs/agent-commands/README.md`
 - `docs/agent-commands/growth-001-global-scrap-parts-traffic.md`
-- `engines/ghana-half-cut-engines.html`
-- `engines/nigeria-half-cut-engines.html`
-- `engines/africa-half-cut-engines.html`
+- `config/apsales_fb_target_groups.yaml`
+- `config/apsales_market_timeline.yaml`
 - `engines/index.html`
+- `engines/africa-half-cut-engines.html`
+- `gearboxes/index.html`
 - `sitemap.xml`
-- `scripts/deploy-production.mjs`
+- `scripts/generate-engine-pages.mjs`
 
 ## Files Changed
 
-Attribution and lead visibility:
+Traffic and conversion:
 
-- `js/main.js`
-- `engines/*.html` script version references
-- `js/admin-leads.js`
-- `css/admin-v4.css`
-- `admin/leads.html`
-
-Regional SEO expansion:
-
-- `engines/kenya-half-cut-engines.html`
-- `engines/tanzania-half-cut-engines.html`
-- `engines/dubai-half-cut-engines.html`
+- `engines/benin-half-cut-engines.html`
+- `engines/togo-half-cut-engines.html`
+- `engines/cameroon-half-cut-engines.html`
+- `engines/cote-d-ivoire-half-cut-engines.html`
+- `engines/uganda-half-cut-engines.html`
+- `engines/senegal-half-cut-engines.html`
+- `engines/south-africa-half-cut-engines.html`
 - `engines/africa-half-cut-engines.html`
 - `engines/index.html`
 - `sitemap.xml`
+- `scripts/generate-engine-pages.mjs`
+- `engines/*.html` engine inquiry country options
+- `gearboxes/index.html`
 
-Report:
+Previously completed in this execution stream:
 
-- `docs/agent-reports/codex-latest.md`
+- `js/main.js`
+- `js/admin-leads.js`
+- `css/admin-v4.css`
+- `admin/leads.html`
+- `engines/kenya-half-cut-engines.html`
+- `engines/tanzania-half-cut-engines.html`
+- `engines/dubai-half-cut-engines.html`
 
 ## Commands Run
 
-- Git status and diff scope checks.
-- JavaScript syntax validation for changed lead scripts.
-- Static page validation for title, meta description, canonical, JSON-LD and WhatsApp CTA.
-- Production HTTPS validation for new regional pages.
-- Release Manager deployments:
-  - `portal`
-  - `engines`
-  - `admin`
+- Git status and diff checks.
+- Static HTML and JSON-LD validation.
+- Sitemap inclusion checks.
+- JavaScript syntax validation.
+- Production HTTPS validation.
+- Release Manager deployments for `portal`, `admin`, `engines`, and attempted `chrome`.
 
 ## Tests / Validation
 
@@ -59,42 +63,64 @@ Passed:
 
 - `node --check js/main.js`
 - `node --check js/admin-leads.js`
-- Static validation for 3 new regional landing pages.
-- JSON-LD parse validation for new and linked pages.
-- Sitemap check for Kenya, Tanzania and Dubai URLs.
+- `node --check scripts/generate-engine-pages.mjs`
+- Static validation for all new regional pages:
+  - title
+  - meta description
+  - canonical
+  - JSON-LD
+  - WhatsApp CTA
+  - safety wording around confirmation before quote
 - Live HTTPS validation:
-  - `https://asia-power.com/engines/kenya-half-cut-engines.html` - PASS 200
-  - `https://asia-power.com/engines/tanzania-half-cut-engines.html` - PASS 200
-  - `https://asia-power.com/engines/dubai-half-cut-engines.html` - PASS 200
-- Live admin validation:
-  - `https://asia-power.com/admin/leads.html` - PASS 200
-  - `https://asia-power.com/js/admin-leads.js?v=growth-attribution-v1` contains Growth Attribution summary.
-  - `https://asia-power.com/css/admin-v4.css?v=growth-attribution-v1` contains admin lead attribution layout.
+  - Kenya, Tanzania, Dubai UAE pages - PASS
+  - Benin, Togo, Cameroon, Cote d'Ivoire, Uganda, Senegal, South Africa pages - PASS
+- Live sitemap validation for all new regional URLs - PASS
+- Engine inquiry country dropdown live sample:
+  - `g4fc.html` - PASS
+  - `g4na.html` - PASS
+  - `mr20de.html` - PASS
+  - `2az-fe.html` - PASS
+  - `651-955.html` - PASS
+- Gearbox catalog static validation:
+  - regional gearbox quote links - PASS
+  - JSON-LD parse - PASS
+  - growth attribution script version - PASS
 
 ## Result
 
-Completed and deployed:
+Deployed:
 
-1. Lead source attribution hardening so WhatsApp and form leads carry page/source context.
-2. Admin lead inbox growth attribution summary showing top source pages, products/engines and countries.
-3. Three new regional half-cut SEO landing pages:
+1. Lead source attribution hardening.
+2. Admin Growth Attribution panel for lead source visibility.
+3. 10 regional half-cut engine landing pages:
    - Kenya
    - Tanzania
-   - Dubai / UAE re-export
-4. Internal links from the Africa hub and engine index into the new regional pages.
+   - Dubai UAE
+   - Benin
+   - Togo
+   - Cameroon
+   - Cote d'Ivoire
+   - Uganda
+   - Senegal
+   - South Africa
+4. Internal links from the engine index and Africa hub.
 5. Sitemap inclusion verified online.
+6. Engine inquiry country options expanded to match the new regional growth pages.
+7. Gearbox Catalog enhanced with regional gearbox quote paths and structured data.
 
 ## Risks / Open Questions
 
-- Search Console submission is still blocked by account/property access. Sitemap ping endpoints are not reliable.
-- Regional pages use confirmed-safe donor cluster links and do not claim unverified stock, prices or supplier details.
-- The next growth bottleneck is not page creation alone; it is measuring which source pages create real inquiries.
+- Search Console submission still requires account/property access.
+- Detailed lead attribution requires admin authentication; public health endpoint confirms only totals.
+- New regional pages are intentionally conservative: no supplier details, no full VINs, no unconfirmed prices, no guaranteed stock claims.
 
 ## Recommended Next Action
 
-Next execution should connect live lead attribution data to a weekly SEO priority list:
+Next growth execution should complete the Gearbox Catalog live deployment, then cover Half Cuts with the same pattern:
 
-1. Top source pages generating inquiries.
-2. Pages with traffic but no inquiry.
-3. Countries/products with inquiries but missing landing pages.
-4. Engine or half-cut pages that should be promoted in internal links.
+1. Re-run Release Manager `chrome` after committing this report so the worktree is clean.
+2. Confirm `gearboxes/` has regional quote links live.
+3. Confirm existing half-cut page structure.
+4. Link half-cut country entry points from `half-cuts/` and relevant country hubs.
+4. Keep every quote dependent on photo/package/price confirmation.
+5. Validate live pages and monitor new lead source attribution in `/admin/leads.html`.
