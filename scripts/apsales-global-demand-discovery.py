@@ -246,6 +246,30 @@ def direct_search_urls(source: dict[str, Any], query: str) -> list[tuple[str, st
     return urls
 
 
+def allowed_result(source: dict[str, Any], url: str) -> bool:
+    platform = str(source.get("platform") or "").lower()
+    parsed = urlparse(url)
+    host = parsed.netloc.lower()
+    path = parsed.path.lower()
+    if "nairaland" in platform:
+        return host.endswith("nairaland.com")
+    if platform == "jiji":
+        return host.endswith("jiji.ng")
+    if platform == "tonaton":
+        return host.endswith("tonaton.com")
+    if platform == "youtube":
+        return host.endswith("youtube.com") and path.startswith("/watch")
+    if "facebook" in platform:
+        return host.endswith("facebook.com") and "/groups/" in path
+    if "pakwheels" in platform:
+        return host.endswith("pakwheels.com")
+    if "opensooq" in platform:
+        return host.endswith("opensooq.com")
+    if "dubizzle" in platform:
+        return host.endswith("dubizzle.com")
+    return True
+
+
 def fetch(url: str, timeout: int = 35) -> tuple[str, int, str]:
     try:
         req = Request(url, headers=HEADERS)
@@ -357,11 +381,14 @@ def discover(args: argparse.Namespace) -> dict[str, Any]:
 
     for source in sources[: args.max_sources]:
         countries = list(source.get("countries") or [])
-        for query in list(source.get("target_queries") or [])[: args.max_queries_per_source]:
+        queries = list(source.get("buyer_intent_queries") or []) + list(source.get("target_queries") or [])
+        for query in queries[: args.max_queries_per_source]:
             rows, query_notes = search_query(source, query, max_results=args.max_results_per_query)
             notes.extend(f"{source.get('id')} | {query} | {note}" for note in query_notes)
             for item in rows:
                 reviewed += 1
+                if not allowed_result(source, item.get("url") or ""):
+                    continue
                 text = clean_text(f"{item.get('title')} {item.get('snippet')}")
                 key = stable_key(str(source.get("id") or ""), item.get("url") or "", text)
                 if key in seen_keys:

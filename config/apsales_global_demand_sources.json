@@ -20,6 +20,7 @@
       "public_url": "https://www.nairaland.com/autos",
       "buyer_signal": "Users ask repair, import, used engine and spare-parts questions in long-running threads.",
       "target_queries": ["site:nairaland.com engine replacement Nigeria", "site:nairaland.com tokunbo engine", "site:nairaland.com gearbox problem Toyota"],
+      "buyer_intent_queries": ["site:nairaland.com \"where can i buy\" engine Nigeria", "site:nairaland.com \"i need\" gearbox Nigeria", "site:nairaland.com \"looking for\" tokunbo engine"],
       "allowed_action": "collect_public_threads_and_create_reply_drafts",
       "risk": "Medium"
     },
@@ -33,6 +34,7 @@
       "public_url": "https://jiji.ng/car-parts-and-accessories",
       "buyer_signal": "Auto-parts listings and buyer comments reveal models, pricing and active local demand.",
       "target_queries": ["site:jiji.ng engine Toyota Nigeria", "site:jiji.ng gearbox Nigeria", "site:jiji.ng half cut Nigeria"],
+      "buyer_intent_queries": ["site:jiji.ng \"looking for\" engine Nigeria", "site:jiji.ng \"need\" gearbox Nigeria"],
       "allowed_action": "collect_public_listing_signals_only",
       "risk": "Medium"
     },
@@ -46,6 +48,7 @@
       "public_url": "https://tonaton.com",
       "buyer_signal": "Ghana vehicle and parts listings expose local demand for Toyota, Hyundai, Kia and Nissan parts.",
       "target_queries": ["site:tonaton.com engine Ghana", "site:tonaton.com gearbox Ghana", "site:tonaton.com spare parts Ghana"],
+      "buyer_intent_queries": ["site:tonaton.com \"looking for\" engine Ghana", "site:tonaton.com \"need\" gearbox Ghana"],
       "allowed_action": "collect_public_listing_signals_only",
       "risk": "Medium"
     },
@@ -111,6 +114,7 @@
       "public_url": "https://www.youtube.com",
       "buyer_signal": "Repair videos and engine-swap videos contain direct questions about where to buy engines and gearboxes.",
       "target_queries": ["G4KD engine replacement comments", "2TR-FE engine swap where to buy", "Toyota gearbox replacement Africa"],
+      "buyer_intent_queries": ["\"where can i buy\" \"2TR-FE\" engine", "\"looking for\" \"G4KD\" engine", "\"need\" Toyota gearbox Africa"],
       "allowed_action": "collect_public_comment_demand_and_create_reply_drafts",
       "risk": "Medium"
     },
@@ -189,6 +193,7 @@
       "public_url": "https://www.facebook.com/groups",
       "buyer_signal": "High-density country-specific auto-parts groups, but account safety must be protected.",
       "target_queries": ["auto parts Ghana group", "spare parts Nigeria group", "Toyota parts Kenya group"],
+      "buyer_intent_queries": ["\"looking for\" engine Ghana group", "\"need\" gearbox Nigeria group", "\"who has\" half cut Kenya"],
       "allowed_action": "browse_joined_or_public_groups_and_create_reply_drafts",
       "risk": "High"
     }
