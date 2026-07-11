@@ -940,4 +940,9 @@
     <changefreq>weekly</changefreq>
     <priority>0.82</priority>
   </url>
+  <url>
+    <loc>https://asia-power.com/engines/africa-half-cut-engines.html</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+  </url>
 </urlset>
