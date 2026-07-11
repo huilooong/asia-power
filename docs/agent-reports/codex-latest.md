@@ -1,82 +1,100 @@
 # Codex Report
 
-Generated: 2026-07-05 07:25 Africa/Accra
+Generated: 2026-07-11 09:30 Africa/Accra
 
 ## Task
 
-Report today's exact progress to Kongming / OpenClaw brain.
-
-The task I believe I was working on today:
-
-- Built a read-only repository status scanner.
-- Generated a CTO project status scan.
-- Generated a CTO project status summary based only on the completed scan.
-- Read the agent command board and prepared this Codex progress report.
-
-No new feature work was started for this reporting task.
+Continue AsiaPower growth execution without stopping at partial sections. Focus on measurable organic traffic and inquiry improvements within the current safety rules.
 
 ## Files Reviewed
 
 - `docs/agent-commands/codex.md`
 - `docs/agent-commands/cursor.md`
 - `docs/agent-commands/README.md`
-- `docs/cto/project-status-scan.md`
-- `docs/cto/project-status-summary.md`
+- `docs/agent-commands/growth-001-global-scrap-parts-traffic.md`
+- `engines/ghana-half-cut-engines.html`
+- `engines/nigeria-half-cut-engines.html`
+- `engines/africa-half-cut-engines.html`
+- `engines/index.html`
+- `sitemap.xml`
+- `scripts/deploy-production.mjs`
 
 ## Files Changed
 
-Likely from my work today:
+Attribution and lead visibility:
 
-- `scripts/project_status_scan.py`
-- `docs/cto/project-status-scan.md`
-- `docs/cto/project-status-summary.md`
+- `js/main.js`
+- `engines/*.html` script version references
+- `js/admin-leads.js`
+- `css/admin-v4.css`
+- `admin/leads.html`
+
+Regional SEO expansion:
+
+- `engines/kenya-half-cut-engines.html`
+- `engines/tanzania-half-cut-engines.html`
+- `engines/dubai-half-cut-engines.html`
+- `engines/africa-half-cut-engines.html`
+- `engines/index.html`
+- `sitemap.xml`
+
+Report:
+
 - `docs/agent-reports/codex-latest.md`
-
-Repository also contains many unrelated modified and untracked files. Ownership is unclear from the current repo status, so I am not attributing those to Codex.
 
 ## Commands Run
 
-- `sed -n '1,240p' docs/agent-commands/codex.md`
-- `sed -n '1,240p' docs/agent-commands/cursor.md`
-- `sed -n '1,240p' docs/agent-commands/README.md`
-- `git status --short`
-- `python3 -m py_compile scripts/project_status_scan.py`
-- `python3 scripts/project_status_scan.py`
-- `sed` / `grep` / `wc` checks against generated CTO reports
+- Git status and diff scope checks.
+- JavaScript syntax validation for changed lead scripts.
+- Static page validation for title, meta description, canonical, JSON-LD and WhatsApp CTA.
+- Production HTTPS validation for new regional pages.
+- Release Manager deployments:
+  - `portal`
+  - `engines`
+  - `admin`
 
 ## Tests / Validation
 
-- `python3 -m py_compile scripts/project_status_scan.py` passed.
-- `python3 scripts/project_status_scan.py` passed and wrote `docs/cto/project-status-scan.md`.
-- Report contents were spot-checked for key sections and corrected when the first scan included noisy architecture-document matches.
-- No production services, Telegram bots, Facebook scripts, deployment scripts, or business automation were executed.
+Passed:
+
+- `node --check js/main.js`
+- `node --check js/admin-leads.js`
+- Static validation for 3 new regional landing pages.
+- JSON-LD parse validation for new and linked pages.
+- Sitemap check for Kenya, Tanzania and Dubai URLs.
+- Live HTTPS validation:
+  - `https://asia-power.com/engines/kenya-half-cut-engines.html` - PASS 200
+  - `https://asia-power.com/engines/tanzania-half-cut-engines.html` - PASS 200
+  - `https://asia-power.com/engines/dubai-half-cut-engines.html` - PASS 200
+- Live admin validation:
+  - `https://asia-power.com/admin/leads.html` - PASS 200
+  - `https://asia-power.com/js/admin-leads.js?v=growth-attribution-v1` contains Growth Attribution summary.
+  - `https://asia-power.com/css/admin-v4.css?v=growth-attribution-v1` contains admin lead attribution layout.
 
 ## Result
 
-Completed:
+Completed and deployed:
 
-- Read-only scanner exists at `scripts/project_status_scan.py`.
-- CTO scan report exists at `docs/cto/project-status-scan.md`.
-- CTO summary report exists at `docs/cto/project-status-summary.md`.
-- Current repo state was checked with `git status --short`.
-- The scan identifies active agents, partial agents, runtime components, data stores, tests, gaps, duplicate concepts, and recommended next actions from repository evidence.
-
-Incomplete:
-
-- Scanner and reports are not committed.
-- The repo has a large dirty working tree with many unrelated files; ownership cannot be fully determined from the scan alone.
-
-Confidence level: high for files I changed today; medium for attribution of broader dirty work.
+1. Lead source attribution hardening so WhatsApp and form leads carry page/source context.
+2. Admin lead inbox growth attribution summary showing top source pages, products/engines and countries.
+3. Three new regional half-cut SEO landing pages:
+   - Kenya
+   - Tanzania
+   - Dubai / UAE re-export
+4. Internal links from the Africa hub and engine index into the new regional pages.
+5. Sitemap inclusion verified online.
 
 ## Risks / Open Questions
 
-- The repository has many modified and untracked files unrelated to the current reporting task.
-- APCGO vs APBD ownership remains unclear.
-- `runtime/` vs `apsales_runtime/` ownership remains unclear.
-- Knowledge Graph vs Growth Database ownership remains unclear.
-- Markdown memory vs runtime MemoryStore ownership remains unclear.
-- Approval gate vs approval routing ownership remains unclear.
+- Search Console submission is still blocked by account/property access. Sitemap ping endpoints are not reliable.
+- Regional pages use confirmed-safe donor cluster links and do not claim unverified stock, prices or supplier details.
+- The next growth bottleneck is not page creation alone; it is measuring which source pages create real inquiries.
 
 ## Recommended Next Action
 
-CTO should review `docs/cto/project-status-scan.md` and `docs/cto/project-status-summary.md`, then decide ownership boundaries before approving new runtime or agent expansion.
+Next execution should connect live lead attribution data to a weekly SEO priority list:
+
+1. Top source pages generating inquiries.
+2. Pages with traffic but no inquiry.
+3. Countries/products with inquiries but missing landing pages.
+4. Engine or half-cut pages that should be promoted in internal links.
