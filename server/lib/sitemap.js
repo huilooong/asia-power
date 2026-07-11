@@ -46,11 +46,16 @@ function listHtmlPaths(publicDir, subdir, priority, changefreq) {
   return fs.readdirSync(dir)
     .filter(name => name.endsWith('.html') && name !== 'index.html')
     .sort()
-    .map(name => ({
-      loc: `/${subdir}/${name}`,
-      changefreq,
-      priority,
-    }));
+    .map(name => {
+      const fp = path.join(dir, name);
+      const mtime = fs.statSync(fp).mtime.toISOString().slice(0, 10);
+      return {
+        loc: `/${subdir}/${name}`,
+        changefreq,
+        priority,
+        lastmod: mtime,
+      };
+    });
 }
 
 function halfCutEntries(approved, lastmod) {
