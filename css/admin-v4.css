@@ -248,6 +248,62 @@ body[data-page^="admin-"] footer.footer {
 }
 body[data-page^="admin-"] .whatsapp-float { display: none !important; }
 
+.admin-leads-growth {
+  margin: 18px 0 22px;
+  padding: 18px;
+  border: 1px solid var(--admin-v4-b2);
+  border-radius: 12px;
+  background: #fff;
+  box-shadow: 0 12px 30px rgba(15, 23, 42, .06);
+}
+
+.admin-leads-growth__head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 14px;
+  margin-bottom: 14px;
+}
+
+.admin-leads-growth__head h2 {
+  margin: 0;
+  color: var(--admin-v4-t1);
+  font-size: 18px;
+}
+
+.admin-leads-growth__head p {
+  margin: 0;
+  color: var(--admin-v4-t2);
+  font-size: 13px;
+}
+
+.admin-leads-growth__grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 14px;
+}
+
+.admin-leads-growth__card {
+  border: 1px solid var(--admin-v4-b2);
+  border-radius: 10px;
+  padding: 14px;
+  background: var(--admin-v4-surface, #f8fafc);
+}
+
+.admin-leads-growth__card h3 {
+  margin: 0 0 10px;
+  color: var(--admin-v4-t1);
+  font-size: 13px;
+}
+
+.admin-leads-growth__card .link-list {
+  gap: 8px;
+}
+
+.admin-leads-growth__card .link-list li {
+  background: #fff;
+}
+
 .admin-review-login__oauth {
   margin: 0 0 16px;
 }
@@ -280,6 +336,18 @@ body[data-page^="admin-"] .whatsapp-float { display: none !important; }
 .admin-review-login__divider span { white-space: nowrap; }
 
 @media (max-width: 720px) {
+  .admin-leads-growth__head {
+    display: block;
+  }
+
+  .admin-leads-growth__head p {
+    margin-top: 6px;
+  }
+
+  .admin-leads-growth__grid {
+    grid-template-columns: 1fr;
+  }
+
   .admin-v4-header__inner {
     flex-direction: column;
     align-items: flex-start;

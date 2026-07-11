@@ -568,6 +568,72 @@
     return `<button type="button" class="admin-leads-filter${active}" data-filter="${id}">${escapeHtml(label)} (${count})</button>`;
   }
 
+  function pathLabel(pageUrl) {
+    const value = String(pageUrl || '').trim();
+    if (!value) return 'Unknown page';
+    try {
+      const url = value.startsWith('http') ? new URL(value) : new URL(value, 'https://asia-power.com');
+      return url.pathname.replace(/^\/+/, '') || 'Home';
+    } catch {
+      return value;
+    }
+  }
+
+  function topGroups(leads, keyFn, limit = 5) {
+    const groups = new Map();
+    leads.forEach((lead) => {
+      const key = keyFn(lead);
+      if (!key) return;
+      const current = groups.get(key) || { key, total: 0, open: 0 };
+      current.total += 1;
+      if (lead.replyStatus !== 'replied') current.open += 1;
+      groups.set(key, current);
+    });
+    return [...groups.values()]
+      .sort((a, b) => (b.total - a.total) || (b.open - a.open) || a.key.localeCompare(b.key))
+      .slice(0, limit);
+  }
+
+  function renderGrowthGroup(title, rows, type) {
+    const body = rows.length
+      ? rows.map((row) => {
+        const href = type === 'page' ? pageDisplayUrl(row.key) : '';
+        const label = type === 'page' ? pathLabel(row.key) : row.key;
+        const value = href ? linkValue(href, label, 'admin-lead-card__link') : escapeHtml(label);
+        return `<li>${value}<span>${row.total} total · ${row.open} open</span></li>`;
+      }).join('')
+      : '<li><em>No attribution data yet</em><span>0 total</span></li>';
+    return `<section class="admin-leads-growth__card"><h3>${escapeHtml(title)}</h3><ul class="link-list">${body}</ul></section>`;
+  }
+
+  function renderGrowthAttributionSummary(leads) {
+    const attributed = leads.filter((lead) => lead.pageUrl || lead.page || lead.referrer || lead.utmSource || lead.utmCampaign);
+    const pageRows = topGroups(attributed, (lead) => lead.pageUrl || lead.page, 5);
+    const productRows = topGroups(leads, (lead) => {
+      const ctx = enrichLead(lead);
+      return ctx.engineCode || lead.engineCode || ctx.product || lead.product || lead.model || ctx.productLabel;
+    }, 5);
+    const countryRows = topGroups(leads, (lead) => lead.country || lead.ipCountry, 5);
+    const organicCount = leads.filter((lead) => {
+      const ref = String(lead.referrer || '').toLowerCase();
+      const source = String(lead.utmSource || '').toLowerCase();
+      return ref.includes('google') || ref.includes('bing') || source === 'google' || source === 'bing';
+    }).length;
+
+    return `
+      <div class="admin-leads-growth">
+        <div class="admin-leads-growth__head">
+          <h2>Growth Attribution</h2>
+          <p>${attributed.length} attributed leads · ${organicCount} search-attributed leads · use this to decide the next SEO page batch.</p>
+        </div>
+        <div class="admin-leads-growth__grid">
+          ${renderGrowthGroup('Top Source Pages', pageRows, 'page')}
+          ${renderGrowthGroup('Top Products / Engines', productRows, 'product')}
+          ${renderGrowthGroup('Top Countries', countryRows, 'country')}
+        </div>
+      </div>`;
+  }
+
   async function boot() {
     const root = document.getElementById('admin-leads-root');
     if (!root) return;
@@ -615,6 +681,8 @@
             <input type="search" id="admin-leads-search" placeholder="Search name, phone, stock ID, vehicle…" aria-label="Search leads" value="${escapeHtml(query)}">
           </label>
         </div>
+
+        ${renderGrowthAttributionSummary(leads)}
 
         <div class="admin-leads-grid">
           ${filtered.length
