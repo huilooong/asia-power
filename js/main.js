@@ -9,6 +9,7 @@
   const ADS_GENERATE_LEAD_SEND_TO = ADS_GENERATE_LEAD_LABEL
     ? `${ADS_CONVERSION_ID}/${ADS_GENERATE_LEAD_LABEL}`
     : '';
+  const UTM_STORAGE_KEY = 'asiapower_utm';
 
   function t(key, fallback) {
     return window.PublicI18n?.t(key, fallback) ?? fallback;
@@ -338,6 +339,119 @@
     return selected?.text?.trim() || field.value?.trim() || '';
   }
 
+  function trimMeta(value, max) {
+    return String(value ?? '').trim().slice(0, max);
+  }
+
+  function titleCaseSlug(value) {
+    return String(value || '')
+      .trim()
+      .split(/[-_]/)
+      .filter(Boolean)
+      .map((part) => part.charAt(0).toUpperCase() + part.slice(1).toLowerCase())
+      .join(' ');
+  }
+
+  function readStoredUtm() {
+    try {
+      const raw = sessionStorage.getItem(UTM_STORAGE_KEY);
+      return raw ? JSON.parse(raw) : {};
+    } catch {
+      return {};
+    }
+  }
+
+  function captureUtmFallback() {
+    const params = new URLSearchParams(window.location.search);
+    const stored = readStoredUtm();
+    const next = {
+      utm_source: params.get('utm_source') || stored.utm_source || '',
+      utm_medium: params.get('utm_medium') || stored.utm_medium || '',
+      utm_campaign: params.get('utm_campaign') || stored.utm_campaign || '',
+      utm_content: params.get('utm_content') || stored.utm_content || '',
+      utm_term: params.get('utm_term') || stored.utm_term || '',
+    };
+    if (next.utm_source || next.utm_medium || next.utm_campaign) {
+      try {
+        sessionStorage.setItem(UTM_STORAGE_KEY, JSON.stringify(next));
+      } catch {
+        // ignore storage failures
+      }
+    }
+    return next;
+  }
+
+  function inferPageProduct(extra = {}) {
+    const params = new URLSearchParams(window.location.search);
+    const body = document.body;
+    const h1 = document.querySelector('h1')?.textContent?.trim() || '';
+    const engine = body?.dataset?.engine || '';
+    const product = trimMeta(
+      extra.product
+        || extra.model
+        || params.get('product')
+        || engine
+        || h1.replace(/\s+(Sourcing Guide|Engine|Half Cut.*)$/i, ''),
+      120,
+    );
+    const brand = trimMeta(extra.brand || params.get('brand') || '', 80);
+    const productLabel = product ? titleCaseSlug(product) || product : '';
+    return { brand, product, productLabel };
+  }
+
+  function captureLeadMetaFallback(extra = {}) {
+    const pageUrl = trimMeta(`${window.location.pathname}${window.location.search}`, 240);
+    const utm = captureUtmFallback();
+    const inferred = inferPageProduct(extra);
+    const enquiryType = trimMeta(extra.enquiry_type || extra.enquiryType || '', 80);
+    const pageLabel = pageUrl.includes('/engines/') ? '发动机详情' : '网站页面';
+    const inquirySubject = inferred.product
+      ? `${inferred.brand ? `${titleCaseSlug(inferred.brand)} ` : ''}${inferred.productLabel} - ${pageLabel}`
+      : `网站询价 - ${pageLabel}`;
+    const replySubject = inferred.product
+      ? `Re: ${inferred.brand ? `${titleCaseSlug(inferred.brand)} ` : ''}${inferred.productLabel} inquiry - AsiaPower`
+      : 'Re: AsiaPower enquiry';
+    return {
+      pageUrl,
+      page: pageUrl,
+      referrer: trimMeta(extra.referrer || document.referrer || '', 240),
+      brand: inferred.brand,
+      product: inferred.product,
+      productLabel: inferred.productLabel,
+      enquiryType,
+      inquirySubject: trimMeta(inquirySubject, 160),
+      replySubject: trimMeta(replySubject, 160),
+      ...utm,
+    };
+  }
+
+  function captureLeadMeta(extra = {}) {
+    return window.AsiaLeadContext?.captureLeadMeta?.(extra) || captureLeadMetaFallback(extra);
+  }
+
+  function appendSourceToWhatsAppHref(link) {
+    if (!link?.href || !link.href.includes('wa.me')) return;
+    let url;
+    try {
+      url = new URL(link.href);
+    } catch {
+      return;
+    }
+    const params = url.searchParams;
+    const currentText = params.get('text') || 'Hello AsiaPower, I would like to request a quote.';
+    if (/Source Page:/i.test(currentText)) return;
+    const utm = window.AsiaLeadContext?.captureUtm?.() || captureUtmFallback();
+    const sourceLines = [
+      '',
+      `Source Page: ${window.location.href}`,
+      document.referrer ? `Referrer: ${document.referrer}` : '',
+      utm.utm_source ? `UTM Source: ${utm.utm_source}` : '',
+      utm.utm_campaign ? `UTM Campaign: ${utm.utm_campaign}` : '',
+    ].filter(Boolean);
+    params.set('text', `${currentText}${sourceLines.join('\n')}`);
+    link.href = url.toString();
+  }
+
   function buildContactWhatsAppMessage(form, leadId) {
     if (window.QuoteRequestForm?.buildMessage) {
       return window.QuoteRequestForm.buildMessage(form, leadId);
@@ -376,17 +490,12 @@
     const extras = window.QuoteRequestForm?.buildLeadExtras?.(form) || {};
     const channel = options.channel || 'email';
     const waMessage = extras.whatsapp_message || buildContactWhatsAppMessage(form);
-    const leadMeta = window.AsiaLeadContext?.captureLeadMeta?.({
+    const leadMeta = captureLeadMeta({
       brand: extras.brand || fieldValue(form, 'brand'),
       product: extras.product || extras.model || fieldValue(form, 'model'),
       enquiry_type: fieldValue(form, 'enquiry_type'),
       source: options.source || 'quote-form',
-    }) || {
-      pageUrl: `${window.location.pathname}${window.location.search}`,
-      page: `${window.location.pathname}${window.location.search}`,
-      referrer: document.referrer || '',
-      ...(window.AsiaPowerUtm?.forLead?.() || {}),
-    };
+    });
     return {
       name: fieldValue(form, 'name'),
       company: fieldValue(form, 'company'),
@@ -1281,6 +1390,16 @@
 
   const WA_PROMPT_SKIP_SELECTOR = '[data-half-cut-wa], [data-half-cut-lead], [data-product-lead], #quote-wa-btn, [data-wa-no-prompt]';
 
+  function initWhatsAppSourceAttribution() {
+    if (window.__ASIAPOWER_WA_SOURCE_ATTR_INIT__) return;
+    window.__ASIAPOWER_WA_SOURCE_ATTR_INIT__ = true;
+    document.addEventListener('click', (e) => {
+      const link = e.target.closest('a[href*="wa.me"]');
+      if (!link) return;
+      appendSourceToWhatsAppHref(link);
+    }, true);
+  }
+
   function initGenericWhatsAppLeadCapture() {
     if (window.__ASIAPOWER_WA_LEAD_CAPTURE_INIT__) return;
     window.__ASIAPOWER_WA_LEAD_CAPTURE_INIT__ = true;
@@ -1305,8 +1424,12 @@
 
       try {
         const params = new URLSearchParams(window.location.search);
-        const brand = params.get('brand') || '';
-        const product = params.get('product') || '';
+        const inferred = inferPageProduct({
+          brand: params.get('brand') || '',
+          product: params.get('product') || '',
+        });
+        const brand = inferred.brand;
+        const product = inferred.product;
         let enquiryType = '';
         let vehicleDetails = '';
         if (brand || product) {
@@ -1320,16 +1443,12 @@
           else if (p.includes('engine')) enquiryType = 'engine';
           else if (product) enquiryType = 'engine';
         }
-        const leadMeta = window.AsiaLeadContext?.captureLeadMeta?.({
+        const leadMeta = captureLeadMeta({
           brand,
           product,
           enquiry_type: enquiryType,
           source: 'whatsapp-intent',
-        }) || {
-          pageUrl: `${window.location.pathname}${window.location.search}`,
-          page: `${window.location.pathname}${window.location.search}`,
-          referrer: document.referrer || '',
-        };
+        });
         const res = await fetch('/api/leads/whatsapp', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
@@ -1432,6 +1551,7 @@
     initGearboxCatalogPage();
     initChassisCatalogPage();
     initFrontCutCatalogPage();
+    initWhatsAppSourceAttribution();
     initWhatsAppAnalytics();
     initGenericWhatsAppLeadCapture();
     initCaseStudyVideos();
