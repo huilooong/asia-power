@@ -4,7 +4,7 @@
   <!-- Core pages -->
   <url>
     <loc>https://asia-power.com/</loc>
-    <lastmod>2026-07-03</lastmod>
+    <lastmod>2026-07-11</lastmod>
     <changefreq>weekly</changefreq>
     <priority>1.0</priority>
   </url>
@@ -16,7 +16,7 @@
   </url>
   <url>
     <loc>https://asia-power.com/contact.html</loc>
-    <lastmod>2026-07-03</lastmod>
+    <lastmod>2026-07-11</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
@@ -30,7 +30,7 @@
   <!-- Catalog index pages -->
   <url>
     <loc>https://asia-power.com/gearboxes/</loc>
-    <lastmod>2026-07-03</lastmod>
+    <lastmod>2026-07-11</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
   </url>
@@ -42,13 +42,13 @@
   </url>
   <url>
     <loc>https://asia-power.com/engines/</loc>
-    <lastmod>2026-07-03</lastmod>
+    <lastmod>2026-07-11</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
     <loc>https://asia-power.com/half-cuts/</loc>
-    <lastmod>2026-07-03</lastmod>
+    <lastmod>2026-07-11</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
   </url>
@@ -907,61 +907,73 @@
   </url>
   <url>
     <loc>https://asia-power.com/engines/ghana-half-cut-engines.html</loc>
+    <lastmod>2026-07-11</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.85</priority>
   </url>
   <url>
     <loc>https://asia-power.com/engines/nigeria-half-cut-engines.html</loc>
+    <lastmod>2026-07-11</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.85</priority>
   </url>
   <url>
     <loc>https://asia-power.com/engines/kenya-half-cut-engines.html</loc>
+    <lastmod>2026-07-11</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.85</priority>
   </url>
   <url>
     <loc>https://asia-power.com/engines/tanzania-half-cut-engines.html</loc>
+    <lastmod>2026-07-11</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.85</priority>
   </url>
   <url>
     <loc>https://asia-power.com/engines/dubai-half-cut-engines.html</loc>
+    <lastmod>2026-07-11</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.85</priority>
   </url>
   <url>
     <loc>https://asia-power.com/engines/benin-half-cut-engines.html</loc>
+    <lastmod>2026-07-11</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.84</priority>
   </url>
   <url>
     <loc>https://asia-power.com/engines/togo-half-cut-engines.html</loc>
+    <lastmod>2026-07-11</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.84</priority>
   </url>
   <url>
     <loc>https://asia-power.com/engines/cameroon-half-cut-engines.html</loc>
+    <lastmod>2026-07-11</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.84</priority>
   </url>
   <url>
     <loc>https://asia-power.com/engines/cote-d-ivoire-half-cut-engines.html</loc>
+    <lastmod>2026-07-11</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.84</priority>
   </url>
   <url>
     <loc>https://asia-power.com/engines/uganda-half-cut-engines.html</loc>
+    <lastmod>2026-07-11</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.84</priority>
   </url>
   <url>
     <loc>https://asia-power.com/engines/senegal-half-cut-engines.html</loc>
+    <lastmod>2026-07-11</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.84</priority>
   </url>
   <url>
     <loc>https://asia-power.com/engines/south-africa-half-cut-engines.html</loc>
+    <lastmod>2026-07-11</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.84</priority>
   </url>
@@ -992,6 +1004,7 @@
   </url>
   <url>
     <loc>https://asia-power.com/engines/africa-half-cut-engines.html</loc>
+    <lastmod>2026-07-11</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
   </url>
