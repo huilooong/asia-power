@@ -2317,7 +2317,7 @@ body[data-page="frontcuts"] .ebay-parts-main .ebay-listing-row .ap-listing-photo
   min-height: 0;
   aspect-ratio: 4 / 3;
   flex-shrink: 0;
-  align-self: stretch;
+  align-self: start;
   border: none;
   border-radius: 0;
   border-right: 1px solid #e8e8ed;
@@ -2372,7 +2372,7 @@ body[data-page="frontcuts"] .ebay-parts-main .ebay-listing-list {
 }
 .ebay-listing-row--parts .ebay-listing-row__photo,
 .ebay-listing-row--parts .ap-listing-photo {
-  align-self: stretch;
+  align-self: start;
   height: auto;
   aspect-ratio: 4 / 3;
 }

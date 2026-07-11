@@ -6,12 +6,13 @@
 
   // Must bump when ebay-layout.css changes — injectEbayStylesheet rewrites all pages to this query.
   // Stale CDN entries for old ?v= keys (e.g. v4-listing-card-v1) can keep serving 66px parts thumbs.
-  const SITE_EBAY_LAYOUT_VER = 'list-photo-uniform-v2';
-  const SITE_COMPONENTS_VER = 'list-photo-uniform-v2';
-  // Deploy markers (keep strings discoverable): auth-nav-v1 · auth-nav-once-v2 · auth-nav-sitewide-v1 · login-entry-v1 · lang-sync-v2 · contact-center-v1 · about-type-v2 · list-photo-uniform-v1 · list-photo-uniform-v2 · parts-photo-v2 · integrity-audit-v1 · parts-placeholder-v1 · parts-parallel-v1 · stock-id-search-v1 · dedicated-price-v1 · catalog-search-v1
+  const SITE_EBAY_LAYOUT_VER = 'list-photo-uniform-v2b';
+  const SITE_COMPONENTS_VER = 'list-photo-uniform-v2b';
+  // Deploy markers (keep strings discoverable): auth-nav-v1 · auth-nav-once-v2 · auth-nav-sitewide-v1 · login-entry-v1 · lang-sync-v2 · contact-center-v1 · about-type-v2 · list-photo-uniform-v1 · list-photo-uniform-v2 · list-photo-uniform-v2b · parts-photo-v2 · integrity-audit-v1 · parts-placeholder-v1 · parts-parallel-v1 · stock-id-search-v1 · dedicated-price-v1 · catalog-search-v1
   // login-entry-v1 = catalog footer Sign in + clearer toolbar login pill; buyer dial codes expanded (local WIP, not deployed)
   // list-photo-uniform-v1 = half-cut list photo frames fixed 4:3 + cover
-  // list-photo-uniform-v2 = parts catalogs (engines/gearboxes/chassis/front) same uniform frames
+  // list-photo-uniform-v2 / v2b = parts catalogs same uniform frames (v2b: align-self start so height ignores text row)
+
   // dedicated-price-v1 = dedicated part listings use full priceUsd (not half-cut PART_PRICE_RATIOS)
   // auth-nav-sitewide-v1 = full public topbar audit (about/contact/countries/brands/engines SEO), not only home+catalog
   // lang-sync-v2 = sitewide lang switcher matches homepage (text + separators; CF cache-bust)
