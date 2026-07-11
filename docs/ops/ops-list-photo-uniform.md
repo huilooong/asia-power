@@ -2,54 +2,41 @@
 
 **Task ID:** `list-photo-uniform`  
 **Date:** 2026-07-11  
-**Status:** Preview ready · **awaiting CEO deploy approval**
+**Status:** **Production live**（commit → push → 现网已同步；Release Manager `chrome` 全量脚本末尾 SSH 偶发失败，已手工核对通过）
+
+## Production
+
+| Item | Value |
+|------|-------|
+| Git | `20194de2b` on `chore/backfill-2026-07-10-prod` |
+| Cache | `list-photo-uniform-v1`（`ebay-layout.css` + `components.js`） |
+| 现网验证 | `/half-cuts/` 前 8 条图框高度全部 **219**；`aspect-ratio: 4/3`；`object-fit: cover` |
 
 ## 问题
 
-半切目录列表照片「整体输出不一致、看起来很丑」：竖图卡片明显高于方图卡片，灰边参差。
+半切目录列表照片高度不齐（竖图 ~265、方图 ~219），看起来参差。
 
 ## 根因
 
-| 项 | 说明 |
-|---|---|
-| CSS v4 | `.ebay-listing-row--v4 .ap-listing-photo { aspect-ratio: auto; height: 100%; }` → 框高跟随原图像素比例 |
-| Half-cut | `.ebay-listing-row--halfcut … { object-fit: contain }` → 竖图把行撑高，方图留灰边 |
-| 证据（现网桌面） | 方图框 **200×219**；竖图框 **200×265** |
+1. v4 列表 `aspect-ratio: auto` + halfcut `object-fit: contain` → 框高跟随原图比例
+2. **`js/components.js` 的 `injectEbayStylesheet` 把 CSS 版本强制改回旧 `about-type-v2`** → 浏览器继续吃旧 CSS 缓存，只改 HTML `?v=` 不够
 
-不是单张图 404（多数图能打开）；是布局规则让列表视觉不齐。
+## 修复
 
-## 修复（本地已改，未部署）
-
-1. v4 列表图框改为固定 **`aspect-ratio: 4 / 3`**
-2. 半切 / 车辆列表图改为 **`object-fit: cover`**
-3. 目录卡片同步 cover（零部件页专用 contain 选择器保留）
-4. Cache bust：`list-photo-uniform-v1`
-
-## 文件
-
-| Path | Change |
-|---|---|
-| `css/ebay-layout.css` | 统一列表图框 |
-| `half-cuts|trucks|machinery|engines|gearboxes|chassis-parts|front-cuts/index.html` | CSS cache bust |
-| `docs/previews/list-photo-uniform/list-photo-uniform-preview.html` | 预览 |
-| `docs/ops/ops-list-photo-uniform.md` | 本报告 |
+| 文件 | 改动 |
+|------|------|
+| `css/ebay-layout.css` | 固定 4:3 + cover |
+| `js/components.js` | `SITE_EBAY_LAYOUT_VER` / `SITE_COMPONENTS_VER` → `list-photo-uniform-v1` |
+| 目录 `*/index.html` | CSS/JS cache bust；保留 `about-type-v2` deploy marker |
 
 ## 预览
 
-- Rel: `docs/previews/list-photo-uniform/list-photo-uniform-preview.html`
-- Abs: `/Users/longhui/Desktop/AsiaPower/docs/previews/list-photo-uniform/list-photo-uniform-preview.html`
+- `docs/previews/list-photo-uniform/list-photo-uniform-preview.html`
 
-## 部署（等 CEO「上线」）
+## 验证
 
-```bash
-# commit → push GitHub → Release Manager chrome
-node scripts/deploy-production.mjs chrome --yes
-```
-
-## 验证计划
-
-| 检查 | 期望 |
-|---|---|
-| `/half-cuts/` 前 8 条图框高度 | 一致（不再 219 vs 265） |
-| CSS 含 `list-photo-uniform` / `aspect-ratio: 4 / 3` | Pass |
-| `/engines/` 专门配件图 | 仍 contain，不误伤 |
+| 检查 | 结果 |
+|------|------|
+| 现网 HTML / JS 含 `list-photo-uniform-v1` | Pass |
+| 浏览器前 8 条图框高度 | 全部 219（不再 219/265 混用） |
+| 零部件 contain 规则 | 保留（未改 parts 专用选择器） |
