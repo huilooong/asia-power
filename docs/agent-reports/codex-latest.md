@@ -1,6 +1,6 @@
 # Codex Report
 
-Generated: 2026-07-11 19:49 Africa/Accra
+Generated: 2026-07-11 19:54 Africa/Accra
 
 ## Task
 
@@ -20,6 +20,8 @@ Continue AsiaPower growth execution until the current growth loop has real deplo
 - `half-cuts/index.html`
 - `contact.html`
 - `css/ebay-layout.css`
+- `index.html`
+- `css/home-v4-hybrid.css`
 - `sitemap.xml`
 - `scripts/generate-engine-pages.mjs`
 - `gearboxes/index.html`
@@ -45,6 +47,8 @@ Traffic and conversion:
 - `half-cuts/index.html`
 - `contact.html`
 - `css/ebay-layout.css`
+- `index.html`
+- `css/home-v4-hybrid.css`
 
 Previously completed in this execution stream:
 
@@ -117,6 +121,15 @@ Passed:
   - remote file markers present on production server - PASS
   - `nginx` active - PASS
   - `inventory-site.service` active - PASS
+- Homepage export route validation:
+  - `https://asia-power.com/?v=b6d4ebc12` - PASS 200
+  - content-type `text/html` - PASS
+  - export route links present - PASS
+  - homepage CSS cache-bust present - PASS
+  - homepage ItemList structured data present - PASS
+  - remote file markers present on production server - PASS
+  - `nginx` active - PASS
+  - `inventory-site.service` active - PASS
 
 ## Result
 
@@ -141,12 +154,14 @@ Deployed:
 7. Gearbox Catalog enhanced with regional gearbox quote paths and structured data; live page verified.
 8. Half-cuts Catalog enhanced with regional half-cut quote paths and structured data; live page verified.
 9. Contact page enhanced with regional quote paths for Ghana, Nigeria, Kenya, Tanzania, Benin, Cameroon, Dubai UAE and South Africa; live page verified.
+10. Homepage enhanced with a lightweight export route section linking to the highest-value regional quote paths; live page verified.
 
 ## Risks / Open Questions
 
 - Search Console submission still requires account/property access.
 - Detailed lead attribution requires admin authentication; public health endpoint confirms only totals.
 - `chrome` Release Manager attempts for Gearbox, Half-cuts and Contact catalog/static page changes exited before summary even though the synced live pages and remote chrome validation checks passed. Treat the content as live, but treat the release record as incomplete.
+- `home` Release Manager attempt for the homepage export route section synced files and the live homepage passed remote/HTTPS validation, but the release command exited before summary. Treat the content as live, but treat the release record as incomplete.
 - New regional pages are intentionally conservative: no supplier details, no full VINs, no unconfirmed prices, no guaranteed stock claims.
 
 ## Recommended Next Action
