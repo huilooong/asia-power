@@ -1,6 +1,6 @@
 # Codex Report
 
-Generated: 2026-07-11 19:54 Africa/Accra
+Generated: 2026-07-11 19:57 Africa/Accra
 
 ## Task
 
@@ -22,6 +22,7 @@ Continue AsiaPower growth execution until the current growth loop has real deplo
 - `css/ebay-layout.css`
 - `index.html`
 - `css/home-v4-hybrid.css`
+- `sitemap.xml`
 - `sitemap.xml`
 - `scripts/generate-engine-pages.mjs`
 - `gearboxes/index.html`
@@ -49,6 +50,7 @@ Traffic and conversion:
 - `css/ebay-layout.css`
 - `index.html`
 - `css/home-v4-hybrid.css`
+- `sitemap.xml`
 
 Previously completed in this execution stream:
 
@@ -130,6 +132,10 @@ Passed:
   - remote file markers present on production server - PASS
   - `nginx` active - PASS
   - `inventory-site.service` active - PASS
+- Sitemap validation:
+  - local sitemap lastmod refreshed for homepage, contact, catalog indexes, Africa hub and regional growth pages - PASS
+  - production dynamic sitemap contains the regional growth URLs - PASS
+  - production dynamic sitemap includes `2026-07-11` lastmod entries - PASS
 
 ## Result
 
@@ -155,6 +161,7 @@ Deployed:
 8. Half-cuts Catalog enhanced with regional half-cut quote paths and structured data; live page verified.
 9. Contact page enhanced with regional quote paths for Ghana, Nigeria, Kenya, Tanzania, Benin, Cameroon, Dubai UAE and South Africa; live page verified.
 10. Homepage enhanced with a lightweight export route section linking to the highest-value regional quote paths; live page verified.
+11. Sitemap baseline refreshed and production dynamic sitemap verified for regional growth URLs.
 
 ## Risks / Open Questions
 
