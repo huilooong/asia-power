@@ -1,6 +1,6 @@
 # Codex Report
 
-Generated: 2026-07-11 09:39 Africa/Accra
+Generated: 2026-07-11 12:44 Africa/Accra
 
 ## Task
 
@@ -19,6 +19,7 @@ Continue AsiaPower growth execution until the current growth loop has real deplo
 - `gearboxes/index.html`
 - `sitemap.xml`
 - `scripts/generate-engine-pages.mjs`
+- `gearboxes/index.html`
 
 ## Files Changed
 
@@ -55,7 +56,8 @@ Previously completed in this execution stream:
 - Sitemap inclusion checks.
 - JavaScript syntax validation.
 - Production HTTPS validation.
-- Release Manager deployments for `portal`, `admin`, `engines`, and attempted `chrome`.
+- Release Manager deployments for `portal`, `admin`, and `engines`.
+- Release Manager `chrome` attempts reached file sync, but did not complete a pass summary; live content was verified separately.
 
 ## Tests / Validation
 
@@ -85,6 +87,11 @@ Passed:
   - regional gearbox quote links - PASS
   - JSON-LD parse - PASS
   - growth attribution script version - PASS
+- Gearbox catalog live validation:
+  - `https://asia-power.com/gearboxes/` - PASS 200
+  - regional quote links present - PASS
+  - growth attribution script version present - PASS
+  - JSON-LD ItemList present - PASS
 
 ## Result
 
@@ -106,21 +113,20 @@ Deployed:
 4. Internal links from the engine index and Africa hub.
 5. Sitemap inclusion verified online.
 6. Engine inquiry country options expanded to match the new regional growth pages.
-7. Gearbox Catalog enhanced with regional gearbox quote paths and structured data.
+7. Gearbox Catalog enhanced with regional gearbox quote paths and structured data; live page verified.
 
 ## Risks / Open Questions
 
 - Search Console submission still requires account/property access.
 - Detailed lead attribution requires admin authentication; public health endpoint confirms only totals.
+- `chrome` Release Manager attempts for the Gearbox Catalog exited before summary even though the synced live page and remote chrome validation checks passed. Treat the content as live, but treat the release record as incomplete.
 - New regional pages are intentionally conservative: no supplier details, no full VINs, no unconfirmed prices, no guaranteed stock claims.
 
 ## Recommended Next Action
 
-Next growth execution should complete the Gearbox Catalog live deployment, then cover Half Cuts with the same pattern:
+Next growth execution should cover Half Cuts with the same pattern:
 
-1. Re-run Release Manager `chrome` after committing this report so the worktree is clean.
-2. Confirm `gearboxes/` has regional quote links live.
-3. Confirm existing half-cut page structure.
-4. Link half-cut country entry points from `half-cuts/` and relevant country hubs.
-4. Keep every quote dependent on photo/package/price confirmation.
-5. Validate live pages and monitor new lead source attribution in `/admin/leads.html`.
+1. Confirm existing half-cut page structure.
+2. Link half-cut country entry points from `half-cuts/` and relevant country hubs.
+3. Keep every quote dependent on photo/package/price confirmation.
+4. Validate live pages and monitor new lead source attribution in `/admin/leads.html`.
