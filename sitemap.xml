@@ -916,6 +916,21 @@
     <priority>0.85</priority>
   </url>
   <url>
+    <loc>https://asia-power.com/engines/kenya-half-cut-engines.html</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.85</priority>
+  </url>
+  <url>
+    <loc>https://asia-power.com/engines/tanzania-half-cut-engines.html</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.85</priority>
+  </url>
+  <url>
+    <loc>https://asia-power.com/engines/dubai-half-cut-engines.html</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.85</priority>
+  </url>
+  <url>
     <loc>https://asia-power.com/engines/toyota-half-cut-engines.html</loc>
     <changefreq>weekly</changefreq>
     <priority>0.82</priority>
