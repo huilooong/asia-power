@@ -76,7 +76,7 @@ def main() -> int:
         mod = importlib.util.module_from_spec(spec)
         assert spec and spec.loader
         spec.loader.exec_module(mod)
-        rows = mod._iter_jsonl(mod.INTEL_FILE)
+        rows = mod.load_intel_rows(mod.DEFAULT_INTEL_FILES)
         candidates = mod.select_candidates(rows, limit=10, min_score=70)
         created = mod.create_drafts(candidates) if args.create_demand_drafts else []
         mod.write_report(rows=rows, candidates=candidates, created=created)

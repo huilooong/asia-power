@@ -1,4 +1,4 @@
-# 子敬 · 社媒互动频率策略（FB + X · 非洲市场）
+# 子敬 · 社媒/论坛/市场需求策略（全球公开渠道）
 # 目标：引流 asia-power.com — 买家需求优先，先发现真实需求，再人工批准互动
 # KPI: asia-power.com + sales@asia-power.com
 # CEO 2026-07-11：预算有限，停止平台极限探测；只保留能找到精准客户和询盘的动作
@@ -10,23 +10,31 @@ stop_condition: demand_first_human_approval
 # CEO 路由（Mac cron / launchd 入口 scripts/apsales-zijing-run.py）
 operating_modes:
   limited_mode: demand_drafts    # 只处理已有社媒情报 → 草稿队列
-  normal_mode: demand_discovery  # 浏览/发现公开需求 → 社媒需求草稿 → CEO 批准后互动
+  normal_mode: global_demand_discovery  # 浏览/发现公开需求 → 社媒需求草稿 → CEO 批准后互动
   limits_file: memory/customer_gateway/fb_platform_limits.json
   unified_entry: scripts/apsales-zijing-run.py
   activity_log_action: social_demand_drafts
+  global_sources_registry: config/apsales_global_demand_sources.json
 
 mission_today:
-  focus: "发现 engine / gearbox / half-cut 买家需求，生成回复草稿，引导到 asia-power.com，不做泛群发"
+  focus: "从全球公开社媒、论坛、分类信息站和视频评论发现 engine / gearbox / half-cut 买家需求，生成回复草稿，引导到 asia-power.com，不做泛群发"
   skip_platforms:
     - instagram  # INS 今日暂停
 
 engagement_priority:
-  P0: "浏览公开/已加入社媒信息流，识别真实买家求购帖"
+  P0: "浏览公开/已加入社媒、论坛、分类信息站、视频评论，识别真实买家求购帖"
   P1: "为高意图求购帖生成 APSales 回复草稿"
   P2: "CEO/APSales 批准后再回复，导流到对应国家/产品页面"
   P3: "时间线发帖 · 0/日 · 仅 CEO 明确要求时"
   P4: "好友 DM 默认关闭，只有明确买家互动后人工批准"
   P5: "X 低优先级，仅保留监听/草稿"
+
+global_demand_sources:
+  enabled: true
+  registry: config/apsales_global_demand_sources.json
+  report_script: scripts/apsales-global-demand-sources.py
+  intel_jsonl: memory/customer_gateway/global_social_demand_intel.jsonl
+  note: "Facebook 只是一个渠道；Nairaland、Jiji、Tonaton、Pigiame、Dubizzle、OpenSooq、YouTube/TikTok 评论、Reddit/论坛都可以进入同一条 APSales 草稿流程"
 
 platforms:
   facebook:
@@ -198,10 +206,10 @@ scheme_content_ref: "data/knowledge-base/apsales-promotion-schemes-v2.md"
 
 browse_feed:
   enabled: true
-  platform: facebook
+  platform: public_social_sources
   sessions_per_day: 3
   session_minutes: 10
-  note: "Mac 本地浏览公开/已加入信息流；只保存情报，不自动评论"
+  note: "Mac 本地浏览公开/已加入信息流；只保存情报，不自动评论；Facebook 不是唯一渠道"
   focus_keywords:
     - dismantling
     - half cut

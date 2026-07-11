@@ -21,7 +21,11 @@ ROOT = Path(__file__).resolve().parent.parent
 if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
 
-INTEL_FILE = ROOT / "memory" / "customer_gateway" / "fb_friends_market_intel.jsonl"
+DEFAULT_INTEL_FILES = [
+    ROOT / "memory" / "customer_gateway" / "fb_friends_market_intel.jsonl",
+    ROOT / "memory" / "customer_gateway" / "social_research_notes.jsonl",
+    ROOT / "memory" / "customer_gateway" / "global_social_demand_intel.jsonl",
+]
 REPORT_FILE = ROOT / "docs" / "agent-reports" / "apsales-social-demand-drafts.md"
 STATE_FILE = ROOT / "memory" / "customer_gateway" / "social_demand_draft_state.json"
 
@@ -74,7 +78,15 @@ def _iter_jsonl(path: Path) -> list[dict[str, Any]]:
         except json.JSONDecodeError:
             continue
         if isinstance(row, dict):
+            row.setdefault("_intel_file", str(path.relative_to(ROOT)))
             rows.append(row)
+    return rows
+
+
+def load_intel_rows(paths: list[Path]) -> list[dict[str, Any]]:
+    rows: list[dict[str, Any]] = []
+    for path in paths:
+        rows.extend(_iter_jsonl(path))
     return rows
 
 
@@ -94,9 +106,9 @@ def _is_self_or_noise(row: dict[str, Any]) -> bool:
     return any(
         marker in text
         for marker in (
-            "asia-power.com",
-            "asiapower",
-            "sales@asia-power.com",
+        "asia-power.com",
+        "asiapower",
+        "sales@asia-power.com",
             "i'm a supplier from china",
             "we supply verified",
             "we list verified",
@@ -112,7 +124,7 @@ def _fallback_score(row: dict[str, Any]) -> int:
 
     text = str(row.get("text") or "").lower()
     score = 0
-    if any(k in text for k in ("looking for", "need", "want to buy", "who has", "anyone selling", "quote", "how much")):
+    if any(k in text for k in ("looking for", "need", "needed", "want to buy", "who has", "anyone selling", "quote", "how much", "where can i get", "where to buy", "recommend supplier", "looking to import")):
         score += 45
     if any(k in text for k in ("engine", "gearbox", "transmission", "half cut", "half-cut", "spare part")):
         score += 20
@@ -129,6 +141,21 @@ def _intent_type(row: dict[str, Any], score: int) -> str:
     if row.get("intent_type"):
         return str(row["intent_type"])
     return "buyer_demand" if score >= 70 else "market_signal"
+
+
+def _source_platform(row: dict[str, Any]) -> str:
+    for key in ("source_platform", "platform", "source"):
+        value = str(row.get(key) or "").strip().lower()
+        if value:
+            return value
+    file_hint = str(row.get("_intel_file") or "").lower()
+    if "fb_" in file_hint or "facebook" in file_hint:
+        return "facebook"
+    if "nairaland" in file_hint:
+        return "nairaland"
+    if "jiji" in file_hint:
+        return "jiji"
+    return "social"
 
 
 def _target_url(row: dict[str, Any]) -> str:
@@ -239,7 +266,7 @@ def create_drafts(candidates: list[dict[str, Any]]) -> list[dict[str, Any]]:
             "decision_path": "Social Intel -> Demand Filter -> Draft Queue",
             "products": _products(row),
             "source_post_url": row.get("post_url") or "",
-            "source_platform": "facebook",
+            "source_platform": _source_platform(row),
             "source_type": "public_social_intel",
             "demand_key": row["_demand_key"],
         })
@@ -280,8 +307,9 @@ def write_report(*, rows: list[dict[str, Any]], candidates: list[dict[str, Any]]
         "",
         "## Scope",
         "",
-        "- Reads existing local social intel only.",
-        "- Does not log in to Facebook.",
+        "- Reads existing local social/forum/marketplace intel only.",
+        "- Default sources: Facebook feed intel, social research notes, and global social demand intel JSONL.",
+        "- Does not log in to any platform.",
         "- Does not post, comment, DM, email or WhatsApp anyone.",
         "- Creates internal APSales draft_queue records only when explicitly run with `--create-drafts`.",
         "",
@@ -291,6 +319,17 @@ def write_report(*, rows: list[dict[str, Any]], candidates: list[dict[str, Any]]
     ]
     for key in sorted(intent_counts):
         lines.append(f"- {key}: {intent_counts[key]}")
+
+    source_counts: dict[str, int] = {}
+    for row in rows:
+        platform = _source_platform(row)
+        source_counts[platform] = source_counts.get(platform, 0) + 1
+    lines.extend(["", "## Source Mix", ""])
+    if source_counts:
+        for key in sorted(source_counts):
+            lines.append(f"- {key}: {source_counts[key]}")
+    else:
+        lines.append("- No local intel rows found.")
 
     lines.extend([
         "",
@@ -330,7 +369,7 @@ def write_report(*, rows: list[dict[str, Any]], candidates: list[dict[str, Any]]
         "",
         "The useful path is not broad automated posting. The useful path is:",
         "",
-        "1. Browse public/social feed manually or with the existing logged-in browser runner.",
+        "1. Browse public social, forum, marketplace and video-comment sources manually or with approved local runners.",
         "2. Save structured intel.",
         "3. Filter only real buyer demand.",
         "4. Create reply drafts.",
@@ -347,6 +386,7 @@ def build_parser() -> argparse.ArgumentParser:
     p = argparse.ArgumentParser(description="Create APSales reply drafts from social demand intel")
     p.add_argument("--limit", type=int, default=10)
     p.add_argument("--min-score", type=int, default=70)
+    p.add_argument("--intel-file", action="append", default=[], help="Extra JSONL intel file to read")
     p.add_argument("--create-drafts", action="store_true")
     p.add_argument("--json", action="store_true")
     return p
@@ -354,7 +394,8 @@ def build_parser() -> argparse.ArgumentParser:
 
 def main() -> int:
     args = build_parser().parse_args()
-    rows = _iter_jsonl(INTEL_FILE)
+    paths = DEFAULT_INTEL_FILES + [Path(p) for p in args.intel_file]
+    rows = load_intel_rows(paths)
     candidates = select_candidates(rows, limit=args.limit, min_score=args.min_score)
     created = create_drafts(candidates) if args.create_drafts else []
     write_report(rows=rows, candidates=candidates, created=created)
@@ -362,6 +403,7 @@ def main() -> int:
     result = {
         "ok": True,
         "reviewed": len(rows),
+        "sources": [str(p) for p in paths],
         "candidates": len(candidates),
         "drafts_created": len(created),
         "report": str(REPORT_FILE),
