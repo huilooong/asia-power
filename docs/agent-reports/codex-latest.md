@@ -1,6 +1,6 @@
 # Codex Report
 
-Generated: 2026-07-11 12:44 Africa/Accra
+Generated: 2026-07-11 19:49 Africa/Accra
 
 ## Task
 
@@ -18,6 +18,8 @@ Continue AsiaPower growth execution until the current growth loop has real deplo
 - `engines/africa-half-cut-engines.html`
 - `gearboxes/index.html`
 - `half-cuts/index.html`
+- `contact.html`
+- `css/ebay-layout.css`
 - `sitemap.xml`
 - `scripts/generate-engine-pages.mjs`
 - `gearboxes/index.html`
@@ -40,6 +42,9 @@ Traffic and conversion:
 - `scripts/generate-engine-pages.mjs`
 - `engines/*.html` engine inquiry country options
 - `gearboxes/index.html`
+- `half-cuts/index.html`
+- `contact.html`
+- `css/ebay-layout.css`
 
 Previously completed in this execution stream:
 
@@ -99,6 +104,19 @@ Passed:
   - regional quote links present - PASS
   - growth attribution script version present - PASS
   - JSON-LD ItemList present - PASS
+- Contact page static validation:
+  - regional quote paths present - PASS
+  - JSON-LD parse - PASS
+  - all 8 regional linked pages exist - PASS
+  - growth attribution script version present - PASS
+- Contact page production validation:
+  - `https://asia-power.com/contact.html?v=56ecd41cf` - PASS 200
+  - content-type `text/html` - PASS
+  - regional quote paths present - PASS
+  - growth attribution script version present - PASS
+  - remote file markers present on production server - PASS
+  - `nginx` active - PASS
+  - `inventory-site.service` active - PASS
 
 ## Result
 
@@ -122,12 +140,13 @@ Deployed:
 6. Engine inquiry country options expanded to match the new regional growth pages.
 7. Gearbox Catalog enhanced with regional gearbox quote paths and structured data; live page verified.
 8. Half-cuts Catalog enhanced with regional half-cut quote paths and structured data; live page verified.
+9. Contact page enhanced with regional quote paths for Ghana, Nigeria, Kenya, Tanzania, Benin, Cameroon, Dubai UAE and South Africa; live page verified.
 
 ## Risks / Open Questions
 
 - Search Console submission still requires account/property access.
 - Detailed lead attribution requires admin authentication; public health endpoint confirms only totals.
-- `chrome` Release Manager attempts for Gearbox and Half-cuts catalog changes exited before summary even though the synced live pages and remote chrome validation checks passed. Treat the content as live, but treat the release record as incomplete.
+- `chrome` Release Manager attempts for Gearbox, Half-cuts and Contact catalog/static page changes exited before summary even though the synced live pages and remote chrome validation checks passed. Treat the content as live, but treat the release record as incomplete.
 - New regional pages are intentionally conservative: no supplier details, no full VINs, no unconfirmed prices, no guaranteed stock claims.
 
 ## Recommended Next Action
