@@ -33,8 +33,13 @@ global_demand_sources:
   enabled: true
   registry: config/apsales_global_demand_sources.json
   report_script: scripts/apsales-global-demand-sources.py
+  discovery_script: scripts/apsales-global-demand-discovery.py
   intel_jsonl: memory/customer_gateway/global_social_demand_intel.jsonl
   note: "Facebook 只是一个渠道；Nairaland、Jiji、Tonaton、Pigiame、Dubizzle、OpenSooq、YouTube/TikTok 评论、Reddit/论坛都可以进入同一条 APSales 草稿流程"
+  daily_sequence:
+    - discover_public_demand
+    - score_buyer_intent
+    - generate_approval_drafts
 
 platforms:
   facebook:

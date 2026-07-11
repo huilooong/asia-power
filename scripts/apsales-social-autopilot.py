@@ -34,6 +34,7 @@ def build_parser() -> argparse.ArgumentParser:
     p.add_argument("--json", action="store_true", help="JSON output")
     p.add_argument("--browse", action="store_true", help="Run Facebook friends feed browse (Mac local)")
     p.add_argument("--browse-status", action="store_true", help="Show last browse session summary")
+    p.add_argument("--discover-global-demand", action="store_true", help="Discover public global buyer-demand signals")
     p.add_argument("--demand-drafts", action="store_true", help="Build reply drafts from saved social buyer-demand intel")
     p.add_argument("--create-demand-drafts", action="store_true", help="Write selected social demand replies to draft_queue")
     return p
@@ -65,6 +66,27 @@ def main() -> int:
             except Exception:
                 pass
         print(json.dumps(payload, ensure_ascii=False, indent=2))
+        return 0
+
+    if args.discover_global_demand:
+        import importlib.util
+        spec = importlib.util.spec_from_file_location(
+            "global_demand_discovery",
+            ROOT / "scripts" / "apsales-global-demand-discovery.py",
+        )
+        mod = importlib.util.module_from_spec(spec)
+        assert spec and spec.loader
+        spec.loader.exec_module(mod)
+        discovery_args = mod.build_parser().parse_args(["--json"])
+        result = mod.discover(discovery_args)
+        if args.json:
+            print(json.dumps(result, ensure_ascii=False, indent=2))
+        else:
+            print("=== 子敬全球公开需求发现 ===")
+            print(f"已检查搜索结果: {result.get('reviewed', 0)}")
+            print(f"买家需求: {result.get('buyer_demand', 0)}")
+            print(f"市场信号: {result.get('market_signal', 0)}")
+            print(f"报告: {result.get('report')}")
         return 0
 
     if args.demand_drafts or args.create_demand_drafts:

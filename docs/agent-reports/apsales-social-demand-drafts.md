@@ -1,6 +1,6 @@
 # APSales Social Demand Drafts
 
-Generated: 2026-07-11 20:30 UTC
+Generated: 2026-07-11 21:02 UTC
 
 ## Scope
 
@@ -12,14 +12,13 @@ Generated: 2026-07-11 20:30 UTC
 
 ## Current Social Intel Quality
 
-- Total intel rows reviewed: 39
-- market_signal: 35
-- self_promotion: 4
+- Total intel rows reviewed: 16
+- market_signal: 16
 
 ## Source Mix
 
-- home_feed: 19
-- social: 20
+- facebook groups: 8
+- tonaton: 8
 
 ## Selected Buyer Demand Candidates
 
