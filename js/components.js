@@ -6,9 +6,9 @@
 
   // Must bump when ebay-layout.css changes — injectEbayStylesheet rewrites all pages to this query.
   // Stale CDN entries for old ?v= keys (e.g. v4-listing-card-v1) can keep serving 66px parts thumbs.
-  const SITE_EBAY_LAYOUT_VER = 'about-type-v2';
-  const SITE_COMPONENTS_VER = 'about-type-v2';
-  // Deploy markers (keep strings discoverable): auth-nav-v1 · auth-nav-once-v2 · auth-nav-sitewide-v1 · lang-sync-v2 · contact-center-v1 · about-type-v2 · parts-photo-v2 · integrity-audit-v1 · parts-placeholder-v1 · parts-parallel-v1 · stock-id-search-v1 · dedicated-price-v1 · catalog-search-v1
+  const SITE_EBAY_LAYOUT_VER = 'list-photo-uniform-v1';
+  const SITE_COMPONENTS_VER = 'list-photo-uniform-v1';
+  // Deploy markers (keep strings discoverable): auth-nav-v1 · auth-nav-once-v2 · auth-nav-sitewide-v1 · lang-sync-v2 · contact-center-v1 · about-type-v2 · list-photo-uniform-v1 · parts-photo-v2 · integrity-audit-v1 · parts-placeholder-v1 · parts-parallel-v1 · stock-id-search-v1 · dedicated-price-v1 · catalog-search-v1
   // dedicated-price-v1 = dedicated part listings use full priceUsd (not half-cut PART_PRICE_RATIOS)
   // auth-nav-sitewide-v1 = full public topbar audit (about/contact/countries/brands/engines SEO), not only home+catalog
   // lang-sync-v2 = sitewide lang switcher matches homepage (text + separators; CF cache-bust)
