@@ -332,6 +332,7 @@
     if (partType === 'chassis') return true;
     if (partType && partType !== 'front') return false;
     if (!isPassengerHalfCutItem(item)) return false;
+    if (String(item.halfCutCompleteness || '').trim().toLowerCase() === 'complete') return true;
     return CHASSIS_CATALOG_EVIDENCE_RE.test(chassisCatalogEvidenceText(item));
   }
 

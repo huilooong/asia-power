@@ -63,11 +63,28 @@ const chassisIds = liveCategoryIds('chassis');
 const engineIds = liveCategoryIds('engines');
 const gearboxIds = liveCategoryIds('gearboxes');
 const frontCutIds = liveCategoryIds('frontcuts');
+const completeHalfCuts = live.filter((item) => (
+  !String(item.passengerPartType || '').trim()
+  && String(item.vehicleCondition || '').trim().toLowerCase() === 'half cut'
+  && String(item.engineCode || '').trim()
+  && String(item.transmissionCode || '').trim()
+  && String(item.halfCutCompleteness || '').trim().toLowerCase() === 'complete'
+));
 
-assert.deepEqual(
-  chassisIds,
-  ['HC250488'],
-  'live chassis catalog must retain only the RAV4 rear/chassis section listing',
+assert.equal(
+  completeHalfCuts.length,
+  398,
+  'all 398 approved complete half-cuts must carry the completeness marker',
+);
+assert.equal(
+  completeHalfCuts.every((item) => chassisIds.includes(item.stockId)),
+  true,
+  'every complete half-cut must enter the chassis catalog by derived display',
+);
+assert.equal(
+  chassisIds.includes('HC250488'),
+  true,
+  'the standalone evidence-based RAV4 chassis section must remain visible',
 );
 assert.equal(
   targetIds.some((stockId) => chassisIds.includes(stockId)),
@@ -127,7 +144,7 @@ assert.equal(match(trueHalfCut, 'halfcuts'), true, 'real half-cut stays in half-
 assert.equal(match(trueHalfCut, 'frontcuts'), true, 'real half-cut stays in front-cut catalog');
 assert.equal(match(trueHalfCut, 'engines'), true, 'real half-cut may feed engine catalog by code');
 assert.equal(match(trueHalfCut, 'gearboxes'), true, 'real half-cut may feed gearbox catalog by code');
-assert.equal(match(trueHalfCut, 'chassis'), false, 'real half-cut does not enter chassis-only catalog');
+assert.equal(match(trueHalfCut, 'chassis'), false, 'half-cut without verified chassis contents stays out of chassis');
 
 const chassisHalfCut = {
   ...trueHalfCut,
@@ -135,6 +152,17 @@ const chassisHalfCut = {
   includedParts: ['Remaining rear/chassis portion only'],
 };
 assert.equal(match(chassisHalfCut, 'chassis'), true, 'real donor cut with explicit chassis evidence stays in chassis');
+
+const completeHalfCut = {
+  ...trueHalfCut,
+  stockId: 'TEST-COMPLETE-HALFCUT',
+  halfCutCompleteness: 'complete',
+};
+assert.equal(
+  match(completeHalfCut, 'chassis'),
+  true,
+  'verified complete half-cut enters chassis through derived display metadata',
+);
 
 const engineWithChassisKeyword = {
   stockId: 'TEST-ENGINE-CHASSIS-WORD',
@@ -160,6 +188,7 @@ console.log(JSON.stringify({
     gearboxes: gearboxIds.length,
     frontcuts: frontCutIds.length,
   },
+  completeHalfCuts: completeHalfCuts.length,
   chassisIds,
   fordGearboxIds,
 }, null, 2));

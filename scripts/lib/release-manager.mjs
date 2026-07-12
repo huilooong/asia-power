@@ -108,6 +108,7 @@ export const TARGET_SOURCE_FILES = {
   finalize: [
     'deploy/inventory-site-scripts/backup-inventory-site.sh',
     'scripts/telegram-lead-reminder.js',
+    'scripts/backfill-complete-halfcut-categories-2026-07-12.mjs',
     'scripts/setup-r2-cors.mjs',
   ],
 };

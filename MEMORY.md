@@ -116,6 +116,7 @@
 - **公开类目互斥（CEO 2026-07-12 定稿）**：`passengerPartType` 是独立零件主分类，优先于 engineCode/transmissionCode/标题/搜索。独立发动机只进发动机，独立变速箱只进变速箱，底盘只进底盘，半切/车头不得混入上述独立件；搜索只能扩大匹配字段，禁止跨类目补项。仅无专用类型的真正半切可因自带 engineCode/transmissionCode 同时出现在动力总成目录。事故批次 HC250556–HC250566；报告 `docs/ops/ops-part-category-filter-fix-2026-07-12.md`。
 - **类目 JS 缓存键不可回退（CEO 2026-07-12）**：Cloudflare 对 `half-cut-directory.js?v=` 使用 immutable；若 HTML 仍挂旧 `category-filter-v1`，即使用新文件覆盖磁盘，浏览器仍吃旧规则。目录发布后必须确认各页 cache key，禁止 chrome 目标用旧 HTML 把 key 打回 v1。底盘空页即因此复现。
 - **类目过滤必须防 false negative（CEO 2026-07-12 纠正）**：不能只验证“错误货已排除”，还必须对比发布备份与生产原始数据，并逐类核对改前/改后 count，确认合法库存仍保留。底盘采用“显式 chassis 或真正 donor cut 的公开底盘证据”准入；独立 engine/transmission/other 不得因关键词串入。事故：底盘 445 条宽放后被收紧成 0，HC250488 被误杀；修复报告 `docs/ops/ops-chassis-transmission-filter-repair-2026-07-12.md`。
+- **完整半切四类验收（CEO 2026-07-12 定稿）**：确认完整的半切必须在发动机 / 变速箱 / 底盘 / 前切（车头）四类都有对应可见入口；同一实物优先用同一 stockId 派生多目录卡片，不重复计库存。完整性须包含发动机、变速箱、前切结构和可拆前副车架/悬挂/转向等底盘件；缺件或证据不足的库存不得自动宣称完整。禁止“只恢复底盘一条就退出”：修复后必须按四类矩阵验收至少一个完整样例，再汇报全库批量范围。样例与全库审计见 `docs/ops/ops-halfcut-category-rules-audit-2026-07-12.md`。
 - 本批对外卖点固定体现 **Low mileage / Nearly new condition（低里程 / 几乎全新）**。详见 `docs/ops/ops-engine-transmission-pricing-2026-07-12.md`。
 
 ## 中文车型 normalize（2026-07-10）

@@ -177,22 +177,22 @@ catalog_pages = [
 ]
 for page in catalog_pages:
     text = page.read_text()
-    text = re.sub(r'half-cut-directory\\.js\\?v=[^"\\']+', 'half-cut-directory.js?v=category-filter-v3', text)
-    text = re.sub(r'ebay-catalog-hub\\.js\\?v=[^"\\']+', 'ebay-catalog-hub.js?v=category-filter-v3', text)
+    text = re.sub(r'half-cut-directory\\.js\\?v=[^"\\']+', 'half-cut-directory.js?v=category-filter-v4', text)
+    text = re.sub(r'ebay-catalog-hub\\.js\\?v=[^"\\']+', 'ebay-catalog-hub.js?v=category-filter-v4', text)
     page.write_text(text)
 
 home = pub / 'index.html'
 text = home.read_text()
-text = re.sub(r'home-v4-hybrid\\.js\\?v=[^"\\']+', 'home-v4-hybrid.js?v=category-filter-v3', text)
+text = re.sub(r'home-v4-hybrid\\.js\\?v=[^"\\']+', 'home-v4-hybrid.js?v=category-filter-v4', text)
 home.write_text(text)
 PY
 grep -q 'matchesInventoryCategory' /root/.openclaw/workspace/inventory-site/public/js/half-cut-directory.js
 grep -q 'hasChassisCatalogEvidence' /root/.openclaw/workspace/inventory-site/public/js/half-cut-directory.js
 grep -q 'Search may widen fields, never categories' /root/.openclaw/workspace/inventory-site/public/js/ebay-catalog-hub.js
-grep -q 'category-filter-v3' /root/.openclaw/workspace/inventory-site/public/index.html
+grep -q 'category-filter-v4' /root/.openclaw/workspace/inventory-site/public/index.html
 for page in half-cuts engines gearboxes front-cuts chassis-parts; do
-  grep -q 'half-cut-directory.js?v=category-filter-v3' "/root/.openclaw/workspace/inventory-site/public/$page/index.html"
-  grep -q 'ebay-catalog-hub.js?v=category-filter-v3' "/root/.openclaw/workspace/inventory-site/public/$page/index.html"
+  grep -q 'half-cut-directory.js?v=category-filter-v4' "/root/.openclaw/workspace/inventory-site/public/$page/index.html"
+  grep -q 'ebay-catalog-hub.js?v=category-filter-v4' "/root/.openclaw/workspace/inventory-site/public/$page/index.html"
 done
 echo "[deploy:categories] category filters OK on remote"
 `);
@@ -345,10 +345,10 @@ grep -q 'dedicated-price-v1' "$PUB/js/components.js"
 grep -q 'formatCatalogPartPrice' "$PUB/js/half-cut-directory.js"
 grep -q 'catalogPartPriceAmount' "$PUB/js/half-cut-directory.js"
 grep -q 'formatCatalogPartPrice' "$PUB/js/ebay-catalog-hub.js"
-grep -E -q 'half-cut-directory\.js\?v=(category-filter-v1|category-filter-v3|parts-parallel-v1|stock-id-search-v1|stock-id-search-v2|dedicated-price-v1|catalog-search-v1|catalog-search-v2)' "$PUB/half-cuts/index.html"
-grep -E -q 'ebay-catalog-hub\.js\?v=(category-filter-v1|category-filter-v3|parts-parallel-v1|stock-id-search-v1|stock-id-search-v2|dedicated-price-v1|catalog-search-v1|catalog-search-v2)' "$PUB/half-cuts/index.html"
-grep -E -q 'half-cut-directory\.js\?v=(category-filter-v1|category-filter-v3|stock-id-search-v2|dedicated-price-v1|catalog-search-v1|catalog-search-v2)' "$PUB/gearboxes/index.html"
-grep -E -q 'ebay-catalog-hub\.js\?v=(category-filter-v1|category-filter-v3|stock-id-search-v2|dedicated-price-v1|catalog-search-v1|catalog-search-v2)' "$PUB/gearboxes/index.html"
+grep -E -q 'half-cut-directory\.js\?v=(category-filter-v1|category-filter-v3|category-filter-v4|parts-parallel-v1|stock-id-search-v1|stock-id-search-v2|dedicated-price-v1|catalog-search-v1|catalog-search-v2)' "$PUB/half-cuts/index.html"
+grep -E -q 'ebay-catalog-hub\.js\?v=(category-filter-v1|category-filter-v3|category-filter-v4|parts-parallel-v1|stock-id-search-v1|stock-id-search-v2|dedicated-price-v1|catalog-search-v1|catalog-search-v2)' "$PUB/half-cuts/index.html"
+grep -E -q 'half-cut-directory\.js\?v=(category-filter-v1|category-filter-v3|category-filter-v4|stock-id-search-v2|dedicated-price-v1|catalog-search-v1|catalog-search-v2)' "$PUB/gearboxes/index.html"
+grep -E -q 'ebay-catalog-hub\.js\?v=(category-filter-v1|category-filter-v3|category-filter-v4|stock-id-search-v2|dedicated-price-v1|catalog-search-v1|catalog-search-v2)' "$PUB/gearboxes/index.html"
 grep -E -q 'catalog-search-v1|catalog-search-v2|stock-id-search-v[12]' "$PUB/half-cuts/index.html"
 grep -q 'catalog-search-aliases.js' "$PUB/half-cuts/index.html"
 grep -q 'hc.exwBadge' "$PUB/js/public-i18n.js"
@@ -454,6 +454,7 @@ function deployFinalize() {
     `${ROOT}/scripts/sync-data-backup-r2.mjs`,
     `${ROOT}/scripts/telegram-common.js`,
     `${ROOT}/scripts/fix-inventory-record.mjs`,
+    `${ROOT}/scripts/backfill-complete-halfcut-categories-2026-07-12.mjs`,
     `${ROOT}/scripts/fix-truck-listing-meta.mjs`,
     `${ROOT}/scripts/optimize-inventory-photos.mjs`,
     `${ROOT}/scripts/compress-inventory-videos.mjs`,
