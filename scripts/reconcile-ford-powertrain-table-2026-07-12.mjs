@@ -24,51 +24,61 @@ const EXPECTED = {
   HC250556: {
     lineNo: 1, code: 'CAF372WQ', displacement: '1.0T', qty: 24,
     kind: 'package', transmissionCode: 'MT', remarkZh: '手动挡',
+    publicModel: '1.0T Engine + Manual Transmission Powertrain Package · 24 units',
     title: 'Ford CAF372WQ 1.0T Engine + Manual Transmission Powertrain Package · 24 units',
   },
   HC250557: {
     lineNo: 2, code: 'CAF384Q', displacement: '1.5L', qty: 47,
     kind: 'package', transmissionCode: 'AT', remarkZh: '自动挡',
+    publicModel: '1.5L Engine + Automatic Transmission Powertrain Package · 47 units',
     title: 'Ford CAF384Q 1.5L Engine + Automatic Transmission Powertrain Package · 47 units',
   },
   HC250558: {
     lineNo: 3, code: 'CAF384Q', displacement: '1.5L', qty: 18,
     kind: 'package', transmissionCode: 'MT', remarkZh: '手动挡',
+    publicModel: '1.5L Engine + Manual Transmission Powertrain Package · 18 units',
     title: 'Ford CAF384Q 1.5L Engine + Manual Transmission Powertrain Package · 18 units',
   },
   HC250559: {
     lineNo: 4, code: 'CAF384Q', displacement: '1.5L', qty: 2,
     kind: 'engine', transmissionCode: '', remarkZh: '无变速器',
+    publicModel: '1.5L Engine Assembly · 2 units',
     title: 'Ford CAF384Q 1.5L Engine Assembly · 2 units',
   },
   HC250560: {
     lineNo: 5, code: 'CAF384WQ', displacement: '1.5T', qty: 4,
     kind: 'engine', transmissionCode: '', remarkZh: '无变速器',
+    publicModel: '1.5T Engine Assembly · 4 units',
     title: 'Ford CAF384WQ 1.5T Engine Assembly · 4 units',
   },
   HC250561: {
     lineNo: 6, code: 'CAF488WQ', displacement: '2.0T', qty: 17,
     kind: 'package', transmissionCode: 'AT', remarkZh: '自动挡',
+    publicModel: '2.0T Engine + Automatic Transmission Powertrain Package · 17 units',
     title: 'Ford CAF488WQ 2.0T Engine + Automatic Transmission Powertrain Package · 17 units',
   },
   HC250562: {
     lineNo: 7, code: 'CAF488WQ', displacement: '2.0T', qty: 62,
     kind: 'engine', transmissionCode: '', remarkZh: '无变速器',
+    publicModel: '2.0T Engine Assembly · 62 units',
     title: 'Ford CAF488WQ 2.0T Engine Assembly · 62 units',
   },
   HC250563: {
     lineNo: 8, code: 'GTDIQ8', displacement: '2.7T', qty: 3,
     kind: 'engine', transmissionCode: '', remarkZh: '无变速器',
+    publicModel: '2.7T Engine Assembly · 3 units',
     title: 'Ford GTDIQ8 2.7T Engine Assembly · 3 units',
   },
   HC250564: {
     lineNo: 9, code: 'CAF488Q10', displacement: '2.0L', qty: 34,
     kind: 'engine', transmissionCode: '', remarkZh: '无变速器（福特混动）',
+    publicModel: '2.0L Hybrid Engine Assembly · 34 units',
     title: 'Ford CAF488Q10 2.0L Hybrid Engine Assembly · 34 units',
   },
   HC250565: {
     lineNo: 10, code: '', displacement: '1.5L', qty: 33,
     kind: 'transmission', transmissionCode: 'AT', remarkZh: '',
+    publicModel: 'Focus 2019-2021 1.5L Automatic Transmission Assembly · 33 units',
     title: 'Ford Focus 2019-2021 1.5L Automatic Transmission Assembly · 33 units',
   },
 };
@@ -135,6 +145,8 @@ function patchItem(item, spec, nowIso) {
   return {
     ...item,
     title: spec.title,
+    // Public API derives its display title from brand/model/engine/transmission.
+    model: spec.publicModel,
     engineCode: spec.code,
     transmissionCode: spec.transmissionCode,
     displacement: spec.displacement,
