@@ -1,7 +1,7 @@
 # OPS · 底盘与变速箱类目过滤修复
 
 **日期：** 2026-07-12  
-**状态：** 代码与真实生产数据回归已通过，待 Release Manager 发布后补现网截图  
+**状态：** 已通过 Release Manager 上线并完成现网 DOM 与截图验证  
 **范围：** 底盘、发动机、变速箱、半切/车头公开目录  
 **上一版本：** `REL-20260712145020-categories-abaa121e0`
 
@@ -27,7 +27,7 @@
 |---|---:|---|
 | Release 备份中的旧前端规则 | 445 | `chassis` 对乘用车目录直接 `return true`，大量误放 |
 | 上轮 Release 后 | 0 | 只认显式 `passengerPartType=chassis`，造成 false negative |
-| 本次证据规则 | 1 | 仅 HC250488 有公开底盘段证据 |
+| 本次证据规则（现网） | 1 | 仅 HC250488 有公开底盘段证据 |
 
 对比依据：
 
@@ -132,5 +132,35 @@ if (category === 'chassis') return partType === 'chassis';
 | 福特变速箱相关 | 5 条：HC250132、HC250524、HC250528、HC250536、HC250565 |
 | 车头 | 432 条；HC250556–HC250566 独立动力总成均不进入 |
 
-现网发布、截图与 Release ID 在发布完成后补充。
+现网页面 DOM 实测：
+
+| 页面 | 现网结果 |
+|---|---|
+| `/chassis-parts/` | 1 条，列表 stockId 仅 HC250488 |
+| `/gearboxes/?brand=ford` | 5 条，5 个福特 stockId 全部显示 |
+| `/engines/` | 436 条；首屏含 HC250556–564、566，且不含 HC250565 |
+| `/front-cuts/?q=HC250565` | 0 条 |
+
+截图：
+
+- `docs/ops/evidence/chassis-restored-live-20260712.png`
+- `docs/ops/evidence/ford-gearboxes-live-20260712.png`
+- `docs/ops/evidence/engines-count-live-20260712.png`
+- `docs/ops/evidence/frontcut-powertrain-exclusion-live-20260712.png`
+
+## 五、发布与回滚
+
+- Git commit：`d2b0161e350874705dc8ff9636f79e7ab88d60f2`
+- GitHub branch：`chore/backfill-2026-07-10-prod`
+- Release ID：`REL-20260712150522-categories-d2b0161e3`
+- 备份：`/root/.openclaw/workspace/inventory-site/backups/scheduled/asia-power-backup-20260712-150524.tar.gz`
+- Release snapshots：`releases/REL-20260712150522-categories-d2b0161e3/snapshots/`
+- 回滚：`RESTORE_CONFIRM=REL-20260712150522-categories-d2b0161e3 node scripts/release-restore.mjs REL-20260712150522-categories-d2b0161e3`
+
+两次发布前检查曾被门禁拦截，均未同步生产文件：
+
+1. 原工作区存在其它任务的未提交改动，`git_clean` 失败。
+2. 干净 detached worktree 没有 upstream，`git_pushed` 失败。
+
+最终发布使用干净、已绑定远端提交的工作树，未使用 `--allow-dirty` 或未推送例外。
 
