@@ -6,10 +6,21 @@ import { spawnSync } from 'child_process';
 import fs from 'fs';
 import path from 'path';
 
-export const VALID_TARGETS = ['nginx', 'api', 'engines', 'apsales', 'finalize', 'home', 'portal', 'chrome', 'admin'];
+export const VALID_TARGETS = ['nginx', 'api', 'engines', 'apsales', 'finalize', 'home', 'portal', 'chrome', 'admin', 'sales-email'];
 
 /** @type {Record<string, string[]>} */
 export const TARGET_SOURCE_FILES = {
+  'sales-email': [
+    'index.html',
+    'about.html',
+    'contact.html',
+    'half-cuts/index.html',
+    'engines/index.html',
+    'trucks/index.html',
+    'js/public-i18n.js',
+    'scripts/deploy-production.mjs',
+    'scripts/lib/release-manager.mjs',
+  ],
   home: [
     'index.html',
     'css/home-v4-hybrid.css',
@@ -101,6 +112,15 @@ export const TARGET_SOURCE_FILES = {
 
 /** @type {Record<string, string[]>} */
 export const TARGET_REMOTE_PATHS = {
+  'sales-email': [
+    '/root/.openclaw/workspace/inventory-site/public/index.html',
+    '/root/.openclaw/workspace/inventory-site/public/about.html',
+    '/root/.openclaw/workspace/inventory-site/public/contact.html',
+    '/root/.openclaw/workspace/inventory-site/public/half-cuts/index.html',
+    '/root/.openclaw/workspace/inventory-site/public/engines/index.html',
+    '/root/.openclaw/workspace/inventory-site/public/trucks/index.html',
+    '/root/.openclaw/workspace/inventory-site/public/js/public-i18n.js',
+  ],
   home: [
     '/root/.openclaw/workspace/inventory-site/public/index.html',
     '/root/.openclaw/workspace/inventory-site/public/css/home-v4-hybrid.css',

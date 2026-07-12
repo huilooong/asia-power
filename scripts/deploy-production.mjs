@@ -113,6 +113,45 @@ echo "[deploy:engines] removed public preview and stale sitemap"
 `);
 }
 
+/** Public contact email only — patch live pages without overwriting newer production chrome. */
+function deploySalesEmail() {
+  console.log('[deploy:sales-email] replacing public contact addresses in place');
+  ssh(`
+set -e
+node <<'NODE'
+const fs = require('fs');
+const root = '/root/.openclaw/workspace/inventory-site/public';
+const files = [
+  'index.html',
+  'about.html',
+  'contact.html',
+  'half-cuts/index.html',
+  'engines/index.html',
+  'trucks/index.html',
+  'js/public-i18n.js',
+];
+for (const rel of files) {
+  const file = root + '/' + rel;
+  let text = fs.readFileSync(file, 'utf8');
+  text = text
+    .replaceAll('weylonhui@gmail.com', 'sales@asia-power.com')
+    .replaceAll('info@asia-power.com', 'sales@asia-power.com');
+  if (rel === 'about.html') {
+    text = text.replaceAll('public-i18n.js?v=about-i18n-v1', 'public-i18n.js?v=sales-email-v1');
+  }
+  fs.writeFileSync(file, text);
+}
+for (const rel of files) {
+  const text = fs.readFileSync(root + '/' + rel, 'utf8');
+  if (text.includes('weylonhui@gmail.com') || text.includes('info@asia-power.com')) {
+    throw new Error('old public email remains in ' + rel);
+  }
+}
+console.log('[deploy:sales-email] public contact email OK');
+NODE
+`);
+}
+
 /** Homepage only — v4-hybrid (does NOT rsync full public/) */
 function deployHome() {
   console.log('[deploy:home] syncing v4-hybrid homepage files only');
@@ -509,7 +548,7 @@ function printHelp() {
   console.log(`AsiaPower deploy (Release Manager enabled):
   node scripts/deploy-production.mjs <target> [--yes] [--allow-dirty] [user@host]
 
-  nginx | api | engines | apsales | finalize | home | portal | chrome | admin
+  nginx | api | engines | apsales | finalize | home | portal | chrome | admin | sales-email
 
   REQUIRED: commit → push GitHub → then deploy (CEO red line 2026-07-10)
   Pre-deploy:  git clean, HEAD on origin, backup, target confirmation
@@ -531,6 +570,7 @@ const targets = {
   portal: deployPortal,
   chrome: deployChrome,
   admin: deployAdmin,
+  'sales-email': deploySalesEmail,
 };
 
 async function main() {
