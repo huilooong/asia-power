@@ -75,15 +75,44 @@ assert.equal(
   'Ford dedicated engines/transmission must stay out of chassis',
 );
 
+const kitMirrors = live
+  .filter((item) => item.listingStructure === 'kit_transmission_mirror_sku'
+    || item.mirrorSource === 'ford-kit-transmission-mirror-2026-07-12')
+  .sort((a, b) => String(a.stockId).localeCompare(String(b.stockId)));
+assert.equal(kitMirrors.length, 4, 'four kit transmission mirrors must exist');
+for (const item of kitMirrors) {
+  assert.deepEqual(
+    {
+      halfcuts: match(item, 'halfcuts'),
+      frontcuts: match(item, 'frontcuts'),
+      chassis: match(item, 'chassis'),
+      engines: match(item, 'engines'),
+      gearboxes: match(item, 'gearboxes'),
+    },
+    { halfcuts: false, frontcuts: false, chassis: false, engines: false, gearboxes: true },
+    `${item.stockId} kit mirror must be gearbox-only`,
+  );
+  assert.equal(item.passengerPartType, 'transmission');
+  assert.equal(Number(item.priceUsd), 441);
+}
+
 const fordGearboxIds = live
   .filter((item) => String(item.brand || '').trim().toLowerCase() === 'ford')
   .filter((item) => match(item, 'gearboxes'))
   .map((item) => item.stockId)
   .sort();
+const expectedFordGearboxes = [
+  'HC250132',
+  'HC250524',
+  'HC250528',
+  'HC250536',
+  'HC250565',
+  ...kitMirrors.map((item) => item.stockId),
+].sort();
 assert.deepEqual(
   fordGearboxIds,
-  ['HC250132', 'HC250524', 'HC250528', 'HC250536', 'HC250565'],
-  'Ford gearbox catalog must include one dedicated transmission and four historical donor cuts',
+  expectedFordGearboxes,
+  'Ford gearbox catalog must include historical donor cuts, HC250565, and four kit mirrors',
 );
 
 const trueHalfCut = {
