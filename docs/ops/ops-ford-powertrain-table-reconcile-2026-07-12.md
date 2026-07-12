@@ -1,9 +1,9 @@
-# OPS · 福特动力总成原表挂牌纠正
+# OPS · 福特动力总成原表挂牌纠正（含双品牌占位图）
 
 **日期：** 2026-07-12  
 **权威来源：** CEO 原始图片《福特试验车最后一批发动机/变速器清单》  
 **范围：** HC250556–HC250565；HC250566 仅盘点、不修改  
-**状态：** 实施前设计已定稿；生产结果与证据见文末
+**状态：** 已完成现网数据纠正 + 双品牌占位图；10/10 成功
 
 ## 结论
 
@@ -12,8 +12,10 @@
 - 106 套发动机+变速箱；
 - 105 台纯发动机；
 - 33 台独立自动变速箱；
-- 因套装同时含一台发动机和一台变速箱，业务口径为 **211 台发动机、139 台变速箱**；
-- 按源表每行数量直接相加是 **244 个可售套/台**，这是实物挂牌单位合计，不应与 211+139 相加。
+- 业务口径：**211 台发动机、139 台变速箱**（套装重叠计入）；
+- 实物挂牌单位合计：**244 套/台**。
+
+现网已按原表数量、类目、命名与价格纠正；本批 10 条主图均为 **Ford logo + AsiaPower** 双品牌占位图。HC250566 真车照片未改动。
 
 ## 原表逐行复核
 
@@ -30,49 +32,91 @@
 | 9 | CAF488Q10 | 2.0L | 发动机总成 | 34 | 无变速器（福特混动） |
 | 10 | 自动变速器 | 1.5 | 变速器总成 | 33 | 空 |
 
-## 旧错误与纠正策略
+## 旧错误 vs 新挂牌
 
 | 问题 | 旧呈现 | 新规则 |
 |---|---|---|
-| 数量口径 | 页面容易被理解为每库存号 1 台；历史汇报还写成“9 发动机 + 1 变速箱” | 一个源表行对应一个 SKU，`quantityUnits/quantity/sellableQty` 必须写源表数量 |
-| 套装识别 | 三个套装行仍以普通发动机标题展示，变速箱价值不清楚 | 标题明确 `Engine + ... Transmission Powertrain Package` |
-| 套装类目 | 系统只有互斥的 engine/transmission 类目 | 单 SKU 套装放 engine 主类目，但标题、描述、配件清单明确发动机+变速箱；不复制进变速箱，不进入车头/底盘 |
-| 纯发动机 | 标题未稳定体现数量/排量/总成 | 仅 engine 类目，标题明确型号、排量、Engine Assembly、数量 |
-| 独立变速箱 | 公共标题退化成 `Ford Focus AT` | 仅 transmission 类目；用既有上下文命名为 Focus 2019–2021 1.5L Automatic Transmission，并注明原表无车型/年份 |
-| 价格 | 三个套装仍按单发动机 USD 1,250 | 纯发动机 USD 1,250；独立变速箱 USD 441；套装按两项合计 USD 1,691 |
+| 数量口径 | 易被理解为每库存号 1 台；历史还写成“9 发动机 + 1 变速箱” | 一行一个 SKU，`quantityUnits/quantity/sellableQty` = 源表数量 |
+| 套装识别 | 普通发动机标题，变速箱价值不清 | 标题明确 `Engine + ... Transmission Powertrain Package` |
+| 套装类目 | 无 combo 类目 | 单 SKU 放 engine 主类目；标题/描述/配件清单写明发动机+变速箱；不进变速箱/车头/底盘 |
+| 独立变速箱 | 公共标题退化成 `Ford Focus AT` | 仅 transmission；命名 Focus 2019–2021 1.5L Automatic Transmission |
+| 价格 | 套装仍按单发动机 1250 | 纯发动机 1250；独立变速箱 441；套装 1691 |
+| 照片 | 空相册 | 本批专用 Ford x AsiaPower 双品牌占位图 |
 
 ## 新挂牌清单
 
-| stockId | 源表行 | 新挂牌名 | 数量 | 类目 | 价格 |
-|---|---:|---|---:|---|---:|
-| HC250556 | 1 | Ford CAF372WQ 1.0T Engine + Manual Transmission Powertrain Package | 24 套 | engine（套装单 SKU） | USD 1,691 |
-| HC250557 | 2 | Ford CAF384Q 1.5L Engine + Automatic Transmission Powertrain Package | 47 套 | engine（套装单 SKU） | USD 1,691 |
-| HC250558 | 3 | Ford CAF384Q 1.5L Engine + Manual Transmission Powertrain Package | 18 套 | engine（套装单 SKU） | USD 1,691 |
-| HC250559 | 4 | Ford CAF384Q 1.5L Engine Assembly | 2 台 | engine | USD 1,250 |
-| HC250560 | 5 | Ford CAF384WQ 1.5T Engine Assembly | 4 台 | engine | USD 1,250 |
-| HC250561 | 6 | Ford CAF488WQ 2.0T Engine + Automatic Transmission Powertrain Package | 17 套 | engine（套装单 SKU） | USD 1,691 |
-| HC250562 | 7 | Ford CAF488WQ 2.0T Engine Assembly | 62 台 | engine | USD 1,250 |
-| HC250563 | 8 | Ford GTDIQ8 2.7T Engine Assembly | 3 台 | engine | USD 1,250 |
-| HC250564 | 9 | Ford CAF488Q10 2.0L Hybrid Engine Assembly | 34 台 | engine | USD 1,250 |
-| HC250565 | 10 | Ford Focus 2019-2021 1.5L Automatic Transmission Assembly | 33 台 | transmission | USD 441 |
+| stockId | 源表行 | 公开名摘要 | 数量 | 类目 | 价格 | 主图 |
+|---|---:|---|---:|---|---:|---|
+| HC250556 | 1 | CAF372WQ 1.0T Engine + Manual Transmission Package | 24 套 | engine | USD 1,691 | 双品牌占位 |
+| HC250557 | 2 | CAF384Q 1.5L Engine + Automatic Transmission Package | 47 套 | engine | USD 1,691 | 双品牌占位 |
+| HC250558 | 3 | CAF384Q 1.5L Engine + Manual Transmission Package | 18 套 | engine | USD 1,691 | 双品牌占位 |
+| HC250559 | 4 | CAF384Q 1.5L Engine Assembly | 2 台 | engine | USD 1,250 | 双品牌占位 |
+| HC250560 | 5 | CAF384WQ 1.5T Engine Assembly | 4 台 | engine | USD 1,250 | 双品牌占位 |
+| HC250561 | 6 | CAF488WQ 2.0T Engine + Automatic Transmission Package | 17 套 | engine | USD 1,691 | 双品牌占位 |
+| HC250562 | 7 | CAF488WQ 2.0T Engine Assembly | 62 台 | engine | USD 1,250 | 双品牌占位 |
+| HC250563 | 8 | GTDIQ8 2.7T Engine Assembly | 3 台 | engine | USD 1,250 | 双品牌占位 |
+| HC250564 | 9 | CAF488Q10 2.0L Hybrid Engine Assembly | 34 台 | engine | USD 1,250 | 双品牌占位 |
+| HC250565 | 10 | Focus 2019-2021 1.5L Automatic Transmission Assembly | 33 台 | transmission | USD 441 | 双品牌占位 |
 
-### 套装定价决定
+### 套装定价
 
-采用 **USD 1,691 = USD 1,250 发动机 + USD 441 变速箱**。原因是原表明确为发动机+变速器完整套装；继续只收发动机价会漏掉变速箱价值。系统没有 combo 类目，因此采用单 SKU 套装，不拆成两个库存号，避免数量翻倍和重复售卖。
+采用 **USD 1,691 = 1,250 + 441**。系统无 combo 类目，故用单 SKU 套装，不拆两个库存号，避免数量翻倍。
 
-## 生产实施与验证
+### 双品牌占位图
 
-待执行后补充：
+| 项 | 路径 |
+|---|---|
+| 源文件 SVG | `assets/images/ford-asiapower-powertrain-placeholder.svg` |
+| 现网主图 PNG | `assets/images/ford-asiapower-powertrain-placeholder.png` |
+| 公开 URL | https://asia-power.com/assets/images/ford-asiapower-powertrain-placeholder.png |
+| 范围 | 仅 `sourceImport=ford-test-powertrain-lot-2026-07-12` 的 HC250556–HC250565 |
+| 未改 | HC250566 等其它库存真车照片 |
 
-- 生产备份路径；
-- 10 条 approved 与 linked submissions 更新结果；
-- 公开 API 数量、标题、类目、价格；
-- 发动机/变速箱/车头/底盘目录互斥；
-- 页面截图证据；
-- HC250566 未修改确认。
+## 生产实施
+
+| 项 | 结果 |
+|---|---|
+| Git commits | `680bce125` 数量纠正；`faae95c9a` 公开命名；`1e11bf850` 起含占位图资产（后续补 PNG） |
+| 生产备份 | `/root/.openclaw/workspace/inventory-site/data/backups/ford-powertrain-table-reconcile-2026-07-12T15-28-13-442Z/` 及后续同名前缀备份 |
+| 执行报告 | `/root/.openclaw/workspace/inventory-site/reports/ford-powertrain-table-reconcile-2026-07-12.json` |
+| 脚本 | `scripts/reconcile-ford-powertrain-table-2026-07-12.mjs` |
+| 资产同步 | 已 rsync PNG/SVG 到生产 `public/assets/images/`；`deploy-production.mjs` chrome 目标已登记 |
+
+## 现网验证
+
+| 检查 | 结果 |
+|---|---|
+| 公开 API 10/10 数量 | 24/47/18/2/4/17/62/3/34/33，合计 244 |
+| 构成口径 | packages=106；engines qty=211；transmissions qty=139 |
+| 类目 | 556–564 = engine；565 = transmission |
+| 价格 | 套装 1691；纯发动机 1250；变速箱 441 |
+| 照片 | 10/10 指向双品牌 PNG；HC250566 真车相册未动 |
+| 发动机列表 | `/engines/?q=HC250556` 可见套装名、24 units、$1691、占位图 |
+| 变速箱列表 | `/gearboxes/?q=HC250565` 可见 33 units、$441、占位图 |
+| 详情页 | HC250556 / HC250565 主图均为 Ford x AsiaPower 占位图 |
+| 车头/底盘 | `/front-cuts/?q=HC250565`、`/chassis-parts/?q=HC250556` 无本批串入 |
+
+### 截图证据
+
+- `docs/ops/evidence/ford-powertrain-engine-list-placeholder-20260712.png`
+- `docs/ops/evidence/ford-powertrain-engine-detail-placeholder-20260712.png`
+- `docs/ops/evidence/ford-powertrain-transmission-list-placeholder-20260712.png`
+- `docs/ops/evidence/ford-powertrain-transmission-detail-placeholder-20260712.png`
+- `docs/ops/evidence/ford-powertrain-frontcut-exclusion-20260712.png`
+- `docs/ops/evidence/ford-powertrain-chassis-exclusion-20260712.png`
+
+## 需 CEO 再拍板？
+
+套装价已按 **1250+441=1691** 上线。若你希望套装对外只标发动机价 1250、或改成别的套装价，再说一声我改。
 
 ## 交付路径
 
-- 报告：`docs/ops/ops-ford-powertrain-table-reconcile-2026-07-12.md`
-- 可复跑脚本：`scripts/reconcile-ford-powertrain-table-2026-07-12.mjs`
-- 执行报告：`reports/ford-powertrain-table-reconcile-2026-07-12.json`
+```text
+docs/ops/ops-ford-powertrain-table-reconcile-2026-07-12.md
+docs/ops/evidence/ford-powertrain-*-20260712.png
+assets/images/ford-asiapower-powertrain-placeholder.png
+assets/images/ford-asiapower-powertrain-placeholder.svg
+scripts/reconcile-ford-powertrain-table-2026-07-12.mjs
+```
+
+绝对工作区：`/Users/longhui/Desktop/AsiaPower`

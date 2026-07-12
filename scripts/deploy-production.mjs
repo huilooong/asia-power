@@ -263,6 +263,10 @@ function deployChrome() {
     `${ROOT}/assets/images/ford-asiapower-powertrain-placeholder.svg`,
     `${pub}/assets/images/ford-asiapower-powertrain-placeholder.svg`
   );
+  rsync(
+    `${ROOT}/assets/images/ford-asiapower-powertrain-placeholder.png`,
+    `${pub}/assets/images/ford-asiapower-powertrain-placeholder.png`
+  );
   // Detail shells (chrome header cache-bust)
   rsync(`${ROOT}/half-cuts/detail.html`, `${pub}/half-cuts/detail.html`);
   rsync(`${ROOT}/trucks/detail.html`, `${pub}/trucks/detail.html`);
@@ -373,6 +377,7 @@ grep -q 'about-type-v2' "$PUB/engines/index.html"
 grep -E -q 'catalog-search-v1|catalog-search-v2|stock-id-search-v[12]|dedicated-price-v1' "$PUB/engines/index.html"
 test -f "$PUB/assets/images/parts-placeholder.svg"
 test -f "$PUB/assets/images/ford-asiapower-powertrain-placeholder.svg"
+test -f "$PUB/assets/images/ford-asiapower-powertrain-placeholder.png"
 echo "[deploy:chrome] listing + static chrome OK on remote"
 `);
 }

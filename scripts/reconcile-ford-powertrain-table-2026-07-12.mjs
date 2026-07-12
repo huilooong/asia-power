@@ -20,9 +20,9 @@ const TRANSMISSION_PRICE_USD = 441;
 const PACKAGE_PRICE_USD = ENGINE_PRICE_USD + TRANSMISSION_PRICE_USD;
 const SALES_HIGHLIGHT = 'Low mileage · nearly new condition';
 const PLACEHOLDER_PHOTO = {
-  label: 'Ford × AsiaPower dual-brand placeholder',
-  url: '/assets/images/ford-asiapower-powertrain-placeholder.svg',
-  thumbUrl: '/assets/images/ford-asiapower-powertrain-placeholder.svg',
+  label: 'Ford x AsiaPower dual-brand placeholder',
+  url: '/assets/images/ford-asiapower-powertrain-placeholder.png',
+  thumbUrl: '/assets/images/ford-asiapower-powertrain-placeholder.png',
   placeholder: true,
   placeholderKind: 'ford-asiapower-dual-brand',
 };
@@ -152,7 +152,7 @@ function patchItem(item, spec, nowIso) {
   notes = replaceLine(
     notes,
     '占位图：',
-    '占位图：Ford logo + AsiaPower 双品牌（assets/images/ford-asiapower-powertrain-placeholder.svg）'
+    '占位图：Ford logo + AsiaPower 双品牌（assets/images/ford-asiapower-powertrain-placeholder.png）'
   );
 
   return {
@@ -184,7 +184,7 @@ function patchItem(item, spec, nowIso) {
     notes,
     reconciledFromCeoTableAt: nowIso,
     reconciledFromCeoTableSource: 'ceo-original-table-image-2026-07-12',
-    placeholderPhotoSource: 'ford-asiapower-powertrain-placeholder.svg',
+    placeholderPhotoSource: 'ford-asiapower-powertrain-placeholder.png',
     updatedAt: nowIso,
   };
 }

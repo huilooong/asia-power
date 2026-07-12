@@ -61,6 +61,8 @@
 
 - `deploy-production.mjs` rsync 工作树进 `public/` — 新增后端目录必须同步 EXCLUDES，否则 `.py` 源码可公开下载（已修一次，勿回归）
 - **公开隐私原则（2026-07-12）**：公开页/API 不得出现完整 VIN、供应商资料、内部备注或审核元数据；脱敏对象禁止再与 raw item 合并。Preview 不得公网裸奔。QXB guide 先逐页查隐私，只有命中完整 VIN、供应商/客户隐私或内部备注才下线/noindex，禁止无差别全删。
+- **公开联系邮箱（CEO 2026-07-12 定稿）**：公开页、联系页、About 与 SEO 结构化数据统一使用 `sales@asia-power.com`；个人 Gmail 仅保留内部转发/管理员用途，不对外展示。
+- **公开页窄范围发布（事故教训 2026-07-12）**：生产文件可能领先当前 Git 分支；发布共享 `home/chrome` 目标前必须核对生产漂移。只改公开邮箱等小范围内容时使用 Release Manager `sales-email` 目标，先快照再原位替换，禁止用旧分支整包覆盖新页面。
 - **P0 已上线**：Commit `69b6eced3`；API `REL-20260712114055-api-69b6eced3`；Preview 下线 `REL-20260712114302-engines-69b6eced3`。报告：`docs/ops/ops-p0-privacy-deploy-audit-2026-07-12.md`。
 
 ## 供应商上传图片压缩（2026-07-10）
@@ -106,9 +108,12 @@
 - Release: REL-20260710093613-chrome + integrity api/chrome 2026-07-10 · ops: docs/ops/ops-parts-photo-display.md
 
 ## 发动机 / 变速箱业务规则（CEO 2026-07-12）
-- 今日福特试验车批次 HC250556–HC250565：发动机命名已确认正确，禁止随意改；变速箱必须读 `notes` / `remark` 后以车型、排量、年款、挡位等已知信息命名，禁止只写空洞的 AT/Transmission，也禁止臆造真实型号。
+- **CEO 原表数量是唯一权威口径（2026-07-12 纠正）**：HC250556–HC250565 是 10 个「型号+配置」SKU 行，不是 9 台发动机 + 1 台变速箱。原表为 106 套发动机+变速箱、105 台纯发动机、33 台独立自动变速箱，即 211 台发动机、139 台变速箱（套装重叠计入），实物挂牌单位合计 244 套/台。上传批次必须把表内数量写入 `quantityUnits/quantity/sellableQty`；禁止把「一行一个库存号」误读成「一行只有 1 台」。
+- 本批挂牌结构：发动机+变速箱使用 engine 主类目的单 SKU `Powertrain Package`，标题/描述/配件清单明确两项；纯发动机只进 engine；独立变速箱只进 transmission；全部不得进入车头/底盘。纯发动机 USD 1,250、独立变速箱 USD 441、套装 USD 1,691。本批无实拍时用 `assets/images/ford-asiapower-powertrain-placeholder.png`（Ford + AsiaPower 双品牌），不得挪用其它库存真车照片。
+- 变速箱必须读 `notes` / `remark` 后以车型、排量、年款、挡位等已知信息命名，禁止只写空洞的 AT/Transmission，也禁止臆造真实变速箱型号；若适配信息来自既有上下文而非 CEO 原表，必须明确注明。
 - 本批定价汇率 6.8：发动机 RMB 8,500 → **USD 1,250**；变速箱 RMB 3,000 → **USD 441**（四舍五入到整数美元）。价格字段必须明确为 USD。
 - **公开类目互斥（CEO 2026-07-12 定稿）**：`passengerPartType` 是独立零件主分类，优先于 engineCode/transmissionCode/标题/搜索。独立发动机只进发动机，独立变速箱只进变速箱，底盘只进底盘，半切/车头不得混入上述独立件；搜索只能扩大匹配字段，禁止跨类目补项。仅无专用类型的真正半切可因自带 engineCode/transmissionCode 同时出现在动力总成目录。事故批次 HC250556–HC250566；报告 `docs/ops/ops-part-category-filter-fix-2026-07-12.md`。
+- **类目过滤必须防 false negative（CEO 2026-07-12 纠正）**：不能只验证“错误货已排除”，还必须对比发布备份与生产原始数据，并逐类核对改前/改后 count，确认合法库存仍保留。底盘采用“显式 chassis 或真正 donor cut 的公开底盘证据”准入；独立 engine/transmission/other 不得因关键词串入。事故：底盘 445 条宽放后被收紧成 0，HC250488 被误杀；修复报告 `docs/ops/ops-chassis-transmission-filter-repair-2026-07-12.md`。
 - 本批对外卖点固定体现 **Low mileage / Nearly new condition（低里程 / 几乎全新）**。详见 `docs/ops/ops-engine-transmission-pricing-2026-07-12.md`。
 
 ## 中文车型 normalize（2026-07-10）

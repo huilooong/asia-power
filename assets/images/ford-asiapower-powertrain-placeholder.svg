@@ -1,4 +1,4 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="900" viewBox="0 0 1200 900" role="img" aria-label="Ford × AsiaPower powertrain placeholder">
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="900" viewBox="0 0 1200 900" role="img" aria-label="Ford x AsiaPower powertrain placeholder">
   <defs>
     <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
       <stop offset="0%" stop-color="#e8eef5"/>
@@ -24,32 +24,29 @@
 
   <rect width="1200" height="900" fill="url(#bg)"/>
   <rect width="1200" height="900" fill="url(#grid)"/>
-  <circle cx="160" cy="120" r="200" fill="#ffffff" fill-opacity="0.4"/>
+  <circle cx="160" cy="90" r="200" fill="#ffffff" fill-opacity="0.4"/>
   <circle cx="1040" cy="780" r="220" fill="#0a1628" fill-opacity="0.04"/>
 
   <rect x="140" y="120" width="920" height="660" rx="36" fill="url(#panel)" stroke="#d5dde8" stroke-width="2"/>
   <rect x="140" y="120" width="920" height="10" rx="5" fill="url(#apNavy)"/>
 
-  <!-- Ford logo mark -->
   <g transform="translate(360 360)">
     <ellipse cx="0" cy="0" rx="170" ry="78" fill="url(#fordBlue)" stroke="#ffffff" stroke-width="8"/>
     <ellipse cx="0" cy="0" rx="156" ry="66" fill="none" stroke="#ffffff" stroke-opacity="0.55" stroke-width="3"/>
     <text x="0" y="18" text-anchor="middle" font-family="Georgia, 'Times New Roman', serif" font-size="72" font-style="italic" font-weight="700" fill="#ffffff" letter-spacing="0.02em">Ford</text>
   </g>
 
-  <!-- Divider -->
   <line x1="600" y1="280" x2="600" y2="440" stroke="#0a1628" stroke-opacity="0.18" stroke-width="3" stroke-linecap="round"/>
   <circle cx="600" cy="360" r="18" fill="#ffffff" stroke="#0a1628" stroke-opacity="0.25" stroke-width="2"/>
-  <text x="600" y="366" text-anchor="middle" font-family="Helvetica Neue, Arial, sans-serif" font-size="18" font-weight="700" fill="#0a1628">×</text>
+  <text x="600" y="366" text-anchor="middle" font-family="Helvetica Neue, Arial, sans-serif" font-size="18" font-weight="700" fill="#0a1628">x</text>
 
-  <!-- AsiaPower mark -->
   <g transform="translate(840 360)">
     <rect x="-150" y="-58" width="300" height="116" rx="22" fill="url(#apNavy)"/>
     <text x="0" y="-4" text-anchor="middle" font-family="Helvetica Neue, Arial, sans-serif" font-size="34" font-weight="800" fill="#ffffff" letter-spacing="0.08em">ASIAPOWER</text>
     <text x="0" y="32" text-anchor="middle" font-family="Helvetica Neue, Arial, sans-serif" font-size="16" font-weight="500" fill="#c9d6e5" letter-spacing="0.18em">AUTO PARTS</text>
   </g>
 
-  <text x="600" y="560" text-anchor="middle" font-family="Helvetica Neue, Arial, sans-serif" font-size="36" font-weight="700" fill="#0a1628" letter-spacing="0.04em">Ford × AsiaPower</text>
+  <text x="600" y="560" text-anchor="middle" font-family="Helvetica Neue, Arial, sans-serif" font-size="36" font-weight="700" fill="#0a1628" letter-spacing="0.04em">Ford x AsiaPower</text>
   <text x="600" y="608" text-anchor="middle" font-family="Helvetica Neue, Arial, sans-serif" font-size="22" font-weight="500" fill="#5b6775" letter-spacing="0.12em">POWERTRAIN LOT · PHOTOS ON REQUEST</text>
-  <text x="600" y="660" text-anchor="middle" font-family="Helvetica Neue, Arial, sans-serif" font-size="18" font-weight="500" fill="#7a8796">Factory test-vehicle engines &amp; transmissions</text>
+  <text x="600" y="660" text-anchor="middle" font-family="Helvetica Neue, Arial, sans-serif" font-size="18" font-weight="500" fill="#7a8796">Factory test-vehicle engines and transmissions</text>
 </svg>
