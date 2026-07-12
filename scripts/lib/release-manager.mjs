@@ -85,9 +85,17 @@ export const TARGET_SOURCE_FILES = {
   engines: ['engines'],
   apsales: [
     'scripts/apsales-growth-autopilot.py',
+    'scripts/apsales-social-autopilot.py',
+    'scripts/apsales-social-demand-drafts.py',
+    'scripts/apsales-global-demand-discovery.py',
+    'scripts/apsales-global-demand-sources.py',
+    'scripts/apsales-comment-review-queue.py',
+    'scripts/apsales-record-public-comment-demand.py',
     'scripts/apsales-social-reply-watch.py',
     'scripts/apsales-record-distribution-action.py',
     'scripts/apsales-distribution-daily-digest.py',
+    'config/apsales_global_demand_sources.json',
+    'config/apsales_social_engagement_policy.yaml',
     'customer_gateway/growth_autopilot.py',
     'customer_gateway/outreach_engine.py',
     'customer_gateway/distribution_progress.py',
@@ -176,6 +184,7 @@ export const TARGET_REMOTE_PATHS = {
   engines: ['/root/.openclaw/workspace/inventory-site/public/engines'],
   apsales: [
     '/root/.openclaw/workspace/AsiaPower/scripts',
+    '/root/.openclaw/workspace/AsiaPower/config',
     '/root/.openclaw/workspace/AsiaPower/customer_gateway',
   ],
   finalize: [

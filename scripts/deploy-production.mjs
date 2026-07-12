@@ -361,10 +361,21 @@ function deployApsales() {
   console.log('[deploy:apsales] syncing growth autopilot scripts');
   run('rsync', ['-av',
     `${ROOT}/scripts/apsales-growth-autopilot.py`,
+    `${ROOT}/scripts/apsales-social-autopilot.py`,
+    `${ROOT}/scripts/apsales-social-demand-drafts.py`,
+    `${ROOT}/scripts/apsales-global-demand-discovery.py`,
+    `${ROOT}/scripts/apsales-global-demand-sources.py`,
+    `${ROOT}/scripts/apsales-comment-review-queue.py`,
+    `${ROOT}/scripts/apsales-record-public-comment-demand.py`,
     `${ROOT}/scripts/apsales-social-reply-watch.py`,
     `${ROOT}/scripts/apsales-record-distribution-action.py`,
     `${ROOT}/scripts/apsales-distribution-daily-digest.py`,
     `${AP}/scripts/`,
+  ]);
+  run('rsync', ['-av',
+    `${ROOT}/config/apsales_global_demand_sources.json`,
+    `${ROOT}/config/apsales_social_engagement_policy.yaml`,
+    `${AP}/config/`,
   ]);
   run('rsync', ['-av',
     `${ROOT}/customer_gateway/growth_autopilot.py`,
@@ -372,6 +383,18 @@ function deployApsales() {
     `${ROOT}/customer_gateway/distribution_progress.py`,
     `${AP}/customer_gateway/`,
   ]);
+  ssh(`
+set -e
+cd /root/.openclaw/workspace/AsiaPower
+.venv/bin/python3 -m py_compile \
+  scripts/apsales-social-autopilot.py \
+  scripts/apsales-social-demand-drafts.py \
+  scripts/apsales-global-demand-discovery.py \
+  scripts/apsales-global-demand-sources.py \
+  scripts/apsales-comment-review-queue.py \
+  scripts/apsales-record-public-comment-demand.py
+echo "[deploy:apsales] growth demand scripts OK on remote"
+`);
 }
 
 function deployFinalize() {
