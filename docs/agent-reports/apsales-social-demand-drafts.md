@@ -1,6 +1,6 @@
 # APSales Social Demand Drafts
 
-Generated: 2026-07-11 21:02 UTC
+Generated: 2026-07-12 02:04 UTC
 
 ## Scope
 
@@ -12,17 +12,28 @@ Generated: 2026-07-11 21:02 UTC
 
 ## Current Social Intel Quality
 
-- Total intel rows reviewed: 16
-- market_signal: 16
+- Total intel rows reviewed: 28
+- buyer_demand: 4
+- comment_review_candidate: 1
+- market_signal: 23
 
 ## Source Mix
 
 - facebook groups: 8
+- jiji: 2
+- nairaland: 9
 - tonaton: 8
+- youtube: 1
 
 ## Selected Buyer Demand Candidates
 
 No high-confidence buyer demand candidates found in the existing intel file.
+
+## Comment Review Candidates
+
+| Platform | Country | Signal | URL |
+| --- | --- | --- | --- |
+| youtube | Global | Sale New Hyundai Kia Gasoline Engine, G4KE G4FC G4NA G4LC G4KJ G4ED Engine Sale New Hyundai Kia Gasoline Engine, G4KE G4FC G4NA G4LC G4KJ G4 | https://www.youtube.com/watch?v=ywLp_XYJo_g |
 
 ## Drafts Created
 

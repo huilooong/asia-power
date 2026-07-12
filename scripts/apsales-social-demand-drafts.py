@@ -16,6 +16,7 @@ import sys
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
+from urllib.parse import urlparse
 
 ROOT = Path(__file__).resolve().parent.parent
 if str(ROOT) not in sys.path:
@@ -28,6 +29,21 @@ DEFAULT_INTEL_FILES = [
 ]
 REPORT_FILE = ROOT / "docs" / "agent-reports" / "apsales-social-demand-drafts.md"
 STATE_FILE = ROOT / "memory" / "customer_gateway" / "social_demand_draft_state.json"
+
+BUYER_PRODUCT_RE = re.compile(
+    r"(where can i|where to|looking for|i need|need|want to buy|who has|recommend|quote|price)"
+    r".{0,160}"
+    r"(engine|gearbox|transmission|half[- ]?cut|spare parts?|tokunbo|used parts?)"
+    r"|"
+    r"(engine|gearbox|transmission|half[- ]?cut|spare parts?|tokunbo|used parts?)"
+    r".{0,160}"
+    r"(where can i|where to|looking for|i need|need|want to buy|who has|recommend|quote|price)",
+    re.I,
+)
+FALSE_BUYER_RE = re.compile(
+    r"\b(review|is it still worth buying|things to know before you buy|palm kernel|agriculture|house clearance|for sale|hot deal|foreign used|store for)\b",
+    re.I,
+)
 
 COUNTRY_URLS = {
     "Ghana": "https://asia-power.com/engines/ghana-half-cut-engines.html",
@@ -143,6 +159,23 @@ def _intent_type(row: dict[str, Any], score: int) -> str:
     return "buyer_demand" if score >= 70 else "market_signal"
 
 
+def _passes_buyer_quality(row: dict[str, Any]) -> bool:
+    text = str(row.get("text") or "")
+    platform = _source_platform(row)
+    host = urlparse(str(row.get("post_url") or "")).netloc.lower()
+    if platform == "nairaland" and not host.endswith("nairaland.com"):
+        return False
+    if platform == "youtube" and not host.endswith("youtube.com"):
+        return False
+    if not BUYER_PRODUCT_RE.search(text):
+        return False
+    if FALSE_BUYER_RE.search(text):
+        return False
+    if row.get("source_type") == "classifieds":
+        return False
+    return True
+
+
 def _source_platform(row: dict[str, Any]) -> str:
     for key in ("source_platform", "platform", "source"):
         value = str(row.get(key) or "").strip().lower()
@@ -213,7 +246,7 @@ def select_candidates(rows: list[dict[str, Any]], *, limit: int, min_score: int)
             continue
         score = _fallback_score(row)
         intent = _intent_type(row, score)
-        if score < min_score or intent != "buyer_demand":
+        if score < min_score or intent != "buyer_demand" or not _passes_buyer_quality(row):
             continue
         enriched = {
             **row,
@@ -345,6 +378,27 @@ def write_report(*, rows: list[dict[str, Any]], candidates: list[dict[str, Any]]
             lines.append(
                 f"| {row.get('_score')} | {row.get('detected_country') or ''} | "
                 f"{str(row.get('author') or '')[:60]} | {', '.join(_products(row)) or ''} | {row.get('_target_url')} |"
+            )
+
+    review_rows = [
+        row for row in rows
+        if _intent_type(row, _fallback_score(row)) == "comment_review_candidate"
+    ][:20]
+    lines.extend([
+        "",
+        "## Comment Review Candidates",
+        "",
+    ])
+    if not review_rows:
+        lines.append("No video/comment review candidates found in the current intel files.")
+    else:
+        lines.append("| Platform | Country | Signal | URL |")
+        lines.append("| --- | --- | --- | --- |")
+        for row in review_rows:
+            signal = str(row.get("text") or "").replace("|", "/")[:140]
+            lines.append(
+                f"| {_source_platform(row)} | {row.get('detected_country') or ''} | "
+                f"{signal} | {row.get('post_url') or ''} |"
             )
 
     lines.extend([

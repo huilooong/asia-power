@@ -77,7 +77,7 @@ def main() -> int:
         mod = importlib.util.module_from_spec(spec)
         assert spec and spec.loader
         spec.loader.exec_module(mod)
-        discovery_args = mod.build_parser().parse_args(["--json"])
+        discovery_args = mod.build_parser().parse_args(["--json", "--deep-read"])
         result = mod.discover(discovery_args)
         if args.json:
             print(json.dumps(result, ensure_ascii=False, indent=2))
@@ -85,6 +85,7 @@ def main() -> int:
             print("=== 子敬全球公开需求发现 ===")
             print(f"已检查搜索结果: {result.get('reviewed', 0)}")
             print(f"买家需求: {result.get('buyer_demand', 0)}")
+            print(f"评论检查候选: {result.get('comment_review_candidate', 0)}")
             print(f"市场信号: {result.get('market_signal', 0)}")
             print(f"报告: {result.get('report')}")
         return 0

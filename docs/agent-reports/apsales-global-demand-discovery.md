@@ -1,6 +1,6 @@
 # APSales Global Demand Discovery
 
-Generated: 2026-07-12 02:01 UTC
+Generated: 2026-07-12 02:03 UTC
 
 ## Safety
 
@@ -11,7 +11,7 @@ Generated: 2026-07-12 02:01 UTC
 
 ## Run Summary
 
-- Dry run: true
+- Dry run: false
 - Sources selected: 5
 - Search results reviewed: 47
 - Records selected: 3
@@ -34,7 +34,7 @@ No high-confidence buyer-demand records found in this run.
 
 | Score | Deep | Platform | Country | Query | Signal | URL |
 | ---: | --- | --- | --- | --- | --- | --- |
-| 55 | false | Jiji | Nigeria | site:jiji.ng "looking for" engine Nigeria | Vehicle Parts & Accessories / 48108 Vehicle Parts & Accessories / 48108 Cars / 30974 Electrical Equipment / 13057 Generators / 12261 Trucks & Trailers / 4266 Bu | https://jiji.ng/car-parts-and-accessories?query=%22looking+for%22+engine+Nigeria |
+| 55 | false | Jiji | Nigeria | site:jiji.ng "looking for" engine Nigeria | Vehicle Parts & Accessories / 48107 Vehicle Parts & Accessories / 48107 Cars / 30969 Electrical Equipment / 13057 Generators / 12261 Trucks & Trailers / 4266 Bu | https://jiji.ng/car-parts-and-accessories?query=%22looking+for%22+engine+Nigeria |
 | 55 | false | Jiji | Nigeria | site:jiji.ng "need" gearbox Nigeria | Vehicle Parts & Accessories / 60 Vehicle Parts & Accessories / 60 Cars / 51 Buses & Microbuses / 11 Electrical Equipment / 4 Electrical Hand Tools / 4 Industria | https://jiji.ng/car-parts-and-accessories?query=%22need%22+gearbox+Nigeria |
 
 ## Fetch Notes
