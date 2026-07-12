@@ -177,21 +177,22 @@ catalog_pages = [
 ]
 for page in catalog_pages:
     text = page.read_text()
-    text = re.sub(r'half-cut-directory\\.js\\?v=[^"\\']+', 'half-cut-directory.js?v=category-filter-v1', text)
-    text = re.sub(r'ebay-catalog-hub\\.js\\?v=[^"\\']+', 'ebay-catalog-hub.js?v=category-filter-v1', text)
+    text = re.sub(r'half-cut-directory\\.js\\?v=[^"\\']+', 'half-cut-directory.js?v=category-filter-v2', text)
+    text = re.sub(r'ebay-catalog-hub\\.js\\?v=[^"\\']+', 'ebay-catalog-hub.js?v=category-filter-v2', text)
     page.write_text(text)
 
 home = pub / 'index.html'
 text = home.read_text()
-text = re.sub(r'home-v4-hybrid\\.js\\?v=[^"\\']+', 'home-v4-hybrid.js?v=category-filter-v1', text)
+text = re.sub(r'home-v4-hybrid\\.js\\?v=[^"\\']+', 'home-v4-hybrid.js?v=category-filter-v2', text)
 home.write_text(text)
 PY
 grep -q 'matchesInventoryCategory' /root/.openclaw/workspace/inventory-site/public/js/half-cut-directory.js
+grep -q 'hasChassisCatalogEvidence' /root/.openclaw/workspace/inventory-site/public/js/half-cut-directory.js
 grep -q 'Search may widen fields, never categories' /root/.openclaw/workspace/inventory-site/public/js/ebay-catalog-hub.js
-grep -q 'category-filter-v1' /root/.openclaw/workspace/inventory-site/public/index.html
+grep -q 'category-filter-v2' /root/.openclaw/workspace/inventory-site/public/index.html
 for page in half-cuts engines gearboxes front-cuts chassis-parts; do
-  grep -q 'half-cut-directory.js?v=category-filter-v1' "/root/.openclaw/workspace/inventory-site/public/$page/index.html"
-  grep -q 'ebay-catalog-hub.js?v=category-filter-v1' "/root/.openclaw/workspace/inventory-site/public/$page/index.html"
+  grep -q 'half-cut-directory.js?v=category-filter-v2' "/root/.openclaw/workspace/inventory-site/public/$page/index.html"
+  grep -q 'ebay-catalog-hub.js?v=category-filter-v2' "/root/.openclaw/workspace/inventory-site/public/$page/index.html"
 done
 echo "[deploy:categories] category filters OK on remote"
 `);

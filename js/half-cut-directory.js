@@ -305,10 +305,40 @@
     return !partType || partType === 'front';
   }
 
+  const CHASSIS_CATALOG_EVIDENCE_RE = /\b(chassis|subframe|suspension|crossmember|axle)\b|底盘|车架|前桥|后桥|悬挂|转向/i;
+
+  function chassisCatalogEvidenceText(item) {
+    return [
+      item?.title,
+      item?.shortDescription,
+      item?.originalVehicleName,
+      ...(Array.isArray(item?.includedParts) ? item.includedParts : [item?.includedParts]),
+      ...(Array.isArray(item?.photos)
+        ? item.photos.map((photo) => (typeof photo === 'object' && photo ? photo.label : ''))
+        : []),
+    ].filter(Boolean).join(' ');
+  }
+
+  /**
+   * Chassis catalog admission is evidence-based:
+   * - dedicated chassis uploads always qualify;
+   * - a real passenger half/front cut qualifies only when its public listing
+   *   explicitly says a chassis-related section is included.
+   * Dedicated engines/transmissions/other parts can never enter by keywords.
+   */
+  function hasChassisCatalogEvidence(item) {
+    if (!item || isTruckItem(item) || isMachineryItem(item)) return false;
+    const partType = passengerInventoryPartType(item);
+    if (partType === 'chassis') return true;
+    if (partType && partType !== 'front') return false;
+    if (!isPassengerHalfCutItem(item)) return false;
+    return CHASSIS_CATALOG_EVIDENCE_RE.test(chassisCatalogEvidenceText(item));
+  }
+
   /**
    * Mutually exclusive dedicated-part rules with one intentional exception:
-   * a real half-cut (no dedicated part type) may also feed engine/gearbox
-   * catalogs when the corresponding code exists.
+   * a real donor cut may also feed engine/gearbox/chassis catalogs when the
+   * corresponding code or explicit public chassis evidence exists.
    */
   function matchesInventoryCategory(item, category) {
     if (!item || isTruckItem(item) || isMachineryItem(item)) return false;
@@ -316,7 +346,7 @@
     if (category === 'halfcuts' || category === 'frontcuts') {
       return isPassengerHalfCutItem(item);
     }
-    if (category === 'chassis') return partType === 'chassis';
+    if (category === 'chassis') return hasChassisCatalogEvidence(item);
     if (category === 'engines') {
       if (partType) return partType === 'engine';
       return isPassengerHalfCutItem(item) && Boolean(String(item.engineCode || '').trim());
@@ -1818,6 +1848,7 @@
     itemRemarkText,
     passengerInventoryPartType,
     isPassengerHalfCutItem,
+    hasChassisCatalogEvidence,
     matchesInventoryCategory,
     normalizeStockIdQuery,
     isStockIdQuery,

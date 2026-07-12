@@ -56,6 +56,36 @@ assert.deepEqual(
   'HC250566 must be engine-only',
 );
 
+const liveCategoryIds = (category) => live
+  .filter((item) => match(item, category))
+  .map((item) => item.stockId);
+const chassisIds = liveCategoryIds('chassis');
+const engineIds = liveCategoryIds('engines');
+const gearboxIds = liveCategoryIds('gearboxes');
+const frontCutIds = liveCategoryIds('frontcuts');
+
+assert.deepEqual(
+  chassisIds,
+  ['HC250488'],
+  'live chassis catalog must retain only the RAV4 rear/chassis section listing',
+);
+assert.equal(
+  targetIds.some((stockId) => chassisIds.includes(stockId)),
+  false,
+  'Ford dedicated engines/transmission must stay out of chassis',
+);
+
+const fordGearboxIds = live
+  .filter((item) => String(item.brand || '').trim().toLowerCase() === 'ford')
+  .filter((item) => match(item, 'gearboxes'))
+  .map((item) => item.stockId)
+  .sort();
+assert.deepEqual(
+  fordGearboxIds,
+  ['HC250132', 'HC250524', 'HC250528', 'HC250536', 'HC250565'],
+  'Ford gearbox catalog must include one dedicated transmission and four historical donor cuts',
+);
+
 const trueHalfCut = {
   stockId: 'TEST-HALFCUT',
   vehicleCategory: 'passenger',
@@ -70,9 +100,37 @@ assert.equal(match(trueHalfCut, 'engines'), true, 'real half-cut may feed engine
 assert.equal(match(trueHalfCut, 'gearboxes'), true, 'real half-cut may feed gearbox catalog by code');
 assert.equal(match(trueHalfCut, 'chassis'), false, 'real half-cut does not enter chassis-only catalog');
 
+const chassisHalfCut = {
+  ...trueHalfCut,
+  stockId: 'TEST-CHASSIS-HALFCUT',
+  includedParts: ['Remaining rear/chassis portion only'],
+};
+assert.equal(match(chassisHalfCut, 'chassis'), true, 'real donor cut with explicit chassis evidence stays in chassis');
+
+const engineWithChassisKeyword = {
+  stockId: 'TEST-ENGINE-CHASSIS-WORD',
+  vehicleCategory: 'passenger',
+  passengerPartType: 'engine',
+  vehicleCondition: 'Engine Assembly',
+  includedParts: ['Engine for chassis application'],
+};
+assert.equal(
+  match(engineWithChassisKeyword, 'chassis'),
+  false,
+  'dedicated engine cannot enter chassis through a keyword',
+);
+
 console.log(JSON.stringify({
   ok: true,
   source: 'https://asia-power.com/api/half-cuts/public',
   checked: targetIds,
   categories: result,
+  liveCounts: {
+    chassis: chassisIds.length,
+    engines: engineIds.length,
+    gearboxes: gearboxIds.length,
+    frontcuts: frontCutIds.length,
+  },
+  chassisIds,
+  fordGearboxIds,
 }, null, 2));
