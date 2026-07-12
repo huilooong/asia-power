@@ -444,7 +444,7 @@ function deployApsales() {
 
 function deployFinalize() {
   rsync(`${ROOT}/deploy/inventory-site-scripts/backup-inventory-site.sh`, `${SITE}/scripts/`);
-  run('rsync', ['-av',
+  const finalizeScripts = [
     `${ROOT}/scripts/telegram-lead-reminder.js`,
     `${ROOT}/scripts/telegram-daily-report.js`,
     `${ROOT}/scripts/telegram-hourly-report.js`,
@@ -460,8 +460,8 @@ function deployFinalize() {
     `${ROOT}/scripts/compress-inventory-videos.mjs`,
     `${ROOT}/scripts/fix-hc250081-lonking.mjs`,
     `${ROOT}/scripts/fix-hc250107-machinery.mjs`,
-    `${SITE}/scripts/`,
-  ]);
+  ].filter((file) => fs.existsSync(file));
+  run('rsync', ['-av', ...finalizeScripts, `${SITE}/scripts/`]);
   rsync(`${ROOT}/scripts/setup-r2-cors.mjs`, `${SITE}/scripts/`);
 
   const remoteScript = `
