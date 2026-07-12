@@ -108,6 +108,7 @@
 ## 发动机 / 变速箱业务规则（CEO 2026-07-12）
 - 今日福特试验车批次 HC250556–HC250565：发动机命名已确认正确，禁止随意改；变速箱必须读 `notes` / `remark` 后以车型、排量、年款、挡位等已知信息命名，禁止只写空洞的 AT/Transmission，也禁止臆造真实型号。
 - 本批定价汇率 6.8：发动机 RMB 8,500 → **USD 1,250**；变速箱 RMB 3,000 → **USD 441**（四舍五入到整数美元）。价格字段必须明确为 USD。
+- **公开类目互斥（CEO 2026-07-12 定稿）**：`passengerPartType` 是独立零件主分类，优先于 engineCode/transmissionCode/标题/搜索。独立发动机只进发动机，独立变速箱只进变速箱，底盘只进底盘，半切/车头不得混入上述独立件；搜索只能扩大匹配字段，禁止跨类目补项。仅无专用类型的真正半切可因自带 engineCode/transmissionCode 同时出现在动力总成目录。事故批次 HC250556–HC250566；报告 `docs/ops/ops-part-category-filter-fix-2026-07-12.md`。
 - 本批对外卖点固定体现 **Low mileage / Nearly new condition（低里程 / 几乎全新）**。详见 `docs/ops/ops-engine-transmission-pricing-2026-07-12.md`。
 
 ## 中文车型 normalize（2026-07-10）

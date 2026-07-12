@@ -241,6 +241,31 @@
     return USED_CAR_EXPORT_REMARK_KEYWORDS.some((kw) => text.includes(normalizeRemarkText(kw)));
   }
 
+  /**
+   * Canonical passenger-parts discriminator.
+   * Explicit inventory fields win; slug/condition are legacy fallbacks only.
+   */
+  function passengerInventoryPartType(item) {
+    if (!item) return '';
+    const explicit = String(item.passengerPartType || '').trim().toLowerCase();
+    if (['front', 'engine', 'transmission', 'chassis', 'other'].includes(explicit)) return explicit;
+
+    const slug = String(item.slug || '').toLowerCase();
+    if (slug.includes('-passenger-engine-')) return 'engine';
+    if (slug.includes('-passenger-transmission-')) return 'transmission';
+    if (slug.includes('-passenger-chassis-')) return 'chassis';
+    if (slug.includes('-front-cut-')) return 'front';
+    if (slug.includes('-passenger-part-')) return 'other';
+
+    const cond = String(item.vehicleCondition || '').trim().toLowerCase();
+    if (cond === 'engine assembly') return 'engine';
+    if (cond === 'transmission assembly') return 'transmission';
+    if (cond === 'chassis part') return 'chassis';
+    if (cond === 'front cut' || cond.includes('nose cut')) return 'front';
+    if (cond === 'part') return 'other';
+    return '';
+  }
+
   function isHalfCutLikeListing(item) {
     if (!item) return false;
     const slug = String(item.slug || '').toLowerCase();
@@ -275,7 +300,32 @@
 
   function isPassengerHalfCutItem(item) {
     if (!item || isTruckItem(item) || isMachineryItem(item)) return false;
-    return !isExportableUsedCarItem(item);
+    if (isExportableUsedCarItem(item)) return false;
+    const partType = passengerInventoryPartType(item);
+    return !partType || partType === 'front';
+  }
+
+  /**
+   * Mutually exclusive dedicated-part rules with one intentional exception:
+   * a real half-cut (no dedicated part type) may also feed engine/gearbox
+   * catalogs when the corresponding code exists.
+   */
+  function matchesInventoryCategory(item, category) {
+    if (!item || isTruckItem(item) || isMachineryItem(item)) return false;
+    const partType = passengerInventoryPartType(item);
+    if (category === 'halfcuts' || category === 'frontcuts') {
+      return isPassengerHalfCutItem(item);
+    }
+    if (category === 'chassis') return partType === 'chassis';
+    if (category === 'engines') {
+      if (partType) return partType === 'engine';
+      return isPassengerHalfCutItem(item) && Boolean(String(item.engineCode || '').trim());
+    }
+    if (category === 'gearboxes') {
+      if (partType) return partType === 'transmission';
+      return isPassengerHalfCutItem(item) && Boolean(String(item.transmissionCode || '').trim());
+    }
+    return false;
   }
 
   /** stock-id-search-v1: Stock-ID search must work across categories (HC250551 / 250551 / hc250551). */
@@ -1754,6 +1804,7 @@
   window.getMachineryInventory = () => filterInventoryBySegment(HALF_CUT_LIST, 'machinery');
   window.getUsedCarInventory = () => filterInventoryBySegment(HALF_CUT_LIST, 'passenger').filter(isExportableUsedCarItem);
   window.getPassengerHalfCutInventory = () => filterInventoryBySegment(HALF_CUT_LIST, 'passenger').filter(isPassengerHalfCutItem);
+  window.getPassengerCatalogInventory = () => filterInventoryBySegment(HALF_CUT_LIST, 'passenger').filter((item) => !isExportableUsedCarItem(item));
   window.parseHalfCutCatalogRoute = parseCatalogRoute;
   window.inventoryForCatalogCategory = inventoryForCatalogCategory;
   window.HalfCutUtils = {
@@ -1765,7 +1816,9 @@
     isExportableUsedCarItem,
     hasExportReadyRemark,
     itemRemarkText,
+    passengerInventoryPartType,
     isPassengerHalfCutItem,
+    matchesInventoryCategory,
     normalizeStockIdQuery,
     isStockIdQuery,
     stockIdDigits,

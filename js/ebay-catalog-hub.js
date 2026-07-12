@@ -588,18 +588,9 @@
   }
 
   function getInventory(category, query) {
-    const base = window.inventoryForCatalogCategory
+    return window.inventoryForCatalogCategory
       ? window.inventoryForCatalogCategory(category)
       : [];
-    // catalog-search-v1: any query (stock / model / engine / CN) spans categories
-    const u = window.HalfCutUtils;
-    if (u?.mergeCatalogSearchHitsIntoInventory) {
-      return u.mergeCatalogSearchHitsIntoInventory(base, query);
-    }
-    if (u?.mergeStockIdHitsIntoInventory) {
-      return u.mergeStockIdHitsIntoInventory(base, query);
-    }
-    return base;
   }
 
   function readHalfCutState(category, route) {
@@ -1040,27 +1031,25 @@
     });
   }
 
-  function inventoryPartItems(partType, query) {
+  function inventoryPartItems(page, partType, query) {
     const u = window.HalfCutUtils;
-    const raw = window.getPassengerHalfCutInventory?.() || [];
+    const raw = window.getPassengerCatalogInventory?.()
+      || window.getPassengerHalfCutInventory?.()
+      || [];
     let list = raw
       .map((item) => u?.toPublicItem?.(item) ?? item)
       .filter((d) => !u?.isSold?.(d))
-      // Parallel: rule + dedicated parallel (half-cut eligibility + dedicated uploads coexist).
-      .filter((d) => {
-        if (u?.isDedicatedPartListing?.(d, partType)) return true;
-        if (partType === 'engine') return String(d.engineCode || '').trim();
-        if (partType === 'transmission') return String(d.transmissionCode || '').trim();
-        // chassis / front: passenger inventory eligible by established catalog rule
-        return true;
-      });
-    // catalog-search-v1: stock / model / engine / CN must surface across categories
+      // Dedicated inventory is mutually exclusive. Real half-cuts may also feed
+      // engine/gearbox catalogs through the canonical category matcher.
+      .filter((d) => u?.matchesInventoryCategory?.(d, page) ?? false);
+    // Search may widen fields, never categories.
     const q = String(query || '').trim();
     if (q && (u?.matchesCatalogSearch || u?.isStockIdQuery?.(q))) {
       const hits = (window.HALF_CUT_LIST || [])
         .map((item) => u?.toPublicItem?.(item) ?? item)
         .filter((d) => {
           if (u?.isSold?.(d)) return false;
+          if (!u?.matchesInventoryCategory?.(d, page)) return false;
           if (u?.matchesCatalogSearch) return u.matchesCatalogSearch(d, q);
           return u?.isStockIdQuery?.(q) && u.matchesStockId(d, q);
         });
@@ -1088,7 +1077,7 @@
       const u = window.HalfCutUtils;
       if (!u) return;
       const state = readPartsState(page);
-      const allItems = inventoryPartItems(partType, state.q);
+      const allItems = inventoryPartItems(page, partType, state.q);
       const filtered = filterInventoryPartItems(allItems, state, partType);
       const brandMap = new Map();
       allItems.forEach((d) => {

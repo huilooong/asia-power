@@ -139,11 +139,36 @@
       || String(item?.vehicleCondition || '').includes('Running Vehicle');
   }
 
+  function passengerPartType(item) {
+    const explicit = String(item?.passengerPartType || '').trim().toLowerCase();
+    if (['front', 'engine', 'transmission', 'chassis', 'other'].includes(explicit)) return explicit;
+    const slug = String(item?.slug || '').toLowerCase();
+    if (slug.includes('-passenger-engine-')) return 'engine';
+    if (slug.includes('-passenger-transmission-')) return 'transmission';
+    if (slug.includes('-passenger-chassis-')) return 'chassis';
+    if (slug.includes('-front-cut-')) return 'front';
+    if (slug.includes('-passenger-part-')) return 'other';
+    const cond = String(item?.vehicleCondition || '').trim().toLowerCase();
+    if (cond === 'engine assembly') return 'engine';
+    if (cond === 'transmission assembly') return 'transmission';
+    if (cond === 'chassis part') return 'chassis';
+    if (cond === 'front cut' || cond.includes('nose cut')) return 'front';
+    if (cond === 'part') return 'other';
+    return '';
+  }
+
   function isPassengerHalf(item) {
     if (isMachinery(item) || isTruckCab(item) || isUsedCar(item)) return false;
     if (item?.vehicleCategory === 'truck') return false;
-    const cond = String(item?.vehicleCondition || '');
-    return cond === 'Half Cut' || item?.vehicleCategory === 'passenger';
+    const partType = passengerPartType(item);
+    return !partType || partType === 'front';
+  }
+
+  function isPassengerEngine(item) {
+    if (isMachinery(item) || isTruckListing(item) || isUsedCar(item)) return false;
+    const partType = passengerPartType(item);
+    if (partType) return partType === 'engine';
+    return isPassengerHalf(item) && Boolean(String(item?.engineCode || '').trim());
   }
 
   function titleOf(item, variant) {
@@ -274,7 +299,7 @@
     const trucks = live.filter((x) => isTruckListing(x) && isTruckCab(x));
     const machinery = live.filter(isMachinery);
     const used = live.filter(isUsedCar);
-    const engines = half.filter((x) => String(x.engineCode || '').trim());
+    const engines = live.filter(isPassengerEngine);
     const brands = new Set(live.map((x) => x.brand).filter(Boolean));
 
     let featured = live.find((x) => x.stockId === 'HC250127')

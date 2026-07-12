@@ -6,10 +6,21 @@ import { spawnSync } from 'child_process';
 import fs from 'fs';
 import path from 'path';
 
-export const VALID_TARGETS = ['nginx', 'api', 'engines', 'apsales', 'finalize', 'home', 'portal', 'chrome', 'admin'];
+export const VALID_TARGETS = ['nginx', 'api', 'engines', 'apsales', 'finalize', 'home', 'portal', 'chrome', 'categories', 'admin'];
 
 /** @type {Record<string, string[]>} */
 export const TARGET_SOURCE_FILES = {
+  categories: [
+    'index.html',
+    'half-cuts/index.html',
+    'engines/index.html',
+    'gearboxes/index.html',
+    'front-cuts/index.html',
+    'chassis-parts/index.html',
+    'js/half-cut-directory.js',
+    'js/ebay-catalog-hub.js',
+    'js/home-v4-hybrid.js',
+  ],
   home: [
     'index.html',
     'css/home-v4-hybrid.css',
@@ -101,6 +112,17 @@ export const TARGET_SOURCE_FILES = {
 
 /** @type {Record<string, string[]>} */
 export const TARGET_REMOTE_PATHS = {
+  categories: [
+    '/root/.openclaw/workspace/inventory-site/public/index.html',
+    '/root/.openclaw/workspace/inventory-site/public/half-cuts/index.html',
+    '/root/.openclaw/workspace/inventory-site/public/engines/index.html',
+    '/root/.openclaw/workspace/inventory-site/public/gearboxes/index.html',
+    '/root/.openclaw/workspace/inventory-site/public/front-cuts/index.html',
+    '/root/.openclaw/workspace/inventory-site/public/chassis-parts/index.html',
+    '/root/.openclaw/workspace/inventory-site/public/js/half-cut-directory.js',
+    '/root/.openclaw/workspace/inventory-site/public/js/ebay-catalog-hub.js',
+    '/root/.openclaw/workspace/inventory-site/public/js/home-v4-hybrid.js',
+  ],
   home: [
     '/root/.openclaw/workspace/inventory-site/public/index.html',
     '/root/.openclaw/workspace/inventory-site/public/css/home-v4-hybrid.css',

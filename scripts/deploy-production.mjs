@@ -154,6 +154,49 @@ echo "[deploy:home] files OK on remote"
 `);
 }
 
+/** Category-filter hot path — preserves production HTML drift, updates only script cache keys. */
+function deployCategories() {
+  console.log('[deploy:categories] syncing category logic and patching cache keys');
+  const pub = `${SITE}/public`;
+  rsync(`${ROOT}/js/half-cut-directory.js`, `${pub}/js/half-cut-directory.js`);
+  rsync(`${ROOT}/js/ebay-catalog-hub.js`, `${pub}/js/ebay-catalog-hub.js`);
+  rsync(`${ROOT}/js/home-v4-hybrid.js`, `${pub}/js/home-v4-hybrid.js`);
+  ssh(`
+set -e
+python3 - <<'PY'
+from pathlib import Path
+import re
+
+pub = Path('/root/.openclaw/workspace/inventory-site/public')
+catalog_pages = [
+    pub / 'half-cuts/index.html',
+    pub / 'engines/index.html',
+    pub / 'gearboxes/index.html',
+    pub / 'front-cuts/index.html',
+    pub / 'chassis-parts/index.html',
+]
+for page in catalog_pages:
+    text = page.read_text()
+    text = re.sub(r'half-cut-directory\\.js\\?v=[^"\\']+', 'half-cut-directory.js?v=category-filter-v1', text)
+    text = re.sub(r'ebay-catalog-hub\\.js\\?v=[^"\\']+', 'ebay-catalog-hub.js?v=category-filter-v1', text)
+    page.write_text(text)
+
+home = pub / 'index.html'
+text = home.read_text()
+text = re.sub(r'home-v4-hybrid\\.js\\?v=[^"\\']+', 'home-v4-hybrid.js?v=category-filter-v1', text)
+home.write_text(text)
+PY
+grep -q 'matchesInventoryCategory' /root/.openclaw/workspace/inventory-site/public/js/half-cut-directory.js
+grep -q 'Search may widen fields, never categories' /root/.openclaw/workspace/inventory-site/public/js/ebay-catalog-hub.js
+grep -q 'category-filter-v1' /root/.openclaw/workspace/inventory-site/public/index.html
+for page in half-cuts engines gearboxes front-cuts chassis-parts; do
+  grep -q 'half-cut-directory.js?v=category-filter-v1' "/root/.openclaw/workspace/inventory-site/public/$page/index.html"
+  grep -q 'ebay-catalog-hub.js?v=category-filter-v1' "/root/.openclaw/workspace/inventory-site/public/$page/index.html"
+done
+echo "[deploy:categories] category filters OK on remote"
+`);
+}
+
 /** Login / register / buyer+supplier portals (does NOT rsync full public/) */
 function deployPortal() {
   console.log('[deploy:portal] syncing login + portal pages');
@@ -509,7 +552,7 @@ function printHelp() {
   console.log(`AsiaPower deploy (Release Manager enabled):
   node scripts/deploy-production.mjs <target> [--yes] [--allow-dirty] [user@host]
 
-  nginx | api | engines | apsales | finalize | home | portal | chrome | admin
+  nginx | api | engines | apsales | finalize | home | portal | chrome | categories | admin
 
   REQUIRED: commit → push GitHub → then deploy (CEO red line 2026-07-10)
   Pre-deploy:  git clean, HEAD on origin, backup, target confirmation
@@ -530,6 +573,7 @@ const targets = {
   home: deployHome,
   portal: deployPortal,
   chrome: deployChrome,
+  categories: deployCategories,
   admin: deployAdmin,
 };
 
