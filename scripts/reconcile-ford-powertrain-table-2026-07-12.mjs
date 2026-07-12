@@ -19,6 +19,13 @@ const ENGINE_PRICE_USD = 1250;
 const TRANSMISSION_PRICE_USD = 441;
 const PACKAGE_PRICE_USD = ENGINE_PRICE_USD + TRANSMISSION_PRICE_USD;
 const SALES_HIGHLIGHT = 'Low mileage · nearly new condition';
+const PLACEHOLDER_PHOTO = {
+  label: 'Ford × AsiaPower dual-brand placeholder',
+  url: '/assets/images/ford-asiapower-powertrain-placeholder.svg',
+  thumbUrl: '/assets/images/ford-asiapower-powertrain-placeholder.svg',
+  placeholder: true,
+  placeholderKind: 'ford-asiapower-dual-brand',
+};
 
 const EXPECTED = {
   HC250556: {
@@ -142,6 +149,12 @@ function patchItem(item, spec, nowIso) {
     );
   }
 
+  notes = replaceLine(
+    notes,
+    '占位图：',
+    '占位图：Ford logo + AsiaPower 双品牌（assets/images/ford-asiapower-powertrain-placeholder.svg）'
+  );
+
   return {
     ...item,
     title: spec.title,
@@ -157,6 +170,7 @@ function patchItem(item, spec, nowIso) {
     sellableQty: spec.qty,
     publicQtyNote: `Sellable qty: ${spec.qty}`,
     includedParts,
+    photos: [PLACEHOLDER_PHOTO],
     shortDescription: `${SALES_HIGHLIGHT} · ${spec.title}`,
     mileage: 'Low mileage · nearly new condition · factory test-vehicle lot',
     priceUsd,
@@ -170,6 +184,7 @@ function patchItem(item, spec, nowIso) {
     notes,
     reconciledFromCeoTableAt: nowIso,
     reconciledFromCeoTableSource: 'ceo-original-table-image-2026-07-12',
+    placeholderPhotoSource: 'ford-asiapower-powertrain-placeholder.svg',
     updatedAt: nowIso,
   };
 }
@@ -184,6 +199,7 @@ function summarize(item, patched, spec) {
     qty: patched.quantityUnits,
     category: patched.passengerPartType,
     priceUsd: patched.priceUsd,
+    photoUrl: patched.photos?.[0]?.url || null,
   };
 }
 
