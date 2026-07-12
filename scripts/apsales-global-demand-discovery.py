@@ -73,6 +73,28 @@ class LinkExtractor(HTMLParser):
         self._current_text = []
         self._capture = False
 
+
+class TextExtractor(HTMLParser):
+    def __init__(self) -> None:
+        super().__init__(convert_charrefs=True)
+        self.parts: list[str] = []
+        self._skip_depth = 0
+
+    def handle_starttag(self, tag: str, attrs: list[tuple[str, str | None]]) -> None:
+        if tag.lower() in {"script", "style", "noscript", "svg"}:
+            self._skip_depth += 1
+
+    def handle_endtag(self, tag: str) -> None:
+        if tag.lower() in {"script", "style", "noscript", "svg"} and self._skip_depth:
+            self._skip_depth -= 1
+
+    def handle_data(self, data: str) -> None:
+        if not self._skip_depth:
+            self.parts.append(data)
+
+    def text(self) -> str:
+        return clean_text(" ".join(self.parts))
+
 BUYER_PATTERNS = [
     r"\bwhere can i (buy|get|find)\b",
     r"\bwhere to (buy|get|find)\b",
@@ -98,6 +120,17 @@ PRODUCT_PATTERNS = [
     r"\bused parts?\b",
 ]
 
+BUYER_PROXIMITY_RE = re.compile(
+    r"(where can i|where to|looking for|i need|need|want to buy|who has|recommend|quote|price)"
+    r".{0,160}"
+    r"(engine|gearbox|transmission|half[- ]?cut|spare parts?|tokunbo|used parts?)"
+    r"|"
+    r"(engine|gearbox|transmission|half[- ]?cut|spare parts?|tokunbo|used parts?)"
+    r".{0,160}"
+    r"(where can i|where to|looking for|i need|need|want to buy|who has|recommend|quote|price)",
+    re.I,
+)
+
 SELLER_PATTERNS = [
     r"\bfor sale\b",
     r"\bavailable\b",
@@ -110,6 +143,24 @@ SELLER_PATTERNS = [
     r"\bwholesale\b",
     r"\bcall now\b",
     r"\bcontact us\b",
+]
+
+FALSE_BUYER_PATTERNS = [
+    r"\breview\b",
+    r"\bis it still worth buying\b",
+    r"\bthings to know before you buy\b",
+    r"\bpalm kernel\b",
+    r"\bagriculture\b",
+    r"\bhouse clearance\b",
+]
+
+NAVIGATION_NOISE = [
+    "nairaland forum",
+    "posts by",
+    "share copy post",
+    "whatsapp telegram twitter facebook",
+    "login / register",
+    "advertise here",
 ]
 
 
@@ -206,6 +257,9 @@ def score_intent(text: str, countries: list[str], known_codes: list[str]) -> tup
     if any(re.search(pattern, lowered) for pattern in PRODUCT_PATTERNS):
         score += 25
         reasons.append("powertrain_product")
+    if BUYER_PROXIMITY_RE.search(text):
+        score += 20
+        reasons.append("buyer_product_proximity")
     detected_codes = detect_engine_codes(text, known_codes)
     if detected_codes:
         score += 20
@@ -216,9 +270,18 @@ def score_intent(text: str, countries: list[str], known_codes: list[str]) -> tup
     if any(re.search(pattern, lowered) for pattern in SELLER_PATTERNS):
         score -= 20
         reasons.append("seller_language")
+    if any(re.search(pattern, lowered) for pattern in FALSE_BUYER_PATTERNS):
+        score -= 25
+        reasons.append("false_buyer_context")
 
     score = max(0, min(100, score))
-    if score >= 70 and "buyer_language" in reasons:
+    if (
+        score >= 70
+        and "buyer_language" in reasons
+        and "buyer_product_proximity" in reasons
+        and "false_buyer_context" not in reasons
+        and "seller_language" not in reasons
+    ):
         intent = "buyer_demand"
     elif score >= 35:
         intent = "market_signal"
@@ -258,9 +321,15 @@ def allowed_result(source: dict[str, Any], url: str) -> bool:
     if "nairaland" in platform:
         return host.endswith("nairaland.com") and re.match(r"^/\d+/", path) is not None
     if platform == "jiji":
-        return host.endswith("jiji.ng")
+        return host.endswith("jiji.ng") and any(
+            marker in path
+            for marker in ("/car-parts-and-accessories", "/12-engines", "/12-gearbox")
+        )
     if platform == "tonaton":
-        return host.endswith("tonaton.com")
+        return host.endswith("tonaton.com") and any(
+            marker in path
+            for marker in ("/auto-parts", "/s_12-engines", "gearbox", "engine")
+        )
     if platform == "youtube":
         return host.endswith("youtube.com") and path.startswith("/watch")
     if "facebook" in platform:
@@ -272,6 +341,13 @@ def allowed_result(source: dict[str, Any], url: str) -> bool:
     if "dubizzle" in platform:
         return host.endswith("dubizzle.com")
     return True
+
+
+def can_deep_read(source: dict[str, Any], url: str) -> bool:
+    platform = str(source.get("platform") or "").lower()
+    parsed = urlparse(url)
+    host = parsed.netloc.lower()
+    return "nairaland" in platform and host.endswith("nairaland.com")
 
 
 def fetch(url: str, timeout: int = 35) -> tuple[str, int, str]:
@@ -304,7 +380,25 @@ def parse_search_results(html_text: str, *, engine: str, base_url: str, max_resu
     rows: list[dict[str, str]] = []
     seen: set[str] = set()
 
-    for link in parser.links:
+    candidates = [
+        {
+            "href": link.get("href") or "",
+            "text": link.get("text") or "",
+        }
+        for link in parser.links
+    ]
+
+    for match in re.finditer(r"""(?:"|')(?P<href>(?:https?://www\.nairaland\.com)?/\d+/[^"']+)["']""", html_text):
+        href = match.group("href")
+        title = clean_text(unquote(href.rsplit("/", 1)[-1].replace("-", " ")))
+        candidates.append({"href": href, "text": title})
+
+    for match in re.finditer(r"https?://(?:www\.)?nairaland\.com/\d+/[^\s\"'<>)]+", html_text):
+        href = match.group(0)
+        title = clean_text(unquote(urlparse(href).path.rsplit("/", 1)[-1].replace("-", " ")))
+        candidates.append({"href": href, "text": title})
+
+    for link in candidates:
         href = urljoin(base_url, extract_target(link.get("href") or ""))
         title = clean_text(link.get("text") or "")
         if not href.startswith("http") or not title or len(title) < 8:
@@ -324,6 +418,23 @@ def parse_search_results(html_text: str, *, engine: str, base_url: str, max_resu
         if len(rows) >= max_results:
             return rows
     return rows[:max_results]
+
+
+def extract_page_text(html_text: str) -> str:
+    parser = TextExtractor()
+    parser.feed(html_text)
+    text = parser.text()
+    for noise in NAVIGATION_NOISE:
+        text = re.sub(re.escape(noise), " ", text, flags=re.I)
+    return clean_text(text)
+
+
+def read_public_page_text(url: str, *, max_chars: int = 4000) -> tuple[str, str]:
+    html_text, status, final_url = fetch(url)
+    if status != 200:
+        return "", f"Deep HTTP {status} {final_url}"
+    text = extract_page_text(html_text)
+    return text[:max_chars], f"Deep HTTP {status} {final_url}"
 
 
 def search_query(source: dict[str, Any], query: str, *, max_results: int) -> tuple[list[dict[str, str]], list[str]]:
@@ -398,9 +509,23 @@ def discover(args: argparse.Namespace) -> dict[str, Any]:
                 if key in seen_keys:
                     continue
                 score, intent, reasons, detected_codes = score_intent(text, countries, known_codes)
+                deep_text = ""
+                if args.deep_read and can_deep_read(source, item.get("url") or ""):
+                    deep_text, deep_note = read_public_page_text(item.get("url") or "")
+                    notes.append(f"{source.get('id')} | {query} | {deep_note}")
+                    if deep_text:
+                        deep_score, deep_intent, deep_reasons, deep_codes = score_intent(deep_text, countries, known_codes)
+                        if deep_score >= score:
+                            score = deep_score
+                            intent = deep_intent
+                            reasons = sorted(set(reasons + deep_reasons + ["deep_read"]))
+                            detected_codes = sorted(set(detected_codes + deep_codes))
+                            text = deep_text
                 if source.get("type") == "classifieds" and intent == "buyer_demand":
                     intent = "market_signal"
                     reasons.append("classifieds_market_signal_only")
+                if source.get("type") == "classifieds" and intent == "market_signal":
+                    score = min(score, 60)
                 if score < args.min_score:
                     continue
                 country = detect_country(f"{query} {text}", countries)
@@ -414,6 +539,7 @@ def discover(args: argparse.Namespace) -> dict[str, Any]:
                     "countries": countries,
                     "author": item.get("search_engine"),
                     "text": text[:1200],
+                    "deep_read": bool(deep_text),
                     "post_url": item.get("url"),
                     "search_query": query,
                     "buyer_intent_score": score,
@@ -485,12 +611,13 @@ def write_report(*, sources: list[dict[str, Any]], reviewed: int, created: list[
     if not buyer_rows:
         lines.append("No high-confidence buyer-demand records found in this run.")
     else:
-        lines.append("| Score | Platform | Country | Query | Signal | URL |")
-        lines.append("| ---: | --- | --- | --- | --- | --- |")
+        lines.append("| Score | Deep | Platform | Country | Query | Signal | URL |")
+        lines.append("| ---: | --- | --- | --- | --- | --- | --- |")
         for row in buyer_rows[:30]:
             signal = str(row.get("text") or "").replace("|", "/")[:160]
             lines.append(
-                f"| {row.get('buyer_intent_score')} | {row.get('source_platform')} | {row.get('detected_country')} | "
+                f"| {row.get('buyer_intent_score')} | {str(bool(row.get('deep_read'))).lower()} | "
+                f"{row.get('source_platform')} | {row.get('detected_country')} | "
                 f"{str(row.get('search_query') or '').replace('|', '/')} | {signal} | {row.get('post_url')} |"
             )
 
@@ -498,12 +625,13 @@ def write_report(*, sources: list[dict[str, Any]], reviewed: int, created: list[
     if not market_rows:
         lines.append("No market-signal records found in this run.")
     else:
-        lines.append("| Score | Platform | Country | Query | Signal | URL |")
-        lines.append("| ---: | --- | --- | --- | --- | --- |")
+        lines.append("| Score | Deep | Platform | Country | Query | Signal | URL |")
+        lines.append("| ---: | --- | --- | --- | --- | --- | --- |")
         for row in market_rows[:30]:
             signal = str(row.get("text") or "").replace("|", "/")[:160]
             lines.append(
-                f"| {row.get('buyer_intent_score')} | {row.get('source_platform')} | {row.get('detected_country')} | "
+                f"| {row.get('buyer_intent_score')} | {str(bool(row.get('deep_read'))).lower()} | "
+                f"{row.get('source_platform')} | {row.get('detected_country')} | "
                 f"{str(row.get('search_query') or '').replace('|', '/')} | {signal} | {row.get('post_url')} |"
             )
 
@@ -528,6 +656,7 @@ def build_parser() -> argparse.ArgumentParser:
     parser.add_argument("--pause-seconds", type=float, default=1.5)
     parser.add_argument("--dry-run", action="store_true")
     parser.add_argument("--ignore-state", action="store_true", help="Ignore local de-dupe state for validation runs")
+    parser.add_argument("--deep-read", action="store_true", help="Fetch supported public thread pages and score body text")
     parser.add_argument("--json", action="store_true")
     return parser
 
