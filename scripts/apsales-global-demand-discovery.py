@@ -565,6 +565,10 @@ def discover(args: argparse.Namespace) -> dict[str, Any]:
                     reasons.append("classifieds_market_signal_only")
                 if source.get("type") == "classifieds" and intent == "market_signal":
                     score = min(score, 60)
+                if source.get("type") == "forum" and intent == "buyer_demand" and not deep_text:
+                    intent = "market_signal"
+                    reasons.append("forum_search_result_only")
+                    score = min(score, 60)
                 if source.get("type") == "video_comments" and score >= args.min_score:
                     intent = "comment_review_candidate"
                     reasons.append("video_comment_review_candidate")

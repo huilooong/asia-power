@@ -165,6 +165,8 @@ def _passes_buyer_quality(row: dict[str, Any]) -> bool:
     host = urlparse(str(row.get("post_url") or "")).netloc.lower()
     if platform == "nairaland" and not host.endswith("nairaland.com"):
         return False
+    if platform == "nairaland" and not row.get("deep_read"):
+        return False
     if platform == "youtube" and not host.endswith("youtube.com"):
         return False
     if not BUYER_PRODUCT_RE.search(text):
