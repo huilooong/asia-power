@@ -198,10 +198,9 @@ function toPublicItem(item) {
     delete copy.originalVehicleName;
   }
 
-  Object.assign(copy, localizePublicNames({
-    ...item,
-    originalVehicleName: copy.originalVehicleName || item.originalVehicleName,
-  }));
+  // Localize only the already-sanitized copy. Passing the raw item here would
+  // merge VIN, supplier PII, notes, and review metadata back into public JSON.
+  Object.assign(copy, localizePublicNames(copy));
 
   if (Array.isArray(copy.includedParts)) {
     copy.includedParts = filterPublicIncludedParts(copy.includedParts);

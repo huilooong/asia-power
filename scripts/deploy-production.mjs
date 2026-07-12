@@ -103,7 +103,14 @@ echo "[deploy:api] inventory-site restarted OK"
 function deployEngines() {
   console.log('[deploy:engines] syncing engines/*.html only');
   run('rsync', ['-av', '--include=*.html', '--exclude=*', `${ROOT}/engines/`, `${SITE}/public/engines/`]);
-  ssh('rm -f /root/.openclaw/workspace/inventory-site/public/sitemap.xml || true');
+  // P0/P1 privacy gate: this internal template preview must never be public.
+  // The engines target snapshots the whole remote directory before this removal.
+  ssh(`
+set -e
+rm -f /root/.openclaw/workspace/inventory-site/public/engines/g4kd-v2.html
+rm -f /root/.openclaw/workspace/inventory-site/public/sitemap.xml
+echo "[deploy:engines] removed public preview and stale sitemap"
+`);
 }
 
 /** Homepage only — v4-hybrid (does NOT rsync full public/) */
