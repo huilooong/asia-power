@@ -4,9 +4,11 @@
 from __future__ import annotations
 
 import argparse
+import importlib.util
 import json
 import os
 import sys
+from datetime import datetime, timezone
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
@@ -19,6 +21,103 @@ try:
     load_dotenv(ROOT / ".env")
 except ModuleNotFoundError:
     pass
+
+
+GROWTH_DAILY_REPORT = ROOT / "docs" / "agent-reports" / "apsales-growth-daily-safe.md"
+
+
+def _load_script_module(name: str, path: Path):
+    spec = importlib.util.spec_from_file_location(name, path)
+    mod = importlib.util.module_from_spec(spec)
+    assert spec and spec.loader
+    spec.loader.exec_module(mod)
+    return mod
+
+
+def _write_growth_daily_report(payload: dict) -> None:
+    GROWTH_DAILY_REPORT.parent.mkdir(parents=True, exist_ok=True)
+    discovery = payload.get("discovery") or {}
+    comments = payload.get("comment_review_queue") or {}
+    drafts = payload.get("demand_drafts") or {}
+    def report_path(value: object) -> str:
+        try:
+            return str(Path(str(value)).resolve().relative_to(ROOT))
+        except (ValueError, OSError):
+            return str(value or "")
+
+    lines = [
+        "# APSales Growth Daily Safe Run",
+        "",
+        f"Generated: {datetime.now(timezone.utc).strftime('%Y-%m-%d %H:%M UTC')}",
+        "",
+        "## Safety Boundary",
+        "",
+        "- No deployment.",
+        "- No login.",
+        "- No posting, commenting, DM, email, WhatsApp or publishing.",
+        "- External replies still require human approval.",
+        "",
+        "## Results",
+        "",
+        f"- Public results reviewed: {discovery.get('reviewed', 0)}",
+        f"- Buyer demand found: {discovery.get('buyer_demand', 0)}",
+        f"- Market signals found: {discovery.get('market_signal', 0)}",
+        f"- Comment review candidates: {comments.get('candidates', discovery.get('comment_review_candidate', 0))}",
+        f"- APSales draft candidates: {drafts.get('candidates', 0)}",
+        f"- APSales drafts created: {drafts.get('drafts_created', 0)}",
+        "",
+        "## Reports",
+        "",
+        f"- Global discovery: `{report_path(discovery.get('report'))}`",
+        f"- Comment review queue: `{report_path(comments.get('report'))}`",
+        f"- Demand drafts: `{report_path(drafts.get('report'))}`",
+        "",
+        "## Next Action",
+        "",
+    ]
+    if comments.get("candidates", 0):
+        lines.append("Open the comment review queue and inspect only the listed public videos/comments for real buyer wording.")
+    elif drafts.get("candidates", 0):
+        lines.append("Review APSales demand draft candidates before creating or sending any reply.")
+    else:
+        lines.append("No immediate external action. Continue daily discovery and expand source quality.")
+    GROWTH_DAILY_REPORT.write_text("\n".join(lines).rstrip() + "\n", encoding="utf-8")
+
+
+def _run_discovery() -> dict:
+    mod = _load_script_module("global_demand_discovery", ROOT / "scripts" / "apsales-global-demand-discovery.py")
+    discovery_args = mod.build_parser().parse_args(["--json", "--deep-read"])
+    return mod.discover(discovery_args)
+
+
+def _run_comment_queue() -> dict:
+    mod = _load_script_module("comment_review_queue", ROOT / "scripts" / "apsales-comment-review-queue.py")
+    queue_args = mod.build_parser().parse_args(["--json"])
+    rows = mod.load_rows(mod.DEFAULT_INTEL_FILES)
+    candidates = mod.select_candidates(rows, limit=queue_args.limit)
+    mod.write_report(candidates, rows_reviewed=len(rows))
+    return {
+        "ok": True,
+        "reviewed": len(rows),
+        "candidates": len(candidates),
+        "report": str(mod.REPORT_FILE),
+    }
+
+
+def _run_demand_drafts(*, create: bool = False) -> dict:
+    mod = _load_script_module("social_demand_drafts", ROOT / "scripts" / "apsales-social-demand-drafts.py")
+    rows = mod.load_intel_rows(mod.DEFAULT_INTEL_FILES)
+    candidates = mod.select_candidates(rows, limit=10, min_score=70)
+    created = mod.create_drafts(candidates) if create else []
+    mod.write_report(rows=rows, candidates=candidates, created=created)
+    return {
+        "ok": True,
+        "reviewed": len(rows),
+        "candidates": len(candidates),
+        "drafts_created": len(created),
+        "report": str(mod.REPORT_FILE),
+        "created": created,
+    }
 
 
 def build_parser() -> argparse.ArgumentParser:
@@ -34,6 +133,7 @@ def build_parser() -> argparse.ArgumentParser:
     p.add_argument("--json", action="store_true", help="JSON output")
     p.add_argument("--browse", action="store_true", help="Run Facebook friends feed browse (Mac local)")
     p.add_argument("--browse-status", action="store_true", help="Show last browse session summary")
+    p.add_argument("--growth-daily-safe", action="store_true", help="Run safe daily growth pipeline: discover, comment queue, demand drafts")
     p.add_argument("--discover-global-demand", action="store_true", help="Discover public global buyer-demand signals")
     p.add_argument("--comment-review-queue", action="store_true", help="Build manual review queue for public video/comment candidates")
     p.add_argument("--demand-drafts", action="store_true", help="Build reply drafts from saved social buyer-demand intel")
@@ -69,17 +169,27 @@ def main() -> int:
         print(json.dumps(payload, ensure_ascii=False, indent=2))
         return 0
 
+    if args.growth_daily_safe:
+        payload = {
+            "ok": True,
+            "discovery": _run_discovery(),
+        }
+        payload["comment_review_queue"] = _run_comment_queue()
+        payload["demand_drafts"] = _run_demand_drafts(create=False)
+        payload["report"] = str(GROWTH_DAILY_REPORT)
+        _write_growth_daily_report(payload)
+        if args.json:
+            print(json.dumps(payload, ensure_ascii=False, indent=2))
+        else:
+            print("=== 子敬每日安全增长流水线 ===")
+            print(f"公开结果: {payload['discovery'].get('reviewed', 0)}")
+            print(f"评论检查候选: {payload['comment_review_queue'].get('candidates', 0)}")
+            print(f"草稿候选: {payload['demand_drafts'].get('candidates', 0)}")
+            print(f"报告: {GROWTH_DAILY_REPORT}")
+        return 0
+
     if args.discover_global_demand:
-        import importlib.util
-        spec = importlib.util.spec_from_file_location(
-            "global_demand_discovery",
-            ROOT / "scripts" / "apsales-global-demand-discovery.py",
-        )
-        mod = importlib.util.module_from_spec(spec)
-        assert spec and spec.loader
-        spec.loader.exec_module(mod)
-        discovery_args = mod.build_parser().parse_args(["--json", "--deep-read"])
-        result = mod.discover(discovery_args)
+        result = _run_discovery()
         if args.json:
             print(json.dumps(result, ensure_ascii=False, indent=2))
         else:
@@ -92,24 +202,7 @@ def main() -> int:
         return 0
 
     if args.comment_review_queue:
-        import importlib.util
-        spec = importlib.util.spec_from_file_location(
-            "comment_review_queue",
-            ROOT / "scripts" / "apsales-comment-review-queue.py",
-        )
-        mod = importlib.util.module_from_spec(spec)
-        assert spec and spec.loader
-        spec.loader.exec_module(mod)
-        queue_args = mod.build_parser().parse_args(["--json"])
-        rows = mod.load_rows(mod.DEFAULT_INTEL_FILES)
-        candidates = mod.select_candidates(rows, limit=queue_args.limit)
-        mod.write_report(candidates, rows_reviewed=len(rows))
-        result = {
-            "ok": True,
-            "reviewed": len(rows),
-            "candidates": len(candidates),
-            "report": str(mod.REPORT_FILE),
-        }
+        result = _run_comment_queue()
         if args.json:
             print(json.dumps(result, ensure_ascii=False, indent=2))
         else:
@@ -120,26 +213,7 @@ def main() -> int:
         return 0
 
     if args.demand_drafts or args.create_demand_drafts:
-        import importlib.util
-        spec = importlib.util.spec_from_file_location(
-            "social_demand_drafts",
-            ROOT / "scripts" / "apsales-social-demand-drafts.py",
-        )
-        mod = importlib.util.module_from_spec(spec)
-        assert spec and spec.loader
-        spec.loader.exec_module(mod)
-        rows = mod.load_intel_rows(mod.DEFAULT_INTEL_FILES)
-        candidates = mod.select_candidates(rows, limit=10, min_score=70)
-        created = mod.create_drafts(candidates) if args.create_demand_drafts else []
-        mod.write_report(rows=rows, candidates=candidates, created=created)
-        payload = {
-            "ok": True,
-            "reviewed": len(rows),
-            "candidates": len(candidates),
-            "drafts_created": len(created),
-            "report": str(mod.REPORT_FILE),
-            "created": created,
-        }
+        payload = _run_demand_drafts(create=args.create_demand_drafts)
         if args.json:
             print(json.dumps(payload, ensure_ascii=False, indent=2))
         else:

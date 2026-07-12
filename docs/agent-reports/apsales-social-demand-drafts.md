@@ -1,6 +1,6 @@
 # APSales Social Demand Drafts
 
-Generated: 2026-07-12 02:04 UTC
+Generated: 2026-07-12 02:22 UTC
 
 ## Scope
 
@@ -12,15 +12,15 @@ Generated: 2026-07-12 02:04 UTC
 
 ## Current Social Intel Quality
 
-- Total intel rows reviewed: 28
+- Total intel rows reviewed: 29
 - buyer_demand: 4
 - comment_review_candidate: 1
-- market_signal: 23
+- market_signal: 24
 
 ## Source Mix
 
 - facebook groups: 8
-- jiji: 2
+- jiji: 3
 - nairaland: 9
 - tonaton: 8
 - youtube: 1
