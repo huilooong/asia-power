@@ -138,38 +138,13 @@ def _draft_follow_up(reply: dict) -> dict | None:
     scheme = reply.get("scheme_id", "")
 
     if lang.startswith("fr"):
-        body = (
-            f"Bonjour — merci pour votre message sur {platform}.\n\n"
-            f"Consultez le catalogue avec photos sur : {listing}\n"
-            f"Pour un devis, écrivez à sales@asia-power.com — nous répondons avec options et photos.\n"
-            f"WhatsApp +233 54 091 1111 si vous préférez.\n\n"
-            f"AsiaPower Sales"
-        )
+        body = "AsiaPower provides on-demand dismantling service and worldwide delivery: https://asia-power.com"
     elif lang.startswith("pt"):
-        body = (
-            f"Olá — obrigado pela sua mensagem no {platform}.\n\n"
-            f"Veja o catálogo com fotos em: {listing}\n"
-            f"Para orçamento, envie email para sales@asia-power.com.\n"
-            f"WhatsApp +233 54 091 1111.\n\n"
-            f"AsiaPower Sales"
-        )
+        body = "AsiaPower provides on-demand dismantling service and worldwide delivery: https://asia-power.com"
     elif lang.startswith("ar"):
-        body = (
-            f"شكراً لرسالتك على {platform}.\n\n"
-            f"تصفح القائمة: {listing}\n"
-            f"للعرض: sales@asia-power.com\n"
-            f"WhatsApp +233 54 091 1111.\n\n"
-            f"AsiaPower Sales"
-        )
+        body = "AsiaPower provides on-demand dismantling service and worldwide delivery: https://asia-power.com"
     else:
-        body = (
-            f"Hi — thanks for your comment on {platform}.\n\n"
-            f"Browse verified listings with photos here: {listing}\n"
-            f"For a quote, email sales@asia-power.com — we'll reply with options and photos.\n"
-            f"WhatsApp +233 54 091 1111 if easier.\n\n"
-            f"We don't close deals in DMs — visit the site first.\n\n"
-            f"AsiaPower Sales"
-        )
+        body = "AsiaPower provides on-demand dismantling service and worldwide delivery: https://asia-power.com"
 
     record = save_draft({
         "customer_name": f"{platform}:{handle}",

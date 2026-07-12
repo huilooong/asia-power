@@ -220,17 +220,7 @@ def _products(row: dict[str, Any]) -> list[str]:
 
 
 def _draft_text(row: dict[str, Any], url: str) -> str:
-    engines = ", ".join(row.get("detected_engine_codes") or [])
-    country = str(row.get("detected_country") or "").strip()
-    product_hint = engines or "the engine / gearbox / half-cut"
-    destination = f" for {country}" if country else ""
-    return (
-        f"Hi — I saw your post about {product_hint}{destination}.\n\n"
-        "AsiaPower helps buyers check used engines, gearboxes and half-cuts from China before quotation. "
-        "We confirm photos, engine/gearbox matching, package scope, condition and export availability before price.\n\n"
-        f"You can send model, year, engine code, gearbox type and destination port here: {url}\n\n"
-        "No pressure — exact availability and price must be confirmed before quotation."
-    )
+    return "AsiaPower provides on-demand dismantling service and worldwide delivery: https://asia-power.com"
 
 
 def select_candidates(rows: list[dict[str, Any]], *, limit: int, min_score: int) -> list[dict[str, Any]]:
