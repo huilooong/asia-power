@@ -60,6 +60,8 @@
 ## 部署与安全（2026-06-29）
 
 - `deploy-production.mjs` rsync 工作树进 `public/` — 新增后端目录必须同步 EXCLUDES，否则 `.py` 源码可公开下载（已修一次，勿回归）
+- **公开隐私原则（2026-07-12）**：公开页/API 不得出现完整 VIN、供应商资料、内部备注或审核元数据；脱敏对象禁止再与 raw item 合并。Preview 不得公网裸奔。QXB guide 先逐页查隐私，只有命中完整 VIN、供应商/客户隐私或内部备注才下线/noindex，禁止无差别全删。
+- **P0 已上线**：Commit `69b6eced3`；API `REL-20260712114055-api-69b6eced3`；Preview 下线 `REL-20260712114302-engines-69b6eced3`。报告：`docs/ops/ops-p0-privacy-deploy-audit-2026-07-12.md`。
 
 ## 供应商上传图片压缩（2026-07-10）
 
@@ -102,6 +104,11 @@
 - 禁止未授权批量改价（`putState` ≥3 条需 `allowBulkPriceUpdate`）
 - 审计：`docs/ops/ops-inventory-integrity-audit-2026-07-10.md`
 - Release: REL-20260710093613-chrome + integrity api/chrome 2026-07-10 · ops: docs/ops/ops-parts-photo-display.md
+
+## 发动机 / 变速箱业务规则（CEO 2026-07-12）
+- 今日福特试验车批次 HC250556–HC250565：发动机命名已确认正确，禁止随意改；变速箱必须读 `notes` / `remark` 后以车型、排量、年款、挡位等已知信息命名，禁止只写空洞的 AT/Transmission，也禁止臆造真实型号。
+- 本批定价汇率 6.8：发动机 RMB 8,500 → **USD 1,250**；变速箱 RMB 3,000 → **USD 441**（四舍五入到整数美元）。价格字段必须明确为 USD。
+- 本批对外卖点固定体现 **Low mileage / Nearly new condition（低里程 / 几乎全新）**。详见 `docs/ops/ops-engine-transmission-pricing-2026-07-12.md`。
 
 ## 中文车型 normalize（2026-07-10）
 - `normalizeKey` 必须保留 CJK；剥成空串会把尚酷等塌成目录里第一个中文名（例：朗逸）
