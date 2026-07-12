@@ -62,6 +62,7 @@
 - `deploy-production.mjs` rsync 工作树进 `public/` — 新增后端目录必须同步 EXCLUDES，否则 `.py` 源码可公开下载（已修一次，勿回归）
 - **公开隐私原则（2026-07-12）**：公开页/API 不得出现完整 VIN、供应商资料、内部备注或审核元数据；脱敏对象禁止再与 raw item 合并。Preview 不得公网裸奔。QXB guide 先逐页查隐私，只有命中完整 VIN、供应商/客户隐私或内部备注才下线/noindex，禁止无差别全删。
 - **公开联系邮箱（CEO 2026-07-12 定稿）**：公开页、联系页、About 与 SEO 结构化数据统一使用 `sales@asia-power.com`；个人 Gmail 仅保留内部转发/管理员用途，不对外展示。
+- **公开页窄范围发布（事故教训 2026-07-12）**：生产文件可能领先当前 Git 分支；发布共享 `home/chrome` 目标前必须核对生产漂移。只改公开邮箱等小范围内容时使用 Release Manager `sales-email` 目标，先快照再原位替换，禁止用旧分支整包覆盖新页面。
 - **P0 已上线**：Commit `69b6eced3`；API `REL-20260712114055-api-69b6eced3`；Preview 下线 `REL-20260712114302-engines-69b6eced3`。报告：`docs/ops/ops-p0-privacy-deploy-audit-2026-07-12.md`。
 
 ## 供应商上传图片压缩（2026-07-10）
