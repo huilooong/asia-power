@@ -15,7 +15,7 @@ import { fileURLToPath } from 'node:url';
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const SOURCE = 'ceo-approved-complete-halfcut-four-category-2026-07-12';
 const CHASSIS_ASSEMBLY = 'Front subframe, suspension & steering assembly';
-const CRITICAL_MISSING_RE = /(?:missing|without|removed|not included|缺失|缺少|不含|拆除|无)(?:.{0,24})(?:engine|gearbox|transmission|front clip|subframe|suspension|steering|发动机|变速箱|前切|车头|副车架|悬挂|转向)/i;
+const CRITICAL_MISSING_RE = /(?:missing|without|removed|not included)\s+(?:the\s+)?(?:engine|gearbox|transmission|front clip|subframe|suspension|steering)|(?:engine|gearbox|transmission|front clip|subframe|suspension|steering)\s+(?:missing|removed|not included)|(?:缺失|缺少|不含|拆除|无)(?:发动机|变速箱|前切|车头|副车架|悬挂|转向)|(?:发动机|变速箱|前切|车头|副车架|悬挂|转向)(?:缺失|缺少|不含|拆除)/i;
 
 function parseArgs(argv) {
   const args = { root: ROOT, apply: false, expected: 398 };
