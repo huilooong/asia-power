@@ -63,18 +63,32 @@ const chassisIds = liveCategoryIds('chassis');
 const engineIds = liveCategoryIds('engines');
 const gearboxIds = liveCategoryIds('gearboxes');
 const frontCutIds = liveCategoryIds('frontcuts');
-const completeHalfCuts = live.filter((item) => (
+const broadHalfCutCandidates = live.filter((item) => (
   !String(item.passengerPartType || '').trim()
   && String(item.vehicleCondition || '').trim().toLowerCase() === 'half cut'
   && String(item.engineCode || '').trim()
   && String(item.transmissionCode || '').trim()
+));
+const completeHalfCuts = live.filter((item) => (
+  broadHalfCutCandidates.includes(item)
   && String(item.halfCutCompleteness || '').trim().toLowerCase() === 'complete'
 ));
+const excludedExportCars = broadHalfCutCandidates.filter((item) => item.isExportUsedCar === true);
 
 assert.equal(
-  completeHalfCuts.length,
+  broadHalfCutCandidates.length,
   398,
-  'all 398 approved complete half-cuts must carry the completeness marker',
+  'the approved broad audit scope must remain 398 records',
+);
+assert.equal(
+  completeHalfCuts.length,
+  394,
+  '394 verified complete half-cuts must carry the completeness marker',
+);
+assert.deepEqual(
+  excludedExportCars.map((item) => item.stockId).sort(),
+  ['HC250129', 'HC250168', 'HC250171', 'HC250553'],
+  'four records explicitly classified as export used cars must stay excluded',
 );
 assert.equal(
   completeHalfCuts.every((item) => chassisIds.includes(item.stockId)),
@@ -189,6 +203,7 @@ console.log(JSON.stringify({
     frontcuts: frontCutIds.length,
   },
   completeHalfCuts: completeHalfCuts.length,
+  excludedExportCars: excludedExportCars.map((item) => item.stockId),
   chassisIds,
   fordGearboxIds,
 }, null, 2));

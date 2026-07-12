@@ -90,6 +90,21 @@ function patchComplete(row, now) {
   };
 }
 
+function unpatchExcluded(row, now) {
+  if (row.halfCutCompletenessSource !== SOURCE) return row;
+  const next = {
+    ...row,
+    includedParts: (Array.isArray(row.includedParts) ? row.includedParts : [])
+      .filter((part) => String(part).trim().toLowerCase() !== CHASSIS_ASSEMBLY.toLowerCase()),
+    updatedAt: now,
+  };
+  delete next.halfCutCompleteness;
+  delete next.halfCutCategoryVisibility;
+  delete next.halfCutCompletenessSource;
+  delete next.halfCutCompletenessVerifiedAt;
+  return next;
+}
+
 function main() {
   const args = parseArgs(process.argv);
   const dataDir = path.join(args.root, 'data');
@@ -103,12 +118,15 @@ function main() {
     throw new Error(`Candidate count ${candidates.length} does not match approved scope ${args.expected}`);
   }
 
-  const exclusions = candidates
-    .filter((row) => CRITICAL_MISSING_RE.test(evidenceText(row)))
-    .map((row) => ({
-      stockId: stockId(row),
-      reason: 'critical powertrain/front-structure missing evidence',
-    }));
+  const exclusions = candidates.flatMap((row) => {
+    if (row.isExportUsedCar === true) {
+      return [{ stockId: stockId(row), reason: 'record is explicitly classified as export used car' }];
+    }
+    if (CRITICAL_MISSING_RE.test(evidenceText(row))) {
+      return [{ stockId: stockId(row), reason: 'critical powertrain/front-structure missing evidence' }];
+    }
+    return [];
+  });
   const excludedIds = new Set(exclusions.map((row) => row.stockId));
   const eligibleIds = new Set(
     candidates.map(stockId).filter((id) => id && !excludedIds.has(id)),
@@ -118,12 +136,16 @@ function main() {
   ).length;
   const beforeFingerprint = immutableFingerprint(approved);
   const now = new Date().toISOString();
-  const nextApproved = approved.map((row) => (
-    eligibleIds.has(stockId(row)) ? patchComplete(row, now) : row
-  ));
-  const nextSubmissions = submissions.map((row) => (
-    eligibleIds.has(stockId(row)) ? patchComplete(row, now) : row
-  ));
+  const nextApproved = approved.map((row) => {
+    if (eligibleIds.has(stockId(row))) return patchComplete(row, now);
+    if (excludedIds.has(stockId(row))) return unpatchExcluded(row, now);
+    return row;
+  });
+  const nextSubmissions = submissions.map((row) => {
+    if (eligibleIds.has(stockId(row))) return patchComplete(row, now);
+    if (excludedIds.has(stockId(row))) return unpatchExcluded(row, now);
+    return row;
+  });
 
   const afterFingerprint = immutableFingerprint(nextApproved);
   if (beforeFingerprint !== afterFingerprint) {
@@ -147,9 +169,10 @@ function main() {
     eligibleCount: eligibleIds.size,
     excludedCount: exclusions.length,
     alreadyComplete,
-    changedApproved: candidates.filter(
-      (row) => String(row.halfCutCompleteness || '').toLowerCase() !== 'complete',
-    ).length - exclusions.length,
+    changedApproved: nextApproved.reduce(
+      (count, row, index) => count + (row !== approved[index] ? 1 : 0),
+      0,
+    ),
     changedSubmissions: nextSubmissions.reduce(
       (count, row, index) => count + (row !== submissions[index] ? 1 : 0),
       0,
