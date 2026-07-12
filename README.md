@@ -29,7 +29,7 @@ Open [http://localhost:8080](http://localhost:8080)
 
 - **Primary phone / WhatsApp:** +233 54 091 1111
 - **China WhatsApp backup:** +86 186 0377 3077
-- **Email:** weylonhui@gmail.com
+- **Email:** sales@asia-power.com
 - **China Office:** South Third Ring Road & Shangdu Road, Zhengzhou, Henan, China
 - **Ghana Office:** No.2 Flower Street, Tabora, Accra, Ghana
 

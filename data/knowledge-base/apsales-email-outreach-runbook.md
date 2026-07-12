@@ -26,9 +26,9 @@
 |----|------|
 | 对外销售邮箱（统一口径） | `sales@asia-power.com` |
 | 历史收件 | `inquiry@` 仍转发，回复一律从 `sales@` 发出 |
-| 网站 `config.js` 显示 | 仍是 `weylonhui@gmail.com` ⚠️ 待改 |
+| 网站公开联系邮箱 | `sales@asia-power.com`（2026-07-12 已统一） |
 | 代码 `email-proxy.js` | ✅ 今日新增 |
-| Cloudflare Email Worker | ⏸ 需 CEO 在 Cloudflare 部署 |
+| Cloudflare Email Worker | ✅ 已接收 `sales@` / `inquiry@` 并回调生产 API |
 
 ### Step 1 — 生成密钥
 

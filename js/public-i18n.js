@@ -750,7 +750,7 @@
     'about.officeChinaDesc': { zh: '郑州 · 日、韩、中供应商网络', fr: 'Zhengzhou · réseau fournisseurs Japon, Corée, Chine', ar: 'تشنغتشو · شبكة موردين يابان وكوريا والصين'},
     'about.officeGhanaTitle': { zh: '加纳 — 西非运营', fr: 'Ghana — opérations Afrique de l\'Ouest', ar: 'غانا — عمليات غرب أفريقيا'},
     'about.officeGhanaDesc': { zh: '阿克拉 · 服务区域进口商', fr: 'Accra · support local pour importateurs régionaux', ar: 'أكرا · دعم محلي للمستوردين الإقليميين'},
-    'about.officeEmail': { zh: 'weylonhui@gmail.com', fr: 'weylonhui@gmail.com', ar: 'weylonhui@gmail.com'},
+    'about.officeEmail': { zh: 'sales@asia-power.com', fr: 'sales@asia-power.com', ar: 'sales@asia-power.com'},
     'about.officeWhatsapp': { zh: 'WhatsApp', fr: 'WhatsApp', ar: 'واتساب'},
     'about.finalTitle': { zh: '让每一件可循环利用的资产，都拥有第二次生命。', fr: 'Donner une seconde vie à chaque actif réutilisable.', ar: 'امنح كل أصل قابل لإعادة الاستخدام حياة ثانية.'},
     'about.finalLead': { zh: 'AsiaPower 正在从汽车零部件贸易出发，建设连接全球供应商、采购商、数据与人工智能的行业基础设施。我们欢迎客户、供应商、合作伙伴和投资人，与我们一起推动更高效、更透明、更可信的循环经济。', fr: 'AsiaPower part du commerce de pièces automobiles pour construire une infrastructure sectorielle reliant fournisseurs, acheteurs, données et IA mondiaux. Clients, fournisseurs, partenaires et investisseurs sont les bienvenus pour une économie circulaire plus efficace, transparente et fiable.', ar: 'تبدأ AsiaPower من تجارة قطع السيارات لبناء بنية تحتية صناعية تربط الموردين والمشترين والبيانات والذكاء الاصطناعي عالمياً. نرحب بالعملاء والموردين والشركاء والمستثمرين لاقتصاد دائري أكثر كفاءة وشفافية وثقة.'},
