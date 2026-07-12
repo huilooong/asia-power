@@ -109,10 +109,12 @@
 
 ## 发动机 / 变速箱业务规则（CEO 2026-07-12）
 - **CEO 原表数量是唯一权威口径（2026-07-12 纠正）**：HC250556–HC250565 是 10 个「型号+配置」SKU 行，不是 9 台发动机 + 1 台变速箱。原表为 106 套发动机+变速箱、105 台纯发动机、33 台独立自动变速箱，即 211 台发动机、139 台变速箱（套装重叠计入），实物挂牌单位合计 244 套/台。上传批次必须把表内数量写入 `quantityUnits/quantity/sellableQty`；禁止把「一行一个库存号」误读成「一行只有 1 台」。
-- 本批挂牌结构：发动机+变速箱使用 engine 主类目的单 SKU `Powertrain Package`，标题/描述/配件清单明确两项；纯发动机只进 engine；独立变速箱只进 transmission；全部不得进入车头/底盘。纯发动机 USD 1,250、独立变速箱 USD 441、套装 USD 1,691。本批无实拍时用 `assets/images/ford-asiapower-powertrain-placeholder.png`（Ford + AsiaPower 双品牌），不得挪用其它库存真车照片。
+- 本批挂牌结构：发动机+变速箱套装留在 engine 主类目的单 SKU `Powertrain Package`；**同时必须在变速箱类目再挂对应变速箱镜像 SKU**（HC250567–570 对应 556/557/558/561）。纯发动机只进 engine；独立变速箱只进 transmission，标题/描述/配件清单明确两项；纯发动机只进 engine；独立变速箱只进 transmission；全部不得进入车头/底盘。纯发动机 USD 1,250、独立变速箱 USD 441、套装 USD 1,691。本批无实拍时用 `assets/images/ford-asiapower-powertrain-placeholder.png`（Ford + AsiaPower 双品牌），不得挪用其它库存真车照片。
 - 变速箱必须读 `notes` / `remark` 后以车型、排量、年款、挡位等已知信息命名，禁止只写空洞的 AT/Transmission，也禁止臆造真实变速箱型号；若适配信息来自既有上下文而非 CEO 原表，必须明确注明。
 - 本批定价汇率 6.8：发动机 RMB 8,500 → **USD 1,250**；变速箱 RMB 3,000 → **USD 441**（四舍五入到整数美元）。价格字段必须明确为 USD。
+- **成套动力总成双挂牌（CEO 2026-07-12 定稿）**：原表「发动机+变速器」行 = 发动机类目套装挂牌 + 变速箱类目镜像挂牌；数量与原表一致；镜像价按变速箱 USD 441；不得把纯发动机伪装成变速箱。事故/交付：`docs/ops/ops-chassis-gearbox-dirty-cleanup-2026-07-12.md`。
 - **公开类目互斥（CEO 2026-07-12 定稿）**：`passengerPartType` 是独立零件主分类，优先于 engineCode/transmissionCode/标题/搜索。独立发动机只进发动机，独立变速箱只进变速箱，底盘只进底盘，半切/车头不得混入上述独立件；搜索只能扩大匹配字段，禁止跨类目补项。仅无专用类型的真正半切可因自带 engineCode/transmissionCode 同时出现在动力总成目录。事故批次 HC250556–HC250566；报告 `docs/ops/ops-part-category-filter-fix-2026-07-12.md`。
+- **类目 JS 缓存键不可回退（CEO 2026-07-12）**：Cloudflare 对 `half-cut-directory.js?v=` 使用 immutable；若 HTML 仍挂旧 `category-filter-v1`，即使用新文件覆盖磁盘，浏览器仍吃旧规则。目录发布后必须确认各页 cache key，禁止 chrome 目标用旧 HTML 把 key 打回 v1。底盘空页即因此复现。
 - **类目过滤必须防 false negative（CEO 2026-07-12 纠正）**：不能只验证“错误货已排除”，还必须对比发布备份与生产原始数据，并逐类核对改前/改后 count，确认合法库存仍保留。底盘采用“显式 chassis 或真正 donor cut 的公开底盘证据”准入；独立 engine/transmission/other 不得因关键词串入。事故：底盘 445 条宽放后被收紧成 0，HC250488 被误杀；修复报告 `docs/ops/ops-chassis-transmission-filter-repair-2026-07-12.md`。
 - 本批对外卖点固定体现 **Low mileage / Nearly new condition（低里程 / 几乎全新）**。详见 `docs/ops/ops-engine-transmission-pricing-2026-07-12.md`。
 
