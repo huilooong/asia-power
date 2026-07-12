@@ -1,7 +1,7 @@
 # OPS · 零部件类目互斥过滤修复
 
 **日期：** 2026-07-12
-**状态：** 代码已修复并通过生产数据回归；待 Release Manager 发布与现网截图
+**状态：** 已通过 Release Manager 上线并完成现网矩阵与截图验证
 **范围：** 首页、半切/车头、底盘、发动机、变速箱公开目录
 
 ## 结论
@@ -77,13 +77,23 @@
 
 生产 URL：
 
-- `https://asia-power.com/half-cuts/`
-- `https://asia-power.com/front-cuts/`
-- `https://asia-power.com/chassis-parts/`
-- `https://asia-power.com/engines/`
-- `https://asia-power.com/gearboxes/`
+- `https://asia-power.com/half-cuts/?q=HC250566`
+- `https://asia-power.com/front-cuts/?q=HC250556`
+- `https://asia-power.com/chassis-parts/?q=HC250556`
+- `https://asia-power.com/engines/?q=HC250566`
+- `https://asia-power.com/gearboxes/?q=HC250565`
 
-现网截图（发布后补充）：
+| 现网检查 | 结果 |
+|---|---|
+| HC250556–HC250564 | 9/9 仅发动机类目匹配 |
+| HC250565 | 仅变速箱类目匹配 |
+| HC250566 | 仅发动机类目匹配 |
+| 半切、车头、底盘 | 11/11 均不匹配 |
+| 首页半切货架 | 11/11 均未出现 |
+| 首页发动机货架 | HC250566 可见 |
+| 目录 DOM 实测 | 发动机/变速箱目标各 1 条；三个错误类目各 0 条 |
+
+现网截图：
 
 - `docs/ops/evidence/category-filter-engines-20260712.png`
 - `docs/ops/evidence/category-filter-gearboxes-20260712.png`
@@ -93,10 +103,11 @@
 
 ## 发布与回滚
 
-- Release ID：发布后补充
-- Git commit：发布后补充
-- 远端备份：由 Release Manager 写入对应 release snapshots
-- 回滚：`RESTORE_CONFIRM=<Release ID> node scripts/release-restore.mjs <Release ID>`
+- Release ID：`REL-20260712145020-categories-abaa121e0`
+- Git commit：`abaa121e0b90fe30a87ae02d7cc4a45def0b4aa9`
+- 远端备份：`/root/.openclaw/workspace/inventory-site/backups/scheduled/asia-power-backup-20260712-145023.tar.gz`
+- Release snapshots：`releases/REL-20260712145020-categories-abaa121e0/snapshots/`
+- 回滚：`RESTORE_CONFIRM=REL-20260712145020-categories-abaa121e0 node scripts/release-restore.mjs REL-20260712145020-categories-abaa121e0`
 
 ## 交付路径
 
