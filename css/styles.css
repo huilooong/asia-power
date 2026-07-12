@@ -2113,6 +2113,14 @@ body.site-modal-open .half-cut-lead-status {
 }
 .cta-block p { color: var(--steel-300); max-width: 520px; }
 .cta-block__actions { display: flex; gap: 12px; flex-wrap: wrap; }
+.catalog-action-block .btn-outline-light {
+  border-color: rgba(255, 255, 255, .68);
+  color: var(--white);
+}
+.catalog-action-block .btn-outline-light:hover {
+  background: var(--white);
+  color: var(--navy-900);
+}
 
 .catalog-coming-soon {
   max-width: 560px;

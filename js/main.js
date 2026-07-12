@@ -940,10 +940,7 @@
     const config = window.ASIAPOWER;
     if (!grid || !config) return;
 
-    const slugs = config.homepageBrands || [];
-    const brands = slugs
-      .map(slug => config.brandsDirectory.find(b => b.slug === slug))
-      .filter(Boolean);
+    const brands = getBrandsWithPublicStock(config).slice(0, 12);
 
     grid.innerHTML = brands.map(brand => {
       const url = brandProductUrl(brand);
@@ -1059,6 +1056,66 @@
     return `contact.html?brand=${encodeURIComponent(brand.slug)}`;
   }
 
+  function normalizeBrandSlug(value) {
+    return String(value || '')
+      .trim()
+      .toLowerCase()
+      .replace(/&/g, 'and')
+      .replace(/[^a-z0-9]+/g, '-')
+      .replace(/^-+|-+$/g, '');
+  }
+
+  function isCountableStockItem(item) {
+    const status = String(item?.status || '').trim().toLowerCase();
+    return !['sold', 'unavailable', 'removed', 'private', 'draft'].includes(status);
+  }
+
+  function getPublicStockItems() {
+    if (Array.isArray(window.HALF_CUT_LIST)) return window.HALF_CUT_LIST;
+    return [];
+  }
+
+  function getBrandsWithPublicStock(config) {
+    const configured = new Map((config.brandsDirectory || []).map((brand) => [brand.slug, brand]));
+    const counts = new Map();
+    const names = new Map();
+
+    getPublicStockItems().forEach((item) => {
+      if (!isCountableStockItem(item)) return;
+      const slug = item.brandSlug || normalizeBrandSlug(item.brand);
+      if (!slug) return;
+      counts.set(slug, (counts.get(slug) || 0) + 1);
+      if (!names.has(slug)) names.set(slug, item.brand || slug);
+    });
+
+    const priority = [
+      ...(config.featuredBrandSlugs || []),
+      'toyota',
+      'nissan',
+      'honda',
+      'hyundai',
+      'kia',
+      'mitsubishi',
+    ];
+    const priorityRank = new Map(priority.map((slug, index) => [slug, index]));
+
+    return Array.from(counts, ([slug, count]) => {
+      const baseBrand = configured.get(slug) || {};
+      return {
+        ...baseBrand,
+        slug,
+        name: baseBrand.name || names.get(slug) || slug,
+        inventoryCount: count,
+      };
+    }).sort((a, b) => {
+      const ar = priorityRank.has(a.slug) ? priorityRank.get(a.slug) : 999;
+      const br = priorityRank.has(b.slug) ? priorityRank.get(b.slug) : 999;
+      if (ar !== br) return ar - br;
+      if ((b.inventoryCount || 0) !== (a.inventoryCount || 0)) return (b.inventoryCount || 0) - (a.inventoryCount || 0);
+      return a.name.localeCompare(b.name, undefined, { sensitivity: 'base' });
+    });
+  }
+
   function renderFeaturedBrandCard(brand) {
     const initial = brand.name.charAt(0);
     const url = brandProductUrl(brand);
@@ -1141,7 +1198,7 @@
       return;
     }
 
-    const brands = config.brandsDirectory;
+    const brands = getBrandsWithPublicStock(config);
     const featuredSlugs = config.featuredBrandSlugs || [];
     const featuredBrands = featuredSlugs
       .map(slug => brands.find(b => b.slug === slug))
@@ -1201,7 +1258,7 @@
       });
 
       if (featuredSection) {
-        featuredSection.classList.toggle('hidden', query.length > 0 && featuredVisible === 0);
+        featuredSection.classList.toggle('hidden', featuredBrands.length === 0 || (query.length > 0 && featuredVisible === 0));
       }
       if (visibleEl) visibleEl.textContent = visible;
       if (emptyEl) emptyEl.classList.toggle('hidden', visible > 0);

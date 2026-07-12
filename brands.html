@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="theme-color" content="#ffffff">
 
-  <meta name="description" content="AsiaPower brand directory — engines, gearboxes, chassis parts and half-cuts for Japanese, Korean, Chinese, American and European vehicle applications. 50+ brands supported globally.">
+  <meta name="description" content="AsiaPower in-stock brand directory — current public inventory signals for engines, gearboxes, chassis parts and half-cuts sourced through verified China supply channels.">
   <title>Brands We Support | AsiaPower</title>
   <link rel="canonical" href="https://asia-power.com/brands.html">
   <link rel="alternate" hreflang="en" href="https://asia-power.com/brands.html">
@@ -18,7 +18,7 @@
   <link rel="preload" href="assets/fonts/inter-latin.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="stylesheet" href="css/fonts.css?v=self-hosted-fonts-v1">
 <link rel="stylesheet" href="css/styles.css?v=lang-sync-v2">
-  <link rel="stylesheet" href="css/ebay-layout.css?v=about-type-v2" data-ebay-layout="1">
+  <link rel="stylesheet" href="css/ebay-layout.css?v=login-entry-v1" data-ebay-layout="1">
   <link rel="icon" href="assets/favicon.png" type="image/png">
   <link rel="apple-touch-icon" href="assets/favicon.png">
   <!-- Google tag (gtag.js) -->
@@ -47,12 +47,12 @@
         <div class="brands-hero__content">
           <span class="brands-hero__label" data-i18n="brands.label">Primary Entry Point</span>
           <h1 data-i18n="brands.title">Brand Directory</h1>
-          <p class="brands-hero__lead" data-i18n="brands.lead">Select a vehicle brand to access engines, gearboxes, chassis parts and half-cuts. AsiaPower sources Japanese, Korean, Chinese, American and European applications through a verified China-based supplier network.</p>
+          <p class="brands-hero__lead" data-i18n="brands.lead">Select an in-stock vehicle brand to access engines, gearboxes, chassis parts and half-cuts. This directory updates from current public inventory signals.</p>
         </div>
         <div class="brands-hero__metrics">
           <div class="brands-metric">
-            <span class="brands-metric__value" id="brand-count-metric">50</span>
-            <span class="brands-metric__label" data-i18n="brands.vehicleBrands">Vehicle Brands</span>
+            <span class="brands-metric__value" id="brand-count-metric">0</span>
+            <span class="brands-metric__label" data-i18n="brands.vehicleBrands">In-stock Brands</span>
           </div>
           <div class="brands-metric">
             <span class="brands-metric__value">4</span>
@@ -74,7 +74,7 @@
             <input type="search" id="brand-search" placeholder="Search brands or engine models (e.g. G4KD, 2TR, K24A)…" aria-label="Search brands and engine models" data-i18n-placeholder="brands.searchPlaceholder">
           </div>
           <div class="brands-toolbar__meta">
-            <span data-i18n="brands.showing">Showing</span> <strong id="brand-visible-count">50</strong> <span data-i18n="brands.of">of</span> <strong id="brand-total-count">50</strong> <span data-i18n="brands.brandsWord">brands</span>
+            <span data-i18n="brands.showing">Showing</span> <strong id="brand-visible-count">0</strong> <span data-i18n="brands.of">of</span> <strong id="brand-total-count">0</strong> <span data-i18n="brands.brandsWord">brands</span>
           </div>
         </div>
       </div>
@@ -85,7 +85,7 @@
         <div class="brands-directory-header">
           <span class="section-eyebrow" data-i18n="brands.featuredEyebrow">Priority Channels</span>
           <h2 class="section-title" data-i18n="brands.featuredTitle">Featured Brands</h2>
-          <p class="section-lead" data-i18n="brands.featuredLead">High-volume sourcing channels with dedicated supplier access, faster quotation and export programs.</p>
+          <p class="section-lead" data-i18n="brands.featuredLead">High-volume in-stock channels with dedicated supplier access, faster quotation and export programs.</p>
         </div>
         <div class="brand-featured-matrix" id="brand-featured-matrix" aria-live="polite"></div>
       </div>
@@ -94,9 +94,9 @@
     <section class="section brands-section brands-section--all">
       <div class="container">
         <div class="brands-directory-header">
-          <span class="section-eyebrow" data-i18n="brands.allEyebrow">Full Coverage</span>
-          <h2 class="section-title" data-i18n="brands.allTitle">All Supported Brands</h2>
-          <p class="section-lead" data-i18n="brands.allLead">Complete brand index for global powertrain sourcing — select any make to request engines, gearboxes, chassis parts or half-cuts.</p>
+          <span class="section-eyebrow" data-i18n="brands.allEyebrow">Current Stock</span>
+          <h2 class="section-title" data-i18n="brands.allTitle">In-stock Brands</h2>
+          <p class="section-lead" data-i18n="brands.allLead">Current brand index generated from public inventory signals. When new stock adds a brand, this list updates automatically.</p>
         </div>
         <div class="brand-tiles" id="brand-matrix" aria-live="polite"></div>
         <div class="brands-empty hidden" id="brands-empty" aria-live="polite"></div>
@@ -151,8 +151,10 @@
 
   <script src="js/path-utils.js?v=listing-layout-v1"></script>
   <script src="js/config.js?v=contact-20260625"></script>
+  <script src="js/vehicle-catalog.js?v=brand-stock-directory-v1"></script>
+  <script src="js/half-cut-directory.js?v=brand-stock-directory-v1"></script>
   <script src="js/seo.js?v=p3-seo-v1"></script>
-  <script src="js/components.js?v=about-type-v2" defer></script>
+  <script src="js/components.js?v=login-entry-v1" defer></script>
   <script src="js/main.js?v=wa-lead-v1" defer></script>
 </body>
 </html>

@@ -132,12 +132,8 @@ const ASIAPOWER = {
     { value: '5', label: 'Global Regions' },
     { value: '200+', label: 'Verified Suppliers' },
   ],
-  homepageBrands: [
-    'toyota', 'honda', 'nissan', 'ford', 'chevrolet', 'volkswagen',
-    'hyundai', 'kia', 'byd', 'mercedes-benz', 'bmw', 'geely', 'chery',
-  ],
   categories: [
-    { href: 'brands.html', title: 'Brand Directory', count: '50+', desc: 'Start by vehicle brand', icon: 'network' },
+    { href: 'brands.html', title: 'In-stock Brands', count: 'Live', desc: 'Current public stock', icon: 'network' },
     { href: 'engines/', title: 'Used Engines', count: '5000+', desc: 'Petrol, diesel & hybrid', icon: 'engine', image: 'assets/images/supply-engines.jpg?v=img-v3', imageAlt: 'Used petrol and diesel engines for export' },
     { href: 'gearboxes/', title: 'Used Gearboxes', count: '1000+', desc: 'Auto, manual & 4WD', icon: 'gearbox', image: 'assets/images/supply-gearbox.jpg?v=img-v3', imageAlt: 'Automatic and manual gearboxes for global buyers' },
     { href: 'chassis-parts/', title: 'Chassis Parts', count: '500+', desc: 'Suspension & steering', icon: 'diesel', image: 'assets/images/supply-chassis.jpg?v=img-v3', imageAlt: 'Chassis and suspension parts from salvage vehicles' },

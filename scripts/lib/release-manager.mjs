@@ -45,6 +45,8 @@ export const TARGET_SOURCE_FILES = {
   ],
   chrome: [
     'js/components.js',
+    'js/config.js',
+    'js/main.js',
     'js/public-i18n.js',
     'js/ebay-layout.js',
     'js/half-cut-directory.js',
@@ -147,6 +149,8 @@ export const TARGET_REMOTE_PATHS = {
   ],
   chrome: [
     '/root/.openclaw/workspace/inventory-site/public/js/components.js',
+    '/root/.openclaw/workspace/inventory-site/public/js/config.js',
+    '/root/.openclaw/workspace/inventory-site/public/js/main.js',
     '/root/.openclaw/workspace/inventory-site/public/js/public-i18n.js',
     '/root/.openclaw/workspace/inventory-site/public/js/ebay-layout.js',
     '/root/.openclaw/workspace/inventory-site/public/js/half-cut-directory.js',

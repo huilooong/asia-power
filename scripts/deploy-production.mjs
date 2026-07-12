@@ -243,6 +243,8 @@ function deployChrome() {
   ssh('mkdir -p /root/.openclaw/workspace/inventory-site/public/css /root/.openclaw/workspace/inventory-site/public/js /root/.openclaw/workspace/inventory-site/public/half-cuts /root/.openclaw/workspace/inventory-site/public/trucks /root/.openclaw/workspace/inventory-site/public/machinery /root/.openclaw/workspace/inventory-site/public/engines /root/.openclaw/workspace/inventory-site/public/gearboxes /root/.openclaw/workspace/inventory-site/public/front-cuts /root/.openclaw/workspace/inventory-site/public/chassis-parts');
   // Shared listing assets
   rsync(`${ROOT}/js/components.js`, `${pub}/js/components.js`);
+  rsync(`${ROOT}/js/config.js`, `${pub}/js/config.js`);
+  rsync(`${ROOT}/js/main.js`, `${pub}/js/main.js`);
   rsync(`${ROOT}/js/public-i18n.js`, `${pub}/js/public-i18n.js`);
   rsync(`${ROOT}/js/ebay-layout.js`, `${pub}/js/ebay-layout.js`);
   rsync(`${ROOT}/js/half-cut-directory.js`, `${pub}/js/half-cut-directory.js`);
@@ -287,6 +289,8 @@ function deployChrome() {
 set -e
 PUB=/root/.openclaw/workspace/inventory-site/public
 test -f "$PUB/js/components.js"
+test -f "$PUB/js/config.js"
+test -f "$PUB/js/main.js"
 test -f "$PUB/js/public-i18n.js"
 test -f "$PUB/js/ebay-layout.js"
 test -f "$PUB/js/half-cut-directory.js"
@@ -301,6 +305,8 @@ test -f "$PUB/brands.html"
 test -f "$PUB/brands/toyota.html"
 test -f "$PUB/app.html"
 grep -q 'AsiaPowerAuthNav' "$PUB/js/components.js"
+grep -q 'getBrandsWithPublicStock' "$PUB/js/main.js"
+grep -q 'Current public stock' "$PUB/js/config.js"
 grep -q 'auth-nav-once-v2' "$PUB/js/components.js"
 grep -q 'about-type-v2' "$PUB/js/components.js"
 grep -q 'about-type-v2' "$PUB/js/components.js"
@@ -355,6 +361,7 @@ grep -q 'ebay-contact-section' "$PUB/css/ebay-layout.css"
 grep -q 'max-width: 920px' "$PUB/css/ebay-layout.css"
 grep -q 'about-type-v2' "$PUB/kenya.html"
 grep -q 'about-type-v2' "$PUB/brands/toyota.html"
+grep -q 'brand-stock-directory-v1' "$PUB/brands.html"
 grep -q 'about-type-v2' "$PUB/half-cuts/index.html"
 grep -E -q 'catalog-search-v1|catalog-search-v2|stock-id-search-v[12]' "$PUB/half-cuts/index.html"
 grep -q 'about-type-v2' "$PUB/engines/index.html"

@@ -4126,6 +4126,20 @@ body:has(.page-hero--catalog-v4) .cta-block {
   background: #fff;
   border-top: 1px solid #e8e8ed;
 }
+body:has(.page-hero--catalog-v4) .catalog-action-block {
+  color: #1d1d1f;
+}
+body:has(.page-hero--catalog-v4) .catalog-action-block p {
+  color: #6e6e73;
+}
+body:has(.page-hero--catalog-v4) .catalog-action-block .btn-outline-light {
+  border-color: #1d1d1f;
+  color: #1d1d1f;
+}
+body:has(.page-hero--catalog-v4) .catalog-action-block .btn-outline-light:hover {
+  background: #1d1d1f;
+  color: #fff;
+}
 @media (max-width: 640px) {
   .page-hero--catalog-v4 {
     padding: 24px 0 22px;
