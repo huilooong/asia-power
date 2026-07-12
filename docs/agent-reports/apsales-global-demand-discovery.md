@@ -1,6 +1,6 @@
 # APSales Global Demand Discovery
 
-Generated: 2026-07-12 01:51 UTC
+Generated: 2026-07-12 02:01 UTC
 
 ## Safety
 
@@ -13,9 +13,10 @@ Generated: 2026-07-12 01:51 UTC
 
 - Dry run: true
 - Sources selected: 5
-- Search results reviewed: 46
-- Records selected: 2
+- Search results reviewed: 47
+- Records selected: 3
 - Buyer demand records: 0
+- Comment review candidates: 1
 - Market signal records: 2
 - Intel file: `memory/customer_gateway/global_social_demand_intel.jsonl`
 
@@ -23,11 +24,17 @@ Generated: 2026-07-12 01:51 UTC
 
 No high-confidence buyer-demand records found in this run.
 
+## Comment Review Candidates
+
+| Score | Platform | Country | Query | Why review comments | URL |
+| ---: | --- | --- | --- | --- | --- |
+| 45 | YouTube | Global | "looking for" "G4KD" engine | Sale New Hyundai Kia Gasoline Engine, G4KE G4FC G4NA G4LC G4KJ G4ED Engine Sale New Hyundai Kia Gasoline Engine, G4KE G4FC G4NA G4LC G4KJ G4ED Engine | https://www.youtube.com/watch?v=ywLp_XYJo_g |
+
 ## Market Signals
 
 | Score | Deep | Platform | Country | Query | Signal | URL |
 | ---: | --- | --- | --- | --- | --- | --- |
-| 55 | false | Jiji | Nigeria | site:jiji.ng "looking for" engine Nigeria | Vehicle Parts & Accessories / 48108 Vehicle Parts & Accessories / 48108 Cars / 30976 Electrical Equipment / 13057 Generators / 12261 Trucks & Trailers / 4266 Bu | https://jiji.ng/car-parts-and-accessories?query=%22looking+for%22+engine+Nigeria |
+| 55 | false | Jiji | Nigeria | site:jiji.ng "looking for" engine Nigeria | Vehicle Parts & Accessories / 48108 Vehicle Parts & Accessories / 48108 Cars / 30974 Electrical Equipment / 13057 Generators / 12261 Trucks & Trailers / 4266 Bu | https://jiji.ng/car-parts-and-accessories?query=%22looking+for%22+engine+Nigeria |
 | 55 | false | Jiji | Nigeria | site:jiji.ng "need" gearbox Nigeria | Vehicle Parts & Accessories / 60 Vehicle Parts & Accessories / 60 Cars / 51 Buses & Microbuses / 11 Electrical Equipment / 4 Electrical Hand Tools / 4 Industria | https://jiji.ng/car-parts-and-accessories?query=%22need%22+gearbox+Nigeria |
 
 ## Fetch Notes

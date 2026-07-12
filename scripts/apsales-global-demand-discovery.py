@@ -375,6 +375,11 @@ def extract_target(href: str) -> str:
 
 
 def parse_search_results(html_text: str, *, engine: str, base_url: str, max_results: int) -> list[dict[str, str]]:
+    if "youtube.com" in urlparse(base_url).netloc.lower():
+        yt_rows = parse_youtube_results(html_text, max_results=max_results)
+        if yt_rows:
+            return yt_rows
+
     parser = LinkExtractor()
     parser.feed(html_text)
     rows: list[dict[str, str]] = []
@@ -418,6 +423,40 @@ def parse_search_results(html_text: str, *, engine: str, base_url: str, max_resu
         if len(rows) >= max_results:
             return rows
     return rows[:max_results]
+
+
+def _decode_js_string(text: str) -> str:
+    try:
+        return bytes(text, "utf-8").decode("unicode_escape")
+    except UnicodeDecodeError:
+        return text
+
+
+def parse_youtube_results(html_text: str, *, max_results: int) -> list[dict[str, str]]:
+    rows: list[dict[str, str]] = []
+    seen: set[str] = set()
+    for match in re.finditer(
+        r'"videoId":"(?P<id>[A-Za-z0-9_-]{11})".{0,3500}?"title":\{"runs":\[\{"text":"(?P<title>[^"]+)"',
+        html_text,
+        re.S,
+    ):
+        video_id = match.group("id")
+        if video_id in seen:
+            continue
+        seen.add(video_id)
+        title = clean_text(_decode_js_string(match.group("title")))
+        if not title:
+            continue
+        url = f"https://www.youtube.com/watch?v={video_id}"
+        rows.append({
+            "title": title,
+            "url": url,
+            "snippet": title,
+            "search_engine": "YouTube",
+        })
+        if len(rows) >= max_results:
+            break
+    return rows
 
 
 def extract_page_text(html_text: str) -> str:
@@ -526,9 +565,14 @@ def discover(args: argparse.Namespace) -> dict[str, Any]:
                     reasons.append("classifieds_market_signal_only")
                 if source.get("type") == "classifieds" and intent == "market_signal":
                     score = min(score, 60)
+                if source.get("type") == "video_comments" and score >= args.min_score:
+                    intent = "comment_review_candidate"
+                    reasons.append("video_comment_review_candidate")
                 if score < args.min_score:
                     continue
                 country = detect_country(f"{query} {text}", countries)
+                if source.get("type") == "video_comments" and not any(c.lower() in f"{query} {text}".lower() for c in countries):
+                    country = "Global"
                 record = {
                     "created_at": now_utc(),
                     "source": source.get("id"),
@@ -550,6 +594,8 @@ def discover(args: argparse.Namespace) -> dict[str, Any]:
                     "recommended_action": (
                         "create_apsales_reply_draft"
                         if intent == "buyer_demand"
+                        else "review_public_video_comments"
+                        if intent == "comment_review_candidate"
                         else "use_for_market_intelligence_or_content"
                     ),
                     "demand_key": key,
@@ -573,6 +619,7 @@ def discover(args: argparse.Namespace) -> dict[str, Any]:
         "saved": 0 if args.dry_run else len(created),
         "buyer_demand": sum(1 for r in created if r.get("intent_type") == "buyer_demand"),
         "market_signal": sum(1 for r in created if r.get("intent_type") == "market_signal"),
+        "comment_review_candidate": sum(1 for r in created if r.get("intent_type") == "comment_review_candidate"),
         "report": str(REPORT_FILE),
         "intel_file": str(INTEL_FILE),
         "dry_run": args.dry_run,
@@ -582,6 +629,7 @@ def discover(args: argparse.Namespace) -> dict[str, Any]:
 def write_report(*, sources: list[dict[str, Any]], reviewed: int, created: list[dict[str, Any]], notes: list[str], dry_run: bool) -> None:
     REPORT_FILE.parent.mkdir(parents=True, exist_ok=True)
     buyer_rows = [r for r in created if r.get("intent_type") == "buyer_demand"]
+    comment_rows = [r for r in created if r.get("intent_type") == "comment_review_candidate"]
     market_rows = [r for r in created if r.get("intent_type") == "market_signal"]
     lines = [
         "# APSales Global Demand Discovery",
@@ -602,6 +650,7 @@ def write_report(*, sources: list[dict[str, Any]], reviewed: int, created: list[
         f"- Search results reviewed: {reviewed}",
         f"- Records selected: {len(created)}",
         f"- Buyer demand records: {len(buyer_rows)}",
+        f"- Comment review candidates: {len(comment_rows)}",
         f"- Market signal records: {len(market_rows)}",
         f"- Intel file: `{INTEL_FILE.relative_to(ROOT)}`",
         "",
@@ -618,6 +667,19 @@ def write_report(*, sources: list[dict[str, Any]], reviewed: int, created: list[
             lines.append(
                 f"| {row.get('buyer_intent_score')} | {str(bool(row.get('deep_read'))).lower()} | "
                 f"{row.get('source_platform')} | {row.get('detected_country')} | "
+                f"{str(row.get('search_query') or '').replace('|', '/')} | {signal} | {row.get('post_url')} |"
+            )
+
+    lines.extend(["", "## Comment Review Candidates", ""])
+    if not comment_rows:
+        lines.append("No video/comment review candidates found in this run.")
+    else:
+        lines.append("| Score | Platform | Country | Query | Why review comments | URL |")
+        lines.append("| ---: | --- | --- | --- | --- | --- |")
+        for row in comment_rows[:30]:
+            signal = str(row.get("text") or "").replace("|", "/")[:160]
+            lines.append(
+                f"| {row.get('buyer_intent_score')} | {row.get('source_platform')} | {row.get('detected_country')} | "
                 f"{str(row.get('search_query') or '').replace('|', '/')} | {signal} | {row.get('post_url')} |"
             )
 
