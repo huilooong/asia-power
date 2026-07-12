@@ -462,7 +462,8 @@ function deployFinalize() {
     `${ROOT}/scripts/fix-hc250107-machinery.mjs`,
   ].filter((file) => fs.existsSync(file));
   run('rsync', ['-av', ...finalizeScripts, `${SITE}/scripts/`]);
-  rsync(`${ROOT}/scripts/setup-r2-cors.mjs`, `${SITE}/scripts/`);
+  const setupR2Cors = `${ROOT}/scripts/setup-r2-cors.mjs`;
+  if (fs.existsSync(setupR2Cors)) rsync(setupR2Cors, `${SITE}/scripts/`);
 
   const remoteScript = `
 set -e
