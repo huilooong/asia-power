@@ -5,7 +5,42 @@
     toastEl.textContent = msg;
     toastEl.classList.add('on');
     clearTimeout(window.__loginToast);
-    window.__loginToast = setTimeout(() => toastEl.classList.remove('on'), 3200);
+    window.__loginToast = setTimeout(() => toastEl.classList.remove('on'), 4200);
+  }
+
+  /** Inline status under supplier register button (toast alone is easy to miss on mobile). */
+  function setRegStatus(msg, kind) {
+    const hint = document.getElementById('reg-hint');
+    if (!hint) return;
+    hint.textContent = msg;
+    hint.classList.remove('hint--error', 'hint--ok', 'hint--busy');
+    if (kind) hint.classList.add(`hint--${kind}`);
+    try {
+      hint.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
+    } catch (_) { /* ignore */ }
+  }
+
+  function fetchJson(url, options, timeoutMs) {
+    const ms = timeoutMs || 20000;
+    const ctrl = typeof AbortController !== 'undefined' ? new AbortController() : null;
+    const timer = ctrl ? setTimeout(() => ctrl.abort(), ms) : null;
+    const opts = ctrl ? { ...options, signal: ctrl.signal } : options;
+    return fetch(url, opts)
+      .then((r) => r.json().then((data) => ({ okHttp: r.ok, data })).catch(() => ({
+        okHttp: false,
+        data: { error: '服务器返回异常，请稍后重试' },
+      })))
+      .catch((err) => ({
+        okHttp: false,
+        data: {
+          error: err && err.name === 'AbortError'
+            ? '请求超时，请检查网络后重试'
+            : '网络错误，请稍后重试',
+        },
+      }))
+      .finally(() => {
+        if (timer) clearTimeout(timer);
+      });
   }
 
   const params = new URLSearchParams(location.search);
@@ -302,9 +337,13 @@
 
   // —— Supplier register (profile + password; no SMS) ——
   document.getElementById('reg-submit').addEventListener('click', async () => {
+    const btn = document.getElementById('reg-submit');
     const terms = document.getElementById('reg-terms');
     if (terms && !terms.checked) {
-      toast('请勾选同意供应商标准');
+      const msg = '请勾选同意供应商标准';
+      setRegStatus(msg, 'error');
+      toast(msg);
+      try { terms.focus(); } catch (_) { /* ignore */ }
       return;
     }
     const password = document.getElementById('reg-password')?.value || '';
@@ -324,7 +363,7 @@
       brands: document.getElementById('reg-brands')?.value.trim() || '',
       monthlyCapacity: document.getElementById('reg-capacity')?.value || '',
     };
-    if (!requireFields([
+    const missingPairs = [
       ['手机号', body.phone],
       ['密码', body.password],
       ['确认密码', body.passwordConfirm],
@@ -335,31 +374,54 @@
       ['邮箱', body.email],
       ['经营地址', body.address],
       ['主营品类', body.specialization],
-    ])) return;
-    if (body.password !== body.passwordConfirm) return toast('两次密码不一致');
-    if (body.password.length < 8) return toast('密码至少 8 位');
-
-    const btn = document.getElementById('reg-submit');
-    btn.disabled = true;
-    const res = await fetch('/api/supplier/register', {
-      method: 'POST',
-      credentials: 'include',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(body),
-    }).then((r) => r.json()).catch(() => ({ error: 'Network error' }));
-    btn.disabled = false;
-
-    if (res.error) {
-      const missing = Array.isArray(res.missingFields)
-        ? res.missingFields.map((f) => f.label || f.key || f).join('、')
-        : '';
-      toast(missing ? `${res.error}：${missing}` : res.error);
-      const hint = document.getElementById('reg-hint');
-      if (hint) hint.textContent = missing ? `缺少：${missing}` : res.error;
+    ].filter(([, value]) => !String(value || '').trim());
+    if (missingPairs.length) {
+      const msg = `请填写：${missingPairs.map(([label]) => label).join('、')}`;
+      setRegStatus(msg, 'error');
+      toast(msg);
       return;
     }
-    toast('注册成功，进入供应商工作台');
-    location.href = params.get('next') || '/supplier-portal/dashboard.html';
+    if (body.password !== body.passwordConfirm) {
+      const msg = '两次密码不一致';
+      setRegStatus(msg, 'error');
+      return toast(msg);
+    }
+    if (body.password.length < 8) {
+      const msg = '密码至少 8 位';
+      setRegStatus(msg, 'error');
+      return toast(msg);
+    }
+
+    if (!btn) return;
+    const prevLabel = btn.textContent;
+    btn.disabled = true;
+    btn.textContent = '提交中…';
+    setRegStatus('正在提交注册…', 'busy');
+    try {
+      const { data: res } = await fetchJson('/api/supplier/register', {
+        method: 'POST',
+        credentials: 'include',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(body),
+      });
+
+      if (res.error) {
+        const missing = Array.isArray(res.missingFields)
+          ? res.missingFields.map((f) => f.label || f.key || f).join('、')
+          : '';
+        const msg = missing ? `${res.error}：${missing}` : res.error;
+        setRegStatus(msg, 'error');
+        toast(msg);
+        return;
+      }
+      setRegStatus('注册成功，正在进入工作台…', 'ok');
+      toast('注册成功，进入供应商工作台');
+      location.href = params.get('next') || '/supplier-portal/dashboard.html';
+    } finally {
+      // If navigation succeeds this is a no-op; if error, restore clickable state.
+      btn.disabled = false;
+      btn.textContent = prevLabel;
+    }
   });
 
   fetch('/api/me', { credentials: 'include' })

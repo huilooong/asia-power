@@ -6,7 +6,7 @@
   <title>Sign in / Register · AsiaPower</title>
   <meta name="description" content="Sign in or register as an AsiaPower buyer or supplier. Buyers: Google or phone+password. Suppliers: phone+password or register. SMS OTP temporarily hidden.">
   <link rel="stylesheet" href="/css/portal-app.css?v=portal-auth-v3">
-  <link rel="stylesheet" href="/css/login.css?v=auth-nav-v1">
+  <link rel="stylesheet" href="/css/login.css?v=reg-feedback-v1">
   <link rel="icon" href="/assets/favicon.png" type="image/png">
 </head>
 <body class="login-page" data-page="login" data-portal-shell="v4">
@@ -309,7 +309,7 @@
             <span lang="zh-CN">我确认信息真实，并同意 AsiaPower 供应商标准。</span>
           </label>
           <button class="btn btn-gold btn-block" type="button" id="reg-submit">Create supplier account · 完成注册</button>
-          <div class="hint" id="reg-hint">密码至少 8 位。注册后用手机号+密码登录。</div>
+          <div class="hint" id="reg-hint" role="status" aria-live="polite">密码至少 8 位。注册后用手机号+密码登录。</div>
         </div>
       </div>
 
@@ -325,7 +325,7 @@
 
   <div class="toast" id="toast"></div>
   <script src="/js/v4-portal-shell.js?v=auth-nav-once-v2"></script>
-  <script src="/js/login.js?v=phone-pw-v2"></script>
+  <script src="/js/login.js?v=reg-feedback-v1"></script>
   <script>window.AsiaPowerV4PortalShell?.mount('login');</script>
 </body>
 </html>
