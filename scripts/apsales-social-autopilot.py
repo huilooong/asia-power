@@ -35,6 +35,7 @@ def build_parser() -> argparse.ArgumentParser:
     p.add_argument("--browse", action="store_true", help="Run Facebook friends feed browse (Mac local)")
     p.add_argument("--browse-status", action="store_true", help="Show last browse session summary")
     p.add_argument("--discover-global-demand", action="store_true", help="Discover public global buyer-demand signals")
+    p.add_argument("--comment-review-queue", action="store_true", help="Build manual review queue for public video/comment candidates")
     p.add_argument("--demand-drafts", action="store_true", help="Build reply drafts from saved social buyer-demand intel")
     p.add_argument("--create-demand-drafts", action="store_true", help="Write selected social demand replies to draft_queue")
     return p
@@ -88,6 +89,34 @@ def main() -> int:
             print(f"评论检查候选: {result.get('comment_review_candidate', 0)}")
             print(f"市场信号: {result.get('market_signal', 0)}")
             print(f"报告: {result.get('report')}")
+        return 0
+
+    if args.comment_review_queue:
+        import importlib.util
+        spec = importlib.util.spec_from_file_location(
+            "comment_review_queue",
+            ROOT / "scripts" / "apsales-comment-review-queue.py",
+        )
+        mod = importlib.util.module_from_spec(spec)
+        assert spec and spec.loader
+        spec.loader.exec_module(mod)
+        queue_args = mod.build_parser().parse_args(["--json"])
+        rows = mod.load_rows(mod.DEFAULT_INTEL_FILES)
+        candidates = mod.select_candidates(rows, limit=queue_args.limit)
+        mod.write_report(candidates, rows_reviewed=len(rows))
+        result = {
+            "ok": True,
+            "reviewed": len(rows),
+            "candidates": len(candidates),
+            "report": str(mod.REPORT_FILE),
+        }
+        if args.json:
+            print(json.dumps(result, ensure_ascii=False, indent=2))
+        else:
+            print("=== 子敬公开评论检查队列 ===")
+            print(f"已读取情报: {len(rows)}")
+            print(f"评论检查候选: {len(candidates)}")
+            print(f"报告: {mod.REPORT_FILE}")
         return 0
 
     if args.demand_drafts or args.create_demand_drafts:
