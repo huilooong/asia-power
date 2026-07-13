@@ -23,7 +23,7 @@
 
 ## Bugbot fixes applied
 
-1. Deploy grep for `half-cuts/detail.html` accepts `vehicle-engine-001`
+1. Deploy grep for `half-cuts/detail.html` accepts `vehicle-engine-001b`
 2. Removed inventory-donor `Fits {brand} {model}` from engine inventory rows/cards — use directory structured apps only
 3. Escaped Compatible Vehicles / rejected notes / H1 in `engine-detail.js`
 4. Removed duplicate `engine-directory.js` load on `engines/index.html`
