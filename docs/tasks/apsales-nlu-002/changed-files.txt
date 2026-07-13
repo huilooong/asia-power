@@ -1,5 +1,3 @@
-# APSALES-NLU-002 changed files
-
 sales_core/message_understanding.py
 sales_core/conversation_state.py
 sales_core/commercial_decision.py
@@ -12,6 +10,7 @@ docs/tasks/apsales-nlu-002/root-cause.md
 docs/tasks/apsales-nlu-002/scope-answer-routing.md
 docs/tasks/apsales-nlu-002/image-evidence-routing.md
 docs/tasks/apsales-nlu-002/idempotency.md
+docs/tasks/apsales-nlu-002/quantity-answer-binding.md
 docs/tasks/apsales-nlu-002/test-results.md
 docs/tasks/apsales-nlu-002/test-results.out.txt
 docs/tasks/apsales-nlu-002/production-validation.md

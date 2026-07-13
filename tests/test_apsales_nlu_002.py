@@ -109,3 +109,83 @@ def test_image_after_ask_plate_does_not_reask():
     low = r.lower()
     assert "received your photo" in low or "review" in low or "quantity" in low
     assert "please send a clear engine plate" not in low
+
+
+def test_bare_one_without_ask_quantity_is_not_qty_answer():
+    u = understand_message("1")
+    assert u["communicative_act"] == "new_request"
+    assert not any(e["type"] == "quantity" for e in u["entities"])
+
+
+def test_bare_one_after_ask_quantity_is_answer():
+    u = understand_message("1", previous_system_action="ask_quantity")
+    assert u["communicative_act"] == "answer_previous_question"
+    assert u["intent"] == "provide_quantity"
+    assert u["references_previous_turn"] is True
+    assert any(e["type"] == "quantity" and e["normalized_value"] == 1 for e in u["entities"])
+
+
+def test_quantity_phrases_after_ask_quantity():
+    for text, expected in [
+        ("2 units", 2),
+        ("ten pieces", 10),
+        ("qty: 3", 3),
+    ]:
+        u = understand_message(text, previous_system_action="ask_quantity")
+        assert u["communicative_act"] == "answer_previous_question", text
+        assert any(e["normalized_value"] == expected for e in u["entities"] if e["type"] == "quantity"), text
+
+
+def test_scenario_2sz_complete_then_one_asks_destination():
+    """Regression: 2sz → ask_scope → Complete engine → ask_quantity → 1 → ask_destination."""
+    st = empty_state("wa:nlu002-qty")
+    u1 = understand_message("2sz", conversation_id="wa:nlu002-qty")
+    st = update_state_from_understanding(st, u1)
+    d1 = decide_commercial("2sz", prior_state=st, understanding=u1)
+    a1, r1, _ = apply_dead_loop_guard(st, next_best_action=d1.next_best_action, reply=d1.reply)
+    st = record_system_action(st, a1, r1)
+    assert a1 == "ask_scope"
+
+    u2 = understand_message("Complete engine", previous_system_action=a1)
+    st = update_state_from_understanding(st, u2)
+    d2 = decide_commercial("Complete engine", prior_state=st, understanding=u2)
+    a2, r2, _ = apply_dead_loop_guard(st, next_best_action=d2.next_best_action, reply=d2.reply)
+    st = record_system_action(st, a2, r2)
+    assert a2 == "ask_quantity", a2
+    assert "quantity" in r2.lower()
+
+    u3 = understand_message("1", previous_system_action=a2)
+    assert u3["communicative_act"] == "answer_previous_question"
+    st = update_state_from_understanding(st, u3)
+    assert st["known"].get("quantity") == 1
+    d3 = decide_commercial("1", prior_state=st, understanding=u3)
+    a3, r3, _ = apply_dead_loop_guard(st, next_best_action=d3.next_best_action, reply=d3.reply)
+    assert a3 == "ask_destination", a3
+    assert "asiapower here" not in r3.lower()
+    assert "what do you need" not in r3.lower()
+    assert "destination" in r3.lower() or "port" in r3.lower()
+
+
+def test_tema_after_ask_destination():
+    u = understand_message("Tema", previous_system_action="ask_destination")
+    assert u["communicative_act"] == "answer_previous_question"
+    assert any(e["type"] == "destination_port" for e in u["entities"])
+    st = empty_state("wa:nlu002-dest")
+    st["known"]["product_scope"] = "complete_engine"
+    st["known"]["quantity"] = 1
+    st["customer_reported"]["engine_code"] = "2SZ"
+    st["known"]["claimed_engine_code"] = "2SZ"
+    st = record_system_action(st, "ask_destination", "Destination port?")
+    st = update_state_from_understanding(st, u)
+    assert st["known"].get("destination_port")
+    d = decide_commercial("Tema", prior_state=st, understanding=u)
+    assert d.next_best_action != "ask_destination"
+    assert "destination_port" in d.known
+
+
+def test_vin_after_ask_vin():
+    vin = "1HGCM82633A004352"
+    u = understand_message(vin, previous_system_action="ask_vin")
+    assert u["communicative_act"] == "answer_previous_question"
+    assert u["intent"] == "provide_vin"
+    assert any(e["type"] == "vin" and e["normalized_value"] == vin for e in u["entities"])

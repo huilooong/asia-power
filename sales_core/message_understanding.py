@@ -31,8 +31,42 @@ _ENGINE_PHRASE = re.compile(
 _STANDALONE_CODE = re.compile(r"^\s*([A-Z0-9][A-Z0-9\-]{1,11})\s*$", re.I)
 _VIN_RE = re.compile(r"\b([A-HJ-NPR-Z0-9]{17})\b", re.I)
 _QTY_RE = re.compile(
-    r"(\d+)\s*(?:pcs|units?|sets?|engines?|台|件)\b|"
-    r"(?:qty|quantity|数量)\s*[:：]?\s*(\d+)",
+    r"(\d+)\s*(?:pcs|units?|sets?|engines?|pieces?|台|件)\b|"
+    r"(?:qty|quantity|数量)\s*[:：]?\s*(\d+)|"
+    r"(?:need|want|order)\s+(\d+)\b",
+    re.I,
+)
+# Bare digit / word quantity — only valid as answer when prior ask_quantity
+_BARE_QTY_RE = re.compile(r"^\s*(\d{1,4})\s*$")
+_WORD_QTY = {
+    "one": 1,
+    "two": 2,
+    "three": 3,
+    "four": 4,
+    "five": 5,
+    "six": 6,
+    "seven": 7,
+    "eight": 8,
+    "nine": 9,
+    "ten": 10,
+    "eleven": 11,
+    "twelve": 12,
+    "a": 1,
+    "an": 1,
+}
+_WORD_QTY_RE = re.compile(
+    r"^\s*(one|two|three|four|five|six|seven|eight|nine|ten|eleven|twelve|a|an)"
+    r"(?:\s*(?:pcs|units?|sets?|engines?|pieces?|台|件))?\s*$",
+    re.I,
+)
+_DEST_RE = re.compile(
+    r"\b("
+    r"tema|accra|dubai|lagos|apapa|mombasa|durban|abidjan|dar\s*es\s*salaam|"
+    r"jebel\s*ali|sharjah|abu\s*dhabi|rotterdam|hamburg|los\s*angeles|long\s*beach|"
+    r"ghana|nigeria|kenya|uae|dubai|tanzania|senegal|ivory\s*coast|cote\s*d'?ivoire|"
+    r"south\s*africa|cameroon|benin|togo"
+    r")\b|"
+    r"(?:port|destination|目的港|港口)\s*[:：]?\s*([A-Za-z][A-Za-z\s\-]{1,40})",
     re.I,
 )
 _NO_PLATE_RE = re.compile(
@@ -98,6 +132,87 @@ def parse_product_scope(text: str, *, previous_system_action: str = "") -> dict[
             "confidence": 0.95,
             "verification_status": "customer_reported",
         }
+    return None
+
+
+def parse_quantity(text: str, *, previous_system_action: str = "") -> dict[str, Any] | None:
+    """Return quantity entity. Bare digits / word qty only after ask_quantity."""
+    raw = (text or "").strip()
+    if not raw:
+        return None
+    q: int | None = None
+    conf = 0.9
+    m = _QTY_RE.search(raw)
+    if m:
+        g = next((x for x in m.groups() if x), None)
+        if g and str(g).isdigit():
+            q = int(g)
+    if q is None and previous_system_action == "ask_quantity":
+        bm = _BARE_QTY_RE.match(raw)
+        if bm:
+            q = int(bm.group(1))
+            conf = 0.95
+        else:
+            wm = _WORD_QTY_RE.match(raw)
+            if wm:
+                q = _WORD_QTY.get(wm.group(1).lower())
+                conf = 0.93
+    if q is None or q < 1 or q > 9999:
+        return None
+    return {
+        "type": "quantity",
+        "raw_value": raw[:40],
+        "normalized_value": q,
+        "source": "customer_text",
+        "confidence": conf,
+        "verification_status": "customer_reported",
+    }
+
+
+def parse_destination(text: str, *, previous_system_action: str = "") -> dict[str, Any] | None:
+    """Return destination_port entity. Short place names preferred after ask_destination."""
+    raw = (text or "").strip()
+    if not raw:
+        return None
+    m = _DEST_RE.search(raw)
+    if m:
+        val = next((g for g in m.groups() if g), None) or m.group(0)
+        norm = re.sub(r"\s+", " ", str(val).strip()).title()
+        if norm.lower() in {"port", "destination", "港口", "目的港"}:
+            return None
+        return {
+            "type": "destination_port",
+            "raw_value": raw[:80],
+            "normalized_value": norm,
+            "source": "customer_text",
+            "confidence": 0.9,
+            "verification_status": "customer_reported",
+        }
+    # After ask_destination, a short single place token is accepted (e.g. "Tema", "Accra")
+    if previous_system_action == "ask_destination":
+        if re.match(r"^[A-Za-z][A-Za-z\s\-]{1,40}$", raw) and len(raw) <= 40:
+            # Reject greetings / scope words
+            reject = {
+                "complete",
+                "engine",
+                "hello",
+                "thanks",
+                "yes",
+                "no",
+                "ok",
+                "okay",
+                "hi",
+                "quantity",
+            }
+            if raw.lower().strip() not in reject and not raw.isdigit():
+                return {
+                    "type": "destination_port",
+                    "raw_value": raw[:80],
+                    "normalized_value": raw.strip().title(),
+                    "source": "customer_text",
+                    "confidence": 0.85,
+                    "verification_status": "customer_reported",
+                }
     return None
 
 
@@ -198,20 +313,13 @@ def understand_message(
             }
         )
 
-    qty_m = _QTY_RE.search(raw)
-    if qty_m:
-        q = next((g for g in qty_m.groups() if g), None)
-        if q:
-            entities.append(
-                {
-                    "type": "quantity",
-                    "raw_value": q,
-                    "normalized_value": int(q),
-                    "source": "customer_text",
-                    "confidence": 0.9,
-                    "verification_status": "customer_reported",
-                }
-            )
+    qty_ent = parse_quantity(raw, previous_system_action=previous_system_action)
+    if qty_ent:
+        entities.append(qty_ent)
+
+    dest_ent = parse_destination(raw, previous_system_action=previous_system_action)
+    if dest_ent:
+        entities.append(dest_ent)
 
     scope_ent = parse_product_scope(raw, previous_system_action=previous_system_action)
     if scope_ent:
@@ -225,14 +333,28 @@ def understand_message(
         and previous_system_action.startswith("ask_")
         and bool(previous_customer_engine)
     )
-    # Pure scope answer after ask_scope (NLU-002)
+    # Context-bound answers driven by last_system_action (NLU-002)
     scope_answers_ask = previous_system_action == "ask_scope" and bool(scope_ent)
+    qty_answers_ask = previous_system_action == "ask_quantity" and bool(qty_ent)
+    dest_answers_ask = previous_system_action == "ask_destination" and bool(dest_ent)
+    vin_answers_ask = previous_system_action in {"ask_vin", "ask_vin_plate"} and bool(vin_m)
+    image_answers_evidence = previous_system_action in {
+        "ask_engine_plate",
+        "ask_engine_photo",
+        "ask_vin_plate",
+        "ask_vehicle_photo",
+        "ask_oe_label",
+    } and message_type in {"image", "photo", "document"}
     is_answer = bool(previous_system_action) and (
         is_clarification
         or bool(entities)
         or cannot_plate
         or can_photo
         or scope_answers_ask
+        or qty_answers_ask
+        or dest_answers_ask
+        or vin_answers_ask
+        or image_answers_evidence
         or message_type in {"image", "photo"}
     )
 
@@ -252,6 +374,14 @@ def understand_message(
     elif scope_answers_ask:
         # Context-bound: same words without ask_scope may be new_request
         act, intent = "answer_previous_question", "provide_scope"
+    elif qty_answers_ask:
+        act, intent = "answer_previous_question", "provide_quantity"
+    elif dest_answers_ask:
+        act, intent = "answer_previous_question", "provide_destination"
+    elif vin_answers_ask:
+        act, intent = "answer_previous_question", "provide_vin"
+    elif image_answers_evidence:
+        act, intent = "send_alternative_evidence", "media_evidence"
     elif scope_ent and not previous_system_action:
         act, intent = "new_request", "provide_scope"
     elif is_correction and engine_ents:
@@ -264,6 +394,8 @@ def understand_message(
         act, intent = "provide_information", "engine_inquiry"
     elif vin_m:
         act, intent = "provide_information", "vin_inquiry"
+    elif qty_ent and not previous_system_action:
+        act, intent = "provide_information", "provide_quantity"
     elif _PRICE_RE.search(raw):
         act, intent = "ask_price", "price_request"
     elif _SHIP_RE.search(raw):

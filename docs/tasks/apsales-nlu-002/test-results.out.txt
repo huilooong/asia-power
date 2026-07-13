@@ -1,23 +1,14 @@
-=== Python NLU-002 ===
+=== Python NLU-002 (qty follow-up) ===
+PASS test_bare_one_after_ask_quantity_is_answer
+PASS test_bare_one_without_ask_quantity_is_not_qty_answer
 PASS test_complete_engine_after_ask_scope_is_answer
 PASS test_complete_engine_without_context_is_new_request
 PASS test_image_after_ask_plate_does_not_reask
+PASS test_quantity_phrases_after_ask_quantity
+PASS test_scenario_2sz_complete_then_one_asks_destination
 PASS test_scenario_2sz_then_complete_engine_advances
 PASS test_scenario_long_block
 PASS test_standalone_complete_only_after_ask_scope
-OK 6
-=== Node webhook ===
-✔ verifySignature accepts valid hmac (0.993917ms)
-✔ GET challenge returns plain text (60.544083ms)
-[telegram] skipped: ASIAPOWER_TELEGRAM_BOT_TOKEN or ASIAPOWER_TELEGRAM_CHAT_ID not configured
-✔ POST invalid signature rejected; valid stores raw+normalized and dedupes (225.977625ms)
-[telegram] skipped: ASIAPOWER_TELEGRAM_BOT_TOKEN or ASIAPOWER_TELEGRAM_CHAT_ID not configured
-✔ P2 concurrent same wamid claims once (atomic dedup) (210.532208ms)
-ℹ tests 4
-ℹ suites 0
-ℹ pass 4
-ℹ fail 0
-ℹ cancelled 0
-ℹ skipped 0
-ℹ todo 0
-ℹ duration_ms 609.624875
+PASS test_tema_after_ask_destination
+PASS test_vin_after_ask_vin
+OK 12

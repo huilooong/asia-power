@@ -169,6 +169,10 @@ def update_state_from_understanding(
             st["customer_reported"]["product_scope"] = val
             st["known"]["product_scope"] = val
             st["missing"] = [m for m in (st.get("missing") or []) if m != "product_scope"]
+        elif et == "destination_port":
+            st["customer_reported"]["destination_port"] = val
+            st["known"]["destination_port"] = val
+            st["missing"] = [m for m in (st.get("missing") or []) if m != "destination_port"]
 
     # Image / media evidence against last request
     if msg_type in {"image", "photo", "document"}:

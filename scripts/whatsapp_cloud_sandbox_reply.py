@@ -298,8 +298,11 @@ def main() -> int:
         )
         nlu_engine = any(e.get("type") == "engine_code" for e in (mu_probe.get("entities") or []))
         nlu_scope = any(e.get("type") == "product_scope" for e in (mu_probe.get("entities") or []))
+        nlu_qty = any(e.get("type") == "quantity" for e in (mu_probe.get("entities") or []))
+        nlu_dest = any(e.get("type") == "destination_port" for e in (mu_probe.get("entities") or []))
+        nlu_vin = any(e.get("type") == "vin" for e in (mu_probe.get("entities") or []))
         nlu_act = mu_probe.get("communicative_act") or ""
-        nlu_hit = nlu_engine or nlu_scope or nlu_act in {
+        nlu_hit = nlu_engine or nlu_scope or nlu_qty or nlu_dest or nlu_vin or nlu_act in {
             "provide_information",
             "clarify_information",
             "correct_information",
@@ -307,14 +310,22 @@ def main() -> int:
             "cannot_provide_requested_evidence",
             "send_alternative_evidence",
         }
-        # P0-1: after ask_scope, any scope phrase must force Commercial Decision
+        # Context-bound answers must force Commercial Decision (never welcome/LLM)
         if last_action == "ask_scope" and nlu_scope:
+            force_commercial = True
+        if last_action == "ask_quantity" and nlu_qty:
+            force_commercial = True
+        if last_action == "ask_destination" and nlu_dest:
+            force_commercial = True
+        if last_action in {"ask_vin", "ask_vin_plate"} and (nlu_vin or msg_type in {"image", "photo", "document"}):
             force_commercial = True
         if last_action in {"ask_engine_plate", "ask_engine_photo"} and msg_type in {
             "image",
             "photo",
             "document",
         }:
+            force_commercial = True
+        if nlu_act == "answer_previous_question":
             force_commercial = True
         price_hit = is_price_inquiry(text)
     except Exception:

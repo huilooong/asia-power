@@ -61,7 +61,8 @@ _QTY_RE = re.compile(
     re.I,
 )
 _PORT_RE = re.compile(
-    r"\b(port|tema|lagos|mombasa|durban|abidjan|harbour|harbor|港口|apapa)\b",
+    r"\b(port|tema|accra|dubai|lagos|mombasa|durban|abidjan|harbour|harbor|港口|apapa|"
+    r"ghana|nigeria|kenya|uae|jebel\s*ali)\b",
     re.I,
 )
 _PRICE_RE = re.compile(
@@ -364,19 +365,37 @@ def decide_commercial(
     engine_claim = _extract_engine_code(text, cfg)
     prior = prior_state or {}
     prior_cr = prior.get("customer_reported") or {}
+    prior_known = prior.get("known") or {}
     prior_engine = str(prior_cr.get("engine_code") or "")
     prior_asked = list(prior.get("asked_actions") or [])
     unavailable = set(prior.get("unavailable_evidence") or [])
     last_action = str(prior.get("last_system_action") or "")
+    # Bare digit after ask_quantity (NLU-002 quantity binding)
+    if qty is None and last_action == "ask_quantity":
+        bm = re.match(r"^\s*(\d{1,4})\s*$", text)
+        if bm:
+            try:
+                qty = int(bm.group(1))
+            except ValueError:
+                qty = None
     if qty is None and prior_cr.get("quantity") is not None:
         try:
             qty = int(prior_cr.get("quantity"))
         except (TypeError, ValueError):
             qty = prior_cr.get("quantity")
+    if qty is None and prior_known.get("quantity") is not None:
+        try:
+            qty = int(prior_known.get("quantity"))
+        except (TypeError, ValueError):
+            qty = prior_known.get("quantity")
 
     # Merge conversation state: customer already claimed an engine code
     if not engine_claim and prior_engine:
         engine_claim = prior_engine
+
+    has_vin_from_nlu = False
+    understanding_scope = ""
+    understanding_dest = ""
     if understanding:
         try:
             from sales_core.message_understanding import primary_engine_code
@@ -389,6 +408,20 @@ def decide_commercial(
                 if e.get("type") == "engine_code" and e.get("normalized_value"):
                     engine_claim = str(e["normalized_value"])
                     break
+        for e in understanding.get("entities") or []:
+            et = e.get("type")
+            val = e.get("normalized_value")
+            if et == "quantity" and val is not None:
+                try:
+                    qty = int(val)
+                except (TypeError, ValueError):
+                    qty = val
+            elif et == "product_scope" and val:
+                understanding_scope = str(val)
+            elif et == "destination_port" and val:
+                understanding_dest = str(val)
+            elif et == "vin" and val:
+                has_vin_from_nlu = True
         if understanding.get("cannot_provide_plate"):
             unavailable.add("engine_plate")
         if understanding.get("offers_photo_alternative"):
@@ -397,19 +430,13 @@ def decide_commercial(
 
     has_vin = bool(_VIN_RE.search(text)) or bool(
         getattr(snapshot, "vin", "") if snapshot else ""
-    ) or bool(prior_cr.get("vin"))
+    ) or bool(prior_cr.get("vin")) or has_vin_from_nlu or bool(prior_known.get("vin"))
     # Scope from this message OR prior known/customer_reported OR understanding entity
     prior_scope = str(
-        (prior.get("known") or {}).get("product_scope")
+        prior_known.get("product_scope")
         or prior_cr.get("product_scope")
         or ""
     )
-    understanding_scope = ""
-    if understanding:
-        for e in understanding.get("entities") or []:
-            if e.get("type") == "product_scope" and e.get("normalized_value"):
-                understanding_scope = str(e["normalized_value"])
-                break
     has_scope = bool(_has_scope(text) or prior_scope or understanding_scope)
     product_scope_value = understanding_scope or prior_scope or ""
     if has_scope and not product_scope_value and _has_scope(text):
@@ -422,7 +449,15 @@ def decide_commercial(
         except Exception:
             product_scope_value = "complete_engine" if re.search(r"complete", text, re.I) else "known_scope"
 
-    has_port = _has_port(text)
+    prior_port = str(
+        prior_known.get("destination_port") or prior_cr.get("destination_port") or ""
+    )
+    has_port = bool(
+        _has_port(text)
+        or prior_port
+        or understanding_dest
+        or (last_action == "ask_destination" and bool(re.match(r"^[A-Za-z][A-Za-z\s\-]{1,40}$", text)))
+    )
     price_intent = bool(_PRICE_RE.search(text))
     ctype = _customer_type(text, customer_hash=customer_hash, cfg=cfg, qty=qty)
 
