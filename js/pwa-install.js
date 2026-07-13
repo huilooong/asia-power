@@ -7,8 +7,8 @@
   'use strict';
 
   var STORAGE_DISMISS = 'ap_pwa_install_dismissed_until';
-  var SW_URL = '/sw.js?v=pwa-app-v1';
-  var CACHE_BUST = 'pwa-app-v1';
+  var SW_URL = '/sw.js?v=pwa-app-v2';
+  var CACHE_BUST = 'pwa-app-v2';
   /* CSS is also linked from HTML; ensureStyles is a safety net for app.html edge cases. */
 
   var deferredPrompt = null;

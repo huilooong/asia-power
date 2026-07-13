@@ -44,7 +44,7 @@ assert(!/button\.disabled\s*=\s*true[\s\S]{0,80}添加到桌面/.test(js), 'fall
 assert(js.includes('beforeinstallprompt') && js.includes('prompt()'), 'native install prompt path present');
 assert(js.includes('Add to Home Screen') || js.includes('添加到主屏幕'), 'iOS steps present');
 assert(css.includes('.ap-pwa-fab') && css.includes('.ap-pwa-sheet__panel'), 'CSS for FAB + sheet');
-assert(indexHtml.includes('pwa-app-v1') && indexHtml.includes('pwa-app-shell'), 'homepage wires app shell v1');
+assert(indexHtml.includes('pwa-app-v2') && indexHtml.includes('pwa-app-shell'), 'homepage wires app shell v2');
 assert(js.includes('添加到桌面后') || js.includes('open from the icon'), 'install copy explains reopen from icon');
 
 // App shell module checks
@@ -53,6 +53,9 @@ const shellCss = fs.readFileSync(path.join(ROOT, 'css/pwa-app-shell.css'), 'utf8
 assert(shellJs.includes('AsiaPowerAppShell') && shellJs.includes('ap-app-tabbar'), 'app shell API + tabbar');
 assert(shellCss.includes('ap-app-topbar') && shellCss.includes('body.ap-app-shell'), 'app shell CSS chrome');
 assert(shellCss.includes('display: none !important') && shellCss.includes('.ap-footer'), 'hides website footer in app mode');
+assert(!/overscroll-behavior-y:\s*none/.test(shellCss), 'does not lock vertical overscroll (one-finger scroll)');
+assert(shellCss.includes('touch-action: pan-x pan-y'), 'shelf rails allow vertical + horizontal pan');
+assert(shellJs.includes("remove('ap-pwa-sheet-open')"), 'app shell clears install sheet scroll lock');
 
 assert(manifest.display === 'standalone', 'manifest standalone');
 assert(manifest.theme_color === '#0a1628', 'manifest theme_color app navy');
@@ -309,7 +312,7 @@ await new Promise((resolve) => {
         assert(res.status === 200, `local HTTP 200 ${p}`);
       }
       const html = await (await fetch(base + '/index.html')).text();
-      assert(html.includes('pwa-app-v1'), 'index served with pwa-app-v1');
+      assert(html.includes('pwa-app-v2'), 'index served with pwa-app-v2');
       assert(html.includes('pwa-app-shell'), 'index references app shell');
     } catch (err) {
       fail('local HTTP smoke', err.message);

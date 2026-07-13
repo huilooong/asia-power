@@ -1,14 +1,30 @@
 /* AsiaPower standalone PWA app shell — looks like a native app, not a website */
 
+/* Do NOT set overscroll-behavior / overflow:hidden on html|body — that breaks one-finger scroll. */
 html.ap-app,
-html.ap-app body {
-  overscroll-behavior-y: none;
+html.ap-app body.ap-app-shell {
+  overflow-x: hidden;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  touch-action: pan-y pinch-zoom;
 }
 
 body.ap-app-shell {
   padding-top: calc(56px + env(safe-area-inset-top, 0px));
   padding-bottom: calc(64px + env(safe-area-inset-bottom, 0px));
   background: #f5f5f7;
+  /* Keep page scrollable; never lock the document in app mode */
+  overflow-y: auto !important;
+  position: static !important;
+  height: auto !important;
+  max-height: none !important;
+}
+
+/* Horizontal product rails: allow vertical page scroll with one finger too */
+body.ap-app-shell .shelf-rail {
+  scroll-snap-type: x proximity;
+  touch-action: pan-x pan-y;
+  overscroll-behavior-x: contain;
 }
 
 /* —— Top app bar —— */

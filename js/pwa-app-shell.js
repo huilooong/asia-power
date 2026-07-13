@@ -6,7 +6,7 @@
 (function () {
   'use strict';
 
-  var CACHE = 'pwa-app-v1';
+  var CACHE = 'pwa-app-v2';
   var TABBAR_ID = 'ap-app-tabbar';
   var TOPBAR_ID = 'ap-app-topbar';
 
@@ -131,6 +131,8 @@
     ensureCss();
     document.documentElement.classList.add('ap-app');
     document.body.classList.add('ap-app-shell');
+    // Never leave install-sheet scroll lock on in app mode
+    document.body.classList.remove('ap-pwa-sheet-open');
     renderTopbar();
     renderTabbar();
     // Hide install chrome in true app mode

@@ -13,11 +13,19 @@ Standalone / `?app=1` 预览时启用 **App 壳**：
 - 隐藏：页脚、WhatsApp 悬浮球、安装按钮、网站导航
 - 首页压缩营销 Hero，更像 APP 首页
 
+## 滚动修复（pwa-app-v2）
+
+用户：「一个指头滑动不了」——根因是我加的奇葩设定：
+
+- 已删除 `overscroll-behavior-y: none`（会抢竖滑）
+- App 模式强制 `overflow-y: auto`，清掉安装弹层残留的 `ap-pwa-sheet-open`
+- 横向商品轨：`scroll-snap` 改为 `proximity` + `touch-action: pan-x pan-y`（竖滑不被横轨吃掉）
+
 ## 如何验证（重要）
 
 1. **浏览器里直接看首页** → 仍是网站（正常）
-2. 预览 APP 模式：打开 `https://asia-power.com/?app=1` → 应出现顶栏+底栏
-3. 真正 APP：安装到桌面后，**从桌面图标打开**（无地址栏）→ 自动 App 壳
+2. 预览 APP 模式：打开 `https://asia-power.com/?app=1` → 顶栏+底栏，**单指上下滑正常**
+3. 真正 APP：安装到桌面后，**从桌面图标打开**（无地址栏）→ 自动 App 壳 + 可滑
 
 ## Tests
 
