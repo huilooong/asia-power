@@ -49,12 +49,15 @@ function rsync(local, remote, extra = []) {
 }
 
 function ssh(script) {
-  // Prefer bash -s via stdin: long argv validation scripts can fail/hang after rsync bursts.
+  // bash -s stdin avoids rare hang/fail when long validation argv follows rsync bursts
   spawnSync('sleep', ['1']);
-  const r = spawnSync('ssh', ['-o', 'ConnectTimeout=20', REMOTE, 'bash', '-s'], {
-    input: script,
-    stdio: ['pipe', 'inherit', 'inherit'],
-  });
+  const r = spawnSync(
+    'ssh',
+    ['-o', 'ConnectTimeout=20', '-o', 'BatchMode=yes', REMOTE, 'bash', '-s'],
+    { input: script, encoding: 'utf8' },
+  );
+  if (r.stdout) process.stdout.write(r.stdout);
+  if (r.stderr) process.stderr.write(r.stderr);
   if (r.status !== 0) process.exit(r.status ?? 1);
 }
 
