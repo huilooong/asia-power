@@ -1,6 +1,6 @@
 # Preview Validation
 
-**Folder:** `docs/previews/apui-vehicle-engine-001/`  
+**Folder:** `docs/previews/apui-vehicle-engine-001b/`  
 **Mode:** HTML openable locally — no deploy.
 
 ## Files
@@ -35,7 +35,7 @@
 ## Open
 
 ```
-open docs/previews/apui-vehicle-engine-001/half-cut-card-preview.html
-open docs/previews/apui-vehicle-engine-001/engine-card-preview.html
-open docs/previews/apui-vehicle-engine-001/engine-detail-preview.html
+open docs/previews/apui-vehicle-engine-001b/half-cut-card-preview.html
+open docs/previews/apui-vehicle-engine-001b/engine-card-preview.html
+open docs/previews/apui-vehicle-engine-001b/engine-detail-preview.html
 ```
