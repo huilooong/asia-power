@@ -4,33 +4,38 @@
 **Target number:** +86 166 3880 1930  
 **CEO test wa_id:** `19402375223`
 
-## Deploy steps (executed)
+## Deploy
 
-1. Commit + push GitHub  
-2. Release Manager `api`（`server/lib/whatsapp-cloud-sandbox.js` + `asiapower-evidence.js`）  
-3. rsync Python 到 `/root/.openclaw/workspace/AsiaPower/`：
-   - `sales_core/message_understanding.py`
-   - `sales_core/conversation_state.py`
-   - `sales_core/commercial_decision.py`
-   - `scripts/whatsapp_cloud_sandbox_reply.py`
-   - `config/commercial-decision-v1.json`
-4. 确认 autonomy 仍为 sandbox  
-5. 生产侧本地复测同一对话（或 CEO WhatsApp 手测）  
-6. 核对 Evidence turn 含 `message_understanding` / `state_before` / `state_after` / `repeated_action_blocked`
+| 项 | 值 |
+|----|-----|
+| Commit | `c8aa7160c` |
+| Release | `REL-20260713104418-api-c8aa7160c` |
+| Python sync | rsync → `/root/.openclaw/workspace/AsiaPower/` sales_core + sandbox script + config |
+| Autonomy | sandbox（确认） |
+
+## 生产侧复测（同一脚本路径，非开陌生人）
+
+| 轮次 | 输入 | next_action | 关键回复要点 |
+|------|------|-------------|----------------|
+| 1 | `2sz` | `ask_engine_plate` | 识别 2SZ；可问铭牌一次 |
+| 2 | `Engine code is 2sz` | `ask_engine_photo` | act=`clarify_information`；承认 confirming 2SZ；**不再** ask_engine_plate |
+
+生产机 `tests/test_apsales_nlu_001.py`：**12/12 PASS**  
+JS 接线：`messageUnderstanding` / Evidence `message_understanding`：**OK**
 
 ## Checklist
 
-| 项 | 期望 | 结果 |
-|----|------|------|
-| `2sz` → 抽出 2SZ | customer_reported | _pending deploy fill_ |
-| 第二轮澄清不同 NBA | ≠ ask_engine_plate | _pending deploy fill_ |
-| 回复承认 2SZ | 含 confirming | _pending deploy fill_ |
-| 白名单未开陌生人 | sandbox | OK（部署前已确认） |
-| Evidence 新字段 | 有 | _pending deploy fill_ |
+| 项 | 结果 |
+|----|------|
+| `2sz` → 抽出 2SZ customer_reported | **PASS** |
+| 第二轮澄清不同 NBA | **PASS**（photo） |
+| 回复承认 2SZ | **PASS** |
+| 白名单未开陌生人 | **PASS** sandbox |
+| Evidence 新字段接线 | **PASS**（代码已部署） |
 
 ## Rollback
 
 ```bash
-# inventory-site API：Release Manager 回滚上一 Release
-# AsiaPower Python：从上一 commit checkout 对应 sales_core / scripts / config
+RESTORE_CONFIRM=REL-20260713104418-api-c8aa7160c node scripts/release-restore.mjs REL-20260713104418-api-c8aa7160c
+# 并回滚 AsiaPower sales_core / scripts / config 到上一稳定版本
 ```
