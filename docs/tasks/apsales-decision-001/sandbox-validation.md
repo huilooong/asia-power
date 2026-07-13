@@ -1,26 +1,29 @@
 # APSALES-DECISION-001 — Sandbox Validation
 
-## 部署范围
+## 部署
 
-仅美国号码白名单 WhatsApp Sandbox（CEO wa_id）。不开放其他真实客户。
+| 项 | 值 |
+|----|----|
+| Release ID | `REL-20260713092419-api-407be3631` |
+| Git commit | `407be3631` |
+| Branch | `feature/apsales-evidence-001` |
+| 范围 | API lib + AsiaPower workspace Python（Sandbox 实际执行根） |
+| 模式 | 保持 sandbox + CEO 白名单（未开放其他客户） |
 
-## 部署前本地证据
+## 生产验证（服务器）
 
-| 检查 | 结果 |
-|------|------|
-| `python3 tests/test_commercial_decision_v1.py` | 20/20 PASS |
-| sandbox_reply `Need G4KD.` | `next_action=ask_engine_plate` · source=`commercial_decision` |
-| 固定三件套 | 本地路径已消除 |
+```text
+Need G4KD. → next_action=ask_engine_plate · source=commercial_decision · risk=high
+```
 
-## 部署后（待 Release）
+未出现固定三件套（scope + quantity + port）。
 
-| 项 | 状态 |
-|----|------|
-| Release ID | （部署时填写） |
-| Sandbox 模式仍为 sandbox | 必验 |
-| 白名单仍仅 CEO | 必验 |
-| 50 条场景测试 | 部署后执行；本文件先记本地通过 |
+## 本地
 
-## 决策
+`python3 tests/test_commercial_decision_v1.py` → **20/20 PASS**
 
-扩大范围须等 Evidence Review（Phase 6），本任务不自动放开。
+## 下一步
+
+- CEO 在美国号码 Sandbox 做真实对话验证  
+- Evidence 中核对 `commercial_decision` / Decision Result  
+- 满 50 条场景后再考虑扩大范围（本任务不自动放开）
