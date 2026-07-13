@@ -5,6 +5,11 @@ const fs = require('fs');
 const path = require('path');
 const { loadJson, saveJsonAtomic } = require('./json-store');
 const { resolveMailbox } = require('./email-mailbox');
+const {
+  parseEmailPayload,
+  normalizeEmailText,
+  htmlToReadableText,
+} = require('./email-mime-parse');
 
 const DEFAULT_INBOX_DIR = 'memory/customer_gateway/email_inbox';
 
@@ -66,14 +71,17 @@ function createEmailProxyStore(options = {}) {
     return header === secret;
   }
 
-  function ingestInbound(payload) {
-    const from = trim(payload.from, 320);
-    const to = trim(payload.to || payload.recipient, 320);
-    const subject = trim(payload.subject, 500);
-    const text = trim(payload.text || payload.body || payload.textBody, 20000);
-    const html = trim(payload.html || payload.htmlBody, 40000);
-    const messageId = trim(payload.messageId || payload.message_id || '', 240);
-    const inReplyTo = trim(payload.inReplyTo || payload.in_reply_to || '', 240);
+  async function ingestInbound(payload) {
+    // Authoritative MIME decode + text normalize before any agent/Telegram use.
+    const parsed = await parseEmailPayload(payload || {});
+    const from = trim(parsed.from || payload.from, 320);
+    const to = trim(parsed.to || payload.to || payload.recipient, 320);
+    const subject = trim(parsed.subject || payload.subject, 500);
+    const text = trim(parsed.text, 20000);
+    const html = trim(parsed.html || payload.html || payload.htmlBody, 40000);
+    const messageId = trim(parsed.messageId || payload.messageId || payload.message_id || '', 240);
+    const inReplyTo = trim(parsed.inReplyTo || payload.inReplyTo || payload.in_reply_to || '', 240);
+    const attachments = Array.isArray(parsed.attachments) ? parsed.attachments : [];
 
     if (!from && !text && !html) {
       const err = new Error('from and body required');
@@ -109,14 +117,20 @@ function createEmailProxyStore(options = {}) {
       store.threads.unshift(thread);
     }
 
+    const plainForAgent = text || normalizeEmailText(htmlToReadableText(html));
     const inbound = {
       id: `msg-${crypto.randomBytes(4).toString('hex')}`,
       direction: 'inbound',
       from,
       to,
       subject,
-      text,
-      textRedacted: redactContacts(text || stripHtml(html)),
+      text: plainForAgent,
+      html: html || undefined,
+      textRedacted: redactContacts(plainForAgent),
+      attachments: attachments.length ? attachments : undefined,
+      detectedEncoding: parsed.detectedEncoding || undefined,
+      detectedCharset: parsed.detectedCharset || undefined,
+      parseSource: parsed.source || undefined,
       receivedAt: new Date().toISOString(),
       messageId: messageId || undefined,
     };
@@ -204,18 +218,11 @@ function createEmailProxyStore(options = {}) {
   };
 }
 
-function stripHtml(html) {
-  return String(html || '')
-    .replace(/<style[\s\S]*?<\/style>/gi, ' ')
-    .replace(/<script[\s\S]*?<\/script>/gi, ' ')
-    .replace(/<[^>]+>/g, ' ')
-    .replace(/\s+/g, ' ')
-    .trim();
-}
-
 module.exports = {
   createEmailProxyStore,
   redactContacts,
   hashEmail,
   proxyReplyAddress,
+  normalizeEmailText,
+  htmlToReadableText,
 };

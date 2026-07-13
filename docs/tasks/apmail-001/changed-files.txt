@@ -1,0 +1,16 @@
+customer_gateway/email_inbound.py
+customer_gateway/email_text_normalize.py
+deploy/cloudflare-email-worker.js
+deploy/inventory-site-server.js
+docs/tasks/apmail-001/analysis.md
+docs/tasks/apmail-001/implementation.md
+docs/tasks/apmail-001/test-results.md
+docs/tasks/apmail-001/review.md
+docs/tasks/apmail-001/changed-files.txt
+package.json
+package-lock.json
+server/lib/email-mime-parse.js
+server/lib/email-proxy.js
+tests/test_email_mime_parse.js
+tests/test_email_proxy.js
+tests/test_email_text_normalize.py

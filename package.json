@@ -3,7 +3,8 @@
   "private": true,
   "description": "AsiaPower inventory site tooling",
   "dependencies": {
-    "@aws-sdk/client-s3": "^3.758.0"
+    "@aws-sdk/client-s3": "^3.758.0",
+    "mailparser": "^3.9.14"
   },
   "optionalDependencies": {
     "sharp": "^0.33.5"

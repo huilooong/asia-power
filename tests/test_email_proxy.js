@@ -15,14 +15,14 @@ test("redactContacts strips email and whatsapp", () => {
   assert.doesNotMatch(out, /buyer@test\.com/);
 });
 
-test("ingestInbound creates thread and inbox file", () => {
+test("ingestInbound creates thread and inbox file", async () => {
   const tmp = fs.mkdtempSync(path.join(os.tmpdir(), "email-proxy-"));
   const store = createEmailProxyStore({
     root: tmp,
     dataDir: path.join(tmp, "data"),
     secret: "test-secret",
   });
-  const result = store.ingestInbound({
+  const result = await store.ingestInbound({
     from: "buyer@example.com",
     to: "inquiry@asia-power.com",
     subject: "G4KJ quote",

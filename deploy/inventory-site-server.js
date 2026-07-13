@@ -1282,9 +1282,9 @@ const server = http.createServer(async (req, res) => {
         if (!emailProxy.verifySecret(req)) {
           return json(res, 403, { error: 'Invalid email webhook secret' });
         }
-        const body = await readBody(req, 256 * 1024);
+        const body = await readBody(req, 1024 * 1024);
         try {
-          const result = emailProxy.ingestInbound(body);
+          const result = await emailProxy.ingestInbound(body);
           const { thread, message: inbound, route } = result;
           const agent = route?.routeAgent || thread.routeAgent || 'apsales';
           let webhookResult = null;
