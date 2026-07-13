@@ -1,10 +1,10 @@
 {
   "report": {
-    "status": "fail",
+    "status": "pass",
     "base_url": "https://asia-power.com",
-    "release_id": "OPS003-DRYRUN",
+    "release_id": "REL-20260713130929-chrome-b9652a9dd",
     "expected_whatsapp": "8616638801930",
-    "checked_at": "2026-07-13T11:08:58.150Z",
+    "checked_at": "2026-07-13T13:12:15.544Z",
     "checks": [
       {
         "name": "homepage_http",
@@ -268,28 +268,23 @@
       },
       {
         "name": "config_js_whatsapp",
-        "status": "fail",
-        "detail": "bare /js/config.js whatsapp='233540911111' (expected 8616638801930) — likely Cloudflare cache poison"
-      },
-      {
-        "name": "config_js_forbidden",
-        "status": "fail",
-        "detail": "forbidden legacy WhatsApp still in bare config.js"
+        "status": "pass",
+        "detail": "whatsapp=8616638801930"
       },
       {
         "name": "config_js_cache_policy",
-        "status": "fail",
-        "detail": "dangerous Cache-Control on config.js: public, max-age=31536000, immutable (APCONTACT incident class)"
+        "status": "pass",
+        "detail": "public, max-age=14400, must-revalidate"
       },
       {
         "name": "config_js_cf",
         "status": "pass",
-        "detail": "cf=HIT age=874218"
+        "detail": "cf=EXPIRED age=0"
       },
       {
         "name": "config_js_release_id",
-        "status": "skip",
-        "detail": "releaseId not stamped yet (OPS-003 phase-2)"
+        "status": "pass",
+        "detail": "releaseId=REL-20260713130929-chrome-b9652a9dd"
       },
       {
         "name": "sw_js_http",
@@ -299,17 +294,17 @@
       {
         "name": "sw_version",
         "status": "pass",
-        "detail": "CACHE_VERSION=apapp-001-v4"
+        "detail": "CACHE_VERSION=apcontact-002-v1"
       },
       {
         "name": "sw_precache_config",
-        "status": "fail",
-        "detail": "sw.js still precaches bare /js/config.js (CF poison risk)"
+        "status": "pass",
+        "detail": "no bare config.js precache (or versioned)"
       },
       {
         "name": "sw_cache_policy",
-        "status": "fail",
-        "detail": "dangerous Cache-Control on sw.js: public, max-age=31536000, immutable"
+        "status": "pass",
+        "detail": "public, max-age=14400, must-revalidate"
       },
       {
         "name": "robots_http",
@@ -530,26 +525,26 @@
         "url": "https://asia-power.com/js/config.js",
         "http_status": 200,
         "cache": {
-          "cache_control": "public, max-age=31536000, immutable",
-          "cf_cache_status": "HIT",
+          "cache_control": "public, max-age=14400, must-revalidate",
+          "cf_cache_status": "EXPIRED",
           "etag": "",
-          "age": "874218",
-          "last_modified": "Fri, 03 Jul 2026 08:18:38 GMT"
+          "age": "",
+          "last_modified": "Mon, 13 Jul 2026 13:12:14 GMT"
         },
-        "whatsapp": "233540911111",
-        "release_id": ""
+        "whatsapp": "8616638801930",
+        "release_id": "REL-20260713130929-chrome-b9652a9dd"
       },
       "sw_js": {
         "url": "https://asia-power.com/sw.js",
         "http_status": 200,
         "cache": {
-          "cache_control": "public, max-age=31536000, immutable",
-          "cf_cache_status": "HIT",
+          "cache_control": "public, max-age=14400, must-revalidate",
+          "cf_cache_status": "EXPIRED",
           "etag": "",
-          "age": "370610",
-          "last_modified": "Thu, 09 Jul 2026 04:12:06 GMT"
+          "age": "",
+          "last_modified": "Mon, 13 Jul 2026 13:12:14 GMT"
         },
-        "cache_version": "apapp-001-v4"
+        "cache_version": "apcontact-002-v1"
       },
       "robots": {
         "url": "https://asia-power.com/robots.txt",
@@ -578,8 +573,8 @@
         "sw_register": "/sw.js?v=apcontact-002"
       }
     },
-    "fail_count": 5,
-    "pass_count": 52
+    "fail_count": 0,
+    "pass_count": 57
   },
   "purge": {
     "status": "manual_action_required",

@@ -1,10 +1,10 @@
 # OPS-003 Production Health
 
-- Checked at: 2026-07-13T11:08:58.150Z
+- Checked at: 2026-07-13T13:12:15.544Z
 - Base URL: https://asia-power.com
-- Release: OPS003-DRYRUN
-- Status: **FAIL**
-- Pass: 52 / Fail: 5
+- Release: REL-20260713130929-chrome-b9652a9dd
+- Status: **PASS**
+- Pass: 57 / Fail: 0
 - Expected WhatsApp: 8616638801930
 
 ## Checks
@@ -61,15 +61,14 @@
 - **PASS** `supplier_portal_float_mount`: #site-whatsapp present
 - **PASS** `supplier_portal_config_whatsapp`: float will use wa.me/8616638801930 via https://asia-power.com/js/config.js?v=apcontact-002
 - **PASS** `config_js_http`: HTTP 200
-- **FAIL** `config_js_whatsapp`: bare /js/config.js whatsapp='233540911111' (expected 8616638801930) — likely Cloudflare cache poison
-- **FAIL** `config_js_forbidden`: forbidden legacy WhatsApp still in bare config.js
-- **FAIL** `config_js_cache_policy`: dangerous Cache-Control on config.js: public, max-age=31536000, immutable (APCONTACT incident class)
-- **PASS** `config_js_cf`: cf=HIT age=874218
-- **SKIP** `config_js_release_id`: releaseId not stamped yet (OPS-003 phase-2)
+- **PASS** `config_js_whatsapp`: whatsapp=8616638801930
+- **PASS** `config_js_cache_policy`: public, max-age=14400, must-revalidate
+- **PASS** `config_js_cf`: cf=EXPIRED age=0
+- **PASS** `config_js_release_id`: releaseId=REL-20260713130929-chrome-b9652a9dd
 - **PASS** `sw_js_http`: HTTP 200
-- **PASS** `sw_version`: CACHE_VERSION=apapp-001-v4
-- **FAIL** `sw_precache_config`: sw.js still precaches bare /js/config.js (CF poison risk)
-- **FAIL** `sw_cache_policy`: dangerous Cache-Control on sw.js: public, max-age=31536000, immutable
+- **PASS** `sw_version`: CACHE_VERSION=apcontact-002-v1
+- **PASS** `sw_precache_config`: no bare config.js precache (or versioned)
+- **PASS** `sw_cache_policy`: public, max-age=14400, must-revalidate
 - **PASS** `robots_http`: HTTP 200
 - **PASS** `robots_content`: bytes=349
 - **PASS** `sitemap_http`: HTTP 200
