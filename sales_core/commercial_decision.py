@@ -49,7 +49,9 @@ _ENGINE_PHRASE_RE = re.compile(
 )
 
 _SCOPE_RE = re.compile(
-    r"long\s*block|complete\s*engine|half[\s-]?cut|gearbox|变速箱|光机|总成",
+    r"long\s*block|complete\s*engine|full\s*engine|bare\s*engine|engine\s*only|"
+    r"engine\s*\+\s*gearbox|with\s+gearbox|half[\s-]?cut|gearbox|变速箱|光机|总成|"
+    r"^\s*complete\s*$",
     re.I,
 )
 _QTY_RE = re.compile(
@@ -366,6 +368,11 @@ def decide_commercial(
     prior_asked = list(prior.get("asked_actions") or [])
     unavailable = set(prior.get("unavailable_evidence") or [])
     last_action = str(prior.get("last_system_action") or "")
+    if qty is None and prior_cr.get("quantity") is not None:
+        try:
+            qty = int(prior_cr.get("quantity"))
+        except (TypeError, ValueError):
+            qty = prior_cr.get("quantity")
 
     # Merge conversation state: customer already claimed an engine code
     if not engine_claim and prior_engine:
@@ -391,7 +398,30 @@ def decide_commercial(
     has_vin = bool(_VIN_RE.search(text)) or bool(
         getattr(snapshot, "vin", "") if snapshot else ""
     ) or bool(prior_cr.get("vin"))
-    has_scope = _has_scope(text)
+    # Scope from this message OR prior known/customer_reported OR understanding entity
+    prior_scope = str(
+        (prior.get("known") or {}).get("product_scope")
+        or prior_cr.get("product_scope")
+        or ""
+    )
+    understanding_scope = ""
+    if understanding:
+        for e in understanding.get("entities") or []:
+            if e.get("type") == "product_scope" and e.get("normalized_value"):
+                understanding_scope = str(e["normalized_value"])
+                break
+    has_scope = bool(_has_scope(text) or prior_scope or understanding_scope)
+    product_scope_value = understanding_scope or prior_scope or ""
+    if has_scope and not product_scope_value and _has_scope(text):
+        try:
+            from sales_core.message_understanding import parse_product_scope
+
+            pe = parse_product_scope(text, previous_system_action=last_action)
+            if pe:
+                product_scope_value = str(pe.get("normalized_value") or "")
+        except Exception:
+            product_scope_value = "complete_engine" if re.search(r"complete", text, re.I) else "known_scope"
+
     has_port = _has_port(text)
     price_intent = bool(_PRICE_RE.search(text))
     ctype = _customer_type(text, customer_hash=customer_hash, cfg=cfg, qty=qty)
@@ -400,6 +430,13 @@ def decide_commercial(
     photo_evidence = photo_evidence or (
         media_type in {"image", "photo"} or bool(_PHOTO_HINT_RE.search(text) and media_type)
     )
+    # Image after we asked for plate/photo counts as evidence received (pending review)
+    if media_type in {"image", "photo", "document"} and (
+        prior.get("requested_evidence_received")
+        or last_action in {"ask_engine_plate", "ask_engine_photo"}
+        or prior.get("last_requested_evidence") in {"engine_plate", "engine_photo"}
+    ):
+        photo_evidence = True
     conflict = conflict or bool(_CONFLICT_HINT_RE.search(text))
     if plate_engine_code and engine_claim and plate_engine_code.upper() != engine_claim.upper():
         conflict = True
@@ -504,6 +541,8 @@ def decide_commercial(
         known.append("claimed_engine_code")
     if has_scope:
         known.append("product_scope")
+        if product_scope_value:
+            known.append(f"product_scope:{product_scope_value}")
     else:
         missing.append("product_scope")
     if qty is not None:
@@ -577,6 +616,20 @@ def decide_commercial(
         and (understanding.get("is_clarification") or understanding.get("is_answer_to_previous_question"))
         and engine_claim
     )
+    scope_just_answered = bool(
+        understanding
+        and understanding.get("communicative_act") == "answer_previous_question"
+        and understanding.get("intent") == "provide_scope"
+    ) or (last_action == "ask_scope" and has_scope)
+    image_fulfills_request = bool(
+        photo_evidence
+        and (
+            last_action in {"ask_engine_plate", "ask_engine_photo"}
+            or prior.get("last_requested_evidence") in {"engine_plate", "engine_photo"}
+            or prior.get("requested_evidence_received")
+            or prior.get("pending_image_review")
+        )
+    )
 
     if conflict:
         candidates = [
@@ -587,6 +640,25 @@ def decide_commercial(
         stage, objective = "manual_review", "Resolve factory vs installed engine conflict"
         reason = "Conflict — Trust First; do not auto-pick VIN"
         human = True
+    elif image_fulfills_request:
+        # P1: image received for requested evidence — never re-ask same plate/photo
+        if engine_claim and not has_scope:
+            candidates = [_AS("ask_scope", 4, 1, 1, 1, 0)]
+            stage, objective = "scope", "Image received; continue commercial"
+        elif engine_claim and qty is None:
+            candidates = [_AS("ask_quantity", 4, 1, 1, 1, 0)]
+            stage, objective = "commercial_fields", "Image received; quantity next"
+        elif engine_claim and not has_port:
+            candidates = [_AS("ask_destination", 4, 1, 1, 1, 0)]
+            stage, objective = "commercial_fields", "Image received; destination next"
+        elif engine_claim:
+            candidates = [_AS("check_supplier", 4, 1, 0, 0, 0), _AS("prepare_quote", 4, 1, 0, 0, 1)]
+            stage, objective = "quote_ready", "Image received; advance"
+        else:
+            candidates = [_AS("request_manual_review", 3, 2, 2, 1, 0)]
+            stage, objective = "manual_review", "Pending image review"
+        reason = "Customer sent requested image — acknowledge; do not re-ask"
+        commercial_risk = "medium"
     elif has_vin and snapshot is not None and not getattr(snapshot, "ok", False):
         candidates = [
             _AS("ask_engine_plate", 3, 4, 4, 2, 1),
@@ -767,8 +839,22 @@ def decide_commercial(
     # Dead-loop soft filter inside candidate list
     if last_action:
         candidates = [c for c in candidates if c.action != last_action] or candidates
-    if plate_unavailable:
-        candidates = [c for c in candidates if c.action != "ask_engine_plate"] or candidates
+    if plate_unavailable or image_fulfills_request or prior.get("requested_evidence_received"):
+        candidates = [c for c in candidates if c.action not in {"ask_engine_plate", "ask_engine_photo"}] or [
+            c for c in candidates if c.action != "ask_engine_plate"
+        ] or candidates
+    if scope_just_answered:
+        candidates = [c for c in candidates if c.action != "ask_scope"] or candidates
+        # Prefer commercial advance after scope answer — strip identity asks unless high-risk conflict
+        if not conflict and commercial_risk != "high":
+            stripped = [
+                c
+                for c in candidates
+                if c.action
+                in {"ask_quantity", "ask_destination", "check_supplier", "prepare_quote", "request_manual_review"}
+            ]
+            if stripped:
+                candidates = stripped
 
     nba, alts = _score_pick(candidates)
     if nba == "ask_scope" and has_scope:
@@ -816,6 +902,7 @@ def decide_commercial(
         conflict=conflict,
         price_intent=price_intent,
         acknowledge_claim=acknowledge_claim,
+        image_received=image_fulfills_request,
     )
     reply = apply_channel_policy(reply, cfg)
 
@@ -864,6 +951,7 @@ def _render_reply(
     conflict: bool,
     price_intent: bool,
     acknowledge_claim: bool = False,
+    image_received: bool = False,
 ) -> str:
     vin_shown = ""
     ident = ""
@@ -875,12 +963,19 @@ def _render_reply(
             except Exception:
                 ident = ""
 
+    img_ack = "Thanks — we received your photo.\n\n" if image_received else ""
+
     if conflict:
         return (
             "Thanks — possible mismatch between factory VIN data and the engine now installed.\n\n"
             "To avoid wrong freight, duty, and fitment loss, please send a clear engine plate photo."
         )
     if nba == "request_manual_review":
+        if image_received:
+            return (
+                "Thanks — we received your photo.\n\n"
+                "Our team will review it shortly to confirm the currently installed engine."
+            )
         ack = f"Got it — you’re confirming the engine code as {engine_claim}.\n\n" if (
             acknowledge_claim and engine_claim
         ) else ""
@@ -967,7 +1062,10 @@ def _render_reply(
         )
     elif nba == "wait_customer":
         lines.append("What do you need for this vehicle?")
-    return "\n\n".join([x for x in lines if x]).strip()
+    body = "\n\n".join([x for x in lines if x]).strip()
+    if image_received and img_ack and nba not in {"ask_engine_plate", "ask_engine_photo"}:
+        return f"{img_ack}{body}".strip()
+    return body
 
 
 def decide_from_vin_result(

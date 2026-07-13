@@ -267,10 +267,36 @@ function createWhatsAppCloudWebhook(rootDir) {
     return fs.existsSync(path.join(dedupDir, `${safeId(messageId)}.seen`));
   }
 
+  /**
+   * P2 atomic inbound claim: create .seen with O_EXCL.
+   * Returns true if THIS caller owns processing (first claim).
+   * Returns false if already claimed (duplicate / concurrent).
+   */
+  function claimInboundOnce(messageId) {
+    if (!messageId) return true; // no id — cannot dedup; process once per payload walk
+    ensureDir(dedupDir);
+    const p = path.join(dedupDir, `${safeId(messageId)}.seen`);
+    try {
+      const fd = fs.openSync(p, 'wx');
+      fs.writeFileSync(fd, new Date().toISOString(), 'utf8');
+      fs.closeSync(fd);
+      return true;
+    } catch (err) {
+      if (err && (err.code === 'EEXIST' || err.code === 'EPERM')) return false;
+      // Fallback: if exists, treat as seen
+      if (fs.existsSync(p)) return false;
+      try {
+        fs.writeFileSync(p, new Date().toISOString(), 'utf8');
+        return true;
+      } catch {
+        return false;
+      }
+    }
+  }
+
   function markSeen(messageId) {
     if (!messageId) return;
-    ensureDir(dedupDir);
-    fs.writeFileSync(path.join(dedupDir, `${safeId(messageId)}.seen`), new Date().toISOString(), 'utf8');
+    claimInboundOnce(messageId);
   }
 
   function persistPayload(rawBody, payload, checksum) {
@@ -297,14 +323,18 @@ function createWhatsAppCloudWebhook(rootDir) {
     walkEntries(payload, (value) => {
       for (const message of value.messages || []) {
         const mid = message.id || '';
-        if (alreadySeen(mid)) {
+        // P2: atomic claim replaces check-then-set race
+        if (mid && !claimInboundOnce(mid)) {
+          duplicates += 1;
+          continue;
+        }
+        if (!mid && alreadySeen(mid)) {
           duplicates += 1;
           continue;
         }
         const normalized = normalizeMessage(message, value, checksum, rawRel);
         const out = path.join(normDir, `${safeId(mid || eventId)}.json`);
         if (!fs.existsSync(out)) writeJsonAtomic(out, normalized);
-        markSeen(mid);
         normalizedMessages.push(normalized);
       }
       for (const status of value.statuses || []) {

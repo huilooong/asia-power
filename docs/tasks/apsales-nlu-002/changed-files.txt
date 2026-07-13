@@ -1,0 +1,19 @@
+# APSALES-NLU-002 changed files
+
+sales_core/message_understanding.py
+sales_core/conversation_state.py
+sales_core/commercial_decision.py
+scripts/whatsapp_cloud_sandbox_reply.py
+server/lib/whatsapp-cloud-webhook.js
+server/lib/whatsapp-cloud-sandbox.js
+tests/test_apsales_nlu_002.py
+tests/test_whatsapp_cloud_webhook.js
+docs/tasks/apsales-nlu-002/root-cause.md
+docs/tasks/apsales-nlu-002/scope-answer-routing.md
+docs/tasks/apsales-nlu-002/image-evidence-routing.md
+docs/tasks/apsales-nlu-002/idempotency.md
+docs/tasks/apsales-nlu-002/test-results.md
+docs/tasks/apsales-nlu-002/test-results.out.txt
+docs/tasks/apsales-nlu-002/production-validation.md
+docs/tasks/apsales-nlu-002/review.md
+docs/tasks/apsales-nlu-002/changed-files.txt

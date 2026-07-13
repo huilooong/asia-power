@@ -129,3 +129,57 @@ test('POST invalid signature rejected; valid stores raw+normalized and dedupes',
   assert.equal(msgs[0].text, 'Hello');
   server.close();
 });
+
+test('P2 concurrent same wamid claims once (atomic dedup)', async () => {
+  const root = fs.mkdtempSync(path.join(os.tmpdir(), 'apwa-dedup-'));
+  const secret = 'app-secret-concurrent';
+  process.env.WHATSAPP_CLOUD_APP_SECRET = secret;
+  process.env.WHATSAPP_AUTONOMY_MODE = 'observe';
+  const handler = createWhatsAppCloudWebhook(root);
+  const payload = {
+    object: 'whatsapp_business_account',
+    entry: [
+      {
+        changes: [
+          {
+            value: {
+              metadata: { phone_number_id: '123', display_phone_number: '8616638801930' },
+              contacts: [{ wa_id: '15559998877', profile: { name: 'Buyer' } }],
+              messages: [
+                {
+                  from: '15559998877',
+                  id: 'wamid.CONCURRENT001',
+                  timestamp: '1710000001',
+                  type: 'text',
+                  text: { body: 'Complete engine' },
+                },
+              ],
+            },
+          },
+        ],
+      },
+    ],
+  };
+  const raw = Buffer.from(JSON.stringify(payload));
+  const goodSig = `sha256=${crypto.createHmac('sha256', secret).update(raw).digest('hex')}`;
+  const server = http.createServer(async (req, res) => {
+    const url = new URL(req.url, 'http://127.0.0.1');
+    await handler(req, res, url, json);
+  });
+  await new Promise((r) => server.listen(0, r));
+  const { port } = server.address();
+  const post = () =>
+    fetch(`http://127.0.0.1:${port}/api/whatsapp/webhook`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'X-Hub-Signature-256': goodSig },
+      body: raw,
+    });
+  const results = await Promise.all([post(), post(), post(), post()]);
+  assert.ok(results.every((r) => r.status === 200));
+  await new Promise((r) => setTimeout(r, 200));
+  const files = fs.readdirSync(path.join(root, 'data', 'whatsapp_cloud', 'normalized'));
+  assert.equal(files.length, 1);
+  const seen = fs.readdirSync(path.join(root, 'data', 'whatsapp_cloud', 'dedup'));
+  assert.equal(seen.filter((f) => f.includes('CONCURRENT001')).length, 1);
+  server.close();
+});

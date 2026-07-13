@@ -13,18 +13,9 @@ import sys
 from typing import Any
 
 
-def _safe_media_reply(message_type: str) -> str:
-    from sales_core.commercial_decision import decide_commercial
-
-    cdr = decide_commercial("", media_type=message_type or "image")
-    # Media-only: prefer inspect / plate ask
-    if not cdr.reply:
-        return (
-            "Thanks — we received your media.\n\n"
-            "Please send a clear engine plate photo (or VIN) so we can confirm "
-            "the currently installed engine."
-        )
-    return cdr.reply
+def _safe_media_reply(message_type: str, *, wa_id: str = "") -> dict[str, Any]:
+    """Image/media must go Commercial Decision + conversation state — never raw LLM."""
+    return _commercial_decide_reply("", wa_id=wa_id, media_type=message_type or "image")
 
 
 _INTERNAL_LEAK_RE = re.compile(
@@ -228,13 +219,32 @@ def main() -> int:
     name = str(payload.get("profile_name") or "WhatsApp Buyer")
     wa_id = str(payload.get("wa_id") or "")
 
+    # P1: image / media never falls into generic LLM
     if msg_type in {"image", "audio", "video", "document", "sticker"} or (
-        msg_type == "audio" or (payload.get("media") or {}).get("voice")
+        (payload.get("media") or {}).get("voice")
     ):
-        if not text:
-            reply = _safe_media_reply(msg_type)
-            print(json.dumps({"ok": True, "reply": reply, "risk_level": "low", "source": "media_meta"}))
-            return 0
+        if not text or msg_type in {"image", "photo", "document"}:
+            try:
+                out = _safe_media_reply(msg_type, wa_id=wa_id)
+                print(json.dumps(out, ensure_ascii=False))
+                return 0
+            except Exception as exc:
+                print(
+                    json.dumps(
+                        {
+                            "ok": True,
+                            "reply": (
+                                "Thanks — we received your media.\n\n"
+                                "Our team will review it shortly."
+                            ),
+                            "risk_level": "low",
+                            "source": "media_fallback",
+                            "error": str(exc)[:120],
+                        },
+                        ensure_ascii=False,
+                    )
+                )
+                return 0
 
     if not text:
         text = f"[{msg_type} message received]"
@@ -265,18 +275,31 @@ def main() -> int:
         except Exception as exc:
             vin_intel = {"error": str(exc)[:200]}
 
+    # NLU-002: load prior action BEFORE probe so scope answers route to Commercial Decision
+    force_commercial = False
     try:
         from sales_core.commercial_decision import _extract_engine_code, load_config
+        from sales_core.conversation_state import conversation_id_for_wa, load_state
         from sales_core.message_understanding import understand_message
         from sales_core.zijing_reply_context import is_price_inquiry
 
         cfg = load_config()
         engine_hit = bool(_extract_engine_code(text, cfg))
-        # NLU-001: also route when understanding finds engine_code / clarification acts
-        mu_probe = understand_message(text, message_type=msg_type)
+        cid = conversation_id_for_wa(wa_id) if wa_id else ""
+        state_probe = load_state(cid) if cid else {}
+        last_action = str(state_probe.get("last_system_action") or "")
+        mu_probe = understand_message(
+            text,
+            message_type=msg_type,
+            previous_system_action=last_action,
+            previous_customer_engine=str(
+                (state_probe.get("customer_reported") or {}).get("engine_code") or ""
+            ),
+        )
         nlu_engine = any(e.get("type") == "engine_code" for e in (mu_probe.get("entities") or []))
+        nlu_scope = any(e.get("type") == "product_scope" for e in (mu_probe.get("entities") or []))
         nlu_act = mu_probe.get("communicative_act") or ""
-        nlu_hit = nlu_engine or nlu_act in {
+        nlu_hit = nlu_engine or nlu_scope or nlu_act in {
             "provide_information",
             "clarify_information",
             "correct_information",
@@ -284,13 +307,35 @@ def main() -> int:
             "cannot_provide_requested_evidence",
             "send_alternative_evidence",
         }
+        # P0-1: after ask_scope, any scope phrase must force Commercial Decision
+        if last_action == "ask_scope" and nlu_scope:
+            force_commercial = True
+        if last_action in {"ask_engine_plate", "ask_engine_photo"} and msg_type in {
+            "image",
+            "photo",
+            "document",
+        }:
+            force_commercial = True
         price_hit = is_price_inquiry(text)
     except Exception:
         engine_hit = bool(re.search(r"\bG4K[A-Z0-9]+\b|\b2SZ\b|\b[123][A-Z]{2}\b", text, re.I))
-        nlu_hit = False
+        nlu_hit = bool(
+            re.search(
+                r"complete\s*engine|long\s*block|bare\s*engine|full\s*engine|engine\s*only",
+                text,
+                re.I,
+            )
+        )
         price_hit = bool(re.search(r"how\s*much|best\s*price|quote|quotation", text, re.I))
+        force_commercial = nlu_hit
 
-    if engine_hit or nlu_hit or price_hit or re.search(r"conflict|replaced engine|swapped engine", text, re.I):
+    if (
+        force_commercial
+        or engine_hit
+        or nlu_hit
+        or price_hit
+        or re.search(r"conflict|replaced engine|swapped engine", text, re.I)
+    ):
         try:
             out = _commercial_decide_reply(text, wa_id=wa_id, media_type=msg_type)
             if vin_intel:

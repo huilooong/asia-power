@@ -65,6 +65,41 @@ _UNSURE_RE = re.compile(
 )
 _MECHANIC_RE = re.compile(r"\bmechanic\s*(?:said|says|told)|师傅\s*(?:说|讲)\b", re.I)
 
+# Product scope answers (APSALES-NLU-002). Order matters — longer phrases first.
+_SCOPE_PATTERNS: list[tuple[re.Pattern[str], str]] = [
+    (re.compile(r"engine\s*\+\s*gearbox|engine\s+and\s+gearbox|with\s+gearbox", re.I), "engine_gearbox"),
+    (re.compile(r"complete\s*engine|full\s*engine", re.I), "complete_engine"),
+    (re.compile(r"long\s*block|光机", re.I), "long_block"),
+    (re.compile(r"bare\s*engine|engine\s*only|裸机|裸发", re.I), "bare_engine"),
+    (re.compile(r"half[\s-]?cut", re.I), "half_cut"),
+    (re.compile(r"\bgearbox\b|变速箱", re.I), "gearbox"),
+    # Standalone "complete" only valid as answer when prior ask_scope (checked below)
+    (re.compile(r"^\s*complete\s*$", re.I), "complete_engine"),
+]
+
+
+def parse_product_scope(text: str, *, previous_system_action: str = "") -> dict[str, Any] | None:
+    """Return product_scope entity or None. Standalone 'complete' needs ask_scope context."""
+    raw = (text or "").strip()
+    if not raw:
+        return None
+    for pat, normalized in _SCOPE_PATTERNS:
+        if not pat.search(raw):
+            continue
+        # Bare word "complete" only after ask_scope
+        if normalized == "complete_engine" and pat.pattern.startswith(r"^\s*complete"):
+            if previous_system_action != "ask_scope":
+                continue
+        return {
+            "type": "product_scope",
+            "raw_value": raw[:80],
+            "normalized_value": normalized,
+            "source": "customer_text",
+            "confidence": 0.95,
+            "verification_status": "customer_reported",
+        }
+    return None
+
 
 def _norm_engine(raw: str) -> str:
     s = re.sub(r"\s+", "", (raw or "").upper())
@@ -104,8 +139,35 @@ def _extract_engine_entities(text: str) -> list[dict[str, Any]]:
     sm = _STANDALONE_CODE.match(t.strip())
     if sm and not found:
         cand = _norm_engine(sm.group(1))
-        # Accept Toyota-like / alphanumeric short codes customers use as engine codes
-        if re.match(r"^[0-9]?[A-Z]{1,3}[0-9A-Z\-]{0,8}$", cand) and not cand.isdigit():
+        reject = {
+            "COMPLETE",
+            "ENGINE",
+            "PLEASE",
+            "HELLO",
+            "THANKS",
+            "THANK",
+            "YES",
+            "NO",
+            "OK",
+            "OKAY",
+            "PHOTO",
+            "IMAGE",
+            "GEARBOX",
+            "QUANTITY",
+            "PORT",
+            "BLOCK",
+            "LONG",
+            "BARE",
+            "FULL",
+        }
+        # Standalone engine codes must include a digit (2SZ, G4KD, 1NZ) — never plain English words
+        if (
+            cand not in reject
+            and not cand.isdigit()
+            and 2 <= len(cand) <= 12
+            and any(ch.isdigit() for ch in cand)
+            and re.match(r"^[0-9A-Z\-]+$", cand)
+        ):
             add(sm.group(1), 0.90 if not _UNSURE_RE.search(t) else 0.50, "standalone")
     return found
 
@@ -151,16 +213,27 @@ def understand_message(
                 }
             )
 
+    scope_ent = parse_product_scope(raw, previous_system_action=previous_system_action)
+    if scope_ent:
+        entities.append(scope_ent)
+
     cannot_plate = bool(_NO_PLATE_RE.search(raw))
     can_photo = bool(_CAN_PHOTO_RE.search(raw))
     is_correction = bool(_CORRECTION_RE.search(raw))
     is_clarification = bool(_CLARIFY_RE.search(raw)) or (
-        bool(entities)
+        bool([e for e in entities if e.get("type") == "engine_code"])
         and previous_system_action.startswith("ask_")
         and bool(previous_customer_engine)
     )
+    # Pure scope answer after ask_scope (NLU-002)
+    scope_answers_ask = previous_system_action == "ask_scope" and bool(scope_ent)
     is_answer = bool(previous_system_action) and (
-        is_clarification or bool(entities) or cannot_plate or can_photo or message_type in {"image", "photo"}
+        is_clarification
+        or bool(entities)
+        or cannot_plate
+        or can_photo
+        or scope_answers_ask
+        or message_type in {"image", "photo"}
     )
 
     engine_ents = [e for e in entities if e["type"] == "engine_code"]
@@ -168,12 +241,19 @@ def understand_message(
         # "not 2sz, it is 3sz" — keep last engine entity as correction target
         is_clarification = False
 
-    if _GREETING_RE.match(raw) and not entities:
+    if message_type in {"image", "photo", "document"} and not raw:
+        act, intent = "send_alternative_evidence", "media_evidence"
+    elif _GREETING_RE.match(raw) and not entities:
         act, intent = "greeting", "greeting"
     elif cannot_plate:
         act, intent = "cannot_provide_requested_evidence", "evidence_unavailable"
     elif can_photo and cannot_plate:
         act, intent = "send_alternative_evidence", "alternative_evidence"
+    elif scope_answers_ask:
+        # Context-bound: same words without ask_scope may be new_request
+        act, intent = "answer_previous_question", "provide_scope"
+    elif scope_ent and not previous_system_action:
+        act, intent = "new_request", "provide_scope"
     elif is_correction and engine_ents:
         act, intent = "correct_information", "engine_inquiry"
     elif is_clarification and engine_ents:

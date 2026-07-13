@@ -50,6 +50,11 @@ def empty_state(conversation_id: str = "") -> dict[str, Any]:
         "last_system_action": "",
         "last_outbound_hash": "",
         "last_outbound_excerpt": "",
+        "last_requested_evidence": "",
+        "last_customer_message_type": "",
+        "requested_evidence_received": False,
+        "image_received_at": "",
+        "pending_image_review": False,
         "turn_count": 0,
         "updated_at": "",
     }
@@ -105,6 +110,8 @@ def update_state_from_understanding(
     st.setdefault("missing", [])
     st["turn_count"] = int(st.get("turn_count") or 0) + 1
     st["last_customer_act"] = understanding.get("communicative_act") or ""
+    msg_type = str(understanding.get("message_type") or "text")
+    st["last_customer_message_type"] = msg_type
 
     answers = list(st.get("customer_answers") or [])
     answers.append(
@@ -158,6 +165,30 @@ def update_state_from_understanding(
             st["customer_reported"]["quantity"] = val
             st["known"]["quantity"] = val
             st["missing"] = [m for m in (st.get("missing") or []) if m != "quantity"]
+        elif et == "product_scope":
+            st["customer_reported"]["product_scope"] = val
+            st["known"]["product_scope"] = val
+            st["missing"] = [m for m in (st.get("missing") or []) if m != "product_scope"]
+
+    # Image / media evidence against last request
+    if msg_type in {"image", "photo", "document"}:
+        st["image_received_at"] = time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime())
+        st["customer_reported"]["customer_result"] = "sent_image"
+        last_req = str(st.get("last_requested_evidence") or "")
+        last_action = str(st.get("last_system_action") or "")
+        if last_req in {"engine_plate", "engine_photo"} or last_action in {
+            "ask_engine_plate",
+            "ask_engine_photo",
+        }:
+            st["requested_evidence_received"] = True
+            st["pending_image_review"] = True
+            if "engine_plate" not in (st.get("unavailable_evidence") or []):
+                # Received alternative — stop treating plate as still owed this turn
+                st["missing"] = [
+                    m
+                    for m in (st.get("missing") or [])
+                    if m not in {"installed_engine_evidence", "engine_plate"}
+                ]
 
     if understanding.get("cannot_provide_plate"):
         if "engine_plate" not in st["unavailable_evidence"]:
@@ -179,6 +210,18 @@ def record_system_action(state: dict[str, Any], action: str, reply: str) -> dict
     st["asked_actions"] = asked[-30:]
     st["last_outbound_hash"] = outbound_hash(reply)
     st["last_outbound_excerpt"] = (reply or "")[:180]
+    evidence_map = {
+        "ask_engine_plate": "engine_plate",
+        "ask_engine_photo": "engine_photo",
+        "ask_vin": "vin",
+        "ask_vin_plate": "vin_plate",
+        "ask_oe_label": "oe_label",
+        "ask_registration": "registration",
+        "ask_vehicle_photo": "vehicle_photo",
+    }
+    if action in evidence_map:
+        st["last_requested_evidence"] = evidence_map[action]
+        st["requested_evidence_received"] = False
     return st
 
 
@@ -241,10 +284,24 @@ def apply_dead_loop_guard(
 
     if would_repeat_action(state, action) or (
         action == "ask_engine_plate" and "engine_plate" in (state.get("unavailable_evidence") or [])
+    ) or (
+        action in {"ask_engine_plate", "ask_engine_photo"}
+        and (
+            state.get("requested_evidence_received")
+            or state.get("pending_image_review")
+            or str(state.get("last_customer_message_type") or "") in {"image", "photo", "document"}
+        )
     ):
         blocked = True
         action = alternate_identity_action(state, "")
-        out = _fallback_reply_for_action(state, action)
+        if state.get("requested_evidence_received") or state.get("pending_image_review"):
+            action = "request_manual_review"
+            out = (
+                "Thanks — we received your photo.\n\n"
+                "Our team will review it shortly to confirm the currently installed engine."
+            )
+        else:
+            out = _fallback_reply_for_action(state, action)
 
     if would_repeat_reply(state, out):
         blocked = True

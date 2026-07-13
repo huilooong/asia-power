@@ -110,6 +110,26 @@ function appendJsonl(file, row) {
   fs.appendFileSync(file, `${JSON.stringify(row)}\n`, 'utf8');
 }
 
+/** P2: claim outbound once per inbound wamid (atomic O_EXCL). */
+function claimOutboundOnce(rootDir, inboundWamid) {
+  if (!inboundWamid) return { ok: true, first: true };
+  const dir = path.join(rootDir, 'data', 'whatsapp_cloud', 'outbound_dedup');
+  fs.mkdirSync(dir, { recursive: true });
+  const safe = String(inboundWamid).replace(/[^a-zA-Z0-9._-]+/g, '_').slice(0, 180);
+  const p = path.join(dir, `${safe}.sent`);
+  try {
+    const fd = fs.openSync(p, 'wx');
+    fs.writeFileSync(fd, new Date().toISOString(), 'utf8');
+    fs.closeSync(fd);
+    return { ok: true, first: true, path: p };
+  } catch (err) {
+    if (err && err.code === 'EEXIST') {
+      return { ok: false, first: false, path: p, reason: 'outbound_already_sent' };
+    }
+    return { ok: true, first: true, path: p, soft: true };
+  }
+}
+
 function stripInternalLeaks(text) {
   return String(text || '')
     // APPROVAL_REQUEST (not only APPROVAL_REQUIRED) — Live Fix 2026-07-13
@@ -469,6 +489,21 @@ async function handleSandboxInbound(rootDir, normalized) {
     gated = applyRiskPolicy(replyText, normalized.text || '');
   }
   replyText = gated.text;
+
+  // P2 outbound idempotency — claim immediately before Graph send
+  const outboundClaim = claimOutboundOnce(rootDir, normalized.message_id);
+  if (!outboundClaim.first) {
+    appendJsonl(logFile, {
+      at: new Date().toISOString(),
+      skipped: true,
+      reason: 'outbound_idempotent_skip',
+      wa_suffix: String(normalized.wa_id || '').slice(-4),
+      inbound_wamid: normalized.message_id || '',
+      decision,
+      reply_excerpt: String(replyText || '').slice(0, 120),
+    });
+    return { skipped: true, reason: 'outbound_idempotent_skip' };
+  }
 
   const send = await sendText({
     phoneNumberId,
