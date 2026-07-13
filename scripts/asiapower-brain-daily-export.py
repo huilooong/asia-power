@@ -13,7 +13,8 @@ import re
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
-BRAIN = ROOT / "AsiaPower-Brain"
+# Resolves through repo symlink AsiaPower-Brain → Obsidian Vault/AsiaPower
+BRAIN = (ROOT / "AsiaPower-Brain").resolve()
 OUT = BRAIN / "exports" / "chatgpt" / "brain-summary.md"
 TARGET_MIN = 1000
 TARGET_MAX = 2000
@@ -199,7 +200,7 @@ def build(day: str) -> str:
             "5. 新增 Vehicle Knowledge",
             _pick(
                 ["Vehicle Knowledge", "新增 Vehicle Knowledge"],
-                BRAIN / "12-Vehicle-Intelligence",
+                BRAIN / "05-Products" / "Vehicle-Intelligence",
                 {"Vehicle-Intelligence.md", "README.md"},
             )
             or ["- 无新车辆结论；VI 目录（VIN/OE/铭牌/照片）已就位"],
