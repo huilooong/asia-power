@@ -2,8 +2,10 @@
 
 /**
  * WhatsApp Cloud API Webhook
- * - APWA-001 observe: receive + store only
- * - APWA-002 sandbox: allowlisted CEO wa_id → APSales → Graph send
+ * - observe: receive + store only
+ * - sandbox: allowlisted CEO wa_id → APSales → Graph send
+ * - live: all real inbound on +86 → APSales → Graph send (APWA-NIGHTSHIFT-001)
+ * - off: emergency kill switch (receive may still persist depending on route)
  */
 
 const crypto = require('crypto');
@@ -345,7 +347,8 @@ function createWhatsAppCloudWebhook(rootDir) {
   }
 
   async function runPostPersist(persistResult) {
-    if (!persistResult || persistResult.mode !== 'sandbox') return;
+    // APWA-NIGHTSHIFT-001: auto-reply path for sandbox (allowlist) and live (all inbound)
+    if (!persistResult || !['sandbox', 'live'].includes(persistResult.mode)) return;
     for (const msg of persistResult.normalizedMessages || []) {
       try {
         await handleSandboxInbound(rootDir, msg);

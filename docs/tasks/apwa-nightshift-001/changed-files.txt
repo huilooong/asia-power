@@ -1,0 +1,20 @@
+# APWA-NIGHTSHIFT-001 — Changed Files
+
+## Modified
+- server/lib/whatsapp-cloud-sandbox.js
+- server/lib/whatsapp-cloud-webhook.js
+- .env.example
+
+## Added
+- docs/tasks/apwa-nightshift-001/analysis.md
+- docs/tasks/apwa-nightshift-001/meta-binding-check.md
+- docs/tasks/apwa-nightshift-001/whitelist-audit.md
+- docs/tasks/apwa-nightshift-001/nightshift-plan.md
+- docs/tasks/apwa-nightshift-001/production-validation.md
+- docs/tasks/apwa-nightshift-001/review.md
+- docs/tasks/apwa-nightshift-001/changed-files.txt
+
+## Not changed (by design)
+- +233 Facebook ads / budgets
+- APSales Commercial Decision (`sales_core/commercial_decision.py` / config)
+- Production env still `WHATSAPP_AUTONOMY_MODE=sandbox` (awaiting CEO approval for `live`)

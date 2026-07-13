@@ -1,8 +1,10 @@
 'use strict';
 
 /**
- * APWA-002 Sandbox: allowlisted CEO number only → APSales think → Graph reply.
- * Everyone else: observe only.
+ * WhatsApp Cloud auto-reply (APWA-002 / APWA-NIGHTSHIFT-001)
+ * - sandbox: CEO allowlist only
+ * - live: all real +86 Cloud inbound → APSales
+ * - observe / off: no auto-reply (off = emergency kill switch)
  */
 
 const { spawnSync } = require('child_process');
@@ -41,6 +43,33 @@ function isSandboxAllowlisted(waId) {
   if (!id) return false;
   const list = sandboxAllowlist();
   return list.some((allowed) => id === allowed || id.endsWith(allowed) || allowed.endsWith(id));
+}
+
+function internalWaIds() {
+  const raw = env('WHATSAPP_INTERNAL_WA_IDS');
+  return String(raw || '')
+    .split(/[,\s]+/)
+    .map(normalizeWaId)
+    .filter(Boolean);
+}
+
+function customerTrafficTag(waId) {
+  const id = normalizeWaId(waId);
+  if (!id) return 'unknown';
+  if (isSandboxAllowlisted(id)) return 'ceo_test';
+  if (internalWaIds().some((x) => id === x || id.endsWith(x) || x.endsWith(id))) {
+    return 'internal';
+  }
+  return 'public_inbound';
+}
+
+/** live = all real inbound; sandbox = allowlist only; observe/off = no auto-reply */
+function shouldAutoReply(waId) {
+  const mode = autonomyMode();
+  if (mode === 'off' || mode === 'observe') return false;
+  if (mode === 'live') return Boolean(normalizeWaId(waId));
+  if (mode === 'sandbox') return isSandboxAllowlisted(waId);
+  return false;
 }
 
 function asiapowerRoot() {
@@ -363,11 +392,22 @@ function fallbackReply(normalized) {
 async function handleSandboxInbound(rootDir, normalized) {
   const logFile = path.join(rootDir, 'data', 'whatsapp_cloud', 'sandbox', 'decisions.ndjson');
   const mode = autonomyMode();
-  if (mode !== 'sandbox') {
-    return { skipped: true, reason: 'not_sandbox_mode' };
+  const trafficTag = customerTrafficTag(normalized.wa_id);
+
+  if (mode === 'off') {
+    return { skipped: true, reason: 'autonomy_off' };
   }
-  if (!isSandboxAllowlisted(normalized.wa_id)) {
+  if (mode === 'observe') {
+    return { skipped: true, reason: 'observe_mode' };
+  }
+  if (mode === 'sandbox' && !isSandboxAllowlisted(normalized.wa_id)) {
     return { skipped: true, reason: 'not_allowlisted' };
+  }
+  if (mode === 'live' && !normalizeWaId(normalized.wa_id)) {
+    return { skipped: true, reason: 'missing_wa_id' };
+  }
+  if (!shouldAutoReply(normalized.wa_id)) {
+    return { skipped: true, reason: `mode_${mode}_no_reply` };
   }
 
   // APSALES-EVIDENCE-001: pair previous pending Decision with this inbound (facts only).
@@ -439,6 +479,8 @@ async function handleSandboxInbound(rootDir, normalized) {
   const row = {
     at: new Date().toISOString(),
     decision,
+    mode,
+    traffic_tag: trafficTag,
     risk_level: gated.risk_blocked ? 'high' : gen.risk_level || 'low',
     reason_code: gated.reason_code,
     risk_blocked: gated.risk_blocked,
@@ -447,7 +489,7 @@ async function handleSandboxInbound(rootDir, normalized) {
     inbound_excerpt: String(normalized.text || '').slice(0, 120),
     reply_excerpt: String(replyText || '').slice(0, 200),
     wamid_out: send.messageId || '',
-    policy_version: 'apwa-002-sandbox-v1',
+    policy_version: 'apwa-nightshift-001-v1',
     parser_version: normalized.parser_version,
   };
   appendJsonl(logFile, row);
@@ -479,6 +521,8 @@ module.exports = {
   handleSandboxInbound,
   isSandboxAllowlisted,
   sandboxAllowlist,
+  shouldAutoReply,
+  customerTrafficTag,
   applyRiskPolicy,
   autonomyMode,
 };
