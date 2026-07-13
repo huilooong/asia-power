@@ -1,4 +1,4 @@
-const CACHE_VERSION = 'apapp-001-v5-hybrid';
+const CACHE_VERSION = 'apcontact-002-v1';
 const STATIC_CACHE = `${CACHE_VERSION}-static`;
 const OFFLINE_URL = '/offline.html';
 
@@ -10,9 +10,10 @@ const STATIC_ASSETS = [
   '/css/styles.css',
   '/css/home-v4-hybrid.css',
   '/js/path-utils.js',
-  '/js/config.js',
-  '/js/components.js',
-  '/js/home-v4-hybrid.js',
+  // Never precache bare /js/config.js — CF may hold immutable +233 poison for months
+  '/js/config.js?v=apcontact-002',
+  '/js/components.js?v=auth-nav-once-v2',
+  '/js/home-v4-hybrid.js?v=category-filter-v4',
   '/assets/favicon.png',
   '/assets/icons/icon-192.png',
   '/assets/icons/icon-512.png',

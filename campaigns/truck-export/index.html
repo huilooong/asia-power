@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#0a1628">
+  <meta name="description" content="Export used truck heads and cabs from China — HOWO, Foton, Hino, Isuzu. Startup video before dismantling. FOB/CIF to Africa, Middle East and worldwide.">
+  <title>Truck Heads Export — FOB from China | AsiaPower</title>
+    <link rel="preload" href="../../assets/fonts/barlow-condensed-800-latin.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href="../../assets/fonts/inter-latin.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="stylesheet" href="../../css/fonts.css?v=self-hosted-fonts-v1">
+<link rel="stylesheet" href="../../css/styles.css?v=self-hosted-fonts-v1">
+  <link rel="icon" href="../../assets/favicon.png" type="image/png">
+  <link rel="canonical" href="https://asia-power.com/campaigns/truck-export/">
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-PB2J3VRX5J"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-PB2J3VRX5J');
+  </script>
+</head>
+<body data-page="campaign-truck-export">
+  <div id="site-topbar"></div>
+  <div id="site-header"></div>
+  <main id="main-content">
+    <section class="page-hero page-hero--catalog page-hero--catalog-dark page-hero--truck-heads">
+      <div class="container">
+        <div class="page-hero__breadcrumb"><a href="../../index.html">Home</a> / Truck Export Campaign</div>
+        <h1>Used Truck Heads &amp; Cabs — Direct Export from China</h1>
+        <p class="section-lead">B2B supply for importers, workshops and fleet operators in Africa, the Middle East and worldwide. HOWO, Sinotruk, Foton, Shacman, Hino, Isuzu, Mitsubishi Fuso, UD and more.</p>
+        <ul class="trust-strip trust-strip--hero">
+          <li>Whole-vehicle startup video before dismantling</li>
+          <li>FOB / CIF to your port</li>
+          <li>Reply within 24 hours</li>
+        </ul>
+        <div class="page-hero__actions">
+          <a id="campaign-quote-btn" href="../../contact.html?product=truck" class="btn btn-accent">Request FOB Quote</a>
+          <a id="campaign-wa-btn" href="https://wa.me/8616638801930" class="btn btn-whatsapp" target="_blank" rel="noopener noreferrer">WhatsApp Quote</a>
+        </div>
+      </div>
+    </section>
+
+    <section class="platform-section">
+      <div class="container">
+        <div class="platform-section__header platform-section__header--center">
+          <span class="section-eyebrow">Why AsiaPower</span>
+          <h2 class="section-title">Built for cross-border truck parts buyers</h2>
+        </div>
+        <div class="platform-process">
+          <div class="platform-process__step">
+            <span class="platform-process__num">01</span>
+            <h3>Video QC first</h3>
+            <p>Startup video on the complete vehicle before any dismantling — you see it run.</p>
+          </div>
+          <div class="platform-process__step">
+            <span class="platform-process__num">02</span>
+            <h3>FOB / CIF pricing</h3>
+            <p>Clear export terms. Container or LCL to major African and Middle East ports.</p>
+          </div>
+          <div class="platform-process__step">
+            <span class="platform-process__num">03</span>
+            <h3>China + Ghana team</h3>
+            <p>Export hub in Zhengzhou, China · coordination office in Accra, Ghana.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="cta-band">
+      <div class="container cta-band__inner">
+        <div>
+          <h2>Send brand, qty and destination port</h2>
+          <p>We reply with availability and FOB quote within 24 hours.</p>
+        </div>
+        <div class="cta-band__actions">
+          <a id="campaign-quote-btn-2" href="../../contact.html?product=truck" class="btn btn-accent">Get Quote</a>
+          <a href="../../truck-heads/" class="btn btn-outline-light">Browse truck head brands</a>
+        </div>
+      </div>
+    </section>
+  </main>
+  <div id="site-footer"></div>
+  <script src="../../js/path-utils.js?v=i18n-full-v1"></script>
+  <script src="../../js/config.js?v=campaign-v1"></script>
+  <script src="../../js/components.js?v=campaign-v1"></script>
+  <script src="../../js/utm-attribution.js?v=campaign-v1"></script>
+  <script src="../../js/whatsapp-crm.js?v=campaign-v1"></script>
+  <script src="../../js/main.js?v=campaign-v1" defer></script>
+  <script>
+    (function () {
+      const utm = window.AsiaPowerUtm?.get?.() || {};
+      const defaults = {
+        utm_source: utm.utm_source || 'outreach',
+        utm_medium: utm.utm_medium || 'landing',
+        utm_campaign: utm.utm_campaign || 'truck_heads_q3_2026',
+      };
+      const quoteHref = window.AsiaPowerUtm?.withUtm?.('../../contact.html?product=truck', defaults)
+        || '../../contact.html?product=truck';
+      document.querySelectorAll('#campaign-quote-btn, #campaign-quote-btn-2').forEach((el) => {
+        el.href = quoteHref;
+      });
+      const waText = window.ASIAPOWER?.whatsappTruckMessage
+        || 'Hello AsiaPower, I need used truck heads/cabs for export. Brand: __ Qty: __ Port: __';
+      const waBtn = document.getElementById('campaign-wa-btn');
+      if (waBtn && window.WhatsAppCrm?.buildUrl) {
+        waBtn.href = window.WhatsAppCrm.buildUrl(waText);
+      }
+    })();
+  </script>
+</body>
+</html>

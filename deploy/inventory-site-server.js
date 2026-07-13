@@ -1134,13 +1134,30 @@ async function serveStatic(req, res, pathname, search = '') {
   const mime = mimeMap[ext] || 'application/octet-stream';
   const isText = mime.startsWith('text/') || mime === 'application/javascript' || mime === 'application/json' || mime === 'image/svg+xml';
   const isAsset = !['.html', '.xml', '.txt'].includes(ext);
+  // APCONTACT incident: never mark site config / SW / chrome JS as year-long immutable.
+  // Cloudflare was serving a Jul-3 /js/config.js HIT with +233 for ~10 days.
+  const base = path.basename(pathname || '');
+  const shortCacheJs = new Set([
+    'config.js',
+    'components.js',
+    'whatsapp-crm.js',
+    'quote-request-form.js',
+    'home-v4-hybrid.js',
+    'sw.js',
+  ]);
+  let cacheControl = isAsset
+    ? 'public, max-age=31536000, immutable'
+    : 'no-cache, no-store, must-revalidate';
+  if (shortCacheJs.has(base) || pathname === '/sw.js') {
+    cacheControl = 'public, max-age=60, must-revalidate';
+  }
   if (ext === '.html') {
     siteAnalytics.recordPageView(req, `${pathname}${search || ''}`);
   }
   applySecurityHeaders(res);
   res.writeHead(200, {
     'Content-Type': isText ? `${mime}; charset=utf-8` : mime,
-    'Cache-Control': isAsset ? 'public, max-age=31536000, immutable' : 'no-cache, no-store, must-revalidate',
+    'Cache-Control': cacheControl,
     'X-Content-Type-Options': 'nosniff',
     'Referrer-Policy': 'strict-origin-when-cross-origin',
   });
