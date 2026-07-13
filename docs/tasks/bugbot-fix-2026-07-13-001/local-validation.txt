@@ -1,0 +1,12 @@
+PASS - brands.html inventory-store brand-stock-directory-v2
+PASS - hydrateBrandDirectoryFromPublicStock + seed fallback warn
+PASS - brandsDirectoryApplyFilter search indirection after hydrate
+PASS - CATALOG_PAGES includes brands
+PASS - parts fit-contain object-fit contain (engines/gearboxes/chassis/frontcuts)
+PASS - parts-ph / banner / halfcut remain cover
+PASS - no !important on contain declarations
+PASS - SVG UTF-8 middle-dot ·
+PASS - seed brands=9 live brands=53
+PASS - AsiaPower-Brain symlink unchanged
+PASS - ReadLints clean
+PASS - Bugbot re-review: no bugs

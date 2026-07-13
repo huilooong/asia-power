@@ -2323,25 +2323,36 @@ body[data-page="frontcuts"] .ebay-parts-main .ebay-listing-row .ap-listing-photo
   border-right: 1px solid #e8e8ed;
   background: #f5f5f7;
 }
+/* Default frame fill: cover (placeholders / non-fit-contain). Dedicated part uploads use contain below. */
 body[data-page="engines"] .ebay-parts-main .ebay-listing-row__photo img,
 body[data-page="engines"] .ebay-parts-main .ap-listing-photo__img,
 body[data-page="engines"] .ebay-parts-main .ap-listing-photo img,
-body[data-page="engines"] .ebay-parts-main .ap-listing-photo--fit-contain .ap-listing-photo__img,
 body[data-page="gearboxes"] .ebay-parts-main .ebay-listing-row__photo img,
 body[data-page="gearboxes"] .ebay-parts-main .ap-listing-photo__img,
 body[data-page="gearboxes"] .ebay-parts-main .ap-listing-photo img,
-body[data-page="gearboxes"] .ebay-parts-main .ap-listing-photo--fit-contain .ap-listing-photo__img,
 body[data-page="chassis"] .ebay-parts-main .ebay-listing-row__photo img,
 body[data-page="chassis"] .ebay-parts-main .ap-listing-photo__img,
 body[data-page="chassis"] .ebay-parts-main .ap-listing-photo img,
-body[data-page="chassis"] .ebay-parts-main .ap-listing-photo--fit-contain .ap-listing-photo__img,
 body[data-page="frontcuts"] .ebay-parts-main .ebay-listing-row__photo img,
 body[data-page="frontcuts"] .ebay-parts-main .ap-listing-photo__img,
-body[data-page="frontcuts"] .ebay-parts-main .ap-listing-photo img,
-body[data-page="frontcuts"] .ebay-parts-main .ap-listing-photo--fit-contain .ap-listing-photo__img {
+body[data-page="frontcuts"] .ebay-parts-main .ap-listing-photo img {
   object-fit: cover;
   object-position: center center;
   background: #f5f5f7;
+}
+/* Real dedicated part photos (engines / gearboxes / chassis / front-cuts) — contain, not cropped.
+   Specificity matches the page cover rules above; no !important. Placeholders keep --parts-ph cover. */
+body[data-page="engines"] .ebay-parts-main .ap-listing-photo--fit-contain .ap-listing-photo__img,
+body[data-page="engines"] .ebay-parts-main .ap-listing-photo--fit-contain img,
+body[data-page="gearboxes"] .ebay-parts-main .ap-listing-photo--fit-contain .ap-listing-photo__img,
+body[data-page="gearboxes"] .ebay-parts-main .ap-listing-photo--fit-contain img,
+body[data-page="chassis"] .ebay-parts-main .ap-listing-photo--fit-contain .ap-listing-photo__img,
+body[data-page="chassis"] .ebay-parts-main .ap-listing-photo--fit-contain img,
+body[data-page="frontcuts"] .ebay-parts-main .ap-listing-photo--fit-contain .ap-listing-photo__img,
+body[data-page="frontcuts"] .ebay-parts-main .ap-listing-photo--fit-contain img {
+  object-fit: contain;
+  object-position: center center;
+  background: #eef1f4;
 }
 body[data-page="engines"] .ebay-parts-main .ebay-listing-list,
 body[data-page="gearboxes"] .ebay-parts-main .ebay-listing-list,

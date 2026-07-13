@@ -1187,6 +1187,9 @@
   }
 
   let brandsDirectorySearchBound = false;
+  let brandsDirectoryHydrateBound = false;
+  /** Latest filter fn — listeners stay bound once but always call current hydrate snapshot. */
+  let brandsDirectoryApplyFilter = null;
 
   function initBrandDirectory() {
     const matrix = document.getElementById('brand-matrix');
@@ -1264,12 +1267,38 @@
       if (emptyEl) emptyEl.classList.toggle('hidden', visible > 0);
     }
 
+    brandsDirectoryApplyFilter = filterBrands;
+
     if (searchInput && !brandsDirectorySearchBound) {
       brandsDirectorySearchBound = true;
-      searchInput.addEventListener('input', filterBrands);
-      searchInput.addEventListener('search', filterBrands);
+      const runFilter = () => brandsDirectoryApplyFilter?.();
+      searchInput.addEventListener('input', runFilter);
+      searchInput.addEventListener('search', runFilter);
     }
     filterBrands();
+  }
+
+  /** Live public catalog first; keep seed-rendered matrix if API fails (no blank page). */
+  function hydrateBrandDirectoryFromPublicStock() {
+    const matrix = document.getElementById('brand-matrix');
+    const featuredMatrix = document.getElementById('brand-featured-matrix');
+    if (!matrix && !featuredMatrix) return;
+    if (brandsDirectoryHydrateBound) return;
+    brandsDirectoryHydrateBound = true;
+
+    const store = window.HalfCutInventoryStore;
+    if (!store?.whenReady) {
+      initBrandDirectory();
+      return;
+    }
+
+    Promise.resolve(store.whenReady())
+      .catch((err) => {
+        console.warn('AsiaPower: brand directory live stock unavailable — keeping seed fallback', err);
+      })
+      .finally(() => {
+        initBrandDirectory();
+      });
   }
 
   function initBrandDetailNav() {
@@ -1482,6 +1511,7 @@
     initStatsStrip();
     initBrandsMarquee();
     initBrandDirectory();
+    hydrateBrandDirectoryFromPublicStock();
     initBrandDetailNav();
     initPlatformOffices();
     initHomepageBrands();
@@ -1500,6 +1530,7 @@
     const matrix = document.getElementById('brand-matrix');
     if (matrix && matrix.children.length === 0) {
       initBrandDirectory();
+      hydrateBrandDirectoryFromPublicStock();
     }
   });
 
@@ -1511,7 +1542,9 @@
     initChassisCatalogPage();
     initFrontCutCatalogPage();
     if (document.getElementById('brand-matrix') || document.getElementById('brand-featured-matrix')) {
+      brandsDirectoryHydrateBound = false;
       initBrandDirectory();
+      hydrateBrandDirectoryFromPublicStock();
     }
     initContactCountrySelect();
     initPhoneInputs();

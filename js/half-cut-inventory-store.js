@@ -627,7 +627,7 @@
   };
 
   const CATALOG_PAGES = new Set([
-    'home', 'halfcuts', 'engines', 'gearboxes', 'chassis', 'frontcuts', 'trucks', 'machinery',
+    'home', 'halfcuts', 'engines', 'gearboxes', 'chassis', 'frontcuts', 'trucks', 'machinery', 'brands',
   ]);
   if (typeof document !== 'undefined' && CATALOG_PAGES.has(document.body?.dataset?.page || '')) {
     whenReady();

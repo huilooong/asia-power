@@ -258,6 +258,10 @@ function deployChrome() {
   rsync(`${ROOT}/js/public-i18n.js`, `${pub}/js/public-i18n.js`);
   rsync(`${ROOT}/js/ebay-layout.js`, `${pub}/js/ebay-layout.js`);
   rsync(`${ROOT}/js/half-cut-directory.js`, `${pub}/js/half-cut-directory.js`);
+  rsync(`${ROOT}/js/half-cut-vin.js`, `${pub}/js/half-cut-vin.js`);
+  rsync(`${ROOT}/js/half-cut-inventory-layer.js`, `${pub}/js/half-cut-inventory-layer.js`);
+  rsync(`${ROOT}/js/half-cut-media-api.js`, `${pub}/js/half-cut-media-api.js`);
+  rsync(`${ROOT}/js/half-cut-inventory-store.js`, `${pub}/js/half-cut-inventory-store.js`);
   rsync(`${ROOT}/js/catalog-search-aliases.js`, `${pub}/js/catalog-search-aliases.js`);
   rsync(`${ROOT}/js/ebay-catalog-hub.js`, `${pub}/js/ebay-catalog-hub.js`);
   rsync(`${ROOT}/js/half-cut-catalog.js`, `${pub}/js/half-cut-catalog.js`);
@@ -379,7 +383,12 @@ grep -q 'ebay-contact-section' "$PUB/css/ebay-layout.css"
 grep -q 'max-width: 920px' "$PUB/css/ebay-layout.css"
 grep -q 'about-type-v2' "$PUB/kenya.html"
 grep -q 'about-type-v2' "$PUB/brands/toyota.html"
-grep -q 'brand-stock-directory-v1' "$PUB/brands.html"
+grep -q 'brand-stock-directory-v2' "$PUB/brands.html"
+grep -q 'half-cut-inventory-store.js' "$PUB/brands.html"
+grep -q 'hydrateBrandDirectoryFromPublicStock' "$PUB/js/main.js"
+grep -q 'parts-photo-contain-v1' "$PUB/js/components.js"
+grep -q 'ap-listing-photo--fit-contain .ap-listing-photo__img' "$PUB/css/ebay-layout.css"
+grep -q 'object-fit: contain' "$PUB/css/ebay-layout.css"
 grep -q 'about-type-v2' "$PUB/half-cuts/index.html"
 grep -E -q 'catalog-search-v1|catalog-search-v2|stock-id-search-v[12]' "$PUB/half-cuts/index.html"
 grep -q 'about-type-v2' "$PUB/engines/index.html"
