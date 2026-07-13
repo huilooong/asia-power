@@ -1,0 +1,83 @@
+# OPS-003 Production Health
+
+- Checked at: 2026-07-13T11:08:58.150Z
+- Base URL: https://asia-power.com
+- Release: OPS003-DRYRUN
+- Status: **FAIL**
+- Pass: 52 / Fail: 5
+- Expected WhatsApp: 8616638801930
+
+## Checks
+
+- **PASS** `homepage_http`: HTTP 200
+- **PASS** `homepage_title`: AsiaPower | Global Powertrain Sourcing for Cars, Trucks, Motorcycles &amp; Machi
+- **PASS** `homepage_canonical`: https://asia-power.com/
+- **PASS** `homepage_whatsapp_static`: wa.me/8616638801930
+- **PASS** `homepage_logo`: logo present
+- **PASS** `homepage_jsonld`: JSON-LD present
+- **PASS** `homepage_float_mount`: #site-whatsapp present
+- **PASS** `homepage_config_whatsapp`: float will use wa.me/8616638801930 via https://asia-power.com/js/config.js?v=apcontact-002
+- **PASS** `contact_http`: HTTP 200
+- **PASS** `contact_title`: Contact Us | AsiaPower
+- **PASS** `contact_canonical`: https://asia-power.com/contact.html
+- **PASS** `contact_whatsapp_static`: wa.me/8616638801930
+- **SKIP** `contact_logo`: no logo signal
+- **PASS** `contact_jsonld`: JSON-LD present
+- **PASS** `contact_float_mount`: #site-whatsapp present
+- **PASS** `contact_config_whatsapp`: float will use wa.me/8616638801930 via https://asia-power.com/js/config.js?v=apcontact-002
+- **PASS** `brand_http`: HTTP 200
+- **PASS** `brand_title`: Brands We Support | AsiaPower
+- **PASS** `brand_canonical`: https://asia-power.com/brands.html
+- **SKIP** `brand_whatsapp_static`: no static wa.me (float may use config)
+- **SKIP** `brand_logo`: no logo signal
+- **PASS** `brand_float_mount`: #site-whatsapp present
+- **PASS** `brand_config_whatsapp`: float will use wa.me/8616638801930 via https://asia-power.com/js/config.js?v=apcontact-002
+- **PASS** `engine_http`: HTTP 200
+- **PASS** `engine_title`: Used Engines Export Africa | Engine Catalog | AsiaPower
+- **PASS** `engine_canonical`: https://asia-power.com/engines/
+- **PASS** `engine_whatsapp_static`: wa.me/8616638801930
+- **SKIP** `engine_logo`: no logo signal
+- **PASS** `engine_float_mount`: #site-whatsapp present
+- **PASS** `engine_config_whatsapp`: float will use wa.me/8616638801930 via https://asia-power.com/js/config.js?v=apcontact-002
+- **PASS** `gearbox_http`: HTTP 200
+- **PASS** `gearbox_title`: Gearbox Catalog | AsiaPower
+- **PASS** `gearbox_canonical`: https://asia-power.com/gearboxes/
+- **SKIP** `gearbox_whatsapp_static`: no static wa.me (float may use config)
+- **SKIP** `gearbox_logo`: no logo signal
+- **PASS** `gearbox_float_mount`: #site-whatsapp present
+- **PASS** `gearbox_config_whatsapp`: float will use wa.me/8616638801930 via https://asia-power.com/js/config.js?v=apcontact-002
+- **PASS** `half_cut_http`: HTTP 200
+- **PASS** `half_cut_title`: Half Cut Cars Supplier China | Half-Cuts Catalog | AsiaPower
+- **PASS** `half_cut_canonical`: https://asia-power.com/half-cuts/
+- **PASS** `half_cut_whatsapp_static`: wa.me/8616638801930
+- **SKIP** `half_cut_logo`: no logo signal
+- **PASS** `half_cut_float_mount`: #site-whatsapp present
+- **PASS** `half_cut_config_whatsapp`: float will use wa.me/8616638801930 via https://asia-power.com/js/config.js?v=apcontact-002
+- **PASS** `supplier_portal_http`: HTTP 200
+- **PASS** `supplier_portal_title`: Supplier Portal | AsiaPower
+- **PASS** `supplier_portal_canonical`: https://asia-power.com/supplier-portal.html
+- **SKIP** `supplier_portal_whatsapp_static`: no static wa.me (float may use config)
+- **SKIP** `supplier_portal_logo`: no logo signal
+- **PASS** `supplier_portal_float_mount`: #site-whatsapp present
+- **PASS** `supplier_portal_config_whatsapp`: float will use wa.me/8616638801930 via https://asia-power.com/js/config.js?v=apcontact-002
+- **PASS** `config_js_http`: HTTP 200
+- **FAIL** `config_js_whatsapp`: bare /js/config.js whatsapp='233540911111' (expected 8616638801930) — likely Cloudflare cache poison
+- **FAIL** `config_js_forbidden`: forbidden legacy WhatsApp still in bare config.js
+- **FAIL** `config_js_cache_policy`: dangerous Cache-Control on config.js: public, max-age=31536000, immutable (APCONTACT incident class)
+- **PASS** `config_js_cf`: cf=HIT age=874218
+- **SKIP** `config_js_release_id`: releaseId not stamped yet (OPS-003 phase-2)
+- **PASS** `sw_js_http`: HTTP 200
+- **PASS** `sw_version`: CACHE_VERSION=apapp-001-v4
+- **FAIL** `sw_precache_config`: sw.js still precaches bare /js/config.js (CF poison risk)
+- **FAIL** `sw_cache_policy`: dangerous Cache-Control on sw.js: public, max-age=31536000, immutable
+- **PASS** `robots_http`: HTTP 200
+- **PASS** `robots_content`: bytes=349
+- **PASS** `sitemap_http`: HTTP 200
+- **PASS** `sitemap_content`: bytes=152053
+- **PASS** `sw_register`: registers /sw.js?v=apcontact-002
+- **PASS** `sw_register_body`: https://asia-power.com/sw.js?v=apcontact-002 → apcontact-002-v1
+
+## Cloudflare purge
+
+- Status: **manual_action_required**
+- CLOUDFLARE_ZONE_ID / CLOUDFLARE_API_TOKEN missing — Manual Action Required: purge config.js, sw.js, components.js in Cloudflare dashboard

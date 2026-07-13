@@ -2,6 +2,7 @@
  * AsiaPower — Site Configuration
  */
 const ASIAPOWER = {
+  releaseId: 'local-dev',
   company: 'AsiaPower',
   legalName: 'BSB Motors',
   siteUrl: 'https://asia-power.com',

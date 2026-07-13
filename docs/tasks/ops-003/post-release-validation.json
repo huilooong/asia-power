@@ -1,0 +1,597 @@
+{
+  "report": {
+    "status": "fail",
+    "base_url": "https://asia-power.com",
+    "release_id": "OPS003-DRYRUN",
+    "expected_whatsapp": "8616638801930",
+    "checked_at": "2026-07-13T11:08:58.150Z",
+    "checks": [
+      {
+        "name": "homepage_http",
+        "status": "pass",
+        "detail": "HTTP 200"
+      },
+      {
+        "name": "homepage_title",
+        "status": "pass",
+        "detail": "AsiaPower | Global Powertrain Sourcing for Cars, Trucks, Motorcycles &amp; Machi"
+      },
+      {
+        "name": "homepage_canonical",
+        "status": "pass",
+        "detail": "https://asia-power.com/"
+      },
+      {
+        "name": "homepage_whatsapp_static",
+        "status": "pass",
+        "detail": "wa.me/8616638801930"
+      },
+      {
+        "name": "homepage_logo",
+        "status": "pass",
+        "detail": "logo present"
+      },
+      {
+        "name": "homepage_jsonld",
+        "status": "pass",
+        "detail": "JSON-LD present"
+      },
+      {
+        "name": "homepage_float_mount",
+        "status": "pass",
+        "detail": "#site-whatsapp present"
+      },
+      {
+        "name": "homepage_config_whatsapp",
+        "status": "pass",
+        "detail": "float will use wa.me/8616638801930 via https://asia-power.com/js/config.js?v=apcontact-002"
+      },
+      {
+        "name": "contact_http",
+        "status": "pass",
+        "detail": "HTTP 200"
+      },
+      {
+        "name": "contact_title",
+        "status": "pass",
+        "detail": "Contact Us | AsiaPower"
+      },
+      {
+        "name": "contact_canonical",
+        "status": "pass",
+        "detail": "https://asia-power.com/contact.html"
+      },
+      {
+        "name": "contact_whatsapp_static",
+        "status": "pass",
+        "detail": "wa.me/8616638801930"
+      },
+      {
+        "name": "contact_logo",
+        "status": "skip",
+        "detail": "no logo signal"
+      },
+      {
+        "name": "contact_jsonld",
+        "status": "pass",
+        "detail": "JSON-LD present"
+      },
+      {
+        "name": "contact_float_mount",
+        "status": "pass",
+        "detail": "#site-whatsapp present"
+      },
+      {
+        "name": "contact_config_whatsapp",
+        "status": "pass",
+        "detail": "float will use wa.me/8616638801930 via https://asia-power.com/js/config.js?v=apcontact-002"
+      },
+      {
+        "name": "brand_http",
+        "status": "pass",
+        "detail": "HTTP 200"
+      },
+      {
+        "name": "brand_title",
+        "status": "pass",
+        "detail": "Brands We Support | AsiaPower"
+      },
+      {
+        "name": "brand_canonical",
+        "status": "pass",
+        "detail": "https://asia-power.com/brands.html"
+      },
+      {
+        "name": "brand_whatsapp_static",
+        "status": "skip",
+        "detail": "no static wa.me (float may use config)"
+      },
+      {
+        "name": "brand_logo",
+        "status": "skip",
+        "detail": "no logo signal"
+      },
+      {
+        "name": "brand_float_mount",
+        "status": "pass",
+        "detail": "#site-whatsapp present"
+      },
+      {
+        "name": "brand_config_whatsapp",
+        "status": "pass",
+        "detail": "float will use wa.me/8616638801930 via https://asia-power.com/js/config.js?v=apcontact-002"
+      },
+      {
+        "name": "engine_http",
+        "status": "pass",
+        "detail": "HTTP 200"
+      },
+      {
+        "name": "engine_title",
+        "status": "pass",
+        "detail": "Used Engines Export Africa | Engine Catalog | AsiaPower"
+      },
+      {
+        "name": "engine_canonical",
+        "status": "pass",
+        "detail": "https://asia-power.com/engines/"
+      },
+      {
+        "name": "engine_whatsapp_static",
+        "status": "pass",
+        "detail": "wa.me/8616638801930"
+      },
+      {
+        "name": "engine_logo",
+        "status": "skip",
+        "detail": "no logo signal"
+      },
+      {
+        "name": "engine_float_mount",
+        "status": "pass",
+        "detail": "#site-whatsapp present"
+      },
+      {
+        "name": "engine_config_whatsapp",
+        "status": "pass",
+        "detail": "float will use wa.me/8616638801930 via https://asia-power.com/js/config.js?v=apcontact-002"
+      },
+      {
+        "name": "gearbox_http",
+        "status": "pass",
+        "detail": "HTTP 200"
+      },
+      {
+        "name": "gearbox_title",
+        "status": "pass",
+        "detail": "Gearbox Catalog | AsiaPower"
+      },
+      {
+        "name": "gearbox_canonical",
+        "status": "pass",
+        "detail": "https://asia-power.com/gearboxes/"
+      },
+      {
+        "name": "gearbox_whatsapp_static",
+        "status": "skip",
+        "detail": "no static wa.me (float may use config)"
+      },
+      {
+        "name": "gearbox_logo",
+        "status": "skip",
+        "detail": "no logo signal"
+      },
+      {
+        "name": "gearbox_float_mount",
+        "status": "pass",
+        "detail": "#site-whatsapp present"
+      },
+      {
+        "name": "gearbox_config_whatsapp",
+        "status": "pass",
+        "detail": "float will use wa.me/8616638801930 via https://asia-power.com/js/config.js?v=apcontact-002"
+      },
+      {
+        "name": "half_cut_http",
+        "status": "pass",
+        "detail": "HTTP 200"
+      },
+      {
+        "name": "half_cut_title",
+        "status": "pass",
+        "detail": "Half Cut Cars Supplier China | Half-Cuts Catalog | AsiaPower"
+      },
+      {
+        "name": "half_cut_canonical",
+        "status": "pass",
+        "detail": "https://asia-power.com/half-cuts/"
+      },
+      {
+        "name": "half_cut_whatsapp_static",
+        "status": "pass",
+        "detail": "wa.me/8616638801930"
+      },
+      {
+        "name": "half_cut_logo",
+        "status": "skip",
+        "detail": "no logo signal"
+      },
+      {
+        "name": "half_cut_float_mount",
+        "status": "pass",
+        "detail": "#site-whatsapp present"
+      },
+      {
+        "name": "half_cut_config_whatsapp",
+        "status": "pass",
+        "detail": "float will use wa.me/8616638801930 via https://asia-power.com/js/config.js?v=apcontact-002"
+      },
+      {
+        "name": "supplier_portal_http",
+        "status": "pass",
+        "detail": "HTTP 200"
+      },
+      {
+        "name": "supplier_portal_title",
+        "status": "pass",
+        "detail": "Supplier Portal | AsiaPower"
+      },
+      {
+        "name": "supplier_portal_canonical",
+        "status": "pass",
+        "detail": "https://asia-power.com/supplier-portal.html"
+      },
+      {
+        "name": "supplier_portal_whatsapp_static",
+        "status": "skip",
+        "detail": "no static wa.me (float may use config)"
+      },
+      {
+        "name": "supplier_portal_logo",
+        "status": "skip",
+        "detail": "no logo signal"
+      },
+      {
+        "name": "supplier_portal_float_mount",
+        "status": "pass",
+        "detail": "#site-whatsapp present"
+      },
+      {
+        "name": "supplier_portal_config_whatsapp",
+        "status": "pass",
+        "detail": "float will use wa.me/8616638801930 via https://asia-power.com/js/config.js?v=apcontact-002"
+      },
+      {
+        "name": "config_js_http",
+        "status": "pass",
+        "detail": "HTTP 200"
+      },
+      {
+        "name": "config_js_whatsapp",
+        "status": "fail",
+        "detail": "bare /js/config.js whatsapp='233540911111' (expected 8616638801930) — likely Cloudflare cache poison"
+      },
+      {
+        "name": "config_js_forbidden",
+        "status": "fail",
+        "detail": "forbidden legacy WhatsApp still in bare config.js"
+      },
+      {
+        "name": "config_js_cache_policy",
+        "status": "fail",
+        "detail": "dangerous Cache-Control on config.js: public, max-age=31536000, immutable (APCONTACT incident class)"
+      },
+      {
+        "name": "config_js_cf",
+        "status": "pass",
+        "detail": "cf=HIT age=874218"
+      },
+      {
+        "name": "config_js_release_id",
+        "status": "skip",
+        "detail": "releaseId not stamped yet (OPS-003 phase-2)"
+      },
+      {
+        "name": "sw_js_http",
+        "status": "pass",
+        "detail": "HTTP 200"
+      },
+      {
+        "name": "sw_version",
+        "status": "pass",
+        "detail": "CACHE_VERSION=apapp-001-v4"
+      },
+      {
+        "name": "sw_precache_config",
+        "status": "fail",
+        "detail": "sw.js still precaches bare /js/config.js (CF poison risk)"
+      },
+      {
+        "name": "sw_cache_policy",
+        "status": "fail",
+        "detail": "dangerous Cache-Control on sw.js: public, max-age=31536000, immutable"
+      },
+      {
+        "name": "robots_http",
+        "status": "pass",
+        "detail": "HTTP 200"
+      },
+      {
+        "name": "robots_content",
+        "status": "pass",
+        "detail": "bytes=349"
+      },
+      {
+        "name": "sitemap_http",
+        "status": "pass",
+        "detail": "HTTP 200"
+      },
+      {
+        "name": "sitemap_content",
+        "status": "pass",
+        "detail": "bytes=152053"
+      },
+      {
+        "name": "sw_register",
+        "status": "pass",
+        "detail": "registers /sw.js?v=apcontact-002"
+      },
+      {
+        "name": "sw_register_body",
+        "status": "pass",
+        "detail": "https://asia-power.com/sw.js?v=apcontact-002 → apcontact-002-v1"
+      }
+    ],
+    "pages": {
+      "homepage": {
+        "url": "https://asia-power.com/",
+        "http_status": 200,
+        "cache": {
+          "cache_control": "no-cache, no-store, must-revalidate",
+          "cf_cache_status": "DYNAMIC",
+          "etag": "",
+          "age": "",
+          "last_modified": ""
+        },
+        "title": "AsiaPower | Global Powertrain Sourcing for Cars, Trucks, Motorcycles &amp; Machinery",
+        "canonical": "https://asia-power.com/",
+        "wa_me": [
+          "8616638801930"
+        ],
+        "config_script_src": "js/config.js?v=apcontact-002",
+        "has_logo": true,
+        "has_json_ld": true,
+        "has_site_whatsapp": true,
+        "resolved_config_url": "https://asia-power.com/js/config.js?v=apcontact-002",
+        "resolved_config_whatsapp": "8616638801930",
+        "resolved_config_cache": {
+          "cache_control": "public, max-age=14400, must-revalidate",
+          "cf_cache_status": "EXPIRED",
+          "etag": ""
+        }
+      },
+      "contact": {
+        "url": "https://asia-power.com/contact.html",
+        "http_status": 200,
+        "cache": {
+          "cache_control": "no-cache, no-store, must-revalidate",
+          "cf_cache_status": "DYNAMIC",
+          "etag": "",
+          "age": "",
+          "last_modified": ""
+        },
+        "title": "Contact Us | AsiaPower",
+        "canonical": "https://asia-power.com/contact.html",
+        "wa_me": [
+          "8616638801930"
+        ],
+        "config_script_src": "js/config.js?v=apcontact-002",
+        "has_logo": false,
+        "has_json_ld": true,
+        "has_site_whatsapp": true,
+        "resolved_config_url": "https://asia-power.com/js/config.js?v=apcontact-002",
+        "resolved_config_whatsapp": "8616638801930",
+        "resolved_config_cache": {
+          "cache_control": "public, max-age=14400, must-revalidate",
+          "cf_cache_status": "HIT",
+          "etag": ""
+        }
+      },
+      "brand": {
+        "url": "https://asia-power.com/brands.html",
+        "http_status": 200,
+        "cache": {
+          "cache_control": "no-cache, no-store, must-revalidate",
+          "cf_cache_status": "DYNAMIC",
+          "etag": "",
+          "age": "",
+          "last_modified": ""
+        },
+        "title": "Brands We Support | AsiaPower",
+        "canonical": "https://asia-power.com/brands.html",
+        "wa_me": [],
+        "config_script_src": "js/config.js?v=apcontact-002",
+        "has_logo": false,
+        "has_json_ld": false,
+        "has_site_whatsapp": true,
+        "resolved_config_url": "https://asia-power.com/js/config.js?v=apcontact-002",
+        "resolved_config_whatsapp": "8616638801930",
+        "resolved_config_cache": {
+          "cache_control": "public, max-age=14400, must-revalidate",
+          "cf_cache_status": "HIT",
+          "etag": ""
+        }
+      },
+      "engine": {
+        "url": "https://asia-power.com/engines/index.html",
+        "http_status": 200,
+        "cache": {
+          "cache_control": "public, max-age=300",
+          "cf_cache_status": "DYNAMIC",
+          "etag": "",
+          "age": "",
+          "last_modified": ""
+        },
+        "title": "Used Engines Export Africa | Engine Catalog | AsiaPower",
+        "canonical": "https://asia-power.com/engines/",
+        "wa_me": [
+          "8616638801930"
+        ],
+        "config_script_src": "../js/config.js?v=apcontact-002",
+        "has_logo": false,
+        "has_json_ld": true,
+        "has_site_whatsapp": true,
+        "resolved_config_url": "https://asia-power.com/js/config.js?v=apcontact-002",
+        "resolved_config_whatsapp": "8616638801930",
+        "resolved_config_cache": {
+          "cache_control": "public, max-age=14400, must-revalidate",
+          "cf_cache_status": "HIT",
+          "etag": ""
+        }
+      },
+      "gearbox": {
+        "url": "https://asia-power.com/gearboxes/index.html",
+        "http_status": 200,
+        "cache": {
+          "cache_control": "public, max-age=300",
+          "cf_cache_status": "DYNAMIC",
+          "etag": "",
+          "age": "",
+          "last_modified": ""
+        },
+        "title": "Gearbox Catalog | AsiaPower",
+        "canonical": "https://asia-power.com/gearboxes/",
+        "wa_me": [],
+        "config_script_src": "../js/config.js?v=apcontact-002",
+        "has_logo": false,
+        "has_json_ld": true,
+        "has_site_whatsapp": true,
+        "resolved_config_url": "https://asia-power.com/js/config.js?v=apcontact-002",
+        "resolved_config_whatsapp": "8616638801930",
+        "resolved_config_cache": {
+          "cache_control": "public, max-age=14400, must-revalidate",
+          "cf_cache_status": "HIT",
+          "etag": ""
+        }
+      },
+      "half_cut": {
+        "url": "https://asia-power.com/half-cuts/index.html",
+        "http_status": 200,
+        "cache": {
+          "cache_control": "public, max-age=300",
+          "cf_cache_status": "DYNAMIC",
+          "etag": "",
+          "age": "",
+          "last_modified": ""
+        },
+        "title": "Half Cut Cars Supplier China | Half-Cuts Catalog | AsiaPower",
+        "canonical": "https://asia-power.com/half-cuts/",
+        "wa_me": [
+          "8616638801930"
+        ],
+        "config_script_src": "../js/config.js?v=apcontact-002",
+        "has_logo": false,
+        "has_json_ld": true,
+        "has_site_whatsapp": true,
+        "resolved_config_url": "https://asia-power.com/js/config.js?v=apcontact-002",
+        "resolved_config_whatsapp": "8616638801930",
+        "resolved_config_cache": {
+          "cache_control": "public, max-age=14400, must-revalidate",
+          "cf_cache_status": "HIT",
+          "etag": ""
+        }
+      },
+      "supplier_portal": {
+        "url": "https://asia-power.com/supplier-portal.html",
+        "http_status": 200,
+        "cache": {
+          "cache_control": "no-cache, no-store, must-revalidate",
+          "cf_cache_status": "DYNAMIC",
+          "etag": "",
+          "age": "",
+          "last_modified": ""
+        },
+        "title": "Supplier Portal | AsiaPower",
+        "canonical": "https://asia-power.com/supplier-portal.html",
+        "wa_me": [],
+        "config_script_src": "js/config.js?v=apcontact-002",
+        "has_logo": false,
+        "has_json_ld": false,
+        "has_site_whatsapp": true,
+        "resolved_config_url": "https://asia-power.com/js/config.js?v=apcontact-002",
+        "resolved_config_whatsapp": "8616638801930",
+        "resolved_config_cache": {
+          "cache_control": "public, max-age=14400, must-revalidate",
+          "cf_cache_status": "HIT",
+          "etag": ""
+        }
+      },
+      "config_js": {
+        "url": "https://asia-power.com/js/config.js",
+        "http_status": 200,
+        "cache": {
+          "cache_control": "public, max-age=31536000, immutable",
+          "cf_cache_status": "HIT",
+          "etag": "",
+          "age": "874218",
+          "last_modified": "Fri, 03 Jul 2026 08:18:38 GMT"
+        },
+        "whatsapp": "233540911111",
+        "release_id": ""
+      },
+      "sw_js": {
+        "url": "https://asia-power.com/sw.js",
+        "http_status": 200,
+        "cache": {
+          "cache_control": "public, max-age=31536000, immutable",
+          "cf_cache_status": "HIT",
+          "etag": "",
+          "age": "370610",
+          "last_modified": "Thu, 09 Jul 2026 04:12:06 GMT"
+        },
+        "cache_version": "apapp-001-v4"
+      },
+      "robots": {
+        "url": "https://asia-power.com/robots.txt",
+        "http_status": 200,
+        "cache": {
+          "cache_control": "no-cache, no-store, must-revalidate",
+          "cf_cache_status": "BYPASS",
+          "etag": "",
+          "age": "",
+          "last_modified": ""
+        }
+      },
+      "sitemap": {
+        "url": "https://asia-power.com/sitemap.xml",
+        "http_status": 200,
+        "cache": {
+          "cache_control": "public, max-age=3600",
+          "cf_cache_status": "DYNAMIC",
+          "etag": "",
+          "age": "",
+          "last_modified": ""
+        }
+      },
+      "pwa_install": {
+        "src": "/js/pwa-install.js?v=apcontact-002",
+        "sw_register": "/sw.js?v=apcontact-002"
+      }
+    },
+    "fail_count": 5,
+    "pass_count": 52
+  },
+  "purge": {
+    "status": "manual_action_required",
+    "detail": "CLOUDFLARE_ZONE_ID / CLOUDFLARE_API_TOKEN missing — Manual Action Required: purge config.js, sw.js, components.js in Cloudflare dashboard",
+    "files": [
+      "https://asia-power.com/js/config.js",
+      "https://asia-power.com/js/components.js",
+      "https://asia-power.com/sw.js",
+      "https://asia-power.com/js/pwa-install.js",
+      "https://asia-power.com/",
+      "https://asia-power.com/index.html",
+      "https://asia-power.com/contact.html"
+    ]
+  }
+}

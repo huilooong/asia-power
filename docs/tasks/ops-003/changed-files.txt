@@ -1,0 +1,15 @@
+# OPS-003 changed files
+
+scripts/lib/post-release-validation.mjs
+scripts/post-release-validation.mjs
+scripts/lib/release-manager.mjs
+scripts/deploy-production.mjs
+js/config.js
+docs/tasks/ops-003/production-health.md
+docs/tasks/ops-003/release-validation.md
+docs/tasks/ops-003/cache-validation.md
+docs/tasks/ops-003/public-validation.md
+docs/tasks/ops-003/review.md
+docs/tasks/ops-003/release-asset-versioning.md
+docs/tasks/ops-003/changed-files.txt
+docs/tasks/ops-003/post-release-validation.json

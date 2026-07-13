@@ -585,7 +585,7 @@ function printHelp() {
 
   REQUIRED: commit → push GitHub → then deploy (CEO red line 2026-07-10)
   Pre-deploy:  git clean, HEAD on origin, backup, target confirmation
-  Post-deploy: nginx -t, critical URLs, release.json
+  Post-deploy: nginx -t, critical URLs, OPS-003 public parser validation, release.json
 
   Emergency only (logged): DEPLOY_ALLOW_DIRTY=1 + --allow-dirty
                            DEPLOY_ALLOW_UNPUSHED=1
@@ -650,6 +650,7 @@ async function main() {
     target: targetArg,
     remote: REMOTE,
     baseUrl: BASE_URL,
+    releaseId,
   });
 
   for (const c of post.checks) {

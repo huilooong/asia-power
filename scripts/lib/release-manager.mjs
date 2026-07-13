@@ -5,6 +5,12 @@
 import { spawnSync } from 'child_process';
 import fs from 'fs';
 import path from 'path';
+import {
+  runPublicPostReleaseValidation,
+  attemptCloudflarePurge,
+  writeValidationReports,
+  stampReleaseIdIntoConfig,
+} from './post-release-validation.mjs';
 
 export const VALID_TARGETS = ['nginx', 'api', 'engines', 'apsales', 'finalize', 'home', 'portal', 'chrome', 'categories', 'admin'];
 
@@ -418,8 +424,8 @@ echo SNAPSHOT_OK
   return r.status === 0 && (r.stdout || '').includes('SNAPSHOT_OK');
 }
 
-export async function runPostDeployValidation({ root, target, remote, baseUrl }) {
-  /** @type {{name: string, status: 'pass'|'fail'|'skip', detail: string}[]} */
+export async function runPostDeployValidation({ root, target, remote, baseUrl, releaseId = '' }) {
+  /** @type {{name: string, status: 'pass'|'fail'|'skip'|'warn', detail: string}[]} */
   const checks = [];
 
   if (target === 'nginx' || target === 'api') {
@@ -461,7 +467,98 @@ export async function runPostDeployValidation({ root, target, remote, baseUrl })
     detail: svcOut || 'service check failed',
   });
 
-  return { status: checks.some((c) => c.status === 'fail') ? 'fail' : 'pass', checks };
+  // OPS-003: parser-based public validation for any customer-facing target
+  const publicTargets = new Set(['nginx', 'api', 'engines', 'home', 'chrome', 'portal', 'categories', 'admin']);
+  /** @type {any} */
+  let publicReport = null;
+  /** @type {any} */
+  let purgeReport = null;
+
+  if (publicTargets.has(target)) {
+    // Stamp releaseId on remote config.js (no HTML/SEO rewrite)
+    if (releaseId) {
+      const stampCmd = `
+CFG=/root/.openclaw/workspace/inventory-site/public/js/config.js
+if [ -f "$CFG" ]; then
+  if grep -q 'releaseId:' "$CFG"; then
+    sed -i "s/releaseId: *['\\"'][^'\\"']*['\\"']/releaseId: '${releaseId}'/" "$CFG"
+  else
+    sed -i "s/const ASIAPOWER = {/const ASIAPOWER = {\\n  releaseId: '${releaseId}',/" "$CFG"
+  fi
+  if grep -q 'RELEASE_ID:' "$CFG"; then
+    sed -i "s|/\\* RELEASE_ID: .* \\*/|/* RELEASE_ID: ${releaseId} */|" "$CFG"
+  else
+    echo "/* RELEASE_ID: ${releaseId} */" >> "$CFG"
+  fi
+  echo STAMP_OK
+fi
+`;
+      const stamp = spawnSync('ssh', ['-o', 'BatchMode=yes', remote, stampCmd], { encoding: 'utf8' });
+      checks.push({
+        name: 'release_id_stamp',
+        status: (stamp.stdout || '').includes('STAMP_OK') ? 'pass' : 'warn',
+        detail: (stamp.stdout || '').includes('STAMP_OK')
+          ? `stamped ${releaseId} into remote js/config.js`
+          : `stamp skipped/failed: ${(stamp.stderr || stamp.stdout || '').slice(0, 160)}`,
+      });
+    }
+
+    purgeReport = await attemptCloudflarePurge({ baseUrl });
+    checks.push({
+      name: 'cloudflare_purge',
+      status: purgeReport.status === 'pass' ? 'pass' : 'warn',
+      detail: purgeReport.detail,
+    });
+
+    // Brief wait so edge can refresh after successful purge
+    if (purgeReport.status === 'pass') {
+      await new Promise((r) => setTimeout(r, 2000));
+    }
+
+    publicReport = await runPublicPostReleaseValidation({
+      baseUrl,
+      releaseId,
+    });
+
+    for (const c of publicReport.checks) {
+      checks.push({
+        name: `public_${c.name}`,
+        status: c.status === 'skip' ? 'skip' : c.status,
+        detail: c.detail,
+      });
+    }
+
+    const outDir = path.join(root, 'docs', 'tasks', 'ops-003');
+    try {
+      writeValidationReports(outDir, publicReport, purgeReport);
+      // also archive under this release
+      if (releaseId) {
+        const relOut = path.join(root, 'releases', releaseId, 'ops-003');
+        writeValidationReports(relOut, publicReport, purgeReport);
+      }
+      checks.push({
+        name: 'ops003_reports',
+        status: 'pass',
+        detail: `wrote docs/tasks/ops-003/ (+ releases/${releaseId || 'n-a'}/ops-003/)`,
+      });
+    } catch (err) {
+      checks.push({
+        name: 'ops003_reports',
+        status: 'warn',
+        detail: String(err && err.message ? err.message : err),
+      });
+    }
+  } else {
+    checks.push({ name: 'public_post_release_validation', status: 'skip', detail: `target=${target} not public surface` });
+  }
+
+  const hardFail = checks.some((c) => c.status === 'fail');
+  return {
+    status: hardFail ? 'fail' : 'pass',
+    checks,
+    public_report: publicReport,
+    cloudflare_purge: purgeReport,
+  };
 }
 
 export function writeReleaseJson({ remote, release, localDir }) {
@@ -501,6 +598,16 @@ export function buildReleaseRecord({
     validation: {
       pre: { status: pre.status, checks: pre.checks },
       post: post ? { status: post.status, checks: post.checks } : { status: 'pending', checks: [] },
+      ops003_public: post?.public_report
+        ? {
+            status: post.public_report.status,
+            fail_count: post.public_report.fail_count,
+            expected_whatsapp: post.public_report.expected_whatsapp,
+          }
+        : null,
+      cloudflare_purge: post?.cloudflare_purge
+        ? { status: post.cloudflare_purge.status, detail: post.cloudflare_purge.detail }
+        : null,
     },
     recovery: {
       backup_archive: backupPath,
