@@ -10,7 +10,7 @@
 (function () {
   'use strict';
 
-  var CACHE = 'pwa-app-v4';
+  var CACHE = 'pwa-app-v5';
   var TABBAR_ID = 'ap-app-tabbar';
   var TOPBAR_ID = 'ap-app-topbar';
   /** Kill switch — must stay false until standalone detection is proven safe. */
@@ -38,7 +38,11 @@
       if (document.body) {
         document.body.classList.remove('ap-app-shell');
         document.body.classList.remove('ap-pwa-sheet-open');
+        document.body.style.removeProperty('overflow');
+        document.body.style.removeProperty('position');
+        document.body.style.removeProperty('height');
       }
+      document.documentElement.style.removeProperty('overflow');
       var top = document.getElementById(TOPBAR_ID);
       if (top) top.remove();
       var tab = document.getElementById(TABBAR_ID);
@@ -46,6 +50,9 @@
       document.querySelectorAll('.ap-app-topbar, .ap-app-tabbar').forEach(function (el) {
         el.remove();
       });
+      if (window.AsiaPowerPwaInstall && typeof window.AsiaPowerPwaInstall.unlockPageScroll === 'function') {
+        window.AsiaPowerPwaInstall.unlockPageScroll();
+      }
     } catch (_) { /* ignore */ }
   }
 

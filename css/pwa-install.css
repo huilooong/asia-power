@@ -247,9 +247,9 @@ body.page-home .ap-pwa-fab {
   text-align: center;
 }
 
+/* NEVER lock html/body scroll — leftover ap-pwa-sheet-open used to freeze the PWA. */
 body.ap-pwa-sheet-open {
-  overflow: hidden;
-  /* Only lock while the install sheet is open; never leave this class stuck. */
+  /* intentionally empty — sheet uses its own overlay; page must stay scrollable */
 }
 
 @media (min-width: 760px) {

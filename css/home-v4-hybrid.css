@@ -749,7 +749,10 @@ img { display:block; max-width:100% }
   gap: 12px;
   overflow-x: auto;
   padding: 4px 2px 12px;
-  scroll-snap-type: x mandatory;
+  /* proximity + pan-y: mandatory x-snap traps one-finger vertical scroll on phones */
+  scroll-snap-type: x proximity;
+  touch-action: pan-x pan-y;
+  overscroll-behavior-x: contain;
   -webkit-overflow-scrolling: touch;
 }
 .shelf-rail::-webkit-scrollbar { height: 6px; }
@@ -830,3 +833,16 @@ body.page-home-v4-hybrid #site-topbar,
 body.page-home-v4-hybrid #site-header { display: none !important; }
 body.page-home-v4-hybrid #site-footer { display: none !important; }
 body.page-home-v4-hybrid .app-bottom-nav { display: none !important; }
+
+/* Mobile / installed-PWA: never freeze document scroll */
+body.page-home-v4-hybrid {
+  overflow-x: hidden;
+  overflow-y: auto !important;
+  height: auto !important;
+  max-height: none !important;
+  position: static !important;
+  touch-action: pan-y pinch-zoom;
+}
+body.page-home-v4-hybrid .nav-links {
+  touch-action: pan-x pan-y;
+}

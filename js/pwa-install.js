@@ -7,8 +7,8 @@
   'use strict';
 
   var STORAGE_DISMISS = 'ap_pwa_install_dismissed_until';
-  var SW_URL = '/sw.js?v=pwa-app-v4';
-  var CACHE_BUST = 'pwa-app-v4';
+  var SW_URL = '/sw.js?v=pwa-app-v5';
+  var CACHE_BUST = 'pwa-app-v5';
   /* CSS is also linked from HTML; ensureStyles is a safety net for app.html edge cases. */
 
   var deferredPrompt = null;
@@ -202,11 +202,22 @@
     }
   }
 
+  function unlockPageScroll() {
+    try {
+      document.body.classList.remove('ap-pwa-sheet-open');
+      document.documentElement.style.removeProperty('overflow');
+      document.body.style.removeProperty('overflow');
+      document.body.style.removeProperty('position');
+      document.body.style.removeProperty('height');
+      document.body.style.removeProperty('touch-action');
+    } catch (_) { /* ignore */ }
+  }
+
   function openSheet() {
     if (isStandalone()) return;
     syncSheetState();
     sheet.hidden = false;
-    document.body.classList.add('ap-pwa-sheet-open');
+    // Do not add ap-pwa-sheet-open — that class previously froze mobile scrolling.
     var primary = sheet.querySelector('[data-ap-pwa-install]');
     if (primary) primary.focus();
   }
@@ -214,7 +225,7 @@
   function closeSheet(remember) {
     if (!sheet) return;
     sheet.hidden = true;
-    document.body.classList.remove('ap-pwa-sheet-open');
+    unlockPageScroll();
     if (remember) dismissForDays(7);
     updateFab();
   }
@@ -323,7 +334,13 @@
   }
 
   function boot() {
-    if (isStandalone()) return;
+    // Always clear a stuck scroll lock (installed app or leftover sheet class).
+    unlockPageScroll();
+    if (isStandalone()) {
+      if (fab) fab.hidden = true;
+      if (sheet) sheet.hidden = true;
+      return;
+    }
     registerServiceWorker();
     createFab();
     updateFab();
@@ -347,6 +364,7 @@
     openSheet: openSheet,
     closeSheet: closeSheet,
     updateFab: updateFab,
+    unlockPageScroll: unlockPageScroll,
     getDeferredPrompt: function () { return deferredPrompt; },
     _test: {
       STORAGE_DISMISS: STORAGE_DISMISS,
