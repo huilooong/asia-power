@@ -9,5 +9,5 @@
 | gearbox | Gearbox Catalog | AsiaPower | float→8616638801930 |
 | half_cut | Half Cut Cars Supplier China | Half-Cuts Catalog | AsiaPower | wa.me/8616638801930 |
 | supplier_portal | Supplier Portal | AsiaPower | float→8616638801930 |
-| config.js | releaseId=REL-20260713132831-chrome-f0794ce60 | 8616638801930 |
+| config.js | releaseId=REL-20260713133333-engines-83cb600f9 | 8616638801930 |
 | sw.js | apcontact-002-v1 | — |

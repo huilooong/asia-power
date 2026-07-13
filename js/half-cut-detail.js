@@ -638,7 +638,7 @@
       <section class="cta-block">
         <div class="container cta-block__inner">
           <div>
-            <h2>${item.status === 'Sold' ? `${t('hc.ctaSold', 'Similar')} ${escapeHtml(item.brand)} ${escapeHtml(item.model)} ${cutLabel}` : `${t('hc.ctaExport', 'Export')} ${escapeHtml(item.brand)} ${escapeHtml(item.model)} ${cutLabel}`}</h2>
+            <h2>${item.status === 'Sold' ? `${t('hc.ctaSold', 'Similar')} ${escapeHtml(displayTitle.replace(/\s+Half Cut.*$/i, '').trim() || item.brand)} ${cutLabel}` : `${t('hc.ctaExport', 'Export')} ${escapeHtml(displayTitle.replace(/\s+Half Cut.*$/i, '').trim() || item.brand)} ${cutLabel}`}</h2>
             <p>${item.status === 'Sold'
               ? `${t('hc.ctaSoldIntro', 'Stock ID')} <strong>${escapeHtml(item.stockId)}</strong> ${t('hc.ctaSoldRest', 'is sold. Reference this listing when requesting a similar unit.')}`
               : `${t('hc.ctaSoldIntro', 'Stock ID')} <strong>${escapeHtml(item.stockId)}</strong>${t('hc.ctaAvailableRest', ' — reference for EXW/CIF quotation; availability confirmed on enquiry.')}`}</p>

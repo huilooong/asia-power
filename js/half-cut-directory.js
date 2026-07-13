@@ -860,23 +860,25 @@
     const pricePart = priceSnippet ? `${priceSnippet}. ` : '';
     const engLine = listingEngineConfirmLine(item);
     const engHint = engLine ? ` — ${engLine}` : (item.engineCode ? ` — ${item.engineCode}` : '');
+    const vehicle = window.EngineCardLabel?.formatHalfCutVehicleTitle?.(item)
+      || [item.brand, item.model].filter(Boolean).join(' ');
     if (item?.vehicleCategory === 'machinery') {
       const videoHint = hasVideo(item) ? ' Whole-vehicle startup video available before dismantling.' : '';
       if (isAvailable(item)) {
-        return `${item.brand} ${item.model} ${typeLabel} export from China${engHint}.${videoHint} ${pricePart}Photos and shipping on request. Stock ${item.stockId}.`;
+        return `${vehicle} ${typeLabel} export from China${engHint}.${videoHint} ${pricePart}Photos and shipping on request. Stock ${item.stockId}.`;
       }
       if (isReserved(item)) {
-        return `Reserved ${item.brand} ${item.model} ${typeLabel}${engHint}. ${pricePart}Confirm availability or request similar units. Stock ${item.stockId}.`;
+        return `Reserved ${vehicle} ${typeLabel}${engHint}. ${pricePart}Confirm availability or request similar units. Stock ${item.stockId}.`;
       }
-      return `Sold ${item.brand} ${item.model} ${typeLabel} reference${engHint}. ${pricePart}Request similar available units. Stock ${item.stockId}.`;
+      return `Sold ${vehicle} ${typeLabel} reference${engHint}. ${pricePart}Request similar available units. Stock ${item.stockId}.`;
     }
     if (isAvailable(item)) {
-      return `${item.brand} ${item.model} half cut${engHint}. ${pricePart}Photos and shipping on request. Stock ID ${item.stockId}.`;
+      return `${vehicle} half cut${engHint}. ${pricePart}Photos and shipping on request. Stock ID ${item.stockId}.`;
     }
     if (isReserved(item)) {
-      return `Reserved ${item.brand} ${item.model} half cut${engHint}. ${pricePart}Confirm availability or request similar units. Stock ID ${item.stockId}.`;
+      return `Reserved ${vehicle} half cut${engHint}. ${pricePart}Confirm availability or request similar units. Stock ID ${item.stockId}.`;
     }
-    return `Sold ${item.brand} ${item.model} half cut${engHint}. ${pricePart}Request similar available units. Stock ID ${item.stockId}.`;
+    return `Sold ${vehicle} half cut${engHint}. ${pricePart}Request similar available units. Stock ID ${item.stockId}.`;
   }
 
   function heroIntro(item) {
