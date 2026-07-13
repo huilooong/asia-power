@@ -1,0 +1,27 @@
+{
+  "releaseId": "REL-20260713114530-chrome-9e6a8bcc4",
+  "target": "chrome",
+  "git": {
+    "commit": "9e6a8bcc40b13f618f7747b8e50ca8d03a15f83d",
+    "short": "9e6a8bcc4",
+    "branch": "feature/apsales-evidence-001"
+  },
+  "remote": "root@159.65.86.24",
+  "timestamp": "2026-07-13T11:52:04.244159+00:00",
+  "status": "deployed_assets_verified",
+  "notes": [
+    "Release Manager rsync completed; Node ssh() post-check exited non-zero (flaky) before writeReleaseJson",
+    "Independent remote greps PASS; public assets verified; OPS-003 pass=57 fail=0",
+    "DEPLOY_ALLOW_UNPUSHED=1 used only because clean worktree was detached; SHA already on origin/feature/apsales-evidence-001"
+  ],
+  "rollback": "Restore snapshots under releases/REL-20260713114530-chrome-9e6a8bcc4/snapshots/ to public/, or redeploy prior chrome release REL-20260713105651-chrome-d40316224",
+  "changedFiles": [
+    "brands.html",
+    "js/main.js",
+    "js/half-cut-inventory-store.js",
+    "js/components.js",
+    "css/ebay-layout.css",
+    "assets/images/ford-asiapower-powertrain-placeholder.svg",
+    "scripts/deploy-production.mjs"
+  ]
+}
