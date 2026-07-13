@@ -20,3 +20,13 @@ test('non-price safe reply passes through', () => {
   assert.equal(r.reason_code, 'ok');
   assert.match(r.text, /G4KD|engine/i);
 });
+
+test('APPROVAL_REQUEST leak is stripped / rewritten for VIN inbound', () => {
+  const leaked =
+    'Dear Customer,\n\nThank you for VIN LFBME3062EJB07697.\n\nBest regards,\nAsiaPower Sales Team\n' +
+    'APPROVAL_REQUEST: action=external_message | risk=medium | why=Send draft';
+  const r = applyRiskPolicy(leaked, 'LFBME3062EJB07697');
+  assert.equal(r.reason_code, 'whatsapp_style_vin');
+  assert.doesNotMatch(r.text, /APPROVAL_REQUEST|Dear Customer|Best regards/i);
+  assert.match(r.text, /VIN|quantity|port/i);
+});

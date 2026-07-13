@@ -83,9 +83,51 @@ function appendJsonl(file, row) {
 
 function stripInternalLeaks(text) {
   return String(text || '')
-    .replace(/(?:^|\n)\s*(?:MEMORY_TO_SAVE|DECISION_TO_SAVE|APPROVAL_REQUIRED|INTERNAL_NOTE)\s*:.*$/gim, '')
+    // APPROVAL_REQUEST (not only APPROVAL_REQUIRED) — Live Fix 2026-07-13
+    .replace(
+      /(?:^|\n)\s*(?:MEMORY_TO_SAVE|DECISION_TO_SAVE|APPROVAL_REQUEST|APPROVAL_REQUIRED|INTERNAL_NOTE|SYSTEM|DEBUG)\s*:.*$/gim,
+      '',
+    )
+    .replace(/\bAPPROVAL_REQUEST\b[:\s].*$/gim, '')
     .replace(/\n{3,}/g, '\n\n')
     .trim();
+}
+
+function hasEmailTone(text) {
+  return (
+    /\bDear\s+Customer\b/i.test(text) ||
+    /\bDear\s+Sir\b/i.test(text) ||
+    /\bBest\s+regards\b/i.test(text) ||
+    /\bLooking\s+forward\s+to\s+your\s+reply\b/i.test(text) ||
+    /\bAsiaPower\s+Sales\s+Team\b/i.test(text)
+  );
+}
+
+function hasResidualLeak(text) {
+  return /MEMORY_TO_SAVE|DECISION_TO_SAVE|APPROVAL_REQUEST|APPROVAL_REQUIRED|INTERNAL_NOTE\s*:/i.test(
+    String(text || ''),
+  );
+}
+
+function extractVin(text) {
+  const m = String(text || '').toUpperCase().match(/\b([A-HJ-NPR-Z0-9]{11,17})\b/);
+  return m ? m[1] : '';
+}
+
+/** WhatsApp-native reply after customer sent VIN (no email template). */
+function vinReceivedReply(inboundText) {
+  const vin = extractVin(inboundText);
+  const vinLine = vin ? `Got your VIN: ${vin}\n\n` : 'Got your VIN.\n\n';
+  return (
+    vinLine +
+    'We will check the matching engine with suppliers (confirmation before any stock/price promise).\n\n' +
+    'Please confirm:\n' +
+    '• Long block / complete engine / gearbox?\n' +
+    '• Quantity?\n' +
+    '• Destination port?\n\n' +
+    'Then we move to quotation (FOB / CIF).\n\n' +
+    'www.asia-power.com'
+  );
 }
 
 /**
@@ -139,8 +181,26 @@ function isPriceInquiry(inbound) {
 }
 
 function applyRiskPolicy(text, inboundText) {
-  const body = stripInternalLeaks(text);
-  const inbound = String(inboundText || '').toLowerCase();
+  let body = stripInternalLeaks(text);
+  const inbound = String(inboundText || '');
+  const inboundL = inbound.toLowerCase();
+  const inboundHasVin = Boolean(extractVin(inbound));
+
+  // P0: internal tags or email tone must never reach WhatsApp
+  if (hasResidualLeak(body) || hasEmailTone(body)) {
+    if (inboundHasVin) {
+      return {
+        text: vinReceivedReply(inbound),
+        risk_blocked: true,
+        reason_code: 'whatsapp_style_vin',
+      };
+    }
+    return {
+      text: priceAdvanceReply(inbound),
+      risk_blocked: true,
+      reason_code: hasResidualLeak(body) ? 'leak_stripped' : 'email_tone_rewrite',
+    };
+  }
 
   const forbidden = [
     /\bwe have (?:it )?in stock\b/i,
@@ -162,8 +222,8 @@ function applyRiskPolicy(text, inboundText) {
   ];
 
   const hit = forbidden.some((re) => re.test(body));
-  const inboundAsksPrice = isPriceInquiry(inbound);
-  const inboundAsksStock = /\b(in\s*stock|available|have\s+you)\b/i.test(inbound) || /库存|有货/.test(inbound);
+  const inboundAsksPrice = isPriceInquiry(inboundL);
+  const inboundAsksStock = /\b(in\s*stock|available|have\s+you)\b/i.test(inboundL) || /库存|有货/.test(inbound);
 
   if (inboundAsksPrice) {
     const weak =
@@ -171,9 +231,18 @@ function applyRiskPolicy(text, inboundText) {
       !body ||
       /do not confirm|cannot quote|we cannot (?:give|provide) (?:a )?price/i.test(body);
     return {
-      text: weak ? priceAdvanceReply(inboundText) : body,
+      text: weak ? priceAdvanceReply(inbound) : body,
       risk_blocked: weak,
       reason_code: weak ? 'price_advance' : 'ok',
+    };
+  }
+
+  // VIN already provided: keep WhatsApp short advance if model invents email prose
+  if (inboundHasVin && (hasEmailTone(body) || body.length > 900)) {
+    return {
+      text: vinReceivedReply(inbound),
+      risk_blocked: true,
+      reason_code: 'whatsapp_style_vin',
     };
   }
 
@@ -182,7 +251,7 @@ function applyRiskPolicy(text, inboundText) {
   }
 
   return {
-    text: priceAdvanceReply(inboundText),
+    text: priceAdvanceReply(inbound),
     risk_blocked: true,
     reason_code: inboundAsksStock ? 'stock_advance' : 'policy_blocked',
   };
