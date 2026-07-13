@@ -859,9 +859,14 @@
       document.head.appendChild(link);
     }
     document.querySelectorAll('.app-bottom-nav').forEach((nav) => nav.remove());
-    if (!isHybridHome && !isInternalToolPage() && !useEbayLayout()) {
+    const standaloneApp = document.documentElement.classList.contains('ap-app')
+      || document.body.classList.contains('ap-app-shell')
+      || (window.matchMedia && window.matchMedia('(display-mode: standalone)').matches)
+      || window.navigator.standalone === true;
+    if (!standaloneApp && !isHybridHome && !isInternalToolPage() && !useEbayLayout()) {
       document.body.insertAdjacentHTML('beforeend', renderAppBottomNav(activeId));
     }
+    ensurePwaAppShellAssets();
 
     const pub = i18n();
     if (pub) {
@@ -872,6 +877,23 @@
 
     hydrateAuthSlots(document);
     window.dispatchEvent(new CustomEvent('asiapower:layoutrefresh'));
+  }
+
+  function ensurePwaAppShellAssets() {
+    if (!document.querySelector('link[data-ap-app-shell-css]')) {
+      const link = document.createElement('link');
+      link.rel = 'stylesheet';
+      link.href = href(`css/pwa-app-shell.css?v=pwa-app-v1`);
+      link.setAttribute('data-ap-app-shell-css', '1');
+      document.head.appendChild(link);
+    }
+    if (!document.querySelector('script[data-ap-app-shell-js]') && !window.AsiaPowerAppShell) {
+      const script = document.createElement('script');
+      script.src = href(`js/pwa-app-shell.js?v=pwa-app-v1`);
+      script.defer = true;
+      script.setAttribute('data-ap-app-shell-js', '1');
+      document.head.appendChild(script);
+    }
   }
 
   if (document.readyState === 'loading') {

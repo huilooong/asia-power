@@ -7,8 +7,8 @@
   'use strict';
 
   var STORAGE_DISMISS = 'ap_pwa_install_dismissed_until';
-  var SW_URL = '/sw.js?v=pwa-install-v2';
-  var CACHE_BUST = 'pwa-install-v2';
+  var SW_URL = '/sw.js?v=pwa-app-v1';
+  var CACHE_BUST = 'pwa-app-v1';
   /* CSS is also linked from HTML; ensureStyles is a safety net for app.html edge cases. */
 
   var deferredPrompt = null;
@@ -127,12 +127,12 @@
           '<img class="ap-pwa-sheet__icon" src="/assets/icons/icon-192.png" width="72" height="72" alt="">' +
           '<div class="ap-pwa-sheet__meta">' +
             '<h2 id="ap-pwa-sheet-title">' + t('安装 AsiaPower APP', 'Install AsiaPower App') + '</h2>' +
-            '<p>' + t('添加到桌面，全屏打开库存与询价 — 像真正的 APP', 'Add to your home screen for fullscreen stock & quotes — like a real app') + '</p>' +
+            '<p>' + t('添加到桌面后，请从桌面图标打开 — 无浏览器地址栏，才是 APP 模式', 'After adding to home screen, open from the icon — no browser URL bar means App mode') + '</p>' +
           '</div>' +
         '</div>' +
         '<ul class="ap-pwa-sheet__perks">' +
-          '<li>' + t('一键打开，无需每次搜网址', 'One-tap open — no searching the URL') + '</li>' +
-          '<li>' + t('全屏体验，更像手机 APP', 'Fullscreen — feels like a native app') + '</li>' +
+          '<li>' + t('一键打开，无浏览器地址栏', 'One-tap open — no browser URL bar') + '</li>' +
+          '<li>' + t('底部导航：库存 / 发动机 / 询价', 'Bottom tabs: Stock / Engines / Quote') + '</li>' +
           '<li>' + t('内容始终来自 asia-power.com 最新站', 'Always uses the latest asia-power.com content') + '</li>' +
         '</ul>' +
         '<div class="ap-pwa-sheet__body" data-ap-pwa-steps>' + stepsHtml(platform) + '</div>' +

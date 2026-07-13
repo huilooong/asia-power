@@ -136,7 +136,9 @@ function deployHome() {
   rsync(`${ROOT}/js/public-i18n.js`, `${pub}/js/public-i18n.js`);
   rsync(`${ROOT}/js/path-utils.js`, `${pub}/js/path-utils.js`);
   rsync(`${ROOT}/js/pwa-install.js`, `${pub}/js/pwa-install.js`);
+  rsync(`${ROOT}/js/pwa-app-shell.js`, `${pub}/js/pwa-app-shell.js`);
   rsync(`${ROOT}/css/pwa-install.css`, `${pub}/css/pwa-install.css`);
+  rsync(`${ROOT}/css/pwa-app-shell.css`, `${pub}/css/pwa-app-shell.css`);
   rsync(`${ROOT}/sw.js`, `${pub}/sw.js`);
   rsync(`${ROOT}/manifest.json`, `${pub}/manifest.json`);
   rsync(`${ROOT}/app.html`, `${pub}/app.html`);
@@ -148,10 +150,13 @@ test -f "$PUB/index.html"
 test -f "$PUB/css/home-v4-hybrid.css"
 test -f "$PUB/css/styles.css"
 test -f "$PUB/css/pwa-install.css"
+test -f "$PUB/css/pwa-app-shell.css"
 test -f "$PUB/js/home-v4-hybrid.js"
 test -f "$PUB/js/engine-card-label.js"
 test -f "$PUB/js/public-i18n.js"
 test -f "$PUB/js/pwa-install.js"
+test -f "$PUB/js/pwa-app-shell.js"
+test -f "$PUB/js/components.js"
 test -f "$PUB/manifest.json"
 test -f "$PUB/app.html"
 test -f "$PUB/assets/home-v4-inventory-snapshot.json"
@@ -172,10 +177,11 @@ grep -q 'href="/trucks/"' "$PUB/index.html"
 grep -q 'href="/machinery/"' "$PUB/index.html"
 grep -q 'href="/half-cuts/?cat=used-cars"' "$PUB/index.html"
 grep -q 'nav-list-direct-v1' "$PUB/js/home-v4-hybrid.js"
-grep -q 'pwa-install-v2' "$PUB/index.html"
-grep -q 'AsiaPowerPwaInstall' "$PUB/js/pwa-install.js"
-grep -q 'ap-pwa-fab' "$PUB/css/pwa-install.css"
-grep -q 'ap-pwa-sheet' "$PUB/js/pwa-install.js"
+grep -q 'pwa-app-v1' "$PUB/index.html"
+grep -q 'AsiaPowerAppShell' "$PUB/js/pwa-app-shell.js"
+grep -q 'ap-app-tabbar' "$PUB/css/pwa-app-shell.css"
+grep -q 'ap-app-shell' "$PUB/js/pwa-app-shell.js"
+grep -q 'ensurePwaAppShellAssets' "$PUB/js/components.js"
 echo "[deploy:home] files OK on remote"
 `);
 }
