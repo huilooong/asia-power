@@ -1,0 +1,30 @@
+# changed-files.txt — APSALES-EVIDENCE-001
+
+## Phase 1–3（设计）
+
+docs/tasks/apsales-evidence-001/analysis.md
+docs/tasks/apsales-evidence-001/architecture.md
+docs/tasks/apsales-evidence-001/evidence-model.md
+docs/tasks/apsales-evidence-001/daily-summary.md
+docs/tasks/apsales-evidence-001/evolution-rule.md
+docs/tasks/apsales-evidence-001/implementation.md
+docs/tasks/apsales-evidence-001/review.md
+docs/tasks/apsales-evidence-001/future-roadmap.md
+docs/tasks/apsales-evidence-001/changed-files.txt
+
+## Phase 4（实现）
+
+data/evidence/README.md
+data/evidence/whatsapp/.gitkeep
+server/lib/asiapower-evidence.js
+server/lib/whatsapp-cloud-sandbox.js
+sales_coach/evidence.py
+sales_coach/config.py
+sales_coach/__main__.py
+sales_coach/__init__.py
+docs/agents/apsales/coach/2026-07-13-evidence.md
+
+## Runtime evidence samples（本地验证产生，append-only）
+
+data/evidence/whatsapp/turns.ndjson
+data/evidence/whatsapp/patches.ndjson

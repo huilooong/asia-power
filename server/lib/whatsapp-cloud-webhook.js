@@ -1,9 +1,30 @@
 'use strict';
 
+/**
+ * WhatsApp Cloud API Webhook
+ * - APWA-001 observe: receive + store only
+ * - APWA-002 sandbox: allowlisted CEO wa_id → APSales → Graph send
+ */
+
 const crypto = require('crypto');
 const fs = require('fs');
 const path = require('path');
-const { notifyAsync } = require('./telegram-notify');
+const { handleSandboxInbound } = require('./whatsapp-cloud-sandbox');
+
+const PARSER_VERSION = 'apwa-002-sandbox-1.0.0';
+const SCHEMA_VERSION = 'apwa-normalized-v1';
+
+function env(...keys) {
+  for (const key of keys) {
+    const v = String(process.env[key] || '').trim();
+    if (v) return v;
+  }
+  return '';
+}
+
+function autonomyMode() {
+  return env('WHATSAPP_AUTONOMY_MODE', 'WHATSAPP_CLOUD_AUTONOMY_MODE') || 'observe';
+}
 
 function readRawBody(req, limitBytes = 1024 * 1024) {
   return new Promise((resolve, reject) => {
@@ -31,88 +52,320 @@ function timingSafeEqualString(a, b) {
 }
 
 function verifySignature(rawBody, signatureHeader, appSecret) {
-  if (!appSecret) return true;
-  if (!signatureHeader || !signatureHeader.startsWith('sha256=')) return false;
+  if (!appSecret) return false;
+  if (!signatureHeader || !String(signatureHeader).startsWith('sha256=')) return false;
   const expected = `sha256=${crypto.createHmac('sha256', appSecret).update(rawBody).digest('hex')}`;
   return timingSafeEqualString(signatureHeader, expected);
 }
 
+function sha256Hex(buf) {
+  return crypto.createHash('sha256').update(buf).digest('hex');
+}
+
+function ensureDir(dir) {
+  fs.mkdirSync(dir, { recursive: true });
+}
+
+function writeJsonAtomic(file, obj) {
+  ensureDir(path.dirname(file));
+  const tmp = `${file}.${process.pid}.${Date.now()}.tmp`;
+  fs.writeFileSync(tmp, `${JSON.stringify(obj, null, 2)}\n`, 'utf8');
+  fs.renameSync(tmp, file);
+}
+
 function appendJsonl(file, row) {
-  fs.mkdirSync(path.dirname(file), { recursive: true });
+  ensureDir(path.dirname(file));
   fs.appendFileSync(file, `${JSON.stringify(row)}\n`, 'utf8');
 }
 
-function extractMessages(payload) {
-  const messages = [];
+function safeId(id) {
+  return String(id || '')
+    .replace(/[^a-zA-Z0-9._=-]/g, '_')
+    .slice(0, 200) || `anon-${Date.now()}`;
+}
+
+function extractMediaMeta(message) {
+  const type = message.type;
+  const node = message[type];
+  if (!node || typeof node !== 'object') return null;
+  if (['image', 'document', 'audio', 'video', 'sticker'].includes(type)) {
+    return {
+      id: node.id || '',
+      mime_type: node.mime_type || '',
+      sha256: node.sha256 || '',
+      caption: node.caption || '',
+      filename: node.filename || '',
+      voice: Boolean(node.voice),
+    };
+  }
+  if (type === 'location') {
+    return {
+      latitude: node.latitude,
+      longitude: node.longitude,
+      name: node.name || '',
+      address: node.address || '',
+    };
+  }
+  if (type === 'contacts') {
+    return { contacts: message.contacts || node || [] };
+  }
+  if (type === 'interactive') {
+    return {
+      interactive_type: node.type || '',
+      button_reply: node.button_reply || null,
+      list_reply: node.list_reply || null,
+      nfm_reply: node.nfm_reply || null,
+    };
+  }
+  if (type === 'button') {
+    return { button: node };
+  }
+  return null;
+}
+
+function normalizeMessage(message, value, checksum, rawRelPath) {
+  const contactsByWaId = new Map((value.contacts || []).map((c) => [c.wa_id, c]));
+  const contact = contactsByWaId.get(message.from) || {};
+  const media = extractMediaMeta(message);
+  let text = '';
+  if (message.type === 'text') text = message.text?.body || '';
+  else if (media?.caption) text = media.caption;
+  else if (message.type === 'button') text = message.button?.text || '';
+  else if (message.type === 'interactive') {
+    text =
+      message.interactive?.button_reply?.title ||
+      message.interactive?.list_reply?.title ||
+      '';
+  }
+
+  return {
+    schema_version: SCHEMA_VERSION,
+    parser_version: PARSER_VERSION,
+    channel: 'whatsapp_cloud',
+    autonomy_mode: autonomyMode(),
+    message_id: message.id || '',
+    wa_id: message.from || '',
+    profile_name: contact.profile?.name || '',
+    phone_number_id: value.metadata?.phone_number_id || '',
+    display_phone_number: value.metadata?.display_phone_number || '',
+    timestamp: message.timestamp || '',
+    message_type: message.type || 'unknown',
+    text,
+    media: media || undefined,
+    raw_checksum: checksum,
+    raw_path: rawRelPath,
+    received_at: new Date().toISOString(),
+  };
+}
+
+function normalizeStatus(status, value, checksum, rawRelPath) {
+  return {
+    schema_version: SCHEMA_VERSION,
+    parser_version: PARSER_VERSION,
+    channel: 'whatsapp_cloud',
+    kind: 'status',
+    message_id: status.id || '',
+    recipient_id: status.recipient_id || '',
+    status: status.status || '',
+    timestamp: status.timestamp || '',
+    conversation_id: status.conversation?.id || '',
+    errors: status.errors || undefined,
+    phone_number_id: value.metadata?.phone_number_id || '',
+    raw_checksum: checksum,
+    raw_path: rawRelPath,
+    received_at: new Date().toISOString(),
+  };
+}
+
+function walkEntries(payload, fn) {
   for (const entry of payload.entry || []) {
     for (const change of entry.changes || []) {
-      const value = change.value || {};
-      const contactsByWaId = new Map((value.contacts || []).map((contact) => [contact.wa_id, contact]));
-      for (const message of value.messages || []) {
-        const contact = contactsByWaId.get(message.from) || {};
-        messages.push({
-          from: message.from,
-          name: contact.profile?.name || '',
-          id: message.id,
-          timestamp: message.timestamp,
-          type: message.type,
-          text: message.text?.body || '',
-          phoneNumberId: value.metadata?.phone_number_id || '',
-          displayPhoneNumber: value.metadata?.display_phone_number || '',
-        });
-      }
+      fn(change.value || {});
     }
   }
+}
+
+/** Legacy helpers kept for tests / callers */
+function extractMessages(payload) {
+  const messages = [];
+  walkEntries(payload, (value) => {
+    const contactsByWaId = new Map((value.contacts || []).map((c) => [c.wa_id, c]));
+    for (const message of value.messages || []) {
+      const contact = contactsByWaId.get(message.from) || {};
+      messages.push({
+        from: message.from,
+        name: contact.profile?.name || '',
+        id: message.id,
+        timestamp: message.timestamp,
+        type: message.type,
+        text: message.text?.body || '',
+        phoneNumberId: value.metadata?.phone_number_id || '',
+        displayPhoneNumber: value.metadata?.display_phone_number || '',
+      });
+    }
+  });
   return messages;
 }
 
 function extractStatuses(payload) {
   const statuses = [];
-  for (const entry of payload.entry || []) {
-    for (const change of entry.changes || []) {
-      const value = change.value || {};
+  walkEntries(payload, (value) => {
+    for (const status of value.statuses || []) {
+      statuses.push({
+        id: status.id,
+        recipientId: status.recipient_id,
+        status: status.status,
+        timestamp: status.timestamp,
+        conversationId: status.conversation?.id || '',
+        phoneNumberId: value.metadata?.phone_number_id || '',
+      });
+    }
+  });
+  return statuses;
+}
+
+function buildTelegramText(normalizedMessages, normalizedStatuses) {
+  try {
+    const { notifyAsync } = require('./telegram-notify');
+    if (normalizedMessages.length) {
+      const lines = ['AsiaPower Cloud API inbound (observe)'];
+      for (const msg of normalizedMessages.slice(0, 5)) {
+        const name = msg.profile_name ? ` (${msg.profile_name})` : '';
+        const body = msg.text ? `: ${msg.text}` : ` [${msg.message_type}]`;
+        const from = String(msg.wa_id || '');
+        const masked = from.length > 4 ? `…${from.slice(-4)}` : from;
+        lines.push(`- ${masked}${name}${body}`);
+      }
+      notifyAsync(lines.join('\n'));
+      return;
+    }
+    if (normalizedStatuses.length) {
+      const summary = normalizedStatuses
+        .slice(0, 5)
+        .map((s) => `${s.status}:${String(s.recipient_id || '').slice(-4)}`)
+        .join(', ');
+      notifyAsync(`AsiaPower Cloud API status: ${summary}`);
+    }
+  } catch {
+    /* telegram optional */
+  }
+}
+
+function createWhatsAppCloudWebhook(rootDir) {
+  const base = path.join(rootDir, 'data', 'whatsapp_cloud');
+  const rawDir = path.join(base, 'raw');
+  const normDir = path.join(base, 'normalized');
+  const statusDir = path.join(base, 'statuses');
+  const dedupDir = path.join(base, 'dedup');
+  const failedDir = path.join(base, 'failed');
+  const legacyEvents = path.join(rootDir, 'data', 'whatsapp-cloud-webhook-events.ndjson');
+
+  function alreadySeen(messageId) {
+    if (!messageId) return false;
+    return fs.existsSync(path.join(dedupDir, `${safeId(messageId)}.seen`));
+  }
+
+  function markSeen(messageId) {
+    if (!messageId) return;
+    ensureDir(dedupDir);
+    fs.writeFileSync(path.join(dedupDir, `${safeId(messageId)}.seen`), new Date().toISOString(), 'utf8');
+  }
+
+  function persistPayload(rawBody, payload, checksum) {
+    const mode = autonomyMode();
+    const eventId = `evt-${Date.now()}-${checksum.slice(0, 12)}`;
+    const rawRel = path.join('data', 'whatsapp_cloud', 'raw', `${eventId}.json`);
+    const rawAbs = path.join(rootDir, rawRel);
+
+    // Immutable raw: never overwrite if exists
+    if (!fs.existsSync(rawAbs)) {
+      writeJsonAtomic(rawAbs, {
+        received_at: new Date().toISOString(),
+        raw_checksum: checksum,
+        parser_version: PARSER_VERSION,
+        autonomy_mode: mode,
+        payload,
+      });
+    }
+
+    const normalizedMessages = [];
+    const normalizedStatuses = [];
+    let duplicates = 0;
+
+    walkEntries(payload, (value) => {
+      for (const message of value.messages || []) {
+        const mid = message.id || '';
+        if (alreadySeen(mid)) {
+          duplicates += 1;
+          continue;
+        }
+        const normalized = normalizeMessage(message, value, checksum, rawRel);
+        const out = path.join(normDir, `${safeId(mid || eventId)}.json`);
+        if (!fs.existsSync(out)) writeJsonAtomic(out, normalized);
+        markSeen(mid);
+        normalizedMessages.push(normalized);
+      }
       for (const status of value.statuses || []) {
-        statuses.push({
-          id: status.id,
-          recipientId: status.recipient_id,
-          status: status.status,
-          timestamp: status.timestamp,
-          conversationId: status.conversation?.id || '',
-          phoneNumberId: value.metadata?.phone_number_id || '',
+        const normalized = normalizeStatus(status, value, checksum, rawRel);
+        const sid = `${safeId(status.id)}-${safeId(status.status)}-${safeId(status.timestamp)}`;
+        const out = path.join(statusDir, `${sid}.json`);
+        if (!fs.existsSync(out)) writeJsonAtomic(out, normalized);
+        normalizedStatuses.push(normalized);
+      }
+    });
+
+    appendJsonl(legacyEvents, {
+      receivedAt: new Date().toISOString(),
+      object: payload.object || '',
+      raw_checksum: checksum,
+      parser_version: PARSER_VERSION,
+      autonomy_mode: mode,
+      messages: extractMessages(payload),
+      statuses: extractStatuses(payload),
+      normalized_message_ids: normalizedMessages.map((m) => m.message_id),
+      duplicates,
+      // Keep payload for backward compatibility (phase A); raw file is source of truth
+      payload,
+    });
+
+    const modeLower = String(mode || '').toLowerCase();
+    // Sandbox: no Draft / Approval / Telegram / Shadow — allowlist handled async after ACK
+    if (modeLower === 'observe' || modeLower === 'off') {
+      buildTelegramText(normalizedMessages, normalizedStatuses);
+    }
+
+    return {
+      messages: normalizedMessages.length,
+      statuses: normalizedStatuses.length,
+      duplicates,
+      raw_checksum: checksum,
+      mode: modeLower,
+      normalizedMessages,
+    };
+  }
+
+  async function runPostPersist(persistResult) {
+    if (!persistResult || persistResult.mode !== 'sandbox') return;
+    for (const msg of persistResult.normalizedMessages || []) {
+      try {
+        await handleSandboxInbound(rootDir, msg);
+      } catch (err) {
+        appendJsonl(path.join(failedDir, 'sandbox.ndjson'), {
+          at: new Date().toISOString(),
+          error: String(err && err.message ? err.message : err).slice(0, 500),
+          wa_suffix: String(msg.wa_id || '').slice(-4),
+          message_id: msg.message_id || '',
         });
       }
     }
   }
-  return statuses;
-}
-
-function buildTelegramText(messages, statuses) {
-  if (messages.length) {
-    const lines = ['AsiaPower Cloud API inbound message'];
-    for (const msg of messages.slice(0, 5)) {
-      const name = msg.name ? ` (${msg.name})` : '';
-      const body = msg.text ? `: ${msg.text}` : ` [${msg.type}]`;
-      lines.push(`- ${msg.from}${name}${body}`);
-    }
-    if (messages.length > 5) lines.push(`- ... ${messages.length - 5} more`);
-    return lines.join('\n');
-  }
-  if (statuses.length) {
-    const summary = statuses.slice(0, 5).map((s) => `${s.recipientId || s.id}: ${s.status}`).join('\n- ');
-    return `AsiaPower Cloud API status update\n- ${summary}`;
-  }
-  return '';
-}
-
-function createWhatsAppCloudWebhook(rootDir) {
-  const eventsFile = path.join(rootDir, 'data', 'whatsapp-cloud-webhook-events.ndjson');
 
   return async function handleWhatsAppCloudWebhook(req, res, url, json) {
     if (req.method === 'GET') {
       const mode = url.searchParams.get('hub.mode');
       const token = url.searchParams.get('hub.verify_token');
       const challenge = url.searchParams.get('hub.challenge');
-      const expected = String(process.env.WHATSAPP_CLOUD_VERIFY_TOKEN || '').trim();
+      const expected = env('WHATSAPP_VERIFY_TOKEN', 'WHATSAPP_CLOUD_VERIFY_TOKEN');
 
       if (mode === 'subscribe' && expected && timingSafeEqualString(token, expected)) {
         res.writeHead(200, { 'Content-Type': 'text/plain; charset=utf-8' });
@@ -126,9 +379,23 @@ function createWhatsAppCloudWebhook(rootDir) {
       return json(res, 405, { error: 'Method not allowed' });
     }
 
-    const rawBody = await readRawBody(req);
-    const appSecret = String(process.env.WHATSAPP_CLOUD_APP_SECRET || '').trim();
+    let rawBody;
+    try {
+      rawBody = await readRawBody(req);
+    } catch (err) {
+      return json(res, 413, { error: err.message || 'Payload too large' });
+    }
+
+    const appSecret = env('WHATSAPP_APP_SECRET', 'WHATSAPP_CLOUD_APP_SECRET');
     const signature = req.headers['x-hub-signature-256'];
+    if (!appSecret) {
+      appendJsonl(path.join(failedDir, 'unsigned.ndjson'), {
+        at: new Date().toISOString(),
+        error: 'WHATSAPP_APP_SECRET missing',
+        body_sha256: sha256Hex(rawBody),
+      });
+      return json(res, 403, { error: 'Webhook signature not configured' });
+    }
     if (!verifySignature(rawBody, signature, appSecret)) {
       return json(res, 403, { error: 'Invalid webhook signature' });
     }
@@ -140,23 +407,28 @@ function createWhatsAppCloudWebhook(rootDir) {
       return json(res, 400, { error: 'Invalid JSON payload' });
     }
 
-    const messages = extractMessages(payload);
-    const statuses = extractStatuses(payload);
-    appendJsonl(eventsFile, {
-      receivedAt: new Date().toISOString(),
-      object: payload.object || '',
-      messages,
-      statuses,
-      payload,
-    });
+    const checksum = sha256Hex(rawBody);
 
-    const telegramText = buildTelegramText(messages, statuses);
-    if (telegramText) notifyAsync(telegramText);
+    // Fast ACK for Meta, then persist + optional sandbox reply
+    json(res, 200, { ok: true, mode: autonomyMode(), queued: true });
 
-    return json(res, 200, {
-      ok: true,
-      messages: messages.length,
-      statuses: statuses.length,
+    setImmediate(() => {
+      Promise.resolve()
+        .then(async () => {
+          const result = persistPayload(rawBody, payload, checksum);
+          await runPostPersist(result);
+        })
+        .catch((err) => {
+          try {
+            appendJsonl(path.join(failedDir, 'persist.ndjson'), {
+              at: new Date().toISOString(),
+              error: String(err && err.message ? err.message : err).slice(0, 500),
+              raw_checksum: checksum,
+            });
+          } catch {
+            /* last resort */
+          }
+        });
     });
   };
 }
@@ -166,4 +438,7 @@ module.exports = {
   extractMessages,
   extractStatuses,
   verifySignature,
+  normalizeMessage,
+  PARSER_VERSION,
+  SCHEMA_VERSION,
 };
