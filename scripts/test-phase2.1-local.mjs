@@ -38,7 +38,7 @@ function load(relativePath) {
   'js/half-cut-inventory-store.js',
 ].forEach(load);
 
-sandbox.window.ASIAPOWER = { whatsapp: '233540911111' };
+sandbox.window.ASIAPOWER = { whatsapp: '8616638801930' };
 
 const Vin = sandbox.window.HalfCutVin;
 const Store = sandbox.window.HalfCutInventoryStore;

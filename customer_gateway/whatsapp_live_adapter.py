@@ -188,7 +188,7 @@ class MockLiveAdapter(_WriteBlockedMixin):
                 contact_name="Ghana Motors Trading",
                 message=f"Do you have G4KJ engine available? (mock poll #{suffix})",
                 timestamp="2024-06-28 10:00",
-                phone_hint="233540911111",
+                phone_hint="8616638801930",
             ),
         ]
 

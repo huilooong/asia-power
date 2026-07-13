@@ -25,7 +25,7 @@ _EMAIL_SIGNATURES: dict[str, str] = {
         "中国办公室：河南省郑州市南三环与商都路\n"
         "微信：16638801930（请通过微信联系，不接手机来电）\n\n"
         "加纳办公室：Ghana, Accra, Tabora, Flower Street No.2\n"
-        "WhatsApp：+233 54 091 1111"
+        "WhatsApp：+86 166 3880 1930"
     ),
     "en": (
         "AsiaPower · Global Circular Economy Supply Chain\n"
@@ -35,7 +35,7 @@ _EMAIL_SIGNATURES: dict[str, str] = {
         "China Office: Zhengzhou, Henan\n"
         "WeChat: 16638801930 (WeChat messages only — no mobile/voice calls)\n\n"
         "Ghana Office: Accra, Ghana, Tabora, Flower Street No.2\n"
-        "WhatsApp: +233 54 091 1111"
+        "WhatsApp: +86 166 3880 1930"
     ),
     "fr": (
         "AsiaPower · Chaîne d'approvisionnement de l'économie circulaire\n"
@@ -45,7 +45,7 @@ _EMAIL_SIGNATURES: dict[str, str] = {
         "Bureau Chine : Zhengzhou, Henan\n"
         "WeChat : 16638801930 (contact via WeChat uniquement — pas d'appels téléphoniques)\n\n"
         "Bureau Ghana : Accra, Tabora, Flower Street No.2\n"
-        "WhatsApp : +233 54 091 1111"
+        "WhatsApp : +86 166 3880 1930"
     ),
     "ar": (
         "AsiaPower · سلسلة توريد الاقتصاد الدائري العالمية\n"
@@ -55,7 +55,7 @@ _EMAIL_SIGNATURES: dict[str, str] = {
         "مكتب الصين: Zhengzhou, Henan\n"
         "WeChat: 16638801930 (تواصل عبر WeChat فقط — لا مكالمات هاتفية)\n\n"
         "مكتب غانا: Accra, Tabora, Flower Street No.2\n"
-        "WhatsApp: +233 54 091 1111"
+        "WhatsApp: +86 166 3880 1930"
     ),
 }
 

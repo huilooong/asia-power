@@ -578,7 +578,7 @@ def register_test_batch_wave1(*, notify: bool = True) -> dict[str, Any]:
         "Browse supplier-verified listings with photos, engine codes and EXW pricing on our website.\n\n"
         "👉 https://asia-power.com/half-cuts/\n\n"
         "Have a requirement? Email sales@asia-power.com — we reply with options and photos. "
-        "WhatsApp +233 54 091 1111 also works.\n\n"
+        "WhatsApp +86 166 3880 1930 also works.\n\n"
         "We don't close deals in comments — visit the site to explore the catalog."
     )
     scheme_b = (
@@ -589,14 +589,14 @@ def register_test_batch_wave1(*, notify: bool = True) -> dict[str, Any]:
         "📋 Full photos & specs on our website:\n"
         "https://asia-power.com/half-cuts/detail.html?slug=toyota-vios-2010-2nz-fe-half-cut-hc250509\n\n"
         "Interested? Email sales@asia-power.com with HC250509 — we'll confirm availability and send a quote. "
-        "WhatsApp +233 54 091 1111.\n\n"
+        "WhatsApp +86 166 3880 1930.\n\n"
         "Browse first, email when ready — we don't negotiate prices in DMs."
     )
     scheme_a_x = (
         "Custom dismantling. Parts on demand.\n\n"
         "AsiaPower — verified half-cuts, engines & gearboxes from China for Africa.\n\n"
         "Browse: https://asia-power.com/half-cuts/\n"
-        "Quote: sales@asia-power.com · WhatsApp +233 54 091 1111"
+        "Quote: sales@asia-power.com · WhatsApp +86 166 3880 1930"
     )
     caption_a_fb = caption_for_scheme("A", "facebook")
     caption_a_x = caption_for_scheme("A", "x")

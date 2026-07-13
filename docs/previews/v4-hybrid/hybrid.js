@@ -5,7 +5,7 @@
   'use strict';
 
   const ORIGIN = 'https://asia-power.com';
-  const WA = '8618603773077';
+  const WA = '8616638801930';
   const ENGINE_RATIO = 0.65;
 
   const ICONS = {

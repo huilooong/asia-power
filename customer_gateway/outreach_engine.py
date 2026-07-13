@@ -221,7 +221,7 @@ def build_lead_followup_email(candidate: dict[str, Any]) -> tuple[str, str]:
         "https://asia-power.com/half-cuts/\n\n"
         "Reply to this email with your engine code or vehicle model — "
         "we will confirm availability and send photos.\n\n"
-        "WhatsApp: +233 54 091 1111\n"
+        "WhatsApp: +86 166 3880 1930\n"
         "Best regards,\n"
         "AsiaPower Sales Team\n"
         "sales@asia-power.com"

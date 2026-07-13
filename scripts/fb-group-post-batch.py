@@ -23,7 +23,7 @@ except ModuleNotFoundError:
 
 DEFAULT_TEXT = """Used engines & half-cuts from China.
 www.asia-power.com
-WhatsApp: +86 186 0377 3077"""
+WhatsApp: +86 166 3880 1930"""
 
 IMAGE_PATH = ROOT / "assets" / "images" / "supply-halfcut.jpg"
 

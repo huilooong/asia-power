@@ -28,7 +28,7 @@
   });
 
   document.getElementById('wa').addEventListener('click', () => {
-    window.open('https://wa.me/8618603773077?text=' + encodeURIComponent('Hi AsiaPower, I want to reserve HC250127 with a deposit.'), '_blank');
+    window.open('https://wa.me/8616638801930?text=' + encodeURIComponent('Hi AsiaPower, I want to reserve HC250127 with a deposit.'), '_blank');
   });
 
   document.getElementById('inquire').addEventListener('click', () => {

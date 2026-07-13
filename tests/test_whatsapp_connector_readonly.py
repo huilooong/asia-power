@@ -31,7 +31,7 @@ class WhatsAppConnectorReadonlyTests(unittest.TestCase):
             conn.auto_reply("hello")
 
     def test_phone_hash_masked(self) -> None:
-        h = hash_phone("+233540911111", "Ghana Motors")
+        h = hash_phone("+8616638801930", "Ghana Motors")
         self.assertEqual(len(h), 16)
         self.assertNotIn("233", h)
 

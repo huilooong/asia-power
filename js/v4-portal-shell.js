@@ -20,7 +20,7 @@
           <span class="ap-auth-slot" data-ap-auth-slot data-variant="portal"><a href="/login/" ${active === 'login' ? 'class="on"' : ''} data-i18n="nav.signIn">Sign in</a></span>
         </div>
         <div class="nav-right">
-          <a class="nav-wa" href="https://wa.me/8618603773077" target="_blank" rel="noopener">WhatsApp</a>
+          <a class="nav-wa" href="https://wa.me/8616638801930" target="_blank" rel="noopener">WhatsApp</a>
         </div>
       </div>`;
     document.body.insertBefore(nav, document.body.firstChild);

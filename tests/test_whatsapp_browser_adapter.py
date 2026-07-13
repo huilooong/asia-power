@@ -106,7 +106,7 @@ class WhatsAppBrowserAdapterTests(unittest.TestCase):
         fake_page = mock.MagicMock()
         store_payload = [{
             "contact_name": "Ghana Motors",
-            "chat_id_raw": "233540911111",
+            "chat_id_raw": "8616638801930",
             "message": "Do you have G4KJ engine?",
             "timestamp": "2024-06-28 10:00",
             "direction": "incoming",

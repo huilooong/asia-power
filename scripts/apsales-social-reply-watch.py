@@ -142,7 +142,7 @@ def _draft_follow_up(reply: dict) -> dict | None:
             f"Bonjour — merci pour votre message sur {platform}.\n\n"
             f"Consultez le catalogue avec photos sur : {listing}\n"
             f"Pour un devis, écrivez à sales@asia-power.com — nous répondons avec options et photos.\n"
-            f"WhatsApp +233 54 091 1111 si vous préférez.\n\n"
+            f"WhatsApp +86 166 3880 1930 si vous préférez.\n\n"
             f"AsiaPower Sales"
         )
     elif lang.startswith("pt"):
@@ -150,7 +150,7 @@ def _draft_follow_up(reply: dict) -> dict | None:
             f"Olá — obrigado pela sua mensagem no {platform}.\n\n"
             f"Veja o catálogo com fotos em: {listing}\n"
             f"Para orçamento, envie email para sales@asia-power.com.\n"
-            f"WhatsApp +233 54 091 1111.\n\n"
+            f"WhatsApp +86 166 3880 1930.\n\n"
             f"AsiaPower Sales"
         )
     elif lang.startswith("ar"):
@@ -158,7 +158,7 @@ def _draft_follow_up(reply: dict) -> dict | None:
             f"شكراً لرسالتك على {platform}.\n\n"
             f"تصفح القائمة: {listing}\n"
             f"للعرض: sales@asia-power.com\n"
-            f"WhatsApp +233 54 091 1111.\n\n"
+            f"WhatsApp +86 166 3880 1930.\n\n"
             f"AsiaPower Sales"
         )
     else:
@@ -166,7 +166,7 @@ def _draft_follow_up(reply: dict) -> dict | None:
             f"Hi — thanks for your comment on {platform}.\n\n"
             f"Browse verified listings with photos here: {listing}\n"
             f"For a quote, email sales@asia-power.com — we'll reply with options and photos.\n"
-            f"WhatsApp +233 54 091 1111 if easier.\n\n"
+            f"WhatsApp +86 166 3880 1930 if easier.\n\n"
             f"We don't close deals in DMs — visit the site first.\n\n"
             f"AsiaPower Sales"
         )

@@ -91,12 +91,12 @@ class INTIDTests(OpportunityTestBase):
         self.assertEqual(a, b)
 
     def test_int_id_002_phone_normalization(self) -> None:
-        a = compute_customer_hash({"phone": "+233 54 091 1111", "channel": "whatsapp"})
-        b = compute_customer_hash({"phone": "233540911111", "channel": "whatsapp"})
+        a = compute_customer_hash({"phone": "+86 166 3880 1930", "channel": "whatsapp"})
+        b = compute_customer_hash({"phone": "8616638801930", "channel": "whatsapp"})
         self.assertEqual(a, b)
 
     def test_int_id_003_channel_handle(self) -> None:
-        h = compute_customer_hash({"channel": "whatsapp", "phone": "+233540911111"})
+        h = compute_customer_hash({"channel": "whatsapp", "phone": "+8616638801930"})
         self.assertEqual(len(h), 16)
 
     def test_int_id_004_fallback_collision_guard(self) -> None:

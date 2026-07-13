@@ -178,7 +178,7 @@ function renderBuyBoxActions(item, base) {
     `Listing: ${pageUrl}`,
     'Please send price, photos and shipping options.',
   ].join('\n');
-  const wa = `https://wa.me/233540911111?text=${encodeURIComponent(waText)}`;
+  const wa = `https://wa.me/8616638801930?text=${encodeURIComponent(waText)}`;
   if (item.status === 'Available') {
     return [
       `<a class="hc-item-detail__btn hc-item-detail__btn--primary" href="${contact}">Contact Sourcing Team</a>`,

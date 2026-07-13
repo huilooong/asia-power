@@ -24,7 +24,7 @@ POST_TEXT = """Looking for used engines, half-cuts or auto parts from China? �
 
 We are AsiaPower — verified used parts exporter.
 Browse our catalog 👉 www.asia-power.com
-WhatsApp: +86 186 0377 3077
+WhatsApp: +86 166 3880 1930
 
 Same-day quotes. Real stock photos before shipment."""
 

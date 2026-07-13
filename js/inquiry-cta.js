@@ -70,7 +70,7 @@
 
   function whatsappPhone() {
     const c = config();
-    return String(c.chinaWhatsapp || '8618603773077').replace(/\D/g, '');
+    return String(c.chinaWhatsapp || '8616638801930').replace(/\D/g, '');
   }
 
   function whatsappUrl(ctx) {

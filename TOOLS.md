@@ -41,8 +41,8 @@ Things like:
 
 ### WhatsApp
 
-- **Primary (live since 2026-06-25):** Ghana `233540911111` (`+233 54 091 1111`) — in `js/config.js` as `whatsapp`
-- China number `8618603773077` kept as `chinaWhatsapp` fallback in config
+- **Primary customer entry (APCONTACT-001):** `8616638801930` (`+86 166 3880 1930`) — `js/config.js` `whatsapp` + `chinaWhatsapp` (unified)
+- Legacy Ghana Business App `+233 54 091 1111` kept for historical/ads/browser-chain notes only — not site default
 - Cache-bust pattern: bump the `?v=` token on `config.js` / `styles.css` in HTML to force Cloudflare + browser to reload (CF API token on the box is R2-scoped, **cannot** purge zone cache)
 
 ### TTS

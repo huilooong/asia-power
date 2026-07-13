@@ -17,6 +17,7 @@ class EmailSignatureTests(unittest.TestCase):
         self.assertIn("鲁子敬", out)
         self.assertIn("国际销售经理", out)
         self.assertIn("16638801930", out)
+        self.assertIn("+86 166 3880 1930", out)
         self.assertIn("不接手机来电", out)
         self.assertTrue(out.index("--") > 0)
 

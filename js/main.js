@@ -579,7 +579,7 @@
           if (window.WhatsAppCrm?.openWhatsApp) {
             window.WhatsAppCrm.openWhatsApp(msg, leadId);
           } else {
-            window.open(`https://wa.me/${String(window.ASIAPOWER?.whatsapp || '233540911111').replace(/\D/g, '')}?text=${encodeURIComponent(msg)}`, '_blank', 'noopener,noreferrer');
+            window.open(`https://wa.me/${String(window.ASIAPOWER?.whatsapp || '8616638801930').replace(/\D/g, '')}?text=${encodeURIComponent(msg)}`, '_blank', 'noopener,noreferrer');
           }
 
           showContactSuccess(form, { channel: 'whatsapp', leadId, email: result?.email });

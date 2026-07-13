@@ -32,7 +32,7 @@ class WhatsAppLiveReadonlyTests(unittest.TestCase):
             "contact_name": contact,
             "message": message,
             "timestamp": "2024-03-15 10:00",
-            "phone_hint": "233540911111",
+            "phone_hint": "8616638801930",
         }), encoding="utf-8")
 
     def test_poll_inbox(self) -> None:

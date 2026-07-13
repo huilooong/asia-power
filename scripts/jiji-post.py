@@ -41,7 +41,7 @@ AD_TITLE = "Used Engines & Auto Parts from China — AsiaPower"
 AD_DESCRIPTION = (
     "AsiaPower exports used Japanese & Korean engines, half-cuts, gearboxes and auto parts "
     "from China to Ghana/Nigeria. Verified stock, export docs, same-day WhatsApp quotes. "
-    "Visit: www.asia-power.com or WhatsApp: +86 186 0377 3077"
+    "Visit: www.asia-power.com or WhatsApp: +86 166 3880 1930"
 )
 # Jiji category: Vehicles > Vehicle Parts & Accessories (slug: car-parts-and-accessories)
 AD_CATEGORY_ID = 54

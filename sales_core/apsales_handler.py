@@ -461,7 +461,7 @@ def dispatch_distribution_command(message: str) -> str:
             "详情页格式: half-cuts/detail.html?slug=…\n"
             "方案 A–E: data/knowledge-base/apsales-promotion-schemes-v2.md\n"
             "发帖后每小时扫回复: scripts/apsales-social-reply-watch.py\n"
-            "联系: sales@asia-power.com · WhatsApp +233 54 091 1111"
+            "联系: sales@asia-power.com · WhatsApp +86 166 3880 1930"
         )
 
     if action == "plan":

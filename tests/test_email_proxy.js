@@ -9,7 +9,7 @@ const path = require("path");
 const { createEmailProxyStore, redactContacts } = require("../server/lib/email-proxy.js");
 
 test("redactContacts strips email and whatsapp", () => {
-  const text = "Call me +233201234567 or email buyer@test.com on WhatsApp +86 186 0377 3077";
+  const text = "Call me +233201234567 or email buyer@test.com on WhatsApp +86 166 3880 1930";
   const out = redactContacts(text);
   assert.match(out, /\[contact redacted\]/);
   assert.doesNotMatch(out, /buyer@test\.com/);

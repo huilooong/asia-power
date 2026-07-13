@@ -563,7 +563,7 @@ def build_maps_outreach_email(lead: dict[str, Any]) -> tuple[str, str]:
     subject = subject_tpl.format(city=city, country=lead.get("country") or city, name=first)
 
     catalog = voice.get("catalog_url") or "https://asia-power.com/half-cuts/"
-    whatsapp = voice.get("whatsapp") or "+233 54 091 1111"
+    whatsapp = voice.get("whatsapp") or "+86 166 3880 1930"
     ceo_name = voice.get("name") or "Zijing Lu"
     from_email = voice.get("from_email") or "sales@asia-power.com"
 
