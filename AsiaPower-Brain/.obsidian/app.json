@@ -1,0 +1,10 @@
+{
+  "legacyEditor": false,
+  "livePreview": true,
+  "defaultViewMode": "source",
+  "newFileLocation": "folder",
+  "newFileFolderPath": "10-Daily",
+  "attachmentFolderPath": "99-Archive/attachments",
+  "showFrontmatter": true,
+  "strictLineBreaks": false
+}

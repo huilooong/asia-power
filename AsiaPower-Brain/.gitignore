@@ -1,0 +1,8 @@
+# Obsidian local / cache — do not commit personal workspace state
+.obsidian/workspace.json
+.obsidian/workspace-mobile.json
+.obsidian/workspaces.json
+.obsidian/cache
+.obsidian/plugins/
+.trash/
+.DS_Store
