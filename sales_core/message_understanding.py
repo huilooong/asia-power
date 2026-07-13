@@ -59,7 +59,11 @@ _CLARIFY_RE = re.compile(
 _GREETING_RE = re.compile(r"^\s*(hi|hello|hey|good\s*(?:day|morning)|你好|您好)\b", re.I)
 _PRICE_RE = re.compile(r"how\s*much|best\s*price|quote|quotation|报价|多少钱", re.I)
 _SHIP_RE = re.compile(r"\b(?:ship|shipping|freight|cif|fob|port|eta)\b", re.I)
-_UNSURE_RE = re.compile(r"\b(?:maybe|not\s*sure|perhaps|possibly|might\s*be|大概|可能)\b", re.I)
+_UNSURE_RE = re.compile(
+    r"\b(?:maybe|not\s*sure|perhaps|possibly|might\s*be|i\s*think|大概|可能)\b",
+    re.I,
+)
+_MECHANIC_RE = re.compile(r"\bmechanic\s*(?:said|says|told)|师傅\s*(?:说|讲)\b", re.I)
 
 
 def _norm_engine(raw: str) -> str:
@@ -195,6 +199,17 @@ def understand_message(
         for e in engine_ents:
             e["confidence"] = min(float(e.get("confidence") or 0.9), 0.55)
             e["hedged"] = True
+    if _MECHANIC_RE.search(raw) and engine_ents:
+        for e in engine_ents:
+            e["confidence"] = min(float(e.get("confidence") or 0.9), 0.70)
+            e["secondary_source"] = "mechanic"
+            e["soft_hedge"] = True
+
+    ambiguities: list[str] = []
+    if any(e.get("hedged") for e in engine_ents):
+        ambiguities.append("hedged_engine_code")
+    if any(e.get("soft_hedge") or e.get("secondary_source") == "mechanic" for e in engine_ents):
+        ambiguities.append("secondary_source_claim")
 
     return {
         "message_id": message_id or f"mu-{uuid.uuid4().hex[:12]}",
@@ -210,7 +225,7 @@ def understand_message(
         "is_answer_to_previous_question": is_answer,
         "cannot_provide_plate": cannot_plate,
         "offers_photo_alternative": can_photo,
-        "unresolved_ambiguities": (["hedged_engine_code"] if any(e.get("hedged") for e in engine_ents) else []),
+        "unresolved_ambiguities": ambiguities,
         "raw_text_excerpt": raw[:200],
     }
 

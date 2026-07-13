@@ -17,6 +17,13 @@
 
 **AsiaPower 落地：** 业务数字走 `verified_sales_intelligence`；部署/能力以代码与生产检查为准；不迎合、不幻觉。
 
+## 销售 Decision · customer_reported（CEO 2026-07-13）
+
+- **原则：** Use customer information as a working assumption. Verify only when the commercial risk justifies it.
+- `customer_reported ≠ verified`，但**可用、不可忽略**；禁止把「客户可能说错」做成「默认不相信客户」。
+- 仅在：错配成本高 / 临报价·采购·发货 / 冲突 / 不确定或师傅转述 / 高频混淆 时主动要证据。
+- 实现：`config/commercial-decision-v1.json` → `customer_reported_policy`；说明见 `docs/tasks/apsales-nlu-001/customer-reported-working-assumption.md`
+
 ## Agent 分工（CEO 定稿 2026-07-03）
 
 | Agent | 代号 | 主战场 | 职责 |

@@ -48,7 +48,14 @@ def test_regression_2sz_then_clarify_different_action():
     d1 = decide_commercial("2sz", prior_state=st, understanding=u1, conversation_id="wa:test-nlu")
     assert d1.claimed_identity.get("engine_code") == "2SZ"
     assert "claimed_engine_code" in d1.known
-    # First turn may ask plate
+    # Clear claim = working assumption → usually advance (scope), not default plate
+    assert d1.next_best_action in {
+        "ask_scope",
+        "ask_quantity",
+        "ask_engine_plate",
+        "ask_engine_photo",
+        "ask_vin",
+    }
     a1, r1, _ = apply_dead_loop_guard(st, next_best_action=d1.next_best_action, reply=d1.reply)
     st = record_system_action(st, a1, r1)
 
@@ -70,10 +77,27 @@ def test_regression_2sz_then_clarify_different_action():
     assert a2 != "ask_engine_plate" or a1 != "ask_engine_plate"
     assert "2SZ" in r2 or "2sz" in r2.lower() or "confirming" in r2.lower() or "Got it" in r2
     assert r2.strip() != r1.strip()
-    # Prefer not the isolated plate sentence alone
     if a1 == "ask_engine_plate":
         assert a2 != "ask_engine_plate"
         assert "confirming the engine code as 2SZ" in r2 or "2SZ" in r2
+
+
+def test_clear_claim_is_working_assumption_not_ignored():
+    u = understand_message("2sz")
+    st = update_state_from_understanding(empty_state("wa:wa"), u)
+    d = decide_commercial("2sz", prior_state=st, understanding=u)
+    assert d.claimed_identity.get("engine_code") == "2SZ"
+    assert d.claimed_identity.get("verification_status") == "customer_reported"
+    assert "claimed_engine_code" in d.known
+    assert d.next_best_action in {"ask_scope", "ask_quantity", "ask_destination"}
+    assert d.next_best_action != "ask_engine_plate"
+
+
+def test_hedged_claim_asks_verify():
+    u = understand_message("I am not sure, maybe 2sz")
+    st = update_state_from_understanding(empty_state("wa:hedge"), u)
+    d = decide_commercial("I am not sure, maybe 2sz", prior_state=st, understanding=u)
+    assert d.next_best_action in {"ask_engine_plate", "ask_engine_photo", "ask_vin", "request_manual_review"}
 
 
 def test_repeat_2sz_blocked():
@@ -140,7 +164,13 @@ def test_maybe_2sz_hedged():
 def test_g4kd_still_works():
     d = decide_commercial("Need G4KD.")
     assert d.claimed_identity.get("engine_code") == "G4KD"
-    assert d.next_best_action in {"ask_engine_plate", "ask_engine_photo", "request_manual_review"}
+    assert d.next_best_action in {
+        "ask_scope",
+        "ask_quantity",
+        "ask_engine_plate",
+        "ask_engine_photo",
+        "request_manual_review",
+    }
 
 
 def test_vin_as_alternative_after_plate():

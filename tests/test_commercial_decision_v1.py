@@ -64,9 +64,11 @@ def _assert_channel(reply: str):
 
 def test_01_first_customer_need_g4kd():
     d = decide_commercial("Need G4KD.")
-    assert d.next_best_action in {"ask_engine_plate", "ask_engine_photo", "request_manual_review"}
-    assert d.commercial_risk == "high"
-    assert d.evidence_confidence < 0.60
+    # CEO 2026-07-13: clear customer_reported is a working assumption — advance, don't default-distrust
+    assert d.next_best_action in {"ask_scope", "ask_quantity", "ask_destination"}
+    assert d.commercial_risk in {"medium", "low"}
+    assert d.evidence_confidence >= 0.60
+    assert d.claimed_identity.get("verification_status") == "customer_reported"
     _assert_no_fixed_trio(d.reply, d.ask_list)
     _assert_channel(d.reply)
 

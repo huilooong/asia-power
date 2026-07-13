@@ -440,13 +440,59 @@ def decide_commercial(
         cfg.get("wholesaler_quantity_min") or 5
     ):
         conf = max(conf, 0.88)
-    if engine_claim and ctype in {"unknown", "repairer", "retail"} and not plate_evidence and not has_vin:
-        conf = min(conf, 0.45) if conf else 0.40
+
+    policy = cfg.get("customer_reported_policy") or {}
+    working_min = float(
+        (cfg.get("confidence") or {}).get("customer_reported_working_min", 0.72)
+    )
+    confusion_codes = {
+        str(x).upper() for x in (policy.get("high_confusion_engine_codes") or [])
+    }
+    repairer_verify = bool(policy.get("repairer_default_verify", True))
+
+    claim_hedged = False
+    claim_secondary = False
+    if understanding:
+        for e in understanding.get("entities") or []:
+            if e.get("type") != "engine_code":
+                continue
+            if e.get("hedged"):
+                claim_hedged = True
+            if e.get("soft_hedge") or e.get("secondary_source") == "mechanic":
+                claim_secondary = True
+        if "hedged_engine_code" in (understanding.get("unresolved_ambiguities") or []):
+            claim_hedged = True
+        if "secondary_source_claim" in (understanding.get("unresolved_ambiguities") or []):
+            claim_secondary = True
+    if re.search(r"\b(?:maybe|not\s*sure|i\s*think|perhaps|possibly|might\s*be)\b", text, re.I):
+        claim_hedged = True
+    if re.search(r"\bmechanic\s*(?:said|says|told)\b", text, re.I):
+        claim_secondary = True
+
+    high_confusion = bool(engine_claim and engine_claim.upper() in confusion_codes)
+    # CEO 2026-07-13: customer_reported is a usable working assumption — not ignored,
+    # and not "default distrust". Verify only when commercial risk justifies it.
+    needs_verify = bool(
+        conflict
+        or claim_hedged
+        or claim_secondary
+        or (repairer_verify and ctype == "repairer")
+        or (high_confusion and ctype == "repairer")
+    )
+    # Clear customer claim → usable working confidence (still ≠ verified)
+    if engine_claim and not plate_evidence and not photo_evidence and not conflict:
+        if needs_verify and (claim_hedged or claim_secondary):
+            conf = min(conf, 0.50) if conf else 0.45
+        elif needs_verify and ctype == "repairer":
+            conf = min(conf, 0.48) if conf else 0.45
+        else:
+            conf = max(conf, working_min)
+
     if conflict:
         conf = min(conf, 0.35)
     # Clarification of same code raises claim confidence slightly (still not verified)
-    if understanding and understanding.get("is_clarification") and engine_claim:
-        conf = max(conf, 0.50)
+    if understanding and understanding.get("is_clarification") and engine_claim and not claim_hedged:
+        conf = max(conf, working_min)
 
     known: list[str] = []
     missing: list[str] = []
@@ -476,15 +522,24 @@ def decide_commercial(
     risk_reasons: list[str] = []
     if conflict:
         risk_reasons.append("vin_or_claim_conflicts_with_installed_engine_evidence")
-    if engine_claim and conf < caution_min and not plate_evidence:
-        risk_reasons.append("engine_code_claim_without_installed_engine_evidence")
+    if engine_claim and needs_verify and not plate_evidence and not photo_evidence:
+        if claim_hedged:
+            risk_reasons.append("customer_uncertainty_hedged_claim")
+        elif claim_secondary:
+            risk_reasons.append("secondary_source_claim_needs_soft_verify")
+        elif ctype == "repairer":
+            risk_reasons.append("repairer_high_mismatch_cost")
+        else:
+            risk_reasons.append("verification_justified_by_commercial_risk")
     if snapshot is not None and not getattr(snapshot, "ok", False) and has_vin:
         risk_reasons.append("vin_decode_failed_or_low_trust")
-    if price_intent and conf < advance_min:
+    if price_intent and conf < advance_min and needs_verify:
         risk_reasons.append("price_intent_with_insufficient_identity_confidence")
 
-    if conflict or (conf < caution_min and engine_claim and ctype != "wholesaler"):
+    if conflict or (needs_verify and engine_claim and conf < caution_min and ctype != "wholesaler"):
         commercial_risk = "high"
+    elif engine_claim and not plate_evidence and not photo_evidence:
+        commercial_risk = "medium"  # working assumption — usable, not verified
     elif conf < advance_min:
         commercial_risk = "medium"
     else:
@@ -557,8 +612,8 @@ def decide_commercial(
         objective = "Advance wholesale with low identity friction"
         reason = "Wholesaler/batch — reduce friction unless anomaly"
         commercial_risk = "low" if conf >= advance_min else "medium"
-    elif engine_claim and conf < caution_min:
-        # NLU-001: after plate already asked / clarification / plate unavailable → alternate evidence
+    elif engine_claim and needs_verify and conf < caution_min:
+        # Verify only when risk justifies — not default distrust
         if plate_unavailable or clarifying_claim or plate_already_asked:
             candidates = [
                 _AS("ask_engine_photo", 3, 4, 4, 2, 1),
@@ -566,16 +621,65 @@ def decide_commercial(
                 _AS("ask_registration", 1, 2, 2, 2, 1),
             ]
             stage, objective = "confirm_identity", "Acknowledge claim; alternate evidence"
-            reason = "Customer reported engine code — do not re-ask plate; seek easier evidence"
+            reason = "Verification justified; do not re-ask plate"
         else:
+            soft = claim_hedged or claim_secondary
             candidates = [
-                _AS("ask_engine_plate", 2, 5, 5, 2, 1),
+                _AS("ask_engine_photo" if soft else "ask_engine_plate", 2, 5 if not soft else 4, 5 if not soft else 4, 2, 1),
                 _AS("ask_engine_photo", 2, 4, 4, 2, 1),
                 _AS("ask_vin", 2, 3, 3, 2, 1),
             ]
-            stage, objective = "confirm_identity", "Confirm currently installed engine"
-            reason = "Claimed code ≠ evidence; Current Installed Engine First"
+            stage, objective = "confirm_identity", "Soft-verify before wrong supply"
+            reason = (
+                "Customer uncertain / secondary source — soft verify"
+                if soft
+                else "Repairer / high mismatch cost — verify installed engine"
+            )
         commercial_risk = "high"
+    elif engine_claim and conf >= caution_min:
+        # Working assumption: advance commercial conversation; verify later if quoting/shipping
+        has_installed_evidence = bool(plate_evidence or photo_evidence)
+        about_to_commit = price_intent or (has_scope and qty is not None and has_port)
+        if (
+            about_to_commit
+            and not has_installed_evidence
+            and not has_vin
+            and conf < advance_min
+        ):
+            candidates = [
+                _AS("ask_engine_photo", 3, 4, 4, 2, 1),
+                _AS("ask_vin", 2, 3, 3, 2, 1),
+                _AS("ask_engine_plate", 2, 3, 3, 2, 1),
+            ]
+            stage, objective = "confirm_identity", "Verify before quote / supply"
+            reason = "Working assumption OK earlier; verify now before quote/purchase/ship"
+            commercial_risk = "medium"
+        elif not has_scope:
+            candidates = [_AS("ask_scope", 4, 1, 1, 1, 0)]
+            stage, objective = "scope", "Advance on customer_reported working assumption"
+            reason = "customer_reported usable — not ignored; not yet verified"
+            commercial_risk = "medium"
+        elif qty is None:
+            candidates = [_AS("ask_quantity", 4, 1, 1, 1, 0)]
+            stage, objective = "commercial_fields", "Quantity next"
+            reason = "Working assumption engine code — reduce friction"
+        elif not has_port:
+            candidates = [_AS("ask_destination", 4, 1, 1, 1, 0)]
+            stage, objective = "commercial_fields", "Destination next"
+            reason = "Working assumption engine code — reduce friction"
+        elif has_installed_evidence or conf >= advance_min:
+            candidates = [_AS("prepare_quote", 5, 1, 0, 0, 0), _AS("check_supplier", 5, 1, 0, 0, 1)]
+            stage, objective = "quote_ready", "Quote path ready"
+            reason = "Fields complete with installed-engine evidence or high confidence"
+            commercial_risk = "low" if conf >= advance_min else "medium"
+        else:
+            candidates = [
+                _AS("ask_engine_photo", 3, 4, 4, 2, 1),
+                _AS("prepare_quote", 4, 1, 0, 0, 1),
+            ]
+            stage, objective = "confirm_identity", "Verify before quote"
+            reason = "Fields complete — verify once before formal quote"
+            commercial_risk = "medium"
     elif has_vin and getattr(snapshot, "ok", False):
         if conf >= advance_min or (conf >= caution_min and has_scope):
             if not has_scope:
@@ -640,7 +744,7 @@ def decide_commercial(
         ]
         stage, objective, reason = "identify", "Highest-value next fact", "Default cautious"
 
-    if commercial_risk == "high" and conf < caution_min and engine_claim and ctype != "wholesaler":
+    if commercial_risk == "high" and conf < caution_min and engine_claim and ctype != "wholesaler" and needs_verify:
         if not any(c.action == "request_manual_review" for c in candidates):
             candidates.insert(0, _AS("request_manual_review", 1, 5, 2, 1, 1))
         if not plate_evidence and not plate_already_asked and not plate_unavailable and not clarifying_claim:
@@ -649,14 +753,13 @@ def decide_commercial(
                     c.risk_reduction += 1
                     c.evidence_gain += 1
             human = False
-            reason = "High mismatch risk — plate before wrong supply"
+            reason = "Verification justified by commercial risk — not default distrust"
         elif clarifying_claim or plate_already_asked or plate_unavailable:
-            # Prefer photo/VIN over repeating plate or jumping to human too early
             candidates = [c for c in candidates if c.action != "ask_engine_plate"]
             if not any(c.action == "ask_engine_photo" for c in candidates):
                 candidates.insert(0, _AS("ask_engine_photo", 3, 4, 4, 2, 1))
             human = False
-            reason = "High risk but customer clarified claim — alternate evidence"
+            reason = "Risk path but claim clarified — alternate evidence"
         else:
             human = True
             reason = "High risk after evidence — human review (Trust First)"
@@ -847,7 +950,12 @@ def _render_reply(
         lines.append("Yes — we can help with pricing.")
 
     if nba == "ask_scope":
-        lines.append("Do you need long block or complete engine?")
+        if engine_claim:
+            lines.append(
+                f"Noted {engine_claim} (as you reported). Do you need long block or complete engine?"
+            )
+        else:
+            lines.append("Do you need long block or complete engine?")
     elif nba == "ask_quantity":
         lines.append("What quantity do you need?")
     elif nba == "ask_destination":

@@ -2,7 +2,22 @@
   "version": "v1",
   "confidence": {
     "advance_min": 0.90,
-    "caution_min": 0.60
+    "caution_min": 0.60,
+    "customer_reported_working_min": 0.72
+  },
+  "customer_reported_policy": {
+    "principle": "Use customer information as a working assumption. Verify only when the commercial risk justifies it.",
+    "customer_reported_is_not_verified": true,
+    "customer_reported_is_usable": true,
+    "verify_when": [
+      "high_mismatch_cost",
+      "about_to_quote_purchase_or_ship",
+      "conflicting_information",
+      "customer_uncertainty_or_secondary_source",
+      "high_confusion_or_version_risk"
+    ],
+    "high_confusion_engine_codes": ["2SZ", "3SZ", "G4KD", "G4KE", "G4KC"],
+    "repairer_default_verify": true
   },
   "whatsapp_channel": {
     "max_words": 60,
