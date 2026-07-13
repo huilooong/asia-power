@@ -177,13 +177,16 @@ grep -q 'href="/trucks/"' "$PUB/index.html"
 grep -q 'href="/machinery/"' "$PUB/index.html"
 grep -q 'href="/half-cuts/?cat=used-cars"' "$PUB/index.html"
 grep -q 'nav-list-direct-v1' "$PUB/js/home-v4-hybrid.js"
-grep -q 'pwa-app-v3' "$PUB/index.html"
+grep -q 'pwa-app-v4' "$PUB/index.html"
+grep -q 'SHELL_ENABLED = false' "$PUB/js/pwa-app-shell.js"
 grep -q 'AsiaPowerAppShell' "$PUB/js/pwa-app-shell.js"
 grep -q 'ap-app-tabbar' "$PUB/css/pwa-app-shell.css"
 grep -q 'touch-action: pan-x pan-y' "$PUB/css/pwa-app-shell.css"
 grep -q 'overscroll-behavior-y: none' "$PUB/css/pwa-app-shell.css" && exit 1 || true
+grep -q 'html:not(.ap-app)' "$PUB/css/pwa-app-shell.css"
 grep -q 'ap-app-shell' "$PUB/js/pwa-app-shell.js"
 grep -q 'ensurePwaAppShellAssets' "$PUB/js/components.js"
+grep -q '"display": "browser"' "$PUB/manifest.json"
 echo "[deploy:home] files OK on remote"
 `);
 }

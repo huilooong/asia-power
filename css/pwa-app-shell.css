@@ -1,5 +1,11 @@
 /* AsiaPower standalone PWA app shell — looks like a native app, not a website */
 
+/* Failsafe: never paint app chrome unless html.ap-app is set by shell JS */
+html:not(.ap-app) .ap-app-topbar,
+html:not(.ap-app) .ap-app-tabbar {
+  display: none !important;
+}
+
 /* Do NOT set overscroll-behavior / overflow:hidden on html|body — that breaks one-finger scroll. */
 html.ap-app,
 html.ap-app body.ap-app-shell {
@@ -9,7 +15,7 @@ html.ap-app body.ap-app-shell {
   touch-action: pan-y pinch-zoom;
 }
 
-body.ap-app-shell {
+html.ap-app body.ap-app-shell {
   padding-top: calc(56px + env(safe-area-inset-top, 0px));
   padding-bottom: calc(64px + env(safe-area-inset-bottom, 0px));
   background: #f5f5f7;
@@ -21,14 +27,14 @@ body.ap-app-shell {
 }
 
 /* Horizontal product rails: allow vertical page scroll with one finger too */
-body.ap-app-shell .shelf-rail {
+html.ap-app body.ap-app-shell .shelf-rail {
   scroll-snap-type: x proximity;
   touch-action: pan-x pan-y;
   overscroll-behavior-x: contain;
 }
 
 /* —— Top app bar —— */
-.ap-app-topbar {
+html.ap-app body.ap-app-shell .ap-app-topbar {
   position: fixed;
   top: 0;
   left: 0;
@@ -42,14 +48,14 @@ body.ap-app-shell .shelf-rail {
   border-bottom: 1px solid rgba(255, 255, 255, 0.08);
 }
 
-.ap-app-topbar__inner {
+html.ap-app body.ap-app-shell .ap-app-topbar__inner {
   display: flex;
   align-items: center;
   gap: 10px;
   min-height: 56px;
 }
 
-.ap-app-topbar__brand {
+html.ap-app body.ap-app-shell .ap-app-topbar__brand {
   display: inline-flex;
   align-items: center;
   gap: 8px;
@@ -60,19 +66,19 @@ body.ap-app-shell .shelf-rail {
   letter-spacing: 0.02em;
 }
 
-.ap-app-topbar__brand img {
+html.ap-app body.ap-app-shell .ap-app-topbar__brand img {
   width: 28px;
   height: 28px;
   border-radius: 8px;
   background: #fff;
 }
 
-.ap-app-topbar__search {
+html.ap-app body.ap-app-shell .ap-app-topbar__search {
   flex: 1 1 auto;
   min-width: 0;
 }
 
-.ap-app-topbar__search input {
+html.ap-app body.ap-app-shell .ap-app-topbar__search input {
   width: 100%;
   height: 36px;
   border: 0;
@@ -83,18 +89,18 @@ body.ap-app-shell .shelf-rail {
   font: 500 14px/1 Inter, "Helvetica Neue", Arial, sans-serif;
 }
 
-.ap-app-topbar__search input::placeholder {
+html.ap-app body.ap-app-shell .ap-app-topbar__search input::placeholder {
   color: rgba(255, 255, 255, 0.55);
 }
 
 /* —— Bottom tab bar —— */
-.ap-app-tabbar {
+html.ap-app body.ap-app-shell .ap-app-tabbar {
   position: fixed;
   left: 0;
   right: 0;
   bottom: 0;
   z-index: 10040;
-  display: grid;
+  display: grid !important;
   grid-template-columns: repeat(5, minmax(0, 1fr));
   gap: 2px;
   min-height: 64px;
@@ -106,7 +112,7 @@ body.ap-app-shell .shelf-rail {
   -webkit-backdrop-filter: blur(18px);
 }
 
-.ap-app-tabbar__item {
+html.ap-app body.ap-app-shell .ap-app-tabbar__item {
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -119,24 +125,24 @@ body.ap-app-shell .shelf-rail {
   font: 700 10px/1 Inter, "Helvetica Neue", Arial, sans-serif;
 }
 
-.ap-app-tabbar__item.is-active {
+html.ap-app body.ap-app-shell .ap-app-tabbar__item.is-active {
   color: #0a1628;
   background: #eef2f7;
 }
 
-.ap-app-tabbar__icon {
+html.ap-app body.ap-app-shell .ap-app-tabbar__icon {
   display: grid;
   place-items: center;
   width: 22px;
   height: 22px;
 }
 
-.ap-app-tabbar__icon svg {
+html.ap-app body.ap-app-shell .ap-app-tabbar__icon svg {
   width: 20px;
   height: 20px;
 }
 
-.ap-app-tabbar__label {
+html.ap-app body.ap-app-shell .ap-app-tabbar__label {
   max-width: 100%;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -144,72 +150,62 @@ body.ap-app-shell .shelf-rail {
 }
 
 /* —— Hide website chrome in app mode —— */
-body.ap-app-shell .ap-pwa-fab,
-body.ap-app-shell .ap-pwa-sheet,
-body.ap-app-shell .whatsapp-float,
-body.ap-app-shell #site-whatsapp,
-body.ap-app-shell #site-topbar,
-body.ap-app-shell #site-header,
-body.ap-app-shell #site-footer,
-body.ap-app-shell .ap-footer,
-body.ap-app-shell .app-bottom-nav,
-body.ap-app-shell .trust,
-body.ap-app-shell .preview-note,
-body.ap-app-shell .demo-bar {
+html.ap-app body.ap-app-shell .ap-pwa-fab,
+html.ap-app body.ap-app-shell .ap-pwa-sheet,
+html.ap-app body.ap-app-shell .whatsapp-float,
+html.ap-app body.ap-app-shell #site-whatsapp,
+html.ap-app body.ap-app-shell #site-topbar,
+html.ap-app body.ap-app-shell #site-header,
+html.ap-app body.ap-app-shell #site-footer,
+html.ap-app body.ap-app-shell .ap-footer,
+html.ap-app body.ap-app-shell .app-bottom-nav,
+html.ap-app body.ap-app-shell .trust,
+html.ap-app body.ap-app-shell .preview-note,
+html.ap-app body.ap-app-shell .demo-bar {
   display: none !important;
 }
 
 /* Homepage: turn marketing site into compact app home */
-body.ap-app-shell.page-home-v4-hybrid .ap-nav {
+html.ap-app body.ap-app-shell.page-home-v4-hybrid .ap-nav {
   display: none !important;
 }
 
-body.ap-app-shell.page-home-v4-hybrid .hero {
+html.ap-app body.ap-app-shell.page-home-v4-hybrid .hero {
   padding: 20px 16px 8px !important;
   text-align: left !important;
 }
 
-body.ap-app-shell.page-home-v4-hybrid .hero h1 {
+html.ap-app body.ap-app-shell.page-home-v4-hybrid .hero h1 {
   font-size: 28px !important;
   letter-spacing: -0.6px !important;
   margin-bottom: 8px !important;
 }
 
-body.ap-app-shell.page-home-v4-hybrid .hero-sub {
+html.ap-app body.ap-app-shell.page-home-v4-hybrid .hero-sub {
   font-size: 14px !important;
   margin-bottom: 14px !important;
 }
 
-body.ap-app-shell.page-home-v4-hybrid .hero-badge {
+html.ap-app body.ap-app-shell.page-home-v4-hybrid .hero-badge {
   justify-content: flex-start !important;
 }
 
-body.ap-app-shell.page-home-v4-hybrid .hero-search-wrap {
+html.ap-app body.ap-app-shell.page-home-v4-hybrid .hero-search-wrap {
   margin: 0 0 12px !important;
 }
 
-body.ap-app-shell.page-home-v4-hybrid .popular-wrap {
+html.ap-app body.ap-app-shell.page-home-v4-hybrid .popular-wrap {
   margin-bottom: 8px !important;
 }
 
-/* Catalog ebay pages: keep list, drop leftover bottom letter-nav / float overlap */
-body.ap-app-shell.scheme-ebay .ap-app-tabbar {
-  display: grid !important;
-}
-
-body.ap-app-shell.scheme-ebay .ebay-cars-main,
-body.ap-app-shell.scheme-ebay .ebay-parts-main {
+html.ap-app body.ap-app-shell.scheme-ebay .ebay-cars-main,
+html.ap-app body.ap-app-shell.scheme-ebay .ebay-parts-main {
   padding-bottom: 12px;
 }
 
-/* Force app bottom nav visible even where hybrid/ebay CSS hid the old one */
-body.ap-app-shell .ap-app-tabbar {
-  display: grid !important;
-}
-
 @media (min-width: 900px) {
-  body.ap-app-shell .ap-app-topbar__inner,
-  body.ap-app-shell .ap-app-tabbar {
+  html.ap-app body.ap-app-shell .ap-app-topbar__inner,
+  html.ap-app body.ap-app-shell .ap-app-tabbar {
     max-width: 720px;
     margin: 0 auto;
   }

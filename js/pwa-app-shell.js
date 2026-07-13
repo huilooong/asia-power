@@ -2,26 +2,51 @@
  * AsiaPower — standalone PWA app shell
  * When opened from the home-screen icon (no browser chrome), apply an app-like
  * top bar + bottom tabs and hide marketing website chrome.
+ *
+ * P0 2026-07-13: SHELL_ENABLED=false — display-mode:fullscreen (and some clients)
+ * falsely activated the shell inside a normal browser tab and wrecked the homepage.
+ * Re-enable only after CEO approval + standalone-only detection.
  */
 (function () {
   'use strict';
 
-  var CACHE = 'pwa-app-v3';
+  var CACHE = 'pwa-app-v4';
   var TABBAR_ID = 'ap-app-tabbar';
   var TOPBAR_ID = 'ap-app-topbar';
+  /** Kill switch — must stay false until standalone detection is proven safe. */
+  var SHELL_ENABLED = false;
 
   function isStandalone() {
+    if (!SHELL_ENABLED) return false;
     try {
-      if (window.matchMedia && window.matchMedia('(display-mode: standalone)').matches) return true;
-      if (window.matchMedia && window.matchMedia('(display-mode: fullscreen)').matches) return true;
-      if (window.navigator.standalone === true) return true;
       var q = new URLSearchParams(window.location.search);
-      if (q.get('app') === '1' || q.get('source') === 'pwa') {
-        // Allow forced preview while debugging; real installs set display-mode.
-        if (q.get('app') === '1') return true;
-      }
+      // Explicit opt-out always wins
+      if (q.get('app') === '0' || q.get('noshell') === '1') return false;
+      // Preview only with ?app=1 — never treat source=pwa as shell
+      if (q.get('app') === '1') return true;
+      // Real installed-app modes only. Do NOT use display-mode:fullscreen
+      // (F11 / some WebViews falsely match and poison the marketing site).
+      if (window.matchMedia && window.matchMedia('(display-mode: standalone)').matches) return true;
+      if (window.navigator.standalone === true) return true;
     } catch (_) { /* ignore */ }
     return false;
+  }
+
+  function stripShell() {
+    try {
+      document.documentElement.classList.remove('ap-app');
+      if (document.body) {
+        document.body.classList.remove('ap-app-shell');
+        document.body.classList.remove('ap-pwa-sheet-open');
+      }
+      var top = document.getElementById(TOPBAR_ID);
+      if (top) top.remove();
+      var tab = document.getElementById(TABBAR_ID);
+      if (tab) tab.remove();
+      document.querySelectorAll('.ap-app-topbar, .ap-app-tabbar').forEach(function (el) {
+        el.remove();
+      });
+    } catch (_) { /* ignore */ }
   }
 
   function t(zh, en) {
@@ -87,13 +112,12 @@
     bar.className = 'ap-app-topbar';
     bar.innerHTML =
       '<div class="ap-app-topbar__inner">' +
-        '<a class="ap-app-topbar__brand" href="/?source=pwa">' +
+        '<a class="ap-app-topbar__brand" href="/">' +
           '<img src="/assets/icons/icon-192.png" width="28" height="28" alt="">' +
           '<span>AsiaPower</span>' +
         '</a>' +
         '<form class="ap-app-topbar__search" action="/half-cuts/" method="get" role="search">' +
           '<input type="search" name="q" placeholder="' + t('搜库存 / 发动机号', 'Search stock / engine') + '" aria-label="Search">' +
-          '<input type="hidden" name="source" value="pwa">' +
         '</form>' +
       '</div>';
     document.body.prepend(bar);
@@ -103,10 +127,10 @@
     document.querySelectorAll('.app-bottom-nav, #' + TABBAR_ID).forEach(function (n) { n.remove(); });
     var current = activeTab();
     var tabs = [
-      { id: 'home', href: '/?source=pwa', label: t('首页', 'Home'), icon: 'home' },
-      { id: 'stock', href: '/half-cuts/?source=pwa', label: t('库存', 'Stock'), icon: 'stock' },
-      { id: 'engines', href: '/engines/?source=pwa', label: t('发动机', 'Engines'), icon: 'engines' },
-      { id: 'trucks', href: '/trucks/?source=pwa', label: t('卡车', 'Trucks'), icon: 'trucks' },
+      { id: 'home', href: '/', label: t('首页', 'Home'), icon: 'home' },
+      { id: 'stock', href: '/half-cuts/', label: t('库存', 'Stock'), icon: 'stock' },
+      { id: 'engines', href: '/engines/', label: t('发动机', 'Engines'), icon: 'engines' },
+      { id: 'trucks', href: '/trucks/', label: t('卡车', 'Trucks'), icon: 'trucks' },
       { id: 'quote', href: waUrl(), label: t('询价', 'Quote'), icon: 'quote', external: true },
     ];
     var nav = document.createElement('nav');
@@ -127,15 +151,16 @@
   }
 
   function applyShell() {
-    if (!isStandalone()) return false;
+    if (!isStandalone()) {
+      stripShell();
+      return false;
+    }
     ensureCss();
     document.documentElement.classList.add('ap-app');
     document.body.classList.add('ap-app-shell');
-    // Never leave install-sheet scroll lock on in app mode
     document.body.classList.remove('ap-pwa-sheet-open');
     renderTopbar();
     renderTabbar();
-    // Hide install chrome in true app mode
     document.querySelectorAll('.ap-pwa-fab, .ap-pwa-sheet').forEach(function (el) {
       el.hidden = true;
     });
@@ -143,14 +168,18 @@
   }
 
   function boot() {
+    if (!SHELL_ENABLED) {
+      stripShell();
+      return;
+    }
     if (!applyShell()) return;
     window.addEventListener('asiapower:langchange', function () {
       renderTopbar();
       renderTabbar();
     });
     window.addEventListener('asiapower:layoutrefresh', function () {
-      // components.js may wipe/reinsert old bottom nav — keep app tabbar
       if (isStandalone()) renderTabbar();
+      else stripShell();
     });
   }
 
@@ -163,6 +192,8 @@
   window.AsiaPowerAppShell = {
     isStandalone: isStandalone,
     applyShell: applyShell,
+    stripShell: stripShell,
+    enabled: function () { return SHELL_ENABLED; },
     activeTab: activeTab,
   };
 })();
