@@ -14,6 +14,7 @@
   <link rel="icon" href="assets/favicon.png" type="image/png">
   <link rel="apple-touch-icon" href="/assets/icons/apple-touch-icon.png">
   <link rel="stylesheet" href="css/styles.css?v=lang-sync-v2">
+  <link rel="stylesheet" href="css/pwa-install.css?v=pwa-install-v2">
   <style>
     body { background: #f5f7fb; color: #0a1628; }
     .app-install-page { min-height: 100vh; padding: 28px 16px 48px; }
@@ -46,7 +47,7 @@
         <h1>下载 AsiaPower APP</h1>
         <p>无需应用商店，可直接添加到手机桌面。No app store required — add AsiaPower to your phone home screen.</p>
         <div class="app-install-actions">
-          <a class="btn btn-accent" href="/">打开首页 / Open Home</a>
+          <button class="btn btn-accent" type="button" id="app-page-install">安装到桌面 / Install App</button>
           <a class="btn btn-whatsapp" href="https://wa.me/8616638801930?text=Hello%20AsiaPower%2C%20I%20would%20like%20to%20enquire%20about%20powertrain%20sourcing%20for%20export." target="_blank" rel="noopener">联系 WhatsApp</a>
           <button class="btn btn-outline-light" type="button" id="copy-app-url">复制网址</button>
         </div>
@@ -88,23 +89,34 @@
   <script src="js/path-utils.js?v=listing-layout-v1"></script>
   <script src="js/config.js?v=apcontact-002"></script>
   <script src="js/components.js?v=about-type-v2" defer></script>
-  <script src="js/pwa-install.js?v=apcontact-002" defer></script>
+  <script src="js/pwa-install.js?v=pwa-install-v2" defer></script>
   <script>
     (function () {
-      var button = document.getElementById('copy-app-url');
-      if (!button) return;
-      button.addEventListener('click', function () {
-        var url = 'https://asia-power.com/app.html';
-        if (navigator.clipboard && navigator.clipboard.writeText) {
-          navigator.clipboard.writeText(url).then(function () {
-            button.textContent = '已复制';
-          }).catch(function () {
-            button.textContent = url;
-          });
-          return;
-        }
-        button.textContent = url;
-      });
+      var copyBtn = document.getElementById('copy-app-url');
+      if (copyBtn) {
+        copyBtn.addEventListener('click', function () {
+          var url = 'https://asia-power.com/app.html';
+          if (navigator.clipboard && navigator.clipboard.writeText) {
+            navigator.clipboard.writeText(url).then(function () {
+              copyBtn.textContent = '已复制';
+            }).catch(function () {
+              copyBtn.textContent = url;
+            });
+            return;
+          }
+          copyBtn.textContent = url;
+        });
+      }
+      var installBtn = document.getElementById('app-page-install');
+      if (installBtn) {
+        installBtn.addEventListener('click', function () {
+          if (window.AsiaPowerPwaInstall && window.AsiaPowerPwaInstall.openSheet) {
+            window.AsiaPowerPwaInstall.openSheet();
+            return;
+          }
+          window.location.href = '/';
+        });
+      }
     })();
   </script>
 </body>

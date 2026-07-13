@@ -1,0 +1,270 @@
+/* AsiaPower PWA install FAB + sheet — app-like install UX */
+
+.ap-pwa-fab {
+  position: fixed;
+  left: max(12px, env(safe-area-inset-left));
+  bottom: max(16px, env(safe-area-inset-bottom));
+  z-index: 1200;
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  max-width: min(280px, calc(100vw - 88px));
+  padding: 8px 14px 8px 8px;
+  border: 0;
+  border-radius: 999px;
+  background: #0a1628;
+  color: #fff;
+  box-shadow:
+    0 10px 28px rgba(10, 22, 40, 0.28),
+    0 0 0 1px rgba(255, 255, 255, 0.08) inset;
+  cursor: pointer;
+  text-align: left;
+  font: 600 13px/1.2 "Barlow Condensed", "Helvetica Neue", Arial, sans-serif;
+  letter-spacing: 0.02em;
+  transition: transform 0.18s ease, box-shadow 0.18s ease, opacity 0.18s ease;
+}
+
+.ap-pwa-fab:hover,
+.ap-pwa-fab:focus-visible {
+  transform: translateY(-1px);
+  box-shadow:
+    0 14px 32px rgba(10, 22, 40, 0.34),
+    0 0 0 1px rgba(255, 255, 255, 0.12) inset;
+  outline: none;
+}
+
+.ap-pwa-fab--ready {
+  background: linear-gradient(135deg, #0a1628 0%, #16325a 100%);
+}
+
+.ap-pwa-fab--done {
+  background: #14532d;
+}
+
+.ap-pwa-fab__icon {
+  flex: 0 0 auto;
+  width: 36px;
+  height: 36px;
+  border-radius: 10px;
+  overflow: hidden;
+  background: #fff;
+  box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.2);
+}
+
+.ap-pwa-fab__icon img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.ap-pwa-fab__text {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.ap-pwa-fab__text strong {
+  font-size: 14px;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.ap-pwa-fab__text small {
+  font: 500 11px/1.2 Inter, "Helvetica Neue", Arial, sans-serif;
+  opacity: 0.78;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Leave room for WhatsApp float on the right */
+body.scheme-ebay .ap-pwa-fab,
+body.page-home .ap-pwa-fab {
+  bottom: max(18px, env(safe-area-inset-bottom));
+}
+
+.ap-pwa-sheet {
+  position: fixed;
+  inset: 0;
+  z-index: 1300;
+}
+
+.ap-pwa-sheet[hidden] {
+  display: none !important;
+}
+
+.ap-pwa-sheet__backdrop {
+  position: absolute;
+  inset: 0;
+  background: rgba(10, 22, 40, 0.48);
+}
+
+.ap-pwa-sheet__panel {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  max-height: min(88vh, 640px);
+  overflow: auto;
+  padding: 18px 18px calc(18px + env(safe-area-inset-bottom));
+  border-radius: 22px 22px 0 0;
+  background: #f7f8fa;
+  box-shadow: 0 -12px 40px rgba(10, 22, 40, 0.22);
+  color: #0a1628;
+  -webkit-overflow-scrolling: touch;
+}
+
+.ap-pwa-sheet__close {
+  position: absolute;
+  top: 10px;
+  right: 12px;
+  width: 36px;
+  height: 36px;
+  border: 0;
+  border-radius: 999px;
+  background: #e8ecf1;
+  color: #0a1628;
+  font-size: 22px;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.ap-pwa-sheet__app {
+  display: flex;
+  gap: 14px;
+  align-items: center;
+  padding-right: 36px;
+  margin-bottom: 14px;
+}
+
+.ap-pwa-sheet__icon {
+  width: 72px;
+  height: 72px;
+  border-radius: 16px;
+  object-fit: cover;
+  box-shadow: 0 8px 20px rgba(10, 22, 40, 0.16);
+  background: #fff;
+}
+
+.ap-pwa-sheet__meta h2 {
+  margin: 0 0 6px;
+  font: 800 22px/1.15 "Barlow Condensed", "Helvetica Neue", Arial, sans-serif;
+  letter-spacing: 0.01em;
+}
+
+.ap-pwa-sheet__meta p {
+  margin: 0;
+  font: 500 14px/1.45 Inter, "Helvetica Neue", Arial, sans-serif;
+  color: #52606d;
+}
+
+.ap-pwa-sheet__perks {
+  list-style: none;
+  margin: 0 0 14px;
+  padding: 12px 14px;
+  border-radius: 14px;
+  background: #fff;
+  border: 1px solid #e2e8f0;
+}
+
+.ap-pwa-sheet__perks li {
+  position: relative;
+  padding: 6px 0 6px 22px;
+  font: 500 13px/1.45 Inter, "Helvetica Neue", Arial, sans-serif;
+  color: #334155;
+}
+
+.ap-pwa-sheet__perks li::before {
+  content: "✓";
+  position: absolute;
+  left: 0;
+  top: 6px;
+  color: #15803d;
+  font-weight: 800;
+}
+
+.ap-pwa-sheet__body {
+  margin-bottom: 14px;
+}
+
+.ap-pwa-steps {
+  margin: 0;
+  padding: 14px 14px 14px 32px;
+  border-radius: 14px;
+  background: #fff;
+  border: 1px solid #e2e8f0;
+  color: #334155;
+  font: 500 14px/1.65 Inter, "Helvetica Neue", Arial, sans-serif;
+}
+
+.ap-pwa-glyph {
+  display: inline-block;
+  padding: 0 4px;
+  border-radius: 4px;
+  background: #e8ecf1;
+  font-weight: 700;
+}
+
+.ap-pwa-sheet__actions {
+  display: grid;
+  gap: 10px;
+}
+
+.ap-pwa-sheet__primary {
+  appearance: none;
+  border: 0;
+  border-radius: 12px;
+  padding: 14px 16px;
+  background: #0a1628;
+  color: #fff;
+  font: 700 15px/1.2 Inter, "Helvetica Neue", Arial, sans-serif;
+  cursor: pointer;
+}
+
+.ap-pwa-sheet__primary:disabled {
+  opacity: 0.55;
+  cursor: default;
+}
+
+.ap-pwa-sheet__secondary {
+  display: block;
+  text-align: center;
+  padding: 12px 14px;
+  border-radius: 12px;
+  border: 1.5px solid #d5dde8;
+  background: #fff;
+  color: #0a1628;
+  text-decoration: none;
+  font: 600 14px/1.2 Inter, "Helvetica Neue", Arial, sans-serif;
+}
+
+.ap-pwa-sheet__hint {
+  margin: 12px 0 0;
+  font: 500 12px/1.45 Inter, "Helvetica Neue", Arial, sans-serif;
+  color: #64748b;
+  text-align: center;
+}
+
+body.ap-pwa-sheet-open {
+  overflow: hidden;
+}
+
+@media (min-width: 760px) {
+  .ap-pwa-sheet__panel {
+    left: 50%;
+    right: auto;
+    bottom: 24px;
+    width: min(420px, calc(100vw - 32px));
+    transform: translateX(-50%);
+    border-radius: 18px;
+    max-height: min(80vh, 620px);
+  }
+}
+
+@media (max-width: 420px) {
+  .ap-pwa-fab__text small {
+    display: none;
+  }
+}
