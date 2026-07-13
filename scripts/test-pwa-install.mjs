@@ -44,7 +44,7 @@ assert(!/button\.disabled\s*=\s*true[\s\S]{0,80}添加到桌面/.test(js), 'fall
 assert(js.includes('beforeinstallprompt') && js.includes('prompt()'), 'native install prompt path present');
 assert(js.includes('Add to Home Screen') || js.includes('添加到主屏幕'), 'iOS steps present');
 assert(css.includes('.ap-pwa-fab') && css.includes('.ap-pwa-sheet__panel'), 'CSS for FAB + sheet');
-assert(indexHtml.includes('pwa-app-v2') && indexHtml.includes('pwa-app-shell'), 'homepage wires app shell v2');
+assert(indexHtml.includes('pwa-app-v3') && indexHtml.includes('pwa-app-shell'), 'homepage wires app shell v2');
 assert(js.includes('添加到桌面后') || js.includes('open from the icon'), 'install copy explains reopen from icon');
 
 // App shell module checks
@@ -312,7 +312,7 @@ await new Promise((resolve) => {
         assert(res.status === 200, `local HTTP 200 ${p}`);
       }
       const html = await (await fetch(base + '/index.html')).text();
-      assert(html.includes('pwa-app-v2'), 'index served with pwa-app-v2');
+      assert(html.includes('pwa-app-v3'), 'index served with pwa-app-v3');
       assert(html.includes('pwa-app-shell'), 'index references app shell');
     } catch (err) {
       fail('local HTTP smoke', err.message);

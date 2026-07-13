@@ -6,7 +6,7 @@
 (function () {
   'use strict';
 
-  var CACHE = 'pwa-app-v2';
+  var CACHE = 'pwa-app-v3';
   var TABBAR_ID = 'ap-app-tabbar';
   var TOPBAR_ID = 'ap-app-topbar';
 
