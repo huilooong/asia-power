@@ -21,5 +21,8 @@ No prompt stacking; no synonym-masking duplicates; no image→LLM; no new Engine
 
 ## Production
 
-Release `REL-20260713120527-api-f4468db45` + Python rsync 已完成。  
-US 白名单号码（suffix `5223`）真出站：`Complete engine`→quantity；图片→确认收到；同 wamid 幂等跳过。详见 `production-validation.md`。
+Release `REL-20260713122504-api-d519e7940`（qty binding）已完成。  
+US 5223 真出站：`2sz`→scope→`Complete engine`→quantity→`1`→**Which destination port?**（commercial，无欢迎语）；同 wamid 幂等跳过。
+
+详见 `quantity-answer-binding.md` + `production-validation.md`。
+

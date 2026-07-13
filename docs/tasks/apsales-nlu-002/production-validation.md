@@ -1,53 +1,46 @@
 # APSALES-NLU-002 — Production Validation
 
-**Mode:** `WHATSAPP_AUTONOMY_MODE=live`（现网；白名单仍保留 CEO US）  
-**Business number:** +86 166 3880 1930  
-**US / CEO wa_id suffix:** `5223`
+**Mode:** live（CEO US allowlist suffix `5223`）  
+**Business number:** +86 166 3880 1930
 
-## Deploy
+## Deploy (qty binding)
 
 | 项 | 值 |
 |----|-----|
-| Commit | `f4468db45` |
-| Branch | `feature/apsales-evidence-001` |
-| Release (api) | `REL-20260713120527-api-f4468db45` |
-| Python sync | rsync → `/root/.openclaw/workspace/AsiaPower/` `sales_core/*` + `scripts/whatsapp_cloud_sandbox_reply.py` + `tests/test_apsales_nlu_002.py` |
-| Prod unit | 6/6 PASS on server |
+| Commit | `d519e7940` |
+| Release (api) | `REL-20260713122504-api-d519e7940` |
+| Python sync | `sales_core/*` + `whatsapp_cloud_sandbox_reply.py` → AsiaPower |
 
-## Live Graph 出站（白名单 US 号码）
+## Live Graph — quantity regression (2026-07-13)
 
-| 轮次 | 入站 | decision | 出站要点 | wamid_out |
-|------|------|----------|----------|-----------|
-| 1 | `2sz` | commercial_decision | ask_scope（Noted 2SZ… long block or complete） | 已发送 |
-| 2 | `Complete engine` | commercial_decision | **What quantity do you need?**（非 LLM / 非铭牌） | 已发送 |
-| 2 replay | 同 wamid | skipped | `outbound_idempotent_skip` | 未重发 |
-| 3 | 强制 `ask_engine_plate` 后 `[image]` | commercial_decision | **Thanks — we received your photo** + 推进 quantity | 已发送 |
-| 3 replay | 同 image wamid | skipped | `outbound_idempotent_skip` | 未重发 |
+| 轮次 | 入站 | decision | 出站 | 结果 |
+|------|------|----------|------|------|
+| 1 | `2sz` | commercial_decision | Noted 2SZ… long block or complete engine? | PASS |
+| 2 | `Complete engine` | commercial_decision | What quantity do you need? | PASS |
+| 3 | `1` | commercial_decision | **Which destination port?** | PASS（无欢迎语） |
+| 3 replay | 同 wamid `1` | skipped | `outbound_idempotent_skip` | PASS |
 
-## conversation_state（`wa:19402375223`）
+### conversation_state `wa:19402375223`
 
 | 字段 | 值 |
 |------|-----|
 | `known.product_scope` | `complete_engine` |
-| `requested_evidence_received` | `true` |
-| `pending_image_review` | `true` |
-| `customer_reported.customer_result` | `sent_image` |
-| `last_customer_message_type` | `image` |
-| `last_requested_evidence` | `engine_plate` |
+| `known.quantity` | `1` |
+| `last_system_action` | `ask_destination` |
+| outbound | Which destination port? |
 
-## Checklist
+## Double “1” welcome (pre-fix)
 
-| 项 | 结果 |
-|----|------|
-| Complete engine → answer / commercial / 不问铭牌 | **PASS** |
-| Long block（prod unit + local） | **PASS** |
-| 图片确认收到、不重复要铭牌 | **PASS** |
-| 同 wamid 出站幂等 | **PASS** |
-| 代码含 claimInboundOnce / claimOutboundOnce | **PASS** |
+| 观察 | 结论 |
+|------|------|
+| 12:15:20Z + 12:15:45Z 两次 `1` | **两个不同 inbound wamid** |
+| 两次不同 wamid_out | 两次真实 Graph 发送 |
+| 原因 | 数量未绑定 → Python 未走 Commercial → `core` import 失败 → **fallback 欢迎语** |
+| 非幂等漏发 | P2 按 wamid 正确；重复是客户/测试重发了第二条 `1` |
 
 ## Rollback
 
 ```bash
-RESTORE_CONFIRM=REL-20260713120527-api-f4468db45 node scripts/release-restore.mjs REL-20260713120527-api-f4468db45
-# 并回滚 AsiaPower sales_core / scripts/whatsapp_cloud_sandbox_reply.py 到上一稳定 commit
+RESTORE_CONFIRM=REL-20260713122504-api-d519e7940 node scripts/release-restore.mjs REL-20260713122504-api-d519e7940
+# 并回滚 AsiaPower sales_core / sandbox_reply 到上一 commit
 ```
