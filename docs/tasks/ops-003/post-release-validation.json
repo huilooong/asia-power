@@ -2,9 +2,9 @@
   "report": {
     "status": "pass",
     "base_url": "https://asia-power.com",
-    "release_id": "REL-20260713133333-engines-83cb600f9",
+    "release_id": "REL-20260713133534-chrome-4e5ada93c",
     "expected_whatsapp": "8616638801930",
-    "checked_at": "2026-07-13T13:34:01.503Z",
+    "checked_at": "2026-07-13T13:38:29.006Z",
     "checks": [
       {
         "name": "homepage_http",
@@ -284,7 +284,7 @@
       {
         "name": "config_js_release_id",
         "status": "pass",
-        "detail": "releaseId=REL-20260713133333-engines-83cb600f9"
+        "detail": "releaseId=REL-20260713133534-chrome-4e5ada93c"
       },
       {
         "name": "sw_js_http",
@@ -361,7 +361,7 @@
         "resolved_config_whatsapp": "8616638801930",
         "resolved_config_cache": {
           "cache_control": "public, max-age=14400, must-revalidate",
-          "cf_cache_status": "HIT",
+          "cf_cache_status": "EXPIRED",
           "etag": ""
         }
       },
@@ -529,20 +529,20 @@
           "cf_cache_status": "EXPIRED",
           "etag": "",
           "age": "",
-          "last_modified": "Mon, 13 Jul 2026 13:34:00 GMT"
+          "last_modified": "Mon, 13 Jul 2026 13:38:27 GMT"
         },
         "whatsapp": "8616638801930",
-        "release_id": "REL-20260713133333-engines-83cb600f9"
+        "release_id": "REL-20260713133534-chrome-4e5ada93c"
       },
       "sw_js": {
         "url": "https://asia-power.com/sw.js",
         "http_status": 200,
         "cache": {
           "cache_control": "public, max-age=14400, must-revalidate",
-          "cf_cache_status": "HIT",
+          "cf_cache_status": "EXPIRED",
           "etag": "",
-          "age": "54",
-          "last_modified": "Mon, 13 Jul 2026 13:33:06 GMT"
+          "age": "",
+          "last_modified": "Mon, 13 Jul 2026 13:38:27 GMT"
         },
         "cache_version": "apcontact-002-v1"
       },
