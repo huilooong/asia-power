@@ -19,6 +19,7 @@ Commercial Decision V1, NLU-001, Conversation State, Evidence, Truth Guard.
 
 No prompt stacking; no synonym-masking duplicates; no image→LLM; no new Engine/microservice; no quote/VIN/website/ads changes.
 
-## Open
+## Production
 
-Production sandbox live turns after commit → push → Release Manager (`api`) + Python rsync.
+Release `REL-20260713120527-api-f4468db45` + Python rsync 已完成。  
+US 白名单号码（suffix `5223`）真出站：`Complete engine`→quantity；图片→确认收到；同 wamid 幂等跳过。详见 `production-validation.md`。
