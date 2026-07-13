@@ -49,7 +49,9 @@ function rsync(local, remote, extra = []) {
 }
 
 function ssh(script) {
-  run('ssh', [REMOTE, script]);
+  // Brief pause after rsync bursts — remote sshd can refuse/hang the next session.
+  spawnSync('sleep', ['2']);
+  run('ssh', ['-o', 'ConnectTimeout=30', '-o', 'ServerAliveInterval=5', '-o', 'ServerAliveCountMax=3', REMOTE, script]);
 }
 
 function deployNginx() {
