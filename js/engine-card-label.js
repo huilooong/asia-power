@@ -285,6 +285,13 @@
     var src = input || {};
     var brand = String(src.brand || '').trim();
     var model = String(src.model || '').trim();
+    if (brand && model && brand.toLowerCase() === model.toLowerCase()) {
+      return brand;
+    }
+    // Avoid "Brand Brand Model" when model already starts with brand
+    if (brand && model && new RegExp('^' + brand.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + '\\b', 'i').test(model)) {
+      return model;
+    }
     return [brand, model].filter(Boolean).join(' ');
   }
 
