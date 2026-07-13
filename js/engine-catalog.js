@@ -72,20 +72,24 @@
   function renderEngineModelCard(brandSlug, brandName, model, opts) {
     const options = opts || {};
     const url = modelUrl(brandSlug, model.code);
+    const label = window.EngineCardLabel;
+    const primary = label?.formatEngineCodeDisplacementFuel?.(model)
+      || [model.code, model.displacement, model.fuel].filter(Boolean).join(' · ');
+    const appsSummary = label?.formatCompatibleVehiclesSummary?.(model.applications, {
+      brandName,
+      limit: 3,
+    }) || '';
     if (options.listMode) {
       const hub = window.AsiaPowerEbayCatalogHub;
-      const fullTitle = `${brandName} ${model.code}`.trim();
+      const fullTitle = primary || `${brandName} ${model.code}`.trim();
       if (hub?.renderPartsListRow) {
-        const fuelKey = { petrol: 'engines.petrol', diesel: 'engines.diesel', hybrid: 'engines.hybrid' }[model.type];
-        const fuelLabel = fuelKey ? t(fuelKey, model.fuel || model.type) : (model.fuel || '');
-        const metaParts = [fuelLabel, model.displacement].filter(Boolean);
         return hub.renderPartsListRow({
           brandSlug,
           brandName,
           title: fullTitle,
           url,
           filterTags: `${model.type} ${brandSlug}`,
-          meta: metaParts.join(' · '),
+          meta: appsSummary || '',
         });
       }
       return `
@@ -95,6 +99,7 @@
         </a>
         <div class="ebay-listing-row__main">
           <h3 class="ebay-listing-row__title"><a href="${url}">${fullTitle}</a></h3>
+          ${appsSummary ? `<p class="ebay-listing-row__specs">${appsSummary}</p>` : ''}
         </div>
         <div class="ebay-listing-row__aside">
           <p class="ebay-listing-row__price ebay-listing-row__price--enquiry">${t('hc.priceOnEnquiry', 'Quote on enquiry')} <span class="ap-exw-badge" translate="no">EXW</span></p>
@@ -103,15 +108,16 @@
     }
     const hasPage = window.SitePaths?.enginePagePath?.(brandSlug, model.code);
     const ctaLabel = hasPage ? t('engine.viewModel', 'View Model →') : t('engine.requestQuote', 'Request Quote');
+    const appsHtml = appsSummary
+      ? `<p class="engine-model__apps">${appsSummary}</p>`
+      : '';
     return `
       <article class="engine-model" data-filter-tags="${model.type} ${brandSlug}">
         <div class="engine-model__header">
           <span class="engine-model__brand">${brandName}</span>
-          <span class="engine-model__fuel">${model.fuel}</span>
         </div>
-        <h3 class="engine-model__code"><a href="${url}">${model.code}</a></h3>
-        <p class="engine-model__displacement">${model.displacement}</p>
-        <p class="engine-model__apps">${model.applications}</p>
+        <h3 class="engine-model__code"><a href="${url}">${primary}</a></h3>
+        ${appsHtml}
         ${renderExportStatus()}
         <div class="engine-model__footer">
           <a href="${url}" class="btn btn-navy btn-sm">${ctaLabel}</a>

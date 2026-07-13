@@ -207,42 +207,74 @@
     const display = toDisplay(item);
     const detail = utils()?.detailUrl?.(base(), display.slug)
       || `${base()}half-cuts/detail.html?slug=${encodeURIComponent(display.slug)}`;
-    const title = escapeHtml(utils()?.listingTitle?.(display) || display.title || '');
     const photo = photoBlock(display);
+    const u = utils();
+    const label = window.EngineCardLabel;
 
     if (variant === 'engine') {
-      const u = utils();
       const engineTitle = escapeHtml(
-        u?.formatEngineCatalogPrimaryTitle?.(display) || display.title || '',
+        label?.formatEngineCodeDisplacementFuel?.(display)
+          || u?.formatEngineCatalogPrimaryTitle?.(display)
+          || display.title
+          || '',
       );
+      const code = display.engineCode || display.code;
+      const lookup = label?.lookupCatalogModelExact?.(code, display.brandSlug);
+      const appsSummary = lookup?.model
+        ? label.formatCompatibleVehiclesSummary?.(lookup.model.applications, {
+          brandName: lookup.brandName || display.brand,
+          limit: 2,
+        })
+        : '';
+      const apps = appsSummary
+        ? `<div class="ebay-card__meta">${escapeHtml(appsSummary)}</div>`
+        : '';
       const enginePrice = u?.formatCatalogPartPrice?.(display, 'engine')
         || u?.formatPartPriceUsd?.(display, u?.PART_PRICE_RATIOS?.engine ?? 0.65);
       const enginePriceHtml = u?.priceWithExwLabel?.(enginePrice, 'Quote') || priceBlock(display);
       return `<a class="ebay-card ebay-card--engine" href="${detail}">
         <div class="ebay-card__photo">${enginePhotoBlock(display)}</div>
         <div class="ebay-card__title">${engineTitle}</div>
+        ${apps}
         <div class="ebay-card__price">${enginePriceHtml}</div>
       </a>`;
     }
 
+    const vehicleTitle = escapeHtml(
+      label?.formatHalfCutVehicleTitle?.(display)
+        || u?.listingVehiclePrimaryTitle?.(display)
+        || u?.listingTitle?.(display)
+        || display.title
+        || '',
+    );
+    const engineLine = escapeHtml(
+      label?.formatEngineCodeDisplacementFuel?.(display)
+        || u?.listingEngineConfirmLine?.(display)
+        || '',
+    );
+    const year = escapeHtml(String(display.year || ''));
+    const status = escapeHtml(u?.listingStatusLabel?.(display) || display.status || '');
+    const engineHtml = engineLine ? `<div class="ebay-card__engine">${engineLine}</div>` : '';
+    const yearHtml = year ? `<div class="ebay-card__year">${year}</div>` : '';
+    const statusHtml = status ? `<div class="ebay-card__status">${status}</div>` : '';
+
     if (variant === 'rated') {
-      const meta = display.video?.url ? t('home.videoVerified', 'Video verified') : t('home.exportReady', 'Export ready');
-      return `<a class="ebay-card" href="${detail}">
+      return `<a class="ebay-card ebay-card--vehicle-first" href="${detail}">
         <div class="ebay-card__photo">${photo}</div>
-        <div class="ebay-card__title">${title}</div>
-        <div class="ebay-card__meta ebay-card__meta--rec">${t('home.agreeRecommend', '100% agree')} · ${meta}</div>
+        <div class="ebay-card__title">${vehicleTitle}</div>
+        ${engineHtml}
+        ${yearHtml}
+        ${statusHtml}
         <div class="ebay-card__price">${priceBlock(display)}</div>
       </a>`;
     }
 
-    const videoMeta = display.video?.url ? `(${t('home.video', 'Video')})` : '';
-    const metaHtml = videoMeta
-      ? `<div class="ebay-card__meta">${escapeHtml(videoMeta)}</div>`
-      : '';
-    return `<a class="ebay-card" href="${detail}">
+    return `<a class="ebay-card ebay-card--vehicle-first" href="${detail}">
       <div class="ebay-card__photo">${photo}</div>
-      <div class="ebay-card__title">${title}</div>
-      ${metaHtml}
+      <div class="ebay-card__title">${vehicleTitle}</div>
+      ${engineHtml}
+      ${yearHtml}
+      ${statusHtml}
       <div class="ebay-card__price">${priceBlock(display)}</div>
     </a>`;
   }
@@ -252,12 +284,18 @@
     const url = pagePath
       ? `${base()}${pagePath}`
       : `${base()}engines/?q=${encodeURIComponent(model.code)}`;
-    const title = `${brandName} ${model.code} Engine · ${model.displacement}`;
+    const label = window.EngineCardLabel;
+    const title = label?.formatEngineCodeDisplacementFuel?.(model)
+      || `${model.code} · ${model.displacement} ${model.fuel}`.replace(/\s+/g, ' ').trim();
+    const apps = label?.formatCompatibleVehiclesSummary?.(model.applications, {
+      brandName,
+      limit: 3,
+    }) || '';
     const img = `${base()}assets/images/supply-engines.jpg?v=img-v3`;
-    return `<a class="ebay-card" href="${url}">
+    return `<a class="ebay-card ebay-card--engine-first" href="${url}">
       <div class="ebay-card__photo"><img src="${img}" alt="" loading="lazy"></div>
       <div class="ebay-card__title">${escapeHtml(title)}</div>
-      <div class="ebay-card__meta ebay-card__meta--rec">${t('home.agreeRecommend', '100% agree')} · ${t('home.exportReady', 'Export ready')}</div>
+      ${apps ? `<div class="ebay-card__meta">${escapeHtml(apps)}</div>` : ''}
       <div class="ebay-card__price">${t('home.fromQuote', 'From quote')} ${utils()?.exwBadgeHtml?.() || '<span class="ap-exw-badge">EXW</span>'}</div>
     </a>`;
   }

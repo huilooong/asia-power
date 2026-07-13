@@ -155,12 +155,26 @@
 
   function renderEngineCard(brand, code) {
     const url = engineUrl(brand.slug, code);
+    const model = window.getBrandEngines?.(brand.slug)?.models?.find(
+      (m) => String(m.code).toUpperCase() === String(code).toUpperCase(),
+    );
+    const label = window.EngineCardLabel;
+    const primary = model
+      ? (label?.formatEngineCodeDisplacementFuel?.(model) || code)
+      : code;
+    const apps = model
+      ? (label?.formatCompatibleVehiclesSummary?.(model.applications, {
+        brandName: brand.name,
+        limit: 3,
+      }) || '')
+      : '';
     return `
       <article class="brand-engine-card">
         <div class="brand-engine-card__header">
-          <h3 class="brand-engine-card__code"><a href="${url}">${code}</a></h3>
+          <h3 class="brand-engine-card__code"><a href="${url}">${primary}</a></h3>
           <span class="brand-engine-card__status">${t('brand.availableOnRequest', 'Available on Request')}</span>
         </div>
+        ${apps ? `<p class="brand-engine-card__apps">${apps}</p>` : ''}
         <p class="brand-engine-card__note">${t('brand.availabilityNote', 'Availability depends on supplier network and current stock.')}</p>
         <div class="brand-engine-card__actions">
           <a href="${quoteUrl(brand.slug, code)}" class="btn btn-navy btn-sm">${t('brand.requestQuote', 'Request Quote')}</a>

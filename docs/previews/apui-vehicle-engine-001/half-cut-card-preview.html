@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>APUI-VEHICLE-ENGINE-001 — Half-Cut Card Preview</title>
+  <style>
+    :root {
+      --ink: #12141a;
+      --muted: #5c6470;
+      --line: #e4e7ec;
+      --bg: #f3f1ec;
+      --card: #fff;
+      --ok: #1f7a4d;
+      --warn: #9a6700;
+      --sold: #6b7280;
+      --accent: #0b3d5c;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: "Segoe UI", "Helvetica Neue", Arial, sans-serif;
+      color: var(--ink);
+      background:
+        radial-gradient(1200px 500px at 10% -10%, #dfeaf2 0%, transparent 55%),
+        linear-gradient(180deg, #ebe7df, var(--bg));
+      padding: 28px 18px 64px;
+    }
+    h1 { font-size: 1.35rem; margin: 0 0 6px; letter-spacing: -0.02em; }
+    .sub { color: var(--muted); font-size: 0.92rem; margin-bottom: 22px; max-width: 52rem; }
+    .note { font-size: 0.82rem; color: var(--muted); margin: 0 0 18px; }
+    section { margin-bottom: 36px; }
+    section > h2 { font-size: 0.78rem; text-transform: uppercase; letter-spacing: 0.08em; color: var(--muted); margin: 0 0 12px; }
+    .grid { display: grid; gap: 14px; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); max-width: 980px; }
+    .card {
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      overflow: hidden;
+      min-height: 0;
+    }
+    .media {
+      height: 118px;
+      background: linear-gradient(135deg, #c5d0da, #8fa3b5 45%, #3d5568);
+      position: relative;
+    }
+    .media span {
+      position: absolute; left: 10px; bottom: 8px;
+      font-size: 0.68rem; color: #fff; opacity: 0.85;
+    }
+    .body { padding: 12px 14px 14px; }
+    .title {
+      font-size: 1.05rem;
+      font-weight: 700;
+      letter-spacing: -0.01em;
+      line-height: 1.25;
+      margin: 0 0 6px;
+    }
+    .engine {
+      font-size: 0.88rem;
+      color: var(--accent);
+      font-weight: 600;
+      margin: 0 0 4px;
+      line-height: 1.3;
+    }
+    .year { font-size: 0.82rem; color: var(--muted); margin: 0 0 8px; }
+    .status {
+      display: inline-block;
+      font-size: 0.72rem;
+      font-weight: 700;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      padding: 3px 8px;
+      border-radius: 4px;
+      background: #e8f5ee;
+      color: var(--ok);
+    }
+    .status.reserved { background: #fff4d6; color: var(--warn); }
+    .status.sold { background: #eef0f3; color: var(--sold); }
+    .phone {
+      max-width: 390px;
+      margin-top: 10px;
+      border: 10px solid #1c1f26;
+      border-radius: 28px;
+      padding: 14px 12px;
+      background: #111;
+    }
+    .phone .inner { background: var(--bg); border-radius: 16px; padding: 12px; }
+    .src { font-size: 0.72rem; color: var(--muted); margin-top: 8px; }
+    .detail-h1 {
+      max-width: 720px;
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      padding: 18px 20px;
+    }
+    .detail-h1 h3 { margin: 0 0 6px; font-size: 1.35rem; }
+    .detail-h1 p { margin: 0; color: var(--muted); font-size: 0.9rem; }
+  </style>
+</head>
+<body>
+  <h1>Half-Cut cards — Vehicle-first IA</h1>
+  <p class="sub">APUI-VEHICLE-ENGINE-001 preview. Lines use real inventory / seed / catalog-backed specs. Missing fields degrade — nothing invented.</p>
+  <p class="note">Desktop grid · then phone frame. Status colors: Available / Reserved / Sold.</p>
+
+  <section>
+    <h2>1–3 · Full field · Available · Reserved · Sold</h2>
+    <div class="grid">
+      <!-- Real: HC250509 Toyota Vios 2010 2NZ-FE — disp/fuel from ENGINE_DIRECTORY -->
+      <article class="card">
+        <div class="media"><span>HC250509 · inventory</span></div>
+        <div class="body">
+          <p class="title">Toyota Vios</p>
+          <p class="engine">2NZ-FE · 1.3L Petrol</p>
+          <p class="year">2010</p>
+          <span class="status">Available</span>
+        </div>
+      </article>
+      <!-- Real reserved: HC250105 has 2.4L Petrol on record -->
+      <article class="card">
+        <div class="media"><span>HC250105 · inventory</span></div>
+        <div class="body">
+          <p class="title">Dongfeng 东风</p>
+          <p class="engine">ZG24 · 2.4L Petrol</p>
+          <p class="year">2013</p>
+          <span class="status reserved">Reserved</span>
+        </div>
+      </article>
+      <!-- Seed sold: HC250006 — 2ZR-FE in directory 1.8L Petrol -->
+      <article class="card">
+        <div class="media"><span>HC250006 · seed</span></div>
+        <div class="body">
+          <p class="title">Toyota Corolla</p>
+          <p class="engine">2ZR-FE · 1.8L Petrol</p>
+          <p class="year">2018</p>
+          <span class="status sold">Sold</span>
+        </div>
+      </article>
+    </div>
+  </section>
+
+  <section>
+    <h2>4 · Missing displacement (no catalog match — degrade)</h2>
+    <div class="grid">
+      <!-- HC250507 R20A3 not reliably in directory → code only -->
+      <article class="card">
+        <div class="media"><span>HC250507 · no invent</span></div>
+        <div class="body">
+          <p class="title">Honda CR-V</p>
+          <p class="engine">R20A3</p>
+          <p class="year">2007</p>
+          <span class="status">Available</span>
+        </div>
+      </article>
+      <!-- fuel only if we had fuel without disp — illustrate pattern with G4KD fuel from catalog but pretend disp missing: show Code · Petrol -->
+      <article class="card">
+        <div class="media"><span>Pattern · fuel only</span></div>
+        <div class="body">
+          <p class="title">Hyundai ix35</p>
+          <p class="engine">G4KD · Petrol</p>
+          <p class="year">2010</p>
+          <span class="status">Available</span>
+        </div>
+      </article>
+      <!-- disp only -->
+      <article class="card">
+        <div class="media"><span>Pattern · disp only</span></div>
+        <div class="body">
+          <p class="title">Toyota Camry</p>
+          <p class="engine">1AZ-FE · 2.0L</p>
+          <p class="year">2010</p>
+          <span class="status">Available</span>
+        </div>
+      </article>
+    </div>
+    <p class="src">Note: “fuel only / disp only” rows demonstrate join rules. Prefer catalog backfill when `ENGINE_DIRECTORY` hit exists (e.g. G4KD → 2.0L Petrol).</p>
+  </section>
+
+  <section>
+    <h2>5 · Detail H1 proposal</h2>
+    <div class="detail-h1">
+      <h3>Toyota Vios Half Cut — 2NZ-FE 1.3L Petrol</h3>
+      <p>Stock HC250509 · Year 2010 · Status Available · Specs from inventory + catalog backfill.</p>
+    </div>
+  </section>
+
+  <section>
+    <h2>6 · Phone</h2>
+    <div class="phone">
+      <div class="inner">
+        <article class="card">
+          <div class="media" style="height:96px"><span>mobile</span></div>
+          <div class="body">
+            <p class="title">Hyundai ix35</p>
+            <p class="engine">G4KD · 2.0L Petrol</p>
+            <p class="year">2010</p>
+            <span class="status">Available</span>
+          </div>
+        </article>
+      </div>
+    </div>
+  </section>
+</body>
+</html>

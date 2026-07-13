@@ -834,7 +834,9 @@
     if (!u) return '';
     const display = u.toPublicItem?.(item) ?? item;
     const primaryTitle = page === 'engines'
-      ? (u.formatEngineCatalogPrimaryTitle?.(display) || u.formatPartsCatalogPrimaryTitle?.(display))
+      ? (window.EngineCardLabel?.formatEngineCodeDisplacementFuel?.(display)
+        || u.formatEngineCatalogPrimaryTitle?.(display)
+        || u.formatPartsCatalogPrimaryTitle?.(display))
       : (u.formatPartsCatalogPrimaryTitle?.(display)
         || String(display.stockId || '').trim()
         || display.slug);
@@ -844,6 +846,21 @@
       || `<p class="ebay-listing-row__price">${escapeHtml(priceLabel || t('hc.priceOnEnquiry', 'Quote on enquiry'))} <span class="ap-exw-badge">EXW</span></p>`;
     const mileage = String(display.mileage || '').trim();
     const metaParts = u.formatPartsCatalogMetaParts?.(display, t) || [];
+    if (page === 'engines') {
+      // Compatible Vehicles only from directory structured apps — never "Fits" a single donor listing
+      const label = window.EngineCardLabel;
+      const code = display.engineCode || display.code;
+      const lookup = label?.lookupCatalogModelExact?.(code, display.brandSlug);
+      const appsSummary = lookup?.model
+        ? label.formatCompatibleVehiclesSummary?.(lookup.model.applications, {
+          brandName: lookup.brandName || display.brand,
+          limit: 2,
+        })
+        : '';
+      if (appsSummary) metaParts.unshift(appsSummary);
+      const year = display.year ? String(display.year) : '';
+      if (year) metaParts.unshift(year);
+    }
     const displacement = page === 'engines' ? u.formatDisplacementLiters?.(display) : '';
     const filterTags = [
       display.brandSlug,

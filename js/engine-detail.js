@@ -62,6 +62,15 @@
     return labels.map(label => window.PublicI18n?.translateExportStatus?.(label) || label);
   }
 
+  function escapeHtml(value) {
+    return String(value || '')
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;')
+      .replace(/'/g, '&#39;');
+  }
+
   function renderEngineDetail(slug) {
     window.CatalogLeadUtils?.ensureCatalogLeadScripts?.();
     const engine = window.SEO_ENGINES?.[slug];
@@ -88,11 +97,45 @@
     upsertMeta('property', 'og:title', engine.title);
     upsertMeta('property', 'og:description', engine.description);
 
+    const label = window.EngineCardLabel;
+    const h1 = label?.formatEngineDetailH1?.(engine)
+      || `${engine.brand} ${engine.code} ${engine.displacement || ''} ${engine.fuel || ''} Engine`.replace(/\s+/g, ' ').trim();
+    const primaryLine = label?.formatEngineCodeDisplacementFuel?.(engine)
+      || [engine.code, engine.displacement, engine.fuel].filter(Boolean).join(' · ');
+    const vehicleList = label?.formatCompatibleVehiclesList?.(engine.applications, engine.brand) || [];
+    const compatHtml = vehicleList.length
+      ? `<section class="engine-detail__compat">
+          <h2>${t('engine.compatibleVehicles', 'Compatible Vehicles')}</h2>
+          <p class="engine-detail__compat-note">${t(
+            'engine.compatDisclaimer',
+            'Applications may vary by year, market and specification. Confirm by engine photo, engine number or VIN before ordering.',
+          )}</p>
+          <ul class="engine-detail__compat-list">
+            ${vehicleList.map((v) => `<li>${escapeHtml(v)}</li>`).join('')}
+          </ul>
+        </section>`
+      : '';
+    // Keep raw applications text only in muted note when unstructured leftovers exist
+    const parsed = label?.parseStructuredApplications?.(engine.applications, engine.brand);
+    const leftoverNote = parsed?.rejected?.length
+      ? `<p class="engine-detail__apps-note">${escapeHtml(t('engine.applicationsNote', 'Additional application notes'))}: ${escapeHtml(parsed.rejected.join('; '))}</p>`
+      : '';
+
+    const seoTitle = `${h1.replace(/\s+Engine$/i, '')} Engine Supplier | AsiaPower`;
+    const seoDesc = vehicleList.length
+      ? `${h1}. Compatible vehicles may include ${vehicleList.slice(0, 4).join(', ')}. Confirm specification before ordering.`
+      : `${h1}. Sourced for global export through AsiaPower. Confirm specification before ordering.`;
+
+    document.title = seoTitle;
+    if (meta) meta.content = seoDesc;
+    upsertMeta('property', 'og:title', seoTitle);
+    upsertMeta('property', 'og:description', seoDesc);
+
     upsertJsonLd('schema-engine-product', {
       '@context': 'https://schema.org',
       '@type': 'Product',
-      name: `${engine.brand} ${engine.code} Engine`,
-      description: engine.description,
+      name: h1,
+      description: seoDesc,
       brand: { '@type': 'Brand', name: engine.brand },
       category: 'Used Automotive Engine',
       url: canonical,
@@ -114,9 +157,9 @@
             <a href="${b}engines/">${t('engine.engines', 'Engines')}</a> /
             <span>${engine.code}</span>
           </div>
-          <h1>${engine.brand} ${engine.code} ${t('engine.categoryEngines', 'Engine')}</h1>
+          <h1>${escapeHtml(h1)}</h1>
           ${window.InquiryCta?.render?.({ context: { product: `${engine.brand} ${engine.code}`, category: 'engine' }, variant: 'catalog-hero' }) || ''}
-          <p>${engine.displacement} ${engine.fuel} — ${engine.applications}. ${t('engine.sourcedFor', "Sourced for global export through AsiaPower's China-based supply network.")}</p>
+          <p>${escapeHtml(primaryLine)}. ${t('engine.sourcedFor', "Sourced for global export through AsiaPower's China-based supply network.")}</p>
         </div>
       </section>
 
@@ -125,13 +168,14 @@
           <div class="engine-detail">
             <div class="engine-detail__main">
               <span class="section-eyebrow">${engine.origin} · ${t('engine.engineModel', 'Engine Model')}</span>
-              <h2 class="engine-detail__code">${engine.code}</h2>
+              <h2 class="engine-detail__code">${escapeHtml(primaryLine)}</h2>
               <dl class="engine-detail__specs">
                 <div><dt>${t('spec.brand', 'Brand')}</dt><dd><a href="${b}brands/${engine.brandSlug}.html">${engine.brand}</a></dd></div>
-                <div><dt>${t('engine.displacement', 'Displacement')}</dt><dd>${engine.displacement}</dd></div>
-                <div><dt>${t('engine.fuelType', 'Fuel Type')}</dt><dd>${engine.fuel}</dd></div>
-                <div><dt>${t('engine.applications', 'Applications')}</dt><dd>${engine.applications}</dd></div>
+                <div><dt>${t('engine.displacement', 'Displacement')}</dt><dd>${engine.displacement || '—'}</dd></div>
+                <div><dt>${t('engine.fuelType', 'Fuel Type')}</dt><dd>${engine.fuel || '—'}</dd></div>
               </dl>
+              ${compatHtml}
+              ${leftoverNote}
               <ul class="engine-model__status engine-detail__status" aria-label="${t('engine.exportAvailability', 'Export availability')}">
                 ${exportStatusLabels().map(s => `<li class="engine-model__status-item">${s}</li>`).join('')}
               </ul>

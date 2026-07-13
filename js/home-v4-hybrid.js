@@ -172,20 +172,22 @@
   }
 
   function titleOf(item, variant) {
-    // Prefer API English title when present
+    const label = window.EngineCardLabel;
+    if (variant === 'engine') {
+      return label?.formatEngineCodeDisplacementFuel?.(item)
+        || [item?.brand, item?.engineCode, t('home.v4.engineSuffix', 'Engine')].filter(Boolean).join(' ');
+    }
+    // Vehicle-first for half-cuts / trucks / used
+    const vehicle = label?.formatHalfCutVehicleTitle?.(item)
+      || [item?.brand, item?.model].filter(Boolean).join(' ');
+    if (vehicle) {
+      if (variant === 'truck') return vehicle + ' ' + t('home.v4.cabSuffix', 'Cab');
+      if (variant === 'used') return vehicle;
+      return vehicle;
+    }
     const apiTitle = String(item?.title || '').trim();
     const hasCjk = /[\u4e00-\u9fff]/.test(apiTitle);
-    if (apiTitle && !hasCjk && variant !== 'engine') return apiTitle;
-
-    if (variant === 'engine') {
-      return [item?.brand, item?.engineCode, t('home.v4.engineSuffix', 'Engine')].filter(Boolean).join(' ');
-    }
-    const bits = [item?.brand, item?.model, item?.engineCode].filter(Boolean);
-    if (bits.length) {
-      if (variant === 'truck') return bits.join(' ') + ' ' + t('home.v4.cabSuffix', 'Cab');
-      if (variant === 'used') return bits.join(' ');
-      return bits.join(' ') + ' ' + t('home.v4.halfCutSuffix', 'Half-Cut');
-    }
+    if (apiTitle && !hasCjk) return apiTitle;
     return item?.title || item?.stockId || 'Listing';
   }
 
@@ -212,8 +214,15 @@
     const video = hasVideo(item);
     const price = variant === 'engine' ? engineMoney(item.priceUsd) : money(item.priceUsd);
     const tags = variant === 'engine'
-      ? [item.engineCode, item.year].filter(Boolean)
-      : [item.year, item.transmissionCode, item.drivetrain].filter(Boolean);
+      ? [
+        window.EngineCardLabel?.formatEngineCodeDisplacementFuel?.(item) || item.engineCode,
+        item.year,
+      ].filter(Boolean)
+      : [
+        window.EngineCardLabel?.formatEngineCodeDisplacementFuel?.(item) || item.engineCode,
+        item.year,
+        item.status,
+      ].filter(Boolean);
     const tagHtml = tags.map((tg) => `<span class="ptg">${esc(tg)}</span>`).join('')
       + (video ? `<span class="ptg v">${esc(t('home.video', 'Video'))}</span>` : '');
     const imgHtml = img

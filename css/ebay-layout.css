@@ -4241,6 +4241,82 @@ body:has(.page-hero--catalog-v4) .catalog-action-block .btn-outline-light:hover 
   text-decoration: none;
   color: #1d1d1f;
 }
+
+/* APUI-VEHICLE-ENGINE-001 — Vehicle-first / Engine-first compact stack */
+.ebay-listing-row--vehicle-first .ebay-listing-row__title {
+  margin-bottom: 4px;
+}
+.ebay-listing-row__engine,
+.ebay-card__engine {
+  margin: 0 0 2px;
+  font-size: 13px;
+  font-weight: 600;
+  color: #0b3d5c;
+  line-height: 1.3;
+}
+.ebay-listing-row__yearline,
+.ebay-card__year {
+  margin: 0 0 4px;
+  font-size: 12.5px;
+  color: #6e6e73;
+  line-height: 1.3;
+}
+.ebay-listing-row__avail,
+.ebay-card__status {
+  display: inline-block;
+  margin: 0 0 8px;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: #1f7a4d;
+}
+.ebay-listing-row__avail.status-reserved,
+.ebay-card__status.status-reserved,
+.ebay-card__status:is(.status-reserved) {
+  color: #9a6700;
+}
+.ebay-listing-row__avail.status-sold,
+.ebay-card__status.status-sold {
+  color: #6b7280;
+}
+.brand-engine-card__apps,
+.engine-model__apps {
+  margin: 4px 0 8px;
+  font-size: 12.5px;
+  color: #6e6e73;
+  line-height: 1.35;
+}
+.engine-detail__compat {
+  margin: 18px 0 12px;
+}
+.engine-detail__compat h2 {
+  font-size: 1.05rem;
+  margin: 0 0 6px;
+}
+.engine-detail__compat-note,
+.engine-detail__apps-note {
+  margin: 0 0 10px;
+  font-size: 0.85rem;
+  color: #6e6e73;
+  line-height: 1.45;
+}
+.engine-detail__compat-list {
+  margin: 0;
+  padding-left: 1.15rem;
+  columns: 2;
+  gap: 18px;
+}
+.engine-detail__compat-list li {
+  margin: 0 0 6px;
+  break-inside: avoid;
+}
+@media (max-width: 640px) {
+  .engine-detail__compat-list { columns: 1; }
+  .ebay-listing-row__engine,
+  .ebay-card__engine { font-size: 12.5px; }
+}
+
 .ebay-listing-row__tags {
   display: flex;
   flex-wrap: wrap;

@@ -841,9 +841,14 @@
   }
 
   function seoTitle(item) {
-    const displayTitle = listingTitle(item)
+    const label = window.EngineCardLabel;
+    if (label?.formatHalfCutSeoTitle) {
+      return label.formatHalfCutSeoTitle(item);
+    }
+    const displayTitle = listingVehiclePrimaryTitle(item) || listingTitle(item)
       || `${item.year} ${item.brand} ${item.model} ${listingTypeLabel(item)}`.replace(/\s+/g, ' ').trim();
-    const core = displayTitle.replace(/\s+/g, ' ').trim();
+    const eng = listingEngineConfirmLine(item).replace(/\s·\s/g, ' ');
+    const core = [displayTitle, 'Half Cut', eng].filter(Boolean).join(' ').replace(/\s+/g, ' ').trim();
     if (isReserved(item)) return `${core} — Reserved | AsiaPower`;
     if (isSold(item)) return `${core} — Sold | AsiaPower`;
     return `${core} | AsiaPower`;
@@ -853,24 +858,25 @@
     const typeLabel = listingTypeLabel(item).toLowerCase();
     const priceSnippet = seoPriceSnippet(item);
     const pricePart = priceSnippet ? `${priceSnippet}. ` : '';
+    const engLine = listingEngineConfirmLine(item);
+    const engHint = engLine ? ` — ${engLine}` : (item.engineCode ? ` — ${item.engineCode}` : '');
     if (item?.vehicleCategory === 'machinery') {
-      const engineHint = item.engineCode ? ` — ${item.engineCode} engine` : '';
       const videoHint = hasVideo(item) ? ' Whole-vehicle startup video available before dismantling.' : '';
       if (isAvailable(item)) {
-        return `${item.brand} ${item.model} ${typeLabel} export from China${engineHint}.${videoHint} ${pricePart}Photos and shipping on request. Stock ${item.stockId}.`;
+        return `${item.brand} ${item.model} ${typeLabel} export from China${engHint}.${videoHint} ${pricePart}Photos and shipping on request. Stock ${item.stockId}.`;
       }
       if (isReserved(item)) {
-        return `Reserved ${item.brand} ${item.model} ${typeLabel}${engineHint}. ${pricePart}Confirm availability or request similar units. Stock ${item.stockId}.`;
+        return `Reserved ${item.brand} ${item.model} ${typeLabel}${engHint}. ${pricePart}Confirm availability or request similar units. Stock ${item.stockId}.`;
       }
-      return `Sold ${item.brand} ${item.model} ${typeLabel} reference${engineHint}. ${pricePart}Request similar available units. Stock ${item.stockId}.`;
+      return `Sold ${item.brand} ${item.model} ${typeLabel} reference${engHint}. ${pricePart}Request similar available units. Stock ${item.stockId}.`;
     }
     if (isAvailable(item)) {
-      return `${item.brand} ${item.model} half cut — ${item.engineCode} / ${item.transmissionCode}. ${pricePart}Photos and shipping on request. Stock ID ${item.stockId}.`;
+      return `${item.brand} ${item.model} half cut${engHint}. ${pricePart}Photos and shipping on request. Stock ID ${item.stockId}.`;
     }
     if (isReserved(item)) {
-      return `Reserved ${item.brand} ${item.model} half cut — ${item.engineCode} / ${item.transmissionCode}. ${pricePart}Confirm availability or request similar units. Stock ID ${item.stockId}.`;
+      return `Reserved ${item.brand} ${item.model} half cut${engHint}. ${pricePart}Confirm availability or request similar units. Stock ID ${item.stockId}.`;
     }
-    return `Sold ${item.brand} ${item.model} half cut — ${item.engineCode} / ${item.transmissionCode}. ${pricePart}Request similar available units. Stock ID ${item.stockId}.`;
+    return `Sold ${item.brand} ${item.model} half cut${engHint}. ${pricePart}Request similar available units. Stock ID ${item.stockId}.`;
   }
 
   function heroIntro(item) {
@@ -1117,6 +1123,15 @@
   }
 
   function lookupEngineCatalogSpec(display) {
+    const label = window.EngineCardLabel;
+    if (label?.lookupCatalogModelExact) {
+      const looked = label.lookupCatalogModelExact(
+        display?.engineCode,
+        display?.brandSlug || '',
+      );
+      if (looked.conflict) return null;
+      return looked.model || null;
+    }
     const code = normEngineCatalogCode(display?.engineCode);
     if (!code) return null;
     const brandEntry = window.getBrandEngines?.(display?.brandSlug || '');
@@ -1130,7 +1145,37 @@
     return null;
   }
 
+  function resolveListingEngineSpec(display) {
+    const label = window.EngineCardLabel;
+    if (label?.resolveDisplacementFuelTraceable) {
+      return label.resolveDisplacementFuelTraceable({
+        engineCode: display?.engineCode,
+        displacement: display?.displacement,
+        fuelType: display?.fuelType,
+        fuel: display?.fuel,
+        brandSlug: display?.brandSlug,
+      });
+    }
+    return {
+      code: String(display?.engineCode || '').trim().toUpperCase(),
+      displacement: formatDisplacementLiters(display),
+      fuel: '',
+      displacementSource: display?.displacement ? 'inventory' : '',
+      fuelSource: '',
+      directoryConflict: false,
+    };
+  }
+
   function formatDisplacementLiters(display) {
+    const label = window.EngineCardLabel;
+    if (label?.resolveDisplacementFuelTraceable) {
+      return label.resolveDisplacementFuelTraceable({
+        engineCode: display?.engineCode,
+        displacement: display?.displacement,
+        fuelType: display?.fuelType,
+        brandSlug: display?.brandSlug,
+      }).displacement || '';
+    }
     const raw = String(display?.displacement || '').trim();
     if (raw && raw !== '—') {
       const match = raw.match(/(\d+(?:\.\d+)?)/);
@@ -1151,19 +1196,91 @@
         }
       }
     }
-    const title = String(display?.title || display?.originalVehicleName || '').trim();
-    const fromTitle = title.match(/(\d+(?:\.\d+)?)\s*[Ll]\b/);
-    if (fromTitle) return `${fromTitle[1]}L`;
+    // APUI-VEHICLE-ENGINE-001: never invent from free-text title
     return '';
   }
 
   function resolveEngineFuelType(display) {
+    const label = window.EngineCardLabel;
+    if (label?.resolveDisplacementFuelTraceable) {
+      const fuel = label.resolveDisplacementFuelTraceable({
+        engineCode: display?.engineCode,
+        displacement: display?.displacement,
+        fuelType: display?.fuelType,
+        fuel: display?.fuel,
+        brandSlug: display?.brandSlug,
+      }).fuel;
+      return fuel ? fuel.toLowerCase() : '';
+    }
     const raw = String(display?.fuelType || '').trim();
     if (raw) return raw.toLowerCase();
     const spec = lookupEngineCatalogSpec(display);
     if (spec?.type) return String(spec.type).toLowerCase();
     if (spec?.fuel) return String(spec.fuel).toLowerCase();
     return '';
+  }
+
+  function listingVehiclePrimaryTitle(display) {
+    const label = window.EngineCardLabel;
+    if (label?.formatHalfCutVehicleTitle) {
+      return label.formatHalfCutVehicleTitle(display) || '';
+    }
+    const brand = String(display?.brand || '').trim();
+    const model = String(display?.model || '').trim();
+    return [brand, model].filter(Boolean).join(' ');
+  }
+
+  function listingEngineConfirmLine(display) {
+    const label = window.EngineCardLabel;
+    if (label?.formatEngineCodeDisplacementFuel) {
+      return label.formatEngineCodeDisplacementFuel({
+        engineCode: display?.engineCode,
+        displacement: display?.displacement,
+        fuelType: display?.fuelType,
+        brandSlug: display?.brandSlug,
+      });
+    }
+    const code = String(display?.engineCode || '').trim().toUpperCase();
+    const liters = formatDisplacementLiters(display);
+    if (code && liters) return `${code} · ${liters}`;
+    return code || liters || '';
+  }
+
+  function listingStatusLabel(display) {
+    const status = String(display?.status || '').trim();
+    if (/^available$/i.test(status)) return t('hc.available', 'Available');
+    if (/^reserved$/i.test(status)) return t('hc.reserved', 'Reserved');
+    if (/^sold$/i.test(status)) return t('hc.sold', 'Sold');
+    if (/transit/i.test(status)) return t('hc.inTransit', 'In Transit');
+    return status;
+  }
+
+  function listingVehicleStackHtml(display, opts) {
+    const title = listingVehiclePrimaryTitle(display);
+    const engineLine = listingEngineConfirmLine(display);
+    const year = listingYear(display);
+    const status = listingStatusLabel(display);
+    const statusClass = statusSlug(display?.status);
+    const titleTag = opts?.titleTag || 'div';
+    const titleClass = opts?.titleClass || 'ebay-listing-row__title';
+    const detail = opts?.detailHref || '';
+    const titleInner = detail
+      ? `<a href="${detail}">${escapeHtml(title || listingTitle(display))}</a>`
+      : escapeHtml(title || listingTitle(display));
+    const engineHtml = engineLine
+      ? `<p class="ebay-listing-row__engine">${escapeHtml(engineLine)}</p>`
+      : '';
+    const yearHtml = year
+      ? `<p class="ebay-listing-row__yearline">${escapeHtml(year)}</p>`
+      : '';
+    const statusHtml = status
+      ? `<span class="ebay-listing-row__avail status-${escapeHtml(statusClass)}">${escapeHtml(status)}</span>`
+      : '';
+    return `
+      <${titleTag} class="${titleClass}">${titleInner}</${titleTag}>
+      ${engineHtml}
+      ${yearHtml}
+      ${statusHtml}`;
   }
 
   function formatPartsCatalogPrimaryTitle(display) {
@@ -1175,12 +1292,23 @@
   }
 
   function formatEngineCatalogPrimaryTitle(display) {
+    // Engine-first for inventory engine parts listing
+    const label = window.EngineCardLabel;
+    if (label?.formatEngineCodeDisplacementFuel) {
+      const primary = label.formatEngineCodeDisplacementFuel({
+        engineCode: display?.engineCode,
+        displacement: display?.displacement,
+        fuelType: display?.fuelType,
+        brandSlug: display?.brandSlug,
+      });
+      if (primary) return primary;
+    }
     const year = listingYear(display);
     const brand = String(display?.brand || '').trim();
     const model = String(display?.model || '').trim();
     const engine = String(display?.engineCode || '').trim().toUpperCase();
     const displacement = formatDisplacementLiters(display);
-    return [year, brand, model, engine, displacement].filter(Boolean).join(' ');
+    return [engine, displacement, brand, model, year].filter(Boolean).join(' ');
   }
 
   function formatPartsCatalogMetaParts(display, translate) {
@@ -1262,10 +1390,12 @@
 
   function listingSpecsLineHtml(display, item) {
     const parts = [];
-    const engine = String(display?.engineCode || '').trim();
-    const liters = formatDisplacementLiters?.(display) || '';
-    if (engine && liters) parts.push(`${engine} ${liters}`);
-    else if (engine) parts.push(engine);
+    const engineLine = listingEngineConfirmLine(display);
+    if (engineLine) parts.push(engineLine);
+    const year = listingYear(display);
+    if (year) parts.push(year);
+    const status = listingStatusLabel(display);
+    if (status) parts.push(status);
     const drive = listingDrivetrainLabel(display);
     if (drive) parts.push(drive);
     if (isPassengerHalfCutItem(item || display)) {
@@ -1603,24 +1733,31 @@
     const display = window.HalfCutInventoryLayer?.toPublicItem?.(item) ?? item;
     const basePath = opts?.base || window.SitePaths?.base?.() || '../';
     const detail = detailUrl(basePath, display.slug);
-    const title = escapeHtml(listingTitle(display));
-    const driveLabel = escapeHtml(listingDrivetrainLabel(display));
+    const vehicleTitle = escapeHtml(listingVehiclePrimaryTitle(display) || listingTitle(display));
+    const engineLine = escapeHtml(listingEngineConfirmLine(display));
+    const year = escapeHtml(listingYear(display));
+    const status = escapeHtml(listingStatusLabel(display));
+    const statusClass = statusSlug(display.status);
     const priceLabel = formatFobPrice(display);
     const priceHtml = priceWithExwLabel(priceLabel, 'Quote');
-    const metaHtml = driveLabel
-      ? `<div class="ebay-card__meta ebay-card__meta--drive">${t('hc.drivetrain', 'Drivetrain')}: ${driveLabel}</div>`
-      : '';
     const noteHtml = customDismantleNoteHtml(item, 'card');
     const photo = listingCardPhoto(display, basePath);
     const photoHtml = photo.includes('data-ap-listing-photo')
       ? photo
       : `<div class="ebay-card__photo">${photo}</div>`;
+    const engineHtml = engineLine ? `<div class="ebay-card__engine">${engineLine}</div>` : '';
+    const yearHtml = year ? `<div class="ebay-card__year">${year}</div>` : '';
+    const statusHtml = status
+      ? `<div class="ebay-card__status status-${statusClass}">${status}</div>`
+      : '';
 
-    return `<a class="ebay-card ebay-card--catalog" href="${detail}" data-slug="${display.slug}" data-brand="${display.brandSlug}">
+    return `<a class="ebay-card ebay-card--catalog ebay-card--vehicle-first" href="${detail}" data-slug="${display.slug}" data-brand="${display.brandSlug}">
       ${photoHtml}
-      <div class="ebay-card__title">${title}</div>
+      <div class="ebay-card__title">${vehicleTitle}</div>
+      ${engineHtml}
+      ${yearHtml}
+      ${statusHtml}
       <div class="ebay-card__price">${priceHtml}</div>
-      ${metaHtml}
       ${noteHtml}
     </a>`;
   }
@@ -1742,32 +1879,29 @@
     const display = window.HalfCutInventoryLayer?.toPublicItem?.(item) ?? item;
     const basePath = opts?.base || window.SitePaths?.base?.() || '../';
     const detail = detailUrl(basePath, display.slug);
-    const title = escapeHtml(listingTitle(display));
-    const brand = escapeHtml(String(display?.brand || '').trim());
     const statusClass = statusSlug(display.status);
     const priceLabel = formatFobPrice(display);
     const priceHtml = listingRowPriceHtml(priceLabel);
-    const tagsHtml = listingSpecTagsHtml(display);
-    const specsHtml = listingSpecsLineHtml(display, item);
+    const stackHtml = listingVehicleStackHtml(display, {
+      detailHref: detail,
+      titleTag: 'h3',
+      titleClass: 'ebay-listing-row__title',
+    });
     const vinLine = listingVinLine(display);
     const vinHtml = vinLine
       ? `<span class="ebay-listing-row__vin">${escapeHtml(vinLine)}</span>`
       : '<span class="ebay-listing-row__vin"></span>';
-    const makeHtml = brand
-      ? `<div class="ebay-listing-row__make">${brand}</div>`
-      : '';
     const ctasHtml = listingRowCtasHtml(display);
+    const noteHtml = customDismantleNoteHtml(item, 'list');
 
     return `
-      <article class="ebay-listing-row ebay-listing-row--halfcut ebay-listing-row--v4" data-slug="${display.slug}" data-brand="${display.brandSlug}" data-status="${statusClass}">
+      <article class="ebay-listing-row ebay-listing-row--halfcut ebay-listing-row--v4 ebay-listing-row--vehicle-first" data-slug="${display.slug}" data-brand="${display.brandSlug}" data-status="${statusClass}">
         ${renderListingPhoto(display, detail)}
         <div class="ebay-listing-row__main">
           <div class="ebay-listing-row__main-body">
-            ${makeHtml}
-            <h3 class="ebay-listing-row__title"><a href="${detail}">${title}</a></h3>
-            ${tagsHtml}
+            ${stackHtml}
             ${priceHtml}
-            ${specsHtml}
+            ${noteHtml}
           </div>
           <div class="ebay-listing-row__bot">
             ${vinHtml}
@@ -1927,6 +2061,10 @@
     formatEngineCatalogPrimaryTitle,
     formatDisplacementLiters,
     resolveEngineFuelType,
+    resolveListingEngineSpec,
+    listingVehiclePrimaryTitle,
+    listingEngineConfirmLine,
+    listingStatusLabel,
     lookupEngineCatalogSpec,
     formatPartsCatalogMetaParts,
     isDedicatedPartListing,

@@ -130,6 +130,8 @@ function deployHome() {
   rsync(`${ROOT}/css/home-v4-hybrid.css`, `${pub}/css/home-v4-hybrid.css`);
   rsync(`${ROOT}/css/styles.css`, `${pub}/css/styles.css`);
   rsync(`${ROOT}/js/home-v4-hybrid.js`, `${pub}/js/home-v4-hybrid.js`);
+  rsync(`${ROOT}/js/engine-directory.js`, `${pub}/js/engine-directory.js`);
+  rsync(`${ROOT}/js/engine-card-label.js`, `${pub}/js/engine-card-label.js`);
   rsync(`${ROOT}/js/components.js`, `${pub}/js/components.js`);
   rsync(`${ROOT}/js/public-i18n.js`, `${pub}/js/public-i18n.js`);
   rsync(`${ROOT}/js/path-utils.js`, `${pub}/js/path-utils.js`);
@@ -142,10 +144,13 @@ test -f "$PUB/index.html"
 test -f "$PUB/css/home-v4-hybrid.css"
 test -f "$PUB/css/styles.css"
 test -f "$PUB/js/home-v4-hybrid.js"
+test -f "$PUB/js/engine-card-label.js"
 test -f "$PUB/js/public-i18n.js"
 test -f "$PUB/assets/home-v4-inventory-snapshot.json"
 grep -q 'page-home-v4-hybrid' "$PUB/index.html"
 grep -q 'home-v4-hybrid' "$PUB/index.html"
+grep -q 'engine-card-label.js' "$PUB/index.html"
+grep -q 'formatHalfCutVehicleTitle\|titleOf' "$PUB/js/home-v4-hybrid.js"
 grep -q 'home-lang-v1' "$PUB/index.html"
 grep -q 'lang-sync-v2\|auth-nav-once-v2' "$PUB/index.html"
 grep -q 'lang-sync-v2' "$PUB/css/styles.css"
@@ -266,6 +271,11 @@ function deployChrome() {
   rsync(`${ROOT}/js/ebay-catalog-hub.js`, `${pub}/js/ebay-catalog-hub.js`);
   rsync(`${ROOT}/js/half-cut-catalog.js`, `${pub}/js/half-cut-catalog.js`);
   rsync(`${ROOT}/js/home-hub.js`, `${pub}/js/home-hub.js`);
+  rsync(`${ROOT}/js/engine-directory.js`, `${pub}/js/engine-directory.js`);
+  rsync(`${ROOT}/js/engine-card-label.js`, `${pub}/js/engine-card-label.js`);
+  rsync(`${ROOT}/js/engine-catalog.js`, `${pub}/js/engine-catalog.js`);
+  rsync(`${ROOT}/js/engine-detail.js`, `${pub}/js/engine-detail.js`);
+  rsync(`${ROOT}/js/brand-page.js`, `${pub}/js/brand-page.js`);
   rsync(`${ROOT}/css/ebay-layout.css`, `${pub}/css/ebay-layout.css`);
   rsync(`${ROOT}/css/styles.css`, `${pub}/css/styles.css`);
   rsync(`${ROOT}/css/login.css`, `${pub}/css/login.css`);
@@ -358,19 +368,27 @@ grep -q 'dedicated-price-v1' "$PUB/js/components.js"
 grep -q 'formatCatalogPartPrice' "$PUB/js/half-cut-directory.js"
 grep -q 'catalogPartPriceAmount' "$PUB/js/half-cut-directory.js"
 grep -q 'formatCatalogPartPrice' "$PUB/js/ebay-catalog-hub.js"
-grep -E -q 'half-cut-directory\.js\?v=(category-filter-v1|category-filter-v3|category-filter-v4|parts-parallel-v1|stock-id-search-v1|stock-id-search-v2|dedicated-price-v1|catalog-search-v1|catalog-search-v2)' "$PUB/half-cuts/index.html"
-grep -E -q 'ebay-catalog-hub\.js\?v=(category-filter-v1|category-filter-v3|category-filter-v4|parts-parallel-v1|stock-id-search-v1|stock-id-search-v2|dedicated-price-v1|catalog-search-v1|catalog-search-v2)' "$PUB/half-cuts/index.html"
-grep -E -q 'half-cut-directory\.js\?v=(category-filter-v1|category-filter-v3|category-filter-v4|stock-id-search-v2|dedicated-price-v1|catalog-search-v1|catalog-search-v2)' "$PUB/gearboxes/index.html"
-grep -E -q 'ebay-catalog-hub\.js\?v=(category-filter-v1|category-filter-v3|category-filter-v4|stock-id-search-v2|dedicated-price-v1|catalog-search-v1|catalog-search-v2)' "$PUB/gearboxes/index.html"
-grep -E -q 'catalog-search-v1|catalog-search-v2|stock-id-search-v[12]' "$PUB/half-cuts/index.html"
+grep -E -q 'half-cut-directory\\.js\\?v=(category-filter-v1|category-filter-v3|category-filter-v4|parts-parallel-v1|stock-id-search-v1|stock-id-search-v2|dedicated-price-v1|catalog-search-v1|catalog-search-v2|vehicle-engine-001)' "$PUB/half-cuts/index.html"
+grep -E -q 'ebay-catalog-hub\\.js\\?v=(category-filter-v1|category-filter-v3|category-filter-v4|parts-parallel-v1|stock-id-search-v1|stock-id-search-v2|dedicated-price-v1|catalog-search-v1|catalog-search-v2|vehicle-engine-001)' "$PUB/half-cuts/index.html"
+grep -E -q 'half-cut-directory\\.js\\?v=(category-filter-v1|category-filter-v3|category-filter-v4|stock-id-search-v2|dedicated-price-v1|catalog-search-v1|catalog-search-v2|vehicle-engine-001)' "$PUB/gearboxes/index.html"
+grep -E -q 'ebay-catalog-hub\\.js\\?v=(category-filter-v1|category-filter-v3|category-filter-v4|stock-id-search-v2|dedicated-price-v1|catalog-search-v1|catalog-search-v2|vehicle-engine-001)' "$PUB/gearboxes/index.html"
+grep -E -q 'catalog-search-v1|catalog-search-v2|stock-id-search-v[12]|vehicle-engine-001' "$PUB/half-cuts/index.html"
 grep -q 'catalog-search-aliases.js' "$PUB/half-cuts/index.html"
+grep -q 'engine-card-label.js' "$PUB/half-cuts/index.html"
+grep -q 'listingVehiclePrimaryTitle' "$PUB/js/half-cut-directory.js"
+grep -q 'resolveDisplacementFuelTraceable' "$PUB/js/engine-card-label.js"
+grep -q 'parseStructuredApplications' "$PUB/js/engine-card-label.js"
+test -f "$PUB/js/engine-card-label.js"
+test -f "$PUB/js/engine-directory.js"
 grep -q 'hc.exwBadge' "$PUB/js/public-i18n.js"
 grep -q 'ebay-sidebar__brands' "$PUB/js/ebay-layout.js"
 grep -q 'exwBadgeHtml' "$PUB/js/half-cut-directory.js"
 grep -q 'productImages,' "$PUB/js/half-cut-directory.js"
 grep -q 'fetchPublicItemBySlug' "$PUB/js/half-cut-detail.js"
 grep -q "params.get('id')" "$PUB/js/half-cut-detail.js"
-grep -q 'parts-parallel-v1' "$PUB/half-cuts/detail.html"
+grep -E -q 'vehicle-engine-001|parts-parallel-v1|stock-id-search-v2|catalog-search-v2' "$PUB/half-cuts/detail.html"
+grep -q 'engine-card-label.js' "$PUB/half-cuts/detail.html"
+grep -q 'formatHalfCutDetailH1\|formatHalfCutVehicleTitle' "$PUB/js/half-cut-detail.js"
 grep -q 'ebay-sidebar--v4' "$PUB/css/ebay-layout.css"
 grep -qF -- '--ebay-list-photo-w: 200px' "$PUB/css/ebay-layout.css"
 grep -q 'photo--parts-ph' "$PUB/css/ebay-layout.css"

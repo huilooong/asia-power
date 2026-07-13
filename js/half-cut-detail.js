@@ -431,7 +431,10 @@
   function renderHalfCutDetailContent(item, root) {
     const b = base();
     const u = window.HalfCutUtils;
-    const displayTitle = u.listingTitle(item) || item.title;
+    const displayTitle = window.EngineCardLabel?.formatHalfCutDetailH1?.(item)
+      || u.listingVehiclePrimaryTitle?.(item)
+      || u.listingTitle(item)
+      || item.title;
     const title = u.seoTitle(item);
     const description = u.seoDescription(item);
 

@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>APUI-VEHICLE-ENGINE-001 — Engine Card Preview</title>
+  <style>
+    :root {
+      --ink: #12141a;
+      --muted: #5c6470;
+      --line: #e4e7ec;
+      --bg: #f0eee9;
+      --card: #fff;
+      --accent: #0b3d5c;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: "Segoe UI", "Helvetica Neue", Arial, sans-serif;
+      color: var(--ink);
+      background:
+        radial-gradient(900px 420px at 90% 0%, #d5e4df 0%, transparent 50%),
+        linear-gradient(180deg, #e7e3db, var(--bg));
+      padding: 28px 18px 64px;
+    }
+    h1 { font-size: 1.35rem; margin: 0 0 6px; }
+    .sub { color: var(--muted); font-size: 0.92rem; margin-bottom: 22px; max-width: 52rem; }
+    section { margin-bottom: 34px; }
+    section > h2 { font-size: 0.78rem; text-transform: uppercase; letter-spacing: 0.08em; color: var(--muted); margin: 0 0 12px; }
+    .grid { display: grid; gap: 14px; grid-template-columns: repeat(auto-fill, minmax(230px, 1fr)); max-width: 960px; }
+    .card {
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      padding: 14px 14px 16px;
+      min-height: 108px;
+    }
+    .code {
+      font-size: 1.08rem;
+      font-weight: 750;
+      letter-spacing: -0.02em;
+      margin: 0 0 4px;
+      color: var(--accent);
+      line-height: 1.25;
+    }
+    .apps {
+      font-size: 0.82rem;
+      color: var(--muted);
+      margin: 0;
+      line-height: 1.35;
+    }
+    .brand { font-size: 0.72rem; color: #8a93a0; margin: 10px 0 0; text-transform: uppercase; letter-spacing: 0.06em; }
+    .phone {
+      max-width: 390px;
+      border: 10px solid #1c1f26;
+      border-radius: 28px;
+      padding: 14px 12px;
+      background: #111;
+    }
+    .phone .inner { background: var(--bg); border-radius: 16px; padding: 12px; }
+    .src { font-size: 0.75rem; color: var(--muted); }
+  </style>
+</head>
+<body>
+  <h1>Engine cards — Engine-first IA</h1>
+  <p class="sub">Primary line = <strong>EngineCardLabel</strong> pattern <code>Code · Displacement Fuel</code>. Second line = real applications from <code>ENGINE_DIRECTORY</code> only.</p>
+
+  <section>
+    <h2>1 · Multiple compatible vehicles</h2>
+    <div class="grid">
+      <article class="card">
+        <p class="code">2AZ-FE · 2.4L Petrol</p>
+        <p class="apps">Fits Camry · RAV4 · Alphard</p>
+        <p class="brand">Toyota · directory</p>
+      </article>
+      <article class="card">
+        <p class="code">1NZ-FE · 1.8L Petrol</p>
+        <p class="apps">Corolla · Fielder · +2 Models</p>
+        <p class="brand">Toyota · directory (Corolla, Fielder, Axio, Yaris)</p>
+      </article>
+      <article class="card">
+        <p class="code">G4KD · 2.0L Petrol</p>
+        <p class="apps">Optima · Sportage · Sorento</p>
+        <p class="brand">Hyundai · directory</p>
+      </article>
+    </div>
+  </section>
+
+  <section>
+    <h2>2 · Single application string</h2>
+    <div class="grid">
+      <article class="card">
+        <p class="code">1HZ · 4.2L Diesel</p>
+        <p class="apps">Fits Land Cruiser 80/100 series</p>
+        <p class="brand">Toyota · directory</p>
+      </article>
+    </div>
+  </section>
+
+  <section>
+    <h2>3 · No reliable compatible data</h2>
+    <div class="grid">
+      <article class="card">
+        <p class="code">R20A3</p>
+        <!-- no apps line — inventory code without directory applications -->
+        <p class="brand">Honda · inventory code · apps hidden</p>
+      </article>
+      <article class="card">
+        <p class="code">L13Z1</p>
+        <p class="brand">Honda · inventory code · apps hidden</p>
+      </article>
+    </div>
+    <p class="src">When applications are unknown, omit the Fits line. Do not invent vehicles.</p>
+  </section>
+
+  <section>
+    <h2>4 · Phone</h2>
+    <div class="phone">
+      <div class="inner">
+        <article class="card">
+          <p class="code">2AZ-FE · 2.4L Petrol</p>
+          <p class="apps">Camry · RAV4 · +1 Models</p>
+          <p class="brand">Toyota</p>
+        </article>
+      </div>
+    </div>
+  </section>
+</body>
+</html>

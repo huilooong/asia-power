@@ -1,0 +1,15 @@
+# APUI-VEHICLE-ENGINE-001 changed files
+
+docs/tasks/apui-vehicle-engine-001/analysis.md
+docs/tasks/apui-vehicle-engine-001/data-audit.md
+docs/tasks/apui-vehicle-engine-001/information-architecture.md
+docs/tasks/apui-vehicle-engine-001/half-cut-design.md
+docs/tasks/apui-vehicle-engine-001/engine-design.md
+docs/tasks/apui-vehicle-engine-001/compatible-vehicles-policy.md
+docs/tasks/apui-vehicle-engine-001/seo-plan.md
+docs/tasks/apui-vehicle-engine-001/preview-validation.md
+docs/tasks/apui-vehicle-engine-001/review.md
+docs/tasks/apui-vehicle-engine-001/changed-files.txt
+docs/previews/apui-vehicle-engine-001/half-cut-card-preview.html
+docs/previews/apui-vehicle-engine-001/engine-card-preview.html
+docs/previews/apui-vehicle-engine-001/engine-detail-preview.html
