@@ -508,6 +508,9 @@ async function handleSandboxInbound(rootDir, normalized) {
       channel: 'whatsapp',
       vehicleIntelligence: gen.vehicle_intelligence || null,
       commercialDecision: gen.commercial_decision || null,
+      messageUnderstanding: gen.message_understanding || null,
+      conversationState: gen.conversation_state || null,
+      repeatedActionBlocked: Boolean(gen.repeated_action_blocked),
     });
     if (ev && ev.evidence_id) row.evidence_id = ev.evidence_id;
   } catch {

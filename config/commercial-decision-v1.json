@@ -20,5 +20,5 @@
   },
   "wholesaler_quantity_min": 5,
   "known_wholesaler_hashes": [],
-  "engine_code_pattern": "\\b(G4K[A-Z0-9]+|G4NA|HR1[56]DE|1NZ|2NZ|2AZ|1AZ|QR25|VQ35)[A-Z0-9]*\\b"
+  "engine_code_pattern": "\\b(G4K[A-Z0-9]+|G4NA|G4FC|G4FG|HR1[56]DE|MR20DE|QR25DE?|VQ35DE?|[123][A-Z]{2}(?:-[A-Z0-9]+)?|1NZ|2NZ|2AZ|1AZ|1KD(?:-FTV)?|2KD(?:-FTV)?|2TR(?:-FE)?|K24A\\d?|R20A\\d?)\\b"
 }

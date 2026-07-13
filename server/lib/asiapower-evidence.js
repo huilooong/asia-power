@@ -355,6 +355,9 @@ function recordEvidenceTurn({
   channel = 'whatsapp',
   vehicleIntelligence = null,
   commercialDecision = null,
+  messageUnderstanding = null,
+  conversationState = null,
+  repeatedActionBlocked = false,
 }) {
   try {
     const at = new Date().toISOString();
@@ -378,6 +381,7 @@ function recordEvidenceTurn({
       commercialDecision ||
       (vehicleIntelligence && vehicleIntelligence.commercial_decision) ||
       null;
+    const mu = messageUnderstanding || null;
     const turn = {
       schema_version: 1,
       type: 'evidence_turn',
@@ -393,6 +397,26 @@ function recordEvidenceTurn({
         inbound_wamid: normalized.message_id || null,
         inbound_type: normalized.message_type || 'text',
       },
+      // APSALES-NLU-001
+      message_understanding: mu,
+      extracted_entities: mu && Array.isArray(mu.entities) ? mu.entities : null,
+      communicative_act: mu ? mu.communicative_act || null : null,
+      clarification_flag: mu ? Boolean(mu.is_clarification) : false,
+      correction_flag: mu ? Boolean(mu.is_correction) : false,
+      conversation_state: conversationState || null,
+      state_before: conversationState ? conversationState.before || null : null,
+      state_after: conversationState ? conversationState.after || null : null,
+      last_action:
+        (conversationState &&
+          conversationState.before &&
+          conversationState.before.last_system_action) ||
+        null,
+      repeated_action_blocked: Boolean(repeatedActionBlocked),
+      selected_next_best_action:
+        (cdr && (cdr.next_best_action || cdr.next_action)) ||
+        (decision && decision.next_action) ||
+        null,
+      outbound_reply: String(finalReply || ''),
       decision,
       customer_intelligence: vehicleIntelligence
         ? {
@@ -436,6 +460,9 @@ function recordEvidenceTurn({
         draft_id: null,
         sandbox_log: 'data/whatsapp_cloud/sandbox/decisions.ndjson',
         vehicle_knowledge: 'data/vehicle_knowledge/',
+        conversation_state: waId
+          ? `data/whatsapp_cloud/conversation_state/wa:${waId}.json`
+          : null,
       },
     };
 

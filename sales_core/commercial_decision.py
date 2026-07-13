@@ -36,8 +36,17 @@ _DEFAULT_CONFIG: dict[str, Any] = {
     },
     "wholesaler_quantity_min": 5,
     "known_wholesaler_hashes": [],
-    "engine_code_pattern": r"\b(G4K[A-Z0-9]+|G4NA|HR1[56]DE|1NZ|2NZ|2AZ|1AZ|QR25|VQ35)[A-Z0-9]*\b",
+    "engine_code_pattern": (
+        r"\b(G4K[A-Z0-9]+|G4NA|G4FC|G4FG|HR1[56]DE|MR20DE|QR25DE?|VQ35DE?|"
+        r"[123][A-Z]{2}(?:-[A-Z0-9]+)?|1NZ|2NZ|2AZ|1AZ|1KD(?:-FTV)?|2KD(?:-FTV)?|"
+        r"2TR(?:-FE)?|K24A\d?|R20A\d?)\b"
+    ),
 }
+_ENGINE_PHRASE_RE = re.compile(
+    r"(?:engine\s*code|engine\s*no\.?|engine\s*number|code\s*is)\s*(?:is|为|：|:)?\s*"
+    r"([A-Z0-9][A-Z0-9\-]{1,11})",
+    re.I,
+)
 
 _SCOPE_RE = re.compile(
     r"long\s*block|complete\s*engine|half[\s-]?cut|gearbox|变速箱|光机|总成",
@@ -184,8 +193,20 @@ def _has_port(text: str) -> bool:
 
 
 def _extract_engine_code(text: str, cfg: dict[str, Any]) -> str:
-    m = _engine_code_re(cfg).search(text or "")
-    return (m.group(1) if m else "").upper()
+    t = text or ""
+    pm = _ENGINE_PHRASE_RE.search(t)
+    if pm:
+        return re.sub(r"\s+", "", pm.group(1).upper())
+    m = _engine_code_re(cfg).search(t)
+    if m:
+        return re.sub(r"\s+", "", m.group(1).upper())
+    # Standalone short code (e.g. "2sz")
+    sm = re.match(r"^\s*([A-Z0-9][A-Z0-9\-]{1,11})\s*$", t.strip(), re.I)
+    if sm:
+        cand = re.sub(r"\s+", "", sm.group(1).upper())
+        if re.match(r"^[0-9]?[A-Z]{1,3}[0-9A-Z\-]{0,8}$", cand) and not cand.isdigit():
+            return cand
+    return ""
 
 
 def _word_count(text: str) -> int:
@@ -324,8 +345,14 @@ def decide_commercial(
     photo_evidence: bool = False,
     plate_engine_code: str = "",
     config: dict[str, Any] | None = None,
+    prior_state: dict[str, Any] | None = None,
+    understanding: dict[str, Any] | None = None,
 ) -> CommercialDecision:
-    """Return one next_best_action + auditable record + channel reply."""
+    """Return one next_best_action + auditable record + channel reply.
+
+    APSALES-NLU-001: may consume structured prior_state / understanding.
+    Commercial Decision still does not invent NLU — it uses merged facts.
+    """
     cfg = config or load_config()
     advance_min = float((cfg.get("confidence") or {}).get("advance_min", 0.90))
     caution_min = float((cfg.get("confidence") or {}).get("caution_min", 0.60))
@@ -333,9 +360,37 @@ def decide_commercial(
     text = (message or "").strip()
     qty = _extract_qty(text)
     engine_claim = _extract_engine_code(text, cfg)
+    prior = prior_state or {}
+    prior_cr = prior.get("customer_reported") or {}
+    prior_engine = str(prior_cr.get("engine_code") or "")
+    prior_asked = list(prior.get("asked_actions") or [])
+    unavailable = set(prior.get("unavailable_evidence") or [])
+    last_action = str(prior.get("last_system_action") or "")
+
+    # Merge conversation state: customer already claimed an engine code
+    if not engine_claim and prior_engine:
+        engine_claim = prior_engine
+    if understanding:
+        try:
+            from sales_core.message_understanding import primary_engine_code
+
+            pe = primary_engine_code(understanding)
+            if pe:
+                engine_claim = pe
+        except Exception:
+            for e in understanding.get("entities") or []:
+                if e.get("type") == "engine_code" and e.get("normalized_value"):
+                    engine_claim = str(e["normalized_value"])
+                    break
+        if understanding.get("cannot_provide_plate"):
+            unavailable.add("engine_plate")
+        if understanding.get("offers_photo_alternative"):
+            photo_evidence = photo_evidence or False
+            prior_cr = {**prior_cr, "offers_engine_photo": True}
+
     has_vin = bool(_VIN_RE.search(text)) or bool(
         getattr(snapshot, "vin", "") if snapshot else ""
-    )
+    ) or bool(prior_cr.get("vin"))
     has_scope = _has_scope(text)
     has_port = _has_port(text)
     price_intent = bool(_PRICE_RE.search(text))
@@ -364,7 +419,12 @@ def decide_commercial(
         )
     if engine_claim:
         evidence.append(
-            {"type": "claimed_engine_code", "source": "customer_text", "value": engine_claim}
+            {
+                "type": "claimed_engine_code",
+                "source": "customer_text",
+                "value": engine_claim,
+                "verification_status": "customer_reported",
+            }
         )
     if plate_evidence:
         evidence.append({"type": "engine_plate", "source": "customer_media"})
@@ -384,6 +444,9 @@ def decide_commercial(
         conf = min(conf, 0.45) if conf else 0.40
     if conflict:
         conf = min(conf, 0.35)
+    # Clarification of same code raises claim confidence slightly (still not verified)
+    if understanding and understanding.get("is_clarification") and engine_claim:
+        conf = max(conf, 0.50)
 
     known: list[str] = []
     missing: list[str] = []
@@ -452,6 +515,14 @@ def decide_commercial(
     objective = ""
     reason = ""
 
+    plate_already_asked = "ask_engine_plate" in prior_asked or last_action == "ask_engine_plate"
+    plate_unavailable = "engine_plate" in unavailable
+    clarifying_claim = bool(
+        understanding
+        and (understanding.get("is_clarification") or understanding.get("is_answer_to_previous_question"))
+        and engine_claim
+    )
+
     if conflict:
         candidates = [
             _AS("request_manual_review", 1, 5, 2, 1, 1),
@@ -487,13 +558,23 @@ def decide_commercial(
         reason = "Wholesaler/batch — reduce friction unless anomaly"
         commercial_risk = "low" if conf >= advance_min else "medium"
     elif engine_claim and conf < caution_min:
-        candidates = [
-            _AS("ask_engine_plate", 2, 5, 5, 2, 1),
-            _AS("ask_engine_photo", 2, 4, 4, 2, 1),
-            _AS("ask_vin", 2, 3, 3, 2, 1),
-        ]
-        stage, objective = "confirm_identity", "Confirm currently installed engine"
-        reason = "Claimed code ≠ evidence; Current Installed Engine First"
+        # NLU-001: after plate already asked / clarification / plate unavailable → alternate evidence
+        if plate_unavailable or clarifying_claim or plate_already_asked:
+            candidates = [
+                _AS("ask_engine_photo", 3, 4, 4, 2, 1),
+                _AS("ask_vin", 2, 3, 3, 2, 1),
+                _AS("ask_registration", 1, 2, 2, 2, 1),
+            ]
+            stage, objective = "confirm_identity", "Acknowledge claim; alternate evidence"
+            reason = "Customer reported engine code — do not re-ask plate; seek easier evidence"
+        else:
+            candidates = [
+                _AS("ask_engine_plate", 2, 5, 5, 2, 1),
+                _AS("ask_engine_photo", 2, 4, 4, 2, 1),
+                _AS("ask_vin", 2, 3, 3, 2, 1),
+            ]
+            stage, objective = "confirm_identity", "Confirm currently installed engine"
+            reason = "Claimed code ≠ evidence; Current Installed Engine First"
         commercial_risk = "high"
     elif has_vin and getattr(snapshot, "ok", False):
         if conf >= advance_min or (conf >= caution_min and has_scope):
@@ -562,16 +643,29 @@ def decide_commercial(
     if commercial_risk == "high" and conf < caution_min and engine_claim and ctype != "wholesaler":
         if not any(c.action == "request_manual_review" for c in candidates):
             candidates.insert(0, _AS("request_manual_review", 1, 5, 2, 1, 1))
-        if not plate_evidence:
+        if not plate_evidence and not plate_already_asked and not plate_unavailable and not clarifying_claim:
             for c in candidates:
                 if c.action == "ask_engine_plate":
                     c.risk_reduction += 1
                     c.evidence_gain += 1
             human = False
             reason = "High mismatch risk — plate before wrong supply"
+        elif clarifying_claim or plate_already_asked or plate_unavailable:
+            # Prefer photo/VIN over repeating plate or jumping to human too early
+            candidates = [c for c in candidates if c.action != "ask_engine_plate"]
+            if not any(c.action == "ask_engine_photo" for c in candidates):
+                candidates.insert(0, _AS("ask_engine_photo", 3, 4, 4, 2, 1))
+            human = False
+            reason = "High risk but customer clarified claim — alternate evidence"
         else:
             human = True
             reason = "High risk after evidence — human review (Trust First)"
+
+    # Dead-loop soft filter inside candidate list
+    if last_action:
+        candidates = [c for c in candidates if c.action != last_action] or candidates
+    if plate_unavailable:
+        candidates = [c for c in candidates if c.action != "ask_engine_plate"] or candidates
 
     nba, alts = _score_pick(candidates)
     if nba == "ask_scope" and has_scope:
@@ -580,6 +674,11 @@ def decide_commercial(
         nba = "ask_destination" if not has_port else "prepare_quote"
     if nba == "ask_destination" and has_port:
         nba = "prepare_quote"
+    if nba == last_action:
+        for alt in alts + ["ask_engine_photo", "ask_vin", "request_manual_review"]:
+            if alt != last_action:
+                nba = alt
+                break
 
     expected_map = {
         "ask_engine_plate": "sent_engine_plate",
@@ -597,6 +696,15 @@ def decide_commercial(
     ask_keys = [nba] if nba in _ASK_LABELS else []
     ask_list = [_ASK_LABELS[nba]] if nba in _ASK_LABELS else []
 
+    acknowledge_claim = bool(engine_claim) and (
+        clarifying_claim
+        or plate_already_asked
+        or (understanding or {}).get("communicative_act")
+        in {"clarify_information", "answer_previous_question", "correct_information"}
+        or (understanding or {}).get("is_clarification")
+        or (understanding or {}).get("is_correction")
+    )
+
     reply = _render_reply(
         nba=nba,
         snapshot=snapshot,
@@ -604,6 +712,7 @@ def decide_commercial(
         conf=conf,
         conflict=conflict,
         price_intent=price_intent,
+        acknowledge_claim=acknowledge_claim,
     )
     reply = apply_channel_policy(reply, cfg)
 
@@ -622,6 +731,7 @@ def decide_commercial(
                 if engine_claim
                 else "none"
             ),
+            "verification_status": "customer_reported" if engine_claim else "none",
         },
         evidence=evidence,
         evidence_confidence=round(conf, 3),
@@ -650,6 +760,7 @@ def _render_reply(
     conf: float,
     conflict: bool,
     price_intent: bool,
+    acknowledge_claim: bool = False,
 ) -> str:
     vin_shown = ""
     ident = ""
@@ -667,7 +778,11 @@ def _render_reply(
             "To avoid wrong freight, duty, and fitment loss, please send a clear engine plate photo."
         )
     if nba == "request_manual_review":
+        ack = f"Got it — you’re confirming the engine code as {engine_claim}.\n\n" if (
+            acknowledge_claim and engine_claim
+        ) else ""
         return (
+            f"{ack}"
             "We want to double-check before moving ahead, so you don't risk ocean freight, "
             "duty, and install costs on the wrong unit. Our team will review shortly."
         )
@@ -677,6 +792,11 @@ def _render_reply(
             "engine than ship the wrong one."
         )
     if nba == "ask_engine_plate":
+        if acknowledge_claim and engine_claim:
+            return (
+                f"Got it — you’re confirming the engine code as {engine_claim}.\n\n"
+                "To avoid supplying the wrong version, please send a clear engine plate photo."
+            )
         claim = f" You mentioned {engine_claim}." if engine_claim else ""
         return (
             f"Got it.{claim} Before quantity/port, please confirm the engine currently installed "
@@ -684,14 +804,29 @@ def _render_reply(
             f"Please send a clear engine plate photo."
         )
     if nba == "ask_engine_photo":
+        if acknowledge_claim and engine_claim:
+            return (
+                f"Got it — you’re confirming the engine code as {engine_claim}.\n\n"
+                "To avoid supplying the wrong version, please send a clear photo of the engine if available."
+            )
         return "Please send a clear photo of the engine currently in the car."
     if nba == "ask_vin":
+        if acknowledge_claim and engine_claim:
+            return (
+                f"Got it — you’re confirming the engine code as {engine_claim}.\n\n"
+                "If easier, please send the VIN (or VIN plate photo)."
+            )
         if price_intent:
             return "Yes — we can help with pricing once identity is solid.\n\nPlease send the VIN (or engine plate photo)."
         return "Please send the VIN so we can match the vehicle record."
     if nba == "ask_vin_plate":
         return "VIN decode needs a clearer source — please send a VIN plate photo."
     if nba == "ask_registration":
+        if acknowledge_claim and engine_claim:
+            return (
+                f"Got it — you’re confirming the engine code as {engine_claim}.\n\n"
+                "Please send a vehicle registration photo as an alternative."
+            )
         return "Please send a vehicle registration photo so we can continue matching."
     if nba == "ask_oe_label":
         return "Please send a clear OE / parts label photo."

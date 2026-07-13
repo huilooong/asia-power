@@ -1,0 +1,22 @@
+# APSALES-NLU-001 changed files
+
+sales_core/message_understanding.py
+sales_core/conversation_state.py
+sales_core/commercial_decision.py
+config/commercial-decision-v1.json
+scripts/whatsapp_cloud_sandbox_reply.py
+server/lib/whatsapp-cloud-sandbox.js
+server/lib/asiapower-evidence.js
+tests/test_apsales_nlu_001.py
+docs/tasks/apsales-nlu-001/analysis.md
+docs/tasks/apsales-nlu-001/architecture.md
+docs/tasks/apsales-nlu-001/message-understanding-schema.md
+docs/tasks/apsales-nlu-001/conversation-state.md
+docs/tasks/apsales-nlu-001/dead-loop-root-cause.md
+docs/tasks/apsales-nlu-001/implementation.md
+docs/tasks/apsales-nlu-001/test-results.md
+docs/tasks/apsales-nlu-001/test-results.out.txt
+docs/tasks/apsales-nlu-001/production-validation.md
+docs/tasks/apsales-nlu-001/review.md
+docs/tasks/apsales-nlu-001/changed-files.txt
+memory/2026-07-13.md
