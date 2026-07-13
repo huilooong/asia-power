@@ -34,10 +34,14 @@ _NHTSA_URL = "https://vpic.nhtsa.dot.gov/api/vehicles/DecodeVinValues/{vin}?form
 PHASE = "phase_1_nhtsa"
 PROVIDER_CHAIN = ("asia_power_store", "nhtsa_vpic", "corgi_fallback", "manual_review")
 
+# APSALES-DECISION-001: fixed trio retired — ask_list comes from commercial_decision NBA
 _SALES_ASK_LABELS = {
-    "product_scope": "Long block / complete engine / gearbox?",
-    "quantity": "Quantity?",
-    "destination_port": "Destination port?",
+    "ask_scope": "Long block or complete engine?",
+    "ask_quantity": "Quantity?",
+    "ask_destination": "Destination port?",
+    "ask_engine_plate": "Clear photo of the engine plate/nameplate?",
+    "ask_engine_photo": "Clear photo of the engine currently installed?",
+    "ask_vin": "VIN (or VIN plate photo)?",
 }
 
 # verification_status values
@@ -165,6 +169,7 @@ class CustomerIntelligenceResult:
     next_action: str = "ask_missing_sales_fields"
     module: str = "SALES_DECISION"
     phase: str = PHASE
+    commercial_decision: dict[str, Any] = field(default_factory=dict)
 
     def to_dict(self) -> dict[str, Any]:
         return {
@@ -177,6 +182,7 @@ class CustomerIntelligenceResult:
             "ask_keys": self.ask_keys,
             "next_action": self.next_action,
             "module": self.module,
+            "commercial_decision": self.commercial_decision,
         }
 
 
@@ -504,65 +510,51 @@ def _message_has_scope(text: str) -> bool:
 def build_sales_decision(
     snapshot: VehicleSnapshot,
     customer_message: str = "",
+    *,
+    customer_hash: str = "",
+    conversation_id: str = "",
 ) -> CustomerIntelligenceResult:
-    known = snapshot.known_fields() if snapshot.ok else (["vin"] if snapshot.vin else [])
-    do_not_ask = list(known)
-    ask_keys: list[str] = []
-    if not _message_has_scope(customer_message):
-        ask_keys.append("product_scope")
-    if not _message_has_quantity(customer_message):
-        ask_keys.append("quantity")
-    if not _message_has_port(customer_message):
-        ask_keys.append("destination_port")
+    """Sales Decision via Commercial Decision Rules V1 (APSALES-DECISION-001)."""
+    from sales_core.commercial_decision import decide_from_vin_result
 
-    ask_list = [_SALES_ASK_LABELS[k] for k in ask_keys if k in _SALES_ASK_LABELS]
-    next_action = "ask_missing_sales_fields" if ask_list else "ready_for_quote_check"
+    cdr = decide_from_vin_result(
+        snapshot,
+        customer_message,
+        customer_hash=customer_hash,
+        conversation_id=conversation_id,
+    )
+    known = list(cdr.known) or (
+        snapshot.known_fields() if snapshot.ok else (["vin"] if snapshot.vin else [])
+    )
     return CustomerIntelligenceResult(
         snapshot=snapshot,
         known=known,
-        do_not_ask=do_not_ask,
-        ask_list=ask_list,
-        ask_keys=ask_keys,
-        next_action=next_action,
+        do_not_ask=list(known),
+        ask_list=list(cdr.ask_list),
+        ask_keys=list(cdr.ask_keys),
+        next_action=cdr.next_best_action,
+        commercial_decision=cdr.to_dict(),
     )
 
 
 def build_whatsapp_reply(result: CustomerIntelligenceResult) -> str:
+    """Channel reply from Commercial Decision Record (one NBA)."""
+    from sales_core.commercial_decision import apply_channel_policy
+
+    cdr = result.commercial_decision or {}
+    reply = str(cdr.get("reply") or "").strip()
+    if reply:
+        return apply_channel_policy(reply)
+    # Minimal fallback — still one objective, never fixed trio
     snap = result.snapshot
     shown = snap.vin_masked or mask_vin(snap.vin) or "your VIN"
-    lines: list[str] = []
-
-    if snap.ok and snap.identity_line():
-        lines.append(f"Got your VIN: {shown}")
-        lines.append(f"Identified: {snap.identity_line()}")
-        if snap.engine_code:
-            lines.append(f"Engine code: {snap.engine_code}")
-        elif snap.engine_desc:
-            lines.append(f"Engine: {snap.engine_desc}")
-        if snap.transmission:
-            lines.append(f"Transmission: {snap.transmission}")
-        if snap.verification_status == VS_PROVIDER_REPORTED:
-            lines.append("(Provider reported — not yet AsiaPower-verified; we confirm before stock/price)")
-        elif snap.knowledge_hit or snap.verification_status in {VS_VERIFIED, VS_MANUAL_REVIEWED}:
-            lines.append("(AsiaPower vehicle knowledge — we still confirm before stock/price)")
-        else:
-            lines.append("(vehicle records — we still confirm before stock/price)")
-    else:
-        lines.append(f"Got your VIN: {shown}")
-        lines.append("We're matching it in AsiaPower vehicle knowledge (full specs pending / may need manual review).")
-
     if result.ask_list:
-        lines.append("")
-        lines.append("To move to quotation, I only need:")
-        for item in result.ask_list:
-            lines.append(f"• {item}")
-    else:
-        lines.append("")
-        lines.append("Thanks — we have the vehicle + sales basics. We'll check supply and advance to quotation.")
-
-    lines.append("")
-    lines.append("www.asia-power.com")
-    return "\n".join(lines)
+        return apply_channel_policy(
+            f"Got VIN {shown}.\n\n{result.ask_list[0]}"
+        )
+    return apply_channel_policy(
+        f"Got VIN {shown}. Thanks — we can check supply next (no stock/price promise yet)."
+    )
 
 
 def enrich_and_decide(customer_message: str, *, root: Path | None = None) -> CustomerIntelligenceResult:

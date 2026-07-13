@@ -14,12 +14,17 @@ from typing import Any
 
 
 def _safe_media_reply(message_type: str) -> str:
-    return (
-        "Thanks — we received your media.\n\n"
-        "Please also type: vehicle model, year, engine code or VIN, "
-        "and whether you need long block / complete engine / gearbox / accessories.\n\n"
-        "www.asia-power.com"
-    )
+    from sales_core.commercial_decision import decide_commercial
+
+    cdr = decide_commercial("", media_type=message_type or "image")
+    # Media-only: prefer inspect / plate ask
+    if not cdr.reply:
+        return (
+            "Thanks — we received your media.\n\n"
+            "Please send a clear engine plate photo (or VIN) so we can confirm "
+            "the currently installed engine."
+        )
+    return cdr.reply
 
 
 _INTERNAL_LEAK_RE = re.compile(
@@ -45,27 +50,42 @@ def _strip_internal_leaks(text: str) -> str:
 
 
 def _vin_received_reply(inbound: str) -> str:
-    """Think Before Reply: Vehicle Intelligence → Sales Decision → short WhatsApp ask."""
+    """Think Before Reply: Vehicle Intelligence → Commercial Decision → WhatsApp."""
     try:
         from sales_core.vehicle_intelligence import enrich_and_decide, build_whatsapp_reply
 
         result = enrich_and_decide(inbound)
         return build_whatsapp_reply(result)
     except Exception:
-        m = _VIN_RE.search(inbound or "")
-        vin = m.group(1) if m else ""
-        head = f"Got your VIN: {vin}\n\n" if vin else "Got your VIN.\n\n"
-        return (
-            head
-            + "We will check the matching engine with suppliers "
-            + "(confirmation before any stock/price promise).\n\n"
-            + "Please confirm:\n"
-            + "• Long block / complete engine / gearbox?\n"
-            + "• Quantity?\n"
-            + "• Destination port?\n\n"
-            + "Then we move to quotation (FOB / CIF).\n\n"
-            + "www.asia-power.com"
-        )
+        from sales_core.commercial_decision import decide_commercial
+
+        cdr = decide_commercial(inbound or "")
+        return cdr.reply
+
+
+def _commercial_decide_reply(inbound: str, *, wa_id: str = "", media_type: str = "") -> dict[str, Any]:
+    """Non-VIN path: Commercial Decision Rules V1 inside Sales Decision."""
+    import hashlib
+
+    from sales_core.commercial_decision import decide_commercial
+
+    customer_hash = hashlib.sha256((wa_id or "").encode()).hexdigest()[:16] if wa_id else ""
+    cdr = decide_commercial(
+        inbound,
+        customer_hash=customer_hash,
+        media_type=media_type,
+    )
+    return {
+        "ok": True,
+        "reply": cdr.reply,
+        "risk_level": "high" if cdr.commercial_risk == "high" else "low",
+        "reason_code": "commercial_decision_v1",
+        "category": cdr.customer_intent,
+        "classification": "commercial_decision",
+        "source": "commercial_decision",
+        "next_action": cdr.next_best_action,
+        "commercial_decision": cdr.to_dict(),
+    }
 
 
 def _risk_rewrite(text: str, inbound: str) -> tuple[str, str]:
@@ -158,19 +178,10 @@ def main() -> int:
             print(json.dumps({"ok": True, "reply": reply, "risk_level": "low", "source": "media_meta"}))
             return 0
 
-    try:
-        from core.language_router import detect_language, resolve_target_language
-        from customer_gateway.sales_message_classifier import classify_inbound_message
-        from sales_core.sales_brain_draft import build_sales_brain_draft
-    except Exception as exc:  # pragma: no cover
-        print(json.dumps({"ok": False, "error": f"import:{exc}"}))
-        return 1
-
     if not text:
         text = f"[{msg_type} message received]"
 
-    # APSALES-AUTOINTELLIGENCE-001: VIN → Vehicle Intelligence → Sales Decision → Reply
-    # Do NOT draft first when VIN is present (Think Before Reply).
+    # APSALES-DECISION-001: VIN / engine-code / price before LLM imports (Think Before Reply)
     vin_intel: dict[str, Any] | None = None
     if _VIN_RE.search(text):
         try:
@@ -188,13 +199,48 @@ def main() -> int:
                 "classification": "vehicle_intelligence",
                 "source": "vehicle_intelligence",
                 "vehicle_intelligence": vin_intel,
+                "commercial_decision": (vin_intel or {}).get("commercial_decision"),
                 "next_action": decision.next_action,
             }
             print(json.dumps(out, ensure_ascii=False))
             return 0
         except Exception as exc:
-            # Fall through to normal draft if intelligence fails (Business First)
             vin_intel = {"error": str(exc)[:200]}
+
+    try:
+        from sales_core.commercial_decision import _extract_engine_code, load_config
+        from sales_core.zijing_reply_context import is_price_inquiry
+
+        cfg = load_config()
+        engine_hit = bool(_extract_engine_code(text, cfg))
+        price_hit = is_price_inquiry(text)
+    except Exception:
+        engine_hit = bool(re.search(r"\bG4K[A-Z0-9]+\b", text, re.I))
+        price_hit = bool(re.search(r"how\s*much|best\s*price|quote|quotation", text, re.I))
+
+    if engine_hit or price_hit or re.search(r"conflict|replaced engine|swapped engine", text, re.I):
+        try:
+            out = _commercial_decide_reply(text, wa_id=wa_id, media_type=msg_type)
+            if vin_intel:
+                out["vehicle_intelligence"] = vin_intel
+            print(json.dumps(out, ensure_ascii=False))
+            return 0
+        except Exception:
+            pass
+
+    try:
+        from core.language_router import detect_language, resolve_target_language
+        from customer_gateway.sales_message_classifier import classify_inbound_message
+        from sales_core.sales_brain_draft import build_sales_brain_draft
+    except Exception as exc:  # pragma: no cover
+        # Last resort: still answer via commercial decision
+        try:
+            out = _commercial_decide_reply(text, wa_id=wa_id, media_type=msg_type)
+            print(json.dumps(out, ensure_ascii=False))
+            return 0
+        except Exception:
+            print(json.dumps({"ok": False, "error": f"import:{exc}"}))
+            return 1
 
     classification = classify_inbound_message(text, contact_name=name)
     detected = detect_language(text, scenario="buyer")

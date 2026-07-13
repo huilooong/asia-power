@@ -1,0 +1,22 @@
+# APSALES-DECISION-001 changed files
+
+sales_core/commercial_decision.py
+sales_core/vehicle_intelligence.py
+sales_core/zijing_reply_context.py
+scripts/whatsapp_cloud_sandbox_reply.py
+server/lib/whatsapp-cloud-sandbox.js
+server/lib/asiapower-evidence.js
+config/commercial-decision-v1.json
+tests/test_commercial_decision_v1.py
+docs/tasks/apsales-decision-001/analysis.md
+docs/tasks/apsales-decision-001/architecture.md
+docs/tasks/apsales-decision-001/decision-model.md
+docs/tasks/apsales-decision-001/decision-rules.md
+docs/tasks/apsales-decision-001/risk-confidence-policy.md
+docs/tasks/apsales-decision-001/next-best-action.md
+docs/tasks/apsales-decision-001/test-results.md
+docs/tasks/apsales-decision-001/test-results.out.json
+docs/tasks/apsales-decision-001/sandbox-validation.md
+docs/tasks/apsales-decision-001/review.md
+docs/tasks/apsales-decision-001/future-roadmap.md
+docs/tasks/apsales-decision-001/changed-files.txt

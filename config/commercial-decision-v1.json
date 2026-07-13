@@ -1,0 +1,24 @@
+{
+  "version": "v1",
+  "confidence": {
+    "advance_min": 0.90,
+    "caution_min": 0.60
+  },
+  "whatsapp_channel": {
+    "max_words": 60,
+    "max_paragraphs": 3,
+    "max_questions": 2,
+    "default_questions": 1,
+    "include_website_by_default": false,
+    "forbid_phrases": [
+      "Dear Customer",
+      "Dear Sir",
+      "Best regards",
+      "Looking forward to your reply",
+      "AsiaPower Sales Team"
+    ]
+  },
+  "wholesaler_quantity_min": 5,
+  "known_wholesaler_hashes": [],
+  "engine_code_pattern": "\\b(G4K[A-Z0-9]+|G4NA|HR1[56]DE|1NZ|2NZ|2AZ|1AZ|QR25|VQ35)[A-Z0-9]*\\b"
+}

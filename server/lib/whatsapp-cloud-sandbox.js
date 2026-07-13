@@ -156,13 +156,8 @@ function vinReceivedReply(inboundText) {
   const vinLine = vin ? `Got your VIN: ${vin}\n\n` : 'Got your VIN.\n\n';
   return (
     vinLine +
-    'We will check the matching engine with suppliers (confirmation before any stock/price promise).\n\n' +
-    'Please confirm:\n' +
-    '• Long block / complete engine / gearbox?\n' +
-    '• Quantity?\n' +
-    '• Destination port?\n\n' +
-    'Then we move to quotation (FOB / CIF).\n\n' +
-    'www.asia-power.com'
+    'Matching is pending. To avoid a costly mismatch, please send a clear engine plate photo ' +
+    '(VIN is factory config only — not always the engine now installed).'
   );
 }
 
@@ -197,14 +192,8 @@ function priceAdvanceReply(inboundText) {
     );
   }
   return (
-    'Yes — we can help with pricing.\n\n' +
-    'To quote the correct engine/parts, I need the exact vehicle first (wrong code = wrong price).\n\n' +
-    'Please send:\n' +
-    '• VIN, or vehicle model + year + engine code\n' +
-    '• What you need (long block / complete engine / gearbox / accessories)\n' +
-    '• Quantity + destination port\n\n' +
-    'Once we have that, we check the right one and move to quotation.\n\n' +
-    'www.asia-power.com'
+    'Yes — we can help with pricing once identity is solid.\n\n' +
+    'Please send the VIN (or a clear engine plate photo).'
   );
 }
 
@@ -415,17 +404,26 @@ async function handleSandboxInbound(rootDir, normalized) {
     replyText = gen.reply;
     if (gen.reason_code === 'vehicle_intelligence_vin' || gen.source === 'vehicle_intelligence') {
       decision = 'vehicle_intelligence';
+    } else if (
+      gen.reason_code === 'commercial_decision_v1' ||
+      gen.source === 'commercial_decision'
+    ) {
+      decision = 'commercial_decision';
     }
   }
 
   const originalReply = replyText;
   let gated;
-  // Already Think-Before-Reply from Vehicle Intelligence — do not re-LLM rewrite
-  if (decision === 'vehicle_intelligence' && !hasResidualLeak(replyText) && !hasEmailTone(replyText)) {
+  // Already Think-Before-Reply from Vehicle Intelligence / Commercial Decision — do not re-LLM rewrite
+  if (
+    (decision === 'vehicle_intelligence' || decision === 'commercial_decision') &&
+    !hasResidualLeak(replyText) &&
+    !hasEmailTone(replyText)
+  ) {
     gated = {
       text: stripInternalLeaks(replyText),
       risk_blocked: false,
-      reason_code: 'vehicle_intelligence_vin',
+      reason_code: decision === 'commercial_decision' ? 'commercial_decision_v1' : 'vehicle_intelligence_vin',
     };
   } else {
     gated = applyRiskPolicy(replyText, normalized.text || '');
@@ -467,6 +465,7 @@ async function handleSandboxInbound(rootDir, normalized) {
       sent: Boolean(send.messageId),
       channel: 'whatsapp',
       vehicleIntelligence: gen.vehicle_intelligence || null,
+      commercialDecision: gen.commercial_decision || null,
     });
     if (ev && ev.evidence_id) row.evidence_id = ev.evidence_id;
   } catch {

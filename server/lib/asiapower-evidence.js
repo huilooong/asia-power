@@ -96,23 +96,45 @@ function inferIntent(normalized) {
 /**
  * Map sandbox outcome → Sales Decision (not Reply text).
  */
-function inferDecision({ inboundText, replyText, reasonCode, genDecision, vehicleIntelligence }) {
+function inferDecision({
+  inboundText,
+  replyText,
+  reasonCode,
+  genDecision,
+  vehicleIntelligence,
+  commercialDecision,
+}) {
   const inbound = String(inboundText || '');
   const reply = String(replyText || '');
   const askVin = /\bvin\b/i.test(reply) || /车架号/.test(reply);
   const askModel = /\b(model|year|engine code|型号|年款)\b/i.test(reply);
   const askPort = /\b(port|港口)\b/i.test(reply);
   const quoteNow = /\b(USD|FOB|CIF|\$\s*\d|报价)\b/i.test(reply);
+  const cdr =
+    commercialDecision ||
+    (vehicleIntelligence && vehicleIntelligence.commercial_decision) ||
+    null;
 
   let sales = 'general';
   let salesDetail = 'continue';
   let nextAction = 'wait';
 
-  if (reasonCode === 'vehicle_intelligence_vin' || genDecision === 'vehicle_intelligence') {
+  if (cdr && cdr.next_best_action) {
+    sales = 'commercial_decision';
+    salesDetail = cdr.objective || cdr.customer_intent || 'nba';
+    nextAction = cdr.next_best_action;
+  } else if (reasonCode === 'vehicle_intelligence_vin' || genDecision === 'vehicle_intelligence') {
     sales = 'quotation';
     salesDetail = 'vin_enriched_ask_missing';
     nextAction =
       (vehicleIntelligence && vehicleIntelligence.next_action) || 'ask_missing_sales_fields';
+  } else if (
+    reasonCode === 'commercial_decision_v1' ||
+    genDecision === 'commercial_decision'
+  ) {
+    sales = 'commercial_decision';
+    salesDetail = 'nba';
+    nextAction = 'wait';
   } else if (reasonCode === 'price_advance' || (isPriceInquiry(inbound) && askVin)) {
     sales = 'quotation';
     salesDetail = 'collect_vin_first';
@@ -157,6 +179,7 @@ function inferDecision({ inboundText, replyText, reasonCode, genDecision, vehicl
       quote_now: quoteNow,
       defer_quote: isPriceInquiry(inbound) && !quoteNow,
       vin_enriched: reasonCode === 'vehicle_intelligence_vin',
+      commercial_decision_v1: Boolean(cdr),
     },
   };
 }
@@ -331,6 +354,7 @@ function recordEvidenceTurn({
   sent,
   channel = 'whatsapp',
   vehicleIntelligence = null,
+  commercialDecision = null,
 }) {
   try {
     const at = new Date().toISOString();
@@ -342,6 +366,7 @@ function recordEvidenceTurn({
       reasonCode,
       genDecision,
       vehicleIntelligence,
+      commercialDecision,
     });
     const truthGuard = truthGuardNode({
       originalReply,
@@ -349,6 +374,10 @@ function recordEvidenceTurn({
       riskBlocked,
       reasonCode,
     });
+    const cdr =
+      commercialDecision ||
+      (vehicleIntelligence && vehicleIntelligence.commercial_decision) ||
+      null;
     const turn = {
       schema_version: 1,
       type: 'evidence_turn',
@@ -374,6 +403,7 @@ function recordEvidenceTurn({
             snapshot: vehicleIntelligence.snapshot || null,
           }
         : null,
+      commercial_decision: cdr,
       truth_guard: truthGuard,
       reply: {
         text: String(finalReply || ''),

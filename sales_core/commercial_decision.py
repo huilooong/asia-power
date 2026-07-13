@@ -1,0 +1,744 @@
+#!/usr/bin/env python3
+"""APSALES-DECISION-001 — Commercial Decision Rules V1.
+
+Falls inside existing Sales Decision. No new Engine.
+No hidden CoT — only auditable Commercial Decision Records.
+"""
+
+from __future__ import annotations
+
+import json
+import re
+import uuid
+from dataclasses import asdict, dataclass, field
+from pathlib import Path
+from typing import Any
+
+ROOT = Path(__file__).resolve().parents[1]
+CONFIG_PATH = ROOT / "config" / "commercial-decision-v1.json"
+
+_DEFAULT_CONFIG: dict[str, Any] = {
+    "version": "v1",
+    "confidence": {"advance_min": 0.90, "caution_min": 0.60},
+    "whatsapp_channel": {
+        "max_words": 60,
+        "max_paragraphs": 3,
+        "max_questions": 2,
+        "default_questions": 1,
+        "include_website_by_default": False,
+        "forbid_phrases": [
+            "Dear Customer",
+            "Dear Sir",
+            "Best regards",
+            "Looking forward to your reply",
+            "AsiaPower Sales Team",
+        ],
+    },
+    "wholesaler_quantity_min": 5,
+    "known_wholesaler_hashes": [],
+    "engine_code_pattern": r"\b(G4K[A-Z0-9]+|G4NA|HR1[56]DE|1NZ|2NZ|2AZ|1AZ|QR25|VQ35)[A-Z0-9]*\b",
+}
+
+_SCOPE_RE = re.compile(
+    r"long\s*block|complete\s*engine|half[\s-]?cut|gearbox|变速箱|光机|总成",
+    re.I,
+)
+_QTY_RE = re.compile(
+    r"(\d+)\s*(?:pcs|units?|sets?|engines?|台|件)\b|"
+    r"(?:qty|quantity|数量)\s*[:：]?\s*(\d+)|"
+    r"(?:need|want|order)\s+(\d+)\b",
+    re.I,
+)
+_PORT_RE = re.compile(
+    r"\b(port|tema|lagos|mombasa|durban|abidjan|harbour|harbor|港口|apapa)\b",
+    re.I,
+)
+_PRICE_RE = re.compile(
+    r"how\s*much|best\s*price|lowest\s*price|\bquotation\b|\bquote\b|\bpricing\b|"
+    r"\bcost\b|报价|多少钱|什么价|价格",
+    re.I,
+)
+_VIN_RE = re.compile(r"\b([A-HJ-NPR-Z0-9]{11,17})\b", re.I)
+_CONFLICT_HINT_RE = re.compile(
+    r"conflict|doesn'?t match|not matching|wrong engine|different engine|"
+    r"replaced engine|swapped engine|changed engine",
+    re.I,
+)
+_PLATE_HINT_RE = re.compile(r"plate|铭牌|nameplate|engine\s*label", re.I)
+_PHOTO_HINT_RE = re.compile(r"photo|picture|image|照片|pic\b", re.I)
+_WHOLESALER_HINT_RE = re.compile(
+    r"wholesaler|wholesale|distributor|dealer|批量|批发",
+    re.I,
+)
+
+_ASK_LABELS = {
+    "ask_scope": "Long block or complete engine?",
+    "ask_quantity": "Quantity?",
+    "ask_destination": "Destination port?",
+    "ask_engine_plate": "Clear photo of the engine plate/nameplate?",
+    "ask_engine_photo": "Clear photo of the engine currently installed?",
+    "ask_vin": "VIN (or VIN plate photo)?",
+    "ask_vin_plate": "VIN plate photo?",
+    "ask_oe_label": "OE / parts label photo?",
+    "ask_vehicle_photo": "Vehicle photo?",
+    "ask_registration": "Vehicle registration photo?",
+}
+
+
+def load_config(path: Path | None = None) -> dict[str, Any]:
+    p = path or CONFIG_PATH
+    cfg = json.loads(json.dumps(_DEFAULT_CONFIG))
+    if p.is_file():
+        try:
+            raw = json.loads(p.read_text(encoding="utf-8"))
+            if isinstance(raw, dict):
+                cfg.update(raw)
+                if isinstance(raw.get("confidence"), dict):
+                    cfg["confidence"] = {**_DEFAULT_CONFIG["confidence"], **raw["confidence"]}
+                if isinstance(raw.get("whatsapp_channel"), dict):
+                    cfg["whatsapp_channel"] = {
+                        **_DEFAULT_CONFIG["whatsapp_channel"],
+                        **raw["whatsapp_channel"],
+                    }
+        except (json.JSONDecodeError, OSError):
+            pass
+    return cfg
+
+
+def _engine_code_re(cfg: dict[str, Any]) -> re.Pattern[str]:
+    return re.compile(
+        str(cfg.get("engine_code_pattern") or _DEFAULT_CONFIG["engine_code_pattern"]),
+        re.I,
+    )
+
+
+@dataclass
+class ActionScore:
+    action: str
+    score: float = 0.0
+    sales_progress: float = 0.0
+    risk_reduction: float = 0.0
+    evidence_gain: float = 0.0
+    customer_effort: float = 0.0
+    delay_cost: float = 0.0
+
+    def compute(self) -> float:
+        self.score = (
+            self.sales_progress
+            + self.risk_reduction
+            + self.evidence_gain
+            - self.customer_effort
+            - self.delay_cost
+        )
+        return self.score
+
+
+@dataclass
+class CommercialDecision:
+    decision_id: str = ""
+    conversation_id: str = ""
+    customer_intent: str = "unknown"
+    customer_type: str = "unknown"
+    product_type: str = "unknown"
+    claimed_identity: dict[str, Any] = field(default_factory=dict)
+    evidence: list[dict[str, Any]] = field(default_factory=list)
+    evidence_confidence: float = 0.0
+    commercial_risk: str = "medium"
+    risk_reasons: list[str] = field(default_factory=list)
+    known: list[str] = field(default_factory=list)
+    missing: list[str] = field(default_factory=list)
+    sales_stage: str = "identify"
+    objective: str = ""
+    next_best_action: str = "wait_customer"
+    expected_result: str = ""
+    alternative_actions: list[str] = field(default_factory=list)
+    human_review_required: bool = False
+    decision_reason: str = ""
+    ask_keys: list[str] = field(default_factory=list)
+    ask_list: list[str] = field(default_factory=list)
+    reply: str = ""
+    module: str = "SALES_DECISION"
+    version: str = "commercial_decision_v1"
+
+    def to_dict(self) -> dict[str, Any]:
+        return asdict(self)
+
+
+def _extract_qty(text: str) -> int | None:
+    m = _QTY_RE.search(text or "")
+    if not m:
+        return None
+    raw = m.group(1) or m.group(2) or m.group(3)
+    try:
+        return int(raw)
+    except (TypeError, ValueError):
+        return None
+
+
+def _has_scope(text: str) -> bool:
+    return bool(_SCOPE_RE.search(text or ""))
+
+
+def _has_port(text: str) -> bool:
+    return bool(_PORT_RE.search(text or ""))
+
+
+def _extract_engine_code(text: str, cfg: dict[str, Any]) -> str:
+    m = _engine_code_re(cfg).search(text or "")
+    return (m.group(1) if m else "").upper()
+
+
+def _word_count(text: str) -> int:
+    return len(re.findall(r"[A-Za-z0-9']+", text or ""))
+
+
+def _question_count(text: str) -> int:
+    return (text or "").count("?")
+
+
+def apply_channel_policy(reply: str, cfg: dict[str, Any] | None = None) -> str:
+    """WhatsApp policy: compress if over limit; never naive mid-word truncate."""
+    cfg = cfg or load_config()
+    ch = cfg.get("whatsapp_channel") or {}
+    text = (reply or "").strip()
+    for phrase in ch.get("forbid_phrases") or []:
+        text = re.sub(re.escape(phrase), "", text, flags=re.I)
+    text = re.sub(
+        r"(?:^|\n)\s*(?:MEMORY_TO_SAVE|DECISION_TO_SAVE|APPROVAL_REQUEST|APPROVAL_REQUIRED|"
+        r"INTERNAL_NOTE|SYSTEM|DEBUG)\s*:.*$",
+        "",
+        text,
+        flags=re.I | re.M,
+    )
+    text = re.sub(r"\n{3,}", "\n\n", text).strip()
+    if not ch.get("include_website_by_default", False):
+        text = re.sub(r"\n*www\.asia-power\.com\n*", "\n", text).strip()
+
+    max_words = int(ch.get("max_words") or 60)
+    max_paras = int(ch.get("max_paragraphs") or 3)
+    max_q = int(ch.get("max_questions") or 2)
+
+    if _word_count(text) > max_words or _question_count(text) > max_q:
+        paras = [p.strip() for p in re.split(r"\n\s*\n", text) if p.strip()]
+        kept: list[str] = []
+        for p in paras[:max_paras]:
+            sents = re.split(r"(?<=[.!?])\s+", p)
+            chunk: list[str] = []
+            for s in sents:
+                trial = " ".join(chunk + [s]).strip()
+                if _word_count("\n\n".join(kept + [trial])) > max_words:
+                    break
+                chunk.append(s)
+            if chunk:
+                kept.append(" ".join(chunk))
+            if _word_count("\n\n".join(kept)) >= max_words - 5:
+                break
+        text = "\n\n".join(kept).strip() or (text.split("\n")[0][:180])
+
+    if _question_count(text) > max_q:
+        out_parts: list[str] = []
+        q_seen = 0
+        for sent in re.split(r"(?<=[.!?])\s+", text):
+            if "?" in sent:
+                if q_seen >= max_q:
+                    continue
+                q_seen += 1
+            out_parts.append(sent)
+        text = " ".join(out_parts).strip()
+    return text.strip()
+
+
+def _score_pick(candidates: list[ActionScore]) -> tuple[str, list[str]]:
+    for c in candidates:
+        c.compute()
+    ranked = sorted(candidates, key=lambda c: c.score, reverse=True)
+    if not ranked:
+        return "wait_customer", []
+    return ranked[0].action, [c.action for c in ranked[1:4]]
+
+
+def _customer_type(
+    text: str,
+    *,
+    customer_hash: str,
+    cfg: dict[str, Any],
+    qty: int | None,
+) -> str:
+    hashes = {str(h) for h in (cfg.get("known_wholesaler_hashes") or [])}
+    if customer_hash and customer_hash in hashes:
+        return "wholesaler"
+    if _WHOLESALER_HINT_RE.search(text or ""):
+        return "wholesaler"
+    min_q = int(cfg.get("wholesaler_quantity_min") or 5)
+    if qty is not None and qty >= min_q:
+        return "wholesaler"
+    if re.search(r"workshop|garage|mechanic|维修", text or "", re.I):
+        return "repairer"
+    return "unknown"
+
+
+def _base_confidence_from_snapshot(snapshot: Any | None) -> float:
+    if snapshot is None:
+        return 0.0
+    ok = bool(getattr(snapshot, "ok", False))
+    vs = str(getattr(snapshot, "verification_status", "") or "")
+    engine = str(getattr(snapshot, "engine_code", "") or "")
+    if vs in {"verified", "manual_reviewed"}:
+        return 0.95 if engine else 0.92
+    if getattr(snapshot, "knowledge_hit", False) and ok:
+        return 0.91 if engine else 0.88
+    if ok and vs == "provider_reported":
+        return 0.72 if engine else 0.65
+    if ok:
+        return 0.62
+    return 0.35
+
+
+def _AS(
+    action: str,
+    sp: float,
+    rr: float,
+    eg: float,
+    ce: float,
+    dc: float,
+) -> ActionScore:
+    return ActionScore(
+        action=action,
+        sales_progress=sp,
+        risk_reduction=rr,
+        evidence_gain=eg,
+        customer_effort=ce,
+        delay_cost=dc,
+    )
+
+
+def decide_commercial(
+    message: str,
+    *,
+    snapshot: Any | None = None,
+    customer_hash: str = "",
+    conversation_id: str = "",
+    media_type: str = "",
+    conflict: bool = False,
+    plate_evidence: bool = False,
+    photo_evidence: bool = False,
+    plate_engine_code: str = "",
+    config: dict[str, Any] | None = None,
+) -> CommercialDecision:
+    """Return one next_best_action + auditable record + channel reply."""
+    cfg = config or load_config()
+    advance_min = float((cfg.get("confidence") or {}).get("advance_min", 0.90))
+    caution_min = float((cfg.get("confidence") or {}).get("caution_min", 0.60))
+
+    text = (message or "").strip()
+    qty = _extract_qty(text)
+    engine_claim = _extract_engine_code(text, cfg)
+    has_vin = bool(_VIN_RE.search(text)) or bool(
+        getattr(snapshot, "vin", "") if snapshot else ""
+    )
+    has_scope = _has_scope(text)
+    has_port = _has_port(text)
+    price_intent = bool(_PRICE_RE.search(text))
+    ctype = _customer_type(text, customer_hash=customer_hash, cfg=cfg, qty=qty)
+
+    plate_evidence = plate_evidence or bool(_PLATE_HINT_RE.search(text) and media_type)
+    photo_evidence = photo_evidence or (
+        media_type in {"image", "photo"} or bool(_PHOTO_HINT_RE.search(text) and media_type)
+    )
+    conflict = conflict or bool(_CONFLICT_HINT_RE.search(text))
+    if plate_engine_code and engine_claim and plate_engine_code.upper() != engine_claim.upper():
+        conflict = True
+    snap_engine = str(getattr(snapshot, "engine_code", "") or "") if snapshot else ""
+    if plate_engine_code and snap_engine and plate_engine_code.upper() != snap_engine.upper():
+        conflict = True
+
+    evidence: list[dict[str, Any]] = []
+    if has_vin and snapshot is not None:
+        evidence.append(
+            {
+                "type": "vin_snapshot",
+                "source": getattr(snapshot, "provider_source", "vin"),
+                "verification_status": getattr(snapshot, "verification_status", "unverified"),
+                "confidence": getattr(snapshot, "confidence", "none"),
+            }
+        )
+    if engine_claim:
+        evidence.append(
+            {"type": "claimed_engine_code", "source": "customer_text", "value": engine_claim}
+        )
+    if plate_evidence:
+        evidence.append({"type": "engine_plate", "source": "customer_media"})
+    if photo_evidence:
+        evidence.append({"type": "engine_photo", "source": "customer_media"})
+
+    conf = _base_confidence_from_snapshot(snapshot)
+    if plate_evidence and not conflict:
+        conf = max(conf, 0.91)
+    if photo_evidence and not conflict:
+        conf = max(conf, 0.75)
+    if engine_claim and ctype == "wholesaler" and (qty or 0) >= int(
+        cfg.get("wholesaler_quantity_min") or 5
+    ):
+        conf = max(conf, 0.88)
+    if engine_claim and ctype in {"unknown", "repairer", "retail"} and not plate_evidence and not has_vin:
+        conf = min(conf, 0.45) if conf else 0.40
+    if conflict:
+        conf = min(conf, 0.35)
+
+    known: list[str] = []
+    missing: list[str] = []
+    if has_vin:
+        known.append("vin")
+    if snap_engine:
+        known.append("vin_engine_code")
+    if engine_claim:
+        known.append("claimed_engine_code")
+    if has_scope:
+        known.append("product_scope")
+    else:
+        missing.append("product_scope")
+    if qty is not None:
+        known.append("quantity")
+    else:
+        missing.append("quantity")
+    if has_port:
+        known.append("destination_port")
+    else:
+        missing.append("destination_port")
+    if plate_evidence:
+        known.append("engine_plate")
+    if photo_evidence:
+        known.append("engine_photo")
+
+    risk_reasons: list[str] = []
+    if conflict:
+        risk_reasons.append("vin_or_claim_conflicts_with_installed_engine_evidence")
+    if engine_claim and conf < caution_min and not plate_evidence:
+        risk_reasons.append("engine_code_claim_without_installed_engine_evidence")
+    if snapshot is not None and not getattr(snapshot, "ok", False) and has_vin:
+        risk_reasons.append("vin_decode_failed_or_low_trust")
+    if price_intent and conf < advance_min:
+        risk_reasons.append("price_intent_with_insufficient_identity_confidence")
+
+    if conflict or (conf < caution_min and engine_claim and ctype != "wholesaler"):
+        commercial_risk = "high"
+    elif conf < advance_min:
+        commercial_risk = "medium"
+    else:
+        commercial_risk = "low"
+
+    if conflict:
+        intent = "identity_conflict"
+    elif has_vin:
+        intent = "vin_provided"
+    elif price_intent:
+        intent = "price_request"
+    elif engine_claim:
+        intent = "engine_code_claim"
+    elif media_type in {"image", "photo", "document"}:
+        intent = "media_evidence"
+    else:
+        intent = "general_enquiry"
+
+    product_type = "engine"
+    if re.search(r"gearbox|变速箱", text, re.I):
+        product_type = "gearbox"
+    elif re.search(r"half[\s-]?cut", text, re.I):
+        product_type = "half_cut"
+
+    candidates: list[ActionScore] = []
+    human = False
+    stage = "identify"
+    objective = ""
+    reason = ""
+
+    if conflict:
+        candidates = [
+            _AS("request_manual_review", 1, 5, 2, 1, 1),
+            _AS("ask_engine_plate", 2, 4, 4, 2, 1),
+            _AS("decline_wrong_supply", 0, 5, 0, 1, 2),
+        ]
+        stage, objective = "manual_review", "Resolve factory vs installed engine conflict"
+        reason = "Conflict — Trust First; do not auto-pick VIN"
+        human = True
+    elif has_vin and snapshot is not None and not getattr(snapshot, "ok", False):
+        candidates = [
+            _AS("ask_engine_plate", 3, 4, 4, 2, 1),
+            _AS("ask_engine_photo", 2, 3, 3, 2, 1),
+            _AS("ask_vin_plate", 2, 3, 3, 2, 1),
+            _AS("ask_registration", 1, 2, 2, 2, 1),
+        ]
+        stage, objective = "confirm_identity", "One high-value evidence after VIN failure"
+        reason = "VIN failed/low trust — not scope/qty/port trio"
+    elif engine_claim and ctype == "wholesaler" and conf >= caution_min:
+        if not has_scope:
+            candidates = [_AS("ask_scope", 4, 1, 1, 1, 0)]
+            stage = "scope"
+        elif qty is None:
+            candidates = [_AS("ask_quantity", 4, 1, 1, 1, 0)]
+            stage = "commercial_fields"
+        elif not has_port:
+            candidates = [_AS("ask_destination", 4, 1, 1, 1, 0)]
+            stage = "commercial_fields"
+        else:
+            candidates = [_AS("check_supplier", 5, 1, 0, 0, 0), _AS("prepare_quote", 5, 1, 0, 0, 1)]
+            stage = "quote_ready"
+        objective = "Advance wholesale with low identity friction"
+        reason = "Wholesaler/batch — reduce friction unless anomaly"
+        commercial_risk = "low" if conf >= advance_min else "medium"
+    elif engine_claim and conf < caution_min:
+        candidates = [
+            _AS("ask_engine_plate", 2, 5, 5, 2, 1),
+            _AS("ask_engine_photo", 2, 4, 4, 2, 1),
+            _AS("ask_vin", 2, 3, 3, 2, 1),
+        ]
+        stage, objective = "confirm_identity", "Confirm currently installed engine"
+        reason = "Claimed code ≠ evidence; Current Installed Engine First"
+        commercial_risk = "high"
+    elif has_vin and getattr(snapshot, "ok", False):
+        if conf >= advance_min or (conf >= caution_min and has_scope):
+            if not has_scope:
+                candidates = [_AS("ask_scope", 4, 1, 1, 1, 0)]
+                stage = "scope"
+            elif qty is None:
+                candidates = [_AS("ask_quantity", 4, 1, 1, 1, 0)]
+                stage = "commercial_fields"
+            elif not has_port:
+                candidates = [_AS("ask_destination", 4, 1, 1, 1, 0)]
+                stage = "commercial_fields"
+            else:
+                candidates = [_AS("prepare_quote", 5, 1, 0, 0, 0)]
+                stage = "quote_ready"
+            objective = "Advance with VIN identity; no stock/price promise"
+            reason = "VIN usable; VIN ≠ installed engine if later conflict"
+        else:
+            candidates = [
+                _AS("ask_engine_plate", 3, 4, 4, 2, 1),
+                _AS("ask_scope", 3, 1, 1, 1, 0),
+            ]
+            stage, objective = "confirm_identity", "Prefer plate when engine match matters"
+            reason = "Provider-reported VIN — prefer installed-engine confirm"
+    elif price_intent:
+        if conf >= advance_min:
+            if not has_scope:
+                candidates = [_AS("ask_scope", 4, 1, 1, 1, 0)]
+            elif qty is None:
+                candidates = [_AS("ask_quantity", 4, 1, 1, 1, 0)]
+            elif not has_port:
+                candidates = [_AS("ask_destination", 4, 1, 1, 1, 0)]
+            else:
+                candidates = [_AS("prepare_quote", 5, 1, 0, 0, 0)]
+            stage, objective = "commercial_fields", "Price intent with enough identity"
+            reason = "Business First: advance, do not invent price"
+        else:
+            candidates = [
+                _AS("ask_engine_plate", 2, 4, 4, 2, 1),
+                _AS("ask_vin", 2, 3, 3, 2, 1),
+                _AS("ask_engine_photo", 2, 3, 3, 2, 1),
+            ]
+            stage, objective = "confirm_identity", "Price intent but weak identity"
+            reason = "Do not quote; do not dead-end; one identity ask"
+    elif conf >= advance_min:
+        if not has_scope:
+            candidates = [_AS("ask_scope", 4, 1, 1, 1, 0)]
+            stage, objective, reason = "scope", "Confirm purchase form", ">=90% — scope only"
+        elif qty is None:
+            candidates = [_AS("ask_quantity", 4, 1, 1, 1, 0)]
+            stage, objective, reason = "commercial_fields", "Confirm quantity", "scope known"
+        elif not has_port:
+            candidates = [_AS("ask_destination", 4, 1, 1, 1, 0)]
+            stage, objective, reason = "commercial_fields", "Confirm destination", "qty known"
+        else:
+            candidates = [_AS("prepare_quote", 5, 1, 0, 0, 0)]
+            stage, objective, reason = "quote_ready", "Quote path ready", "fields complete"
+    else:
+        candidates = [
+            _AS("ask_engine_plate", 2, 3, 3, 2, 1),
+            _AS("ask_vin", 2, 3, 3, 2, 1),
+            _AS("ask_scope", 2, 1, 1, 1, 0),
+        ]
+        stage, objective, reason = "identify", "Highest-value next fact", "Default cautious"
+
+    if commercial_risk == "high" and conf < caution_min and engine_claim and ctype != "wholesaler":
+        if not any(c.action == "request_manual_review" for c in candidates):
+            candidates.insert(0, _AS("request_manual_review", 1, 5, 2, 1, 1))
+        if not plate_evidence:
+            for c in candidates:
+                if c.action == "ask_engine_plate":
+                    c.risk_reduction += 1
+                    c.evidence_gain += 1
+            human = False
+            reason = "High mismatch risk — plate before wrong supply"
+        else:
+            human = True
+            reason = "High risk after evidence — human review (Trust First)"
+
+    nba, alts = _score_pick(candidates)
+    if nba == "ask_scope" and has_scope:
+        nba = "ask_quantity" if qty is None else ("ask_destination" if not has_port else "prepare_quote")
+    if nba == "ask_quantity" and qty is not None:
+        nba = "ask_destination" if not has_port else "prepare_quote"
+    if nba == "ask_destination" and has_port:
+        nba = "prepare_quote"
+
+    expected_map = {
+        "ask_engine_plate": "sent_engine_plate",
+        "ask_engine_photo": "sent_engine_photo",
+        "ask_vin": "sent_vin",
+        "ask_vin_plate": "sent_vin",
+        "ask_scope": "confirmed_scope",
+        "ask_quantity": "confirmed_quantity",
+        "ask_destination": "confirmed_destination",
+        "check_supplier": "entered_supplier_check",
+        "prepare_quote": "entered_quote_preparation",
+        "request_manual_review": "manual_review_required",
+        "decline_wrong_supply": "wrong_identity_detected",
+    }
+    ask_keys = [nba] if nba in _ASK_LABELS else []
+    ask_list = [_ASK_LABELS[nba]] if nba in _ASK_LABELS else []
+
+    reply = _render_reply(
+        nba=nba,
+        snapshot=snapshot,
+        engine_claim=engine_claim,
+        conf=conf,
+        conflict=conflict,
+        price_intent=price_intent,
+    )
+    reply = apply_channel_policy(reply, cfg)
+
+    return CommercialDecision(
+        decision_id=f"cdr-{uuid.uuid4().hex[:12]}",
+        conversation_id=conversation_id or customer_hash or "",
+        customer_intent=intent,
+        customer_type=ctype,
+        product_type=product_type,
+        claimed_identity={
+            "engine_code": engine_claim or snap_engine or "",
+            "source": (
+                "vin"
+                if snap_engine and not engine_claim
+                else "customer_text"
+                if engine_claim
+                else "none"
+            ),
+        },
+        evidence=evidence,
+        evidence_confidence=round(conf, 3),
+        commercial_risk=commercial_risk,
+        risk_reasons=risk_reasons,
+        known=known,
+        missing=missing,
+        sales_stage=stage,
+        objective=objective,
+        next_best_action=nba,
+        expected_result=expected_map.get(nba, "customer_replied_without_progress"),
+        alternative_actions=alts,
+        human_review_required=human or nba == "request_manual_review",
+        decision_reason=reason,
+        ask_keys=ask_keys,
+        ask_list=ask_list,
+        reply=reply,
+    )
+
+
+def _render_reply(
+    *,
+    nba: str,
+    snapshot: Any | None,
+    engine_claim: str,
+    conf: float,
+    conflict: bool,
+    price_intent: bool,
+) -> str:
+    vin_shown = ""
+    ident = ""
+    if snapshot is not None:
+        vin_shown = str(getattr(snapshot, "vin_masked", "") or "")
+        if hasattr(snapshot, "identity_line"):
+            try:
+                ident = snapshot.identity_line() or ""
+            except Exception:
+                ident = ""
+
+    if conflict:
+        return (
+            "Thanks — possible mismatch between factory VIN data and the engine now installed.\n\n"
+            "To avoid wrong freight, duty, and fitment loss, please send a clear engine plate photo."
+        )
+    if nba == "request_manual_review":
+        return (
+            "We want to double-check before moving ahead, so you don't risk ocean freight, "
+            "duty, and install costs on the wrong unit. Our team will review shortly."
+        )
+    if nba == "decline_wrong_supply":
+        return (
+            "We should pause this supply path — better confirm the currently installed "
+            "engine than ship the wrong one."
+        )
+    if nba == "ask_engine_plate":
+        claim = f" You mentioned {engine_claim}." if engine_claim else ""
+        return (
+            f"Got it.{claim} Before quantity/port, please confirm the engine currently installed "
+            f"(VIN is factory config only).\n\n"
+            f"Please send a clear engine plate photo."
+        )
+    if nba == "ask_engine_photo":
+        return "Please send a clear photo of the engine currently in the car."
+    if nba == "ask_vin":
+        if price_intent:
+            return "Yes — we can help with pricing once identity is solid.\n\nPlease send the VIN (or engine plate photo)."
+        return "Please send the VIN so we can match the vehicle record."
+    if nba == "ask_vin_plate":
+        return "VIN decode needs a clearer source — please send a VIN plate photo."
+    if nba == "ask_registration":
+        return "Please send a vehicle registration photo so we can continue matching."
+    if nba == "ask_oe_label":
+        return "Please send a clear OE / parts label photo."
+    if nba == "ask_vehicle_photo":
+        return "Please send a clear vehicle photo."
+
+    lines: list[str] = []
+    if vin_shown and ident:
+        lines.append(f"Got VIN {vin_shown}. Matched: {ident}.")
+        vs = str(getattr(snapshot, "verification_status", "") or "")
+        if vs == "provider_reported":
+            lines.append("Provider-reported only — we still confirm before stock/price.")
+    elif vin_shown:
+        lines.append(f"Got VIN {vin_shown}. Full match still pending.")
+    elif engine_claim and conf >= 0.85:
+        lines.append(f"Noted {engine_claim}.")
+    elif price_intent:
+        lines.append("Yes — we can help with pricing.")
+
+    if nba == "ask_scope":
+        lines.append("Do you need long block or complete engine?")
+    elif nba == "ask_quantity":
+        lines.append("What quantity do you need?")
+    elif nba == "ask_destination":
+        lines.append("Which destination port?")
+    elif nba in {"prepare_quote", "check_supplier"}:
+        lines.append(
+            "Thanks — enough to check supply and prepare quotation "
+            "(no price number until confirmed)."
+        )
+    elif nba == "wait_customer":
+        lines.append("What do you need for this vehicle?")
+    return "\n\n".join([x for x in lines if x]).strip()
+
+
+def decide_from_vin_result(
+    snapshot: Any,
+    customer_message: str = "",
+    *,
+    customer_hash: str = "",
+    conversation_id: str = "",
+    config: dict[str, Any] | None = None,
+) -> CommercialDecision:
+    return decide_commercial(
+        customer_message,
+        snapshot=snapshot,
+        customer_hash=customer_hash,
+        conversation_id=conversation_id,
+        config=config,
+    )
