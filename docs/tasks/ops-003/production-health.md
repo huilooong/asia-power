@@ -1,8 +1,8 @@
 # OPS-003 Production Health
 
-- Checked at: 2026-07-13T13:22:15.979Z
+- Checked at: 2026-07-13T13:31:18.994Z
 - Base URL: https://asia-power.com
-- Release: REL-20260713131924-chrome-cfcf5df6b
+- Release: REL-20260713132831-chrome-f0794ce60
 - Status: **PASS**
 - Pass: 57 / Fail: 0
 - Expected WhatsApp: 8616638801930
@@ -64,7 +64,7 @@
 - **PASS** `config_js_whatsapp`: whatsapp=8616638801930
 - **PASS** `config_js_cache_policy`: public, max-age=14400, must-revalidate
 - **PASS** `config_js_cf`: cf=EXPIRED age=0
-- **PASS** `config_js_release_id`: releaseId=REL-20260713131924-chrome-cfcf5df6b
+- **PASS** `config_js_release_id`: releaseId=REL-20260713132831-chrome-f0794ce60
 - **PASS** `sw_js_http`: HTTP 200
 - **PASS** `sw_version`: CACHE_VERSION=apcontact-002-v1
 - **PASS** `sw_precache_config`: no bare config.js precache (or versioned)
