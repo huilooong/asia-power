@@ -2,7 +2,7 @@
 
 ## Status
 
-**Implemented · Bugbot clean · Awaiting Release Manager + OPS-003**
+**Closed · Deployed · OPS-003 pass**
 
 ## Verdict answers (CEO)
 
@@ -12,8 +12,8 @@
 4. **symlink 保留：** `AsiaPower-Brain` 是 APBRAIN-002 故意 symlink。**Bugbot 缺设计上下文，该项不修。**
 5. **Bugbot 复审剩余：** 无（第二轮 no bugs）。第一轮搜索闭包已修。
 6. **Diagnostics：** ReadLints 无错误；本地校验见 `test-results.md`。
-7. **Commit / Release / 回滚：** 见同目录 `release.md`（部署后填写）。
-8. **公网验收：** OPS-003 结果写入 `public-validation.md`。
+7. **Commit / Release / 回滚：** commit `9e6a8bcc4` + docs `ff5df776d`；Release `REL-20260713114530-chrome-9e6a8bcc4`；回滚见 `release.md`。
+8. **公网验收：** OPS-003 **pass=57 fail=0**；品牌/CSS/SVG 现网抽检 PASS。
 
 ## Medium-2 note (required)
 
