@@ -45,20 +45,27 @@ def _strip_internal_leaks(text: str) -> str:
 
 
 def _vin_received_reply(inbound: str) -> str:
-    m = _VIN_RE.search(inbound or "")
-    vin = m.group(1) if m else ""
-    head = f"Got your VIN: {vin}\n\n" if vin else "Got your VIN.\n\n"
-    return (
-        head
-        + "We will check the matching engine with suppliers "
-        + "(confirmation before any stock/price promise).\n\n"
-        + "Please confirm:\n"
-        + "• Long block / complete engine / gearbox?\n"
-        + "• Quantity?\n"
-        + "• Destination port?\n\n"
-        + "Then we move to quotation (FOB / CIF).\n\n"
-        + "www.asia-power.com"
-    )
+    """Think Before Reply: Vehicle Intelligence → Sales Decision → short WhatsApp ask."""
+    try:
+        from sales_core.vehicle_intelligence import enrich_and_decide, build_whatsapp_reply
+
+        result = enrich_and_decide(inbound)
+        return build_whatsapp_reply(result)
+    except Exception:
+        m = _VIN_RE.search(inbound or "")
+        vin = m.group(1) if m else ""
+        head = f"Got your VIN: {vin}\n\n" if vin else "Got your VIN.\n\n"
+        return (
+            head
+            + "We will check the matching engine with suppliers "
+            + "(confirmation before any stock/price promise).\n\n"
+            + "Please confirm:\n"
+            + "• Long block / complete engine / gearbox?\n"
+            + "• Quantity?\n"
+            + "• Destination port?\n\n"
+            + "Then we move to quotation (FOB / CIF).\n\n"
+            + "www.asia-power.com"
+        )
 
 
 def _risk_rewrite(text: str, inbound: str) -> tuple[str, str]:
@@ -162,6 +169,33 @@ def main() -> int:
     if not text:
         text = f"[{msg_type} message received]"
 
+    # APSALES-AUTOINTELLIGENCE-001: VIN → Vehicle Intelligence → Sales Decision → Reply
+    # Do NOT draft first when VIN is present (Think Before Reply).
+    vin_intel: dict[str, Any] | None = None
+    if _VIN_RE.search(text):
+        try:
+            from sales_core.vehicle_intelligence import enrich_and_decide, build_whatsapp_reply
+
+            decision = enrich_and_decide(text)
+            reply = build_whatsapp_reply(decision)
+            vin_intel = decision.to_dict()
+            out: dict[str, Any] = {
+                "ok": True,
+                "reply": reply,
+                "risk_level": "low",
+                "reason_code": "vehicle_intelligence_vin",
+                "category": "vin_provided",
+                "classification": "vehicle_intelligence",
+                "source": "vehicle_intelligence",
+                "vehicle_intelligence": vin_intel,
+                "next_action": decision.next_action,
+            }
+            print(json.dumps(out, ensure_ascii=False))
+            return 0
+        except Exception as exc:
+            # Fall through to normal draft if intelligence fails (Business First)
+            vin_intel = {"error": str(exc)[:200]}
+
     classification = classify_inbound_message(text, contact_name=name)
     detected = detect_language(text, scenario="buyer")
     comm_lang = resolve_target_language("apsales", "buyer", text)
@@ -188,7 +222,7 @@ def main() -> int:
     reply, reason = _risk_rewrite(reply, text)
     risk = "high" if reason in {"policy_blocked"} else str(draft.get("risk_level") or "medium")
 
-    out: dict[str, Any] = {
+    out = {
         "ok": True,
         "reply": reply,
         "risk_level": risk,
@@ -197,6 +231,8 @@ def main() -> int:
         "classification": draft.get("classification"),
         "source": "apsales_sandbox",
     }
+    if vin_intel:
+        out["vehicle_intelligence"] = vin_intel
     print(json.dumps(out, ensure_ascii=False))
     return 0
 

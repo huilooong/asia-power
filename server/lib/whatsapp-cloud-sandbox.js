@@ -114,9 +114,45 @@ function extractVin(text) {
   return m ? m[1] : '';
 }
 
-/** WhatsApp-native reply after customer sent VIN (no email template). */
+/** WhatsApp-native reply after customer sent VIN (Vehicle Intelligence when possible). */
 function vinReceivedReply(inboundText) {
-  const vin = extractVin(inboundText);
+  const inbound = String(inboundText || '');
+  try {
+    const root = asiapowerRoot();
+    const py =
+      process.env.APSALES_PYTHON ||
+      (fs.existsSync(path.join(root, '.venv', 'bin', 'python3'))
+        ? path.join(root, '.venv', 'bin', 'python3')
+        : fs.existsSync(path.join(root, '.venv-qxb', 'bin', 'python3'))
+          ? path.join(root, '.venv-qxb', 'bin', 'python3')
+          : 'python3');
+    const run = spawnSync(
+      py,
+      [
+        '-c',
+        'from sales_core.vehicle_intelligence import enrich_and_decide, build_whatsapp_reply; import sys;\n'
+          + 'print(build_whatsapp_reply(enrich_and_decide(sys.stdin.read())))',
+      ],
+      {
+        cwd: root,
+        input: inbound,
+        encoding: 'utf8',
+        timeout: 20000,
+        env: {
+          ...process.env,
+          ASIAPOWER_ROOT: root,
+          PYTHONPATH: [root, process.env.PYTHONPATH || ''].filter(Boolean).join(path.delimiter),
+        },
+      },
+    );
+    const out = String(run.stdout || '').trim();
+    if (run.status === 0 && out && !/Dear Customer|APPROVAL_REQUEST/i.test(out)) {
+      return out;
+    }
+  } catch {
+    /* fall through */
+  }
+  const vin = extractVin(inbound);
   const vinLine = vin ? `Got your VIN: ${vin}\n\n` : 'Got your VIN.\n\n';
   return (
     vinLine +
@@ -377,10 +413,23 @@ async function handleSandboxInbound(rootDir, normalized) {
     decision = 'fallback';
   } else {
     replyText = gen.reply;
+    if (gen.reason_code === 'vehicle_intelligence_vin' || gen.source === 'vehicle_intelligence') {
+      decision = 'vehicle_intelligence';
+    }
   }
 
   const originalReply = replyText;
-  const gated = applyRiskPolicy(replyText, normalized.text || '');
+  let gated;
+  // Already Think-Before-Reply from Vehicle Intelligence — do not re-LLM rewrite
+  if (decision === 'vehicle_intelligence' && !hasResidualLeak(replyText) && !hasEmailTone(replyText)) {
+    gated = {
+      text: stripInternalLeaks(replyText),
+      risk_blocked: false,
+      reason_code: 'vehicle_intelligence_vin',
+    };
+  } else {
+    gated = applyRiskPolicy(replyText, normalized.text || '');
+  }
   replyText = gated.text;
 
   const send = await sendText({
@@ -417,6 +466,7 @@ async function handleSandboxInbound(rootDir, normalized) {
       outboundWamid: send.messageId || '',
       sent: Boolean(send.messageId),
       channel: 'whatsapp',
+      vehicleIntelligence: gen.vehicle_intelligence || null,
     });
     if (ev && ev.evidence_id) row.evidence_id = ev.evidence_id;
   } catch {

@@ -1,0 +1,24 @@
+# changed-files.txt — APSALES-AUTOINTELLIGENCE-001
+
+## Docs
+
+docs/tasks/apsales-autointelligence-001/analysis.md
+docs/tasks/apsales-autointelligence-001/github-research.md
+docs/tasks/apsales-autointelligence-001/architecture.md
+docs/tasks/apsales-autointelligence-001/vin-decision.md
+docs/tasks/apsales-autointelligence-001/future-roadmap.md
+docs/tasks/apsales-autointelligence-001/provider-decision.md
+docs/tasks/apsales-autointelligence-001/implementation.md
+docs/tasks/apsales-autointelligence-001/review.md
+docs/tasks/apsales-autointelligence-001/changed-files.txt
+
+## Code
+
+sales_core/vehicle_intelligence.py
+scripts/whatsapp_cloud_sandbox_reply.py
+server/lib/whatsapp-cloud-sandbox.js
+server/lib/asiapower-evidence.js
+tests/test_vehicle_intelligence.py
+data/vehicle_knowledge/README.md
+data/vehicle_knowledge/.gitkeep
+.gitignore

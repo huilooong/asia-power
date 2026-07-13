@@ -96,7 +96,7 @@ function inferIntent(normalized) {
 /**
  * Map sandbox outcome → Sales Decision (not Reply text).
  */
-function inferDecision({ inboundText, replyText, reasonCode, genDecision }) {
+function inferDecision({ inboundText, replyText, reasonCode, genDecision, vehicleIntelligence }) {
   const inbound = String(inboundText || '');
   const reply = String(replyText || '');
   const askVin = /\bvin\b/i.test(reply) || /车架号/.test(reply);
@@ -108,7 +108,12 @@ function inferDecision({ inboundText, replyText, reasonCode, genDecision }) {
   let salesDetail = 'continue';
   let nextAction = 'wait';
 
-  if (reasonCode === 'price_advance' || (isPriceInquiry(inbound) && askVin)) {
+  if (reasonCode === 'vehicle_intelligence_vin' || genDecision === 'vehicle_intelligence') {
+    sales = 'quotation';
+    salesDetail = 'vin_enriched_ask_missing';
+    nextAction =
+      (vehicleIntelligence && vehicleIntelligence.next_action) || 'ask_missing_sales_fields';
+  } else if (reasonCode === 'price_advance' || (isPriceInquiry(inbound) && askVin)) {
     sales = 'quotation';
     salesDetail = 'collect_vin_first';
     nextAction = 'ask_vin';
@@ -151,6 +156,7 @@ function inferDecision({ inboundText, replyText, reasonCode, genDecision }) {
       ask_port: askPort,
       quote_now: quoteNow,
       defer_quote: isPriceInquiry(inbound) && !quoteNow,
+      vin_enriched: reasonCode === 'vehicle_intelligence_vin',
     },
   };
 }
@@ -324,6 +330,7 @@ function recordEvidenceTurn({
   outboundWamid,
   sent,
   channel = 'whatsapp',
+  vehicleIntelligence = null,
 }) {
   try {
     const at = new Date().toISOString();
@@ -334,6 +341,7 @@ function recordEvidenceTurn({
       replyText: finalReply || '',
       reasonCode,
       genDecision,
+      vehicleIntelligence,
     });
     const truthGuard = truthGuardNode({
       originalReply,
@@ -357,6 +365,15 @@ function recordEvidenceTurn({
         inbound_type: normalized.message_type || 'text',
       },
       decision,
+      customer_intelligence: vehicleIntelligence
+        ? {
+            known: vehicleIntelligence.known || [],
+            do_not_ask: vehicleIntelligence.do_not_ask || [],
+            ask_list: vehicleIntelligence.ask_list || [],
+            next_action: vehicleIntelligence.next_action || decision.next_action,
+            snapshot: vehicleIntelligence.snapshot || null,
+          }
+        : null,
       truth_guard: truthGuard,
       reply: {
         text: String(finalReply || ''),
@@ -388,6 +405,7 @@ function recordEvidenceTurn({
           : null,
         draft_id: null,
         sandbox_log: 'data/whatsapp_cloud/sandbox/decisions.ndjson',
+        vehicle_knowledge: 'data/vehicle_knowledge/',
       },
     };
 

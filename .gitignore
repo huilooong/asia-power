@@ -37,6 +37,10 @@ data/vehicle-model-memory.json
 data/site-analytics-daily.json
 data/apsales_runtime/
 data/apsales/
+data/vehicle_knowledge/vin-cache.json
+data/vehicle_knowledge/observations.ndjson
+data/vehicle_knowledge/raw/
+data/evidence/whatsapp/*.ndjson
 deploy/test-run/data/
 deploy/test-run/data/**
 .env
