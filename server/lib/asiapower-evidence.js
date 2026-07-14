@@ -358,6 +358,7 @@ function recordEvidenceTurn({
   messageUnderstanding = null,
   conversationState = null,
   repeatedActionBlocked = false,
+  line = null,
 }) {
   try {
     const at = new Date().toISOString();
@@ -382,12 +383,14 @@ function recordEvidenceTurn({
       (vehicleIntelligence && vehicleIntelligence.commercial_decision) ||
       null;
     const mu = messageUnderstanding || null;
+    const lineTag = line == null || line === '' ? null : String(line);
     const turn = {
       schema_version: 1,
       type: 'evidence_turn',
       evidence_id: evidenceId,
       at,
       channel,
+      ...(lineTag ? { line: lineTag } : {}),
       customer: {
         message: String(normalized.text || ''),
         intent: inferIntent(normalized),

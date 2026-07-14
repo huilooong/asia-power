@@ -515,6 +515,14 @@ function deployApsalesOpenClaw() {
     `${REMOTE}:/root/.openclaw/extensions/apsales-live-draft/apsales-whatsapp-session.mjs.next`,
   );
   rsync(
+    `${ROOT}/deploy/apsales-live-draft/evidence-hook.mjs`,
+    `${REMOTE}:/root/.openclaw/extensions/apsales-live-draft/evidence-hook.mjs`,
+  );
+  rsync(
+    `${ROOT}/server/lib/asiapower-evidence.js`,
+    `${REMOTE}:/root/.openclaw/workspace/AsiaPower/server/lib/asiapower-evidence.js`,
+  );
+  rsync(
     `${ROOT}/scripts/apsales-media-vin-ocr.py`,
     `${REMOTE}:/root/.openclaw/workspace/AsiaPower/scripts/apsales-media-vin-ocr.py`,
   );

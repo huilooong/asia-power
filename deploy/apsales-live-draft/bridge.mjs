@@ -4,6 +4,7 @@ import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { spawn } from "node:child_process";
 import { startApsalesWhatsAppSession } from "./apsales-whatsapp-session.mjs";
+import { recordInboundForEvidence, recordReplyForEvidence } from "./evidence-hook.mjs";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const WORKSPACE = "/root/.openclaw/workspace/AsiaPower";
@@ -994,12 +995,31 @@ async function handleMessage(message, state, session) {
     dealPart: dealState?.part_intent || null,
   });
   await appendActivity("apsales_whatsapp_inbound", `客户 ${senderId}: ${text.slice(0, 180)}`, "received");
+  recordInboundForEvidence({
+    senderId,
+    text,
+    messageId: message.messageId,
+    observedAt: message.observedAt,
+    messageType: mediaContext?.message_type || message.kind || "text",
+  });
 
   try {
     if (REPLY_BRAIN === "openclaw") {
       const voiceFail = voiceFailureReply(mediaContext);
       if (voiceFail) {
         const result = await session.sendText(senderId, voiceFail);
+        recordReplyForEvidence({
+          senderId,
+          text,
+          messageId: message.messageId,
+          observedAt: message.observedAt,
+          messageType: mediaContext?.message_type || message.kind || "text",
+          originalReply: voiceFail,
+          finalReply: voiceFail,
+          reasonCode: "voice_failure",
+          outboundWamid: result?.messageId || "",
+          sent: Boolean(result?.messageId),
+        });
         log("voice failure reply sent", {
           senderId,
           messageId: message.messageId,
@@ -1016,6 +1036,18 @@ async function handleMessage(message, state, session) {
       const direct = plateSuccessReply(mediaContext);
       if (direct) {
         const result = await session.sendText(senderId, direct);
+        recordReplyForEvidence({
+          senderId,
+          text,
+          messageId: message.messageId,
+          observedAt: message.observedAt,
+          messageType: mediaContext?.message_type || message.kind || "text",
+          originalReply: direct,
+          finalReply: direct,
+          reasonCode: "plate_direct",
+          outboundWamid: result?.messageId || "",
+          sent: Boolean(result?.messageId),
+        });
         log("plate direct reply sent", {
           senderId,
           messageId: message.messageId,
@@ -1035,6 +1067,18 @@ async function handleMessage(message, state, session) {
       const failDirect = plateFailureReply(mediaContext);
       if (failDirect) {
         const result = await session.sendText(senderId, failDirect);
+        recordReplyForEvidence({
+          senderId,
+          text,
+          messageId: message.messageId,
+          observedAt: message.observedAt,
+          messageType: mediaContext?.message_type || message.kind || "text",
+          originalReply: failDirect,
+          finalReply: failDirect,
+          reasonCode: "plate_fallback",
+          outboundWamid: result?.messageId || "",
+          sent: Boolean(result?.messageId),
+        });
         log("plate fallback direct reply sent", {
           senderId,
           messageId: message.messageId,
@@ -1064,6 +1108,19 @@ async function handleMessage(message, state, session) {
         inventoryMatches,
       });
       const result = await session.sendText(senderId, generated.reply);
+      recordReplyForEvidence({
+        senderId,
+        text,
+        messageId: message.messageId,
+        observedAt: message.observedAt,
+        messageType: mediaContext?.message_type || message.kind || "text",
+        originalReply: generated.reply,
+        finalReply: generated.reply,
+        reasonCode: "openclaw_reply",
+        genDecision: generated.model || "openclaw",
+        outboundWamid: result?.messageId || "",
+        sent: Boolean(result?.messageId),
+      });
       log("openclaw reply sent", {
         senderId,
         messageId: message.messageId,
@@ -1131,6 +1188,18 @@ async function handleMessage(message, state, session) {
       }
       try {
         const result = await session.sendText(senderId, fallback);
+        recordReplyForEvidence({
+          senderId,
+          text,
+          messageId: message.messageId,
+          observedAt: message.observedAt,
+          messageType: mediaContext?.message_type || message.kind || "text",
+          originalReply: fallback,
+          finalReply: fallback,
+          reasonCode: "exception_fallback",
+          outboundWamid: result?.messageId || "",
+          sent: Boolean(result?.messageId),
+        });
         log("openclaw fallback reply sent", {
           senderId,
           messageId: message.messageId,

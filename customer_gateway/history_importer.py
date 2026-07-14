@@ -284,6 +284,34 @@ def run_full_history_import(*, include_browser: bool = False) -> dict[str, Any]:
     total_msgs = sum(c.get("message_count", 0) for c in all_convs)
     role_summary = summarize_contact_roles(all_convs)
 
+    # Persist per-contact tiers (previously only aggregate counts were kept).
+    try:
+        sip.ensure_dirs()
+        tiers_payload = {
+            "updated_at": _now(),
+            "total_contacts": role_summary.get("total_contacts", len(role_summary.get("by_contact") or {})),
+            "customer_tiers": role_summary["customer_tiers"],
+            "other_roles": role_summary["other_roles"],
+            "effective_customers": role_summary["effective_customers"],
+            "by_contact": role_summary.get("by_contact") or {},
+        }
+        sip.CUSTOMER_TIERS_PATH.write_text(
+            json.dumps(tiers_payload, ensure_ascii=False, indent=2) + "\n",
+            encoding="utf-8",
+        )
+    except OSError:
+        pass
+
+    # Phase 3: best-effort vehicle inquiry extract (never fails the import).
+    try:
+        from customer_gateway.vehicle_entity_extractor import (
+            build_vehicle_inquiries_from_conversations,
+        )
+
+        build_vehicle_inquiries_from_conversations(all_convs)
+    except Exception:
+        pass
+
     state = _load_import_state()
     state["last_full_import"] = _now()
     state["conversation_count"] = len(all_convs)

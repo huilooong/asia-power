@@ -114,6 +114,8 @@ export const TARGET_SOURCE_FILES = {
   'apsales-openclaw': [
     'deploy/apsales-live-draft/bridge.mjs',
     'deploy/apsales-live-draft/apsales-whatsapp-session.mjs',
+    'deploy/apsales-live-draft/evidence-hook.mjs',
+    'server/lib/asiapower-evidence.js',
     'scripts/apsales-media-vin-ocr.py',
     'scripts/apsales-media-vin-intelligence.py',
     'scripts/apsales-media-stt.py',
@@ -222,10 +224,12 @@ export const TARGET_REMOTE_PATHS = {
   'apsales-openclaw': [
     '/root/.openclaw/extensions/apsales-live-draft/bridge.mjs',
     '/root/.openclaw/extensions/apsales-live-draft/apsales-whatsapp-session.mjs',
+    '/root/.openclaw/extensions/apsales-live-draft/evidence-hook.mjs',
     '/etc/systemd/system/apsales-whatsapp-bridge.service.d/openclaw-sales-agent.conf',
     '/root/.openclaw/workspace/AsiaPower/scripts/apsales-media-vin-ocr.py',
     '/root/.openclaw/workspace/AsiaPower/scripts/apsales-media-vin-intelligence.py',
     '/root/.openclaw/workspace/AsiaPower/scripts/apsales-media-stt.py',
+    '/root/.openclaw/workspace/AsiaPower/server/lib/asiapower-evidence.js',
   ],
   finalize: [
     '/root/.openclaw/workspace/inventory-site/scripts',
