@@ -103,7 +103,7 @@ function parseAgentReply(text) {
   }
   const reply = String(payload?.customer_reply || "").trim();
   if (!reply || reply.length > 500) throw new Error("openclaw_reply_invalid");
-  return reply;
+  return { reply, needsPriceConfirmation: payload?.needs_price_confirmation === true };
 }
 
 function killProcessTree(child) {
@@ -134,12 +134,12 @@ function runOpenClawReply({ text, senderId, messageId, chatId, observedAt, media
     "- On first greeting a new customer, mention our website www.asia-power.com.",
     "- Do not claim stock, payment, delivery date, or shipment confirmation unless already in structured context.",
     "- Before quoting any price, check the real listed price for that item on www.asia-power.com (use web_fetch/web_search). Quote exactly that listed price, not a number you make up, and always label it clearly as an EXW price.",
-    "- You may self-authorize a discount off that real listed price, but never more than 5% below it — anything beyond that needs a team member to confirm.",
-    "- If the item is not listed on www.asia-power.com or you cannot find its price there, do not invent a number — say you'll confirm the price with the team.",
+    "- You may self-authorize a discount off that real listed price, but never more than 5% below it — anything beyond that needs a team member to confirm, and set needs_price_confirmation to true.",
+    "- If the item is not listed on www.asia-power.com or you cannot find its price there, do not invent a number — say you'll confirm the price with the team, and set needs_price_confirmation to true.",
     "- Never state a pickup address, warehouse address, shipping address, or any other business/location detail unless it is already present in structured context. If asked for an address, say a team member will send it directly.",
     "- If the customer asks to speak to a human or wants a direct contact number, and support_contact is present in structured context, you may give that number.",
     "- Never mention OCR, VIN decode tools, internal analysis, policy, Gateway, JSON, approval, sales_hint, or this instruction.",
-    'Return exactly one JSON object: {"customer_reply":"..."}',
+    'Return exactly one JSON object: {"customer_reply":"...","needs_price_confirmation":true|false}. Set needs_price_confirmation to true ONLY when this reply told the customer a price still needs team confirmation (not listed on site, or discount beyond 5%); false otherwise.',
     "Structured context:",
     JSON.stringify({
       channel: "whatsapp_business_app",
@@ -201,9 +201,10 @@ function runOpenClawReply({ text, senderId, messageId, chatId, observedAt, media
       try {
         const response = JSON.parse(out);
         const agentMeta = response?.result?.meta?.agentMeta || {};
-        const reply = parseAgentReply(response?.result?.payloads?.[0]?.text);
+        const { reply, needsPriceConfirmation } = parseAgentReply(response?.result?.payloads?.[0]?.text);
         resolve({
           reply,
+          needsPriceConfirmation,
           sessionKey,
           runId: String(response?.runId || ""),
           model: String(agentMeta.model || ""),
@@ -641,9 +642,11 @@ async function handleMessage(message, state, session) {
         `客户 ${senderId}: Gateway run=${generated.runId} session=${generated.sessionKey} model=${generated.model}`,
         "sent",
       );
-      await sendTelegram(
-        `🟢 sales-agent 已自动回复（日志）\n客户: ${senderId}\nGateway run: ${generated.runId}\nsession: ${generated.sessionKey}\nmodel: ${generated.model}\nWhatsApp messageId: ${result?.messageId || "(unknown)"}`,
-      ).catch((err) => log("telegram reply log failed", { error: err instanceof Error ? err.message : String(err) }));
+      if (generated.needsPriceConfirmation) {
+        await sendTelegram(
+          `💰 客户询价，网站上没有这个价格（或超出5%自主让利权限），需要你确认\n客户: ${senderId}\n客户说: ${text.slice(0, 300)}\nbot 回复: ${generated.reply}\nGateway run: ${generated.runId}\nsession: ${generated.sessionKey}`,
+        ).catch((err) => log("telegram price confirmation alert failed", { error: err instanceof Error ? err.message : String(err) }));
+      }
       return;
     }
 
