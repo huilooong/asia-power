@@ -505,23 +505,38 @@ function deployApsales() {
 }
 
 function deployApsalesOpenClaw() {
-  console.log('[deploy:apsales-openclaw] syncing Gateway sales bridge');
+  console.log('[deploy:apsales-openclaw] syncing Gateway sales bridge + media/VIN adapters');
   rsync(
     `${ROOT}/deploy/apsales-live-draft/bridge.mjs`,
     `${REMOTE}:/root/.openclaw/extensions/apsales-live-draft/bridge.mjs.next`,
   );
+  rsync(
+    `${ROOT}/deploy/apsales-live-draft/apsales-whatsapp-session.mjs`,
+    `${REMOTE}:/root/.openclaw/extensions/apsales-live-draft/apsales-whatsapp-session.mjs.next`,
+  );
+  rsync(
+    `${ROOT}/scripts/apsales-media-vin-ocr.py`,
+    `${REMOTE}:/root/.openclaw/workspace/AsiaPower/scripts/apsales-media-vin-ocr.py`,
+  );
+  rsync(
+    `${ROOT}/scripts/apsales-media-vin-intelligence.py`,
+    `${REMOTE}:/root/.openclaw/workspace/AsiaPower/scripts/apsales-media-vin-intelligence.py`,
+  );
   ssh(`
 set -euo pipefail
-BRIDGE=/root/.openclaw/extensions/apsales-live-draft/bridge.mjs
+BRIDGE_DIR=/root/.openclaw/extensions/apsales-live-draft
+BRIDGE=\$BRIDGE_DIR/bridge.mjs
+SESSION=\$BRIDGE_DIR/apsales-whatsapp-session.mjs
 NEXT=\${BRIDGE}.next
+SESSION_NEXT=\${SESSION}.next
 BACKUP=/root/.openclaw/releases/apsales-openclaw-\$(date -u +%Y%m%dT%H%M%SZ)
 test -s "$NEXT"
-CHECK=\$(mktemp /tmp/apsales-bridge-check-XXXXXX.mjs)
-cp "$NEXT" "$CHECK"
-/usr/bin/node --check "$CHECK"
-rm -f "$CHECK"
+test -s "$SESSION_NEXT"
+/usr/bin/node --check "$NEXT"
+/usr/bin/node --check "$SESSION_NEXT"
 mkdir -p "$BACKUP" /etc/systemd/system/apsales-whatsapp-bridge.service.d
 cp -a "$BRIDGE" "$BACKUP/bridge.mjs"
+if [ -f "$SESSION" ]; then cp -a "$SESSION" "$BACKUP/apsales-whatsapp-session.mjs"; fi
 if [ -f /etc/systemd/system/apsales-whatsapp-bridge.service.d/openclaw-sales-agent.conf ]; then
   cp -a /etc/systemd/system/apsales-whatsapp-bridge.service.d/openclaw-sales-agent.conf "$BACKUP/openclaw-sales-agent.conf"
 fi
@@ -530,7 +545,10 @@ cat > /etc/systemd/system/apsales-whatsapp-bridge.service.d/openclaw-sales-agent
 Environment=APSALES_REPLY_BRAIN=openclaw
 Environment=APSALES_OPENCLAW_AGENT=sales-agent
 Environment=APSALES_OPENCLAW_TIMEOUT_SECONDS=90
+Environment=APSALES_MEDIA_VIN_ENABLED=true
+Environment=APSALES_MEDIA_MAX_BYTES=8388608
 EOF
+mv "$SESSION_NEXT" "$SESSION"
 mv "$NEXT" "$BRIDGE"
 systemctl daemon-reload
 systemctl restart apsales-whatsapp-bridge.service
