@@ -12,7 +12,7 @@ import {
   stampReleaseIdIntoConfig,
 } from './post-release-validation.mjs';
 
-export const VALID_TARGETS = ['nginx', 'api', 'engines', 'apsales', 'finalize', 'home', 'portal', 'chrome', 'categories', 'admin'];
+export const VALID_TARGETS = ['nginx', 'api', 'engines', 'apsales', 'apsales-openclaw', 'finalize', 'home', 'portal', 'chrome', 'categories', 'admin'];
 
 /** @type {Record<string, string[]>} */
 export const TARGET_SOURCE_FILES = {
@@ -110,6 +110,10 @@ export const TARGET_SOURCE_FILES = {
     'customer_gateway/growth_autopilot.py',
     'customer_gateway/outreach_engine.py',
     'customer_gateway/distribution_progress.py',
+  ],
+  'apsales-openclaw': [
+    'deploy/apsales-live-draft/bridge.mjs',
+    'scripts/deploy-production.mjs',
   ],
   finalize: [
     'deploy/inventory-site-scripts/backup-inventory-site.sh',
@@ -210,6 +214,10 @@ export const TARGET_REMOTE_PATHS = {
   apsales: [
     '/root/.openclaw/workspace/AsiaPower/scripts',
     '/root/.openclaw/workspace/AsiaPower/customer_gateway',
+  ],
+  'apsales-openclaw': [
+    '/root/.openclaw/extensions/apsales-live-draft/bridge.mjs',
+    '/etc/systemd/system/apsales-whatsapp-bridge.service.d/openclaw-sales-agent.conf',
   ],
   finalize: [
     '/root/.openclaw/workspace/inventory-site/scripts',

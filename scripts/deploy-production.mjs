@@ -9,7 +9,7 @@
  * Default rejects dirty tree and unpushed HEAD.
  * Emergency only: DEPLOY_ALLOW_DIRTY=1 + --allow-dirty; DEPLOY_ALLOW_UNPUSHED=1 (both logged).
  *
- * Targets: nginx | api | engines | apsales | finalize
+ * Targets: nginx | api | engines | apsales | apsales-openclaw | finalize
  */
 import { spawnSync } from 'child_process';
 import fs from 'fs';
@@ -504,6 +504,40 @@ function deployApsales() {
   ]);
 }
 
+function deployApsalesOpenClaw() {
+  console.log('[deploy:apsales-openclaw] syncing Gateway sales bridge');
+  rsync(
+    `${ROOT}/deploy/apsales-live-draft/bridge.mjs`,
+    `${REMOTE}:/root/.openclaw/extensions/apsales-live-draft/bridge.mjs.next`,
+  );
+  ssh(`
+set -euo pipefail
+BRIDGE=/root/.openclaw/extensions/apsales-live-draft/bridge.mjs
+NEXT=\${BRIDGE}.next
+BACKUP=/root/.openclaw/releases/apsales-openclaw-\$(date -u +%Y%m%dT%H%M%SZ)
+test -s "$NEXT"
+/usr/bin/node --check "$NEXT"
+mkdir -p "$BACKUP" /etc/systemd/system/apsales-whatsapp-bridge.service.d
+cp -a "$BRIDGE" "$BACKUP/bridge.mjs"
+if [ -f /etc/systemd/system/apsales-whatsapp-bridge.service.d/openclaw-sales-agent.conf ]; then
+  cp -a /etc/systemd/system/apsales-whatsapp-bridge.service.d/openclaw-sales-agent.conf "$BACKUP/openclaw-sales-agent.conf"
+fi
+cat > /etc/systemd/system/apsales-whatsapp-bridge.service.d/openclaw-sales-agent.conf <<'EOF'
+[Service]
+Environment=APSALES_REPLY_BRAIN=openclaw
+Environment=APSALES_OPENCLAW_AGENT=sales-agent
+Environment=APSALES_OPENCLAW_TIMEOUT_SECONDS=90
+EOF
+mv "$NEXT" "$BRIDGE"
+systemctl daemon-reload
+systemctl restart apsales-whatsapp-bridge.service
+sleep 2
+systemctl is-active --quiet apsales-whatsapp-bridge.service
+systemctl show apsales-whatsapp-bridge.service -p Environment --no-pager
+echo "[deploy:apsales-openclaw] backup=$BACKUP"
+`);
+}
+
 function deployFinalize() {
   rsync(`${ROOT}/deploy/inventory-site-scripts/backup-inventory-site.sh`, `${SITE}/scripts/`);
   const finalizeScripts = [
@@ -634,7 +668,7 @@ function printHelp() {
   console.log(`AsiaPower deploy (Release Manager enabled):
   node scripts/deploy-production.mjs <target> [--yes] [--allow-dirty] [user@host]
 
-  nginx | api | engines | apsales | finalize | home | portal | chrome | categories | admin
+  nginx | api | engines | apsales | apsales-openclaw | finalize | home | portal | chrome | categories | admin
 
   REQUIRED: commit → push GitHub → then deploy (CEO red line 2026-07-10)
   Pre-deploy:  git clean, HEAD on origin, backup, target confirmation
@@ -651,6 +685,7 @@ const targets = {
   api: deployApi,
   engines: deployEngines,
   apsales: deployApsales,
+  'apsales-openclaw': deployApsalesOpenClaw,
   finalize: deployFinalize,
   home: deployHome,
   portal: deployPortal,
