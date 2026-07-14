@@ -24,6 +24,17 @@ import {
 import { r as waitForWaConnection, t as createWaSocket } from "/root/.openclaw/extensions/whatsapp/dist/session-CoxlXm2K.js";
 
 const ALLOWED_IMAGE_MIME = new Set(["image/jpeg", "image/jpg", "image/png", "image/webp"]);
+const ALLOWED_AUDIO_MIME = new Set([
+  "audio/ogg",
+  "audio/mpeg",
+  "audio/mp4",
+  "audio/aac",
+  "audio/amr",
+  "audio/wav",
+  "audio/x-wav",
+  "audio/webm",
+  "audio/opus",
+]);
 const DEFAULT_MAX_BYTES = 8 * 1024 * 1024;
 
 /** Avoid importing openclaw package name from this extension dir (no package root). */
@@ -115,6 +126,7 @@ function readMedia(message) {
     "imageMessage",
     "videoMessage",
     "audioMessage",
+    "pttMessage",
     "documentMessage",
     "stickerMessage",
   ]) {
@@ -199,8 +211,16 @@ function createConnectionClosedError(update) {
 }
 
 function extForMime(mime) {
-  if (mime === "image/png") return "png";
-  if (mime === "image/webp") return "webp";
+  const m = String(mime || "").toLowerCase();
+  if (m === "image/png") return "png";
+  if (m === "image/webp") return "webp";
+  if (m.includes("ogg") || m.includes("opus")) return "ogg";
+  if (m.includes("mpeg") || m === "audio/mp3") return "mp3";
+  if (m.includes("mp4") || m.includes("aac") || m.includes("m4a")) return "m4a";
+  if (m.includes("wav")) return "wav";
+  if (m.includes("amr")) return "amr";
+  if (m.includes("webm")) return "webm";
+  if (m.startsWith("audio/")) return "ogg";
   return "jpg";
 }
 
@@ -366,17 +386,30 @@ export async function startApsalesWhatsAppSession(params) {
       return { messageId: (await sendApi.sendMessage(to, text, undefined, undefined, options)).messageId };
     },
     /**
-     * Controlled image download for APSales media/VIN pipeline.
+     * Controlled inbound media download (image or audio).
      * Returns metadata + local path. Never logs file bytes.
      */
-    async downloadInboundImage(messageId, options = {}) {
+    async downloadInboundMedia(messageId, options = {}) {
       const id = String(messageId || "");
       if (!id) throw new Error("media_missing_message_id");
       const raw = rawByMessageId.get(id);
       if (!raw) throw new Error("media_raw_message_missing");
       const media = readMedia(raw.message);
       const mime = String(media?.mediaType || "").toLowerCase();
-      if (!ALLOWED_IMAGE_MIME.has(mime) && media?.sectionName !== "imageMessage") {
+      const section = String(media?.sectionName || "");
+      const want = String(options.kind || "any").toLowerCase();
+      const isImage = section === "imageMessage" || ALLOWED_IMAGE_MIME.has(mime) || mime.startsWith("image/");
+      const isAudio =
+        section === "audioMessage" || ALLOWED_AUDIO_MIME.has(mime) || mime.startsWith("audio/");
+      if (want === "image" && !isImage) throw new Error(`media_unsupported_mime:${mime || "unknown"}`);
+      if (want === "audio" && !isAudio) throw new Error(`media_unsupported_mime:${mime || "unknown"}`);
+      if (want === "any" && !isImage && !isAudio) {
+        throw new Error(`media_unsupported_mime:${mime || "unknown"}`);
+      }
+      if (isImage && !ALLOWED_IMAGE_MIME.has(mime) && section !== "imageMessage") {
+        throw new Error(`media_unsupported_mime:${mime || "unknown"}`);
+      }
+      if (isAudio && !ALLOWED_AUDIO_MIME.has(mime) && section !== "audioMessage") {
         throw new Error(`media_unsupported_mime:${mime || "unknown"}`);
       }
       const maxBytes = Number(options.maxBytes) > 0 ? Number(options.maxBytes) : DEFAULT_MAX_BYTES;
@@ -395,7 +428,13 @@ export async function startApsalesWhatsAppSession(params) {
       if (!Buffer.isBuffer(buffer) || buffer.length === 0) throw new Error("media_download_empty");
       if (buffer.length > maxBytes) throw new Error(`media_too_large:${buffer.length}`);
       const sha256 = crypto.createHash("sha256").update(buffer).digest("hex");
-      const safeMime = ALLOWED_IMAGE_MIME.has(mime) ? mime : "image/jpeg";
+      const safeMime = isAudio
+        ? ALLOWED_AUDIO_MIME.has(mime)
+          ? mime
+          : "audio/ogg"
+        : ALLOWED_IMAGE_MIME.has(mime)
+          ? mime
+          : "image/jpeg";
       const filePath = path.join(mediaDir, `${id.replace(/[^\w.-]/g, "_")}.${extForMime(safeMime)}`);
       await writeBufferToFile(buffer, filePath);
       return {
@@ -405,7 +444,14 @@ export async function startApsalesWhatsAppSession(params) {
         sha256,
         path: filePath,
         mediaFileName: media?.fileName || null,
+        kind: isAudio ? "audio" : "image",
       };
+    },
+    async downloadInboundImage(messageId, options = {}) {
+      return this.downloadInboundMedia(messageId, { ...options, kind: "image" });
+    },
+    async downloadInboundAudio(messageId, options = {}) {
+      return this.downloadInboundMedia(messageId, { ...options, kind: "audio" });
     },
     async waitForMessage(paramsLocal) {
       const predicate = (message) =>

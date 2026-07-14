@@ -1,18 +1,29 @@
 #!/usr/bin/env python3
 """OCR chassis/VIN plate facts from a WhatsApp inbound image.
 
-Self-contained. Supports 17-char VIN and Japanese FRAME No. plates.
+Providers (env APSALES_OCR_PROVIDER):
+  - google (recommended) → Cloud Vision DOCUMENT_TEXT_DETECTION
+  - openai → GPT vision text extraction
+  - tesseract / unset → local tesseract fallback (legacy; weak on handwriting
+    and small plates in busy photos)
+
+Parsing is label-based (ENGINE:/FRAME No./COLOR: …), not vehicle-specific
+hardcodes. Supports 17-char VIN and Japanese FRAME No. plates.
 """
 
 from __future__ import annotations
 
+import base64
 import json
+import os
 import re
 import shutil
 import subprocess
 import sys
 import tempfile
 import time
+import urllib.error
+import urllib.request
 from pathlib import Path
 from typing import Any
 
@@ -208,7 +219,18 @@ def _extract_frame(upper: str) -> str | None:
     return None
 
 
+def _label_value(upper: str, labels: tuple[str, ...], pattern: str) -> str | None:
+    for label in labels:
+        m = re.search(rf"(?:{label})\s*[:：]?\s*({pattern})", upper)
+        if m:
+            value = m.group(1).strip().rstrip(".,;")
+            if value and value not in {"TRIM", "PLANT", "OPTION", "COLOR", "ENGINE", "MODEL", "FRAME"}:
+                return value
+    return None
+
+
 def _extract_facts(raw_text: str) -> dict[str, Any]:
+    """Generic label-based plate extraction — no vehicle-specific hardcodes."""
     text = str(raw_text or "")
     upper = text.upper()
     facts: dict[str, Any] = {
@@ -220,51 +242,145 @@ def _extract_facts(raw_text: str) -> dict[str, Any]:
         "color": None,
         "trim": None,
     }
-    if (
-        "TOYOTA" in upper
-        or "VLOAOL" in upper  # upside-down OCR
-        or re.search(r"[T7F][O0Q]YOTA", upper)
-        or "MOTOR CORPORATION JAPAN" in upper
-        or "MOTOR SORPORATION JAPAN" in upper
-    ):
-        facts["manufacturer"] = "TOYOTA"
-    elif "NISSAN" in upper:
-        facts["manufacturer"] = "NISSAN"
-    elif "HONDA" in upper:
-        facts["manufacturer"] = "HONDA"
-    elif "MAZDA" in upper:
-        facts["manufacturer"] = "MAZDA"
-
-    facts["engine_code"] = _extract_engine(upper)
-    facts["frame_no"] = _extract_frame(upper)
-
-    model = re.search(r"DBA[- ]?SCP[0-9O]{2}[- ]?[A-Z0-9]{3,10}", upper)
-    if model:
-        facts["model_code"] = model.group(0).replace(" ", "").replace("O", "0")
-    elif (facts.get("frame_no") or "").startswith("SCP90"):
-        ahx = re.search(r"AHX[A-Z0-9]{2,4}", upper)
-        suffix = ahx.group(0) if ahx else "AHXGK"
-        facts["model_code"] = f"DBA-SCP90-{suffix}"
-
-    cm = re.search(r"\b(?:COLOR|COLOUR)\s*[:：]?\s*([A-Z0-9]{2,4})\b", upper)
-    if cm and cm.group(1) not in {"TRIM", "PLANT", "OPTION"}:
-        facts["color"] = cm.group(1)
-    elif re.search(r"\b3Q8\b", upper):
-        facts["color"] = "3Q8"
-
-    tm = re.search(r"\bTRIM\s*[:：]?\s*([A-Z0-9]{2,6})\b", upper)
-    if tm and tm.group(1) not in {"PLANT", "OPTION", "COLOR"}:
-        facts["trim"] = tm.group(1)
-    elif re.search(r"\bFQ42\b", upper) or re.search(r"\bFO42\b", upper):
-        facts["trim"] = "FQ42"
-
-    clean = _normalize_vin(upper)
-    for match in VIN_FIND.finditer(clean):
-        candidate = match.group(0)
-        if _is_valid_vin(candidate):
-            facts["vin"] = candidate
+    for brand in ("TOYOTA", "NISSAN", "HONDA", "MAZDA", "SUBARU", "SUZUKI", "MITSUBISHI", "LEXUS", "ISUZU", "DAIHATSU"):
+        if brand in upper or (brand == "TOYOTA" and re.search(r"[T7F][O0Q]YOTA", upper)):
+            facts["manufacturer"] = brand
             break
+    if not facts["manufacturer"] and "MOTOR CORPORATION JAPAN" in upper:
+        facts["manufacturer"] = "TOYOTA"
+
+    facts["frame_no"] = _label_value(
+        upper, (r"FRAME\s*NO\.?", "FRAME", r"CHASSIS\s*NO\.?", "CHASSIS"), r"[A-Z0-9-]{6,20}"
+    ) or _extract_frame(upper)
+    if facts["frame_no"]:
+        facts["frame_no"] = facts["frame_no"].replace(" ", "")
+        fm = FRAME_FIND.search(facts["frame_no"]) or FRAME_FIND.search(upper)
+        if fm:
+            facts["frame_no"] = f"{fm.group(1)}-{fm.group(2)}"
+
+    facts["engine_code"] = _label_value(
+        upper, ("ENGINE", "ENG"), r"[A-Z0-9]{2,4}\s*[- ]?\s*[A-Z]{2}"
+    ) or _extract_engine(upper)
+    if facts["engine_code"]:
+        facts["engine_code"] = re.sub(r"\s+", "", facts["engine_code"]).replace("--", "-")
+
+    facts["model_code"] = _label_value(upper, ("MODEL",), r"[A-Z0-9-]{4,24}")
+    if facts["model_code"]:
+        facts["model_code"] = facts["model_code"].replace(" ", "")
+    else:
+        mm = MODEL_FIND.search(upper.replace(" ", ""))
+        if mm:
+            facts["model_code"] = mm.group(1)
+
+    facts["color"] = _label_value(upper, ("COLOR", "COLOUR"), r"[A-Z0-9]{2,4}")
+    facts["trim"] = _label_value(upper, ("TRIM",), r"[A-Z0-9]{2,6}")
+
+    # Prefer already-isolated 17-char tokens (spaces/newlines preserved), then
+    # overlapping scan on the compacted string so a glued "VIN1HGCM…" prefix
+    # cannot swallow the real VIN via non-overlapping finditer.
+    for token in VIN_FIND.findall(upper):
+        if _is_valid_vin(token):
+            facts["vin"] = _normalize_vin(token)
+            break
+    if not facts["vin"]:
+        clean = _normalize_vin(upper)
+        for i in range(0, max(0, len(clean) - 16)):
+            candidate = clean[i : i + 17]
+            if _is_valid_vin(candidate):
+                facts["vin"] = candidate
+                break
     return facts
+
+
+def _ocr_provider() -> str:
+    return str(os.environ.get("APSALES_OCR_PROVIDER") or "tesseract").strip().lower()
+
+
+def _google_vision_text(image_path: Path) -> tuple[str, str]:
+    api_key = (
+        os.environ.get("GOOGLE_CLOUD_VISION_API_KEY")
+        or os.environ.get("APSALES_GOOGLE_VISION_API_KEY")
+        or os.environ.get("GOOGLE_CLOUD_API_KEY")
+        or os.environ.get("APSALES_GOOGLE_CLOUD_API_KEY")
+        # Same GCP project often already has Places key; reuse after Vision API is enabled.
+        or os.environ.get("GOOGLE_PLACES_API_KEY")
+    )
+    if not api_key:
+        raise RuntimeError("missing_GOOGLE_CLOUD_VISION_API_KEY")
+    content = base64.b64encode(image_path.read_bytes()).decode("ascii")
+    body = json.dumps(
+        {
+            "requests": [
+                {
+                    "image": {"content": content},
+                    "features": [{"type": "DOCUMENT_TEXT_DETECTION"}],
+                }
+            ]
+        }
+    ).encode("utf-8")
+    url = f"https://vision.googleapis.com/v1/images:annotate?key={api_key}"
+    req = urllib.request.Request(url, data=body, method="POST", headers={"Content-Type": "application/json"})
+    with urllib.request.urlopen(req, timeout=45) as resp:
+        payload = json.loads(resp.read().decode("utf-8"))
+    responses = payload.get("responses") or [{}]
+    err = responses[0].get("error")
+    if err:
+        raise RuntimeError(str(err.get("message") or err)[:200])
+    full = responses[0].get("fullTextAnnotation") or {}
+    text = str(full.get("text") or "").strip()
+    if not text:
+        annotations = responses[0].get("textAnnotations") or []
+        if annotations:
+            text = str(annotations[0].get("description") or "").strip()
+    return text, "google_vision"
+
+
+def _openai_vision_text(image_path: Path) -> tuple[str, str]:
+    api_key = os.environ.get("OPENAI_API_KEY") or os.environ.get("APSALES_OPENAI_API_KEY")
+    if not api_key:
+        raise RuntimeError("missing_OPENAI_API_KEY")
+    b64 = base64.b64encode(image_path.read_bytes()).decode("ascii")
+    mime = "image/jpeg"
+    if image_path.suffix.lower() == ".png":
+        mime = "image/png"
+    elif image_path.suffix.lower() == ".webp":
+        mime = "image/webp"
+    model = os.environ.get("APSALES_OCR_OPENAI_MODEL") or "gpt-4o-mini"
+    body = json.dumps(
+        {
+            "model": model,
+            "messages": [
+                {
+                    "role": "user",
+                    "content": [
+                        {
+                            "type": "text",
+                            "text": (
+                                "Extract ALL visible text from this vehicle nameplate / registration / "
+                                "chassis photo. Prefer printed labels like MODEL, ENGINE, FRAME No., "
+                                "COLOR, TRIM. Return plain text only, preserve line breaks, no commentary."
+                            ),
+                        },
+                        {
+                            "type": "image_url",
+                            "image_url": {"url": f"data:{mime};base64,{b64}"},
+                        },
+                    ],
+                }
+            ],
+            "max_tokens": 800,
+        }
+    ).encode("utf-8")
+    req = urllib.request.Request(
+        "https://api.openai.com/v1/chat/completions",
+        data=body,
+        method="POST",
+        headers={"Authorization": f"Bearer {api_key}", "Content-Type": "application/json"},
+    )
+    with urllib.request.urlopen(req, timeout=60) as resp:
+        payload = json.loads(resp.read().decode("utf-8"))
+    text = str(payload.get("choices", [{}])[0].get("message", {}).get("content") or "").strip()
+    return text, "openai_vision"
 
 
 def _candidates_from_facts(facts: dict[str, Any]) -> list[dict[str, Any]]:
@@ -299,12 +415,31 @@ def main() -> int:
         if not image_path.is_file():
             print(json.dumps({"status": "failed", "error": "image_not_found"}))
             return 0
-        with Image.open(image_path) as img:
-            image = ImageOps.exif_transpose(img).convert("RGB")
-        raw = _best_orientation_text(image)
+
+        provider = _ocr_provider()
+        raw = ""
+        ocr_engine = "tesseract"
+        cloud_error = None
+        if provider in {"google", "gcp", "vision"}:
+            try:
+                raw, ocr_engine = _google_vision_text(image_path)
+            except Exception as exc:
+                cloud_error = f"{type(exc).__name__}:{str(exc)[:160]}"
+        elif provider in {"openai", "gpt"}:
+            try:
+                raw, ocr_engine = _openai_vision_text(image_path)
+            except Exception as exc:
+                cloud_error = f"{type(exc).__name__}:{str(exc)[:160]}"
+
+        # Fallback / default: local tesseract (kept until CEO enables cloud keys).
+        if not raw:
+            with Image.open(image_path) as img:
+                image = ImageOps.exif_transpose(img).convert("RGB")
+            raw = _best_orientation_text(image)
+            ocr_engine = "tesseract_fallback" if cloud_error else "tesseract"
+
         facts = _extract_facts(raw)
         candidates = _candidates_from_facts(facts)
-        # Prefer Japanese frame on Toyota domestic plates when both appear.
         best = None
         if candidates:
             preferred = next((c for c in candidates if c.get("id_type") == "jp_frame"), None)
@@ -312,7 +447,12 @@ def main() -> int:
         print(
             json.dumps(
                 {
-                    "status": "success" if (facts.get("frame_no") or facts.get("vin") or facts.get("engine_code")) else "failed",
+                    "status": "success"
+                    if (facts.get("frame_no") or facts.get("vin") or facts.get("engine_code"))
+                    else "failed",
+                    "ocr_engine": ocr_engine,
+                    "ocr_provider_requested": provider,
+                    "cloud_error": cloud_error,
                     "ocr_text": raw[:1200],
                     "plate_facts": facts,
                     "vin_candidates": candidates,

@@ -522,6 +522,10 @@ function deployApsalesOpenClaw() {
     `${ROOT}/scripts/apsales-media-vin-intelligence.py`,
     `${REMOTE}:/root/.openclaw/workspace/AsiaPower/scripts/apsales-media-vin-intelligence.py`,
   );
+  rsync(
+    `${ROOT}/scripts/apsales-media-stt.py`,
+    `${REMOTE}:/root/.openclaw/workspace/AsiaPower/scripts/apsales-media-stt.py`,
+  );
   ssh(`
 set -euo pipefail
 BRIDGE_DIR=/root/.openclaw/extensions/apsales-live-draft
@@ -545,6 +549,8 @@ if [ -f "$SESSION" ]; then cp -a "$SESSION" "$BACKUP/apsales-whatsapp-session.mj
 if [ -f /etc/systemd/system/apsales-whatsapp-bridge.service.d/openclaw-sales-agent.conf ]; then
   cp -a /etc/systemd/system/apsales-whatsapp-bridge.service.d/openclaw-sales-agent.conf "$BACKUP/openclaw-sales-agent.conf"
 fi
+# OCR: google Vision free tier (CEO 2026-07-14); STT stays none until vendor key.
+# EnvironmentFile loads GOOGLE_PLACES_API_KEY / APSALES_GOOGLE_VISION_API_KEY from AsiaPower .env
 cat > /etc/systemd/system/apsales-whatsapp-bridge.service.d/openclaw-sales-agent.conf <<'EOF'
 [Service]
 Environment=APSALES_REPLY_BRAIN=openclaw
@@ -552,6 +558,11 @@ Environment=APSALES_OPENCLAW_AGENT=sales-agent
 Environment=APSALES_OPENCLAW_TIMEOUT_SECONDS=90
 Environment=APSALES_MEDIA_VIN_ENABLED=true
 Environment=APSALES_MEDIA_MAX_BYTES=8388608
+Environment=APSALES_VOICE_STT_ENABLED=true
+Environment=APSALES_AUDIO_MAX_BYTES=8388608
+Environment=APSALES_OCR_PROVIDER=google
+Environment=APSALES_STT_PROVIDER=google
+EnvironmentFile=-/root/.openclaw/workspace/AsiaPower/.env
 EOF
 mv "$SESSION_NEXT" "$SESSION"
 mv "$NEXT" "$BRIDGE"

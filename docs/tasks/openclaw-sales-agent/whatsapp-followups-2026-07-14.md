@@ -1,10 +1,11 @@
 # WhatsApp Sales-Agent Follow-ups — 2026-07-14
 
-Status: assigned to Cursor for implementation. Claude role: spec authoring,
-verification, review. This is the follow-up task list from tonight's
-+233 WhatsApp media/VIN pipeline work (see
-`whatsapp-media-vin-pipeline-2026-07-14.md` and
-`whatsapp-media-vin-pipeline-2026-07-14-instructions.md` for full history).
+Status: **implemented (code + research + tests)** — waiting on CEO vendor/key
+decisions before enabling cloud OCR/STT in production.
+Deliverables: `vendor-research-vision-stt-jdm-2026-07-14.md`,
+`tests/test_apsales_media_vin_pipeline.py` (12/12), rewritten
+`whatsapp-media-vin-pipeline-2026-07-14.md`. Claude role was spec authoring;
+Cursor implemented.
 
 Everything below is a gap identified but NOT fixed during tonight's live
 production work — either out of scope for a same-night hotfix, or requiring
