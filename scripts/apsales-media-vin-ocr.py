@@ -227,7 +227,7 @@ def _extract_facts(raw_text: str) -> dict[str, Any]:
     model = re.search(r"DBA[- ]?SCP[0-9O]{2}[- ]?[A-Z0-9]{3,10}", upper)
     if model:
         facts["model_code"] = model.group(0).replace(" ", "").replace("O", "0")
-    elif facts.get("frame_no", "").startswith("SCP90"):
+    elif (facts.get("frame_no") or "").startswith("SCP90"):
         ahx = re.search(r"AHX[A-Z0-9]{2,4}", upper)
         suffix = ahx.group(0) if ahx else "AHXGK"
         facts["model_code"] = f"DBA-SCP90-{suffix}"
