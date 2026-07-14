@@ -532,8 +532,13 @@ SESSION_NEXT=\${SESSION}.next
 BACKUP=/root/.openclaw/releases/apsales-openclaw-\$(date -u +%Y%m%dT%H%M%SZ)
 test -s "$NEXT"
 test -s "$SESSION_NEXT"
-/usr/bin/node --check "$NEXT"
-/usr/bin/node --check "$SESSION_NEXT"
+CHECK=\$(mktemp /tmp/apsales-bridge-check-XXXXXX.mjs)
+SESSION_CHECK=\$(mktemp /tmp/apsales-session-check-XXXXXX.mjs)
+cp "$NEXT" "$CHECK"
+cp "$SESSION_NEXT" "$SESSION_CHECK"
+/usr/bin/node --check "$CHECK"
+/usr/bin/node --check "$SESSION_CHECK"
+rm -f "$CHECK" "$SESSION_CHECK"
 mkdir -p "$BACKUP" /etc/systemd/system/apsales-whatsapp-bridge.service.d
 cp -a "$BRIDGE" "$BACKUP/bridge.mjs"
 if [ -f "$SESSION" ]; then cp -a "$SESSION" "$BACKUP/apsales-whatsapp-session.mjs"; fi
