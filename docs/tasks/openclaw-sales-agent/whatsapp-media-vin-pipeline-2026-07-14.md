@@ -63,4 +63,7 @@ systemctl restart apsales-whatsapp-bridge.service
 
 ## Release
 
-- Commit / Release ID：部署后回填
+- Git: `1ea65907b`
+- Release ID: `REL-20260714052129-apsales-openclaw-1ea65907b`
+- Backup: `/root/.openclaw/releases/apsales-openclaw-*` (latest from deploy log)
+- Env: `APSALES_MEDIA_VIN_ENABLED=true`
