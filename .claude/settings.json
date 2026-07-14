@@ -22,7 +22,17 @@
       "Bash(openclaw models auth status)",
       "mcp__visualize__read_me",
       "mcp__openclaw__web_search",
-      "mcp__openclaw__sessions_history"
+      "mcp__openclaw__sessions_history",
+      "Bash(ssh root@159.65.86.24 *)",
+      "Bash(scp *root@159.65.86.24*)",
+      "Bash(node scripts/deploy-production.mjs *)",
+      "Bash(DEPLOY_ALLOW_DIRTY=1 node scripts/deploy-production.mjs *)",
+      "Bash(git add *)",
+      "Bash(git commit *)",
+      "Bash(git push *)",
+      "Bash(node --check *)",
+      "Bash(.venv/bin/python3 -m py_compile *)",
+      "Bash(.venv/bin/python3 scripts/*)"
     ]
   }
 }
