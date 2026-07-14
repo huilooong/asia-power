@@ -497,7 +497,27 @@ async function buildMediaContext(message, session, senderId) {
   };
 }
 
+function plateSuccessReply(mediaContext) {
+  const vehicle = mediaContext?.vin_decode?.vehicle;
+  if (!vehicle || mediaContext?.vin_decode?.status !== "success") return null;
+  const brand = String(vehicle.brand || vehicle.manufacturer || "").trim();
+  const engine = String(vehicle.engine_code || "").trim();
+  const frame = String(vehicle.frame_no || "").trim();
+  const model = String(vehicle.model || vehicle.model_code || "").trim();
+  const year = String(vehicle.year || "").trim();
+  const bits = [];
+  if (brand) bits.push(brand);
+  if (year) bits.push(year);
+  if (model && !frame) bits.push(model);
+  if (frame) bits.push(frame);
+  if (engine) bits.push(engine);
+  if (!bits.length) return null;
+  // Deterministic path: never let chat history override a successful plate read.
+  return `Got it — ${bits.join(" / ")}. Do you need the engine or the half-cut?`;
+}
+
 async function handleMessage(message, state, session) {
+  const startedAt = Date.now();
   const key = message.messageId || `${message.fromJid}:${message.observedAt}:${message.text}`;
   if (state.seen.includes(key)) return;
   state.seen.push(key);
@@ -526,11 +546,32 @@ async function handleMessage(message, state, session) {
     kind: message.kind,
     mediaVinEnabled: MEDIA_VIN_ENABLED,
     hasMediaContext: Boolean(mediaContext),
+    ocrMs: mediaContext ? Date.now() - startedAt : 0,
+    decodeStatus: mediaContext?.vin_decode?.status || null,
   });
   await appendActivity("apsales_whatsapp_inbound", `客户 ${senderId}: ${text.slice(0, 180)}`, "received");
 
   try {
     if (REPLY_BRAIN === "openclaw") {
+      const direct = plateSuccessReply(mediaContext);
+      if (direct) {
+        const result = await session.sendText(senderId, direct);
+        log("plate direct reply sent", {
+          senderId,
+          messageId: message.messageId,
+          whatsappMessageId: result?.messageId || "",
+          elapsedMs: Date.now() - startedAt,
+          reply: direct,
+          vehicle: mediaContext?.vin_decode?.vehicle || null,
+        });
+        await appendActivity(
+          "apsales_plate_direct_reply_sent",
+          `客户 ${senderId}: ${direct}`,
+          "sent",
+        );
+        return;
+      }
+
       const generated = await runOpenClawReply({
         text,
         senderId,
@@ -549,6 +590,8 @@ async function handleMessage(message, state, session) {
         model: generated.model,
         provider: generated.provider,
         whatsappMessageId: result?.messageId || "",
+        elapsedMs: Date.now() - startedAt,
+        reply: generated.reply,
       });
       await appendActivity(
         "apsales_openclaw_reply_sent",

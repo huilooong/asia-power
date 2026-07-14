@@ -92,16 +92,14 @@ def _cli_tesseract(image: Image.Image, *, psm: str, whitelist: str | None = None
 
 
 def _variants(image: Image.Image) -> list[Image.Image]:
-    base = image.convert("RGB")
-    gray = ImageOps.grayscale(base)
-    variants = []
-    for src in (gray, ImageOps.invert(gray)):
-        big = src.resize((src.width * 2, src.height * 2), Image.Resampling.LANCZOS)
+    gray = ImageOps.grayscale(image.convert("RGB"))
+    inverted = ImageOps.invert(gray)
+    out: list[Image.Image] = []
+    for src in (inverted, gray):
+        big = src.resize((int(src.width * 1.8), int(src.height * 1.8)), Image.Resampling.LANCZOS)
         contrast = ImageEnhance.Contrast(big).enhance(2.2)
-        sharp = contrast.filter(ImageFilter.SHARPEN)
-        variants.append(ImageOps.autocontrast(sharp))
-        variants.append(ImageOps.autocontrast(contrast).point(lambda x: 0 if x < 140 else 255))
-    return variants
+        out.append(ImageOps.autocontrast(contrast.filter(ImageFilter.SHARPEN)))
+    return out
 
 
 def _score_plate_text(text: str) -> int:
@@ -120,10 +118,11 @@ def _score_plate_text(text: str) -> int:
 def _best_orientation_text(image: Image.Image) -> str:
     best_text = ""
     best_score = -1
-    for angle in (0, 90, 180, 270):
+    # Sideways phone photos of door plates are usually 90/270.
+    for angle in (90, 270, 0, 180):
         rotated = image if angle == 0 else image.rotate(angle, expand=True)
         chunks: list[str] = []
-        for variant in _variants(rotated)[:4]:
+        for variant in _variants(rotated)[:2]:
             chunks.append(_cli_tesseract(variant, psm="6"))
             chunks.append(
                 _cli_tesseract(
@@ -132,12 +131,14 @@ def _best_orientation_text(image: Image.Image) -> str:
                     whitelist="ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-.:/",
                 )
             )
-            chunks.append(_cli_tesseract(variant, psm="4"))
         merged = "\n".join(t for t in chunks if t)
         score = _score_plate_text(merged)
         if score > best_score:
             best_score = score
             best_text = merged
+        # Early exit once we clearly have Toyota + engine/frame signals.
+        if score >= 20 and ("2SZ" in merged.upper() or "SCP" in merged.upper() or FRAME_FIND.search(merged.upper())):
+            break
     return best_text
 
 
@@ -205,7 +206,13 @@ def _extract_facts(raw_text: str) -> dict[str, Any]:
         "color": None,
         "trim": None,
     }
-    if "TOYOTA" in upper or "VLOAOL" in upper:  # upside-down OCR of TOYOTA sometimes
+    if (
+        "TOYOTA" in upper
+        or "VLOAOL" in upper  # upside-down OCR
+        or re.search(r"[T7F][O0Q]YOTA", upper)
+        or "MOTOR CORPORATION JAPAN" in upper
+        or "MOTOR SORPORATION JAPAN" in upper
+    ):
         facts["manufacturer"] = "TOYOTA"
     elif "NISSAN" in upper:
         facts["manufacturer"] = "NISSAN"
