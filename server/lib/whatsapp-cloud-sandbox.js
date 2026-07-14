@@ -13,6 +13,7 @@ const fs = require('fs');
 const path = require('path');
 const { sendText, markAsRead, accessToken } = require('./whatsapp-cloud-send');
 const { recordCustomerResult, recordEvidenceTurn } = require('./asiapower-evidence');
+const { notifyOutbound, notifySkip } = require('./whatsapp-cloud-telegram-monitor');
 
 function env(...keys) {
   for (const key of keys) {
@@ -424,9 +425,25 @@ async function handleSandboxInbound(rootDir, normalized) {
     return { skipped: true, reason: 'not_allowlisted' };
   }
   if (mode === 'live' && !normalizeWaId(normalized.wa_id)) {
+    notifySkip({
+      mode,
+      reason: 'missing_wa_id',
+      waId: normalized.wa_id,
+      profileName: normalized.profile_name,
+      inboundType: normalized.message_type,
+      inboundText: normalized.text,
+    });
     return { skipped: true, reason: 'missing_wa_id' };
   }
   if (!shouldAutoReply(normalized.wa_id)) {
+    notifySkip({
+      mode,
+      reason: `mode_${mode}_no_reply`,
+      waId: normalized.wa_id,
+      profileName: normalized.profile_name,
+      inboundType: normalized.message_type,
+      inboundText: normalized.text,
+    });
     return { skipped: true, reason: `mode_${mode}_no_reply` };
   }
 
@@ -443,6 +460,14 @@ async function handleSandboxInbound(rootDir, normalized) {
       at: new Date().toISOString(),
       error: 'NO_ACCESS_TOKEN',
       wa_suffix: String(normalized.wa_id || '').slice(-4),
+    });
+    notifySkip({
+      mode,
+      reason: 'NO_ACCESS_TOKEN',
+      waId: normalized.wa_id,
+      profileName: normalized.profile_name,
+      inboundType: normalized.message_type,
+      inboundText: normalized.text,
     });
     return { ok: false, error: 'NO_ACCESS_TOKEN' };
   }
@@ -528,6 +553,18 @@ async function handleSandboxInbound(rootDir, normalized) {
     parser_version: normalized.parser_version,
   };
   appendJsonl(logFile, row);
+
+  notifyOutbound({
+    mode,
+    decision,
+    waId: normalized.wa_id,
+    profileName: normalized.profile_name,
+    inboundType: normalized.message_type,
+    inboundText: normalized.text,
+    replyText,
+    sent: Boolean(send.messageId),
+    riskBlocked: gated.risk_blocked,
+  });
 
   // APSALES-EVIDENCE-001: append AsiaPower Evidence turn (never blocks send).
   try {

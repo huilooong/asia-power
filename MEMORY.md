@@ -130,6 +130,23 @@
 - `normalizeKey` 必须保留 CJK；剥成空串会把尚酷等塌成目录里第一个中文名（例：朗逸）
 - 显式映射：尚酷→Scirocco；详见 `docs/ops/ops-hc250552-scirocco-model-fix.md`
 
+## WhatsApp Cloud CEO 盯梢（2026-07-14）
+
+- Cloud API **不能**扫码登录看聊天；CEO 用 Telegram 实时摘要（方案 B）。
+- 入站 `📲` + 出站 `🤖`；关盯梢：`WHATSAPP_TELEGRAM_MONITOR=off`（不停接待）。
+- 说明：`docs/ops/whatsapp-cloud-runtime.md`
+
+## WhatsApp 双通道（勿混）
+
+| 通道 | 号码 | 路径 | 自动回复开关 |
+|------|------|------|----------------|
+| Cloud API | +86 166 3880 1930 | `inventory-site` webhook → Graph 回 | `WHATSAPP_AUTONOMY_MODE=live`（`observe`=只收不回） |
+| Business App | +233 | `apsales-whatsapp-bridge` + OpenClaw sales-agent | 独立 systemd；**勿**把 OpenClaw `channels.whatsapp.*.enabled=true` 乱开（易与 bridge 双回） |
+
+- **事故 2026-07-14：** 生产 Cloud 被设成 `observe` → 客户消息落库但不回；已改回 `live`。
+- +233 媒体/VIN：QA bridge（禁止迁 monitor）；回滚只用 `APSALES_MEDIA_VIN_ENABLED=false`。
+- 报告：`docs/ops/whatsapp-cloud-runtime.md`；媒体管线见 openclaw-sales-agent 任务文档。
+
 ## Engineering gotchas
 - **CSS cache-bust**：改 `ebay-layout.css` 必须同步 bump `js/components.js` 的 `SITE_EBAY_LAYOUT_VER`，否则 CDN 旧 `?v=` 会盖掉新样式（parts 真图曾因此卡在 66px）。
 - **库存号搜索跨分类（P0 2026-07-10）**：顶栏搜数字/`HC…` 默认进半切页；若车在 used-cars/卡车等分类会被踢空。规则：`isStockIdQuery` + `mergeStockIdHitsIntoInventory`；现网 cache key 已升到 `stock-id-search-v2`（v1 逻辑曾在 origin 但 CF 仍喂 `parts-parallel-v1` 旧 JS → CEO 测仍空）。回归 `node scripts/verify-stock-id-search.mjs` + 现网截图。报告：`docs/ops/ops-p0-stock-id-search-live-retest-2026-07-10.md`。
@@ -140,3 +157,9 @@
 - `matchesCatalogSearch` + `mergeCatalogSearchHitsIntoInventory`：库存号/车型/发动机/VIN/中文别名均可从顶栏半切页命中全库
 - 别名：`js/catalog-search-aliases.js`（zh-en-seed）；短码 <4 字符禁止去空格折叠（防 CDL←Automatic DLX）
 - 回归：`node scripts/verify-catalog-search.mjs`；cache key 现网 `catalog-search-v2`
+
+## sales-agent 模型（2026-07-14）
+
+- 生产 `sales-agent` 用 `openrouter/google/gemini-2.5-flash`（含 qwen / gpt-5.4-mini fallback），**不要**单绑 `zai/glm-4.7-flash`（易 429 导致整线客户「当机」）。
+- 配置在主机 `/root/.openclaw/openclaw.json`（热加载）；备份见 `releases/apsales-hotfixes/`。
+

@@ -12,6 +12,7 @@ const crypto = require('crypto');
 const fs = require('fs');
 const path = require('path');
 const { handleSandboxInbound } = require('./whatsapp-cloud-sandbox');
+const { notifyInbound } = require('./whatsapp-cloud-telegram-monitor');
 
 const PARSER_VERSION = 'apwa-002-sandbox-1.0.0';
 const SCHEMA_VERSION = 'apwa-normalized-v1';
@@ -226,22 +227,16 @@ function extractStatuses(payload) {
   return statuses;
 }
 
-function buildTelegramText(normalizedMessages, normalizedStatuses) {
+function buildTelegramText(normalizedMessages, normalizedStatuses, mode) {
   try {
-    const { notifyAsync } = require('./telegram-notify');
     if (normalizedMessages.length) {
-      const lines = ['AsiaPower Cloud API inbound (observe)'];
-      for (const msg of normalizedMessages.slice(0, 5)) {
-        const name = msg.profile_name ? ` (${msg.profile_name})` : '';
-        const body = msg.text ? `: ${msg.text}` : ` [${msg.message_type}]`;
-        const from = String(msg.wa_id || '');
-        const masked = from.length > 4 ? `…${from.slice(-4)}` : from;
-        lines.push(`- ${masked}${name}${body}`);
-      }
-      notifyAsync(lines.join('\n'));
+      notifyInbound(normalizedMessages, mode || autonomyMode());
       return;
     }
-    if (normalizedStatuses.length) {
+    // Delivery receipts are noisy in live — only push in observe/off
+    const modeLower = String(mode || autonomyMode() || '').toLowerCase();
+    if ((modeLower === 'observe' || modeLower === 'off') && normalizedStatuses.length) {
+      const { notifyAsync } = require('./telegram-notify');
       const summary = normalizedStatuses
         .slice(0, 5)
         .map((s) => `${s.status}:${String(s.recipient_id || '').slice(-4)}`)
@@ -361,10 +356,8 @@ function createWhatsAppCloudWebhook(rootDir) {
     });
 
     const modeLower = String(mode || '').toLowerCase();
-    // Sandbox: no Draft / Approval / Telegram / Shadow — allowlist handled async after ACK
-    if (modeLower === 'observe' || modeLower === 'off') {
-      buildTelegramText(normalizedMessages, normalizedStatuses);
-    }
+    // CEO monitor (B 2026-07-14): inbound Telegram in all modes; status spam only observe/off
+    buildTelegramText(normalizedMessages, normalizedStatuses, modeLower);
 
     return {
       messages: normalizedMessages.length,
