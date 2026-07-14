@@ -5,6 +5,7 @@
   'use strict';
 
   const WA = '8616638801930';
+  // Internal estimate only — never render this ratio on public UI.
   const ENGINE_RATIO = 0.65;
   const SHELF_LIMIT = 12;
   const POPULAR = ['Lexus LX570', 'Toyota Prado', 'Isuzu 4JB1', '2AZ-FE', 'HC250127', 'Hilux'];
@@ -229,7 +230,7 @@
       ? `<div class="pc-img real"><span class="pc-hc">${esc(item.stockId)}</span>${video ? `<span class="pc-video">${esc(t('home.video', 'Video'))}</span>` : ''}<img src="${esc(img)}" alt="" loading="lazy"></div>`
       : `<div class="pc-img"><span class="pc-hc">${esc(item.stockId || '')}</span><div class="pc-ph">${ICONS.photo}<span>${esc(t('home.v4.photo', 'Photo'))}</span></div></div>`;
     const note = variant === 'engine'
-      ? `<div class="engine-price-note">${esc(t('home.v4.engineNote', 'Engine EXW ref. (~65%)'))}</div>`
+      ? `<div class="engine-price-note">${esc(t('home.v4.engineNote', 'Engine EXW reference'))}</div>`
       : '';
 
     return `<a class="pcard" href="${esc(detailUrl(item))}">

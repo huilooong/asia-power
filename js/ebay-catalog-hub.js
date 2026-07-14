@@ -62,6 +62,7 @@
     { id: 'all', labelKey: 'filter.equipmentType', label: 'Equipment type' },
     { id: 'excavator', labelKey: 'filter.excavator', label: 'Excavator', match: /excavator|挖掘机/i },
     { id: 'loader', labelKey: 'filter.loader', label: 'Loader', match: /loader|装载机/i },
+    { id: 'tractor', labelKey: 'filter.tractor', label: 'Tractor', match: /tractor|拖拉机/i },
     { id: 'crane', labelKey: 'filter.crane', label: 'Crane', match: /crane|起重/i },
     { id: 'roller', labelKey: 'filter.roller', label: 'Roller', match: /roller|压路/i },
   ];

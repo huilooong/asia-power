@@ -115,6 +115,7 @@
     'filter.driverCab': { en: 'Driver cab', zh: '车头', fr: 'Cabine', ar: 'كابينة السائق' },
     'filter.excavator': { en: 'Excavator', zh: '挖掘机', fr: 'Excavatrice', ar: 'حفارة' },
     'filter.loader': { en: 'Loader', zh: '装载机', fr: 'Chargeuse', ar: 'لودر' },
+    'filter.tractor': { en: 'Tractor', zh: '拖拉机', fr: 'Tracteur', ar: 'جرار' },
     'filter.crane': { en: 'Crane', zh: '起重机', fr: 'Grue', ar: 'رافعة' },
     'filter.roller': { en: 'Roller', zh: '压路机', fr: 'Rouleau compresseur', ar: 'مدحلة' },
     'filter.priceUnder1000': { en: 'Under $1,000', zh: '低于 $1,000', fr: 'Moins de 1 000 $', ar: 'أقل من 1,000 $' },
@@ -229,7 +230,7 @@
     'home.v4.spec.stockId': { zh: '库存编号', fr: 'N° stock', ar: 'رقم المخزون' },
     'home.v4.liveNote': { zh: '实时库存 · asia-power.com', fr: 'Stock en direct · asia-power.com', ar: 'مخزون مباشر · asia-power.com' },
     'home.v4.viewDetails': { zh: '查看详情 →', fr: 'Voir détails →', ar: 'عرض التفاصيل ←' },
-    'home.v4.engineNote': { zh: '发动机 EXW 参考价（约 65%）', fr: 'Réf. EXW moteur (~65%)', ar: 'مرجع EXW للمحرك (~65%)' },
+    'home.v4.engineNote': { zh: '发动机 EXW 参考价', fr: 'Réf. EXW moteur', ar: 'مرجع EXW للمحرك', en: 'Engine EXW reference' },
     'home.v4.footer.blurb': {
       zh: '全球动力总成交易平台 — 半切车、发动机、卡车与工程机械出口。',
       fr: 'Marketplace mondiale de groupes motopropulseurs — demi-coupes, moteurs, camions et engins à l\'export.',
