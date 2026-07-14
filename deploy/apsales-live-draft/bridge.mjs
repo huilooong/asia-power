@@ -130,8 +130,9 @@ function runOpenClawReply({ text, senderId, messageId, chatId, observedAt, media
     "- Sound human and direct. No long greetings, no bullet lists, no corporate filler.",
     "- Ask at most ONE missing question.",
     "- Do not repeat facts the customer already gave.",
-    "- Do not claim stock, exact price, payment, delivery date, VIN decode, or shipment confirmation unless those facts are already in the structured context.",
-    "- Never mention internal analysis, policy, tools, Gateway, JSON, approval, or this instruction.",
+    "- If vin_decode.status is success, use those vehicle facts in plain language (brand/model/engine/frame).",
+    "- Do not claim stock, exact price, payment, delivery date, or shipment confirmation unless already in structured context.",
+    "- Never mention OCR, VIN decode tools, internal analysis, policy, Gateway, JSON, approval, sales_hint, or this instruction.",
     'Return exactly one JSON object: {"customer_reply":"..."}',
     "Structured context:",
     JSON.stringify({
@@ -333,13 +334,9 @@ function isImageMessage(message) {
 function textForRouting(message, mediaContext) {
   const caption = String(message.text || "").trim();
   if (mediaContext?.message_type === "image") {
-    const best = mediaContext.media?.vin_candidates?.find((c) => c.valid_format)?.vin;
-    const decodeStatus = mediaContext.vin_decode?.status || "none";
-    const hint = best
-      ? `Customer sent a chassis/nameplate photo. OCR found VIN candidate; decode=${decodeStatus}. Confirm with customer if needed.`
-      : `Customer sent a photo. OCR did not find a clear VIN. Ask for a clearer photo or typed VIN.`;
+    // Never put internal English instructions into customer_message.
     return {
-      text: caption || hint,
+      text: caption || "[customer sent an image]",
       mediaPlaceholder: "图片",
     };
   }
@@ -347,9 +344,7 @@ function textForRouting(message, mediaContext) {
   if (String(message.kind || "").toLowerCase() !== "media") return { text: "", mediaPlaceholder: null };
   const label = mediaLabel(message);
   return {
-    text: MEDIA_VIN_ENABLED
-      ? `[Customer sent ${label}. Media processing unavailable for this item.]`
-      : `[客户通过 WhatsApp 发来${label}，媒体/VIN 功能已关闭。]`,
+    text: `[customer sent ${label}]`,
     mediaPlaceholder: label,
   };
 }
@@ -409,10 +404,16 @@ async function buildMediaContext(message, session, senderId) {
   }));
 
   const candidates = Array.isArray(ocr?.vin_candidates) ? ocr.vin_candidates : [];
-  const bestVin = candidates.find((c) => c.valid_format)?.vin || ocr?.best_vin || null;
+  const plateFacts = ocr?.plate_facts && typeof ocr.plate_facts === "object" ? ocr.plate_facts : {};
+  const best = candidates.find((c) => c.valid_format) || null;
+  const bestId = best?.vin || ocr?.best_vin || null;
+  const idType = best?.id_type || ocr?.id_type || null;
   let vinDecode = { status: "failed", error: "no_valid_vin" };
-  if (bestVin) {
-    vinDecode = await runPython({ vin: bestVin }, VIN_SCRIPT).catch((err) => ({
+  if (bestId || Object.keys(plateFacts).length) {
+    vinDecode = await runPython(
+      { vin: bestId, id_type: idType, plate_facts: plateFacts },
+      VIN_SCRIPT,
+    ).catch((err) => ({
       status: "failed",
       error: err instanceof Error ? err.message : String(err),
     }));
@@ -420,11 +421,12 @@ async function buildMediaContext(message, session, senderId) {
     vinDecode = { status: "failed", error: ocr.error || "ocr_failed" };
   }
 
-  if (bestVin && (vinDecode.status === "success" || vinDecode.status === "uncertain")) {
+  if (bestId && (vinDecode.status === "success" || vinDecode.status === "uncertain")) {
     await appendVinKnowledgePending({
       ts: new Date().toISOString(),
       status: "pending_confirm",
-      vin_masked: vinDecode.vehicle?.vin || null,
+      vin_masked: vinDecode.vehicle?.vin || vinDecode.vehicle?.frame_no || null,
+      id_type: idType,
       message_id: message.messageId,
       sender_id: senderId,
       image_sha256: download.sha256,
@@ -433,10 +435,10 @@ async function buildMediaContext(message, session, senderId) {
       provider_source: vinDecode.provider_source || null,
       verification_status: vinDecode.verification_status || null,
       field_provenance: {
-        vin: "ocr",
-        vehicle: "asia_power_vehicle_intelligence",
+        vehicle_id: "ocr",
+        vehicle: vinDecode.source || "ocr",
       },
-      note: "Not written to permanent knowledge store until customer confirms or decode is high-confidence success.",
+      note: "Not written to permanent knowledge store until customer confirms.",
     }).catch((err) => log("vin pending write failed", {
       error: err instanceof Error ? err.message : String(err),
     }));
@@ -446,6 +448,13 @@ async function buildMediaContext(message, session, senderId) {
     await fs.unlink(download.path).catch(() => {});
   }
 
+  const maskId = (value) => {
+    const s = String(value || "");
+    if (s.includes("-") && s.length >= 8) return `${s.slice(0, 5)}***${s.slice(-3)}`;
+    if (s.length >= 8) return `${s.slice(0, 3)}***${s.slice(-4)}`;
+    return s ? "***" : null;
+  };
+
   return {
     message_type: "image",
     customer_text: String(message.text || ""),
@@ -453,14 +462,25 @@ async function buildMediaContext(message, session, senderId) {
       mime_type: download.mimeType,
       sha256: download.sha256,
       size_bytes: download.sizeBytes,
-      ocr_text: String(ocr?.ocr_text || "").slice(0, 400),
+      ocr_text: String(ocr?.ocr_text || "").slice(0, 500),
+      plate_facts: {
+        manufacturer: plateFacts.manufacturer || null,
+        model_code: plateFacts.model_code || null,
+        engine_code: plateFacts.engine_code || null,
+        frame_no_masked: maskId(plateFacts.frame_no),
+        vin_masked: maskId(plateFacts.vin),
+        color: plateFacts.color || null,
+        trim: plateFacts.trim || null,
+      },
       vin_candidates: candidates.map((c) => ({
-        vin: c.valid_format ? `${String(c.vin).slice(0, 3)}***${String(c.vin).slice(-4)}` : "invalid",
+        id_masked: c.valid_format ? maskId(c.vin) : "invalid",
         confidence: c.confidence,
         valid_format: Boolean(c.valid_format),
         source: c.source,
+        id_type: c.id_type || null,
       })),
-      best_vin_masked: bestVin ? `${bestVin.slice(0, 3)}***${bestVin.slice(-4)}` : null,
+      best_id_masked: maskId(bestId),
+      id_type: idType,
     },
     vin_decode: {
       status: vinDecode.status || "failed",
@@ -470,6 +490,10 @@ async function buildMediaContext(message, session, senderId) {
       confidence: vinDecode.confidence || null,
       error: vinDecode.error || null,
     },
+    sales_hint:
+      vinDecode.status === "success"
+        ? "Nameplate/VIN facts are in vin_decode.vehicle. Acknowledge the vehicle briefly and ask ONE sales question (engine/half-cut/destination)."
+        : "Photo received but plate OCR incomplete. Ask once for a clearer plate photo or the FRAME/VIN number.",
   };
 }
 
