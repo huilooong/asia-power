@@ -516,7 +516,10 @@ BRIDGE=/root/.openclaw/extensions/apsales-live-draft/bridge.mjs
 NEXT=\${BRIDGE}.next
 BACKUP=/root/.openclaw/releases/apsales-openclaw-\$(date -u +%Y%m%dT%H%M%SZ)
 test -s "$NEXT"
-/usr/bin/node --check "$NEXT"
+CHECK=\$(mktemp /tmp/apsales-bridge-check-XXXXXX.mjs)
+cp "$NEXT" "$CHECK"
+/usr/bin/node --check "$CHECK"
+rm -f "$CHECK"
 mkdir -p "$BACKUP" /etc/systemd/system/apsales-whatsapp-bridge.service.d
 cp -a "$BRIDGE" "$BACKUP/bridge.mjs"
 if [ -f /etc/systemd/system/apsales-whatsapp-bridge.service.d/openclaw-sales-agent.conf ]; then
