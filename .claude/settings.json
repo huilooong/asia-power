@@ -1,0 +1,28 @@
+{
+  "fileCheckpointingEnabled": true,
+  "permissions": {
+    "defaultMode": "auto",
+    "allow": [
+      "mcp__Claude_in_Chrome__find",
+      "mcp__Claude_Preview__preview_screenshot",
+      "Bash(openclaw channels status *)",
+      "Bash(openclaw config get *)",
+      "mcp__openclaw__session_status",
+      "mcp__openclaw__sessions_list",
+      "Bash(openclaw gateway status *)",
+      "Bash(openclaw config schema *)",
+      "Bash(ffprobe *)",
+      "Bash(openclaw models)",
+      "mcp__openclaw__memory_search",
+      "Bash(openclaw config validate)",
+      "mcp__claude_ai_Google_Drive__read_file_content",
+      "mcp__Claude_Preview__preview_list",
+      "Bash(openclaw status)",
+      "Bash(openclaw channels logs *)",
+      "Bash(openclaw models auth status)",
+      "mcp__visualize__read_me",
+      "mcp__openclaw__web_search",
+      "mcp__openclaw__sessions_history"
+    ]
+  }
+}
