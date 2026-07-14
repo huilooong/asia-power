@@ -3,10 +3,16 @@
 from __future__ import annotations
 
 import re
+from functools import lru_cache
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 SOP_PATH = ROOT / "docs" / "customer-service-sop.md"
+TRAINING_DIR = ROOT / "docs" / "zijing-training"
+LIVE_RULES_PATH = TRAINING_DIR / "LIVE-RULES.md"
+# Cap injected markdown so prompts stay within model context budgets.
+_LIVE_RULES_MAX_CHARS = 7000
+_SOP_CUSTOMER_MAX_CHARS = 2500
 
 _GREETING_ONLY_RE = re.compile(
     r"^(?:hi+|hello+|hey+|good\s+(?:morning|afternoon|evening))[\s!?.]*$",
@@ -97,12 +103,70 @@ def zijing_price_advance_reply(message: str = "") -> str:
             "Please send the VIN (or a clear engine plate photo)."
         )
 
+
+def _clip(text: str, max_chars: int) -> str:
+    s = (text or "").strip()
+    if len(s) <= max_chars:
+        return s
+    return s[: max_chars - 1].rstrip() + "…"
+
+
+def _read_text(path: Path) -> str:
+    try:
+        return path.read_text(encoding="utf-8")
+    except OSError:
+        return ""
+
+
+@lru_cache(maxsize=4)
+def _cached_file(path_str: str, mtime_ns: int) -> str:
+    return _read_text(Path(path_str))
+
+
+def _load_watched(path: Path) -> str:
+    if not path.is_file():
+        return ""
+    try:
+        mtime_ns = path.stat().st_mtime_ns
+    except OSError:
+        return _read_text(path)
+    return _cached_file(str(path), mtime_ns)
+
+
+def load_zijing_live_rules() -> str:
+    """CEO training distilled for customer-facing auto-reply (no private session PII)."""
+    return _clip(_load_watched(LIVE_RULES_PATH), _LIVE_RULES_MAX_CHARS)
+
+
+def load_zijing_sop_customer_slice() -> str:
+    """
+    Customer-facing slices from SOP (skip「给龙哥四段中文」draft format).
+    """
+    raw = _load_watched(SOP_PATH)
+    if not raw:
+        return ""
+    # Keep sections that matter for live customer replies; drop draft-to-CEO format.
+    keep_headers = (
+        "## 二、标准开场话术",
+        "## 三、车型知识",
+        "## 四、报价规范",
+        "## 五、库存查询",
+    )
+    chunks: list[str] = []
+    parts = re.split(r"(?=^## )", raw, flags=re.M)
+    for part in parts:
+        if any(part.startswith(h) for h in keep_headers):
+            chunks.append(part.strip())
+    return _clip("\n\n".join(chunks), _SOP_CUSTOMER_MAX_CHARS)
+
+
 def zijing_training_rules_addon() -> str:
-    """Condensed rules for APSales WhatsApp auto-reply prompt."""
-    return (
+    """Condensed rules for APSales WhatsApp auto-reply prompt (+ live training files)."""
+    base = (
         "Zijing (子敬) trained WhatsApp rules — MUST follow:\n"
         "- Sound like a real person texting, not a call center. Short lines.\n"
         "- Do NOT start every message with `Hello sir`.\n"
+        "- Never use corporate filler like \"I'd be happy to help\" / \"Great news!\".\n"
         "- Existing customer sent only `Hi`/`Hello` with no new question → reply `Hi` only.\n"
         "- Vague opener → website + ask need: www.asia-power.com + What you need?\n"
         "- Specific enquiry → still include www.asia-power.com once if not just sent.\n"
@@ -115,6 +179,14 @@ def zijing_training_rules_addon() -> str:
         "- Ghana local stock: say ready to collect in GHS when applicable.\n"
         "- China late night: say photos/videos tomorrow morning, don't promise instant.\n"
     )
+    live = load_zijing_live_rules()
+    sop = load_zijing_sop_customer_slice()
+    parts = [base]
+    if live:
+        parts.append("--- Zijing LIVE-RULES.md (CEO training; highest priority) ---\n" + live)
+    if sop:
+        parts.append("--- customer-service-sop (customer-facing slices) ---\n" + sop)
+    return "\n\n".join(parts)
 
 
 def zijing_quick_reply(message: str, *, contact_name: str = "") -> str | None:

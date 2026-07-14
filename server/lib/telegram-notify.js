@@ -91,10 +91,71 @@ function isEnabled() {
   return config().enabled;
 }
 
+/**
+ * Send a photo (or document fallback) to CEO Telegram.
+ * @param {{ buffer: Buffer, filename?: string, caption?: string, mimeType?: string, asDocument?: boolean }} opts
+ */
+async function sendTelegramMedia(opts = {}) {
+  const cfg = config();
+  if (!cfg.enabled) {
+    return { ok: false, skipped: true };
+  }
+  const buffer = opts.buffer;
+  if (!buffer || !Buffer.isBuffer(buffer) || !buffer.length) {
+    return { ok: false, error: 'empty_buffer' };
+  }
+  const mimeType = opts.mimeType || 'image/jpeg';
+  const filename = opts.filename || 'media.bin';
+  const caption = String(opts.caption || '').slice(0, 1024);
+  const asDocument = Boolean(opts.asDocument) || !mimeType.startsWith('image/');
+  const method = asDocument ? 'sendDocument' : 'sendPhoto';
+  const field = asDocument ? 'document' : 'photo';
+
+  const form = new FormData();
+  form.append('chat_id', cfg.chatId);
+  if (caption) form.append('caption', caption);
+  form.append(field, new Blob([buffer], { type: mimeType }), filename);
+
+  const res = await fetch(`https://api.telegram.org/bot${cfg.token}/${method}`, {
+    method: 'POST',
+    body: form,
+  });
+  const data = await res.json().catch(() => ({}));
+  if (!res.ok || !data.ok) {
+    const err = new Error(data.description || `Telegram ${method} HTTP ${res.status}`);
+    err.data = data;
+    throw err;
+  }
+  return { ok: true, data, method };
+}
+
+function notifyMedia(opts) {
+  const cfg = config();
+  if (!cfg.enabled) {
+    return Promise.resolve({ ok: false, skipped: true });
+  }
+  return sendTelegramMedia(opts).then((result) => {
+    console.log(`[telegram] ${result.method || 'media'} sent`);
+    return result;
+  }).catch((err) => {
+    console.error('[telegram] media send failed:', err.message);
+    return { ok: false, error: err.message };
+  });
+}
+
+function notifyMediaAsync(opts) {
+  notifyMedia(opts).catch((err) => {
+    console.error('[telegram] media async error:', err.message);
+  });
+}
+
 module.exports = {
   sendTelegram,
   notify,
   notifyAsync,
+  sendTelegramMedia,
+  notifyMedia,
+  notifyMediaAsync,
   isEnabled,
   resetConfig,
 };

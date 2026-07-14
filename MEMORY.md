@@ -130,6 +130,12 @@
 - `normalizeKey` 必须保留 CJK；剥成空串会把尚酷等塌成目录里第一个中文名（例：朗逸）
 - 显式映射：尚酷→Scirocco；详见 `docs/ops/ops-hc250552-scirocco-model-fix.md`
 
+## 子敬训练接线（2026-07-14）
+
+- 自动回复读 `docs/zijing-training/LIVE-RULES.md`（不是只读 session 日记）。
+- Python：`zijing_training_rules_addon()`；+233：`bridge.mjs`；云端第一句：`asia-rule-support` + workspace LIVE-RULES。
+- 说明：`docs/ops/asia-rule-support-zijing-align.md`
+
 ## WhatsApp Cloud CEO 盯梢（2026-07-14）
 
 - Cloud API **不能**扫码登录看聊天；CEO 用 Telegram 实时摘要（方案 B）。

@@ -5,9 +5,11 @@ const assert = require('node:assert/strict');
 
 const {
   maskWa,
-  clip,
-  formatInboundLines,
+  clipLabel,
+  fullText,
+  formatInboundMessage,
   formatOutboundLines,
+  chunkTelegramText,
 } = require('../server/lib/whatsapp-cloud-telegram-monitor.js');
 
 test('maskWa keeps last 4 digits only', () => {
@@ -16,35 +18,50 @@ test('maskWa keeps last 4 digits only', () => {
   assert.equal(maskWa(''), '????');
 });
 
-test('formatInboundLines includes mode and clipped body', () => {
-  const text = formatInboundLines(
-    [{ wa_id: '19402375223', profile_name: 'Test', text: 'Hello AsiaPower', message_type: 'text' }],
+test('formatInboundMessage keeps full customer text (no summary clip)', () => {
+  const long = 'A'.repeat(1200);
+  const text = formatInboundMessage(
+    { wa_id: '19402375223', profile_name: 'Test', text: long, message_type: 'text' },
     'live',
   );
-  assert.match(text, /📲 WhatsApp 客户消息 · live/);
-  assert.match(text, /…5223 \(Test\): Hello AsiaPower/);
+  assert.match(text, /📲 WhatsApp 客户原文 · live/);
+  assert.match(text, /客户: …5223 \(Test\)/);
+  assert.ok(text.includes(long), 'must include full customer body');
+  assert.ok(!text.includes('…A'), 'must not truncate with ellipsis mid-body');
 });
 
-test('formatOutboundLines shows reply result', () => {
+test('formatOutboundLines keeps full customer + reply originals', () => {
+  const customer = 'Hello AsiaPower, I need a gearbox for Corolla 2015 automatic.';
+  const reply = Array.from({ length: 20 }, (_, i) => `Line ${i + 1} of the full reply.`).join('\n');
   const text = formatOutboundLines({
     mode: 'live',
     decision: 'commercial_decision',
     waId: '2203393936',
     profileName: 'Buyer',
     inboundType: 'text',
-    inboundText: 'Hello',
-    replyText: 'Which destination port?',
+    inboundText: customer,
+    replyText: reply,
     sent: true,
     riskBlocked: false,
   });
-  assert.match(text, /🤖 子敬已回复 · live · commercial_decision/);
-  assert.match(text, /…3936 \(Buyer\)/);
-  assert.match(text, /回复: Which destination port\?/);
-  assert.match(text, /结果: 发送成功/);
+  assert.match(text, /🤖 子敬原文回复/);
+  assert.ok(text.includes(customer));
+  assert.ok(text.includes(reply));
+  assert.match(text, /—— 客户原文 ——/);
+  assert.match(text, /—— 子敬原文 ——/);
 });
 
-test('clip truncates long text', () => {
-  assert.equal(clip('abc'), 'abc');
-  assert.ok(clip('x'.repeat(400), 50).endsWith('…'));
-  assert.ok(clip('x'.repeat(400), 50).length <= 50);
+test('fullText preserves newlines', () => {
+  assert.equal(fullText('  hi\nthere  '), 'hi\nthere');
+});
+
+test('clipLabel only shortens names', () => {
+  assert.equal(clipLabel('abc'), 'abc');
+  assert.ok(clipLabel('x'.repeat(80), 40).endsWith('…'));
+});
+
+test('chunkTelegramText splits overlimit', () => {
+  const parts = chunkTelegramText('x'.repeat(5000), 3900);
+  assert.ok(parts.length >= 2);
+  assert.ok(parts.every((p) => p.length <= 3920));
 });
