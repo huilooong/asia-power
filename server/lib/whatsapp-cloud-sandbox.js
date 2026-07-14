@@ -479,6 +479,15 @@ async function handleSandboxInbound(rootDir, normalized) {
   // Mark read (best-effort)
   await markAsRead({ phoneNumberId, messageId: normalized.message_id });
 
+  // Phase 1b: image VIN OCR / voice STT → merge into text before APSales brain.
+  try {
+    const { recognizeInboundMedia, applyRecognitionToNormalized } = require('./whatsapp-cloud-media-recognition');
+    const recognized = await recognizeInboundMedia(normalized);
+    applyRecognitionToNormalized(normalized, recognized);
+  } catch {
+    /* Business First — recognition must never block reply */
+  }
+
   let gen = generateReplyViaPython(normalized);
   let replyText = '';
   let decision = 'apsales';

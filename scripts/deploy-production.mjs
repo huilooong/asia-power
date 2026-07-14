@@ -522,6 +522,15 @@ function deployApsalesOpenClaw() {
     `${ROOT}/server/lib/asiapower-evidence.js`,
     `${REMOTE}:/root/.openclaw/workspace/AsiaPower/server/lib/asiapower-evidence.js`,
   );
+  // Phase 1c: +233 bridge retainOrDiscardPhoto (same module as +86 Cloud API)
+  rsync(
+    `${ROOT}/server/lib/customer-photo-archive.js`,
+    `${REMOTE}:/root/.openclaw/workspace/AsiaPower/server/lib/customer-photo-archive.js`,
+  );
+  rsync(
+    `${ROOT}/server/lib/media-optimize.js`,
+    `${REMOTE}:/root/.openclaw/workspace/AsiaPower/server/lib/media-optimize.js`,
+  );
   rsync(
     `${ROOT}/scripts/apsales-media-vin-ocr.py`,
     `${REMOTE}:/root/.openclaw/workspace/AsiaPower/scripts/apsales-media-vin-ocr.py`,

@@ -1,13 +1,30 @@
 import fs from "node:fs/promises";
 import fssync from "node:fs";
 import path from "node:path";
+import { createRequire } from "node:module";
 import { fileURLToPath } from "node:url";
 import { spawn } from "node:child_process";
 import { startApsalesWhatsAppSession } from "./apsales-whatsapp-session.mjs";
 import { recordInboundForEvidence, recordReplyForEvidence } from "./evidence-hook.mjs";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
+const _require = createRequire(import.meta.url);
 const WORKSPACE = "/root/.openclaw/workspace/AsiaPower";
+
+function loadRetainOrDiscardPhoto() {
+  const candidates = [
+    path.resolve(__dirname, "../../server/lib/customer-photo-archive.js"),
+    path.join(WORKSPACE, "server/lib/customer-photo-archive.js"),
+  ];
+  for (const candidate of candidates) {
+    try {
+      return _require(candidate).retainOrDiscardPhoto;
+    } catch {
+      /* try next */
+    }
+  }
+  return null;
+}
 const LIVE_RULES_PATH = `${WORKSPACE}/docs/zijing-training/LIVE-RULES.md`;
 const LIVE_RULES_MAX_CHARS = 7000;
 let _liveRulesCache = { mtimeMs: 0, text: "" };
@@ -58,8 +75,6 @@ const MEDIA_MAX_BYTES = Number.parseInt(process.env.APSALES_MEDIA_MAX_BYTES || S
 const AUDIO_MAX_BYTES = Number.parseInt(process.env.APSALES_AUDIO_MAX_BYTES || String(8 * 1024 * 1024), 10);
 const TELEGRAM_TOKEN_PATH = process.env.TELEGRAM_BOT_TOKEN_FILE || "/root/.openclaw/credentials/telegram-bot-token";
 const TELEGRAM_CHAT_ID = process.env.TELEGRAM_CHAT_ID || "8918522756";
-void __dirname;
-
 function log(message, data = {}) {
   console.log(JSON.stringify({ ts: new Date().toISOString(), message, ...data }));
 }
@@ -721,8 +736,22 @@ async function buildMediaContext(message, session, senderId) {
     }));
   }
 
-  if (vinDecode.status === "success") {
-    await fs.unlink(download.path).catch(() => {});
+  // Phase 1c: keep VIN photos (and up to N key photos); stop deleting on OCR success.
+  const retainOrDiscardPhoto = loadRetainOrDiscardPhoto();
+  if (typeof retainOrDiscardPhoto === "function") {
+    await retainOrDiscardPhoto({
+      workspace: WORKSPACE,
+      customerId: `wa:${String(senderId || "").replace(/^\+/, "").replace(/\D/g, "")}`,
+      tmpPath: download.path,
+      hasVin: vinDecode.status === "success",
+      vin: bestId,
+      sourceLine: "+233",
+      ext: (download.mimeType || "").includes("png") ? "png" : "jpg",
+    }).catch((err) => log("photo archive failed", {
+      error: err instanceof Error ? err.message : String(err),
+    }));
+  } else {
+    log("photo archive unavailable — leaving media file", { path: download.path });
   }
 
   return {
