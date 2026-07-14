@@ -12,6 +12,7 @@ import shutil
 import subprocess
 import sys
 import tempfile
+import time
 from pathlib import Path
 from typing import Any
 
@@ -74,7 +75,7 @@ def _is_valid_vin(vin: str) -> bool:
     return _vin_check_digit_ok(v)
 
 
-def _cli_tesseract(image: Image.Image, *, psm: str, whitelist: str | None = None) -> str:
+def _cli_tesseract(image: Image.Image, *, psm: str, whitelist: str | None = None, timeout: float = 10.0) -> str:
     tesseract = shutil.which("tesseract")
     if not tesseract:
         return ""
@@ -85,7 +86,7 @@ def _cli_tesseract(image: Image.Image, *, psm: str, whitelist: str | None = None
         if whitelist:
             cmd.extend(["-c", f"tessedit_char_whitelist={whitelist}"])
         try:
-            proc = subprocess.run(cmd, check=False, capture_output=True, text=True, timeout=45)
+            proc = subprocess.run(cmd, check=False, capture_output=True, text=True, timeout=timeout)
         except (OSError, subprocess.TimeoutExpired):
             return ""
         return (proc.stdout or "").strip()
@@ -115,20 +116,33 @@ def _score_plate_text(text: str) -> int:
     return score
 
 
+_OCR_WALL_BUDGET_SECONDS = 20.0
+
+
 def _best_orientation_text(image: Image.Image) -> str:
     best_text = ""
     best_score = -1
+    deadline = time.monotonic() + _OCR_WALL_BUDGET_SECONDS
     # Sideways phone photos of door plates are usually 90/270.
     for angle in (90, 270, 0, 180):
+        if time.monotonic() >= deadline:
+            break
         rotated = image if angle == 0 else image.rotate(angle, expand=True)
         chunks: list[str] = []
         for variant in _variants(rotated)[:2]:
-            chunks.append(_cli_tesseract(variant, psm="6"))
+            remaining = deadline - time.monotonic()
+            if remaining <= 0:
+                break
+            chunks.append(_cli_tesseract(variant, psm="6", timeout=min(10.0, remaining)))
+            remaining = deadline - time.monotonic()
+            if remaining <= 0:
+                break
             chunks.append(
                 _cli_tesseract(
                     variant,
                     psm="6",
                     whitelist="ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-.:/",
+                    timeout=min(10.0, remaining),
                 )
             )
         merged = "\n".join(t for t in chunks if t)
