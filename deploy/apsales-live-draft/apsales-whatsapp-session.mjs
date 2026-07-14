@@ -22,10 +22,22 @@ import {
   y as extractText,
 } from "/root/.openclaw/extensions/whatsapp/dist/send-api-CFbAgIbn.js";
 import { r as waitForWaConnection, t as createWaSocket } from "/root/.openclaw/extensions/whatsapp/dist/session-CoxlXm2K.js";
-import { formatLocationText } from "openclaw/plugin-sdk/channel-inbound";
 
 const ALLOWED_IMAGE_MIME = new Set(["image/jpeg", "image/jpg", "image/png", "image/webp"]);
 const DEFAULT_MAX_BYTES = 8 * 1024 * 1024;
+
+/** Avoid importing openclaw package name from this extension dir (no package root). */
+function formatLocationText(location) {
+  if (!location || typeof location !== "object") return "";
+  const lat = location.degreesLatitude ?? location.latitude;
+  const lon = location.degreesLongitude ?? location.longitude;
+  const parts = [
+    location.name,
+    location.address,
+    lat != null && lon != null ? `${lat},${lon}` : undefined,
+  ].filter(Boolean);
+  return parts.join(" | ");
+}
 
 function isRecord(value) {
   return Boolean(value && typeof value === "object");
