@@ -516,6 +516,22 @@ function plateSuccessReply(mediaContext) {
   return `Got it — ${bits.join(" / ")}. Do you need the engine or the half-cut?`;
 }
 
+// Deterministic path for the "image message, but no usable plate/VIN read" case.
+// This used to fall through to runOpenClawReply(), which (a) can take 90-100s+
+// end-to-end when the LLM path is slow or rate-limited, and (b) has a known bug
+// where stale conversation history overrides fresh (even successful) context —
+// so leaving it wired for the failure/uncertain case too was inconsistent and
+// meant the exact customers with the least clear photos waited the longest for
+// the least personalized reply anyway. Mirrors plateSuccessReply(): instant,
+// deterministic, no dependency on chat history or LLM availability.
+function plateFailureReply(mediaContext) {
+  if (mediaContext?.message_type !== "image") return null;
+  const status = mediaContext?.vin_decode?.status;
+  if (status === "success") return null; // handled by plateSuccessReply
+  if (!status) return null; // not a media/VIN-decode attempt at all
+  return "Got your photo — I couldn't read the plate clearly. Could you send a clearer photo of the VIN/frame number, or type it here?";
+}
+
 async function handleMessage(message, state, session) {
   const startedAt = Date.now();
   const key = message.messageId || `${message.fromJid}:${message.observedAt}:${message.text}`;
@@ -567,6 +583,26 @@ async function handleMessage(message, state, session) {
         await appendActivity(
           "apsales_plate_direct_reply_sent",
           `客户 ${senderId}: ${direct}`,
+          "sent",
+        );
+        return;
+      }
+
+      const failDirect = plateFailureReply(mediaContext);
+      if (failDirect) {
+        const result = await session.sendText(senderId, failDirect);
+        log("plate fallback direct reply sent", {
+          senderId,
+          messageId: message.messageId,
+          whatsappMessageId: result?.messageId || "",
+          elapsedMs: Date.now() - startedAt,
+          reply: failDirect,
+          decodeStatus: mediaContext?.vin_decode?.status || null,
+          decodeError: mediaContext?.vin_decode?.error || null,
+        });
+        await appendActivity(
+          "apsales_plate_fallback_direct_reply_sent",
+          `客户 ${senderId}: ${failDirect}`,
           "sent",
         );
         return;
