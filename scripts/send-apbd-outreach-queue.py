@@ -97,6 +97,10 @@ def main() -> int:
     for path, record in _iter_queue_records():
         if record.get("approval_status") == "sent":
             continue
+        # Hard gate: never send unless explicitly approved (Track B / three-tracks).
+        # Legacy runs treated any non-sent row as sendable — that bypassed CEO approval.
+        if str(record.get("approval_status") or "").strip().lower() != "approved":
+            continue
         email = normalize_email(record.get("public_email") or "")
         if not email or "@" not in email or "not published" in email:
             continue

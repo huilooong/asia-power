@@ -16,6 +16,32 @@ def _now() -> str:
     return datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M UTC")
 
 
+def should_draft_outreach_candidate(candidate: dict[str, Any]) -> bool:
+    """Whether growth autopilot should create an outreach draft for this candidate.
+
+    Rules (Track C / growth-master-plan 2026-07-15):
+    - Always allow priority=high (any source/channel that scan_outreach_candidates emits).
+    - Also allow priority=medium when source=website_lead AND channel=email
+      (website form backlog: most leads are intent price/whatsapp → medium forever).
+    - Never draft website_lead on non-email channels (CEO: email only for backlog).
+    """
+    source = str(candidate.get("source") or "")
+    channel = str(candidate.get("channel") or "")
+    priority = str(candidate.get("priority") or "")
+
+    if source == "website_lead" and channel != "email":
+        return False
+    if priority == "high":
+        return True
+    if (
+        source == "website_lead"
+        and channel == "email"
+        and priority == "medium"
+    ):
+        return True
+    return False
+
+
 def autopilot_enabled() -> bool:
     return os.getenv("APSALES_GROWTH_AUTOPILOT", "0").strip() == "1"
 
@@ -194,7 +220,7 @@ def run_growth_autopilot() -> dict[str, Any]:
             for candidate in scan_outreach_candidates(limit=40):
                 if drafted >= max_outreach:
                     break
-                if candidate.get("priority") != "high":
+                if not should_draft_outreach_candidate(candidate):
                     continue
                 cid = candidate.get("candidate_id")
                 if not cid or cid in pending_ids:
