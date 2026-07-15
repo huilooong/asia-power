@@ -15,6 +15,7 @@ import {
   classifyFromMeMessage,
 } from "./apsales-human-visibility.mjs";
 import { parseAgentReply, buildExceptionFallback } from "./apsales-parse-agent-reply.mjs";
+import { notifyGhanaStaffIfHandingOff } from "./ghana-staff-handoff.mjs";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const _require = createRequire(import.meta.url);
@@ -84,6 +85,10 @@ const MEDIA_MAX_BYTES = Number.parseInt(process.env.APSALES_MEDIA_MAX_BYTES || S
 const AUDIO_MAX_BYTES = Number.parseInt(process.env.APSALES_AUDIO_MAX_BYTES || String(8 * 1024 * 1024), 10);
 const TELEGRAM_TOKEN_PATH = process.env.TELEGRAM_BOT_TOKEN_FILE || "/root/.openclaw/credentials/telegram-bot-token";
 const TELEGRAM_CHAT_ID = process.env.TELEGRAM_CHAT_ID || "8918522756";
+const GHANA_SUPPORT_CONTACT_LOCAL =
+  process.env.APSALES_GHANA_SUPPORT_CONTACT_LOCAL || "054 913 5916";
+const GHANA_SUPPORT_CONTACT_E164 =
+  process.env.APSALES_GHANA_SUPPORT_CONTACT_E164 || "+233549135916";
 function log(message, data = {}) {
   console.log(JSON.stringify({ ts: new Date().toISOString(), message, ...data }));
 }
@@ -335,7 +340,7 @@ async function runOpenClawReply({ text, senderId, messageId, chatId, observedAt,
       inventory_matches: inventoryMatches || [],
       confirmed_vin: knownVin,
       customer_message: text,
-      support_contact: String(senderId || "").startsWith("+233") ? "054 913 5916" : null,
+      support_contact: String(senderId || "").startsWith("+233") ? GHANA_SUPPORT_CONTACT_LOCAL : null,
     }),
   ].filter(Boolean).join("\n");
 
@@ -1197,6 +1202,35 @@ async function handleMessage(message, state, session) {
         `客户 ${senderId}: Gateway run=${generated.runId} session=${generated.sessionKey} model=${generated.model}`,
         "sent",
       );
+      // Fire-and-forget: notify Ghana staff when agent shared their contact.
+      notifyGhanaStaffIfHandingOff({
+        senderId,
+        replyText: generated.reply,
+        workspace: WORKSPACE,
+        session,
+        contactLocal: GHANA_SUPPORT_CONTACT_LOCAL,
+        contactE164: GHANA_SUPPORT_CONTACT_E164,
+      })
+        .then((handoff) => {
+          if (handoff?.notified) {
+            log("ghana staff handoff notified", { senderId, contactE164: GHANA_SUPPORT_CONTACT_E164 });
+            return appendActivity(
+              "apsales_ghana_staff_handoff_notified",
+              `客户 ${senderId}: 已通知加纳同事 ${GHANA_SUPPORT_CONTACT_E164}`,
+              "sent",
+            );
+          }
+          if (handoff?.error) {
+            log("ghana staff handoff skipped", { senderId, error: handoff.error });
+          }
+          return null;
+        })
+        .catch((err) =>
+          log("ghana staff handoff failed", {
+            senderId,
+            error: err instanceof Error ? err.message : String(err),
+          }),
+        );
       if (generated.needsPriceConfirmation) {
         await sendTelegram(
           `💰 客户询价，网站上没有这个价格（或超出5%自主让利权限），需要你确认\n客户: ${senderId}\n客户说: ${text.slice(0, 300)}\nbot 回复: ${generated.reply}\nGateway run: ${generated.runId}\nsession: ${generated.sessionKey}`,
