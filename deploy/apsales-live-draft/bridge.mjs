@@ -14,6 +14,7 @@ import {
   recentTeamRepliesForPrompt,
   classifyFromMeMessage,
 } from "./apsales-human-visibility.mjs";
+import { parseAgentReply, buildExceptionFallback } from "./apsales-parse-agent-reply.mjs";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const _require = createRequire(import.meta.url);
@@ -141,20 +142,6 @@ function salesSessionKey(senderId) {
   const e164 = String(senderId || "").replace(/[^\d+]/g, "");
   if (!/^\+\d{7,15}$/.test(e164)) throw new Error("invalid_customer_e164");
   return `agent:sales-agent:whatsapp:${e164}`;
-}
-
-function parseAgentReply(text) {
-  const raw = String(text || "").trim();
-  const fenced = raw.match(/^```(?:json)?\s*([\s\S]*?)\s*```$/i);
-  let payload;
-  try {
-    payload = JSON.parse(fenced ? fenced[1] : raw);
-  } catch {
-    throw new Error("openclaw_reply_not_json");
-  }
-  const reply = String(payload?.customer_reply || "").trim();
-  if (!reply || reply.length > 500) throw new Error("openclaw_reply_invalid");
-  return { reply, needsPriceConfirmation: payload?.needs_price_confirmation === true };
 }
 
 function killProcessTree(child) {
@@ -1236,29 +1223,18 @@ async function handleMessage(message, state, session) {
     }
   } catch (err) {
     const error = err instanceof Error ? err.message : String(err);
-    log("handler failed", { senderId, messageId: message.messageId, replyBrain: REPLY_BRAIN, error });
+    const rawText = err && typeof err === "object" && err.rawText ? String(err.rawText).slice(0, 1000) : undefined;
+    log("handler failed", {
+      senderId,
+      messageId: message.messageId,
+      replyBrain: REPLY_BRAIN,
+      error,
+      ...(rawText ? { rawText } : {}),
+    });
     await appendActivity("apsales_whatsapp_exception", `客户 ${senderId}: ${error}`, "error");
     if (REPLY_BRAIN === "openclaw") {
-      // Rate-limit / LLM failure: still try to keep the sales thread alive.
-      const typed = extractVinOrFrameFromText(text);
-      const lower = String(text || "").toLowerCase();
-      const wantsGear =
-        /\b(gear\s*box|gearbox|transmission|auto|manual)\b/i.test(lower);
-      let fallback;
-      if (typed?.id) {
-        fallback = wantsGear
-          ? `Got it — ${typed.id}. Real stock, photos and VIN are on www.asia-power.com — for the gearbox, automatic or manual, and which city/port?`
-          : `Got it — ${typed.id}. See real stock, photos and VIN on www.asia-power.com — engine, gearbox, or half-cut?`;
-      } else if (wantsGear) {
-        fallback =
-          "Real stock, photos and VIN are on www.asia-power.com — for the gearbox, automatic or manual, and please share the VIN/frame so I can match the right unit.";
-      } else if (mediaPlaceholder) {
-        fallback =
-          "Got your photo — you can see our real stock, photos and VIN on www.asia-power.com. Could you also send the VIN or chassis number?";
-      } else {
-        fallback =
-          "Please check our real stock, photos, VIN and custom half-cuts at www.asia-power.com — what VIN or model are you looking for?";
-      }
+      // Rate-limit / LLM failure: keep the sales thread alive; never re-ask VIN if dealState has it.
+      const fallback = buildExceptionFallback(text, mediaPlaceholder, dealState);
       try {
         const result = await sendCustomerText(session, senderId, fallback);
         recordReplyForEvidence({
@@ -1278,6 +1254,8 @@ async function handleMessage(message, state, session) {
           messageId: message.messageId,
           whatsappMessageId: result?.messageId || "",
           error,
+          dealVin: dealState?.vin || dealState?.frame_no || null,
+          ...(rawText ? { rawText } : {}),
         });
         await appendActivity(
           "apsales_openclaw_fallback_sent",

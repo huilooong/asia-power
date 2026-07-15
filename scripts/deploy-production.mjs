@@ -548,6 +548,10 @@ function deployApsalesOpenClaw() {
     `${REMOTE}:/root/.openclaw/extensions/apsales-live-draft/apsales-human-visibility.mjs`,
   );
   rsync(
+    `${ROOT}/deploy/apsales-live-draft/apsales-parse-agent-reply.mjs`,
+    `${REMOTE}:/root/.openclaw/extensions/apsales-live-draft/apsales-parse-agent-reply.mjs`,
+  );
+  rsync(
     `${ROOT}/server/lib/asiapower-evidence.js`,
     `${REMOTE}:/root/.openclaw/workspace/AsiaPower/server/lib/asiapower-evidence.js`,
   );
