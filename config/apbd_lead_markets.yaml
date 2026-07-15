@@ -1,0 +1,108 @@
+# APBD Lead Finder · 统一市场查询（Maps Places）
+# 2026-07-15：合并 lead_finder PHASE1 + apsales_maps_prospect.yaml，查询去重。
+# 目标：同一套市场只跑一遍，减少免费 Demo Key 的 Places 调用次数。
+# CEO 约束：不升级付费 Key；撞额度只记录，不在此开账单。
+
+version: 2
+updated: "2026-07-15"
+canonical_for: lead_finder
+deprecated_parallel_path: "customer_gateway/maps_prospect.py run_maps_prospect_batch（已停用独立跑批）"
+
+search:
+  max_results_per_query: 5
+  # 单次发现上限（原硬编码 30）；略降以拉长免费额度可用天数
+  max_queries_per_run: 20
+  max_total_leads: 40
+
+markets:
+  - id: ghana_accra
+    country: Ghana
+    city: Accra
+    queries:
+      - "engine importer Accra Ghana"
+      - "auto parts wholesaler Accra"
+      - "used auto parts dealer Accra"
+      - "car dismantling yard Accra"
+      - "fleet maintenance company Accra"
+      - "commercial vehicle workshop Accra"
+      - "auto parts dealer Accra"
+      - "tokunbo spare parts Accra"
+
+  - id: nigeria_lagos
+    country: Nigeria
+    city: Lagos
+    queries:
+      - "engine importer Lagos Nigeria"
+      - "auto parts importer Lagos"
+      - "tokunbo spare parts wholesaler Lagos"
+      - "auto dismantler Lagos"
+      - "fleet maintenance Lagos"
+      - "truck parts dealer Lagos"
+      - "auto parts dealer Lagos"
+      - "tokunbo spare parts Lagos"
+      - "car dismantling yard Lagos"
+
+  - id: nigeria_abuja
+    country: Nigeria
+    city: Abuja
+    queries:
+      - "auto parts importer Abuja"
+      - "used car parts dealer Abuja"
+      - "commercial vehicle workshop Abuja"
+      - "auto parts dealer Abuja"
+      - "tokunbo spare parts Abuja"
+
+  - id: kenya_nairobi
+    country: Kenya
+    city: Nairobi
+    queries:
+      - "engine importer Nairobi Kenya"
+      - "auto parts wholesaler Nairobi"
+      - "car dismantling yard Kenya"
+      - "fleet maintenance Nairobi"
+      - "spare parts importer Nairobi"
+      - "auto parts dealer Nairobi"
+
+  - id: tanzania_dar
+    country: Tanzania
+    city: Dar es Salaam
+    queries:
+      - "auto parts importer Dar es Salaam"
+      - "used auto parts wholesaler Tanzania"
+      - "commercial vehicle workshop Dar es Salaam"
+      - "engine parts dealer Tanzania"
+      - "auto parts dealer Dar es Salaam"
+      - "spare parts importer Tanzania"
+
+  - id: uae_dubai
+    country: UAE
+    city: Dubai
+    queries:
+      - "used auto parts wholesale Dubai"
+      - "engine importer Dubai UAE"
+      - "auto dismantler Dubai"
+      - "commercial vehicle spare parts Dubai"
+      - "fleet maintenance company Dubai"
+      - "auto parts wholesale Dubai"
+      - "used car parts dealer Dubai"
+
+  # 仅来自原 maps_prospect YAML（lead_finder 原先没有）
+  - id: saudi_riyadh
+    country: Saudi Arabia
+    city: Riyadh
+    queries:
+      - "auto spare parts Riyadh"
+
+  - id: malaysia_kl
+    country: Malaysia
+    city: Kuala Lumpur
+    queries:
+      - "half cut car parts Malaysia"
+      - "auto parts dealer Kuala Lumpur"
+
+  - id: indonesia_jakarta
+    country: Indonesia
+    city: Jakarta
+    queries:
+      - "auto parts dealer Jakarta"
+      - "bekas mobil spare parts Jakarta"

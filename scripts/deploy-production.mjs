@@ -496,13 +496,25 @@ function deployApsales() {
     `${ROOT}/scripts/apsales-social-reply-watch.py`,
     `${ROOT}/scripts/apsales-record-distribution-action.py`,
     `${ROOT}/scripts/apsales-distribution-daily-digest.py`,
+    `${ROOT}/scripts/apsales-maps-leads-run.py`,
     `${AP}/scripts/`,
   ]);
   run('rsync', ['-av',
     `${ROOT}/customer_gateway/growth_autopilot.py`,
     `${ROOT}/customer_gateway/outreach_engine.py`,
     `${ROOT}/customer_gateway/distribution_progress.py`,
+    `${ROOT}/customer_gateway/maps_prospect.py`,
     `${AP}/customer_gateway/`,
+  ]);
+  // Track B 2026-07-15: unified Maps markets YAML + lead_finder (stops dual Places burn)
+  run('rsync', ['-av',
+    `${ROOT}/config/apbd_lead_markets.yaml`,
+    `${ROOT}/config/apsales_maps_prospect.yaml`,
+    `${AP}/config/`,
+  ]);
+  run('rsync', ['-av', '--exclude', '__pycache__',
+    `${ROOT}/agents/apbd/`,
+    `${AP}/agents/apbd/`,
   ]);
   run('rsync', ['-av',
     `${ROOT}/sales_coach/`,

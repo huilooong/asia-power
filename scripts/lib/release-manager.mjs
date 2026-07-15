@@ -107,9 +107,14 @@ export const TARGET_SOURCE_FILES = {
     'scripts/apsales-social-reply-watch.py',
     'scripts/apsales-record-distribution-action.py',
     'scripts/apsales-distribution-daily-digest.py',
+    'scripts/apsales-maps-leads-run.py',
     'customer_gateway/growth_autopilot.py',
     'customer_gateway/outreach_engine.py',
     'customer_gateway/distribution_progress.py',
+    'customer_gateway/maps_prospect.py',
+    'config/apbd_lead_markets.yaml',
+    'config/apsales_maps_prospect.yaml',
+    'agents/apbd',
   ],
   'apsales-openclaw': [
     'deploy/apsales-live-draft/bridge.mjs',
@@ -220,6 +225,9 @@ export const TARGET_REMOTE_PATHS = {
   apsales: [
     '/root/.openclaw/workspace/AsiaPower/scripts',
     '/root/.openclaw/workspace/AsiaPower/customer_gateway',
+    '/root/.openclaw/workspace/AsiaPower/config/apbd_lead_markets.yaml',
+    '/root/.openclaw/workspace/AsiaPower/config/apsales_maps_prospect.yaml',
+    '/root/.openclaw/workspace/AsiaPower/agents/apbd',
   ],
   'apsales-openclaw': [
     '/root/.openclaw/extensions/apsales-live-draft/bridge.mjs',

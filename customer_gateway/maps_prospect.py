@@ -623,6 +623,23 @@ def create_maps_outreach_draft(lead: dict[str, Any]) -> dict[str, Any] | None:
     return record
 
 
+def maps_prospect_batch_deprecated() -> bool:
+    """Independent Maps batch is merged into lead_finder; skip Places burn by default.
+
+    Escape hatch: FORCE_LEGACY_MAPS_PROSPECT=1 (CEO emergency only).
+    """
+    if os.getenv("FORCE_LEGACY_MAPS_PROSPECT", "").strip() == "1":
+        return False
+    cfg = load_maps_config()
+    if cfg.get("deprecated") is True:
+        return True
+    fallback = cfg.get("fallback") if isinstance(cfg.get("fallback"), dict) else {}
+    # Default: treat missing/false enabled as deprecated when note points at lead_finder.
+    if fallback.get("enabled") is False:
+        return True
+    return False
+
+
 def run_maps_prospect_batch(
     *,
     force: bool = False,
@@ -630,7 +647,20 @@ def run_maps_prospect_batch(
     max_leads: int | None = None,
     max_drafts: int | None = None,
 ) -> dict[str, Any]:
-    """Search Maps, save leads, queue email drafts (no auto-send)."""
+    """Search Maps, save leads, queue email drafts (no auto-send).
+
+    Deprecated 2026-07-15: markets live in config/apbd_lead_markets.yaml via lead_finder.
+    Skips Places calls unless FORCE_LEGACY_MAPS_PROSPECT=1 (even when force=True).
+    """
+    if maps_prospect_batch_deprecated():
+        return {
+            "ok": True,
+            "skipped": True,
+            "reason": "deprecated_merged_into_lead_finder",
+            "canonical": "agents/apbd/lead_finder.py + config/apbd_lead_markets.yaml",
+            "escape_hatch": "FORCE_LEGACY_MAPS_PROSPECT=1",
+        }
+
     should, reason = should_run_maps_fallback(force=force, social_idle=social_idle)
     if not should:
         return {"ok": True, "skipped": True, "reason": reason}

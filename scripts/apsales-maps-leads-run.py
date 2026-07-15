@@ -4,6 +4,10 @@
 Saves leads → memory/customer_gateway/maps_leads.jsonl
 Email drafts → memory/customer_gateway/outreach_queue/ (CEO approval only, NO auto-send)
 
+DEPRECATED 2026-07-15: independent batch is merged into lead_finder
+(config/apbd_lead_markets.yaml). This script now exits skipped unless
+FORCE_LEGACY_MAPS_PROSPECT=1. Do not suggest a paid Google Cloud key.
+
 Usage:
   python3 scripts/apsales-maps-leads-run.py
   python3 scripts/apsales-maps-leads-run.py --force

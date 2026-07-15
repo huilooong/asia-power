@@ -1,17 +1,23 @@
-# 子敬 · Google Maps 客户开发（FB 受限时备用）
-# CEO 可编辑搜索词；每日上限防过量
+# 子敬 · Google Maps 客户开发（已停用独立跑批）
+# 2026-07-15：市场查询已合并进 config/apbd_lead_markets.yaml，由 agents/apbd/lead_finder.py 统一跑。
+# 本文件保留 markets 作历史对照；run_maps_prospect_batch 默认跳过，不再消耗 Places 额度。
+# 紧急恢复独立跑批：FORCE_LEGACY_MAPS_PROSPECT=1（CEO 明示后才用）。
+# CEO 约束：不升级付费 Google Cloud Key。
 
-version: 1
-updated: "2026-07-04"
+version: 2
+updated: "2026-07-15"
+deprecated: true
+canonical_config: "config/apbd_lead_markets.yaml"
+canonical_runner: "agents/apbd/lead_finder.py"
 
 daily_caps:
   leads: 10
   email_drafts: 5
 
-# 触发条件：fb_platform_limits 有 active pause，或 APSALES_MAPS_FALLBACK=1
+# 触发条件：已关闭。独立 Maps 跑批不再与 lead_finder 并行烧额度。
 fallback:
-  enabled: true
-  skip_if_no_fb_block: false  # alternate-run 空闲时也允许跑
+  enabled: false
+  skip_if_no_fb_block: false
 
 ceo_voice:
   name: "Zijing Lu"
@@ -20,6 +26,7 @@ ceo_voice:
   catalog_url: "https://asia-power.com/half-cuts/"
   whatsapp: "+86 166 3880 1930"
 
+# 历史市场列表（已并入 apbd_lead_markets.yaml，此处仅归档）
 markets:
   - id: nigeria_lagos
     country: Nigeria
@@ -86,10 +93,12 @@ markets:
 
 search:
   max_results_per_query: 5
+  # Prefer Places API (New). Browser fallback is last resort and must stay headless.
   prefer_places_api: true
-  browser_headless: true  # never auto-open visible Maps on Mac; set ASIAPOWER_ALLOW_VISIBLE_BROWSER=1 to override
+  browser_fallback: true
+  browser_headless: true
+  browser_timeout_ms: 45000
 
 email:
   only_with_email: true
   scrape_website_for_email: true
-  subject_template: "Custom dismantling from China — half-cuts for {city} dealers"

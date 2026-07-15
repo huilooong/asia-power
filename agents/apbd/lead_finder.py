@@ -13,8 +13,11 @@ from urllib.parse import urlparse
 
 from agents.apbd.config import day_runtime_dir
 
-DEDUP_FILE = Path(__file__).resolve().parent.parent.parent / "runtime" / "apbd" / "lead_dedup_keys.json"
+ROOT = Path(__file__).resolve().parent.parent.parent
+DEDUP_FILE = ROOT / "runtime" / "apbd" / "lead_dedup_keys.json"
+MARKETS_CONFIG_FILE = ROOT / "config" / "apbd_lead_markets.yaml"
 
+# Fallback only if config/apbd_lead_markets.yaml is missing (legacy hardcoded list).
 PHASE1_MARKETS: list[dict[str, Any]] = [
     {
         "country": "Ghana",
@@ -104,6 +107,87 @@ _SUFFIX_RE = re.compile(r"\b(ltd|limited|llc|inc|plc|co\.|company|enterprises|gr
 
 def _now_iso() -> str:
     return datetime.now(timezone.utc).replace(microsecond=0).isoformat()
+
+
+def _norm_query(query: str) -> str:
+    return re.sub(r"\s+", " ", (query or "").strip().lower())
+
+
+def _dedupe_queries(queries: list[Any]) -> list[str]:
+    out: list[str] = []
+    seen: set[str] = set()
+    for raw in queries:
+        q = str(raw or "").strip()
+        if not q:
+            continue
+        key = _norm_query(q)
+        if key in seen:
+            continue
+        seen.add(key)
+        out.append(q)
+    return out
+
+
+def _load_yaml_dict(path: Path) -> dict[str, Any]:
+    if not path.is_file():
+        return {}
+    try:
+        import yaml  # type: ignore
+
+        data = yaml.safe_load(path.read_text(encoding="utf-8"))
+        return data if isinstance(data, dict) else {}
+    except Exception:
+        return {}
+
+
+def load_lead_markets_config() -> dict[str, Any]:
+    """Load canonical markets YAML (merged + query-deduped). Falls back to PHASE1."""
+    cfg = _load_yaml_dict(MARKETS_CONFIG_FILE)
+    search = cfg.get("search") if isinstance(cfg.get("search"), dict) else {}
+    markets_raw = cfg.get("markets") if isinstance(cfg.get("markets"), list) else []
+    markets: list[dict[str, Any]] = []
+    for item in markets_raw:
+        if not isinstance(item, dict):
+            continue
+        country = str(item.get("country") or "").strip()
+        city = str(item.get("city") or "").strip()
+        queries = _dedupe_queries(list(item.get("queries") or []))
+        if not country or not queries:
+            continue
+        markets.append({
+            "id": str(item.get("id") or f"{country}_{city}").strip(),
+            "country": country,
+            "city": city,
+            "queries": queries,
+        })
+    if not markets:
+        markets = [
+            {
+                "id": f"{m.get('country','')}_{m.get('city','')}".strip("_"),
+                "country": m.get("country") or "",
+                "city": m.get("city") or "",
+                "queries": _dedupe_queries(list(m.get("queries") or [])),
+            }
+            for m in PHASE1_MARKETS
+        ]
+        source = "phase1_fallback"
+    else:
+        source = str(MARKETS_CONFIG_FILE.relative_to(ROOT))
+    return {
+        "source": source,
+        "search": {
+            "max_results_per_query": int(search.get("max_results_per_query") or 5),
+            "max_queries_per_run": int(search.get("max_queries_per_run") or 20),
+            "max_total_leads": int(search.get("max_total_leads") or 40),
+        },
+        "markets": markets,
+        "query_count": sum(len(m.get("queries") or []) for m in markets),
+    }
+
+
+def load_phase1_markets() -> list[dict[str, Any]]:
+    """Public helper: markets list for discover_leads (from YAML)."""
+    return list(load_lead_markets_config()["markets"])
 
 
 def normalize_company_name(name: str) -> str:
@@ -273,9 +357,9 @@ def _maps_row_to_lead(row: dict[str, Any], *, query: str) -> dict[str, Any]:
 def discover_leads(
     *,
     markets: list[dict[str, Any]] | None = None,
-    max_results_per_query: int = 5,
-    max_total: int = 100,
-    max_queries: int = 30,
+    max_results_per_query: int | None = None,
+    max_total: int | None = None,
+    max_queries: int | None = None,
 ) -> tuple[list[dict[str, Any]], dict[str, Any]]:
     from agents.apbd.public_sources import PUBLIC_SOURCE_SEARCHERS
     from customer_gateway.maps_prospect import _places_api_key, check_places_api_quota
@@ -283,7 +367,19 @@ def discover_leads(
 
     assert_apbd_no_browser_ui("LeadFinder.discover_leads")
 
-    markets = markets or PHASE1_MARKETS
+    cfg = load_lead_markets_config()
+    search_cfg = cfg["search"]
+    markets = markets or cfg["markets"]
+    if max_results_per_query is None:
+        max_results_per_query = int(search_cfg["max_results_per_query"])
+    if max_total is None:
+        max_total = int(search_cfg["max_total_leads"])
+    if max_queries is None:
+        max_queries = int(search_cfg["max_queries_per_run"])
+
+    # Cross-market query dedupe: same normalized query text only hits Places once per run.
+    run_query_seen: set[str] = set()
+
     seen = load_dedup_keys()
     leads: list[dict[str, Any]] = []
     quota = check_places_api_quota() if _places_api_key() else {"ok": False, "quota_exhausted": False}
@@ -291,6 +387,7 @@ def discover_leads(
         "ok": True,
         "sprint": "SPRINT-001",
         "queries_run": 0,
+        "queries_skipped_dedupe": 0,
         "raw_results": 0,
         "duplicates_skipped": 0,
         "leads_found": 0,
@@ -301,6 +398,10 @@ def discover_leads(
         "api_quota_exhausted": bool(quota.get("quota_exhausted")),
         "discovery_mode": APBD_DISCOVERY_MODE,
         "browser_fallback_disabled": True,
+        "markets_config_source": cfg.get("source"),
+        "markets_query_count": cfg.get("query_count"),
+        "max_queries": max_queries,
+        "max_total": max_total,
     }
 
     if not _places_api_key():
@@ -316,6 +417,11 @@ def discover_leads(
         for query in market.get("queries") or []:
             if len(leads) >= max_total or stats["queries_run"] >= max_queries:
                 break
+            q_key = _norm_query(str(query))
+            if q_key in run_query_seen:
+                stats["queries_skipped_dedupe"] += 1
+                continue
+            run_query_seen.add(q_key)
             stats["queries_run"] += 1
             for source_name, search_fn in PUBLIC_SOURCE_SEARCHERS:
                 if len(leads) >= max_total:
@@ -364,12 +470,18 @@ def save_lead_outputs(leads: list[dict[str, Any]], stats: dict[str, Any], *, day
     csv_path = leads_dir / "daily-leads.csv"
     summary_path = leads_dir / "summary.json"
 
+    market_countries = sorted({
+        str(m.get("country") or "")
+        for m in (load_lead_markets_config().get("markets") or [])
+        if m.get("country")
+    })
+
     payload = {
         "generated_at": _now_iso(),
         "day": day_str,
         "tool": "LeadFinderTool",
         "phase": "1",
-        "markets": ["Ghana", "Nigeria", "Kenya", "Tanzania", "UAE"],
+        "markets": market_countries or ["Ghana", "Nigeria", "Kenya", "Tanzania", "UAE"],
         "lead_count": len(leads),
         "stats": stats,
         "leads": leads,
@@ -432,9 +544,9 @@ def save_lead_outputs(leads: list[dict[str, Any]], stats: dict[str, Any], *, day
 
 def run_lead_finder(
     *,
-    max_results_per_query: int = 5,
-    max_total: int = 100,
-    max_queries: int = 30,
+    max_results_per_query: int | None = None,
+    max_total: int | None = None,
+    max_queries: int | None = None,
 ) -> dict[str, Any]:
     """Discover real public companies — saves leads only, no outreach drafts (handled by APSales/子敬)."""
     leads, stats = discover_leads(

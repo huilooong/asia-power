@@ -55,6 +55,12 @@
 - 429 = 提交/upload-token 限流（非 VIN decode）；VIN 失败查生产 `knowledge-base.js`
 - 状态文件在 `reports/`（如 `qxb-needs-vin-rows.json`、`qxb-batch-progress.json`）
 
+## Google Maps / Places 获客（CEO 2026-07-15）
+
+- **Canonical：** `agents/apbd/lead_finder.py` + `config/apbd_lead_markets.yaml`（已合并原 maps_prospect 查询并去重）。
+- **停用独立跑批：** `customer_gateway/maps_prospect.py` 的 `run_maps_prospect_batch` 默认跳过，避免与 lead_finder 双烧免费额度；紧急恢复仅 `FORCE_LEGACY_MAPS_PROSPECT=1`。
+- **付费红线：** CEO **不想付费**；继续用免费 Demo Key。只做去重减调用；**禁止**主动建议/改成需绑定账单的正式 Google Cloud 生产 Key。撞额度只记录，交 CEO 决定。
+
 ## 🚨 生产部署硬红线（CEO 2026-07-10 · 续费红线）
 
 > **再犯 = 违反公司发布门禁；CEO 已明确：下次再犯不再续费。**
@@ -168,4 +174,12 @@
 
 - 生产 `sales-agent` 用 `openrouter/google/gemini-2.5-flash`（含 qwen / gpt-5.4-mini fallback），**不要**单绑 `zai/glm-4.7-flash`（易 429 导致整线客户「当机」）。
 - 配置在主机 `/root/.openclaw/openclaw.json`（热加载）；备份见 `releases/apsales-hotfixes/`。
+
+## B2B 目录注册（2026-07-15）
+
+- DIYTrade / TradeKey / ExportHub 等：**邮箱验证码 + 图形/人机验证无法全自动闭环**；可从**生产服务器**填表（本机 CDN 常 502/Cloudflare）。
+- **`info@asia-power.com` 未接入 Cloudflare Email Worker**（只接 `sales@` / `inquiry@`）→ 发到 info@ 的验证信 Cursor **读不到**。目录注册统一用 **`sales@asia-power.com`**。
+- DIYTrade + TradeKey：已用 sales@ 注册成功（密码 `memory/customer_gateway/directory-credentials.local.json`）。DIYTrade 邮箱已验证，但需上传营业执照才能出预览模式。
+- Kompass/Europages/ExportHub：DataDome / 人机墙，需真人浏览器。
+- 进度板：`docs/ops/directory-backlink-weekly-progress.md`
 
