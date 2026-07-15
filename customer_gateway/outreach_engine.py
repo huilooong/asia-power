@@ -218,9 +218,20 @@ def save_outreach(record: dict[str, Any]) -> None:
     )
 
 
+def _greeting_name(candidate: dict[str, Any]) -> str:
+    raw = (candidate.get("name") or "").strip()
+    first = raw.split()[0] if raw else ""
+    if not first or first.lower() in {"unknown", "n/a", "na", "test", "none"}:
+        return "there"
+    # Title-case single token; keep ALLCAPS brands/names short as-is if already mixed.
+    if first.isupper() and len(first) <= 6:
+        return first
+    return first[:1].upper() + first[1:].lower()
+
+
 def build_lead_followup_email(candidate: dict[str, Any]) -> tuple[str, str]:
     """Return (subject, body) for a website lead follow-up."""
-    name = (candidate.get("name") or "there").split()[0]
+    name = _greeting_name(candidate)
     country = (candidate.get("country") or "your market").title()
     product = (candidate.get("product") or "").strip()
     product_line = ""
