@@ -1,4 +1,4 @@
-"""CLI: python -m sales_coach [--date YYYY-MM-DD] [--self-improve] [--evidence-summary].
+"""CLI: python -m sales_coach [--date YYYY-MM-DD] [--self-improve] [--evidence-summary] [--rule-proposals].
 
 Sales Coach is READ ONLY over production:
 - never auto-modifies Prompt
@@ -35,7 +35,25 @@ def main(argv: list[str] | None = None) -> int:
         action="store_true",
         help="APSALES-EVIDENCE-001 daily summary (read-only Evidence)",
     )
+    parser.add_argument(
+        "--rule-proposals",
+        action="store_true",
+        help="APSALES-EVIDENCE-001 跨天模式扫描 → 证据打包,不代写规则(Coach Read Only)",
+    )
     args = parser.parse_args(argv)
+
+    if args.rule_proposals:
+        from sales_coach.rule_proposals import run_rule_proposal_scan
+
+        result = run_rule_proposal_scan(write=not args.no_write)
+        if args.json:
+            print(json.dumps(result, ensure_ascii=False, indent=2))
+        elif args.stdout:
+            print(result["markdown"])
+        else:
+            print(f"Rule proposals: {result.get('report_path')}")
+            print(f"patterns={len(result.get('patterns') or [])} read_only={result.get('read_only')}")
+        return 0
 
     if args.evidence_summary:
         result = run_evidence_daily_summary(args.date, write=not args.no_write)
