@@ -183,9 +183,9 @@
       ar: 'السوق العالمي لـ<br><em>مجموعات نقل الحركة المستعملة.</em>',
     },
     'home.v4.hero.sub': {
-      zh: '半切车、发动机与卡车配件 — 中国采购，全球交付。EXW 报价，24 小时响应。',
-      fr: 'Demi-coupes, moteurs et pièces camion — sourcés en Chine, livrés dans le monde. Prix EXW, devis sous 24 h.',
-      ar: 'أنصاف مقطوعة ومحركات وقطع شاحنات — من الصين إلى العالم. أسعار EXW ورد خلال 24 ساعة.',
+      zh: '半切车、发动机与卡车配件 — 中国采购，全球交付。汽车动力总成（非电力设备）。EXW 报价，24 小时响应。',
+      fr: 'Demi-coupes, moteurs et pièces camion — sourcés en Chine, livrés dans le monde. Groupes motopropulseurs auto uniquement (pas d\'équipement électrique). Prix EXW, devis sous 24 h.',
+      ar: 'أنصاف مقطوعة ومحركات وقطع شاحنات — من الصين إلى العالم. مجموعات نقل حركة سيارات فقط (وليست معدات كهربائية). أسعار EXW ورد خلال 24 ساعة.',
     },
     'home.v4.search.placeholder': {
       zh: '按品牌、车型、发动机代码或 HC 编号搜索…',
