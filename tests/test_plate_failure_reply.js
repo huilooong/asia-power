@@ -31,13 +31,56 @@ test('plateFailureReply: dealState.vin uses already-confirmed copy', async () =>
   assert.ok(!/couldn't read the plate clearly/i.test(reply));
 });
 
-test('plateFailureReply: only part_intent without vin/engine still asks for clear photo', async () => {
+test('plateFailureReply: part_intent without vin uses parts-photo copy (not plate ask)', async () => {
   const { plateFailureReply } = await loadHelpers();
   const reply = plateFailureReply(
     { message_type: 'image', vin_decode: { status: 'uncertain' } },
     { part_intent: 'engine' },
   );
+  assert.match(reply, /noted for your engine request/i);
+  assert.ok(!/couldn't read the plate clearly/i.test(reply));
+});
+
+test('plateFailureReply: body-part intent (windscreen) acknowledges part photo', async () => {
+  const { plateFailureReply } = await loadHelpers();
+  const reply = plateFailureReply(
+    { message_type: 'image', vin_decode: { status: 'failed', error: 'no_vin' } },
+    { part_intent: 'windscreen' },
+  );
+  assert.match(reply, /noted for your windscreen request/i);
+  assert.match(reply, /get you a price/i);
+  assert.ok(!/couldn't read the plate clearly/i.test(reply));
+});
+
+test('plateFailureReply: part_intent wins over junk/confirmed vin on OCR fail', async () => {
+  const { plateFailureReply } = await loadHelpers();
+  const reply = plateFailureReply(
+    { message_type: 'image', vin_decode: { status: 'failed' } },
+    { part_intent: 'parts', vin: 'AAAYRWMZ42FJ4A777' },
+  );
+  assert.match(reply, /noted for your parts request/i);
+  assert.ok(!/couldn't read the plate clearly/i.test(reply));
+  assert.ok(!/already have your vehicle confirmed/i.test(reply));
+});
+
+test('plateFailureReply: empty dealState (no part_intent, no vin) keeps unclear-photo copy', async () => {
+  const { plateFailureReply } = await loadHelpers();
+  const reply = plateFailureReply(
+    { message_type: 'image', vin_decode: { status: 'failed', error: 'no_vin' } },
+    {},
+  );
   assert.match(reply, /couldn't read the plate clearly/i);
+});
+
+test('partIntentFromText: body-part list from CEO case maps to parts', async () => {
+  const { partIntentFromText } = await loadHelpers();
+  assert.equal(
+    partIntentFromText('windscreen, driving mirror, side mirror, headlights'),
+    'parts',
+  );
+  assert.equal(partIntentFromText('need a clearer grille photo'), 'grille');
+  assert.equal(partIntentFromText('engine only please'), 'engine');
+  assert.equal(partIntentFromText('hello how are you'), null);
 });
 
 test('plateFailureReply: success status returns null', async () => {

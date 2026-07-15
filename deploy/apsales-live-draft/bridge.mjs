@@ -9,6 +9,7 @@ import { recordInboundForEvidence, recordReplyForEvidence } from "./evidence-hoo
 import {
   noteBotSend,
   plateFailureReply,
+  partIntentFromText,
   nextTeamReplies,
   recentTeamRepliesForPrompt,
   classifyFromMeMessage,
@@ -211,14 +212,6 @@ async function sendCustomerText(session, senderId, text) {
   const result = await session.sendText(senderId, text);
   noteBotSend(senderId, text, result?.messageId);
   return result;
-}
-
-function partIntentFromText(text) {
-  const lower = String(text || "").toLowerCase();
-  if (/\b(half[\s-]?cut|halfcut)\b/.test(lower)) return "half_cut";
-  if (/\b(gear\s*box|gearbox|transmission)\b/.test(lower)) return "gearbox";
-  if (/\b(engine|motor)\b/.test(lower)) return "engine";
-  return null;
 }
 
 async function rememberDealFromContext(senderId, mediaContext, text) {

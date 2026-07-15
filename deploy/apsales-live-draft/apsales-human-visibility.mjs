@@ -73,14 +73,72 @@ export function isBotOutboundEcho(message) {
   return Boolean(incoming && sent && incoming === sent);
 }
 
+/** Human label for dealState.part_intent in customer-facing copy. */
+export function partIntentLabel(intent) {
+  const key = String(intent || "").trim().toLowerCase();
+  const map = {
+    half_cut: "half-cut",
+    gearbox: "gearbox",
+    engine: "engine",
+    windscreen: "windscreen",
+    headlight: "headlight",
+    taillight: "taillight",
+    mirror: "mirror",
+    grille: "grille",
+    bumper: "bumper",
+    hood: "hood",
+    fender: "fender",
+    parts: "parts",
+  };
+  if (map[key]) return map[key];
+  return key ? key.replace(/_/g, " ") : "parts";
+}
+
 /**
- * Bug A: if this photo failed OCR but deal already has a confirmed vehicle, don't ask to resend.
+ * Deterministic part intent from customer text.
+ * Engine/gearbox/half-cut first (inventory match); then body/accessory parts so
+ * later photos are not answered with "couldn't read the plate".
+ */
+export function partIntentFromText(text) {
+  const lower = String(text || "").toLowerCase();
+  if (/\b(half[\s-]?cut|halfcut)\b/.test(lower)) return "half_cut";
+  if (/\b(gear\s*box|gearbox|transmission)\b/.test(lower)) return "gearbox";
+  if (/\b(engine|motor)\b/.test(lower)) return "engine";
+
+  const bodyHits = [];
+  if (/\b(windscreen|windshield)\b/.test(lower)) bodyHits.push("windscreen");
+  if (/\b(head\s*lights?|headlamps?)\b/.test(lower)) bodyHits.push("headlight");
+  if (/\b(tail\s*lights?|taillights?)\b/.test(lower)) bodyHits.push("taillight");
+  if (/\b(side\s*mirror|driving\s*mirror|wing\s*mirror|rear[\s-]?view\s*mirror|mirrors?)\b/.test(lower)) {
+    bodyHits.push("mirror");
+  }
+  if (/\b(grille|grill|front\s*grille)\b/.test(lower)) bodyHits.push("grille");
+  if (/\b(bumper)\b/.test(lower)) bodyHits.push("bumper");
+  if (/\b(bonnet|hood)\b/.test(lower)) bodyHits.push("hood");
+  if (/\b(fender|mudguard)\b/.test(lower)) bodyHits.push("fender");
+  if (/\b(door\s*panel|body\s*part|spare\s*parts?|auto\s*parts?)\b/.test(lower)) bodyHits.push("parts");
+  if (bodyHits.length >= 2) return "parts";
+  if (bodyHits.length === 1) return bodyHits[0];
+  return null;
+}
+
+/**
+ * Image OCR failed: pick copy from deal context.
+ * - part_intent set → treat as accessory/part photo (not a plate ask)
+ * - vin/engine already confirmed (Bug A) → don't ask to resend plate
+ * - else → ask for clearer VIN/frame photo
  */
 export function plateFailureReply(mediaContext, dealState) {
   if (mediaContext?.message_type !== "image") return null;
   const status = mediaContext?.vin_decode?.status;
   if (status === "success") return null;
   if (!status) return null;
+
+  const partIntent = String(dealState?.part_intent || "").trim();
+  if (partIntent) {
+    const label = partIntentLabel(partIntent);
+    return `Got your photo — noted for your ${label} request. Anything else, or should we get you a price?`;
+  }
 
   if (dealState?.vin || dealState?.engine_code) {
     const bits = [dealState.brand, dealState.model, dealState.year, dealState.engine_code]
