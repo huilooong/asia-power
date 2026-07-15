@@ -521,6 +521,10 @@ function deployApsalesOpenClaw() {
     `${REMOTE}:/root/.openclaw/extensions/apsales-live-draft/evidence-hook.mjs`,
   );
   rsync(
+    `${ROOT}/deploy/apsales-live-draft/apsales-human-visibility.mjs`,
+    `${REMOTE}:/root/.openclaw/extensions/apsales-live-draft/apsales-human-visibility.mjs`,
+  );
+  rsync(
     `${ROOT}/server/lib/asiapower-evidence.js`,
     `${REMOTE}:/root/.openclaw/workspace/AsiaPower/server/lib/asiapower-evidence.js`,
   );

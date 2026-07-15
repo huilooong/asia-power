@@ -6,6 +6,13 @@ import { fileURLToPath } from "node:url";
 import { spawn } from "node:child_process";
 import { startApsalesWhatsAppSession } from "./apsales-whatsapp-session.mjs";
 import { recordInboundForEvidence, recordReplyForEvidence } from "./evidence-hook.mjs";
+import {
+  noteBotSend,
+  plateFailureReply,
+  nextTeamReplies,
+  recentTeamRepliesForPrompt,
+  classifyFromMeMessage,
+} from "./apsales-human-visibility.mjs";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const _require = createRequire(import.meta.url);
@@ -189,6 +196,23 @@ async function saveDealState(senderId, patch) {
   return next;
 }
 
+async function appendTeamReply(senderId, text, messageId) {
+  const prev = (await loadDealState(senderId)) || {};
+  const team_replies = nextTeamReplies(prev.team_replies, {
+    text: String(text || "").slice(0, 2000),
+    at: new Date().toISOString(),
+    message_id: messageId || null,
+  });
+  return saveDealState(senderId, { team_replies });
+}
+
+/** sendText + remember outbound id so fromMe echoes are not treated as human. */
+async function sendCustomerText(session, senderId, text) {
+  const result = await session.sendText(senderId, text);
+  noteBotSend(senderId, text, result?.messageId);
+  return result;
+}
+
 function partIntentFromText(text) {
   const lower = String(text || "").toLowerCase();
   if (/\b(half[\s-]?cut|halfcut)\b/.test(lower)) return "half_cut";
@@ -306,6 +330,7 @@ async function runOpenClawReply({ text, senderId, messageId, chatId, observedAt,
     "- End the reply on a concrete question or next step, not an open-ended \"let me know\".",
     "- If vin_decode.status is success, use those vehicle facts in plain language (brand/model/engine/frame).",
     "- If deal_state has vin/frame_no/part_intent, that is already confirmed — NEVER ask for VIN again, NEVER reset to website browse, continue that deal.",
+    "- If recent_team_replies is non-empty, a human teammate already messaged this customer directly — do NOT contradict, deny, or restate those quotes as \"still checking\"; only add new info or ask one missing question.",
     "- On first greeting a new customer (no deal_state), mention our website www.asia-power.com.",
     "- Do not claim stock, payment, delivery date, or shipment confirmation unless already in structured context.",
     "- inventory_matches lists real stock from www.asia-power.com with the actual price_usd for each item — when it has a match for what the customer wants, quote that exact price_usd as the EXW price. Do not call web_fetch or web_search for pricing, they are not reliable for this.",
@@ -326,6 +351,7 @@ async function runOpenClawReply({ text, senderId, messageId, chatId, observedAt,
       media_placeholder: mediaPlaceholder || null,
       media: mediaContext || null,
       deal_state: dealState || null,
+      recent_team_replies: recentTeamRepliesForPrompt(dealState),
       inventory_matches: inventoryMatches || [],
       confirmed_vin: knownVin,
       customer_message: text,
@@ -437,7 +463,7 @@ async function processOutboundQueue(session) {
       const text = String(job.text || "").trim();
       if (!target || !text) throw new Error("missing target or text");
       log("sending approved whatsapp draft", { draftId: job.draft_id, jobId: job.job_id, target });
-      const result = await session.sendText(target, text);
+      const result = await sendCustomerText(session, target, text);
       const sentAt = new Date().toISOString();
       const sentJob = { ...job, status: "sent", sent_at: sentAt, result };
       await moveJsonFile(jobPath, OUTBOX_SENT_DIR, sentJob);
@@ -818,21 +844,8 @@ function plateSuccessReply(mediaContext) {
   return `Got it — ${bits.join(" / ")}. Do you need the engine, gearbox, or the half-cut?`;
 }
 
-// Deterministic path for the "image message, but no usable plate/VIN read" case.
-// This used to fall through to runOpenClawReply(), which (a) can take 90-100s+
-// end-to-end when the LLM path is slow or rate-limited, and (b) has a known bug
-// where stale conversation history overrides fresh (even successful) context —
-// so leaving it wired for the failure/uncertain case too was inconsistent and
-// meant the exact customers with the least clear photos waited the longest for
-// the least personalized reply anyway. Mirrors plateSuccessReply(): instant,
-// deterministic, no dependency on chat history or LLM availability.
-function plateFailureReply(mediaContext) {
-  if (mediaContext?.message_type !== "image") return null;
-  const status = mediaContext?.vin_decode?.status;
-  if (status === "success") return null; // handled by plateSuccessReply
-  if (!status) return null; // not a media/VIN-decode attempt at all
-  return "Got your photo — I couldn't read the plate clearly. Could you send a clearer photo of the VIN/frame number, or type it here?";
-}
+// plateFailureReply imported from apsales-human-visibility.mjs — uses dealState
+// so we don't ask for another plate photo when VIN/engine is already confirmed.
 
 function voiceFailureReply(voiceContext) {
   if (voiceContext?.message_type !== "voice") return null;
@@ -967,11 +980,49 @@ async function buildTextVinContext(text, senderId, messageId) {
 
 async function handleMessage(message, state, session) {
   const startedAt = Date.now();
-  const key = message.messageId || `${message.fromJid}:${message.observedAt}:${message.text}`;
+  const key = message.messageId || `${message.fromJid}:${message.observedAt}:${message.text}:${message.fromMe ? "me" : "in"}`;
   if (state.seen.includes(key)) return;
   state.seen.push(key);
   state.seen = state.seen.slice(-500);
   await writeState(state);
+
+  // Bug B: fromMe = bot echo OR human send on same WhatsApp account.
+  if (message.fromMe) {
+    const kind = classifyFromMeMessage(message);
+    if (kind === "bot_echo") {
+      log("ignored bot outbound echo", {
+        messageId: message.messageId,
+        chat: message.fromPhoneE164,
+      });
+      return;
+    }
+    if (!message.fromPhoneE164 || !String(message.fromPhoneE164).startsWith("+")) {
+      log("ignored fromMe without customer chat e164", {
+        fromJid: message.fromJid,
+        messageId: message.messageId,
+      });
+      return;
+    }
+    const teamText = String(message.text || "").trim();
+    if (!teamText) {
+      log("ignored empty team fromMe", { messageId: message.messageId });
+      return;
+    }
+    const senderId = message.fromPhoneE164;
+    await appendTeamReply(senderId, teamText, message.messageId);
+    log("recorded team reply", {
+      senderId,
+      messageId: message.messageId,
+      text: teamText.slice(0, 180),
+    });
+    await appendActivity(
+      "apsales_team_reply_recorded",
+      `团队回复 ${senderId}: ${teamText.slice(0, 180)}`,
+      "recorded",
+    );
+    // Do not auto-reply to human outbound.
+    return;
+  }
 
   if (!message.fromPhoneE164 || !String(message.fromPhoneE164).startsWith("+")) {
     log("ignored non-customer message", {
@@ -1036,7 +1087,7 @@ async function handleMessage(message, state, session) {
     if (REPLY_BRAIN === "openclaw") {
       const voiceFail = voiceFailureReply(mediaContext);
       if (voiceFail) {
-        const result = await session.sendText(senderId, voiceFail);
+        const result = await sendCustomerText(session, senderId, voiceFail);
         recordReplyForEvidence({
           senderId,
           text,
@@ -1064,7 +1115,7 @@ async function handleMessage(message, state, session) {
 
       const direct = plateSuccessReply(mediaContext);
       if (direct) {
-        const result = await session.sendText(senderId, direct);
+        const result = await sendCustomerText(session, senderId, direct);
         recordReplyForEvidence({
           senderId,
           text,
@@ -1093,9 +1144,9 @@ async function handleMessage(message, state, session) {
         return;
       }
 
-      const failDirect = plateFailureReply(mediaContext);
+      const failDirect = plateFailureReply(mediaContext, dealState);
       if (failDirect) {
-        const result = await session.sendText(senderId, failDirect);
+        const result = await sendCustomerText(session, senderId, failDirect);
         recordReplyForEvidence({
           senderId,
           text,
@@ -1136,7 +1187,7 @@ async function handleMessage(message, state, session) {
         dealState,
         inventoryMatches,
       });
-      const result = await session.sendText(senderId, generated.reply);
+      const result = await sendCustomerText(session, senderId, generated.reply);
       recordReplyForEvidence({
         senderId,
         text,
@@ -1216,7 +1267,7 @@ async function handleMessage(message, state, session) {
           "Please check our real stock, photos, VIN and custom half-cuts at www.asia-power.com — what VIN or model are you looking for?";
       }
       try {
-        const result = await session.sendText(senderId, fallback);
+        const result = await sendCustomerText(session, senderId, fallback);
         recordReplyForEvidence({
           senderId,
           text,

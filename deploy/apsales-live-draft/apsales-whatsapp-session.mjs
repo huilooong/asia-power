@@ -154,7 +154,9 @@ function readQuotedMessage(message) {
 }
 
 function normalizeObservedMessage(message, authDir) {
-  if (message.key.fromMe) return null;
+  // Do NOT drop fromMe here — bot echoes vs human sends are distinguished in bridge.mjs
+  // (see apsales-human-visibility.mjs). Baileys delivers both as fromMe under multi-device.
+  const fromMe = Boolean(message.key?.fromMe);
   const extractedText = extractText(message.message ?? undefined);
   const location = extractLocationData(message.message);
   const text =
@@ -180,6 +182,7 @@ function normalizeObservedMessage(message, authDir) {
   return {
     fromJid,
     fromPhoneE164: fromJid ? jidToE164(fromJid, { authDir }) : null,
+    fromMe,
     hasMedia: media ? true : undefined,
     kind,
     mediaFileName: media?.fileName,
