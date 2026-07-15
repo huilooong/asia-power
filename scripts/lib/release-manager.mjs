@@ -591,6 +591,107 @@ export function writeReleaseJson({ remote, release, localDir }) {
   return { localFile, remoteDir };
 }
 
+/** Default how many REL-* dirs to keep after each deploy (override with DEPLOY_KEEP_RELEASES). */
+export function releaseKeepCount(explicit) {
+  if (Number.isFinite(explicit) && explicit > 0) return Math.floor(explicit);
+  const n = Number.parseInt(String(process.env.DEPLOY_KEEP_RELEASES || '20'), 10);
+  return Number.isFinite(n) && n > 0 ? n : 20;
+}
+
+/**
+ * Keep the newest N REL-* directories under releasesRoot; delete the rest.
+ * Pure filesystem helper — safe to unit-test against a temp dir.
+ * @returns {{ kept: string[], deleted: string[], keep: number }}
+ */
+export function pruneReleaseDirs(releasesRoot, keep = null) {
+  const keepN = releaseKeepCount(keep);
+  if (!releasesRoot || !fs.existsSync(releasesRoot)) {
+    return { kept: [], deleted: [], keep: keepN };
+  }
+  const entries = fs.readdirSync(releasesRoot, { withFileTypes: true })
+    .filter((d) => d.isDirectory() && /^REL-/.test(d.name))
+    .map((d) => {
+      const full = path.join(releasesRoot, d.name);
+      let mtimeMs = 0;
+      try {
+        mtimeMs = fs.statSync(full).mtimeMs;
+      } catch {
+        mtimeMs = 0;
+      }
+      return { name: d.name, full, mtimeMs };
+    })
+    .sort((a, b) => b.mtimeMs - a.mtimeMs || b.name.localeCompare(a.name));
+
+  const kept = entries.slice(0, keepN).map((e) => e.name);
+  const deleted = [];
+  for (const entry of entries.slice(keepN)) {
+    fs.rmSync(entry.full, { recursive: true, force: true });
+    deleted.push(entry.name);
+  }
+  return { kept, deleted, keep: keepN };
+}
+
+/** Never throw — prune failure must not fail a completed deploy. */
+export function pruneReleaseDirsSafe(releasesRoot, keep = null) {
+  try {
+    const result = pruneReleaseDirs(releasesRoot, keep);
+    if (result.deleted.length) {
+      console.log(`[release] pruned ${result.deleted.length} local release(s); kept ${result.kept.length} (max ${result.keep})`);
+    }
+    return result;
+  } catch (err) {
+    const detail = err instanceof Error ? err.message : String(err);
+    console.warn(`[release] local prune failed (non-fatal): ${detail}`);
+    return { kept: [], deleted: [], keep: releaseKeepCount(keep), error: detail };
+  }
+}
+
+/**
+ * Prune remote inventory-site/releases/REL-* the same way (newest N by mtime).
+ * Failures are logged only.
+ */
+export function pruneRemoteReleaseDirsSafe({ remote, keep = null } = {}) {
+  const keepN = releaseKeepCount(keep);
+  if (!remote) {
+    return { kept: 0, deleted: 0, keep: keepN, skipped: true };
+  }
+  const script = `
+set +e
+DIR=/root/.openclaw/workspace/inventory-site/releases
+KEEP=${keepN}
+cd "$DIR" || { echo "missing_releases_dir"; exit 0; }
+mapfile -t ALL < <(ls -1dt REL-* 2>/dev/null)
+TOTAL=\${#ALL[@]}
+if [ "$TOTAL" -le "$KEEP" ]; then
+  echo "kept=$TOTAL deleted=0"
+  exit 0
+fi
+DEL=("\${ALL[@]:$KEEP}")
+for d in "\${DEL[@]}"; do
+  rm -rf -- "$DIR/\$d"
+done
+echo "kept=$KEEP deleted=\${#DEL[@]}"
+`;
+  try {
+    const r = spawnSync(
+      'ssh',
+      ['-o', 'ConnectTimeout=20', '-o', 'BatchMode=yes', remote, 'bash', '-s'],
+      { input: script, encoding: 'utf8' },
+    );
+    const out = String(r.stdout || '').trim();
+    if (r.status !== 0) {
+      console.warn(`[release] remote prune failed (non-fatal): ${String(r.stderr || out).slice(0, 300)}`);
+      return { keep: keepN, error: String(r.stderr || out).slice(0, 300) };
+    }
+    console.log(`[release] remote prune: ${out || 'ok'}`);
+    return { keep: keepN, detail: out };
+  } catch (err) {
+    const detail = err instanceof Error ? err.message : String(err);
+    console.warn(`[release] remote prune failed (non-fatal): ${detail}`);
+    return { keep: keepN, error: detail };
+  }
+}
+
 export function printDeploymentSummary(release) {
   console.log('\n=== Deployment Summary ===');
   console.log(`Release ID:   ${release.release_id}`);

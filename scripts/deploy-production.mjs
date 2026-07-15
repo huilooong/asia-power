@@ -24,6 +24,8 @@ import {
   runPreDeployValidation,
   snapshotRemotePaths,
   writeReleaseJson,
+  pruneReleaseDirsSafe,
+  pruneRemoteReleaseDirsSafe,
 } from './lib/release-manager.mjs';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
@@ -817,6 +819,10 @@ async function main() {
 
   writeReleaseJson({ remote: REMOTE, release, localDir: localReleaseDir });
   printDeploymentSummary(release);
+
+  // Keep newest N REL-* snapshots (local + remote). Never fail the deploy for prune errors.
+  pruneReleaseDirsSafe(path.join(ROOT, 'releases'));
+  pruneRemoteReleaseDirsSafe({ remote: REMOTE });
 
   if (post.status === 'fail') {
     console.error('[release] post-deploy validation FAILED — consider restore');
