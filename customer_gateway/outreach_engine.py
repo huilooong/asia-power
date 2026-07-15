@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import json
 import os
+import re
 import uuid
 from datetime import datetime, timezone
 from pathlib import Path
@@ -97,6 +98,21 @@ def scan_outreach_candidates(limit: int = 30) -> list[dict[str, Any]]:
     return candidates[:limit]
 
 
+_CUSTOMER_DRAFT_LEAK_RE = re.compile(
+    r"(?:^|\n)\s*(?:MEMORY_TO_SAVE|DECISION_TO_SAVE|APPROVAL_REQUEST|APPROVAL_REQUIRED|"
+    r"INTERNAL_NOTE|SYSTEM|DEBUG)\s*:.*$",
+    re.I | re.M,
+)
+
+
+def sanitize_customer_draft(text: str) -> str:
+    """Strip internal bookkeeping lines that must never reach the customer."""
+    cleaned = _CUSTOMER_DRAFT_LEAK_RE.sub("", text or "")
+    # Collapse leftover blank runs after stripping.
+    cleaned = re.sub(r"\n{3,}", "\n\n", cleaned).strip()
+    return cleaned
+
+
 def save_outreach_draft(
     candidate: dict[str, Any],
     *,
@@ -109,7 +125,7 @@ def save_outreach_draft(
         "outreach_id": oid,
         "candidate": candidate,
         "internal_analysis_zh": internal_analysis,
-        "customer_draft": customer_draft,
+        "customer_draft": sanitize_customer_draft(customer_draft),
         "status": "pending",
         "approval_required": True,
         "created_at": _now(),
@@ -266,9 +282,10 @@ def send_outreach(outreach_id: str, *, force: bool = False) -> dict[str, Any]:
         raise ValueError(f"Already sent to this email (blocklist): {to_email}")
 
     subject = (record.get("email_subject") or "").strip()
-    body = (record.get("customer_draft") or "").strip()
+    body = sanitize_customer_draft(record.get("customer_draft") or "")
     if not subject or not body:
         subject, body = build_lead_followup_email(cand)
+        body = sanitize_customer_draft(body)
 
     from customer_gateway.email_outbound import send_proactive_email
 
@@ -327,3 +344,51 @@ def create_lead_email_outreach(candidate: dict[str, Any]) -> dict[str, Any]:
     record["channel"] = "email"
     save_outreach(record)
     return record
+
+
+def rewrite_pending_website_outreach_drafts(*, limit: int = 80) -> list[dict[str, Any]]:
+    """Rewrite pending website_lead email drafts to English template + sanitize leaks.
+
+    Used after CEO found Chinese LLM drafts / MEMORY_TO_SAVE leakage (2026-07-15).
+    Does not send. Returns list of {outreach_id, name, changed}.
+    """
+    out: list[dict[str, Any]] = []
+    if not OUTREACH_QUEUE_DIR.is_dir():
+        return out
+    for path in sorted(OUTREACH_QUEUE_DIR.glob("outreach-*.json"), reverse=True):
+        if len(out) >= limit:
+            break
+        try:
+            record = json.loads(path.read_text(encoding="utf-8"))
+        except (json.JSONDecodeError, OSError):
+            continue
+        if str(record.get("status") or "").lower() != "pending":
+            continue
+        cand = record.get("candidate") or {}
+        if str(cand.get("source") or "") != "website_lead":
+            continue
+        channel = str(record.get("channel") or cand.get("channel") or "").lower()
+        if channel and channel != "email":
+            continue
+
+        subject, body = build_lead_followup_email(cand)
+        body = sanitize_customer_draft(body)
+        before = str(record.get("customer_draft") or "")
+        record["customer_draft"] = body
+        record["email_subject"] = subject
+        record["channel"] = "email"
+        record["rewritten_at"] = _now()
+        record["rewrite_note"] = "english_template_sanitize_2026-07-15"
+        save_outreach(record)
+        out.append(
+            {
+                "outreach_id": record.get("outreach_id"),
+                "name": cand.get("name"),
+                "email": cand.get("email"),
+                "product": cand.get("product"),
+                "changed": before.strip() != body.strip(),
+                "subject": subject,
+                "body_preview": body[:280],
+            }
+        )
+    return out

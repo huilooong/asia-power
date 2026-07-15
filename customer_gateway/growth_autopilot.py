@@ -169,7 +169,24 @@ def _traffic_actions(traffic: dict[str, Any], open_leads: int) -> list[str]:
 
 
 def _draft_outreach_candidate(candidate: dict[str, Any]) -> dict[str, Any]:
-    from customer_gateway.outreach_engine import build_outreach_enquiry, save_outreach_draft
+    """Create one outreach draft.
+
+    Website-lead email follow-ups use the deterministic English template
+    (`create_lead_email_outreach`) — LLM path was producing Chinese customer
+    drafts + MEMORY_TO_SAVE leaks for Ghana/Zambia buyers (CEO 2026-07-15).
+    """
+    from customer_gateway.outreach_engine import (
+        build_outreach_enquiry,
+        create_lead_email_outreach,
+        save_outreach_draft,
+        sanitize_customer_draft,
+    )
+
+    source = str(candidate.get("source") or "")
+    channel = str(candidate.get("channel") or "").lower()
+    if source == "website_lead" and channel == "email":
+        return create_lead_email_outreach(candidate)
+
     from sales_core.apsales_handler import _split_apsales_sections, process_apsales_enquiry
 
     analysis = process_apsales_enquiry(build_outreach_enquiry(candidate), channel="outreach_autopilot")
@@ -177,7 +194,7 @@ def _draft_outreach_candidate(candidate: dict[str, Any]) -> dict[str, Any]:
     record = save_outreach_draft(
         candidate,
         internal_analysis=internal,
-        customer_draft=draft_text,
+        customer_draft=sanitize_customer_draft(draft_text),
     )
     return record
 
