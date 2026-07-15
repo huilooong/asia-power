@@ -504,6 +504,10 @@ function deployApsales() {
     `${ROOT}/customer_gateway/distribution_progress.py`,
     `${AP}/customer_gateway/`,
   ]);
+  run('rsync', ['-av',
+    `${ROOT}/sales_coach/`,
+    `${AP}/sales_coach/`,
+  ]);
 }
 
 function deployApsalesOpenClaw() {
