@@ -335,6 +335,7 @@ function deployChrome() {
     'chassis-parts/index.html',
     'about.html',
     'contact.html',
+    'privacy.html',
     'brands.html',
     'app.html',
     'ghana.html',
