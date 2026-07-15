@@ -508,6 +508,12 @@ function deployApsales() {
     `${ROOT}/sales_coach/`,
     `${AP}/sales_coach/`,
   ]);
+  // Zijing LIVE-RULES.md had no deploy target at all — edits never reached prod despite the
+  // hot-reload (mtime-cache) design in bridge.mjs / zijing_reply_context.py. Fixes that gap.
+  run('rsync', ['-av',
+    `${ROOT}/docs/zijing-training/LIVE-RULES.md`,
+    `${AP}/docs/zijing-training/LIVE-RULES.md`,
+  ]);
 }
 
 function deployApsalesOpenClaw() {
