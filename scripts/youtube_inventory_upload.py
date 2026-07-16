@@ -2,9 +2,10 @@
 """Upload AsiaPower inventory startup videos to YouTube and patch half-cut JSON.
 
 Prereq (one-time):
-  1. Google Cloud project with YouTube Data API v3 enabled
-  2. OAuth Desktop client → save as work/youtube-inventory-migrate/client_secret.json
-     OR set GOOGLE_OAUTH_CLIENT_ID + GOOGLE_OAUTH_CLIENT_SECRET in .env
+  1. Google Cloud: enable YouTube Data API v3 + add youtube.upload scope
+  2. Prefer Desktop OAuth JSON at work/youtube-inventory-migrate/client_secret.json
+     OR reuse site Web client with Authorized redirect URIs:
+       http://127.0.0.1:8765/  and  http://localhost:8765/
   3. Run:  .venv/bin/python scripts/youtube_inventory_upload.py --auth
   4. Run:  .venv/bin/python scripts/youtube_inventory_upload.py --upload-all
 
@@ -29,6 +30,8 @@ CLIENT_SECRET = WORK / "client_secret.json"
 RESULTS = WORK / "upload-results.json"
 
 SCOPES = ["https://www.googleapis.com/auth/youtube.upload"]
+# Fixed port so a Web OAuth client can whitelist an exact redirect URI.
+OAUTH_LOCAL_PORT = 8765
 CJK_RE = re.compile(r"[\u4e00-\u9fff]+")
 
 
@@ -46,29 +49,56 @@ def _load_dotenv() -> None:
 
 
 def ensure_client_secret() -> Path:
+    """Accept Desktop (installed) or Web client JSON.
+
+    Web client (site login) works only if Google Console has redirect URIs:
+      http://127.0.0.1:8765/  and  http://localhost:8765/
+    Never wrap a Web client as fake "installed" — Google rejects that.
+    """
     if CLIENT_SECRET.is_file():
-        return CLIENT_SECRET
+        try:
+            data = json.loads(CLIENT_SECRET.read_text(encoding="utf-8"))
+        except json.JSONDecodeError as exc:
+            raise SystemExit(f"Invalid JSON in {CLIENT_SECRET}: {exc}") from exc
+        if "installed" in data:
+            return CLIENT_SECRET
+        if "web" in data:
+            return CLIENT_SECRET
+        raise SystemExit(
+            f"{CLIENT_SECRET} must have top-level key 'installed' or 'web'.\n"
+            "See: docs/ops/ops-youtube-oauth-desktop-setup.md"
+        )
+
     cid = (os.getenv("GOOGLE_OAUTH_CLIENT_ID") or "").strip()
     csec = (os.getenv("GOOGLE_OAUTH_CLIENT_SECRET") or "").strip()
-    if not cid or not csec:
-        raise SystemExit(
-            "Missing YouTube OAuth client. Put Desktop OAuth JSON at\n"
-            f"  {CLIENT_SECRET}\n"
-            "or set GOOGLE_OAUTH_CLIENT_ID + GOOGLE_OAUTH_CLIENT_SECRET in .env\n"
-            "and enable YouTube Data API v3 on that Google Cloud project."
-        )
-    payload = {
-        "installed": {
-            "client_id": cid,
-            "client_secret": csec,
-            "auth_uri": "https://accounts.google.com/o/oauth2/auth",
-            "token_uri": "https://oauth2.googleapis.com/token",
-            "redirect_uris": ["http://localhost"],
+    if cid and csec:
+        WORK.mkdir(parents=True, exist_ok=True)
+        payload = {
+            "web": {
+                "client_id": cid,
+                "client_secret": csec,
+                "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+                "token_uri": "https://oauth2.googleapis.com/token",
+                "redirect_uris": [
+                    f"http://127.0.0.1:{OAUTH_LOCAL_PORT}/",
+                    f"http://localhost:{OAUTH_LOCAL_PORT}/",
+                ],
+            }
         }
-    }
-    WORK.mkdir(parents=True, exist_ok=True)
-    CLIENT_SECRET.write_text(json.dumps(payload, indent=2), encoding="utf-8")
-    return CLIENT_SECRET
+        CLIENT_SECRET.write_text(json.dumps(payload, indent=2), encoding="utf-8")
+        print(
+            "NOTE: Using site Web OAuth client. In Google Console → Credentials → "
+            "this client → Authorized redirect URIs, add:\n"
+            f"  http://127.0.0.1:{OAUTH_LOCAL_PORT}/\n"
+            f"  http://localhost:{OAUTH_LOCAL_PORT}/"
+        )
+        return CLIENT_SECRET
+
+    raise SystemExit(
+        "Missing OAuth client for YouTube upload.\n"
+        f"Put Desktop or Web client JSON at:\n  {CLIENT_SECRET}\n"
+        "Guide: docs/ops/ops-youtube-oauth-desktop-setup.md"
+    )
 
 
 def get_credentials(*, force_auth: bool = False):
@@ -77,6 +107,8 @@ def get_credentials(*, force_auth: bool = False):
     from google_auth_oauthlib.flow import InstalledAppFlow
 
     ensure_client_secret()
+    data = json.loads(CLIENT_SECRET.read_text(encoding="utf-8"))
+    is_web = "web" in data and "installed" not in data
     creds = None
     if TOKEN.is_file() and not force_auth:
         creds = Credentials.from_authorized_user_file(str(TOKEN), SCOPES)
@@ -85,7 +117,14 @@ def get_credentials(*, force_auth: bool = False):
             creds.refresh(Request())
         else:
             flow = InstalledAppFlow.from_client_secrets_file(str(CLIENT_SECRET), SCOPES)
-            creds = flow.run_local_server(port=0, prompt="consent")
+            # Web clients need an exact whitelisted redirect; Desktop can use any port.
+            port = OAUTH_LOCAL_PORT if is_web else 0
+            creds = flow.run_local_server(
+                port=port,
+                prompt="consent",
+                open_browser=True,
+                bind_addr="127.0.0.1",
+            )
         TOKEN.write_text(creds.to_json(), encoding="utf-8")
     return creds
 
@@ -112,6 +151,7 @@ def youtube_description(row: dict) -> str:
         "Whole-vehicle startup video available before dismantling. "
         "Half-cuts, engines and gearboxes for export from China.\n"
         "Website: https://asia-power.com/\n"
+        "Business inquiry: sales@asia-power.com\n"
         "WhatsApp: +86 166 3880 1930"
     )
 
