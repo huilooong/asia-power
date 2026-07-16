@@ -169,11 +169,11 @@ grep -q 'home-v4-hybrid' "$PUB/index.html"
 grep -q 'engine-card-label.js' "$PUB/index.html"
 grep -q 'formatHalfCutVehicleTitle' "$PUB/js/home-v4-hybrid.js"
 grep -q 'home-scroll-v5' "$PUB/index.html"
-grep -E -q 'lang-sync-v2|auth-nav-once-v2' "$PUB/index.html"
+grep -E -q 'lang-sync-v2|auth-nav-once-v2|seo-guides-20260716' "$PUB/index.html"
 grep -q 'lang-sync-v2' "$PUB/css/styles.css"
 grep -q 'home.v4.hero.title' "$PUB/index.html"
 grep -q 'data-ap-auth-slot' "$PUB/index.html"
-grep -q 'auth-nav-once-v2' "$PUB/index.html"
+grep -E -q 'auth-nav-once-v2|seo-guides-20260716' "$PUB/index.html"
 grep -q 'nav-list-direct-v1' "$PUB/index.html"
 grep -q 'href="/half-cuts/"' "$PUB/index.html"
 grep -q 'href="/engines/"' "$PUB/index.html"
@@ -288,7 +288,7 @@ echo "[deploy:portal] files OK on remote"
 function deployChrome() {
   console.log('[deploy:chrome] syncing listing chrome + catalog shells + static chrome pages');
   const pub = `${SITE}/public`;
-  ssh('mkdir -p /root/.openclaw/workspace/inventory-site/public/css /root/.openclaw/workspace/inventory-site/public/js /root/.openclaw/workspace/inventory-site/public/half-cuts /root/.openclaw/workspace/inventory-site/public/trucks /root/.openclaw/workspace/inventory-site/public/machinery /root/.openclaw/workspace/inventory-site/public/engines /root/.openclaw/workspace/inventory-site/public/gearboxes /root/.openclaw/workspace/inventory-site/public/front-cuts /root/.openclaw/workspace/inventory-site/public/chassis-parts');
+  ssh('mkdir -p /root/.openclaw/workspace/inventory-site/public/css /root/.openclaw/workspace/inventory-site/public/js /root/.openclaw/workspace/inventory-site/public/half-cuts /root/.openclaw/workspace/inventory-site/public/trucks /root/.openclaw/workspace/inventory-site/public/machinery /root/.openclaw/workspace/inventory-site/public/engines /root/.openclaw/workspace/inventory-site/public/gearboxes /root/.openclaw/workspace/inventory-site/public/front-cuts /root/.openclaw/workspace/inventory-site/public/chassis-parts /root/.openclaw/workspace/inventory-site/public/guides');
   // Shared listing assets
   rsync(`${ROOT}/js/components.js`, `${pub}/js/components.js`);
   rsync(`${ROOT}/js/config.js`, `${pub}/js/config.js`);
@@ -348,6 +348,9 @@ function deployChrome() {
     'ghana.html',
     'nigeria.html',
     'kenya.html',
+    'guides/index.html',
+    'guides/buying-used-engines-from-china.html',
+    'guides/fob-vs-cif-shipping-guide.html',
   ]) {
     rsync(`${ROOT}/${rel}`, `${pub}/${rel}`);
   }
@@ -372,6 +375,9 @@ test -f "$PUB/kenya.html"
 test -f "$PUB/brands.html"
 test -f "$PUB/brands/toyota.html"
 test -f "$PUB/app.html"
+test -f "$PUB/guides/index.html"
+test -f "$PUB/guides/buying-used-engines-from-china.html"
+test -f "$PUB/guides/fob-vs-cif-shipping-guide.html"
 grep -q 'AsiaPowerAuthNav' "$PUB/js/components.js"
 grep -q 'getBrandsWithPublicStock' "$PUB/js/main.js"
 grep -q 'Current public stock' "$PUB/js/config.js"
@@ -434,21 +440,24 @@ grep -q 'photo--parts-ph' "$PUB/css/ebay-layout.css"
 grep -q 'about-type-v2' "$PUB/css/ebay-layout.css"
 grep -qF -- '--about-ink' "$PUB/css/ebay-layout.css"
 grep -qF -- '--about-muted' "$PUB/css/ebay-layout.css"
-grep -q 'about-type-v2' "$PUB/about.html"
-grep -q 'about-type-v2' "$PUB/contact.html"
+grep -E -q 'about-type-v2|seo-guides-20260716' "$PUB/about.html"
+grep -E -q 'about-type-v2|seo-guides-20260716' "$PUB/contact.html"
 grep -q 'ebay-contact-section' "$PUB/css/ebay-layout.css"
 grep -q 'max-width: 920px' "$PUB/css/ebay-layout.css"
-grep -q 'about-type-v2' "$PUB/kenya.html"
-grep -q 'about-type-v2' "$PUB/brands/toyota.html"
+grep -E -q 'about-type-v2|seo-guides-20260716' "$PUB/kenya.html"
+grep -E -q 'about-type-v2|seo-guides-20260716' "$PUB/brands/toyota.html"
 grep -q 'brand-stock-directory-v2' "$PUB/brands.html"
 grep -q 'half-cut-inventory-store.js' "$PUB/brands.html"
 grep -q 'hydrateBrandDirectoryFromPublicStock' "$PUB/js/main.js"
 grep -q 'site-consistency-v2' "$PUB/js/components.js"
 grep -q 'ap-listing-photo--fit-contain .ap-listing-photo__img' "$PUB/css/ebay-layout.css"
 grep -q 'object-fit: contain' "$PUB/css/ebay-layout.css"
-grep -q 'about-type-v2' "$PUB/half-cuts/index.html"
+grep -E -q 'about-type-v2|seo-guides-20260716' "$PUB/half-cuts/index.html"
 grep -E -q 'catalog-search-v1|catalog-search-v2|stock-id-search-v[12]' "$PUB/half-cuts/index.html"
-grep -q 'about-type-v2' "$PUB/engines/index.html"
+grep -E -q 'about-type-v2|seo-guides-20260716' "$PUB/engines/index.html"
+grep -q 'seo-guides-20260716' "$PUB/guides/index.html"
+grep -q 'seo-guides-20260716' "$PUB/guides/buying-used-engines-from-china.html"
+grep -q 'seo-guides-20260716' "$PUB/guides/fob-vs-cif-shipping-guide.html"
 grep -E -q 'catalog-search-v1|catalog-search-v2|stock-id-search-v[12]|dedicated-price-v1' "$PUB/engines/index.html"
 test -f "$PUB/assets/images/parts-placeholder.svg"
 test -f "$PUB/assets/images/ford-asiapower-powertrain-placeholder.svg"
