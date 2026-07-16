@@ -138,3 +138,5 @@ agent 的回复:`"My apologies, I just checked that number. Shall I update you h
 - `tests/test_openclaw_parse_agent_reply.mjs`
 
 **验证**：`node --test tests/test_ghana_staff_handoff.js tests/test_openclaw_parse_agent_reply.mjs` → 21 pass / 0 fail
+
+**生产部署**: `REL-20260716165900-apsales-openclaw-fa77b2331`（bridge 已同步，`apsales-whatsapp-bridge` active）
