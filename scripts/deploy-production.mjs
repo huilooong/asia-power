@@ -514,6 +514,14 @@ function deployApsales() {
     `${ROOT}/customer_gateway/maps_prospect.py`,
     `${AP}/customer_gateway/`,
   ]);
+  // sales_core/ had no deploy target at all — files were drifting in via ad-hoc
+  // manual syncs with no git record (found 2026-07-16 audit: apsales_handler.py
+  // was live but never committed; enquiry_context.py was committed but never
+  // deployed, missing the LIVE-RULES.md addon wiring in production).
+  run('rsync', ['-av', '--exclude', '__pycache__',
+    `${ROOT}/sales_core/`,
+    `${AP}/sales_core/`,
+  ]);
   // Track B 2026-07-15: unified Maps markets YAML + lead_finder (stops dual Places burn)
   run('rsync', ['-av',
     `${ROOT}/config/apbd_lead_markets.yaml`,
