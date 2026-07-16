@@ -20,6 +20,33 @@ export function containsGhanaSupportContact(replyText, contactLocal) {
   return false;
 }
 
+/**
+ * Semantic fallback for Ghana staff handoff notify.
+ * Digit match alone misses replies like "team member will send the office location"
+ * with no phone number written out (2026-07-16 +233249632526). Prefer over-notify.
+ */
+export function looksLikeTeamHandoffPromise(replyText) {
+  const t = String(replyText || "").toLowerCase();
+  if (!t.trim()) return false;
+  const teamActor =
+    /\b((our|the)\s+)?(ghana\s+)?(team(\s+member)?|colleague|staff|support)\b/.test(t) ||
+    /\bteam member\b/.test(t);
+  if (!teamActor) return false;
+  const action =
+    /\b(will|can|going to)\b.{0,40}\b(send|share|call|contact|reach|message|whatsapp|text)\b/.test(t) ||
+    /\b(send|share|call|contact|reach)\b.{0,40}\b(you|customer|directly)\b/.test(t) ||
+    /\boffice location\b/.test(t) ||
+    /\b(send|share).{0,30}\b(address|location|office)\b/.test(t);
+  return action;
+}
+
+export function shouldNotifyGhanaStaffHandoff(replyText, contactLocal) {
+  return (
+    containsGhanaSupportContact(replyText, contactLocal) ||
+    looksLikeTeamHandoffPromise(replyText)
+  );
+}
+
 function turnsPath(workspace) {
   return path.join(workspace, "data", "evidence", "whatsapp", "turns.ndjson");
 }
@@ -70,7 +97,7 @@ export async function notifyGhanaStaffIfHandingOff({
   contactE164,
 }) {
   try {
-    if (!containsGhanaSupportContact(replyText, contactLocal)) {
+    if (!shouldNotifyGhanaStaffHandoff(replyText, contactLocal)) {
       return { notified: false };
     }
     if (!session?.sendText || !contactE164) {
@@ -86,6 +113,31 @@ export async function notifyGhanaStaffIfHandingOff({
     ];
 
     await session.sendText(contactE164, lines.join("\n"));
+    return { notified: true };
+  } catch (err) {
+    return { notified: false, error: String(err?.message || err) };
+  }
+}
+
+/**
+ * Separate from address/contact handoff: customer said they could not reach
+ * support_contact. Wording must NOT claim the line is broken — signal issues
+ * are common. Triggered only when parseAgentReply sets supportLineUnreachable.
+ */
+export async function notifyGhanaStaffSupportLineUnreachable({
+  senderId,
+  session,
+  contactE164,
+}) {
+  try {
+    if (!session?.sendText || !contactE164) {
+      return { notified: false, error: "missing_session_or_contact" };
+    }
+    const body = [
+      `Customer ${senderId} tried calling you and couldn't get through — might just be signal where you are.`,
+      "Please check WhatsApp or call them back when you can.",
+    ].join(" ");
+    await session.sendText(contactE164, body);
     return { notified: true };
   } catch (err) {
     return { notified: false, error: String(err?.message || err) };

@@ -35,6 +35,60 @@ test('containsGhanaSupportContact: unrelated reply', async () => {
   assert.equal(containsGhanaSupportContact('Got it — Accra pickup works.', CONTACT), false);
 });
 
+test('looksLikeTeamHandoffPromise: team will send office location (no digits)', async () => {
+  const { looksLikeTeamHandoffPromise, shouldNotifyGhanaStaffHandoff } = await load();
+  const reply =
+    'Our Ghana team member will send you the exact office location directly.';
+  assert.equal(looksLikeTeamHandoffPromise(reply), true);
+  assert.equal(shouldNotifyGhanaStaffHandoff(reply, CONTACT), true);
+  // Digit matcher alone would miss this — that was the 2026-07-16 leak case.
+  const { containsGhanaSupportContact } = await load();
+  assert.equal(containsGhanaSupportContact(reply, CONTACT), false);
+});
+
+test('looksLikeTeamHandoffPromise: unrelated sales reply', async () => {
+  const { looksLikeTeamHandoffPromise } = await load();
+  assert.equal(looksLikeTeamHandoffPromise('The 2SZ-FE engine is 900 USD.'), false);
+});
+
+test('notifyGhanaStaffIfHandingOff: semantic promise without digits → notify', async () => {
+  const { notifyGhanaStaffIfHandingOff } = await load();
+  const calls = [];
+  const out = await notifyGhanaStaffIfHandingOff({
+    senderId: '+233249632526',
+    replyText: 'Our team member will send the office location to you directly.',
+    workspace: '/tmp',
+    session: {
+      sendText: async (to, text) => {
+        calls.push({ to, text });
+      },
+    },
+    contactLocal: CONTACT,
+    contactE164: '+233549135916',
+  });
+  assert.equal(out.notified, true);
+  assert.equal(calls.length, 1);
+  assert.equal(calls[0].to, '+233549135916');
+});
+
+test('notifyGhanaStaffSupportLineUnreachable: english signal wording', async () => {
+  const { notifyGhanaStaffSupportLineUnreachable } = await load();
+  const calls = [];
+  const out = await notifyGhanaStaffSupportLineUnreachable({
+    senderId: '+233531988314',
+    session: {
+      sendText: async (to, text) => {
+        calls.push({ to, text });
+      },
+    },
+    contactE164: '+233549135916',
+  });
+  assert.equal(out.notified, true);
+  assert.equal(calls.length, 1);
+  assert.match(calls[0].text, /might just be signal/i);
+  assert.ok(!/broken|dead line|line is down/i.test(calls[0].text));
+});
+
 test('buildHandoffSummary: only matching customer, last N turns', async () => {
   const { buildHandoffSummary } = await load();
   const fake = [

@@ -17,6 +17,21 @@ test("parseAgentReply: pure JSON happy path", async () => {
   );
   assert.equal(out.reply, "Got it, Chief.");
   assert.equal(out.needsPriceConfirmation, false);
+  assert.equal(out.supportLineUnreachable, false);
+});
+
+test("parseAgentReply: support_line_unreachable true", async () => {
+  const { parseAgentReply } = await load();
+  const out = parseAgentReply(
+    JSON.stringify({
+      customer_reply:
+        "Sorry about that — our team will reach out to you here on WhatsApp instead.",
+      needs_price_confirmation: false,
+      support_line_unreachable: true,
+    }),
+  );
+  assert.equal(out.supportLineUnreachable, true);
+  assert.ok(!/checked|verified|confirmed that/i.test(out.reply));
 });
 
 test("parseAgentReply: ```json fence happy path", async () => {

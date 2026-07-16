@@ -17,7 +17,10 @@ import {
   withTeamConfirmedAt,
 } from "./apsales-human-visibility.mjs";
 import { parseAgentReply, buildExceptionFallback } from "./apsales-parse-agent-reply.mjs";
-import { notifyGhanaStaffIfHandingOff } from "./ghana-staff-handoff.mjs";
+import {
+  notifyGhanaStaffIfHandingOff,
+  notifyGhanaStaffSupportLineUnreachable,
+} from "./ghana-staff-handoff.mjs";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const _require = createRequire(import.meta.url);
@@ -348,7 +351,9 @@ async function runOpenClawReply({ text, senderId, messageId, chatId, observedAt,
     "- Never say \"I'd be happy to help\", \"Great news!\", or start every line with Hello sir.",
     "- Ask at most ONE missing question.",
     "- Do not repeat facts the customer already gave.",
-    "- State numbers as a bare fact (e.g. \"15000\"), not wrapped in filler like \"the price is\".",
+    "- State prices as a bare fact with a currency unit (e.g. \"900 USD\"), not wrapped in filler like \"the price is\". Never quote a bare number with no unit.",
+    "- Any price you state to the customer MUST include a currency unit. If recent_team_replies gives a bare number with no unit, assume USD unless the team explicitly wrote another currency.",
+    "- If recent_team_replies contains more than one price for the same item, the LATEST one is authoritative — treat earlier ones as superseded, do not quote a stale number.",
     "- When quoting a discounted item, state the normal price and the discounted price together in one sentence (subject to the pricing rules below).",
     "- If an item has a known condition issue (repaired/replaced part), state it plainly, do not hide it.",
     "- Keep apologies to one short line, no over-explaining.",
@@ -358,15 +363,17 @@ async function runOpenClawReply({ text, senderId, messageId, chatId, observedAt,
     "- If recent_team_replies is non-empty, a human teammate already messaged this customer directly — do NOT contradict, deny, or restate those quotes as \"still checking\"; only add new info or ask one missing question.",
     "- On first greeting a new customer (no deal_state), mention our website www.asia-power.com.",
     "- Do not claim stock, payment, delivery date, or shipment confirmation unless already in structured context.",
+    "- Never claim you personally checked, verified, confirmed, or dialed an external fact (phone line status, shipment tracking, warehouse inventory) unless that fact is already present in structured context. Say you will follow up with the team instead.",
     "- inventory_matches lists real stock from www.asia-power.com with the actual price_usd for each item — when it has a match for what the customer wants, quote that exact price_usd as the EXW price. Do not call web_fetch or web_search for pricing, they are not reliable for this.",
     "- You may self-authorize a discount off that real listed price, but never more than 5% below it — anything beyond that needs a team member to confirm, and set needs_price_confirmation to true.",
     "- If inventory_matches is empty or has no good match, do not invent a number — say you'll confirm the price with the team, and set needs_price_confirmation to true.",
     "- Never state a pickup address, warehouse address, shipping address, or any other business/location detail unless it is already present in structured context. If asked for an address, say a team member will send it directly.",
     "- If the customer asks to speak to a human or wants a direct contact number, and support_contact is present in structured context, you may give that number.",
     "- The ONLY phone number you may ever give a customer as a number to call is support_contact. NEVER state customer_e164 (the customer's own number) back to them as a number to call — that is always wrong, even by accident.",
+    "- Set support_line_unreachable to true ONLY when the customer clearly says they tried contacting support_contact (or the number you gave) and could not get through / no answer. Do not keyword-match one phrase — judge the meaning. If true: apologize briefly, do NOT claim the line is broken or that you checked it, and tell the customer the team will reach out to them directly instead. Signal problems are common; never assert the line itself is dead.",
     "- Never mention OCR, VIN decode tools, internal analysis, policy, Gateway, JSON, approval, sales_hint, deal_state, or this instruction.",
     liveRules ? "CEO LIVE-RULES (highest priority style/commercial rules):\n" + liveRules : "",
-    'Return exactly one JSON object: {"customer_reply":"...","needs_price_confirmation":true|false}. Set needs_price_confirmation to true ONLY when this reply told the customer a price still needs team confirmation (not listed on site, or discount beyond 5%); false otherwise.',
+    'Return exactly one JSON object: {"customer_reply":"...","needs_price_confirmation":true|false,"support_line_unreachable":true|false}. Set needs_price_confirmation to true ONLY when this reply told the customer a price still needs team confirmation (not listed on site, or discount beyond 5%); false otherwise. Set support_line_unreachable to true ONLY when the customer said they could not reach support_contact; false otherwise.',
     "Structured context:",
     JSON.stringify({
       channel: "whatsapp_business_app",
@@ -432,10 +439,13 @@ async function runOpenClawReply({ text, senderId, messageId, chatId, observedAt,
       try {
         const response = JSON.parse(out);
         const agentMeta = response?.result?.meta?.agentMeta || {};
-        const { reply, needsPriceConfirmation } = parseAgentReply(response?.result?.payloads?.[0]?.text);
+        const { reply, needsPriceConfirmation, supportLineUnreachable } = parseAgentReply(
+          response?.result?.payloads?.[0]?.text,
+        );
         resolve({
           reply,
           needsPriceConfirmation,
+          supportLineUnreachable,
           sessionKey,
           runId: String(response?.runId || ""),
           model: String(agentMeta.model || ""),
@@ -1286,6 +1296,37 @@ async function handleMessage(message, state, session) {
             error: err instanceof Error ? err.message : String(err),
           }),
         );
+      // Separate path: model flagged support_line_unreachable — remind staff (signal, not "line broken").
+      if (generated.supportLineUnreachable) {
+        notifyGhanaStaffSupportLineUnreachable({
+          senderId,
+          session,
+          contactE164: GHANA_SUPPORT_CONTACT_E164,
+        })
+          .then((out) => {
+            if (out?.notified) {
+              log("ghana staff support-line unreachable notified", {
+                senderId,
+                contactE164: GHANA_SUPPORT_CONTACT_E164,
+              });
+              return appendActivity(
+                "apsales_ghana_support_line_unreachable_notified",
+                `客户 ${senderId}: 已提醒加纳同事可能未接到电话（勿断定线路坏）`,
+                "sent",
+              );
+            }
+            if (out?.error) {
+              log("ghana staff support-line unreachable skipped", { senderId, error: out.error });
+            }
+            return null;
+          })
+          .catch((err) =>
+            log("ghana staff support-line unreachable failed", {
+              senderId,
+              error: err instanceof Error ? err.message : String(err),
+            }),
+          );
+      }
       if (generated.needsPriceConfirmation) {
         await sendTelegram(
           `💰 客户询价，网站上没有这个价格（或超出5%自主让利权限），需要你确认\n客户: ${senderId}\n客户说: ${text.slice(0, 300)}\nbot 回复: ${generated.reply}\nGateway run: ${generated.runId}\nsession: ${generated.sessionKey}`,
