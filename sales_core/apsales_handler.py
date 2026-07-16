@@ -584,6 +584,9 @@ def _split_apsales_sections(text: str) -> tuple[str, str, str]:
 
 def build_apsales_enquiry_prompt(message: str, profile: dict, *, channel: str = "cli") -> str:
     lang = resolve_target_language("apsales", "buyer", message)
+    forced = re.search(r"\[BUYER_LANGUAGE=([a-z]{2})\]", message or "", re.I)
+    if forced:
+        lang = forced.group(1).lower()
     inventory_hit, inventory_note = check_inventory_for_enquiry(message)
     ownership = inventory_ownership_label(inventory_hit)
     constitution = build_constitution_context_for_agent("apsales")
@@ -625,6 +628,18 @@ def build_apsales_enquiry_prompt(message: str, profile: dict, *, channel: str = 
         prompt += (
             "Email channel: use formal business email tone (salutation + structured body + closing). "
             "Do not include internal draft notes like '(Draft informed...)'.\n\n"
+        )
+    elif channel in ("outreach", "outreach_autopilot"):
+        prompt += (
+            "Outreach email re-engagement — you ARE 子敬 writing the email yourself:\n"
+            f"- Customer draft language MUST be {language_label(lang)} only. Never Chinese in the customer draft.\n"
+            "- Sound like a real AsiaPower salesperson (Zijing), not a CRM skeleton / mail-merge template.\n"
+            "- Vary the opening and ask based on THIS customer's name/country/product — do not reuse the same 5-line stock paragraph for every lead.\n"
+            "- Short: roughly 5–10 lines. Natural email, not WhatsApp bullets, not corporate filler.\n"
+            "- Include www.asia-power.com once if useful. Do not invent stock or prices.\n"
+            "- Ask at most ONE clear next question (e.g. engine code / model-year / destination port).\n"
+            "- Forbidden in customer draft: MEMORY_TO_SAVE, APPROVAL_REQUEST, Draft informed, internal notes.\n"
+            "- Sign as AsiaPower / Zijing sales style, not a robot.\n\n"
         )
     elif channel == "whatsapp_live":
         prompt += (
@@ -690,6 +705,9 @@ def process_apsales_enquiry(message: str, channel: str = "cli") -> str:
     profile = load_profile("apsales")
     inventory_hit, _ = check_inventory_for_enquiry(message)
     lang = resolve_target_language("apsales", "buyer", message)
+    forced = re.search(r"\[BUYER_LANGUAGE=([a-z]{2})\]", message or "", re.I)
+    if forced:
+        lang = forced.group(1).lower()
 
     approval_info = check_quote_approval_needed(message)
     if approval_info and approval_info.get("blocked_until_approval"):
@@ -740,13 +758,24 @@ def _fallback_enquiry_response(message: str, inventory_hit: bool, lang: str, *, 
     if channel == "whatsapp_live":
         body = _build_whatsapp_fallback_draft(message, facts, keywords, lang)
         draft = f"【客户草稿 / Customer Draft ({language_label(lang)})】\n{body}"
+    elif channel in ("outreach", "outreach_autopilot"):
+        # Outreach must never fall back to Chinese customer copy for EN buyers.
+        if lang == "zh":
+            body = build_contextual_draft_zh(facts, supply)
+        else:
+            body = build_contextual_draft_en(facts, supply, keywords)
+        draft = f"【客户草稿 / Customer Draft ({language_label(lang)})】\n{body}"
     elif lang == "zh":
         body = build_contextual_draft_zh(facts, supply)
         draft = f"【客户草稿 / Customer Draft ({language_label(lang)})】\n{body}"
     else:
         body = build_contextual_draft_en(facts, supply, keywords)
         draft = f"【客户草稿 / Customer Draft ({language_label(lang)})】\n{body}"
-    if channel != "whatsapp_live" and gateway_ctx and "SOP" in gateway_ctx:
+    if (
+        channel not in ("whatsapp_live", "outreach", "outreach_autopilot")
+        and gateway_ctx
+        and "SOP" in gateway_ctx
+    ):
         draft += "\n(Draft informed by sales intelligence — not sent.)"
     return f"{internal}\n\n{draft}"
 
@@ -799,6 +828,9 @@ def process_enquiry_with_openai(client, message: str, profile: dict, *, channel:
     reply = audited if not ok else reply
 
     lang = resolve_target_language("apsales", "buyer", message)
+    forced = re.search(r"\[BUYER_LANGUAGE=([a-z]{2})\]", message or "", re.I)
+    if forced:
+        lang = forced.group(1).lower()
     inventory_hit, _ = check_inventory_for_enquiry(message)
     reply = enforce_supply_language(reply, inventory_hit, lang)
     detected = detect_language(message, scenario="buyer")
