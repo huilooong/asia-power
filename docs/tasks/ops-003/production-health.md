@@ -1,10 +1,10 @@
 # OPS-003 Production Health
 
-- Checked at: 2026-07-15T23:24:05.684Z
+- Checked at: 2026-07-16T09:56:49.625Z
 - Base URL: https://asia-power.com
-- Release: REL-20260715232258-api-af50a109c
-- Status: **FAIL**
-- Pass: 54 / Fail: 1
+- Release: REL-20260716092859-api-75ab9974e
+- Status: **PASS**
+- Pass: 74 / Fail: 0
 - Expected WhatsApp: 8616638801930
 
 ## Checks
@@ -63,16 +63,35 @@
 - **PASS** `config_js_http`: HTTP 200
 - **PASS** `config_js_whatsapp`: whatsapp=8616638801930
 - **PASS** `config_js_cache_policy`: public, max-age=14400, must-revalidate
-- **PASS** `config_js_cf`: cf=HIT age=8
-- **FAIL** `config_js_release_id`: config releaseId=REL-20260715142846-chrome-491023c91 != deploy REL-20260715232258-api-af50a109c
+- **PASS** `config_js_cf`: cf=EXPIRED age=0
+- **PASS** `config_js_release_id`: releaseId=REL-20260716092859-api-75ab9974e
 - **PASS** `sw_js_http`: HTTP 200
-- **PASS** `sw_version`: CACHE_VERSION=pwa-app-v5
+- **PASS** `sw_version`: CACHE_VERSION=pwa-app-v6b
 - **PASS** `sw_precache_config`: no bare config.js precache (or versioned)
 - **PASS** `sw_cache_policy`: public, max-age=14400, must-revalidate
 - **PASS** `robots_http`: HTTP 200
 - **PASS** `robots_content`: bytes=349
+- **PASS** `robots_content_type`: text/plain; charset=utf-8
 - **PASS** `sitemap_http`: HTTP 200
-- **PASS** `sitemap_content`: bytes=154135
+- **PASS** `sitemap_content`: bytes=151430
+- **PASS** `sitemap_content_type`: application/xml; charset=utf-8
+- **PASS** `sitemap_head_http`: HEAD HTTP 200
+- **PASS** `seo_sitemap_url_count`: 711 URLs
+- **PASS** `seo_sitemap_test_like_urls`: no obvious test/demo/QA URLs in sitemap
+- **PASS** `seo_half_cut_sample_present`: https://asia-power.com/half-cuts/detail.html?slug=geely-2009-jl-6mt186-passenger-transmission-hc250580
+- **PASS** `seo_half_cut_detail_http`: HTTP 200
+- **PASS** `seo_half_cut_canonical`: https://asia-power.com/half-cuts/detail.html?slug=geely-2009-jl-6mt186-passenger-transmission-hc250580
+- **PASS** `seo_half_cut_product_jsonld_url`: https://asia-power.com/half-cuts/detail.html?slug=geely-2009-jl-6mt186-passenger-transmission-hc250580
+- **PASS** `seo_truck_sample_present`: https://asia-power.com/trucks/detail.html?slug=volvo-xc60-2017-b4204t11-truck-cab-hc250581
+- **PASS** `seo_truck_detail_http`: HTTP 200
+- **PASS** `seo_truck_canonical`: https://asia-power.com/trucks/detail.html?slug=volvo-xc60-2017-b4204t11-truck-cab-hc250581
+- **PASS** `seo_truck_product_jsonld_url`: https://asia-power.com/trucks/detail.html?slug=volvo-xc60-2017-b4204t11-truck-cab-hc250581
+- **PASS** `seo_truck_legacy_redirect`: HTTP 301 -> /trucks/detail.html?slug=volvo-xc60-2017-b4204t11-truck-cab-hc250581
+- **PASS** `seo_machinery_sample_present`: https://asia-power.com/machinery/detail.html?slug=dongfanghong-380-2005-machinery-tractor-hc250576
+- **PASS** `seo_machinery_detail_http`: HTTP 200
+- **PASS** `seo_machinery_canonical`: https://asia-power.com/machinery/detail.html?slug=dongfanghong-380-2005-machinery-tractor-hc250576
+- **PASS** `seo_machinery_product_jsonld_url`: https://asia-power.com/machinery/detail.html?slug=dongfanghong-380-2005-machinery-tractor-hc250576
+- **PASS** `seo_machinery_legacy_redirect`: HTTP 301 -> /machinery/detail.html?slug=dongfanghong-380-2005-machinery-tractor-hc250576
 - **SKIP** `sw_register`: no register() found in pwa-install
 
 ## Cloudflare purge

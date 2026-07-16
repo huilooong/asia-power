@@ -65,6 +65,26 @@ async function fetchText(url, init = {}) {
   return { status: res.status, headers, body, url: res.url || url };
 }
 
+/**
+ * @param {string} url
+ * @param {RequestInit} [init]
+ */
+async function fetchMeta(url, init = {}) {
+  const res = await fetch(url, {
+    redirect: 'manual',
+    headers: {
+      'User-Agent': 'AsiaPower-ReleaseManager-OPS003/1.0',
+      ...(init.headers || {}),
+    },
+    ...init,
+  });
+  const headers = {};
+  res.headers.forEach((v, k) => {
+    headers[k.toLowerCase()] = v;
+  });
+  return { status: res.status, headers, url: res.url || url };
+}
+
 function extractTitle(html) {
   const m = html.match(/<title[^>]*>([\s\S]*?)<\/title>/i);
   return m ? m[1].replace(/\s+/g, ' ').trim() : '';
@@ -122,6 +142,183 @@ function hasJsonLd(html) {
 
 function hasSiteWhatsappMount(html) {
   return /id=["']site-whatsapp["']/.test(html);
+}
+
+function decodeXmlText(value) {
+  return String(value || '')
+    .replace(/&amp;/g, '&')
+    .replace(/&lt;/g, '<')
+    .replace(/&gt;/g, '>')
+    .replace(/&quot;/g, '"')
+    .replace(/&apos;/g, "'");
+}
+
+function extractSitemapLocs(xml) {
+  const locs = [];
+  const re = /<loc>([\s\S]*?)<\/loc>/gi;
+  let m;
+  while ((m = re.exec(xml))) {
+    const loc = decodeXmlText(m[1]).trim();
+    if (loc) locs.push(loc);
+  }
+  return locs;
+}
+
+function jsonLdBlocks(html) {
+  const blocks = [];
+  const re = /<script[^>]+type=["']application\/ld\+json["'][^>]*>([\s\S]*?)<\/script>/gi;
+  let m;
+  while ((m = re.exec(html))) {
+    try {
+      blocks.push(JSON.parse(m[1].trim()));
+    } catch {
+      // Ignore malformed third-party or legacy JSON-LD here; other checks handle presence.
+    }
+  }
+  return blocks;
+}
+
+function isType(node, type) {
+  const value = node && node['@type'];
+  if (Array.isArray(value)) return value.includes(type);
+  return value === type;
+}
+
+function findProductUrl(node) {
+  if (!node || typeof node !== 'object') return '';
+  if (Array.isArray(node)) {
+    for (const child of node) {
+      const found = findProductUrl(child);
+      if (found) return found;
+    }
+    return '';
+  }
+  if (isType(node, 'Product') && node.url) return String(node.url);
+  if (Array.isArray(node['@graph'])) {
+    const found = findProductUrl(node['@graph']);
+    if (found) return found;
+  }
+  return '';
+}
+
+function productJsonLdUrl(html) {
+  for (const block of jsonLdBlocks(html)) {
+    const found = findProductUrl(block);
+    if (found) return found;
+  }
+  return '';
+}
+
+function sameUrl(a, b) {
+  try {
+    const left = new URL(a);
+    const right = new URL(b);
+    return left.origin === right.origin
+      && left.pathname === right.pathname
+      && left.search === right.search;
+  } catch {
+    return String(a || '') === String(b || '');
+  }
+}
+
+function classifyInventoryLoc(loc) {
+  try {
+    const url = new URL(loc);
+    if (url.pathname === '/trucks/detail.html') return 'truck';
+    if (url.pathname === '/machinery/detail.html') return 'machinery';
+    if (url.pathname === '/half-cuts/detail.html') return 'half_cut';
+  } catch {
+    // ignore
+  }
+  return '';
+}
+
+async function runSeoCanonicalValidation({ baseUrl, sitemapBody, push, pageResults }) {
+  const locs = extractSitemapLocs(sitemapBody);
+  pageResults.seo_canonical = { sitemap_url_count: locs.length, samples: {} };
+  if (!locs.length) {
+    push('seo_sitemap_url_count', 'fail', 'no <loc> URLs found in sitemap');
+    return;
+  }
+  push('seo_sitemap_url_count', 'pass', `${locs.length} URLs`);
+
+  const testLike = locs.filter((loc) => /test-vehicle|demo-listing|qa-stock/i.test(loc));
+  if (testLike.length) {
+    push('seo_sitemap_test_like_urls', 'fail', `${testLike.length} test/demo/QA URL(s) in sitemap`);
+  } else {
+    push('seo_sitemap_test_like_urls', 'pass', 'no obvious test/demo/QA URLs in sitemap');
+  }
+
+  const samples = {
+    half_cut: locs.find((loc) => classifyInventoryLoc(loc) === 'half_cut') || '',
+    truck: locs.find((loc) => classifyInventoryLoc(loc) === 'truck') || '',
+    machinery: locs.find((loc) => classifyInventoryLoc(loc) === 'machinery') || '',
+  };
+
+  for (const [kind, loc] of Object.entries(samples)) {
+    if (!loc) {
+      const required = kind === 'half_cut';
+      push(`seo_${kind}_sample_present`, required ? 'fail' : 'skip', `${kind} sample not found in sitemap`);
+      continue;
+    }
+    push(`seo_${kind}_sample_present`, 'pass', loc);
+    pageResults.seo_canonical.samples[kind] = { loc };
+
+    let detail;
+    try {
+      detail = await fetchText(loc);
+    } catch (err) {
+      push(`seo_${kind}_detail_fetch`, 'fail', String(err && err.message ? err.message : err));
+      continue;
+    }
+    pageResults.seo_canonical.samples[kind].http_status = detail.status;
+    if (detail.status >= 400) {
+      push(`seo_${kind}_detail_http`, 'fail', `HTTP ${detail.status} ${loc}`);
+      continue;
+    }
+    push(`seo_${kind}_detail_http`, 'pass', `HTTP ${detail.status}`);
+
+    const canonical = extractCanonical(detail.body);
+    const productUrl = productJsonLdUrl(detail.body);
+    pageResults.seo_canonical.samples[kind].canonical = canonical;
+    pageResults.seo_canonical.samples[kind].product_jsonld_url = productUrl;
+
+    if (!canonical || !sameUrl(canonical, loc)) {
+      push(`seo_${kind}_canonical`, 'fail', `canonical=${canonical || '(none)'} expected=${loc}`);
+    } else {
+      push(`seo_${kind}_canonical`, 'pass', canonical);
+    }
+
+    if (!productUrl || !sameUrl(productUrl, loc)) {
+      push(`seo_${kind}_product_jsonld_url`, 'fail', `Product.url=${productUrl || '(none)'} expected=${loc}`);
+    } else {
+      push(`seo_${kind}_product_jsonld_url`, 'pass', productUrl);
+    }
+
+    if (kind === 'truck' || kind === 'machinery') {
+      const u = new URL(loc);
+      const legacy = `${baseUrl}/half-cuts/detail.html${u.search}`;
+      let meta;
+      try {
+        meta = await fetchMeta(legacy, { method: 'HEAD' });
+      } catch (err) {
+        push(`seo_${kind}_legacy_redirect`, 'fail', String(err && err.message ? err.message : err));
+        continue;
+      }
+      const location = meta.headers.location || '';
+      const redirectTarget = location.startsWith('http') ? location : absUrl(baseUrl, location);
+      pageResults.seo_canonical.samples[kind].legacy = { url: legacy, status: meta.status, location };
+      if (![301, 308].includes(meta.status) || !sameUrl(redirectTarget, loc)) {
+        push(
+          `seo_${kind}_legacy_redirect`,
+          'fail',
+          `legacy ${legacy} -> HTTP ${meta.status} location=${location || '(none)'} expected=${loc}`,
+        );
+      } else {
+        push(`seo_${kind}_legacy_redirect`, 'pass', `HTTP ${meta.status} -> ${location}`);
+      }
+    }
+  }
 }
 
 /**
@@ -343,6 +540,12 @@ export async function runPublicPostReleaseValidation(opts = {}) {
       } else {
         push('robots_content', 'pass', `bytes=${body.length}`);
       }
+      const contentType = headers['content-type'] || '';
+      if (page.id === 'robots' && !/^text\/plain\b/i.test(contentType)) {
+        push('robots_content_type', 'fail', `Content-Type=${contentType || '(none)'} expected text/plain`);
+      } else if (page.id === 'robots') {
+        push('robots_content_type', 'pass', contentType);
+      }
     }
 
     if (page.kind === 'xml') {
@@ -350,6 +553,25 @@ export async function runPublicPostReleaseValidation(opts = {}) {
         push('sitemap_content', 'fail', 'sitemap.xml missing urlset/sitemapindex');
       } else {
         push('sitemap_content', 'pass', `bytes=${body.length}`);
+      }
+      if (page.id === 'sitemap') {
+        const contentType = headers['content-type'] || '';
+        if (!/application\/xml|text\/xml/i.test(contentType)) {
+          push('sitemap_content_type', 'fail', `Content-Type=${contentType || '(none)'} expected XML`);
+        } else {
+          push('sitemap_content_type', 'pass', contentType);
+        }
+        try {
+          const head = await fetchMeta(url, { method: 'HEAD' });
+          if (head.status >= 400) {
+            push('sitemap_head_http', 'fail', `HEAD HTTP ${head.status}`);
+          } else {
+            push('sitemap_head_http', 'pass', `HEAD HTTP ${head.status}`);
+          }
+        } catch (err) {
+          push('sitemap_head_http', 'fail', String(err && err.message ? err.message : err));
+        }
+        await runSeoCanonicalValidation({ baseUrl, sitemapBody: body, push, pageResults });
       }
     }
   }

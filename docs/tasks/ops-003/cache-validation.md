@@ -58,18 +58,18 @@
 - Resolved config: https://asia-power.com/js/config.js?v=apcontact-002 (whatsapp=8616638801930)
 ## config_js
 - URL: https://asia-power.com/js/config.js
-- CF-Cache-Status: HIT
+- CF-Cache-Status: EXPIRED
 - Cache-Control: public, max-age=14400, must-revalidate
 - ETag: —
-- Age: 8
-- Last-Modified: Wed, 15 Jul 2026 23:23:56 GMT
+- Age: —
+- Last-Modified: Thu, 16 Jul 2026 09:56:46 GMT
 ## sw_js
 - URL: https://asia-power.com/sw.js
 - CF-Cache-Status: EXPIRED
 - Cache-Control: public, max-age=14400, must-revalidate
 - ETag: —
 - Age: —
-- Last-Modified: Wed, 15 Jul 2026 23:24:04 GMT
+- Last-Modified: Thu, 16 Jul 2026 09:56:46 GMT
 ## robots
 - URL: https://asia-power.com/robots.txt
 - CF-Cache-Status: BYPASS
@@ -81,6 +81,13 @@
 - URL: https://asia-power.com/sitemap.xml
 - CF-Cache-Status: DYNAMIC
 - Cache-Control: public, max-age=3600
+- ETag: —
+- Age: —
+- Last-Modified: —
+## seo_canonical
+- URL: 
+- CF-Cache-Status: —
+- Cache-Control: —
 - ETag: —
 - Age: —
 - Last-Modified: —

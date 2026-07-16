@@ -1,10 +1,10 @@
 {
   "report": {
-    "status": "fail",
+    "status": "pass",
     "base_url": "https://asia-power.com",
-    "release_id": "REL-20260715232258-api-af50a109c",
+    "release_id": "REL-20260716092859-api-75ab9974e",
     "expected_whatsapp": "8616638801930",
-    "checked_at": "2026-07-15T23:24:05.684Z",
+    "checked_at": "2026-07-16T09:56:49.625Z",
     "checks": [
       {
         "name": "homepage_http",
@@ -279,12 +279,12 @@
       {
         "name": "config_js_cf",
         "status": "pass",
-        "detail": "cf=HIT age=8"
+        "detail": "cf=EXPIRED age=0"
       },
       {
         "name": "config_js_release_id",
-        "status": "fail",
-        "detail": "config releaseId=REL-20260715142846-chrome-491023c91 != deploy REL-20260715232258-api-af50a109c"
+        "status": "pass",
+        "detail": "releaseId=REL-20260716092859-api-75ab9974e"
       },
       {
         "name": "sw_js_http",
@@ -294,7 +294,7 @@
       {
         "name": "sw_version",
         "status": "pass",
-        "detail": "CACHE_VERSION=pwa-app-v5"
+        "detail": "CACHE_VERSION=pwa-app-v6b"
       },
       {
         "name": "sw_precache_config",
@@ -317,6 +317,11 @@
         "detail": "bytes=349"
       },
       {
+        "name": "robots_content_type",
+        "status": "pass",
+        "detail": "text/plain; charset=utf-8"
+      },
+      {
         "name": "sitemap_http",
         "status": "pass",
         "detail": "HTTP 200"
@@ -324,7 +329,97 @@
       {
         "name": "sitemap_content",
         "status": "pass",
-        "detail": "bytes=154135"
+        "detail": "bytes=151430"
+      },
+      {
+        "name": "sitemap_content_type",
+        "status": "pass",
+        "detail": "application/xml; charset=utf-8"
+      },
+      {
+        "name": "sitemap_head_http",
+        "status": "pass",
+        "detail": "HEAD HTTP 200"
+      },
+      {
+        "name": "seo_sitemap_url_count",
+        "status": "pass",
+        "detail": "711 URLs"
+      },
+      {
+        "name": "seo_sitemap_test_like_urls",
+        "status": "pass",
+        "detail": "no obvious test/demo/QA URLs in sitemap"
+      },
+      {
+        "name": "seo_half_cut_sample_present",
+        "status": "pass",
+        "detail": "https://asia-power.com/half-cuts/detail.html?slug=geely-2009-jl-6mt186-passenger-transmission-hc250580"
+      },
+      {
+        "name": "seo_half_cut_detail_http",
+        "status": "pass",
+        "detail": "HTTP 200"
+      },
+      {
+        "name": "seo_half_cut_canonical",
+        "status": "pass",
+        "detail": "https://asia-power.com/half-cuts/detail.html?slug=geely-2009-jl-6mt186-passenger-transmission-hc250580"
+      },
+      {
+        "name": "seo_half_cut_product_jsonld_url",
+        "status": "pass",
+        "detail": "https://asia-power.com/half-cuts/detail.html?slug=geely-2009-jl-6mt186-passenger-transmission-hc250580"
+      },
+      {
+        "name": "seo_truck_sample_present",
+        "status": "pass",
+        "detail": "https://asia-power.com/trucks/detail.html?slug=volvo-xc60-2017-b4204t11-truck-cab-hc250581"
+      },
+      {
+        "name": "seo_truck_detail_http",
+        "status": "pass",
+        "detail": "HTTP 200"
+      },
+      {
+        "name": "seo_truck_canonical",
+        "status": "pass",
+        "detail": "https://asia-power.com/trucks/detail.html?slug=volvo-xc60-2017-b4204t11-truck-cab-hc250581"
+      },
+      {
+        "name": "seo_truck_product_jsonld_url",
+        "status": "pass",
+        "detail": "https://asia-power.com/trucks/detail.html?slug=volvo-xc60-2017-b4204t11-truck-cab-hc250581"
+      },
+      {
+        "name": "seo_truck_legacy_redirect",
+        "status": "pass",
+        "detail": "HTTP 301 -> /trucks/detail.html?slug=volvo-xc60-2017-b4204t11-truck-cab-hc250581"
+      },
+      {
+        "name": "seo_machinery_sample_present",
+        "status": "pass",
+        "detail": "https://asia-power.com/machinery/detail.html?slug=dongfanghong-380-2005-machinery-tractor-hc250576"
+      },
+      {
+        "name": "seo_machinery_detail_http",
+        "status": "pass",
+        "detail": "HTTP 200"
+      },
+      {
+        "name": "seo_machinery_canonical",
+        "status": "pass",
+        "detail": "https://asia-power.com/machinery/detail.html?slug=dongfanghong-380-2005-machinery-tractor-hc250576"
+      },
+      {
+        "name": "seo_machinery_product_jsonld_url",
+        "status": "pass",
+        "detail": "https://asia-power.com/machinery/detail.html?slug=dongfanghong-380-2005-machinery-tractor-hc250576"
+      },
+      {
+        "name": "seo_machinery_legacy_redirect",
+        "status": "pass",
+        "detail": "HTTP 301 -> /machinery/detail.html?slug=dongfanghong-380-2005-machinery-tractor-hc250576"
       },
       {
         "name": "sw_register",
@@ -356,7 +451,7 @@
         "resolved_config_whatsapp": "8616638801930",
         "resolved_config_cache": {
           "cache_control": "public, max-age=14400, must-revalidate",
-          "cf_cache_status": "HIT",
+          "cf_cache_status": "EXPIRED",
           "etag": ""
         }
       },
@@ -521,13 +616,13 @@
         "http_status": 200,
         "cache": {
           "cache_control": "public, max-age=14400, must-revalidate",
-          "cf_cache_status": "HIT",
+          "cf_cache_status": "EXPIRED",
           "etag": "",
-          "age": "8",
-          "last_modified": "Wed, 15 Jul 2026 23:23:56 GMT"
+          "age": "",
+          "last_modified": "Thu, 16 Jul 2026 09:56:46 GMT"
         },
         "whatsapp": "8616638801930",
-        "release_id": "REL-20260715142846-chrome-491023c91"
+        "release_id": "REL-20260716092859-api-75ab9974e"
       },
       "sw_js": {
         "url": "https://asia-power.com/sw.js",
@@ -537,9 +632,9 @@
           "cf_cache_status": "EXPIRED",
           "etag": "",
           "age": "",
-          "last_modified": "Wed, 15 Jul 2026 23:24:04 GMT"
+          "last_modified": "Thu, 16 Jul 2026 09:56:46 GMT"
         },
-        "cache_version": "pwa-app-v5"
+        "cache_version": "pwa-app-v6b"
       },
       "robots": {
         "url": "https://asia-power.com/robots.txt",
@@ -563,13 +658,46 @@
           "last_modified": ""
         }
       },
+      "seo_canonical": {
+        "sitemap_url_count": 711,
+        "samples": {
+          "half_cut": {
+            "loc": "https://asia-power.com/half-cuts/detail.html?slug=geely-2009-jl-6mt186-passenger-transmission-hc250580",
+            "http_status": 200,
+            "canonical": "https://asia-power.com/half-cuts/detail.html?slug=geely-2009-jl-6mt186-passenger-transmission-hc250580",
+            "product_jsonld_url": "https://asia-power.com/half-cuts/detail.html?slug=geely-2009-jl-6mt186-passenger-transmission-hc250580"
+          },
+          "truck": {
+            "loc": "https://asia-power.com/trucks/detail.html?slug=volvo-xc60-2017-b4204t11-truck-cab-hc250581",
+            "http_status": 200,
+            "canonical": "https://asia-power.com/trucks/detail.html?slug=volvo-xc60-2017-b4204t11-truck-cab-hc250581",
+            "product_jsonld_url": "https://asia-power.com/trucks/detail.html?slug=volvo-xc60-2017-b4204t11-truck-cab-hc250581",
+            "legacy": {
+              "url": "https://asia-power.com/half-cuts/detail.html?slug=volvo-xc60-2017-b4204t11-truck-cab-hc250581",
+              "status": 301,
+              "location": "/trucks/detail.html?slug=volvo-xc60-2017-b4204t11-truck-cab-hc250581"
+            }
+          },
+          "machinery": {
+            "loc": "https://asia-power.com/machinery/detail.html?slug=dongfanghong-380-2005-machinery-tractor-hc250576",
+            "http_status": 200,
+            "canonical": "https://asia-power.com/machinery/detail.html?slug=dongfanghong-380-2005-machinery-tractor-hc250576",
+            "product_jsonld_url": "https://asia-power.com/machinery/detail.html?slug=dongfanghong-380-2005-machinery-tractor-hc250576",
+            "legacy": {
+              "url": "https://asia-power.com/half-cuts/detail.html?slug=dongfanghong-380-2005-machinery-tractor-hc250576",
+              "status": 301,
+              "location": "/machinery/detail.html?slug=dongfanghong-380-2005-machinery-tractor-hc250576"
+            }
+          }
+        }
+      },
       "pwa_install": {
-        "src": "/js/pwa-install.js?v=pwa-app-v5",
+        "src": "/js/pwa-install.js?v=pwa-app-v6b",
         "sw_register": ""
       }
     },
-    "fail_count": 1,
-    "pass_count": 54
+    "fail_count": 0,
+    "pass_count": 74
   },
   "purge": {
     "status": "manual_action_required",
