@@ -1,4 +1,4 @@
-"""CLI: python -m sales_coach [--date YYYY-MM-DD] [--self-improve] [--evidence-summary] [--rule-proposals].
+"""CLI: python -m sales_coach [--date YYYY-MM-DD] [--self-improve] [--evidence-summary] [--rule-proposals] [--llm-audit].
 
 Sales Coach is READ ONLY over production:
 - never auto-modifies Prompt
@@ -40,7 +40,42 @@ def main(argv: list[str] | None = None) -> int:
         action="store_true",
         help="APSALES-EVIDENCE-001 跨天模式扫描 → 证据打包,不代写规则(Coach Read Only)",
     )
+    parser.add_argument(
+        "--llm-audit",
+        action="store_true",
+        help="LLM 读对话对照 LIVE-RULES（只读证据+报告；不代写规则）",
+    )
+    parser.add_argument(
+        "--audit-window-days",
+        type=int,
+        default=1,
+        help="LLM audit trailing window in days (default 1 for cost control)",
+    )
     args = parser.parse_args(argv)
+
+    if args.llm_audit:
+        from sales_coach.llm_audit import run_llm_conformance_audit
+
+        result = run_llm_conformance_audit(
+            write=not args.no_write,
+            window_days=max(1, int(args.audit_window_days)),
+        )
+        if args.json:
+            slim = {k: v for k, v in result.items() if k != "markdown"}
+            print(json.dumps(slim, ensure_ascii=False, indent=2))
+        elif args.stdout:
+            print(result.get("markdown") or "")
+        else:
+            print(f"LLM audit: {result.get('report_path')}")
+            print(f"Combined: {result.get('combined_report_path')}")
+            stats = result.get("stats") or {}
+            print(
+                f"llm_calls={stats.get('llm_calls')} turns={stats.get('turns_audited')} "
+                f"violations={len(result.get('violations') or [])} "
+                f"good={len(result.get('good_examples') or [])} "
+                f"read_only={result.get('read_only')}"
+            )
+        return 0 if result.get("ok", True) else 1
 
     if args.rule_proposals:
         from sales_coach.rule_proposals import run_rule_proposal_scan
