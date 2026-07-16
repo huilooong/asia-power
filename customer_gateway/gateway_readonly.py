@@ -551,6 +551,7 @@ def dispatch_sales_intelligence_command(message: str) -> str:
             "/sales-intelligence import — 导入全部历史到 Conversation Database\n"
             "/sales-intelligence import --browser — 含 Browser 分页全量抓取\n"
             "/sales-intelligence analyze — 运行销售智能分析（阶段 2–7）\n"
+            "/sales-intelligence extract-crm — 仅跑车辆询价提取 → vehicle_inquiries/\n"
             "/sales-intelligence report — 生成完整销售智能报告（md+json）\n"
             "/sales-intelligence dashboard — CEO Dashboard\n"
             "/sales-intelligence approve-reply <reply_id> — CEO 批准话术升级\n"
@@ -567,6 +568,29 @@ def dispatch_sales_intelligence_command(message: str) -> str:
         include_browser = "--browser" in body.lower()
         result = run_full_history_import(include_browser=include_browser)
         return result.get("message", str(result))
+
+    if action == "extract-crm":
+        from customer_gateway.vehicle_entity_extractor import run_vehicle_inquiry_extract
+        from truth.customer_crm_intelligence import load_customer_crm_data
+
+        extract = run_vehicle_inquiry_extract()
+        crm = load_customer_crm_data(contact=None)
+        assortment = (crm.get("assortment") or {}).get("value") or crm.get("assortment") or {}
+        if not isinstance(assortment, dict):
+            assortment = {}
+        top_brands = assortment.get("top_brands") or []
+        top_engines = assortment.get("top_engine_codes") or []
+        return (
+            f"CRM vehicle_inquiries 提取完成\n"
+            f"- ok: {extract.get('ok')}\n"
+            f"- contacts_with_inquiries: {extract.get('contacts_with_inquiries')}\n"
+            f"- total_conversations: {extract.get('total_conversations')}\n"
+            f"- output_dir: {extract.get('output_dir')}\n"
+            f"- crm_available: {crm.get('available')}\n"
+            f"- top_brands: {top_brands[:5]}\n"
+            f"- top_engine_codes: {top_engines[:5]}\n"
+            f"- error: {extract.get('error') or '—'}"
+        )
 
     if action == "analyze":
         result = run_sales_intelligence_analysis()

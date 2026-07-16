@@ -389,6 +389,11 @@ def run_sales_intelligence_analysis() -> dict[str, Any]:
             "message": "无会话数据。请先运行 /sales-intelligence import",
         }
 
+    # Keep CRM vehicle_inquiries warm whenever analyze runs (same Conversation DB).
+    from customer_gateway.vehicle_entity_extractor import run_vehicle_inquiry_extract
+
+    vehicle_extract = run_vehicle_inquiry_extract(conversations)
+
     parsed = _conversations_to_parsed(conversations)
     from customer_gateway.customer_profile_builder import build_all_profiles, load_profiles
     from customer_gateway.message_classifier import classify_messages
@@ -429,6 +434,7 @@ def run_sales_intelligence_analysis() -> dict[str, Any]:
         "reply_evolution": evolution,
         "dashboard": dashboard,
         "performance": performance,
+        "vehicle_inquiry_extract": vehicle_extract,
     }
 
     (sip.SI_ROOT / "latest_analysis.json").write_text(

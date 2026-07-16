@@ -302,21 +302,17 @@ def run_full_history_import(*, include_browser: bool = False) -> dict[str, Any]:
     except OSError:
         pass
 
-    # Phase 3: best-effort vehicle inquiry extract (never fails the import).
-    try:
-        from customer_gateway.vehicle_entity_extractor import (
-            build_vehicle_inquiries_from_conversations,
-        )
+    # Phase 3 CRM: vehicle inquiry extract (wired; result recorded, never fails import).
+    from customer_gateway.vehicle_entity_extractor import run_vehicle_inquiry_extract
 
-        build_vehicle_inquiries_from_conversations(all_convs)
-    except Exception:
-        pass
+    vehicle_extract = run_vehicle_inquiry_extract(all_convs)
 
     state = _load_import_state()
     state["last_full_import"] = _now()
     state["conversation_count"] = len(all_convs)
     state["message_count"] = total_msgs
     state["sources"] = results
+    state["vehicle_inquiry_extract"] = vehicle_extract
     state["role_summary"] = {
         "customer_tiers": role_summary["customer_tiers"],
         "other_roles": role_summary["other_roles"],
@@ -372,7 +368,9 @@ def run_full_history_import(*, include_browser: bool = False) -> dict[str, Any]:
         f"- private/system contacts: {others.get('私人', 0) + others.get('系统/广告', 0)}\n"
         f"客户分类: A级 {tiers.get('A级客户', 0)} | B级 {tiers.get('B级客户', 0)} | "
         f"潜在 {tiers.get('潜在客户', 0)} | 浅互动 {tiers.get('浅互动客户', 0)} | "
-        f"流失 {tiers.get('流失客户', 0)}"
+        f"流失 {tiers.get('流失客户', 0)}\n"
+        f"- vehicle_inquiries files: {vehicle_extract.get('contacts_with_inquiries', 0)} "
+        f"(ok={vehicle_extract.get('ok')})"
     )
     if include_browser and browser:
         pass  # browser block already prepended
@@ -401,5 +399,6 @@ def run_full_history_import(*, include_browser: bool = False) -> dict[str, Any]:
         "message_count": total_msgs,
         "sources": results,
         "role_summary": role_summary,
+        "vehicle_inquiry_extract": vehicle_extract,
         "message": msg,
     }

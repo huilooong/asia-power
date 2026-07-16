@@ -263,4 +263,25 @@ def build_vehicle_inquiries_from_conversations(
     for contact, rows in by_contact.items():
         persist_vehicle_inquiries_for_contact(contact, rows)
         written += 1
-    return {"contacts_with_inquiries": written, "total_conversations": len(convs)}
+    return {
+        "ok": True,
+        "contacts_with_inquiries": written,
+        "total_conversations": len(convs),
+        "output_dir": str(sip.VEHICLE_INQUIRIES_DIR),
+    }
+
+
+def run_vehicle_inquiry_extract(
+    conversations: list[dict[str, Any]] | None = None,
+) -> dict[str, Any]:
+    """Public entry for batch/cron: extract + persist, never raise to caller."""
+    try:
+        return build_vehicle_inquiries_from_conversations(conversations)
+    except Exception as exc:  # noqa: BLE001 — batch must not kill import/analyze
+        return {
+            "ok": False,
+            "error": f"{type(exc).__name__}: {exc}",
+            "contacts_with_inquiries": 0,
+            "total_conversations": 0,
+            "output_dir": str(sip.VEHICLE_INQUIRIES_DIR),
+        }

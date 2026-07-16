@@ -175,3 +175,54 @@ export function classifyFromMeMessage(message) {
   if (isBotOutboundEcho(message)) return "bot_echo";
   return "team_reply";
 }
+
+/** Fields that mean the customer has clearly stated what they want. */
+const PART_REQUEST_KEYS = ["part_intent", "vin", "engine_code"];
+
+/**
+ * Stamp part_first_requested_at once — first time part_intent / vin / engine_code
+ * is written into deal_state. Data-only; no customer-facing use.
+ */
+export function withPartFirstRequestedAt(prev, patch, nowIso) {
+  const base = { ...(patch || {}) };
+  if (prev?.part_first_requested_at || base.part_first_requested_at) return base;
+  const newlyClear = PART_REQUEST_KEYS.some((k) => {
+    const incoming = base[k];
+    if (incoming == null || incoming === "") return false;
+    const before = prev?.[k];
+    return before == null || before === "";
+  });
+  if (!newlyClear) return base;
+  return { ...base, part_first_requested_at: nowIso || new Date().toISOString() };
+}
+
+/**
+ * Rough signal that a human team reply contains a price or stock confirmation.
+ * Intentionally imperfect — we only need samples for future lead-time metrics.
+ */
+export function looksLikeTeamPriceOrStockConfirm(text) {
+  const t = String(text || "").trim();
+  if (!t) return false;
+  if (/\$\s*\d|\bUSD\b|\bFOB\b|\bEXW\b|\bCIF\b|\bGHS\b|\bRMB\b|\bCNY\b/i.test(t)) return true;
+  if (/\b\d{2,6}(?:\.\d+)?\s*(?:USD|usd|dollars?|GHS|RMB)\b/.test(t)) return true;
+  if (/\b(in stock|available|we (?:have|can)\b|price(?:\s+is)?|quotation|quote)\b/i.test(t)) {
+    return true;
+  }
+  if (/报价|有货|现货|美金|美元|单价/.test(t)) return true;
+  return false;
+}
+
+/**
+ * Stamp team_confirmed_at once when a human reply looks like price/stock confirm.
+ * Also records confirmation_status / source_channel for inventory-source-model naming.
+ */
+export function withTeamConfirmedAt(prev, teamText, nowIso) {
+  if (prev?.team_confirmed_at) return {};
+  if (!looksLikeTeamPriceOrStockConfirm(teamText)) return {};
+  const at = nowIso || new Date().toISOString();
+  return {
+    team_confirmed_at: at,
+    confirmation_status: "team_quoted",
+    source_channel: "whatsapp_team",
+  };
+}

@@ -13,6 +13,8 @@ import {
   nextTeamReplies,
   recentTeamRepliesForPrompt,
   classifyFromMeMessage,
+  withPartFirstRequestedAt,
+  withTeamConfirmedAt,
 } from "./apsales-human-visibility.mjs";
 import { parseAgentReply, buildExceptionFallback } from "./apsales-parse-agent-reply.mjs";
 import { notifyGhanaStaffIfHandingOff } from "./ghana-staff-handoff.mjs";
@@ -191,12 +193,16 @@ async function saveDealState(senderId, patch) {
 
 async function appendTeamReply(senderId, text, messageId) {
   const prev = (await loadDealState(senderId)) || {};
+  const nowIso = new Date().toISOString();
+  const teamText = String(text || "").slice(0, 2000);
   const team_replies = nextTeamReplies(prev.team_replies, {
-    text: String(text || "").slice(0, 2000),
-    at: new Date().toISOString(),
+    text: teamText,
+    at: nowIso,
     message_id: messageId || null,
   });
-  return saveDealState(senderId, { team_replies });
+  // Data-only: stamp team_confirmed_at when human reply looks like price/stock confirm.
+  const confirmPatch = withTeamConfirmedAt(prev, teamText, nowIso);
+  return saveDealState(senderId, { team_replies, ...confirmPatch });
 }
 
 /** sendText + remember outbound id so fromMe echoes are not treated as human. */
@@ -232,7 +238,10 @@ async function rememberDealFromContext(senderId, mediaContext, text) {
   if (/\b(automatic|auto)\b/i.test(String(text || ""))) patch.transmission = "automatic";
   if (/\b(manual)\b/i.test(String(text || ""))) patch.transmission = "manual";
   if (!Object.keys(patch).length) return loadDealState(senderId);
-  return saveDealState(senderId, patch);
+  const prev = (await loadDealState(senderId)) || {};
+  // Data-only: first clear part/vin/engine → part_first_requested_at (no display/decision use).
+  const stamped = withPartFirstRequestedAt(prev, patch, new Date().toISOString());
+  return saveDealState(senderId, stamped);
 }
 
 const INVENTORY_PUBLIC_API = "https://asia-power.com/api/half-cuts/public";
