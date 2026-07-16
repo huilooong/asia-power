@@ -3,6 +3,7 @@
 
 from __future__ import annotations
 
+import argparse
 import json
 import os
 import sys
@@ -27,18 +28,70 @@ if not os.getenv("OPENAI_API_KEY"):
             os.environ["OPENAI_API_KEY"] = line.split("=", 1)[1].strip().strip("'").strip('"')
 
 
-def main() -> int:
+def _env_truthy(name: str, default: str = "") -> bool:
+    return (os.getenv(name) or default).strip().lower() in ("1", "true", "yes", "on")
+
+
+def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
+    p = argparse.ArgumentParser(
+        description="Coach LLM LIVE-RULES audit (read-only reports). "
+        "Daily default skips already-audited evidence_ids to save cost."
+    )
+    p.add_argument(
+        "--force",
+        action="store_true",
+        help="Ignore audited_evidence_ids cache and re-judge the window "
+        "(use after prompt/filter changes). Same as COACH_AUDIT_FORCE=1 "
+        "or COACH_AUDIT_SKIP_AUDITED=0.",
+    )
+    p.add_argument(
+        "--window-days",
+        type=int,
+        default=None,
+        help="Override COACH_AUDIT_WINDOW_DAYS (default 2).",
+    )
+    p.add_argument(
+        "--max-conversations",
+        type=int,
+        default=None,
+        help="Override COACH_AUDIT_MAX_CONVOS (default 25).",
+    )
+    p.add_argument(
+        "--suffix",
+        default=None,
+        help="Report filename suffix (e.g. force-verify → …-llm-audit-force-verify.md).",
+    )
+    return p.parse_args(argv)
+
+
+def main(argv: list[str] | None = None) -> int:
     from sales_coach.llm_audit import run_llm_conformance_audit
 
-    window = int(os.getenv("COACH_AUDIT_WINDOW_DAYS") or "2")
-    max_c = int(os.getenv("COACH_AUDIT_MAX_CONVOS") or "25")
-    skip = (os.getenv("COACH_AUDIT_SKIP_AUDITED") or "1").strip().lower() not in (
+    args = parse_args(argv)
+    window = args.window_days if args.window_days is not None else int(
+        os.getenv("COACH_AUDIT_WINDOW_DAYS") or "2"
+    )
+    max_c = args.max_conversations if args.max_conversations is not None else int(
+        os.getenv("COACH_AUDIT_MAX_CONVOS") or "25"
+    )
+    force = bool(args.force) or _env_truthy("COACH_AUDIT_FORCE")
+    # Explicit skip env still works; --force / COACH_AUDIT_FORCE wins to disable skip.
+    skip_env_off = (os.getenv("COACH_AUDIT_SKIP_AUDITED") or "1").strip().lower() in (
         "0",
         "false",
         "no",
     )
-    suffix = (os.getenv("COACH_AUDIT_REPORT_SUFFIX") or "").strip()
+    skip = not (force or skip_env_off)
+    suffix = (args.suffix if args.suffix is not None else os.getenv("COACH_AUDIT_REPORT_SUFFIX") or "").strip()
+
     print("OPENAI_API_KEY set:", bool(os.getenv("OPENAI_API_KEY")))
+    print(
+        "audit mode:",
+        "FORCE (re-judge window, ignore audited cache)" if not skip else "incremental (skip audited)",
+    )
+    if force:
+        print("force flag: --force or COACH_AUDIT_FORCE=1")
+
     result = run_llm_conformance_audit(
         window_days=window,
         max_conversations=max_c,

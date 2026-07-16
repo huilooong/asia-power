@@ -369,6 +369,14 @@ def build_llm_audit_markdown(
     stats: dict[str, Any],
     all_turns: list[dict[str, Any]],
 ) -> str:
+    skip_mode = stats.get("skip_audited", True)
+    if skip_mode:
+        window_note = f"过去 {window_days} 天（增量：跳过已审 evidence_id）"
+    else:
+        window_note = (
+            f"过去 {window_days} 天（**FORCE**：忽略已审缓存，整窗重判 — "
+            "`--force` / COACH_AUDIT_FORCE=1 / COACH_AUDIT_SKIP_AUDITED=0）"
+        )
     lines = [
         f"# Coach LLM 对照 LIVE-RULES 审查 — {day}",
         "",
@@ -376,7 +384,7 @@ def build_llm_audit_markdown(
         "",
         "## 覆盖与成本",
         "",
-        f"- 时间窗: 过去 {window_days} 天（默认只审新增，跳过已审 evidence_id）",
+        f"- 时间窗: {window_note}",
         f"- 会话数(LLM 调用): {stats.get('llm_calls', 0)}",
         f"- turns 送审: {stats.get('turns_audited', 0)}",
         f"- 跳过已审 turns: {stats.get('skipped_already_audited', 0)}",
@@ -530,6 +538,7 @@ def run_llm_conformance_audit(
         "llm_calls": llm_calls,
         "turns_audited": turns_audited,
         "skipped_already_audited": skipped,
+        "skip_audited": skip_audited,
         "model": model if llm_call is None else "injected",
         "error_conversations": error_conversations,
         "conversations_selected": len(ordered),

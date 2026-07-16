@@ -209,5 +209,19 @@ class CoachLlmAuditTests(unittest.TestCase):
             self.assertIn("通道 B", combined)
 
 
+class RunCoachLlmAuditCliTests(unittest.TestCase):
+    def test_force_flag_disables_skip(self) -> None:
+        import importlib.util
+
+        path = Path(__file__).resolve().parent.parent / "scripts" / "run-coach-llm-audit.py"
+        spec = importlib.util.spec_from_file_location("run_coach_llm_audit_cli", path)
+        assert spec and spec.loader
+        cli = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(cli)
+        args = cli.parse_args(["--force", "--suffix", "unit"])
+        self.assertTrue(args.force)
+        self.assertEqual(args.suffix, "unit")
+
+
 if __name__ == "__main__":
     unittest.main()
