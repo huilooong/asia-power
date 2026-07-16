@@ -1143,8 +1143,12 @@ async function serveStatic(req, res, pathname, search = '') {
     'whatsapp-crm.js',
     'quote-request-form.js',
     'home-v4-hybrid.js',
+    'pwa-install.js',
+    'pwa-app-shell.js',
     'sw.js',
   ]);
+  // pwa-install / pwa-app-shell must not be year-immutable: CF can poison a new
+  // ?v= query key if the first edge fetch races a deploy (seen 2026-07-16).
   let cacheControl = isAsset
     ? 'public, max-age=31536000, immutable'
     : 'no-cache, no-store, must-revalidate';

@@ -100,6 +100,8 @@ for f in machinery-brand-catalog.js powertrain-catalog-memory.js powertrain-labe
   test -f /root/.openclaw/workspace/inventory-site/lib/"$f" || { echo "missing lib/$f"; exit 1; }
 done
 node --check /root/.openclaw/workspace/inventory-site/server.js
+grep -q "pwa-install.js" /root/.openclaw/workspace/inventory-site/server.js
+grep -q "pwa-app-shell.js" /root/.openclaw/workspace/inventory-site/server.js
 systemctl daemon-reload
 chmod +x /usr/local/bin/asiapower-health-watch.sh 2>/dev/null || true
 if [ -f /root/.openclaw/workspace/inventory-site/package.json ]; then
@@ -179,8 +181,8 @@ grep -q 'href="/trucks/"' "$PUB/index.html"
 grep -q 'href="/machinery/"' "$PUB/index.html"
 grep -q 'href="/half-cuts/?cat=used-cars"' "$PUB/index.html"
 grep -q 'nav-list-direct-v1' "$PUB/js/home-v4-hybrid.js"
-grep -q 'pwa-app-v6' "$PUB/index.html"
-grep -q "CACHE_VERSION = 'pwa-app-v6'" "$PUB/sw.js"
+grep -q 'pwa-app-v6b' "$PUB/index.html"
+grep -q "CACHE_VERSION = 'pwa-app-v6b'" "$PUB/sw.js"
 grep -q 'obsoleteCacheKeys' "$PUB/sw.js"
 ! grep -q "startsWith('apapp-001-')" "$PUB/sw.js"
 grep -q 'SHELL_ENABLED = false' "$PUB/js/pwa-app-shell.js"

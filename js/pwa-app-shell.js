@@ -10,7 +10,7 @@
 (function () {
   'use strict';
 
-  var CACHE = 'pwa-app-v6';
+  var CACHE = 'pwa-app-v6b';
   var TABBAR_ID = 'ap-app-tabbar';
   var TOPBAR_ID = 'ap-app-topbar';
   /** Kill switch — must stay false until standalone detection is proven safe. */

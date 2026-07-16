@@ -7,8 +7,8 @@
   'use strict';
 
   var STORAGE_DISMISS = 'ap_pwa_install_dismissed_until';
-  var SW_URL = '/sw.js?v=pwa-app-v6';
-  var CACHE_BUST = 'pwa-app-v6';
+  var SW_URL = '/sw.js?v=pwa-app-v6b';
+  var CACHE_BUST = 'pwa-app-v6b';
   var SW_RELOAD_FLAG = 'ap_sw_controller_reloaded';
   /* CSS is also linked from HTML; ensureStyles is a safety net for app.html edge cases. */
 

@@ -1,4 +1,4 @@
-const CACHE_VERSION = 'pwa-app-v6';
+const CACHE_VERSION = 'pwa-app-v6b';
 const STATIC_CACHE = `${CACHE_VERSION}-static`;
 const OFFLINE_URL = '/offline.html';
 
@@ -20,15 +20,15 @@ const STATIC_ASSETS = [
   '/app.html',
   '/css/styles.css',
   '/css/home-v4-hybrid.css?v=home-scroll-v5',
-  '/css/pwa-install.css?v=pwa-app-v6',
-  '/css/pwa-app-shell.css?v=pwa-app-v6',
+  '/css/pwa-install.css?v=pwa-app-v6b',
+  '/css/pwa-app-shell.css?v=pwa-app-v6b',
   '/js/path-utils.js',
   // Never precache bare /js/config.js — CF may hold immutable +233 poison for months
   '/js/config.js?v=apcontact-002',
   '/js/components.js?v=auth-nav-once-v2',
   '/js/home-v4-hybrid.js?v=vehicle-engine-001c',
-  '/js/pwa-install.js?v=pwa-app-v6',
-  '/js/pwa-app-shell.js?v=pwa-app-v6',
+  '/js/pwa-install.js?v=pwa-app-v6b',
+  '/js/pwa-app-shell.js?v=pwa-app-v6b',
   '/assets/favicon.png',
   '/assets/icons/icon-192.png',
   '/assets/icons/icon-512.png',
