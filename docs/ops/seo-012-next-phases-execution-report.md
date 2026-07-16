@@ -27,6 +27,12 @@ Start the post-Phase-1 SEO execution work with changes that can improve organic 
 | `ghana.html` | Added shipping guide CTA beside catalog links |
 | `nigeria.html` | Added shipping guide CTA beside catalog links |
 | `scripts/lib/post-release-validation.mjs` | Added guide pages to public validation and required sitemap guide URL checks |
+| `engines/ghana-used-engines-from-china.html` | Added Ghana used-engine country-intent page |
+| `engines/nigeria-used-engines-from-china.html` | Added Nigeria used-engine country-intent page |
+| `engines/ghana-half-cut-engines.html` | Added related link to Ghana used-engine sourcing page |
+| `engines/nigeria-half-cut-engines.html` | Added related link to Nigeria used-engine sourcing page |
+| `scripts/deploy-production.mjs` | Added country engine pages to chrome deploy sync and remote gates |
+| `scripts/lib/release-manager.mjs` | Added country engine pages to chrome source and snapshot paths |
 
 ## Content Added
 
@@ -74,6 +80,36 @@ Targets:
 - Africa import shipping quote
 - Tema, Lagos, Cotonou, Douala, Abidjan, Mombasa shipping intent
 
+### Ghana Used Engines from China
+
+URL:
+
+```text
+/engines/ghana-used-engines-from-china.html
+```
+
+Targets:
+
+- used engines from China for Ghana
+- Ghana used engine import
+- Tema used engine CIF quote
+- engine plus gearbox Ghana
+
+### Nigeria Used Engines from China
+
+URL:
+
+```text
+/engines/nigeria-used-engines-from-china.html
+```
+
+Targets:
+
+- used engines from China for Nigeria
+- Nigeria used engine import
+- Lagos / Apapa used engine CIF quote
+- engine plus gearbox Nigeria
+
 ## Validation Added
 
 Release Manager now checks:
@@ -81,6 +117,8 @@ Release Manager now checks:
 - `/guides/`
 - `/guides/buying-used-engines-from-china.html`
 - `/guides/fob-vs-cif-shipping-guide.html`
+- `/engines/ghana-used-engines-from-china.html`
+- `/engines/nigeria-used-engines-from-china.html`
 
 For each guide page, existing public validation covers:
 
@@ -96,6 +134,8 @@ Sitemap validation now also fails if the sitemap is missing:
 - `/guides/`
 - `/guides/buying-used-engines-from-china.html`
 - `/guides/fob-vs-cif-shipping-guide.html`
+- `/engines/ghana-used-engines-from-china.html`
+- `/engines/nigeria-used-engines-from-china.html`
 
 ## Validation Run
 
@@ -115,6 +155,8 @@ Passed local HTTP checks against `http://127.0.0.1:8799`:
 | `/guides/` | HTTP 200, title present, canonical correct, JSON-LD present, WhatsApp CTA present |
 | `/guides/buying-used-engines-from-china.html` | HTTP 200, title present, canonical correct, JSON-LD present, WhatsApp CTA present |
 | `/guides/fob-vs-cif-shipping-guide.html` | HTTP 200, title present, canonical correct, JSON-LD present, WhatsApp CTA present |
+| `/engines/ghana-used-engines-from-china.html` | Static validation passed: title present, canonical correct, JSON-LD present, WhatsApp CTA present, shared JS cache key present |
+| `/engines/nigeria-used-engines-from-china.html` | Static validation passed: title present, canonical correct, JSON-LD present, WhatsApp CTA present, shared JS cache key present |
 | `/sitemap.xml` | HTTP 200, XML content type, guide URLs present |
 | `HEAD /sitemap.xml` | HTTP 200 |
 
@@ -124,6 +166,8 @@ Passed dynamic sitemap generation check:
 https://asia-power.com/guides/ present
 https://asia-power.com/guides/buying-used-engines-from-china.html present
 https://asia-power.com/guides/fob-vs-cif-shipping-guide.html present
+https://asia-power.com/engines/ghana-used-engines-from-china.html present
+https://asia-power.com/engines/nigeria-used-engines-from-china.html present
 ```
 
 Full local OPS-003 was attempted, but the local public inventory API returned `approved: 0`, so the existing half-cut sitemap sample check cannot pass in this local environment. This should be re-run against production after deployment, where Phase 1 already validated live inventory samples.
@@ -138,13 +182,12 @@ Before deployment:
 2. Run local server checks for guide pages and sitemap output.
 3. Run Release Manager against a deployed release after CEO deploy confirmation.
 
-## Next Recommended Batch
+## Current Recommended Next Batch
 
-After this guide batch is validated and deployed:
+After the guide and country-engine batch is validated and deployed:
 
-1. Add two country-intent engine pages:
-   - `/engines/ghana-used-engines-from-china.html`
-   - `/engines/nigeria-used-engines-from-china.html`
-2. Add internal links from Ghana/Nigeria country pages to the matching engine pages.
-3. Add GSC query tracking once Search Console data is available.
-4. Review cache policy separately because that touches production behavior.
+1. Add two model-intent pages from live demand:
+   - Toyota engine import to Ghana
+   - Hyundai/Kia engine import to Nigeria
+2. Add Search Console query tracking once GSC data is available.
+3. Review cache policy separately because that touches production behavior.

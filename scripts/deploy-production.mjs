@@ -337,6 +337,8 @@ function deployChrome() {
     'trucks/index.html',
     'machinery/index.html',
     'engines/index.html',
+    'engines/ghana-used-engines-from-china.html',
+    'engines/nigeria-used-engines-from-china.html',
     'gearboxes/index.html',
     'front-cuts/index.html',
     'chassis-parts/index.html',
@@ -375,6 +377,8 @@ test -f "$PUB/kenya.html"
 test -f "$PUB/brands.html"
 test -f "$PUB/brands/toyota.html"
 test -f "$PUB/app.html"
+test -f "$PUB/engines/ghana-used-engines-from-china.html"
+test -f "$PUB/engines/nigeria-used-engines-from-china.html"
 test -f "$PUB/guides/index.html"
 test -f "$PUB/guides/buying-used-engines-from-china.html"
 test -f "$PUB/guides/fob-vs-cif-shipping-guide.html"
@@ -455,6 +459,8 @@ grep -q 'object-fit: contain' "$PUB/css/ebay-layout.css"
 grep -E -q 'about-type-v2|seo-guides-20260716' "$PUB/half-cuts/index.html"
 grep -E -q 'catalog-search-v1|catalog-search-v2|stock-id-search-v[12]' "$PUB/half-cuts/index.html"
 grep -E -q 'about-type-v2|seo-guides-20260716' "$PUB/engines/index.html"
+grep -q 'seo-guides-20260716' "$PUB/engines/ghana-used-engines-from-china.html"
+grep -q 'seo-guides-20260716' "$PUB/engines/nigeria-used-engines-from-china.html"
 grep -q 'seo-guides-20260716' "$PUB/guides/index.html"
 grep -q 'seo-guides-20260716' "$PUB/guides/buying-used-engines-from-china.html"
 grep -q 'seo-guides-20260716' "$PUB/guides/fob-vs-cif-shipping-guide.html"

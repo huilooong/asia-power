@@ -29,6 +29,8 @@ const DEFAULT_PAGES = [
   { id: 'guides', url: '/guides/', kind: 'html' },
   { id: 'guide_buying_used_engines', url: '/guides/buying-used-engines-from-china.html', kind: 'html' },
   { id: 'guide_fob_cif', url: '/guides/fob-vs-cif-shipping-guide.html', kind: 'html' },
+  { id: 'engine_ghana_used_engines', url: '/engines/ghana-used-engines-from-china.html', kind: 'html' },
+  { id: 'engine_nigeria_used_engines', url: '/engines/nigeria-used-engines-from-china.html', kind: 'html' },
   { id: 'supplier_portal', url: '/supplier-portal.html', kind: 'html' },
   { id: 'config_js', url: '/js/config.js', kind: 'config' },
   { id: 'sw_js', url: '/sw.js', kind: 'sw' },
@@ -252,19 +254,21 @@ async function runSeoCanonicalValidation({ baseUrl, sitemapBody, push, pageResul
     push('seo_sitemap_test_like_urls', 'pass', 'no obvious test/demo/QA URLs in sitemap');
   }
 
-  const requiredGuidePaths = [
+  const requiredStaticGrowthPaths = [
     '/guides/',
     '/guides/buying-used-engines-from-china.html',
     '/guides/fob-vs-cif-shipping-guide.html',
+    '/engines/ghana-used-engines-from-china.html',
+    '/engines/nigeria-used-engines-from-china.html',
   ];
-  const missingGuidePaths = requiredGuidePaths.filter((pathname) => {
+  const missingStaticGrowthPaths = requiredStaticGrowthPaths.filter((pathname) => {
     const expected = absUrl(baseUrl, pathname);
     return !locs.some((loc) => sameUrl(loc, expected));
   });
-  if (missingGuidePaths.length) {
-    push('seo_sitemap_guides', 'fail', `missing guide URL(s): ${missingGuidePaths.join(', ')}`);
+  if (missingStaticGrowthPaths.length) {
+    push('seo_sitemap_static_growth_pages', 'fail', `missing static growth URL(s): ${missingStaticGrowthPaths.join(', ')}`);
   } else {
-    push('seo_sitemap_guides', 'pass', 'guide hub and articles present');
+    push('seo_sitemap_static_growth_pages', 'pass', 'guide and country engine pages present');
   }
 
   const samples = {
