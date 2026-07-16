@@ -3,499 +3,499 @@
     "chinese": "日产",
     "english": "Nissan",
     "source": "manual_seed",
-    "learnedAt": "2026-07-16T10:10:51.207Z"
+    "learnedAt": "2026-07-16T15:51:12.387Z"
   },
   "东风日产": {
     "chinese": "东风日产",
     "english": "Nissan",
     "source": "manual_seed",
-    "learnedAt": "2026-07-16T10:10:51.226Z"
+    "learnedAt": "2026-07-16T15:51:12.392Z"
   },
   "丰田": {
     "chinese": "丰田",
     "english": "Toyota",
     "source": "manual_seed",
-    "learnedAt": "2026-07-16T10:10:51.227Z"
+    "learnedAt": "2026-07-16T15:51:12.392Z"
   },
   "一汽丰田": {
     "chinese": "一汽丰田",
     "english": "Toyota",
     "source": "manual_seed",
-    "learnedAt": "2026-07-16T10:10:51.229Z"
+    "learnedAt": "2026-07-16T15:51:12.392Z"
   },
   "广汽丰田": {
     "chinese": "广汽丰田",
     "english": "Toyota",
     "source": "manual_seed",
-    "learnedAt": "2026-07-16T10:10:51.231Z"
+    "learnedAt": "2026-07-16T15:51:12.393Z"
   },
   "雷克萨斯": {
     "chinese": "雷克萨斯",
     "english": "Lexus",
     "source": "manual_seed",
-    "learnedAt": "2026-07-16T10:10:51.232Z"
+    "learnedAt": "2026-07-16T15:51:12.393Z"
   },
   "凌志": {
     "chinese": "凌志",
     "english": "Lexus",
     "source": "manual_seed",
-    "learnedAt": "2026-07-16T10:10:51.233Z"
+    "learnedAt": "2026-07-16T15:51:12.393Z"
   },
   "本田": {
     "chinese": "本田",
     "english": "Honda",
     "source": "manual_seed",
-    "learnedAt": "2026-07-16T10:10:51.237Z"
+    "learnedAt": "2026-07-16T15:51:12.394Z"
   },
   "东风本田": {
     "chinese": "东风本田",
     "english": "Honda",
     "source": "manual_seed",
-    "learnedAt": "2026-07-16T10:10:51.238Z"
+    "learnedAt": "2026-07-16T15:51:12.394Z"
   },
   "广汽本田": {
     "chinese": "广汽本田",
     "english": "Honda",
     "source": "manual_seed",
-    "learnedAt": "2026-07-16T10:10:51.240Z"
+    "learnedAt": "2026-07-16T15:51:12.395Z"
   },
   "讴歌": {
     "chinese": "讴歌",
     "english": "Acura",
     "source": "manual_seed",
-    "learnedAt": "2026-07-16T10:10:51.242Z"
+    "learnedAt": "2026-07-16T15:51:12.395Z"
   },
   "英菲尼迪": {
     "chinese": "英菲尼迪",
     "english": "Infiniti",
     "source": "manual_seed",
-    "learnedAt": "2026-07-16T10:10:51.243Z"
+    "learnedAt": "2026-07-16T15:51:12.396Z"
   },
   "马自达": {
     "chinese": "马自达",
     "english": "Mazda",
     "source": "manual_seed",
-    "learnedAt": "2026-07-16T10:10:51.245Z"
+    "learnedAt": "2026-07-16T15:51:12.396Z"
   },
   "长安马自达": {
     "chinese": "长安马自达",
     "english": "Mazda",
     "source": "manual_seed",
-    "learnedAt": "2026-07-16T10:10:51.247Z"
+    "learnedAt": "2026-07-16T15:51:12.397Z"
   },
   "一汽马自达": {
     "chinese": "一汽马自达",
     "english": "Mazda",
     "source": "manual_seed",
-    "learnedAt": "2026-07-16T10:10:51.249Z"
+    "learnedAt": "2026-07-16T15:51:12.397Z"
   },
   "三菱": {
     "chinese": "三菱",
     "english": "Mitsubishi",
     "source": "manual_seed",
-    "learnedAt": "2026-07-16T10:10:51.250Z"
+    "learnedAt": "2026-07-16T15:51:12.398Z"
   },
   "广汽三菱": {
     "chinese": "广汽三菱",
     "english": "Mitsubishi",
     "source": "manual_seed",
-    "learnedAt": "2026-07-16T10:10:51.251Z"
+    "learnedAt": "2026-07-16T15:51:12.398Z"
   },
   "斯巴鲁": {
     "chinese": "斯巴鲁",
     "english": "Subaru",
     "source": "manual_seed",
-    "learnedAt": "2026-07-16T10:10:51.252Z"
+    "learnedAt": "2026-07-16T15:51:12.399Z"
   },
   "铃木": {
     "chinese": "铃木",
     "english": "Suzuki",
     "source": "manual_seed",
-    "learnedAt": "2026-07-16T10:10:51.252Z"
+    "learnedAt": "2026-07-16T15:51:12.400Z"
   },
   "大发": {
     "chinese": "大发",
     "english": "Daihatsu",
     "source": "manual_seed",
-    "learnedAt": "2026-07-16T10:10:51.253Z"
+    "learnedAt": "2026-07-16T15:51:12.400Z"
   },
   "现代": {
     "chinese": "现代",
     "english": "Hyundai",
     "source": "manual_seed",
-    "learnedAt": "2026-07-16T10:10:51.255Z"
+    "learnedAt": "2026-07-16T15:51:12.401Z"
   },
   "北京现代": {
     "chinese": "北京现代",
     "english": "Hyundai",
     "source": "manual_seed",
-    "learnedAt": "2026-07-16T10:10:51.256Z"
+    "learnedAt": "2026-07-16T15:51:12.401Z"
   },
   "起亚": {
     "chinese": "起亚",
     "english": "Kia",
     "source": "manual_seed",
-    "learnedAt": "2026-07-16T10:10:51.257Z"
+    "learnedAt": "2026-07-16T15:51:12.402Z"
   },
   "悦达起亚": {
     "chinese": "悦达起亚",
     "english": "Kia",
     "source": "manual_seed",
-    "learnedAt": "2026-07-16T10:10:51.258Z"
+    "learnedAt": "2026-07-16T15:51:12.402Z"
   },
   "捷尼赛思": {
     "chinese": "捷尼赛思",
     "english": "Genesis",
     "source": "manual_seed",
-    "learnedAt": "2026-07-16T10:10:51.259Z"
+    "learnedAt": "2026-07-16T15:51:12.402Z"
   },
   "福特": {
     "chinese": "福特",
     "english": "Ford",
     "source": "manual_seed",
-    "learnedAt": "2026-07-16T10:10:51.260Z"
+    "learnedAt": "2026-07-16T15:51:12.403Z"
   },
   "长安福特": {
     "chinese": "长安福特",
     "english": "Ford",
     "source": "manual_seed",
-    "learnedAt": "2026-07-16T10:10:51.261Z"
+    "learnedAt": "2026-07-16T15:51:12.403Z"
   },
   "江铃福特": {
     "chinese": "江铃福特",
     "english": "Ford",
     "source": "manual_seed",
-    "learnedAt": "2026-07-16T10:10:51.261Z"
+    "learnedAt": "2026-07-16T15:51:12.404Z"
   },
   "林肯": {
     "chinese": "林肯",
     "english": "Lincoln",
     "source": "manual_seed",
-    "learnedAt": "2026-07-16T10:10:51.262Z"
+    "learnedAt": "2026-07-16T15:51:12.404Z"
   },
   "雪佛兰": {
     "chinese": "雪佛兰",
     "english": "Chevrolet",
     "source": "manual_seed",
-    "learnedAt": "2026-07-16T10:10:51.263Z"
+    "learnedAt": "2026-07-16T15:51:12.404Z"
   },
   "别克": {
     "chinese": "别克",
     "english": "Buick",
     "source": "manual_seed",
-    "learnedAt": "2026-07-16T10:10:51.266Z"
+    "learnedAt": "2026-07-16T15:51:12.405Z"
   },
   "凯迪拉克": {
     "chinese": "凯迪拉克",
     "english": "Cadillac",
     "source": "manual_seed",
-    "learnedAt": "2026-07-16T10:10:51.266Z"
+    "learnedAt": "2026-07-16T15:51:12.405Z"
   },
   "大众": {
     "chinese": "大众",
     "english": "Volkswagen",
     "source": "manual_seed",
-    "learnedAt": "2026-07-16T10:10:51.267Z"
+    "learnedAt": "2026-07-16T15:51:12.406Z"
   },
   "上汽大众": {
     "chinese": "上汽大众",
     "english": "Volkswagen",
     "source": "manual_seed",
-    "learnedAt": "2026-07-16T10:10:51.268Z"
+    "learnedAt": "2026-07-16T15:51:12.406Z"
   },
   "一汽大众": {
     "chinese": "一汽大众",
     "english": "Volkswagen",
     "source": "manual_seed",
-    "learnedAt": "2026-07-16T10:10:51.270Z"
+    "learnedAt": "2026-07-16T15:51:12.406Z"
   },
   "奥迪": {
     "chinese": "奥迪",
     "english": "Audi",
     "source": "manual_seed",
-    "learnedAt": "2026-07-16T10:10:51.270Z"
+    "learnedAt": "2026-07-16T15:51:12.407Z"
   },
   "一汽奥迪": {
     "chinese": "一汽奥迪",
     "english": "Audi",
     "source": "manual_seed",
-    "learnedAt": "2026-07-16T10:10:51.271Z"
+    "learnedAt": "2026-07-16T15:51:12.407Z"
   },
   "斯柯达": {
     "chinese": "斯柯达",
     "english": "Skoda",
     "source": "manual_seed",
-    "learnedAt": "2026-07-16T10:10:51.273Z"
+    "learnedAt": "2026-07-16T15:51:12.408Z"
   },
   "西雅特": {
     "chinese": "西雅特",
     "english": "Seat",
     "source": "manual_seed",
-    "learnedAt": "2026-07-16T10:10:51.274Z"
+    "learnedAt": "2026-07-16T15:51:12.408Z"
   },
   "奔驰": {
     "chinese": "奔驰",
     "english": "Mercedes-Benz",
     "source": "manual_seed",
-    "learnedAt": "2026-07-16T10:10:51.277Z"
+    "learnedAt": "2026-07-16T15:51:12.409Z"
   },
   "北京奔驰": {
     "chinese": "北京奔驰",
     "english": "Mercedes-Benz",
     "source": "manual_seed",
-    "learnedAt": "2026-07-16T10:10:51.278Z"
+    "learnedAt": "2026-07-16T15:51:12.410Z"
   },
   "宝马": {
     "chinese": "宝马",
     "english": "BMW",
     "source": "manual_seed",
-    "learnedAt": "2026-07-16T10:10:51.279Z"
+    "learnedAt": "2026-07-16T15:51:12.410Z"
   },
   "华晨宝马": {
     "chinese": "华晨宝马",
     "english": "BMW",
     "source": "manual_seed",
-    "learnedAt": "2026-07-16T10:10:51.281Z"
+    "learnedAt": "2026-07-16T15:51:12.411Z"
   },
   "迷你": {
     "chinese": "迷你",
     "english": "MINI",
     "source": "manual_seed",
-    "learnedAt": "2026-07-16T10:10:51.282Z"
+    "learnedAt": "2026-07-16T15:51:12.411Z"
   },
   "保时捷": {
     "chinese": "保时捷",
     "english": "Porsche",
     "source": "manual_seed",
-    "learnedAt": "2026-07-16T10:10:51.285Z"
+    "learnedAt": "2026-07-16T15:51:12.412Z"
   },
   "双龙": {
     "chinese": "双龙",
     "english": "Ssangyong",
     "source": "manual_seed",
-    "learnedAt": "2026-07-16T10:10:51.287Z"
+    "learnedAt": "2026-07-16T15:51:12.412Z"
   },
   "五十铃": {
     "chinese": "五十铃",
     "english": "Isuzu",
     "source": "manual_seed",
-    "learnedAt": "2026-07-16T10:10:51.288Z"
+    "learnedAt": "2026-07-16T15:51:12.413Z"
   },
   "比亚迪": {
     "chinese": "比亚迪",
     "english": "BYD",
     "source": "manual_seed",
-    "learnedAt": "2026-07-16T10:10:51.289Z"
+    "learnedAt": "2026-07-16T15:51:12.413Z"
   },
   "吉利": {
     "chinese": "吉利",
     "english": "Geely",
     "source": "manual_seed",
-    "learnedAt": "2026-07-16T10:10:51.300Z"
+    "learnedAt": "2026-07-16T15:51:12.419Z"
   },
   "极氪": {
     "chinese": "极氪",
     "english": "Zeekr",
     "source": "manual_seed",
-    "learnedAt": "2026-07-16T10:10:51.302Z"
+    "learnedAt": "2026-07-16T15:51:12.420Z"
   },
   "领克": {
     "chinese": "领克",
     "english": "Lynk & Co",
     "source": "manual_seed",
-    "learnedAt": "2026-07-16T10:10:51.302Z"
+    "learnedAt": "2026-07-16T15:51:12.421Z"
   },
   "几何": {
     "chinese": "几何",
     "english": "Geometry",
     "source": "manual_seed",
-    "learnedAt": "2026-07-16T10:10:51.304Z"
+    "learnedAt": "2026-07-16T15:51:12.422Z"
   },
   "奇瑞": {
     "chinese": "奇瑞",
     "english": "Chery",
     "source": "manual_seed",
-    "learnedAt": "2026-07-16T10:10:51.306Z"
+    "learnedAt": "2026-07-16T15:51:12.422Z"
   },
   "星途": {
     "chinese": "星途",
     "english": "Exeed",
     "source": "manual_seed",
-    "learnedAt": "2026-07-16T10:10:51.307Z"
+    "learnedAt": "2026-07-16T15:51:12.422Z"
   },
   "捷途": {
     "chinese": "捷途",
     "english": "Jetour",
     "source": "manual_seed",
-    "learnedAt": "2026-07-16T10:10:51.308Z"
+    "learnedAt": "2026-07-16T15:51:12.423Z"
   },
   "欧萌达": {
     "chinese": "欧萌达",
     "english": "Omoda",
     "source": "manual_seed",
-    "learnedAt": "2026-07-16T10:10:51.310Z"
+    "learnedAt": "2026-07-16T15:51:12.424Z"
   },
   "捷酷": {
     "chinese": "捷酷",
     "english": "Jaecoo",
     "source": "manual_seed",
-    "learnedAt": "2026-07-16T10:10:51.310Z"
+    "learnedAt": "2026-07-16T15:51:12.424Z"
   },
   "长城": {
     "chinese": "长城",
     "english": "Great Wall",
     "source": "manual_seed",
-    "learnedAt": "2026-07-16T10:10:51.311Z"
+    "learnedAt": "2026-07-16T15:51:12.424Z"
   },
   "哈弗": {
     "chinese": "哈弗",
     "english": "Haval",
     "source": "manual_seed",
-    "learnedAt": "2026-07-16T10:10:51.312Z"
+    "learnedAt": "2026-07-16T15:51:12.425Z"
   },
   "坦克": {
     "chinese": "坦克",
     "english": "Tank",
     "source": "manual_seed",
-    "learnedAt": "2026-07-16T10:10:51.313Z"
+    "learnedAt": "2026-07-16T15:51:12.425Z"
   },
   "欧拉": {
     "chinese": "欧拉",
     "english": "Ora",
     "source": "manual_seed",
-    "learnedAt": "2026-07-16T10:10:51.315Z"
+    "learnedAt": "2026-07-16T15:51:12.425Z"
   },
   "名爵": {
     "chinese": "名爵",
     "english": "MG",
     "source": "manual_seed",
-    "learnedAt": "2026-07-16T10:10:51.316Z"
+    "learnedAt": "2026-07-16T15:51:12.426Z"
   },
   "荣威": {
     "chinese": "荣威",
     "english": "Roewe",
     "source": "manual_seed",
-    "learnedAt": "2026-07-16T10:10:51.317Z"
+    "learnedAt": "2026-07-16T15:51:12.426Z"
   },
   "广汽": {
     "chinese": "广汽",
     "english": "GAC",
     "source": "manual_seed",
-    "learnedAt": "2026-07-16T10:10:51.317Z"
+    "learnedAt": "2026-07-16T15:51:12.427Z"
   },
   "长安": {
     "chinese": "长安",
     "english": "Changan",
     "source": "manual_seed",
-    "learnedAt": "2026-07-16T10:10:51.318Z"
+    "learnedAt": "2026-07-16T15:51:12.427Z"
   },
   "江淮": {
     "chinese": "江淮",
     "english": "JAC",
     "source": "manual_seed",
-    "learnedAt": "2026-07-16T10:10:51.319Z"
+    "learnedAt": "2026-07-16T15:51:12.428Z"
   },
   "东风": {
     "chinese": "东风",
     "english": "Dongfeng",
     "source": "manual_seed",
-    "learnedAt": "2026-07-16T10:10:51.322Z"
+    "learnedAt": "2026-07-16T15:51:12.429Z"
   },
   "一汽": {
     "chinese": "一汽",
     "english": "FAW",
     "source": "manual_seed",
-    "learnedAt": "2026-07-16T10:10:51.322Z"
+    "learnedAt": "2026-07-16T15:51:12.429Z"
   },
   "福田": {
     "chinese": "福田",
     "english": "Foton",
     "source": "manual_seed",
-    "learnedAt": "2026-07-16T10:10:51.323Z"
+    "learnedAt": "2026-07-16T15:51:12.430Z"
   },
   "江铃": {
     "chinese": "江铃",
     "english": "JMC",
     "source": "manual_seed",
-    "learnedAt": "2026-07-16T10:10:51.326Z"
+    "learnedAt": "2026-07-16T15:51:12.430Z"
   },
   "大通": {
     "chinese": "大通",
     "english": "Maxus",
     "source": "manual_seed",
-    "learnedAt": "2026-07-16T10:10:51.327Z"
+    "learnedAt": "2026-07-16T15:51:12.431Z"
   },
   "吉利汽车": {
     "chinese": "吉利汽车",
     "english": "Geely",
     "source": "manual_seed",
-    "learnedAt": "2026-07-16T10:10:51.301Z"
+    "learnedAt": "2026-07-16T15:51:12.420Z"
   },
   "江汽集团": {
     "chinese": "江汽集团",
     "english": "JAC",
     "source": "manual_seed",
-    "learnedAt": "2026-07-16T10:10:51.320Z"
+    "learnedAt": "2026-07-16T15:51:12.428Z"
   },
   "华泰汽车": {
     "chinese": "华泰汽车",
     "english": "Hawtai",
     "source": "manual_seed",
-    "learnedAt": "2026-07-16T10:10:51.291Z"
+    "learnedAt": "2026-07-16T15:51:12.414Z"
   },
   "五菱汽车": {
     "chinese": "五菱汽车",
     "english": "Wuling",
     "source": "manual_seed",
-    "learnedAt": "2026-07-16T10:10:51.292Z"
+    "learnedAt": "2026-07-16T15:51:12.414Z"
   },
   "长安跨越": {
     "chinese": "长安跨越",
     "english": "Changan Kuayue",
     "source": "manual_seed",
-    "learnedAt": "2026-07-16T10:10:51.293Z"
+    "learnedAt": "2026-07-16T15:51:12.415Z"
   },
   "沃尔沃": {
     "chinese": "沃尔沃",
     "english": "Volvo",
     "source": "manual_seed",
-    "learnedAt": "2026-07-16T10:10:51.294Z"
+    "learnedAt": "2026-07-16T15:51:12.415Z"
   },
   "雪铁龙": {
     "chinese": "雪铁龙",
     "english": "Citroën",
     "source": "manual_seed",
-    "learnedAt": "2026-07-16T10:10:51.296Z"
+    "learnedAt": "2026-07-16T15:51:12.416Z"
   },
   "东风雪铁龙": {
     "chinese": "东风雪铁龙",
     "english": "Citroën",
     "source": "manual_seed",
-    "learnedAt": "2026-07-16T10:10:51.297Z"
+    "learnedAt": "2026-07-16T15:51:12.416Z"
   },
   "标致": {
     "chinese": "标致",
     "english": "Peugeot",
     "source": "manual_seed",
-    "learnedAt": "2026-07-16T10:10:51.298Z"
+    "learnedAt": "2026-07-16T15:51:12.417Z"
   },
   "东风标致": {
     "chinese": "东风标致",
     "english": "Peugeot",
     "source": "manual_seed",
-    "learnedAt": "2026-07-16T10:10:51.298Z"
+    "learnedAt": "2026-07-16T15:51:12.418Z"
   },
   "道奇": {
     "chinese": "道奇",
     "english": "Dodge",
     "source": "manual_seed",
-    "learnedAt": "2026-07-16T10:10:51.299Z"
+    "learnedAt": "2026-07-16T15:51:12.418Z"
   },
   "华泰": {
     "chinese": "华泰",
     "english": "Hawtai",
     "source": "manual_seed",
-    "learnedAt": "2026-07-16T10:10:51.290Z"
+    "learnedAt": "2026-07-16T15:51:12.414Z"
   },
   "GMC": {
     "chinese": "GMC",
@@ -507,66 +507,66 @@
     "chinese": "猎豹",
     "english": "Liebao",
     "source": "manual_seed",
-    "learnedAt": "2026-07-16T10:10:51.328Z"
+    "learnedAt": "2026-07-16T15:51:12.431Z"
   },
   "猎豹汽车": {
     "chinese": "猎豹汽车",
     "english": "Liebao",
     "source": "manual_seed",
-    "learnedAt": "2026-07-16T10:10:51.328Z"
+    "learnedAt": "2026-07-16T15:51:12.431Z"
   },
   "克莱斯勒": {
     "chinese": "克莱斯勒",
     "english": "Chrysler",
     "source": "manual_seed",
-    "learnedAt": "2026-07-16T10:10:51.330Z"
+    "learnedAt": "2026-07-16T15:51:12.432Z"
   },
   "北京克莱斯勒": {
     "chinese": "北京克莱斯勒",
     "english": "Chrysler",
     "source": "manual_seed",
-    "learnedAt": "2026-07-16T10:10:51.331Z"
+    "learnedAt": "2026-07-16T15:51:12.432Z"
   },
   "吉普": {
     "chinese": "吉普",
     "english": "Jeep",
     "source": "manual_seed",
-    "learnedAt": "2026-07-16T10:10:51.332Z"
+    "learnedAt": "2026-07-16T15:51:12.433Z"
   },
   "路虎": {
     "chinese": "路虎",
     "english": "Land Rover",
     "source": "manual_seed",
-    "learnedAt": "2026-07-16T10:10:51.332Z"
+    "learnedAt": "2026-07-16T15:51:12.433Z"
   },
   "捷豹": {
     "chinese": "捷豹",
     "english": "Jaguar",
     "source": "manual_seed",
-    "learnedAt": "2026-07-16T10:10:51.333Z"
+    "learnedAt": "2026-07-16T15:51:12.434Z"
   },
   "捷豹路虎": {
     "chinese": "捷豹路虎",
     "english": "Land Rover",
     "source": "manual_seed",
-    "learnedAt": "2026-07-16T10:10:51.334Z"
+    "learnedAt": "2026-07-16T15:51:12.435Z"
   },
   "宝骏": {
     "chinese": "宝骏",
     "english": "Baojun",
     "source": "manual_seed",
-    "learnedAt": "2026-07-16T10:10:51.336Z"
+    "learnedAt": "2026-07-16T15:51:12.436Z"
   },
   "东风风光": {
     "chinese": "东风风光",
     "english": "Dongfeng Fengguang",
     "source": "manual_seed",
-    "learnedAt": "2026-07-16T10:10:51.337Z"
+    "learnedAt": "2026-07-16T15:51:12.436Z"
   },
   "风光": {
     "chinese": "风光",
     "english": "Dongfeng Fengguang",
     "source": "manual_seed",
-    "learnedAt": "2026-07-16T10:10:51.338Z"
+    "learnedAt": "2026-07-16T15:51:12.437Z"
   }
 }

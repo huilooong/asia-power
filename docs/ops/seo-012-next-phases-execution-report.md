@@ -1,6 +1,6 @@
 # SEO-012 Next Phases Execution Report
 
-Status: Implementation in progress; not deployed  
+Status: Deployed to production 2026-07-16 ~15:39 UTC; layout bug found post-deploy, see "Bug Found" section below — needs fix + redeploy  
 Date: 2026-07-16  
 Branch: `codex/seo-next-phases`  
 Scope: APSEO-012 follow-up content, internal linking, sitemap and release validation coverage
@@ -181,6 +181,28 @@ Before deployment:
 1. Run local syntax and static-page checks.
 2. Run local server checks for guide pages and sitemap output.
 3. Run Release Manager against a deployed release after CEO deploy confirmation.
+
+## Bug Found — Guides Pages Layout Broken on Production (Claude review, 2026-07-16 ~16:00 UTC)
+
+**Confirmed live at `https://asia-power.com/guides/`** (checked in browser after deploy `b39c765b3` / cache-bust `seo-guides-20260716` — the cache-bust itself worked, `components.js?v=seo-guides-20260716` is serving on production). This is a separate, unfixed bug, not a caching issue.
+
+**Symptom:** `/guides/`, `/guides/buying-used-engines-from-china.html`, `/guides/fob-vs-cif-shipping-guide.html` all render with a duplicate H1, a duplicate breadcrumb, and an irrelevant "Browse by category" sidebar (Half-Cuts/Trucks/Engines/Machinery/Export Used Cars) squeezing the actual guide content into a narrow column.
+
+**Root cause:** `js/components.js` auto-injects `js/ebay-layout.js` on every page (`useEbayLayout()` returns true for all pages except a short denylist). That script wraps page content in a generic shell with a category sidebar + auto-generated breadcrumb/H1, meant for catalog pages. `about.html` and `contact.html` look fine only because `css/ebay-layout.css` has dedicated override blocks for them (`body[data-page="about"] .ebay-sidebar{display:none}` etc., see lines ~1208-1227 and ~1038-1049). **`data-page="guides"` has no matching override block**, so the generic shell renders in full, on top of the guide pages' own custom `.guide-hero`/`.article-hero` sections — hence the duplication.
+
+**Fix (copy the about/contact pattern, add to `css/ebay-layout.css`):**
+
+```css
+body[data-page="guides"] .ebay-sidebar { display: none; }
+body[data-page="guides"] .ebay-page__body { grid-template-columns: 1fr; }
+body[data-page="guides"] .ebay-main--content { min-width: 0; max-width: none; }
+body[data-page="guides"] .ebay-page__intro { padding: 10px 0 0; }
+body[data-page="guides"] .ebay-page-title { display: none; }
+```
+
+All three guide pages share `data-page="guides"`, so one block fixes all three — no per-page edits needed. Verify locally at `http://localhost:8787/guides/`, `/guides/buying-used-engines-from-china.html`, `/guides/fob-vs-cif-shipping-guide.html` before redeploying, then re-check the live URLs after deploy (screenshot or `read_page` — don't trust the report claim alone).
+
+**Minor, lower-priority, pre-existing (not introduced by this batch):** the auto-generated breadcrumb's middle crumb reads "AsiaPower" but links to `/half-cuts/` for any page not in `ebay-layout.js`'s `PAGE_META` table (see `renderBreadcrumb()` fallback branch). Likely affects `about.html`/`contact.html` too. Not blocking — can be cleaned up separately.
 
 ## Current Recommended Next Batch
 

@@ -2,9 +2,9 @@
   "report": {
     "status": "pass",
     "base_url": "https://asia-power.com",
-    "release_id": "REL-20260716092859-api-75ab9974e",
+    "release_id": "REL-20260716140746-chrome-c19c0d62b",
     "expected_whatsapp": "8616638801930",
-    "checked_at": "2026-07-16T09:56:49.625Z",
+    "checked_at": "2026-07-16T14:10:41.286Z",
     "checks": [
       {
         "name": "homepage_http",
@@ -227,6 +227,111 @@
         "detail": "float will use wa.me/8616638801930 via https://asia-power.com/js/config.js?v=apcontact-002"
       },
       {
+        "name": "guides_http",
+        "status": "pass",
+        "detail": "HTTP 200"
+      },
+      {
+        "name": "guides_title",
+        "status": "pass",
+        "detail": "Buyer Guides | AsiaPower"
+      },
+      {
+        "name": "guides_canonical",
+        "status": "pass",
+        "detail": "https://asia-power.com/guides/"
+      },
+      {
+        "name": "guides_whatsapp_static",
+        "status": "skip",
+        "detail": "no static wa.me (float may use config)"
+      },
+      {
+        "name": "guides_logo",
+        "status": "skip",
+        "detail": "no logo signal"
+      },
+      {
+        "name": "guides_float_mount",
+        "status": "pass",
+        "detail": "#site-whatsapp present"
+      },
+      {
+        "name": "guides_config_whatsapp",
+        "status": "pass",
+        "detail": "float will use wa.me/8616638801930 via https://asia-power.com/js/config.js?v=contact-20260625"
+      },
+      {
+        "name": "guide_buying_used_engines_http",
+        "status": "pass",
+        "detail": "HTTP 200"
+      },
+      {
+        "name": "guide_buying_used_engines_title",
+        "status": "pass",
+        "detail": "How to Buy a Used Engine From China — Buyer's Guide | AsiaPower"
+      },
+      {
+        "name": "guide_buying_used_engines_canonical",
+        "status": "pass",
+        "detail": "https://asia-power.com/guides/buying-used-engines-from-china.html"
+      },
+      {
+        "name": "guide_buying_used_engines_whatsapp_static",
+        "status": "skip",
+        "detail": "no static wa.me (float may use config)"
+      },
+      {
+        "name": "guide_buying_used_engines_logo",
+        "status": "skip",
+        "detail": "no logo signal"
+      },
+      {
+        "name": "guide_buying_used_engines_float_mount",
+        "status": "pass",
+        "detail": "#site-whatsapp present"
+      },
+      {
+        "name": "guide_buying_used_engines_config_whatsapp",
+        "status": "pass",
+        "detail": "float will use wa.me/8616638801930 via https://asia-power.com/js/config.js?v=contact-20260625"
+      },
+      {
+        "name": "guide_fob_cif_http",
+        "status": "pass",
+        "detail": "HTTP 200"
+      },
+      {
+        "name": "guide_fob_cif_title",
+        "status": "pass",
+        "detail": "FOB vs CIF: Which Shipping Term Should You Choose? | AsiaPower"
+      },
+      {
+        "name": "guide_fob_cif_canonical",
+        "status": "pass",
+        "detail": "https://asia-power.com/guides/fob-vs-cif-shipping-guide.html"
+      },
+      {
+        "name": "guide_fob_cif_whatsapp_static",
+        "status": "skip",
+        "detail": "no static wa.me (float may use config)"
+      },
+      {
+        "name": "guide_fob_cif_logo",
+        "status": "skip",
+        "detail": "no logo signal"
+      },
+      {
+        "name": "guide_fob_cif_float_mount",
+        "status": "pass",
+        "detail": "#site-whatsapp present"
+      },
+      {
+        "name": "guide_fob_cif_config_whatsapp",
+        "status": "pass",
+        "detail": "float will use wa.me/8616638801930 via https://asia-power.com/js/config.js?v=contact-20260625"
+      },
+      {
         "name": "supplier_portal_http",
         "status": "pass",
         "detail": "HTTP 200"
@@ -284,7 +389,7 @@
       {
         "name": "config_js_release_id",
         "status": "pass",
-        "detail": "releaseId=REL-20260716092859-api-75ab9974e"
+        "detail": "releaseId=REL-20260716140746-chrome-c19c0d62b"
       },
       {
         "name": "sw_js_http",
@@ -329,7 +434,7 @@
       {
         "name": "sitemap_content",
         "status": "pass",
-        "detail": "bytes=151430"
+        "detail": "bytes=151439"
       },
       {
         "name": "sitemap_content_type",
@@ -350,6 +455,11 @@
         "name": "seo_sitemap_test_like_urls",
         "status": "pass",
         "detail": "no obvious test/demo/QA URLs in sitemap"
+      },
+      {
+        "name": "seo_sitemap_guides",
+        "status": "pass",
+        "detail": "guide hub and articles present"
       },
       {
         "name": "seo_half_cut_sample_present",
@@ -451,7 +561,7 @@
         "resolved_config_whatsapp": "8616638801930",
         "resolved_config_cache": {
           "cache_control": "public, max-age=14400, must-revalidate",
-          "cf_cache_status": "EXPIRED",
+          "cf_cache_status": "HIT",
           "etag": ""
         }
       },
@@ -586,6 +696,81 @@
           "etag": ""
         }
       },
+      "guides": {
+        "url": "https://asia-power.com/guides/",
+        "http_status": 200,
+        "cache": {
+          "cache_control": "no-cache, no-store, must-revalidate",
+          "cf_cache_status": "DYNAMIC",
+          "etag": "",
+          "age": "",
+          "last_modified": ""
+        },
+        "title": "Buyer Guides | AsiaPower",
+        "canonical": "https://asia-power.com/guides/",
+        "wa_me": [],
+        "config_script_src": "../js/config.js?v=contact-20260625",
+        "has_logo": false,
+        "has_json_ld": false,
+        "has_site_whatsapp": true,
+        "resolved_config_url": "https://asia-power.com/js/config.js?v=contact-20260625",
+        "resolved_config_whatsapp": "8616638801930",
+        "resolved_config_cache": {
+          "cache_control": "public, max-age=14400, must-revalidate",
+          "cf_cache_status": "EXPIRED",
+          "etag": ""
+        }
+      },
+      "guide_buying_used_engines": {
+        "url": "https://asia-power.com/guides/buying-used-engines-from-china.html",
+        "http_status": 200,
+        "cache": {
+          "cache_control": "no-cache, no-store, must-revalidate",
+          "cf_cache_status": "DYNAMIC",
+          "etag": "",
+          "age": "",
+          "last_modified": ""
+        },
+        "title": "How to Buy a Used Engine From China — Buyer's Guide | AsiaPower",
+        "canonical": "https://asia-power.com/guides/buying-used-engines-from-china.html",
+        "wa_me": [],
+        "config_script_src": "../js/config.js?v=contact-20260625",
+        "has_logo": false,
+        "has_json_ld": false,
+        "has_site_whatsapp": true,
+        "resolved_config_url": "https://asia-power.com/js/config.js?v=contact-20260625",
+        "resolved_config_whatsapp": "8616638801930",
+        "resolved_config_cache": {
+          "cache_control": "public, max-age=14400, must-revalidate",
+          "cf_cache_status": "HIT",
+          "etag": ""
+        }
+      },
+      "guide_fob_cif": {
+        "url": "https://asia-power.com/guides/fob-vs-cif-shipping-guide.html",
+        "http_status": 200,
+        "cache": {
+          "cache_control": "no-cache, no-store, must-revalidate",
+          "cf_cache_status": "DYNAMIC",
+          "etag": "",
+          "age": "",
+          "last_modified": ""
+        },
+        "title": "FOB vs CIF: Which Shipping Term Should You Choose? | AsiaPower",
+        "canonical": "https://asia-power.com/guides/fob-vs-cif-shipping-guide.html",
+        "wa_me": [],
+        "config_script_src": "../js/config.js?v=contact-20260625",
+        "has_logo": false,
+        "has_json_ld": false,
+        "has_site_whatsapp": true,
+        "resolved_config_url": "https://asia-power.com/js/config.js?v=contact-20260625",
+        "resolved_config_whatsapp": "8616638801930",
+        "resolved_config_cache": {
+          "cache_control": "public, max-age=14400, must-revalidate",
+          "cf_cache_status": "HIT",
+          "etag": ""
+        }
+      },
       "supplier_portal": {
         "url": "https://asia-power.com/supplier-portal.html",
         "http_status": 200,
@@ -619,10 +804,10 @@
           "cf_cache_status": "EXPIRED",
           "etag": "",
           "age": "",
-          "last_modified": "Thu, 16 Jul 2026 09:56:46 GMT"
+          "last_modified": "Thu, 16 Jul 2026 14:10:37 GMT"
         },
         "whatsapp": "8616638801930",
-        "release_id": "REL-20260716092859-api-75ab9974e"
+        "release_id": "REL-20260716140746-chrome-c19c0d62b"
       },
       "sw_js": {
         "url": "https://asia-power.com/sw.js",
@@ -632,7 +817,7 @@
           "cf_cache_status": "EXPIRED",
           "etag": "",
           "age": "",
-          "last_modified": "Thu, 16 Jul 2026 09:56:46 GMT"
+          "last_modified": "Thu, 16 Jul 2026 14:10:38 GMT"
         },
         "cache_version": "pwa-app-v6b"
       },
@@ -697,7 +882,7 @@
       }
     },
     "fail_count": 0,
-    "pass_count": 74
+    "pass_count": 90
   },
   "purge": {
     "status": "manual_action_required",

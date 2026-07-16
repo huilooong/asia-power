@@ -1,10 +1,10 @@
 # OPS-003 Production Health
 
-- Checked at: 2026-07-16T09:56:49.625Z
+- Checked at: 2026-07-16T14:10:41.286Z
 - Base URL: https://asia-power.com
-- Release: REL-20260716092859-api-75ab9974e
+- Release: REL-20260716140746-chrome-c19c0d62b
 - Status: **PASS**
-- Pass: 74 / Fail: 0
+- Pass: 90 / Fail: 0
 - Expected WhatsApp: 8616638801930
 
 ## Checks
@@ -53,6 +53,27 @@
 - **SKIP** `half_cut_logo`: no logo signal
 - **PASS** `half_cut_float_mount`: #site-whatsapp present
 - **PASS** `half_cut_config_whatsapp`: float will use wa.me/8616638801930 via https://asia-power.com/js/config.js?v=apcontact-002
+- **PASS** `guides_http`: HTTP 200
+- **PASS** `guides_title`: Buyer Guides | AsiaPower
+- **PASS** `guides_canonical`: https://asia-power.com/guides/
+- **SKIP** `guides_whatsapp_static`: no static wa.me (float may use config)
+- **SKIP** `guides_logo`: no logo signal
+- **PASS** `guides_float_mount`: #site-whatsapp present
+- **PASS** `guides_config_whatsapp`: float will use wa.me/8616638801930 via https://asia-power.com/js/config.js?v=contact-20260625
+- **PASS** `guide_buying_used_engines_http`: HTTP 200
+- **PASS** `guide_buying_used_engines_title`: How to Buy a Used Engine From China — Buyer's Guide | AsiaPower
+- **PASS** `guide_buying_used_engines_canonical`: https://asia-power.com/guides/buying-used-engines-from-china.html
+- **SKIP** `guide_buying_used_engines_whatsapp_static`: no static wa.me (float may use config)
+- **SKIP** `guide_buying_used_engines_logo`: no logo signal
+- **PASS** `guide_buying_used_engines_float_mount`: #site-whatsapp present
+- **PASS** `guide_buying_used_engines_config_whatsapp`: float will use wa.me/8616638801930 via https://asia-power.com/js/config.js?v=contact-20260625
+- **PASS** `guide_fob_cif_http`: HTTP 200
+- **PASS** `guide_fob_cif_title`: FOB vs CIF: Which Shipping Term Should You Choose? | AsiaPower
+- **PASS** `guide_fob_cif_canonical`: https://asia-power.com/guides/fob-vs-cif-shipping-guide.html
+- **SKIP** `guide_fob_cif_whatsapp_static`: no static wa.me (float may use config)
+- **SKIP** `guide_fob_cif_logo`: no logo signal
+- **PASS** `guide_fob_cif_float_mount`: #site-whatsapp present
+- **PASS** `guide_fob_cif_config_whatsapp`: float will use wa.me/8616638801930 via https://asia-power.com/js/config.js?v=contact-20260625
 - **PASS** `supplier_portal_http`: HTTP 200
 - **PASS** `supplier_portal_title`: Supplier Portal | AsiaPower
 - **PASS** `supplier_portal_canonical`: https://asia-power.com/supplier-portal.html
@@ -64,7 +85,7 @@
 - **PASS** `config_js_whatsapp`: whatsapp=8616638801930
 - **PASS** `config_js_cache_policy`: public, max-age=14400, must-revalidate
 - **PASS** `config_js_cf`: cf=EXPIRED age=0
-- **PASS** `config_js_release_id`: releaseId=REL-20260716092859-api-75ab9974e
+- **PASS** `config_js_release_id`: releaseId=REL-20260716140746-chrome-c19c0d62b
 - **PASS** `sw_js_http`: HTTP 200
 - **PASS** `sw_version`: CACHE_VERSION=pwa-app-v6b
 - **PASS** `sw_precache_config`: no bare config.js precache (or versioned)
@@ -73,11 +94,12 @@
 - **PASS** `robots_content`: bytes=349
 - **PASS** `robots_content_type`: text/plain; charset=utf-8
 - **PASS** `sitemap_http`: HTTP 200
-- **PASS** `sitemap_content`: bytes=151430
+- **PASS** `sitemap_content`: bytes=151439
 - **PASS** `sitemap_content_type`: application/xml; charset=utf-8
 - **PASS** `sitemap_head_http`: HEAD HTTP 200
 - **PASS** `seo_sitemap_url_count`: 711 URLs
 - **PASS** `seo_sitemap_test_like_urls`: no obvious test/demo/QA URLs in sitemap
+- **PASS** `seo_sitemap_guides`: guide hub and articles present
 - **PASS** `seo_half_cut_sample_present`: https://asia-power.com/half-cuts/detail.html?slug=geely-2009-jl-6mt186-passenger-transmission-hc250580
 - **PASS** `seo_half_cut_detail_http`: HTTP 200
 - **PASS** `seo_half_cut_canonical`: https://asia-power.com/half-cuts/detail.html?slug=geely-2009-jl-6mt186-passenger-transmission-hc250580

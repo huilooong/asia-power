@@ -48,6 +48,30 @@
 - Age: —
 - Last-Modified: —
 - Resolved config: https://asia-power.com/js/config.js?v=apcontact-002 (whatsapp=8616638801930)
+## guides
+- URL: https://asia-power.com/guides/
+- CF-Cache-Status: DYNAMIC
+- Cache-Control: no-cache, no-store, must-revalidate
+- ETag: —
+- Age: —
+- Last-Modified: —
+- Resolved config: https://asia-power.com/js/config.js?v=contact-20260625 (whatsapp=8616638801930)
+## guide_buying_used_engines
+- URL: https://asia-power.com/guides/buying-used-engines-from-china.html
+- CF-Cache-Status: DYNAMIC
+- Cache-Control: no-cache, no-store, must-revalidate
+- ETag: —
+- Age: —
+- Last-Modified: —
+- Resolved config: https://asia-power.com/js/config.js?v=contact-20260625 (whatsapp=8616638801930)
+## guide_fob_cif
+- URL: https://asia-power.com/guides/fob-vs-cif-shipping-guide.html
+- CF-Cache-Status: DYNAMIC
+- Cache-Control: no-cache, no-store, must-revalidate
+- ETag: —
+- Age: —
+- Last-Modified: —
+- Resolved config: https://asia-power.com/js/config.js?v=contact-20260625 (whatsapp=8616638801930)
 ## supplier_portal
 - URL: https://asia-power.com/supplier-portal.html
 - CF-Cache-Status: DYNAMIC
@@ -62,14 +86,14 @@
 - Cache-Control: public, max-age=14400, must-revalidate
 - ETag: —
 - Age: —
-- Last-Modified: Thu, 16 Jul 2026 09:56:46 GMT
+- Last-Modified: Thu, 16 Jul 2026 14:10:37 GMT
 ## sw_js
 - URL: https://asia-power.com/sw.js
 - CF-Cache-Status: EXPIRED
 - Cache-Control: public, max-age=14400, must-revalidate
 - ETag: —
 - Age: —
-- Last-Modified: Thu, 16 Jul 2026 09:56:46 GMT
+- Last-Modified: Thu, 16 Jul 2026 14:10:38 GMT
 ## robots
 - URL: https://asia-power.com/robots.txt
 - CF-Cache-Status: BYPASS
