@@ -546,6 +546,7 @@
           <span>&copy; ${new Date().getFullYear()} AsiaPower</span>
           <span class="ebay-trust__links">
             <a href="${href('contact.html')}" data-i18n="footer.contactUs">Contact Us</a>
+            <a href="${href('guides/')}">Guides</a>
             <a href="${href('about.html')}" data-i18n="footer.aboutLink">About Us</a>
             <a href="${href('login/')}" data-i18n="nav.signIn">Sign in</a>
             <a href="${href('supplier-portal.html')}" data-i18n="footer.supplierPortal">Supplier Portal</a>
@@ -716,6 +717,7 @@
               <li><a href="${href('about.html')}" data-i18n="footer.aboutLink">About Us</a></li>
               <li><a href="${href('brands.html')}" data-i18n="footer.brandDirectory">Brand Directory</a></li>
               <li><a href="${href('contact.html')}" data-i18n="footer.contactUs">Contact</a></li>
+              <li><a href="${href('guides/')}">Guides</a></li>
               <li><a href="${href('login/')}" data-i18n="nav.signIn">Sign in</a></li>
               <li><a href="${href('supplier-portal.html')}" data-i18n="footer.supplierPortal">Supplier Portal</a></li>
             </ul>

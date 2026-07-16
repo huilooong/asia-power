@@ -19,6 +19,7 @@ const { isContactSpam } = require('./lib/lead-spam');
 const { createVinDecodeHandler } = require('./lib/vin/decode-route');
 const { loadEnv } = require('./lib/load-env');
 const { createWhatsAppCloudWebhook } = require('./lib/whatsapp-cloud-webhook');
+const { buildSitemapXml, sendSitemap } = require('./lib/sitemap');
 
 const ROOT = path.join(__dirname, '..');
 loadEnv(ROOT);
@@ -454,6 +455,28 @@ const server = http.createServer(async (req, res) => {
       return json(res, 404, { error: 'API not found' });
     } catch (err) {
       return json(res, 400, { error: err.message || 'Request failed' });
+    }
+  }
+
+  if ((req.method === 'GET' || req.method === 'HEAD') && p === '/sitemap.xml') {
+    try {
+      const catalog = await halfCut.getPublicCatalog();
+      const xml = buildSitemapXml({
+        siteUrl: process.env.SITE_URL || 'https://asia-power.com',
+        publicDir: PUBLIC_DIR,
+        approved: catalog.approved || [],
+      });
+      if (req.method === 'HEAD') {
+        res.writeHead(200, {
+          'Content-Type': 'application/xml; charset=utf-8',
+          'Cache-Control': 'public, max-age=3600',
+          'X-Content-Type-Options': 'nosniff',
+        });
+        return res.end();
+      }
+      return sendSitemap(res, xml);
+    } catch (err) {
+      return json(res, 500, { error: err.message || 'Sitemap generation failed' });
     }
   }
 

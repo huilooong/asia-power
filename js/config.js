@@ -91,6 +91,7 @@ const ASIAPOWER = {
     { href: 'trucks/', label: 'Trucks', id: 'trucks' },
     { href: 'motorcycles/', label: 'Motorcycles', id: 'motorcycles' },
     { href: 'machinery/', label: 'Machinery', id: 'machinery' },
+    { href: 'guides/', label: 'Guides', id: 'guides' },
     { href: 'supplier-portal.html', label: 'Supplier Portal', id: 'supplier' },
   ],
   seoProducts: [
@@ -99,6 +100,7 @@ const ASIAPOWER = {
     { label: 'Trucks', href: 'trucks/' },
     { label: 'Motorcycles', href: 'motorcycles/' },
     { label: 'Machinery', href: 'machinery/' },
+    { label: 'Guides', href: 'guides/' },
     { label: 'Engines', href: 'engines/' },
     { label: 'Gearboxes', href: 'gearboxes/' },
     { label: 'Chassis Parts', href: 'chassis-parts/' },
