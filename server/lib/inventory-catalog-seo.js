@@ -1,17 +1,11 @@
 'use strict';
 
-const { seoTitle, canonicalUrl, displayTitle, listingTypeLabel } = require('./half-cut-seo');
+const { seoTitle, canonicalUrl, displayTitle, listingTypeLabel, resolveDetailPath } = require('./half-cut-seo');
 
 const STATUS_RANK = { Available: 0, Reserved: 1, 'In Transit': 2 };
 
 function activeItems(catalog) {
   return (catalog?.approved || []).filter((item) => item?.slug && item.status !== 'Sold');
-}
-
-function resolveDetailPath(item) {
-  if (item?.vehicleCategory === 'truck') return '/trucks/detail.html';
-  if (item?.vehicleCategory === 'machinery') return '/machinery/detail.html';
-  return '/half-cuts/detail.html';
 }
 
 function sortItems(items) {

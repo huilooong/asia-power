@@ -5,6 +5,7 @@
 
 const fs = require('fs');
 const path = require('path');
+const { resolveDetailPath } = require('./half-cut-seo');
 
 const CORE_PAGES = [
   { loc: '/', changefreq: 'weekly', priority: '1.0' },
@@ -58,14 +59,37 @@ function listHtmlPaths(publicDir, subdir, priority, changefreq) {
     });
 }
 
+function isSitemapInventoryEligible(item) {
+  if (!item?.slug) return false;
+  if (item.status === 'Sold') return false;
+  if (item.noindex || item.excludeFromSitemap) return false;
+
+  const haystack = [
+    item.stockId,
+    item.slug,
+    item.title,
+    item.brand,
+    item.model,
+    item.shortDescription,
+  ].filter(Boolean).join(' ').toLowerCase();
+  if (/\btest[-\s_]*vehicle\b/.test(haystack)) return false;
+  if (/\b(test|demo|qa)[-\s_]*(record|listing|stock)\b/.test(haystack)) return false;
+
+  return true;
+}
+
+function inventoryLastmod(item, fallback) {
+  return item.updatedAt || item.approvedAt || item.listedAt || item.createdAt || fallback;
+}
+
 function halfCutEntries(approved, lastmod) {
   return (approved || [])
-    .filter(item => item?.slug && item.status !== 'Sold')
+    .filter(isSitemapInventoryEligible)
     .map(item => ({
-      loc: `/half-cuts/detail.html?slug=${encodeURIComponent(item.slug)}`,
+      loc: `${resolveDetailPath(item)}?slug=${encodeURIComponent(item.slug)}`,
       changefreq: 'weekly',
       priority: '0.65',
-      lastmod: item.approvedAt || item.updatedAt || lastmod,
+      lastmod: inventoryLastmod(item, lastmod),
     }));
 }
 
@@ -109,4 +133,6 @@ module.exports = {
   buildSitemapXml,
   sendSitemap,
   CORE_PAGES,
+  halfCutEntries,
+  isSitemapInventoryEligible,
 };

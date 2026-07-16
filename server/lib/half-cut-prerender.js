@@ -97,7 +97,7 @@ function renderHalfCutDetailPage({ publicDir, slug, catalog, siteUrl, detailPath
   };
 }
 
-function sendPrerenderedHtml(res, html, redirectSlug = null, detailPath = '/half-cuts/detail.html') {
+function sendPrerenderedHtml(res, html, redirectSlug = null, detailPath = '/half-cuts/detail.html', options = {}) {
   if (redirectSlug) {
     const pathPart = detailPath.startsWith('/') ? detailPath : `/${detailPath}`;
     res.writeHead(301, {
@@ -113,6 +113,7 @@ function sendPrerenderedHtml(res, html, redirectSlug = null, detailPath = '/half
     'X-Content-Type-Options': 'nosniff',
     'X-AsiaPower-Prerender': 'half-cut',
   });
+  if (options.head) return res.end();
   res.end(html);
 }
 

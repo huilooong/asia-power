@@ -220,6 +220,27 @@
     return lines.filter((line, index, arr) => !(line === '' && arr[index + 1] === '')).join('\n');
   }
 
+  function getUtm() {
+    const utm = captureUtm();
+    const out = {};
+    Object.keys(utm).forEach((key) => {
+      if (utm[key]) out[key] = utm[key];
+    });
+    return out;
+  }
+
+  function withUtm(href, defaults) {
+    const merged = { ...defaults, ...getUtm() };
+    const [base, hash] = String(href).split('#');
+    const [path, query] = base.split('?');
+    const params = new URLSearchParams(query || '');
+    Object.keys(merged).forEach((key) => {
+      if (merged[key]) params.set(key, merged[key]);
+    });
+    const qs = params.toString();
+    return `${path}${qs ? `?${qs}` : ''}${hash ? `#${hash}` : ''}`;
+  }
+
   window.AsiaLeadContext = {
     enrichLead,
     buildInquirySubject,
@@ -233,5 +254,7 @@
 
   window.AsiaPowerUtm = {
     forLead: captureUtm,
+    get: getUtm,
+    withUtm,
   };
 })();

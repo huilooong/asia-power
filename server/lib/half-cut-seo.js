@@ -77,6 +77,12 @@ function canonicalUrl(siteUrl, slug, detailPath = '/half-cuts/detail.html') {
   return `${base}${pathPart}?slug=${encodeURIComponent(slug)}`;
 }
 
+function resolveDetailPath(item) {
+  if (item?.vehicleCategory === 'truck') return '/trucks/detail.html';
+  if (item?.vehicleCategory === 'machinery') return '/machinery/detail.html';
+  return '/half-cuts/detail.html';
+}
+
 function defaultProductImage(siteUrl) {
   const base = String(siteUrl || SITE_DEFAULT).replace(/\/$/, '');
   return `${base}/assets/images/supply-halfcut.jpg?v=img-v3`;
@@ -365,6 +371,7 @@ module.exports = {
   seoTitle,
   seoDescription,
   canonicalUrl,
+  resolveDetailPath,
   productJsonLd,
   buildDetailRootHtml,
   noscriptSummary,

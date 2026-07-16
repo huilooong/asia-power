@@ -108,6 +108,13 @@ const halfCutPrerenderPath = [
 const { renderHalfCutDetailPage, sendPrerenderedHtml } = require(
   halfCutPrerenderPath || path.join(__dirname, '..', 'server', 'lib', 'half-cut-prerender.js')
 );
+const halfCutSeoPath = [
+  path.join(__dirname, 'lib', 'half-cut-seo.js'),
+  path.join(__dirname, '..', 'server', 'lib', 'half-cut-seo.js'),
+].find((candidate) => fs.existsSync(candidate));
+const { resolveDetailPath } = require(
+  halfCutSeoPath || path.join(__dirname, '..', 'server', 'lib', 'half-cut-seo.js')
+);
 const halfCutListPrerenderPath = [
   path.join(__dirname, 'lib', 'half-cut-list-prerender.js'),
   path.join(__dirname, '..', 'server', 'lib', 'half-cut-list-prerender.js'),
@@ -1115,6 +1122,7 @@ async function serveStatic(req, res, pathname, search = '') {
   const ext = path.extname(finalPath).toLowerCase();
   const mimeMap = {
     '.html': 'text/html',
+    '.txt': 'text/plain',
     '.css': 'text/css',
     '.js': 'application/javascript',
     '.json': 'application/json',
@@ -1951,7 +1959,7 @@ const server = http.createServer(async (req, res) => {
     '/machinery/detail.html',
   ]);
 
-  if (req.method === 'GET' && catalogDetailPaths.has(p)) {
+  if ((req.method === 'GET' || req.method === 'HEAD') && catalogDetailPaths.has(p)) {
     const slug = url.searchParams.get('slug');
     if (slug) {
       try {
@@ -1962,6 +1970,11 @@ const server = http.createServer(async (req, res) => {
         const catalog = fullItem
           ? { approved: [fullItem] }
           : await halfCut.getPublicCatalog();
+        const canonicalItem = fullItem || (catalog.approved || []).find((item) => item?.slug === slug);
+        const canonicalDetailPath = canonicalItem ? resolveDetailPath(canonicalItem) : p;
+        if (canonicalItem && canonicalDetailPath !== p) {
+          return redirect(res, `${canonicalDetailPath}?slug=${encodeURIComponent(canonicalItem.slug || slug)}`, 301);
+        }
         const siteUrl = process.env.SITE_URL || 'https://asia-power.com';
         const rendered = renderHalfCutDetailPage({
           publicDir: PUBLIC_DIR,
@@ -1972,7 +1985,9 @@ const server = http.createServer(async (req, res) => {
         });
         if (rendered?.html) {
           siteAnalytics.recordPageView(req, `${p}${url.search || ''}`);
-          return sendPrerenderedHtml(res, rendered.html, rendered.redirectSlug, p);
+          return sendPrerenderedHtml(res, rendered.html, rendered.redirectSlug, p, {
+            head: req.method === 'HEAD',
+          });
         }
       } catch (err) {
         console.error('[prerender]', err);
@@ -2000,7 +2015,7 @@ const server = http.createServer(async (req, res) => {
     }
   }
 
-  if (req.method === 'GET' && p === '/sitemap.xml') {
+  if ((req.method === 'GET' || req.method === 'HEAD') && p === '/sitemap.xml') {
     try {
       const catalog = await halfCut.getPublicCatalog();
       const xml = buildSitemapXml({
@@ -2008,6 +2023,14 @@ const server = http.createServer(async (req, res) => {
         publicDir: PUBLIC_DIR,
         approved: catalog.approved || [],
       });
+      if (req.method === 'HEAD') {
+        res.writeHead(200, {
+          'Content-Type': 'application/xml; charset=utf-8',
+          'Cache-Control': 'public, max-age=3600',
+          'X-Content-Type-Options': 'nosniff',
+        });
+        return res.end();
+      }
       return sendSitemap(res, xml);
     } catch (err) {
       return serverError(res, err);
