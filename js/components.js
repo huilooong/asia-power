@@ -6,7 +6,7 @@
 
   // Must bump when ebay-layout.css changes — injectEbayStylesheet rewrites all pages to this query.
   // Stale CDN entries for old ?v= keys (e.g. v4-listing-card-v1) can keep serving 66px parts thumbs.
-  const SITE_EBAY_LAYOUT_VER = 'parts-photo-contain-v1';
+  const SITE_EBAY_LAYOUT_VER = 'site-consistency-v2';
   const SITE_COMPONENTS_VER = 'parts-photo-contain-v1';
   // Deploy markers (keep strings discoverable): auth-nav-v1 · auth-nav-once-v2 · auth-nav-sitewide-v1 · login-entry-v1 · lang-sync-v2 · contact-center-v1 · about-type-v2 · list-photo-uniform-v1 · list-photo-uniform-v2 · list-photo-uniform-v2b · parts-photo-v2 · integrity-audit-v1 · parts-placeholder-v1 · parts-parallel-v1 · stock-id-search-v1 · dedicated-price-v1 · catalog-search-v1
   // login-entry-v1 = catalog footer Sign in + clearer toolbar login pill; buyer dial codes expanded (local WIP, not deployed)
@@ -210,7 +210,7 @@
       return;
     }
     const script = document.createElement('script');
-    script.src = href('js/ebay-categories.js?v=truck-submodules-v1');
+    script.src = href('js/ebay-categories.js?v=site-consistency-v2');
     script.setAttribute('data-ebay-categories-js', '1');
     script.onload = () => onReady?.();
     script.onerror = () => onReady?.();
