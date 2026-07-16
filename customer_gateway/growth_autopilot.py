@@ -171,13 +171,14 @@ def _traffic_actions(traffic: dict[str, Any], open_leads: int) -> list[str]:
 def _draft_outreach_candidate(candidate: dict[str, Any]) -> dict[str, Any]:
     """Create one outreach draft.
 
-    Website-lead email follow-ups use the deterministic English template
-    (`create_lead_email_outreach`) — LLM path was producing Chinese customer
-    drafts + MEMORY_TO_SAVE leaks for Ghana/Zambia buyers (CEO 2026-07-15).
+    Website-lead email: 子敬 LLM voice via `create_lead_email_outreach`
+    (language + leak gates; template only as last-resort fallback).
     """
     from customer_gateway.outreach_engine import (
         build_outreach_enquiry,
+        buyer_language_for_candidate,
         create_lead_email_outreach,
+        draft_has_cjk,
         save_outreach_draft,
         sanitize_customer_draft,
     )
@@ -187,14 +188,48 @@ def _draft_outreach_candidate(candidate: dict[str, Any]) -> dict[str, Any]:
     if source == "website_lead" and channel == "email":
         return create_lead_email_outreach(candidate)
 
-    from sales_core.apsales_handler import _split_apsales_sections, process_apsales_enquiry
+    from sales_core.apsales_handler import _split_apsales_sections, language_label, process_apsales_enquiry
 
-    analysis = process_apsales_enquiry(build_outreach_enquiry(candidate), channel="outreach_autopilot")
+    enquiry = build_outreach_enquiry(candidate)
+    analysis = process_apsales_enquiry(enquiry, channel="outreach_autopilot")
     internal, _, draft_text = _split_apsales_sections(analysis)
+    body = sanitize_customer_draft(draft_text)
+
+    if not body or draft_has_cjk(body):
+        # No buyer language served by WhatsApp follow-up is Chinese — CJK never
+        # belongs here regardless of country, same gate as the email path.
+        lang = buyer_language_for_candidate(candidate)
+        retry_brief = (
+            enquiry
+            + f" RETRY: Previous draft was invalid (empty or contained Chinese). "
+            f"Rewrite in {language_label(lang)} ONLY. Zero Chinese characters anywhere. "
+            "No MEMORY_TO_SAVE. Write as Zijing, not a template."
+        )
+        analysis2 = process_apsales_enquiry(retry_brief, channel="outreach_autopilot")
+        internal2, _, draft2 = _split_apsales_sections(analysis2)
+        body2 = sanitize_customer_draft(draft2)
+        if body2 and not draft_has_cjk(body2):
+            body, internal = body2, (internal2 or internal)
+        else:
+            # Last resort — never let Chinese reach a non-Chinese-speaking contact.
+            name = candidate.get("name") or "there"
+            product = str(candidate.get("product") or "").strip()
+            greeting = f"Bonjour {name}," if lang == "fr" else f"Hi {name},"
+            ask = (
+                f"Following up on {product} — could you share your destination and any details you need?"
+                if product
+                else "Following up on your enquiry — could you share what you're looking for?"
+            )
+            body = f"{greeting}\n\n{ask}\n\nwww.asia-power.com"
+            internal = (
+                (internal2 or internal or "")
+                + "\n[GATE] LLM draft failed CJK check twice; used minimal safe fallback."
+            )
+
     record = save_outreach_draft(
         candidate,
         internal_analysis=internal,
-        customer_draft=sanitize_customer_draft(draft_text),
+        customer_draft=body,
     )
     return record
 
