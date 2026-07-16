@@ -213,3 +213,49 @@ After the guide and country-engine batch is validated and deployed:
    - Hyundai/Kia engine import to Nigeria
 2. Add Search Console query tracking once GSC data is available.
 3. Review cache policy separately because that touches production behavior.
+
+## Next Batch Execution — Model Intent Pages (2026-07-16)
+
+Implemented locally:
+
+- `/engines/toyota-engines-for-ghana-importers.html`
+- `/engines/hyundai-kia-engines-for-nigeria-importers.html`
+
+Internal links added:
+
+- `/engines/`
+- `/ghana.html`
+- `/nigeria.html`
+- `/engines/ghana-used-engines-from-china.html`
+- `/engines/nigeria-used-engines-from-china.html`
+
+Release and validation coverage updated:
+
+- `scripts/deploy-production.mjs` now syncs and remote-checks both new model-intent pages in the `chrome` release path.
+- `scripts/lib/release-manager.mjs` now snapshots and verifies both new public paths, plus the changed Ghana and Nigeria country landing pages.
+- `scripts/lib/post-release-validation.mjs` now fetches both pages and requires both URLs in the production sitemap static-growth check.
+
+Local validation passed:
+
+```bash
+node -c scripts/lib/post-release-validation.mjs
+node -c scripts/deploy-production.mjs
+node -c scripts/lib/release-manager.mjs
+```
+
+Static SEO checks passed for both pages:
+
+- title present
+- canonical URL exact
+- JSON-LD present
+- WhatsApp CTA uses `8616638801930`
+- shared `config.js` cache key is `seo-guides-20260716`
+
+Dynamic sitemap generation check passed:
+
+```text
+https://asia-power.com/engines/toyota-engines-for-ghana-importers.html present
+https://asia-power.com/engines/hyundai-kia-engines-for-nigeria-importers.html present
+```
+
+Deployment status: pending commit, push and Release Manager deploy.

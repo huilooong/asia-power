@@ -338,7 +338,9 @@ function deployChrome() {
     'machinery/index.html',
     'engines/index.html',
     'engines/ghana-used-engines-from-china.html',
+    'engines/toyota-engines-for-ghana-importers.html',
     'engines/nigeria-used-engines-from-china.html',
+    'engines/hyundai-kia-engines-for-nigeria-importers.html',
     'gearboxes/index.html',
     'front-cuts/index.html',
     'chassis-parts/index.html',
@@ -373,12 +375,16 @@ test -f "$PUB/css/ebay-layout.css"
 test -f "$PUB/css/styles.css"
 test -f "$PUB/about.html"
 test -f "$PUB/contact.html"
+test -f "$PUB/ghana.html"
+test -f "$PUB/nigeria.html"
 test -f "$PUB/kenya.html"
 test -f "$PUB/brands.html"
 test -f "$PUB/brands/toyota.html"
 test -f "$PUB/app.html"
 test -f "$PUB/engines/ghana-used-engines-from-china.html"
+test -f "$PUB/engines/toyota-engines-for-ghana-importers.html"
 test -f "$PUB/engines/nigeria-used-engines-from-china.html"
+test -f "$PUB/engines/hyundai-kia-engines-for-nigeria-importers.html"
 test -f "$PUB/guides/index.html"
 test -f "$PUB/guides/buying-used-engines-from-china.html"
 test -f "$PUB/guides/fob-vs-cif-shipping-guide.html"
@@ -448,6 +454,8 @@ grep -E -q 'about-type-v2|seo-guides-20260716' "$PUB/about.html"
 grep -E -q 'about-type-v2|seo-guides-20260716' "$PUB/contact.html"
 grep -q 'ebay-contact-section' "$PUB/css/ebay-layout.css"
 grep -q 'max-width: 920px' "$PUB/css/ebay-layout.css"
+grep -E -q 'about-type-v2|seo-guides-20260716' "$PUB/ghana.html"
+grep -E -q 'about-type-v2|seo-guides-20260716' "$PUB/nigeria.html"
 grep -E -q 'about-type-v2|seo-guides-20260716' "$PUB/kenya.html"
 grep -E -q 'about-type-v2|seo-guides-20260716' "$PUB/brands/toyota.html"
 grep -q 'brand-stock-directory-v2' "$PUB/brands.html"
@@ -460,7 +468,9 @@ grep -E -q 'about-type-v2|seo-guides-20260716' "$PUB/half-cuts/index.html"
 grep -E -q 'catalog-search-v1|catalog-search-v2|stock-id-search-v[12]' "$PUB/half-cuts/index.html"
 grep -E -q 'about-type-v2|seo-guides-20260716' "$PUB/engines/index.html"
 grep -q 'seo-guides-20260716' "$PUB/engines/ghana-used-engines-from-china.html"
+grep -q 'seo-guides-20260716' "$PUB/engines/toyota-engines-for-ghana-importers.html"
 grep -q 'seo-guides-20260716' "$PUB/engines/nigeria-used-engines-from-china.html"
+grep -q 'seo-guides-20260716' "$PUB/engines/hyundai-kia-engines-for-nigeria-importers.html"
 grep -q 'seo-guides-20260716' "$PUB/guides/index.html"
 grep -q 'seo-guides-20260716' "$PUB/guides/buying-used-engines-from-china.html"
 grep -q 'seo-guides-20260716' "$PUB/guides/fob-vs-cif-shipping-guide.html"

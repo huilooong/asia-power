@@ -30,7 +30,9 @@ const DEFAULT_PAGES = [
   { id: 'guide_buying_used_engines', url: '/guides/buying-used-engines-from-china.html', kind: 'html' },
   { id: 'guide_fob_cif', url: '/guides/fob-vs-cif-shipping-guide.html', kind: 'html' },
   { id: 'engine_ghana_used_engines', url: '/engines/ghana-used-engines-from-china.html', kind: 'html' },
+  { id: 'engine_toyota_ghana', url: '/engines/toyota-engines-for-ghana-importers.html', kind: 'html' },
   { id: 'engine_nigeria_used_engines', url: '/engines/nigeria-used-engines-from-china.html', kind: 'html' },
+  { id: 'engine_hyundai_kia_nigeria', url: '/engines/hyundai-kia-engines-for-nigeria-importers.html', kind: 'html' },
   { id: 'supplier_portal', url: '/supplier-portal.html', kind: 'html' },
   { id: 'config_js', url: '/js/config.js', kind: 'config' },
   { id: 'sw_js', url: '/sw.js', kind: 'sw' },
@@ -259,7 +261,9 @@ async function runSeoCanonicalValidation({ baseUrl, sitemapBody, push, pageResul
     '/guides/buying-used-engines-from-china.html',
     '/guides/fob-vs-cif-shipping-guide.html',
     '/engines/ghana-used-engines-from-china.html',
+    '/engines/toyota-engines-for-ghana-importers.html',
     '/engines/nigeria-used-engines-from-china.html',
+    '/engines/hyundai-kia-engines-for-nigeria-importers.html',
   ];
   const missingStaticGrowthPaths = requiredStaticGrowthPaths.filter((pathname) => {
     const expected = absUrl(baseUrl, pathname);
