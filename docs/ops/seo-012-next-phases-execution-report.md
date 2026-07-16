@@ -258,4 +258,21 @@ https://asia-power.com/engines/toyota-engines-for-ghana-importers.html present
 https://asia-power.com/engines/hyundai-kia-engines-for-nigeria-importers.html present
 ```
 
-Deployment status: pending commit, push and Release Manager deploy.
+Deployment status: deployed to production.
+
+- Release ID: `REL-20260716161506-chrome-33eaeff3e`
+- Deployed commit: `33eaeff3e2e7e5460b70cc9d42a270a4018a7ab7`
+- Release Manager validation: pass
+- Production sitemap count after deploy: 715 URLs
+- New production pages verified:
+  - `https://asia-power.com/engines/toyota-engines-for-ghana-importers.html`
+  - `https://asia-power.com/engines/hyundai-kia-engines-for-nigeria-importers.html`
+
+Production validation passed for both new pages:
+
+- HTTP 200
+- title present
+- canonical exact
+- WhatsApp CTA uses `8616638801930`
+- `#site-whatsapp` mount present
+- floating WhatsApp config resolved through `config.js?v=seo-guides-20260716`
