@@ -1,10 +1,10 @@
 # OPS-003 Production Health
 
-- Checked at: 2026-07-13T13:38:29.006Z
+- Checked at: 2026-07-15T23:24:05.684Z
 - Base URL: https://asia-power.com
-- Release: REL-20260713133534-chrome-4e5ada93c
-- Status: **PASS**
-- Pass: 57 / Fail: 0
+- Release: REL-20260715232258-api-af50a109c
+- Status: **FAIL**
+- Pass: 54 / Fail: 1
 - Expected WhatsApp: 8616638801930
 
 ## Checks
@@ -63,18 +63,17 @@
 - **PASS** `config_js_http`: HTTP 200
 - **PASS** `config_js_whatsapp`: whatsapp=8616638801930
 - **PASS** `config_js_cache_policy`: public, max-age=14400, must-revalidate
-- **PASS** `config_js_cf`: cf=EXPIRED age=0
-- **PASS** `config_js_release_id`: releaseId=REL-20260713133534-chrome-4e5ada93c
+- **PASS** `config_js_cf`: cf=HIT age=8
+- **FAIL** `config_js_release_id`: config releaseId=REL-20260715142846-chrome-491023c91 != deploy REL-20260715232258-api-af50a109c
 - **PASS** `sw_js_http`: HTTP 200
-- **PASS** `sw_version`: CACHE_VERSION=apcontact-002-v1
+- **PASS** `sw_version`: CACHE_VERSION=pwa-app-v5
 - **PASS** `sw_precache_config`: no bare config.js precache (or versioned)
 - **PASS** `sw_cache_policy`: public, max-age=14400, must-revalidate
 - **PASS** `robots_http`: HTTP 200
 - **PASS** `robots_content`: bytes=349
 - **PASS** `sitemap_http`: HTTP 200
-- **PASS** `sitemap_content`: bytes=152053
-- **PASS** `sw_register`: registers /sw.js?v=apcontact-002
-- **PASS** `sw_register_body`: https://asia-power.com/sw.js?v=apcontact-002 → apcontact-002-v1
+- **PASS** `sitemap_content`: bytes=154135
+- **SKIP** `sw_register`: no register() found in pwa-install
 
 ## Cloudflare purge
 

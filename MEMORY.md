@@ -154,6 +154,7 @@
 |------|------|------|----------------|
 | Cloud API | +86 166 3880 1930 | `inventory-site` webhook → Graph 回 | `WHATSAPP_AUTONOMY_MODE=live`（`observe`=只收不回） |
 | Business App | +233 | `apsales-whatsapp-bridge` + OpenClaw sales-agent | 独立 systemd；**勿**把 OpenClaw `channels.whatsapp.*.enabled=true` 乱开（易与 bridge 双回） |
+| Heartbeat 提醒频率 | — | Gateway WhatsApp 关闭是正常态 | 一天最多跟龙哥说一次；其余心跳 `HEARTBEAT_OK`（见 `~/.openclaw/workspace/HEARTBEAT.md`） |
 
 - **事故 2026-07-14：** 生产 Cloud 被设成 `observe` → 客户消息落库但不回；已改回 `live`。
 - +233 媒体/VIN：QA bridge（禁止迁 monitor）；回滚只用 `APSALES_MEDIA_VIN_ENABLED=false`。
@@ -199,3 +200,10 @@
 - HTML 默认英文；`js/public-i18n.js` 的 `STRINGS[key].en` 要齐全——否则 EN 模式下中文默认值会原样露出（供应商门户曾踩坑）。
 - Construction 权威路径：`/machinery/`；`/half-cuts/?cat=machinery` 应 301 过去。
 
+
+## PWA Service Worker 缓存（2026-07-16）
+- `activate` 曾错误只删 `apapp-001-*`，真实桶是 `pwa-app-v*` 等，导致旧缓存永不淘汰。
+- 现用 `obsoleteCacheKeys` 删掉除当前 `STATIC_CACHE` 外全部桶；版本 `pwa-app-v6b`。
+- `pwa-install.js` 必须 short-cache，不可 year-immutable（CF 会冻死 `?v=`）。
+
+- **PWA SW 修复已判定有效（2026-07-16）**：Claude 真机复验通过；现网干净。沙盒未能完整复现「旧访客升级瞬间」属测试环境限制，不否定修复。证据在 `site-template-consistency-audit.md`。

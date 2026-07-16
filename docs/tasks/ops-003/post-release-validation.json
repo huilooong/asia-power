@@ -1,10 +1,10 @@
 {
   "report": {
-    "status": "pass",
+    "status": "fail",
     "base_url": "https://asia-power.com",
-    "release_id": "REL-20260713133534-chrome-4e5ada93c",
+    "release_id": "REL-20260715232258-api-af50a109c",
     "expected_whatsapp": "8616638801930",
-    "checked_at": "2026-07-13T13:38:29.006Z",
+    "checked_at": "2026-07-15T23:24:05.684Z",
     "checks": [
       {
         "name": "homepage_http",
@@ -279,12 +279,12 @@
       {
         "name": "config_js_cf",
         "status": "pass",
-        "detail": "cf=EXPIRED age=0"
+        "detail": "cf=HIT age=8"
       },
       {
         "name": "config_js_release_id",
-        "status": "pass",
-        "detail": "releaseId=REL-20260713133534-chrome-4e5ada93c"
+        "status": "fail",
+        "detail": "config releaseId=REL-20260715142846-chrome-491023c91 != deploy REL-20260715232258-api-af50a109c"
       },
       {
         "name": "sw_js_http",
@@ -294,7 +294,7 @@
       {
         "name": "sw_version",
         "status": "pass",
-        "detail": "CACHE_VERSION=apcontact-002-v1"
+        "detail": "CACHE_VERSION=pwa-app-v5"
       },
       {
         "name": "sw_precache_config",
@@ -324,17 +324,12 @@
       {
         "name": "sitemap_content",
         "status": "pass",
-        "detail": "bytes=152053"
+        "detail": "bytes=154135"
       },
       {
         "name": "sw_register",
-        "status": "pass",
-        "detail": "registers /sw.js?v=apcontact-002"
-      },
-      {
-        "name": "sw_register_body",
-        "status": "pass",
-        "detail": "https://asia-power.com/sw.js?v=apcontact-002 → apcontact-002-v1"
+        "status": "skip",
+        "detail": "no register() found in pwa-install"
       }
     ],
     "pages": {
@@ -361,7 +356,7 @@
         "resolved_config_whatsapp": "8616638801930",
         "resolved_config_cache": {
           "cache_control": "public, max-age=14400, must-revalidate",
-          "cf_cache_status": "EXPIRED",
+          "cf_cache_status": "HIT",
           "etag": ""
         }
       },
@@ -526,13 +521,13 @@
         "http_status": 200,
         "cache": {
           "cache_control": "public, max-age=14400, must-revalidate",
-          "cf_cache_status": "EXPIRED",
+          "cf_cache_status": "HIT",
           "etag": "",
-          "age": "",
-          "last_modified": "Mon, 13 Jul 2026 13:38:27 GMT"
+          "age": "8",
+          "last_modified": "Wed, 15 Jul 2026 23:23:56 GMT"
         },
         "whatsapp": "8616638801930",
-        "release_id": "REL-20260713133534-chrome-4e5ada93c"
+        "release_id": "REL-20260715142846-chrome-491023c91"
       },
       "sw_js": {
         "url": "https://asia-power.com/sw.js",
@@ -542,9 +537,9 @@
           "cf_cache_status": "EXPIRED",
           "etag": "",
           "age": "",
-          "last_modified": "Mon, 13 Jul 2026 13:38:27 GMT"
+          "last_modified": "Wed, 15 Jul 2026 23:24:04 GMT"
         },
-        "cache_version": "apcontact-002-v1"
+        "cache_version": "pwa-app-v5"
       },
       "robots": {
         "url": "https://asia-power.com/robots.txt",
@@ -569,12 +564,12 @@
         }
       },
       "pwa_install": {
-        "src": "/js/pwa-install.js?v=apcontact-002",
-        "sw_register": "/sw.js?v=apcontact-002"
+        "src": "/js/pwa-install.js?v=pwa-app-v5",
+        "sw_register": ""
       }
     },
-    "fail_count": 0,
-    "pass_count": 57
+    "fail_count": 1,
+    "pass_count": 54
   },
   "purge": {
     "status": "manual_action_required",
