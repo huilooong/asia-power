@@ -9,9 +9,13 @@ from unittest import mock
 
 from customer_gateway import outreach_engine
 from customer_gateway.outreach_engine import (
+    build_lead_followup_email,
     build_outreach_enquiry,
+    draft_has_cjk,
+    email_subject_for_candidate,
     enrich_lead_vehicle_fields,
     extract_hc_id_from_page_url,
+    sanitize_customer_product_label,
     scan_outreach_candidates,
 )
 
@@ -162,6 +166,37 @@ class MergeEmailCandidatesTests(unittest.TestCase):
         self.assertIn("several different listings", q)
         self.assertIn("ONE email", q)
         self.assertIn("HC1 (Toyota)", q)
+
+
+class EnCustomerProductCjkGateTests(unittest.TestCase):
+    """EN buyers must not receive CJK that leaked in from raw product fields."""
+
+    def test_sanitize_strips_cjk_keeps_english_tokens(self):
+        raw = "HC250087 (Hyundai ix35 G4KE), Hyundai 胜达经典 G4KE"
+        out = sanitize_customer_product_label(raw, lang="en")
+        self.assertFalse(draft_has_cjk(out))
+        self.assertIn("HC250087", out)
+        self.assertIn("Hyundai", out)
+        self.assertIn("G4KE", out)
+        self.assertNotIn("胜达", out)
+
+    def test_subject_and_template_body_reject_cjk_product(self):
+        cand = {
+            "name": "Fabian Danku",
+            "country": "ghana",
+            "email": "fabiandanku@yahoo.com",
+            "product": (
+                "HC250087 (Hyundai ix35 G4KE), HC250306 (Hyundai Santa Fe G4KC), "
+                "Hyundai 胜达经典 G4KE"
+            ),
+        }
+        subject = email_subject_for_candidate(cand)
+        subject2, body = build_lead_followup_email(cand)
+        self.assertFalse(draft_has_cjk(subject), subject)
+        self.assertFalse(draft_has_cjk(subject2), subject2)
+        self.assertFalse(draft_has_cjk(body), body)
+        self.assertIn("HC250087", subject)
+        self.assertIn("HC250087", body)
 
 
 if __name__ == "__main__":

@@ -137,3 +137,11 @@ sales@asia-power.com
 - Not generic interest question: PASS-ish
 
 ---
+
+
+## Fabian CJK gate re-check (after product sanitize)
+
+- raw product (internal): `HC250087 (Hyundai ix35 G4KE), HC250306 (Hyundai Santa Fe G4KC), Hyundai 胜达经典 G4KE`
+- subject: AsiaPower — your enquiry about HC250087 (Hyundai ix35 G4KE), HC250306 (Hyundai Santa Fe G4KC), Hyundai G4KE
+- body product line: ['You asked about HC250087 (Hyundai ix35 G4KE), HC250306 (Hyundai Santa Fe G4KC), Hyundai G4KE — we have supplier-verified options with photos and engine codes on our site.']
+- CJK in subject/body: **none**

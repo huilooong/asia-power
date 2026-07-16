@@ -358,8 +358,35 @@ def draft_has_cjk(text: str) -> bool:
     return bool(_CJK_RE.search(text or ""))
 
 
+def sanitize_customer_product_label(product: str, *, lang: str = "en") -> str:
+    """Strip CJK from product labels before they reach EN customer subject/body.
+
+    Internal briefs may still see raw product; customer-facing strings must not.
+    """
+    text = str(product or "").strip()
+    if not text:
+        return ""
+    if str(lang or "en").lower() != "en" or not draft_has_cjk(text):
+        return text
+    cleaned = _CJK_RE.sub(" ", text)
+    cleaned = re.sub(r"\s+", " ", cleaned)
+    cleaned = re.sub(r"\s*,\s*,+", ", ", cleaned)
+    cleaned = re.sub(r"\(\s*\)", "", cleaned)
+    cleaned = re.sub(r"\s+([,/;])", r"\1", cleaned)
+    cleaned = re.sub(r"([,/;])\s*", r"\1 ", cleaned)
+    cleaned = re.sub(r"\s+", " ", cleaned).strip(" ,;/-")
+    return cleaned
+
+
+def customer_facing_product(candidate: dict[str, Any]) -> str:
+    """Product string safe for EN customer subject / template body."""
+    lang = buyer_language_for_candidate(candidate)
+    raw = str(candidate.get("product") or candidate.get("engineCode") or "").strip()
+    return sanitize_customer_product_label(raw, lang=lang)
+
+
 def email_subject_for_candidate(candidate: dict[str, Any]) -> str:
-    product = str(candidate.get("product") or candidate.get("engineCode") or "").strip()
+    product = customer_facing_product(candidate)
     if product:
         return f"AsiaPower — your enquiry about {product}"
     return "AsiaPower — following up on your enquiry"
@@ -606,12 +633,12 @@ def build_lead_followup_email(candidate: dict[str, Any]) -> tuple[str, str]:
     """Return (subject, body) for a website lead follow-up."""
     name = _greeting_name(candidate)
     country = (candidate.get("country") or "your market").title()
-    product = (candidate.get("product") or "").strip()
+    product = customer_facing_product(candidate)
     product_line = ""
     if product:
         product_line = f"\nYou asked about {product} — we have supplier-verified options with photos and engine codes on our site.\n"
 
-    subject = "AsiaPower — following up on your enquiry"
+    subject = email_subject_for_candidate(candidate)
     body = (
         f"Hi {name},\n\n"
         f"Thank you for contacting AsiaPower from {country}. "
