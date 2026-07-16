@@ -1226,6 +1226,13 @@ body[data-page="about"] .ebay-page-title {
   display: none;
 }
 
+/* ── Guides pages ── */
+body[data-page="guides"] .ebay-sidebar { display: none; }
+body[data-page="guides"] .ebay-page__body { grid-template-columns: 1fr; }
+body[data-page="guides"] .ebay-main--content { min-width: 0; max-width: none; }
+body[data-page="guides"] .ebay-page__intro { padding: 10px 0 0; }
+body[data-page="guides"] .ebay-page-title { display: none; }
+
 /* about-type-v2: catalog-v4 tokens — color / letter-spacing / line-height / weight (not just font-size) */
 .ebay-about-page {
   /* Match .page-hero--catalog-v4 + listing-v4 ink scale */
