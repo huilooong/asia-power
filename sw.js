@@ -1,6 +1,16 @@
-const CACHE_VERSION = 'pwa-app-v5';
+const CACHE_VERSION = 'pwa-app-v6';
 const STATIC_CACHE = `${CACHE_VERSION}-static`;
 const OFFLINE_URL = '/offline.html';
+
+/**
+ * Keys that must be deleted when a new SW activates.
+ * Historically this filtered `apapp-001-*` only — that prefix never matched
+ * real buckets (`pwa-app-v*`, `pwa-install-*`, `apcontact-*`), so old caches
+ * accumulated forever (Claude Cache Storage evidence 2026-07-16).
+ */
+function obsoleteCacheKeys(keys, currentStaticCache) {
+  return keys.filter((key) => key !== currentStaticCache);
+}
 
 const STATIC_ASSETS = [
   '/',
@@ -10,15 +20,15 @@ const STATIC_ASSETS = [
   '/app.html',
   '/css/styles.css',
   '/css/home-v4-hybrid.css?v=home-scroll-v5',
-  '/css/pwa-install.css?v=pwa-app-v5',
-  '/css/pwa-app-shell.css?v=pwa-app-v5',
+  '/css/pwa-install.css?v=pwa-app-v6',
+  '/css/pwa-app-shell.css?v=pwa-app-v6',
   '/js/path-utils.js',
   // Never precache bare /js/config.js — CF may hold immutable +233 poison for months
   '/js/config.js?v=apcontact-002',
   '/js/components.js?v=auth-nav-once-v2',
   '/js/home-v4-hybrid.js?v=vehicle-engine-001c',
-  '/js/pwa-install.js?v=pwa-app-v5',
-  '/js/pwa-app-shell.js?v=pwa-app-v5',
+  '/js/pwa-install.js?v=pwa-app-v6',
+  '/js/pwa-app-shell.js?v=pwa-app-v6',
   '/assets/favicon.png',
   '/assets/icons/icon-192.png',
   '/assets/icons/icon-512.png',
@@ -88,12 +98,16 @@ self.addEventListener('activate', event => {
   event.waitUntil(
     caches.keys()
       .then(keys => Promise.all(
-        keys
-          .filter(key => key.startsWith('apapp-001-') && key !== STATIC_CACHE)
-          .map(key => caches.delete(key))
+        obsoleteCacheKeys(keys, STATIC_CACHE).map(key => caches.delete(key))
       ))
       .then(() => self.clients.claim())
   );
+});
+
+self.addEventListener('message', event => {
+  if (event.data && event.data.type === 'SKIP_WAITING') {
+    self.skipWaiting();
+  }
 });
 
 self.addEventListener('fetch', event => {

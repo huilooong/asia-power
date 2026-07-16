@@ -7,8 +7,9 @@
   'use strict';
 
   var STORAGE_DISMISS = 'ap_pwa_install_dismissed_until';
-  var SW_URL = '/sw.js?v=pwa-app-v5';
-  var CACHE_BUST = 'pwa-app-v5';
+  var SW_URL = '/sw.js?v=pwa-app-v6';
+  var CACHE_BUST = 'pwa-app-v6';
+  var SW_RELOAD_FLAG = 'ap_sw_controller_reloaded';
   /* CSS is also linked from HTML; ensureStyles is a safety net for app.html edge cases. */
 
   var deferredPrompt = null;
@@ -62,12 +63,53 @@
     } catch (_) { /* ignore */ }
   }
 
+  function askSkipWaiting(worker) {
+    if (!worker) return;
+    try {
+      worker.postMessage({ type: 'SKIP_WAITING' });
+    } catch (_) { /* ignore */ }
+  }
+
+  function wireRegistrationUpdates(reg) {
+    if (!reg) return reg;
+    try {
+      reg.update();
+    } catch (_) { /* ignore */ }
+    if (reg.waiting) askSkipWaiting(reg.waiting);
+    reg.addEventListener('updatefound', function () {
+      var nw = reg.installing;
+      if (!nw) return;
+      nw.addEventListener('statechange', function () {
+        if (nw.state === 'installed') askSkipWaiting(nw);
+      });
+    });
+    // While a tab stays open, re-check for a new sw.js (default browser check can be ~24h).
+    window.setInterval(function () {
+      try { reg.update(); } catch (_) { /* ignore */ }
+    }, 60 * 60 * 1000);
+    return reg;
+  }
+
   function registerServiceWorker() {
     if (!('serviceWorker' in navigator)) return Promise.resolve(null);
-    return navigator.serviceWorker.register(SW_URL).catch(function (err) {
-      console.warn('[AsiaPower PWA] SW registration failed', err);
-      return null;
-    });
+    // Soft-reload once after a new SW claims the page so runtime-cached JS is dropped.
+    if (!navigator.serviceWorker.__apControllerHook) {
+      navigator.serviceWorker.__apControllerHook = true;
+      navigator.serviceWorker.addEventListener('controllerchange', function () {
+        try {
+          if (sessionStorage.getItem(SW_RELOAD_FLAG) === '1') return;
+          sessionStorage.setItem(SW_RELOAD_FLAG, '1');
+        } catch (_) { /* ignore */ }
+        window.location.reload();
+      });
+    }
+    return navigator.serviceWorker
+      .register(SW_URL, { updateViaCache: 'none' })
+      .then(wireRegistrationUpdates)
+      .catch(function (err) {
+        console.warn('[AsiaPower PWA] SW registration failed', err);
+        return null;
+      });
   }
 
   function ensureStyles() {
