@@ -254,3 +254,29 @@ Production validation passed for both new pages:
 - WhatsApp CTA uses `8616638801930`
 - `#site-whatsapp` mount present
 - floating WhatsApp config resolved through `config.js?v=seo-guides-20260716`
+
+## Next Step Execution — Search Console Query Tracking (2026-07-16)
+
+Implemented a read-only Search Console query tracking framework. No production deployment is required for this step.
+
+Added:
+
+- `data/seo/gsc-query-watchlist.json`
+- `scripts/seo-gsc-weekly-report.mjs`
+- `docs/reports/seo/README.md`
+- `docs/ops/seo-013-search-console-query-tracking.md`
+
+The watchlist now tracks the guide, country-engine and model-intent pages added in this SEO phase, including:
+
+- `/engines/toyota-engines-for-ghana-importers.html`
+- `/engines/hyundai-kia-engines-for-nigeria-importers.html`
+
+Current blocker:
+
+- No real GSC export file was found in the repo during this step, so the framework can generate a watchlist baseline now and a query/page performance report once GSC CSV rows are available.
+
+Validation:
+
+```bash
+node scripts/seo-gsc-weekly-report.mjs --watchlist-only --date 2026-07-16
+```

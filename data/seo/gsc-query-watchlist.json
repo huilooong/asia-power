@@ -1,0 +1,138 @@
+{
+  "version": 1,
+  "generatedAt": "2026-07-16",
+  "site": "https://asia-power.com",
+  "purpose": "Track Google Search Console query and landing-page performance for APSEO-012 weekly review cycles.",
+  "trackedPages": [
+    {
+      "page": "/guides/",
+      "segment": "guide_hub",
+      "market": "global",
+      "productType": "used_engines",
+      "status": "live",
+      "targetQueries": [
+        "used engine import guide",
+        "buy used engines from china",
+        "fob cif shipping guide",
+        "engine import from china"
+      ],
+      "queryClusters": ["buyer_question", "export", "used_engine", "shipping"],
+      "nextActionIfSeen": "Expand guide hub links toward matching country and engine-code pages."
+    },
+    {
+      "page": "/guides/buying-used-engines-from-china.html",
+      "segment": "guide",
+      "market": "global",
+      "productType": "used_engines",
+      "status": "live",
+      "targetQueries": [
+        "buying used engines from china",
+        "used engines from china",
+        "how to buy used engines from china",
+        "china used engine supplier"
+      ],
+      "queryClusters": ["buyer_question", "export", "used_engine"],
+      "nextActionIfSeen": "Add FAQ sections for repeated buyer concerns that appear in GSC."
+    },
+    {
+      "page": "/guides/fob-vs-cif-shipping-guide.html",
+      "segment": "guide",
+      "market": "global",
+      "productType": "shipping",
+      "status": "live",
+      "targetQueries": [
+        "fob vs cif shipping",
+        "fob cif car parts import",
+        "cif shipping to ghana",
+        "cif shipping to nigeria"
+      ],
+      "queryClusters": ["shipping", "buyer_question", "export"],
+      "nextActionIfSeen": "Add country-specific examples where impressions appear."
+    },
+    {
+      "page": "/engines/ghana-used-engines-from-china.html",
+      "segment": "country_engine",
+      "market": "ghana",
+      "productType": "used_engines",
+      "status": "live",
+      "targetQueries": [
+        "used engines from china to ghana",
+        "used engines ghana",
+        "ghana engine import",
+        "engine supplier ghana"
+      ],
+      "queryClusters": ["country", "used_engine", "export"],
+      "nextActionIfSeen": "Add internal links from matching brand and model pages when impressions appear."
+    },
+    {
+      "page": "/engines/toyota-engines-for-ghana-importers.html",
+      "segment": "brand_country_engine",
+      "market": "ghana",
+      "productType": "toyota_engines",
+      "status": "live",
+      "targetQueries": [
+        "toyota engines ghana",
+        "toyota used engines ghana",
+        "toyota engine import ghana",
+        "toyota engines from china to ghana",
+        "1nz-fe engine ghana",
+        "2az-fe engine ghana",
+        "2tr-fe engine ghana",
+        "1kd-ftv engine ghana"
+      ],
+      "queryClusters": ["country", "brand", "engine_code", "used_engine"],
+      "nextActionIfSeen": "Add visible FAQ or code section for the exact engine code that gains impressions."
+    },
+    {
+      "page": "/engines/nigeria-used-engines-from-china.html",
+      "segment": "country_engine",
+      "market": "nigeria",
+      "productType": "used_engines",
+      "status": "live",
+      "targetQueries": [
+        "used engines from china to nigeria",
+        "used engines nigeria",
+        "nigeria engine import",
+        "engine supplier nigeria"
+      ],
+      "queryClusters": ["country", "used_engine", "export"],
+      "nextActionIfSeen": "Add internal links from matching brand and model pages when impressions appear."
+    },
+    {
+      "page": "/engines/hyundai-kia-engines-for-nigeria-importers.html",
+      "segment": "brand_country_engine",
+      "market": "nigeria",
+      "productType": "hyundai_kia_engines",
+      "status": "live",
+      "targetQueries": [
+        "hyundai engines nigeria",
+        "kia engines nigeria",
+        "hyundai used engines nigeria",
+        "kia used engines nigeria",
+        "hyundai engines from china to nigeria",
+        "kia engines from china to nigeria",
+        "g4fc engine nigeria",
+        "g4na engine nigeria",
+        "g4kd engine nigeria"
+      ],
+      "queryClusters": ["country", "brand", "engine_code", "used_engine"],
+      "nextActionIfSeen": "Split Hyundai and Kia into separate pages if either brand receives enough impressions."
+    }
+  ],
+  "reviewRules": {
+    "highImpressionsLowCtr": {
+      "minImpressions": 50,
+      "maxCtr": 0.01,
+      "action": "Rewrite title or meta description and check snippet intent."
+    },
+    "rankingOpportunity": {
+      "minPosition": 8,
+      "maxPosition": 20,
+      "action": "Add content depth, FAQ coverage, and internal links."
+    },
+    "newQueryCandidate": {
+      "minImpressions": 20,
+      "action": "Tag query cluster and decide whether to expand the page or create a new page."
+    }
+  }
+}
