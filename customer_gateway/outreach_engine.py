@@ -359,14 +359,14 @@ def draft_has_cjk(text: str) -> bool:
 
 
 def sanitize_customer_product_label(product: str, *, lang: str = "en") -> str:
-    """Strip CJK from product labels before they reach EN customer subject/body.
+    """Strip CJK from product labels before they reach customer subject/body.
 
-    Internal briefs may still see raw product; customer-facing strings must not.
+    No buyer language served by this platform is Chinese, so CJK never belongs
+    in customer-facing text regardless of `lang` (EN, FR, ...). Internal briefs
+    may still see raw product; customer-facing strings must not.
     """
     text = str(product or "").strip()
-    if not text:
-        return ""
-    if str(lang or "en").lower() != "en" or not draft_has_cjk(text):
+    if not text or not draft_has_cjk(text):
         return text
     cleaned = _CJK_RE.sub(" ", text)
     cleaned = re.sub(r"\s+", " ", cleaned)
@@ -395,11 +395,16 @@ def email_subject_for_candidate(candidate: dict[str, Any]) -> str:
 def draft_zijing_outreach_email(candidate: dict[str, Any]) -> tuple[str, str, str]:
     """Ask 子敬 LLM to write the customer email. Returns (subject, body, internal_zh).
 
-    Hard gates: sanitize leaks; reject CJK in customer draft when buyer lang is EN
-    (one retry with a stricter brief). Falls back to English template only if LLM
-    still fails the language gate — marked in internal analysis.
+    Hard gates: sanitize leaks; reject CJK in customer draft for ANY buyer language
+    (no market served by this platform reads Chinese) with one retry using a
+    stricter brief. Falls back to the English template only if the LLM still
+    fails the CJK gate — marked in internal analysis.
     """
-    from sales_core.apsales_handler import _split_apsales_sections, process_apsales_enquiry
+    from sales_core.apsales_handler import (
+        _split_apsales_sections,
+        language_label,
+        process_apsales_enquiry,
+    )
 
     lang = buyer_language_for_candidate(candidate)
     subject = email_subject_for_candidate(candidate)
@@ -408,11 +413,12 @@ def draft_zijing_outreach_email(candidate: dict[str, Any]) -> tuple[str, str, st
     internal, _, draft_text = _split_apsales_sections(analysis)
     body = sanitize_customer_draft(draft_text)
 
-    if lang == "en" and (not body or draft_has_cjk(body)):
+    if (not body) or draft_has_cjk(body):
         retry_brief = (
             enquiry
-            + " RETRY: Previous customer draft was invalid (empty or Chinese). "
-            "Rewrite the Customer Draft in ENGLISH ONLY. Zero Chinese characters. "
+            + " RETRY: Previous customer draft was invalid (empty or contained Chinese). "
+            f"Rewrite the Customer Draft in {language_label(lang)} ONLY. "
+            "Zero Chinese characters anywhere in the draft. "
             "No MEMORY_TO_SAVE. Write as Zijing, not a template."
         )
         analysis2 = process_apsales_enquiry(retry_brief, channel="outreach_autopilot")
@@ -426,7 +432,7 @@ def draft_zijing_outreach_email(candidate: dict[str, Any]) -> tuple[str, str, st
             subject,
             sanitize_customer_draft(tmpl),
             (internal2 or internal or "")
-            + "\n\n[GATE] LLM customer draft failed EN check; used English template fallback.",
+            + "\n\n[GATE] LLM customer draft failed CJK check; used English template fallback.",
         )
 
     if not body:
@@ -506,16 +512,19 @@ def build_outreach_enquiry(candidate: dict[str, Any]) -> str:
     lang = buyer_language_for_candidate(candidate)
     name = candidate.get("name") or "the customer"
     country = candidate.get("country") or "unknown country"
-    product = candidate.get("product") or candidate.get("engineCode") or "general interest"
-    brand = candidate.get("brand") or ""
-    model = candidate.get("model") or ""
+    product = customer_facing_product(candidate) or "general interest"
+    brand = sanitize_customer_product_label(candidate.get("brand") or "")
+    model = sanitize_customer_product_label(candidate.get("model") or "")
     engine_code = candidate.get("engine_code") or candidate.get("engineCode") or ""
     hc_id = str(candidate.get("hc_id") or "").strip().upper()
     vehicle = " ".join(x for x in [brand, model] if x).strip()
     intent = candidate.get("intent") or ""
     reason = candidate.get("reason") or "website enquiry not yet replied"
     msg = str(candidate.get("message") or "").strip()
-    listing_labels = [x for x in (candidate.get("listing_labels") or []) if x]
+    listing_labels = [
+        sanitize_customer_product_label(x) for x in (candidate.get("listing_labels") or []) if x
+    ]
+    listing_labels = [x for x in listing_labels if x]
     multi = bool(candidate.get("multi_listing")) or len(listing_labels) > 1
     bits = [
         f"[BUYER_LANGUAGE={lang}]",
@@ -556,7 +565,10 @@ def build_outreach_enquiry(candidate: dict[str, Any]) -> str:
         )
     bits.append(
         "Do not invent stock or prices. Ask at most one clear next question. "
-        "No MEMORY_TO_SAVE / APPROVAL_REQUEST in the customer draft."
+        "No MEMORY_TO_SAVE / APPROVAL_REQUEST in the customer draft. "
+        "Zero Chinese characters in the customer draft, regardless of buyer language — "
+        "if any product/model name above still contains Chinese, refer to it by brand "
+        "and stock number only, do not transliterate or repeat the Chinese text."
     )
     return " ".join(bits)
 

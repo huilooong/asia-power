@@ -198,6 +198,47 @@ class EnCustomerProductCjkGateTests(unittest.TestCase):
         self.assertIn("HC250087", subject)
         self.assertIn("HC250087", body)
 
+    def test_french_buyer_also_rejects_cjk_product(self):
+        """Regression: CJK gate must not be English-only — Senegal/Togo/etc. buyers
+        must never see leaked Chinese either (real case: Faye Aliou, Senegal,
+        product='Geely 经典帝豪 JLγ-4G15')."""
+        cand = {
+            "name": "Faye Aliou",
+            "country": "senegal",
+            "email": "hekhci@gmail.com",
+            "product": "Geely 经典帝豪 JLγ-4G15",
+        }
+        subject = email_subject_for_candidate(cand)
+        subject2, body = build_lead_followup_email(cand)
+        self.assertFalse(draft_has_cjk(subject), subject)
+        self.assertFalse(draft_has_cjk(subject2), subject2)
+        self.assertFalse(draft_has_cjk(body), body)
+        self.assertIn("Geely", subject)
+        self.assertIn("JL", subject)
+
+    def test_enquiry_brief_sanitizes_brand_model_cjk_for_any_language(self):
+        """build_outreach_enquiry must not hand the LLM raw CJK brand/model text,
+        regardless of buyer language — the brief itself is the source of the leak
+        when brand/model come from inventory data that has Chinese model names.
+
+        Note: the brief legitimately contains CJK in its own instruction preamble
+        ("子敬") — that's an internal instruction to the LLM, not customer-facing
+        text. This test checks the specific brand/model/product insertions only.
+        """
+        cand = {
+            "name": "Alasan Jallow",
+            "country": "gambia",
+            "email": "alasanj435@gmail.com",
+            "brand": "BYD",
+            "model": "速锐",
+            "hc_id": "HC250242",
+            "product": "HC250242 (BYD 速锐 BYD473QE)",
+        }
+        brief = build_outreach_enquiry(cand)
+        self.assertNotIn("速锐", brief)
+        self.assertIn("BYD", brief)
+        self.assertIn("HC250242", brief)
+
 
 if __name__ == "__main__":
     unittest.main()
