@@ -32,13 +32,20 @@ def main() -> int:
 
     window = int(os.getenv("COACH_AUDIT_WINDOW_DAYS") or "2")
     max_c = int(os.getenv("COACH_AUDIT_MAX_CONVOS") or "25")
+    skip = (os.getenv("COACH_AUDIT_SKIP_AUDITED") or "1").strip().lower() not in (
+        "0",
+        "false",
+        "no",
+    )
+    suffix = (os.getenv("COACH_AUDIT_REPORT_SUFFIX") or "").strip()
     print("OPENAI_API_KEY set:", bool(os.getenv("OPENAI_API_KEY")))
     result = run_llm_conformance_audit(
         window_days=window,
         max_conversations=max_c,
         write=True,
-        skip_audited=True,
+        skip_audited=skip,
         combine_with_structured=True,
+        report_suffix=suffix,
     )
     slim = {k: v for k, v in result.items() if k != "markdown"}
     print(json.dumps(slim, ensure_ascii=False, indent=2))

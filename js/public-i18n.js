@@ -617,22 +617,28 @@
     'brand.quoteLead': { zh: '发送发动机代号、VIN、车型或整柜需求。采购团队 24 小时内回复 EXW/CIF 报价。', fr: 'Envoyez votre code moteur, votre NIV, le modèle de véhicule ou les exigences du conteneur. Notre équipe d\'approvisionnement répond dans les 24 heures avec une tarification EXW/CIF.', ar: 'أرسل رمز المحرك أو رقم تعريف وسيلة التنقُّل أو طراز وسيلة التنقُّل أو متطلبات الحاوية. يستجيب فريق التوريد لدينا في غضون 24 ساعة بتسعير التسليم على ظهر السفينة/التكلفة والتأمين والشحن.'},
     'brand.globalSourcing': { zh: '全球动力总成采购', fr: 'Approvisionnement mondial en groupes motopropulseurs', ar: 'مصادر مجموعة نقل الحركة العالمية'},
 
-    'supplier.title': { zh: '供应商门户', fr: 'Portail Fournisseurs', ar: 'بوابة الموردين'},
-    'supplier.lead': { zh: '加入我们的供应商网络。对接非洲各国及美洲、加勒比、中东、东南亚与澳洲的出口需求。', fr: 'Rejoignez notre réseau de fournisseurs. Connectez votre inventaire à la demande d\'exportation en Afrique, aux Amériques, aux Caraïbes, au Moyen-Orient, en Asie du Sud-Est et en Australie.', ar: 'انضم إلى شبكة موردينا. اربط مخزونك بالطلب على التصدير عبر إفريقيا والأمريكتين ومنطقة البحر الكاريبي والشرق الأوسط وجنوب شرق آسيا وأستراليا.'},
-    'supplier.marketScope': { zh: '六大出口区域 — 覆盖非洲各国及美洲、加勒比、中东、东南亚与澳洲 — 构成全球最大的汽车再制造与进口采购市场之一。', fr: 'Six régions d\'export — chaque pays africain plus les Amériques, les Caraïbes, le Moyen-Orient, l\'Asie du Sud-Est et l\'Australie — formant l\'un des plus grands réseaux d\'acheteurs d\'importation et de reconstruction au monde.', ar: 'ست مناطق تصدير — كل دولة أفريقية بالإضافة إلى الأمريكتين ومنطقة البحر الكاريبي والشرق الأوسط وجنوب شرق آسيا وأستراليا — تشكل واحدة من أكبر شبكات مشتري الاستيراد وإعادة البناء في العالم.'},
-    'supplier.marketIntro': { zh: 'AsiaPower 所服务的买家网络规模：', fr: 'Le réseau d\'acheteurs qu\'AsiaPower dessert couvre :', ar: 'شبكة المشترين التي تخدمها AsiaPower تشمل:'},
-    'supplier.statCountries': { zh: '国家及地区', fr: 'Pays et territoires', ar: 'الدول والأقاليم'},
-    'supplier.statPopulation': { zh: '合计人口', fr: 'Population combinée', ar: 'إجمالي السكان'},
-    'supplier.statVehicles': { zh: '机动车保有量', fr: 'Véhicules motorisés immatriculés', ar: 'المركبات المسجلة'},
-    'supplier.statMarket': { zh: '估算年度售后市场规模', fr: 'Demande annuelle estimée — pièces détachées', ar: 'الطلب السنوي المقدر — قطع ما بعد البيع'},
-    'supplier.marketNote': { zh: '数据为基于公开人口、车辆登记及汽车售后行业资料的近似区域合计。需求涵盖再制造、车队更新所需的二手发动机、变速箱、底盘件及乘用车。', fr: 'Totaux régionaux approximatifs basés sur des données publiques de population, d\'immatriculation et de l\'industrie de la pièce automobile. La demande couvre moteurs, boîtes de vitesses, pièces de châssis et demi-coupures pour programmes de reconstruction et de renouvellement de flotte.', ar: 'إجماليات إقليمية تقريبية من بيانات عامة عن السكان وتسجيل المركبات وصناعة قطع الغيار. يغطي الطلب محركات وعلب تروس وقطع شassis ونصف مقطوعة لبرامج إعادة البناء واستبدال الأساطيل.'},
-    'supplier.submitHalfCut': { zh: '上传乘用车库存', fr: 'Téléverser inventaire demi-coupures', ar: 'رفع مخزون نصف المقطوعة'},
-    'supplier.uploadTitle': { zh: '上传库存', fr: 'Téléverser l\'inventaire', ar: 'رفع المخزون' },
-    'supplier.uploadEyebrow': { zh: '供应商操作', fr: 'Action fournisseur', ar: 'إجراء المورد' },
-    'supplier.uploadHint': { zh: '已注册？选择库存类型，上传照片与车辆信息，提交 AsiaPower 审核。', fr: 'Déjà inscrit ? Choisissez le type d\'inventaire et téléversez les photos pour examen AsiaPower.', ar: 'مسجّل بالفعل؟ اختر نوع المخزون وارفع الصور لمراجعة AsiaPower.' },
-    'supplier.uploadHalfCuts': { zh: '半切车', fr: 'Demi-coupes', ar: 'نصف مقطوعة' },
-    'supplier.uploadHalfCutsDesc': { zh: '乘用车、SUV、面包车', fr: 'Voitures, SUV et fourgonnettes', ar: 'سيارات وSUV وفانات' },
-    'supplier.uploadHalfCutsDesc': { zh: '乘用车、SUV、面包车', fr: 'Voitures, SUV et fourgonnettes', ar: 'سيارات وSUV وفانات' },
+    'supplier.title': { en: 'Supplier Portal', zh: '供应商门户', fr: 'Portail Fournisseurs', ar: 'بوابة الموردين'},
+    'supplier.lead': { en: 'Join our supplier network. Connect your inventory with export demand across Africa, the Americas, Caribbean, Middle East, Southeast Asia and Australia.', zh: '加入我们的供应商网络。对接非洲各国及美洲、加勒比、中东、东南亚与澳洲的出口需求。', fr: 'Rejoignez notre réseau de fournisseurs. Connectez votre inventaire à la demande d\'exportation en Afrique, aux Amériques, aux Caraïbes, au Moyen-Orient, en Asie du Sud-Est et en Australie.', ar: 'انضم إلى شبكة موردينا. اربط مخزونك بالطلب على التصدير عبر إفريقيا والأمريكتين ومنطقة البحر الكاريبي والشرق الأوسط وجنوب شرق آسيا وأستراليا.'},
+    'supplier.marketScope': { en: 'Six export regions — every African country plus the Americas, Caribbean, Middle East, Southeast Asia and Australia — forming one of the world\'s largest import and rebuild buyer footprints.', zh: '六大出口区域 — 覆盖非洲各国及美洲、加勒比、中东、东南亚与澳洲 — 构成全球最大的汽车再制造与进口采购市场之一。', fr: 'Six régions d\'export — chaque pays africain plus les Amériques, les Caraïbes, le Moyen-Orient, l\'Asie du Sud-Est et l\'Australie — formant l\'un des plus grands réseaux d\'acheteurs d\'importation et de reconstruction au monde.', ar: 'ست مناطق تصدير — كل دولة أفريقية بالإضافة إلى الأمريكتين ومنطقة البحر الكاريبي والشرق الأوسط وجنوب شرق آسيا وأستراليا — تشكل واحدة من أكبر شبكات مشتري الاستيراد وإعادة البناء في العالم.'},
+    'supplier.marketIntro': { en: 'The buyer network AsiaPower serves spans:', zh: 'AsiaPower 所服务的买家网络规模：', fr: 'Le réseau d\'acheteurs qu\'AsiaPower dessert couvre :', ar: 'شبكة المشترين التي تخدمها AsiaPower تشمل:'},
+    'supplier.statCountries': { en: 'Countries & territories', zh: '国家及地区', fr: 'Pays et territoires', ar: 'الدول والأقاليم'},
+    'supplier.statPopulation': { en: 'Combined population', zh: '合计人口', fr: 'Population combinée', ar: 'إجمالي السكان'},
+    'supplier.statVehicles': { en: 'Registered motor vehicles', zh: '机动车保有量', fr: 'Véhicules motorisés immatriculés', ar: 'المركبات المسجلة'},
+    'supplier.statMarket': { en: 'Est. annual aftermarket demand', zh: '估算年度售后市场规模', fr: 'Demande annuelle estimée — pièces détachées', ar: 'الطلب السنوي المقدر — قطع ما بعد البيع'},
+    'supplier.marketNote': { en: 'Approximate regional totals from public population, vehicle-registration and automotive aftermarket industry data. Demand covers used engines, gearboxes, chassis parts and half-cuts for rebuild and fleet replacement programs.', zh: '数据为基于公开人口、车辆登记及汽车售后行业资料的近似区域合计。需求涵盖再制造、车队更新所需的二手发动机、变速箱、底盘件及乘用车。', fr: 'Totaux régionaux approximatifs basés sur des données publiques de population, d\'immatriculation et de l\'industrie de la pièce automobile. La demande couvre moteurs, boîtes de vitesses, pièces de châssis et demi-coupures pour programmes de reconstruction et de renouvellement de flotte.', ar: 'إجماليات إقليمية تقريبية من بيانات عامة عن السكان وتسجيل المركبات وصناعة قطع الغيار. يغطي الطلب محركات وعلب تروس وقطع شassis ونصف مقطوعة لبرامج إعادة البناء واستبدال الأساطيل.'},
+    'supplier.submitHalfCut': { en: 'Upload passenger inventory', zh: '上传乘用车库存', fr: 'Téléverser inventaire demi-coupures', ar: 'رفع مخزون نصف المقطوعة'},
+    'supplier.uploadTitle': { en: 'Upload Inventory', zh: '上传库存', fr: 'Téléverser l\'inventaire', ar: 'رفع المخزون' },
+    'supplier.uploadEyebrow': { en: 'Supplier action', zh: '供应商操作', fr: 'Action fournisseur', ar: 'إجراء المورد' },
+    'supplier.uploadHint': { en: 'Already registered? Choose your inventory type and upload photos for AsiaPower review.', zh: '已注册？选择库存类型，上传照片与车辆信息，提交 AsiaPower 审核。', fr: 'Déjà inscrit ? Choisissez le type d\'inventaire et téléversez les photos pour examen AsiaPower.', ar: 'مسجّل بالفعل؟ اختر نوع المخزون وارفع الصور لمراجعة AsiaPower.' },
+    'supplier.uploadHalfCuts': { en: 'Half-Cuts', zh: '半切车', fr: 'Demi-coupes', ar: 'نصف مقطوعة' },
+    'supplier.uploadHalfCutsDesc': { en: 'Passenger cars, SUVs and vans', zh: '乘用车、SUV、面包车', fr: 'Voitures, SUV et fourgonnettes', ar: 'سيارات وSUV وفانات' },
+    'supplier.ctaRegister': { en: 'New supplier registration →', zh: '新供应商注册 →', fr: 'Inscription fournisseur →', ar: 'تسجيل مورد جديد →' },
+    'supplier.ctaLogin': { en: 'Supplier login · My uploads →', zh: '供应商登录 · 我的上传 →', fr: 'Connexion fournisseur · Mes envois →', ar: 'دخول المورد · رفعاتي →' },
+    'supplier.regCardTitle': { en: 'Supplier Registration', zh: '供应商注册', fr: 'Inscription fournisseur', ar: 'تسجيل المورد' },
+    'supplier.regCardLead': { en: 'New suppliers register with phone OTP + company profile. After signup you can upload inventory from the supplier dashboard.', zh: '新供应商请用手机验证码完成注册，并填写公司资料。注册成功后即可进入工作台上传库存。', fr: 'Les nouveaux fournisseurs s\'inscrivent par OTP téléphone + profil société. Après inscription, téléversez depuis le tableau de bord.', ar: 'يسجّل الموردون الجدد برمز الهاتف وملف الشركة. بعد التسجيل يمكن الرفع من لوحة المورد.' },
+    'supplier.regCardGo': { en: 'Go to registration', zh: '去注册', fr: 'Aller à l\'inscription', ar: 'الانتقال للتسجيل' },
+    'supplier.regCardSignIn': { en: 'Sign in', zh: '登录', fr: 'Connexion', ar: 'تسجيل الدخول' },
+    'supplier.regCardAlready': { en: 'Already registered?', zh: '已有账号？', fr: 'Déjà inscrit ?', ar: 'مسجّل بالفعل؟' },
     'supplier.uploadTruckVehicle': { en: 'Commercial Vehicles', zh: '商用车整车', fr: 'Véhicules utilitaires', ar: 'مركبات تجارية' },
     'supplier.uploadTruckVehicleDesc': { en: 'Whole truck / commercial vehicle — scrap or used car', zh: '卡车/商用车整车 — 报废车或二手车', fr: 'Camion ou véhicule utilitaire complet — casse ou occasion', ar: 'شاحنة أو مركبة تجارية كاملة — خردة أو مستعملة' },
     'supplier.uploadPassengerVehicle': { en: 'Passenger Vehicles', zh: '乘用车整车', fr: 'Véhicules particuliers', ar: 'مركبات الركاب' },
@@ -647,20 +653,46 @@
     'supplier.uploadTruckParts': { en: 'Commercial Parts', zh: '商用车配件', fr: 'Pièces utilitaires', ar: 'قطع المركبات التجارية' },
     'supplier.uploadTruckPartsDesc': { en: 'Driver cab, axle, engine & transmission, other', zh: '卡车驾驶室、车轴、发动机及变速箱、其他', fr: 'Cabine, essieu, moteur et boîte, autres', ar: 'مقصورة، محور، محرك وعلبة تروس، أخرى' },
     'supplier.uploadTruckPartsBadge': { en: 'Parts', zh: '配件', fr: 'Pièces', ar: 'قطع' },
-    'supplier.uploadLinksTitle': { zh: '已有账号？直接上传', fr: 'Déjà inscrit ? Téléverser', ar: 'مسجّل بالفعل؟ ارفع المخزون' },
-    'supplier.eyebrow': { zh: '合作伙伴计划', fr: 'Programme partenaire', ar: 'برنامج الشركاء'},
-    'supplier.whyTitle': { zh: '为何通过 AsiaPower 供货？', fr: 'Pourquoi approvisionner via AsiaPower ?', ar: 'لماذا التوريد عبر AsiaPower؟'},
-    'supplier.marketsTitle': { zh: '全球出口市场', fr: 'Marchés d\'export mondiaux', ar: 'أسواق التصدير العالمية'},
-    'supplier.marketsLead': { zh: '非洲各国及美洲、加勒比、中东、东南亚与澳洲的进口商、维修厂与车队采购需求。', fr: 'Demande d\'acheteurs — importateurs, ateliers et opérateurs de flottes — dans chaque pays africain, plus les Amériques, les Caraïbes, le Moyen-Orient, l\'Asie du Sud-Est et l\'Australie.', ar: 'طلب المشترين — المستوردين وورش العمل ومشغلي الأساطيل — في كل دولة أفريقية، بالإضافة إلى الأمريكتين ومنطقة البحر الكاريبي والشرق الأوسط وجنوب شرق آسيا وأستراليا.'},
-    'supplier.ordersTitle': { zh: '稳定订单', fr: 'Commandes régulières', ar: 'طلبات منتظمة'},
-    'supplier.ordersLead': { zh: '维修厂、车队运营商及整柜进口商的持续采购量。', fr: 'Volumes réguliers d\'ateliers, d\'opérateurs de flottes et d\'importateurs conteneur.', ar: 'حجم منتظم من الورش ومشغلي الأساطيل ومستوردي الحاويات.'},
-    'supplier.networkTitle': { zh: '验证网络', fr: 'Réseau vérifié', ar: 'شبكة موثقة'},
-    'supplier.networkLead': { zh: '质量标准保护每位合作伙伴。仅列出已批准供应商。', fr: 'Des standards qualité protègent chaque partenaire. Seuls les fournisseurs approuvés sont répertoriés.', ar: 'معايير الجودة تحمي كل شريك. يُدرج الموردون المعتمدون فقط.'},
-    'supplier.logisticsTitle': { zh: '物流托管', fr: 'Logistique prise en charge', ar: 'اللوجستيات مُدارة'},
-    'supplier.logisticsLead': { zh: '我们负责包装、出口单证、清关及全球港口海运。', fr: 'Nous gérons l\'emballage, la documentation export, le dédouanement et le fret maritime vers les ports du monde entier.', ar: 'ندير التعبئة ووثائق التصدير والتخليص الجمركي والشحن البحري إلى الموانئ حول العالم.'},
-    'supplier.regEyebrow': { zh: '注册', fr: 'Inscription', ar: 'التسجيل'},
-    'supplier.regTitle': { zh: '成为 AsiaPower 供应商', fr: 'Devenir fournisseur AsiaPower', ar: 'كن مورداً لدى AsiaPower'},
-    'supplier.regLead': { zh: '用手机验证码完成注册并填写公司资料。我们可能会跟进合作审核。', fr: 'Inscrivez-vous par OTP téléphone et profil société. Notre équipe peut suivre pour un examen partenariat.', ar: 'سجّل برمز الهاتف وبيانات الشركة. قد يتابع فريقنا مراجعة الشراكة.'},
+    'supplier.uploadLinksTitle': { en: 'Already registered? Upload inventory', zh: '已有账号？直接上传', fr: 'Déjà inscrit ? Téléverser', ar: 'مسجّل بالفعل؟ ارفع المخزون' },
+    'supplier.eyebrow': { en: 'Partner Program', zh: '合作伙伴计划', fr: 'Programme partenaire', ar: 'برنامج الشركاء'},
+    'supplier.whyTitle': { en: 'Why Supply Through AsiaPower?', zh: '为何通过 AsiaPower 供货？', fr: 'Pourquoi approvisionner via AsiaPower ?', ar: 'لماذا التوريد عبر AsiaPower؟'},
+    'supplier.marketsTitle': { en: 'Global Export Markets', zh: '全球出口市场', fr: 'Marchés d\'export mondiaux', ar: 'أسواق التصدير العالمية'},
+    'supplier.marketsLead': { en: 'Buyer demand from importers, workshops and fleet operators across every African country, plus the Americas, Caribbean, Middle East, Southeast Asia and Australia.', zh: '非洲各国及美洲、加勒比、中东、东南亚与澳洲的进口商、维修厂与车队采购需求。', fr: 'Demande d\'acheteurs — importateurs, ateliers et opérateurs de flottes — dans chaque pays africain, plus les Amériques, les Caraïbes, le Moyen-Orient, l\'Asie du Sud-Est et l\'Australie.', ar: 'طلب المشترين — المستوردين وورش العمل ومشغلي الأساطيل — في كل دولة أفريقية، بالإضافة إلى الأمريكتين ومنطقة البحر الكاريبي والشرق الأوسط وجنوب شرق آسيا وأستراليا.'},
+    'supplier.ordersTitle': { en: 'Consistent Orders', zh: '稳定订单', fr: 'Commandes régulières', ar: 'طلبات منتظمة'},
+    'supplier.ordersLead': { en: 'Regular volume from workshops, fleet operators, and container importers.', zh: '维修厂、车队运营商及整柜进口商的持续采购量。', fr: 'Volumes réguliers d\'ateliers, d\'opérateurs de flottes et d\'importateurs conteneur.', ar: 'حجم منتظم من الورش ومشغلي الأساطيل ومستوردي الحاويات.'},
+    'supplier.networkTitle': { en: 'Verified Network', zh: '验证网络', fr: 'Réseau vérifié', ar: 'شبكة موثقة'},
+    'supplier.networkLead': { en: 'Quality standards protect every partner. Only approved suppliers listed.', zh: '质量标准保护每位合作伙伴。仅列出已批准供应商。', fr: 'Des standards qualité protègent chaque partenaire. Seuls les fournisseurs approuvés sont répertoriés.', ar: 'معايير الجودة تحمي كل شريك. يُدرج الموردون المعتمدون فقط.'},
+    'supplier.logisticsTitle': { en: 'Logistics Handled', zh: '物流托管', fr: 'Logistique prise en charge', ar: 'اللوجستيات مُدارة'},
+    'supplier.logisticsLead': { en: 'We manage crating, export documentation, customs clearance and ocean freight to ports worldwide.', zh: '我们负责包装、出口单证、清关及全球港口海运。', fr: 'Nous gérons l\'emballage, la documentation export, le dédouanement et le fret maritime vers les ports du monde entier.', ar: 'ندير التعبئة ووثائق التصدير والتخليص الجمركي والشحن البحري إلى الموانئ حول العالم.'},
+    'supplier.regEyebrow': { en: 'Registration', zh: '注册', fr: 'Inscription', ar: 'التسجيل'},
+    'supplier.regTitle': { en: 'Become an AsiaPower Supplier', zh: '成为 AsiaPower 供应商', fr: 'Devenir fournisseur AsiaPower', ar: 'كن مورداً لدى AsiaPower'},
+    'supplier.regLead': { en: 'Complete registration with phone OTP and company details. Our team may follow up for partnership review.', zh: '用手机验证码完成注册并填写公司资料。我们可能会跟进合作审核。', fr: 'Inscrivez-vous par OTP téléphone et profil société. Notre équipe peut suivre pour un examen partenariat.', ar: 'سجّل برمز الهاتف وبيانات الشركة. قد يتابع فريقنا مراجعة الشراكة.'},
+    'login.titleBuyer': { en: 'Buyer sign in', zh: '采购商登录', fr: 'Connexion acheteur', ar: 'دخول المشتري' },
+    'login.titleSupplier': { en: 'Supplier sign in / register', zh: '供应商登录 / 注册', fr: 'Connexion / inscription fournisseur', ar: 'دخول / تسجيل المورد' },
+    'login.leadBuyer': { en: 'Buyers can use Google or phone + password. SMS OTP is temporarily hidden. Guests can still browse and inquire.', zh: '采购商可用 Google 或手机号+密码。短信验证码暂隐藏。游客仍可浏览询价。', fr: 'Les acheteurs peuvent utiliser Google ou téléphone + mot de passe. OTP SMS temporairement masqué. Les invités peuvent toujours parcourir et demander.', ar: 'يمكن للمشترين استخدام Google أو الهاتف + كلمة المرور. رمز الرسائل مخفي مؤقتاً. يمكن للزوار التصفح والاستفسار.' },
+    'login.leadSupplier': { en: 'Sign in with phone + password, or register as a new supplier. Past uploads stay linked to your phone number. SMS OTP is temporarily hidden.', zh: '可用手机号+密码登录或设密；新供应商须注册。历史上传按手机号带出，不丢车。短信验证码暂隐藏。', fr: 'Connexion téléphone + mot de passe, ou inscription. Les envois passés restent liés au numéro. OTP SMS temporairement masqué.', ar: 'سجّل الدخول بالهاتف وكلمة المرور أو سجّل كمورد جديد. الرفعات السابقة مرتبطة برقمك. رمز الرسائل مخفي مؤقتاً.' },
+    'login.signedIn': { en: 'Signed in', zh: '已登录', fr: 'Connecté', ar: 'مسجّل الدخول' },
+    'login.continueWorkspace': { en: 'Go to workspace', zh: '进入工作台', fr: 'Aller à l\'espace', ar: 'إلى مساحة العمل' },
+    'login.signOut': { en: 'Sign out', zh: '退出登录', fr: 'Déconnexion', ar: 'تسجيل الخروج' },
+    'login.tabBuyer': { en: 'Buyer', zh: '采购商', fr: 'Acheteur', ar: 'مشتري' },
+    'login.tabSupplier': { en: 'Supplier', zh: '供应商', fr: 'Fournisseur', ar: 'مورد' },
+    'login.passwordTab': { en: 'Password sign in', zh: '密码登录', fr: 'Connexion mot de passe', ar: 'دخول بكلمة المرور' },
+    'login.registerTab': { en: 'Register', zh: '注册', fr: 'Inscription', ar: 'تسجيل' },
+    'login.orPhone': { en: 'or phone', zh: '或手机号', fr: 'ou téléphone', ar: 'أو الهاتف' },
+    'login.phone': { en: 'Phone', zh: '手机', fr: 'Téléphone', ar: 'الهاتف' },
+    'login.password': { en: 'Password', zh: '密码', fr: 'Mot de passe', ar: 'كلمة المرور' },
+    'login.buyerPwHint': { en: 'Existing password account: phone + password. No account? Tap Register. SMS OTP temporarily hidden.', zh: '已有密码账号：填手机号 + 密码登录。没有账号请点「注册」。短信验证码暂隐藏。', fr: 'Compte existant : téléphone + mot de passe. Pas de compte ? Inscription. OTP SMS temporairement masqué.', ar: 'حساب موجود: هاتف + كلمة مرور. لا حساب؟ سجّل. رمز الرسائل مخفي مؤقتاً.' },
+    'login.buyerRegIntro': { en: 'New buyer: phone + password (confirm twice). SMS OTP temporarily hidden until the China SMS channel is ready.', zh: '新采购商：手机号 + 设置密码（二次确认）即可注册。短信验证码暂隐藏，待国内通道就绪再开。', fr: 'Nouvel acheteur : téléphone + mot de passe (confirmation). OTP SMS masqué jusqu\'au canal Chine.', ar: 'مشتري جديد: هاتف + كلمة مرور (تأكيد). رمز الرسائل مخفي حتى قناة الصين.' },
+    'login.buyerRegHint': { en: 'Password at least 8 characters. After register, sign in with phone + password.', zh: '密码至少 8 位。注册后可用手机号+密码登录。', fr: 'Mot de passe ≥ 8 caractères. Après inscription, connexion téléphone + mot de passe.', ar: 'كلمة المرور 8 أحرف على الأقل. بعد التسجيل ادخل بالهاتف وكلمة المرور.' },
+    'login.supplierRegHint': { en: 'Password at least 8 characters. After register, sign in with phone + password.', zh: '密码至少 8 位。注册后用手机号+密码登录。', fr: 'Mot de passe ≥ 8 caractères. Après inscription, connexion téléphone + mot de passe.', ar: 'كلمة المرور 8 أحرف على الأقل. بعد التسجيل ادخل بالهاتف وكلمة المرور.' },
+    'login.submitting': { en: 'Submitting…', zh: '提交中…', fr: 'Envoi…', ar: 'جاري الإرسال…' },
+    'hc.buyProcessTitle': { en: 'How buying works', zh: '采购流程', fr: 'Comment acheter', ar: 'كيف تتم الشراء' },
+    'hc.buyProcessInspect': { en: 'Inspect — Confirm photos, VIN/engine code and condition before quote.', zh: '验货 — 报价前确认照片、VIN/发动机号与车况。', fr: 'Inspection — Confirmer photos, VIN/code moteur et état avant devis.', ar: 'فحص — أكد الصور وVIN/رمز المحرك والحالة قبل العرض.' },
+    'hc.buyProcessQuote': { en: 'Quote — EXW price plus CIF options to your destination port on request.', zh: '报价 — EXW 价，可按需提供目的港 CIF。', fr: 'Devis — Prix EXW + options CIF vers votre port sur demande.', ar: 'عرض سعر — سعر EXW وخيارات CIF إلى ميناءك عند الطلب.' },
+    'hc.buyProcessLogistics': { en: 'Logistics — Crating, export docs and ocean freight coordinated after order confirm.', zh: '物流 — 确认订单后协调包装、出口单证与海运。', fr: 'Logistique — Emballage, docs export et fret maritime après confirmation.', ar: 'لوجستيات — التعبئة ووثائق التصدير والشحن بعد تأكيد الطلب.' },
+    'hc.buyProcessPayment': { en: 'Payment — Terms confirmed in writing before shipment; inventory held after deposit as agreed.', zh: '付款 — 发货前书面确认付款条件；按约定收定金后锁库存。', fr: 'Paiement — Conditions confirmées par écrit avant expédition ; stock réservé après acompte convenu.', ar: 'الدفع — تُؤكد الشروط كتابياً قبل الشحن؛ يُحجز المخزون بعد العربون المتفق عليه.' },
+    'catalog.loadingHint': { en: 'Fetching live stock…', zh: '正在拉取实时库存…', fr: 'Chargement du stock en direct…', ar: 'جاري جلب المخزون المباشر…' },
+    'catalog.loadingResultsSoon': { en: 'Results will appear here', zh: '结果将显示在这里', fr: 'Les résultats apparaîtront ici', ar: 'ستظهر النتائج هنا' },
 
     'supplier.uploadPage.truckVehicleTitle': { en: 'Commercial Vehicle Upload', zh: '商用车整车上传', fr: 'Téléversement véhicule utilitaire', ar: 'رفع مركبة تجارية' },
     'supplier.uploadPage.truckVehicleLead': { en: 'Upload whole commercial vehicles — scrap or export used car. Enter the VIN first; the system will try to detect brand, model and year. Upload at least 3 clear photos.', zh: '上传商用车整车（报废车或二手车）。请先输入 VIN 底盘号，系统会尝试自动识别品牌、车型和年份。请至少上传 3 张清晰照片。', fr: 'Téléversez des véhicules utilitaires complets — casse ou occasion export. Saisissez d\'abord le VIN ; le système tente de détecter marque, modèle et année. Au moins 3 photos nettes.', ar: 'ارفع مركبات تجارية كاملة — خردة أو مستعملة للتصدير. أدخل VIN أولاً؛ يحاول النظام تحديد العلامة والطراز والسنة. 3 صور واضحة على الأقل.' },
@@ -1074,8 +1106,34 @@
     return file === 'supplier-portal.html';
   }
 
+  /** Drop legacy keys (e.g. old ares-lang) so only asiapower.lang controls public UI. */
+  function migrateLegacyLangKeys() {
+    try {
+      const legacy = localStorage.getItem('ares-lang');
+      if (!legacy) return;
+      if (!localStorage.getItem(STORAGE_KEY) && SUPPORTED_LANGS.includes(legacy)) {
+        localStorage.setItem(STORAGE_KEY, legacy);
+      }
+      localStorage.removeItem('ares-lang');
+    } catch {
+      // ignore
+    }
+  }
+
+  function readUrlLang() {
+    try {
+      const q = new URLSearchParams(window.location.search || '').get('lang');
+      return q && SUPPORTED_LANGS.includes(q) ? q : null;
+    } catch {
+      return null;
+    }
+  }
+
   function getLang() {
     if (!isSwitchablePublicPage()) return DEFAULT_LANG;
+    migrateLegacyLangKeys();
+    const urlLang = readUrlLang();
+    if (urlLang) return urlLang;
     try {
       const stored = localStorage.getItem(STORAGE_KEY);
       if (stored && SUPPORTED_LANGS.includes(stored)) return stored;
@@ -1109,8 +1167,8 @@
 
   function t(key, fallback) {
     const lang = getLang();
-    if (lang === 'en') return fallback || key;
-    return STRINGS[key]?.[lang] || fallback || key;
+    if (lang === 'en') return STRINGS[key]?.en || fallback || key;
+    return STRINGS[key]?.[lang] || STRINGS[key]?.en || fallback || key;
   }
 
   function translateNavLabel(item) {
@@ -1133,41 +1191,40 @@
   function applyDataI18n(root) {
     applyMarketStats(root);
     const lang = getLang();
+    const scope = root || document;
 
-    if (lang === 'en') {
-      (root || document).querySelectorAll('[data-i18n]').forEach((el) => {
-        if (el.dataset.i18nEn != null) {
-          if (el.dataset.i18nHtml === 'true') el.innerHTML = el.dataset.i18nEn;
-          else el.textContent = el.dataset.i18nEn;
-        }
-      });
-      (root || document).querySelectorAll('[data-i18n-placeholder]').forEach((el) => {
-        if (el.dataset.i18nPlaceholderEn != null) el.placeholder = el.dataset.i18nPlaceholderEn;
-      });
-      applyDocumentTitle();
-      return;
-    }
-
-    (root || document).querySelectorAll('[data-i18n]').forEach((el) => {
+    scope.querySelectorAll('[data-i18n]').forEach((el) => {
       const key = el.dataset.i18n;
+      const dictEn = STRINGS[key]?.en;
       if (el.dataset.i18nEn == null) {
-        el.dataset.i18nEn = el.dataset.i18nHtml === 'true' ? el.innerHTML : el.textContent;
+        // Prefer dictionary EN so Chinese HTML defaults never become the EN baseline.
+        el.dataset.i18nEn = dictEn != null
+          ? dictEn
+          : (el.dataset.i18nHtml === 'true' ? el.innerHTML : el.textContent);
+      } else if (dictEn != null && /[\u4e00-\u9fff]/.test(el.dataset.i18nEn)) {
+        el.dataset.i18nEn = dictEn;
       }
-      const text = STRINGS[key]?.[lang];
-      if (!text) {
-        if (el.dataset.i18nHtml === 'true') el.innerHTML = el.dataset.i18nEn;
-        else el.textContent = el.dataset.i18nEn;
-        return;
-      }
-      if (el.dataset.i18nHtml === 'true') el.innerHTML = text.replace(/\n/g, '<br>');
-      else el.textContent = text;
+
+      const text = lang === 'en'
+        ? (dictEn != null ? dictEn : el.dataset.i18nEn)
+        : (STRINGS[key]?.[lang] || el.dataset.i18nEn);
+
+      if (el.dataset.i18nHtml === 'true') el.innerHTML = String(text || '').replace(/\n/g, '<br>');
+      else el.textContent = text || '';
     });
 
-    (root || document).querySelectorAll('[data-i18n-placeholder]').forEach((el) => {
+    scope.querySelectorAll('[data-i18n-placeholder]').forEach((el) => {
       const key = el.dataset.i18nPlaceholder;
-      if (el.dataset.i18nPlaceholderEn == null) el.dataset.i18nPlaceholderEn = el.placeholder;
-      const text = STRINGS[key]?.[lang];
-      el.placeholder = text || el.dataset.i18nPlaceholderEn;
+      const dictEn = STRINGS[key]?.en;
+      if (el.dataset.i18nPlaceholderEn == null) {
+        el.dataset.i18nPlaceholderEn = dictEn != null ? dictEn : el.placeholder;
+      } else if (dictEn != null && /[\u4e00-\u9fff]/.test(el.dataset.i18nPlaceholderEn)) {
+        el.dataset.i18nPlaceholderEn = dictEn;
+      }
+      const text = lang === 'en'
+        ? (dictEn != null ? dictEn : el.dataset.i18nPlaceholderEn)
+        : (STRINGS[key]?.[lang] || el.dataset.i18nPlaceholderEn);
+      el.placeholder = text || '';
     });
     applyDocumentTitle();
   }
@@ -1207,6 +1264,15 @@
 
   function bootI18n() {
     if (!isSwitchablePublicPage()) return;
+    migrateLegacyLangKeys();
+    const urlLang = readUrlLang();
+    if (urlLang) {
+      try {
+        localStorage.setItem(STORAGE_KEY, urlLang);
+      } catch {
+        // ignore
+      }
+    }
     const lang = getLang();
     applyDirection(lang);
     applyDocumentTitle();

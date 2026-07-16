@@ -1082,9 +1082,30 @@
     return list.sort((a, b) => String(b.stockId || '').localeCompare(String(a.stockId || ''), undefined, { numeric: true }));
   }
 
-  function renderPartsCatalogLoading(root) {
+  function renderCatalogSkeleton(root, opts) {
     if (!root) return;
-    root.innerHTML = `<div class="catalog-empty" aria-live="polite"><p class="catalog-empty__title">${t('catalog.loadingInventory', 'Loading inventory…')}</p></div>`;
+    const options = opts || {};
+    const cards = Number(options.cards) > 0 ? Number(options.cards) : 6;
+    const cardHtml = Array.from({ length: cards }, () => `
+      <div class="catalog-skeleton__card" aria-hidden="true">
+        <div class="catalog-skeleton__photo"></div>
+        <div class="catalog-skeleton__line catalog-skeleton__line--title"></div>
+        <div class="catalog-skeleton__line"></div>
+        <div class="catalog-skeleton__line catalog-skeleton__line--short"></div>
+      </div>`).join('');
+    root.innerHTML = `
+      <div class="catalog-skeleton" aria-live="polite" aria-busy="true">
+        <p class="catalog-skeleton__status">
+          <strong>${t('catalog.loadingInventory', 'Loading inventory…')}</strong>
+          <span>${t('catalog.loadingHint', 'Fetching live stock…')}</span>
+        </p>
+        <p class="catalog-skeleton__hint">${t('catalog.loadingResultsSoon', 'Results will appear here')}</p>
+        <div class="catalog-skeleton__grid">${cardHtml}</div>
+      </div>`;
+  }
+
+  function renderPartsCatalogLoading(root) {
+    renderCatalogSkeleton(root, { cards: 6 });
   }
 
   function initInventoryParts(page, root) {
@@ -1303,6 +1324,10 @@
 
   function initHalfCut(root, route) {
     if (!root) return;
+    if (!root.querySelector('.ebay-cars-main, .catalog-skeleton')) {
+      const hasItems = (window.HalfCutInventoryStore?.getPublicInventory?.() || []).length > 0;
+      if (!hasItems) renderCatalogSkeleton(root, { cards: 8 });
+    }
     void ensureCatalogTrending().then(() => paintHalfCutHub(root, route));
   }
 
@@ -1630,6 +1655,7 @@
     initHalfCut,
     initParts,
     initInventoryParts,
+    renderCatalogSkeleton,
     syncTruckSidebarSubmodules,
     syncPageHeader,
     halfCutHubUrl,

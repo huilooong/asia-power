@@ -1,4 +1,8 @@
 (function () {
+  function t(key, fallback) {
+    return window.PublicI18n?.t?.(key, fallback) || fallback || key;
+  }
+
   const toastEl = document.getElementById('toast');
   function toast(msg) {
     if (!toastEl) return;
@@ -65,14 +69,17 @@
     document.getElementById('supplier-pane').classList.toggle('on', role === 'supplier');
     const title = document.getElementById('login-title');
     const lead = document.getElementById('login-lead');
-    if (title) title.textContent = role === 'supplier' ? '供应商登录 / 注册' : '采购商登录';
+    if (title) {
+      title.textContent = role === 'supplier'
+        ? t('login.titleSupplier', 'Supplier sign in / register')
+        : t('login.titleBuyer', 'Buyer sign in');
+    }
     if (lead) {
       lead.textContent = role === 'supplier'
-        ? '可用手机号+密码登录或设密；新供应商须注册。历史上传按手机号带出，不丢车。短信验证码暂隐藏。'
-        : (oauthDemo
-          ? '可用 Google 测试登录或手机号+密码。短信验证码暂隐藏。Google 未配官方密钥时为站内测试。'
-          : '采购商可用 Google 或手机号+密码。短信验证码暂隐藏。游客仍可浏览询价。');
+        ? t('login.leadSupplier', 'Sign in with phone + password, or register as a new supplier. Past uploads stay linked to your phone number. SMS OTP is temporarily hidden.')
+        : t('login.leadBuyer', 'Buyers can use Google or phone + password. SMS OTP is temporarily hidden. Guests can still browse and inquire.');
     }
+    window.PublicI18n?.applyDataI18n?.(document.body);
     const url = new URL(location.href);
     url.searchParams.set('role', role);
     history.replaceState({}, '', url);
@@ -395,8 +402,8 @@
     if (!btn) return;
     const prevLabel = btn.textContent;
     btn.disabled = true;
-    btn.textContent = '提交中…';
-    setRegStatus('正在提交注册…', 'busy');
+    btn.textContent = t('login.submitting', 'Submitting…');
+    setRegStatus(t('login.submitting', 'Submitting…'), 'busy');
     try {
       const { data: res } = await fetchJson('/api/supplier/register', {
         method: 'POST',
@@ -434,7 +441,10 @@
       const out = document.getElementById('session-logout');
       if (!panel || !label || !go) return;
       const name = me.user.name || me.user.company || me.user.email || me.user.phone || me.user.username || me.user.role;
-      label.textContent = `已登录：${name}（${me.user.role === 'supplier' ? '供应商' : '采购商'}）`;
+      const roleLabel = me.user.role === 'supplier'
+        ? t('login.tabSupplier', 'Supplier')
+        : t('login.tabBuyer', 'Buyer');
+      label.textContent = `${t('login.signedIn', 'Signed in')}: ${name} (${roleLabel})`;
       const dest = me.user.role === 'supplier'
         ? (me.needsProfile ? '/supplier-portal/dashboard.html?complete=1' : '/supplier-portal/dashboard.html')
         : (params.get('next') || '/buyer-portal/');

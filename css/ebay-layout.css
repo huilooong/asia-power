@@ -1889,6 +1889,58 @@ body[data-page="about"] .ebay-page-title {
 .scheme-ebay .whatsapp-float { bottom: 20px; }
 .scheme-ebay .app-bottom-nav { display: none !important; }
 
+.catalog-skeleton {
+  margin-top: 8px;
+  padding: 16px 0 8px;
+}
+.catalog-skeleton__status {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 12px;
+  align-items: baseline;
+  margin: 0 0 6px;
+  color: var(--ebay-ink, #111);
+  font-size: 15px;
+}
+.catalog-skeleton__status strong { font-weight: 700; }
+.catalog-skeleton__status span { color: var(--ebay-muted, #666); font-size: 13px; }
+.catalog-skeleton__hint {
+  margin: 0 0 16px;
+  color: var(--ebay-muted, #666);
+  font-size: 13px;
+}
+.catalog-skeleton__grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 14px;
+}
+.catalog-skeleton__card {
+  border: 1px solid var(--ebay-border, #e5e5e5);
+  border-radius: 12px;
+  overflow: hidden;
+  background: var(--ebay-white, #fff);
+}
+.catalog-skeleton__photo {
+  aspect-ratio: 4 / 3;
+  background: linear-gradient(90deg, #ececec 25%, #f5f5f5 37%, #ececec 63%);
+  background-size: 400% 100%;
+  animation: catalog-skeleton-shimmer 1.2s ease-in-out infinite;
+}
+.catalog-skeleton__line {
+  height: 12px;
+  margin: 12px 12px 0;
+  border-radius: 6px;
+  background: linear-gradient(90deg, #ececec 25%, #f5f5f5 37%, #ececec 63%);
+  background-size: 400% 100%;
+  animation: catalog-skeleton-shimmer 1.2s ease-in-out infinite;
+}
+.catalog-skeleton__line--title { width: 72%; height: 14px; }
+.catalog-skeleton__line--short { width: 40%; margin-bottom: 14px; }
+@keyframes catalog-skeleton-shimmer {
+  0% { background-position: 100% 0; }
+  100% { background-position: 0 0; }
+}
+
 .catalog-empty {
   text-align: center;
   padding: 48px 24px 56px;
@@ -3740,6 +3792,23 @@ body[data-page="frontcuts"] .ebay-parts-main .ebay-listing-row__photo--parts-ph 
 }
 .hc-item-detail__btn--facebook:hover {
   background: rgba(24, 119, 242, 0.08);
+}
+.hc-item-detail__process {
+  margin: 0 0 14px;
+  padding: 12px 12px 12px 28px;
+  border: 1px solid var(--ebay-border, #e5e5e5);
+  border-radius: 8px;
+  background: #fafafa;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  font-size: 12px;
+  line-height: 1.45;
+  color: var(--ebay-text, #191919);
+}
+.hc-item-detail__process li::marker {
+  font-weight: 700;
+  color: #0a1628;
 }
 .hc-item-detail__trust {
   list-style: none;

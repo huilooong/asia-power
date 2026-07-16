@@ -183,6 +183,12 @@
                 ${quoteButton(engine, 'btn btn-accent')}
                 <a href="${b}brands/${engine.brandSlug}.html#engines" class="btn btn-outline-navy">${t('engine.allBrandEngines', 'All')} ${engine.brand} ${t('engine.categoryEngines', 'Engines')}</a>
               </div>
+              <ol class="hc-item-detail__process" aria-label="${t('hc.buyProcessTitle', 'How buying works')}">
+                <li>${escapeHtml(t('hc.buyProcessInspect', 'Inspect — Confirm photos, VIN/engine code and condition before quote.'))}</li>
+                <li>${escapeHtml(t('hc.buyProcessQuote', 'Quote — EXW price plus CIF options to your destination port on request.'))}</li>
+                <li>${escapeHtml(t('hc.buyProcessLogistics', 'Logistics — Crating, export docs and ocean freight coordinated after order confirm.'))}</li>
+                <li>${escapeHtml(t('hc.buyProcessPayment', 'Payment — Terms confirmed in writing before shipment; inventory held after deposit as agreed.'))}</li>
+              </ol>
             </div>
             <aside class="engine-detail__aside">
               <h3>${t('engine.browseBrand', 'Browse')} ${engine.brand}</h3>

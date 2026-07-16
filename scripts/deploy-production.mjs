@@ -289,7 +289,9 @@ function deployChrome() {
   rsync(`${ROOT}/js/config.js`, `${pub}/js/config.js`);
   rsync(`${ROOT}/js/main.js`, `${pub}/js/main.js`);
   rsync(`${ROOT}/js/public-i18n.js`, `${pub}/js/public-i18n.js`);
+  rsync(`${ROOT}/js/path-utils.js`, `${pub}/js/path-utils.js`);
   rsync(`${ROOT}/js/ebay-layout.js`, `${pub}/js/ebay-layout.js`);
+  rsync(`${ROOT}/js/ebay-categories.js`, `${pub}/js/ebay-categories.js`);
   rsync(`${ROOT}/js/half-cut-directory.js`, `${pub}/js/half-cut-directory.js`);
   rsync(`${ROOT}/js/half-cut-vin.js`, `${pub}/js/half-cut-vin.js`);
   rsync(`${ROOT}/js/half-cut-inventory-layer.js`, `${pub}/js/half-cut-inventory-layer.js`);

@@ -121,6 +121,14 @@ def _system_prompt(rules_text: str) -> str:
         "Do NOT invent new standards. Do NOT rewrite rules. Do NOT suggest new rule text.\n"
         "If unsure whether something violates a written rule, omit it (do not guess).\n"
         "Also identify strong GOOD examples that clearly follow the rules (e.g. VIN confirmed + pin ask).\n\n"
+        "IMPORTANT — do not over-generalize listed phrases:\n"
+        "Concrete phrases/examples listed in LIVE-RULES are a floor, not a license to widen the rule. "
+        "Example: forbidding `Hi there!` / `Great news!` / `I'd be happy to help` / every-sentence "
+        "`Hello sir` does NOT mean forbidding every Hi/Hello opening. "
+        "Flag only an exact match to a listed phrase or a clear near-paraphrase of that same phrase "
+        "(e.g. `Hi there.` ≈ `Hi there!`). "
+        "Bare short greetings alone (`Hi!`, `Hello!`, `Hi,`, `Hey!`) are NOT violations of that ban.\n"
+        "Apply the same discipline to other rules: do not invent stricter versions than the written text.\n\n"
         "Return ONLY valid JSON with this shape:\n"
         "{\n"
         '  "violations": [{"evidence_id":"...","rule_hint":"...","reason":"...","confidence":"high|medium|low"}],\n'
@@ -137,6 +145,48 @@ def _system_prompt(rules_text: str) -> str:
         f"{rules_text}\n"
         "===== END RULES =====\n"
     )
+
+
+_BANNED_OPENING_RE = re.compile(
+    r"\bhi\s+there\b|\bgreat\s+news\b|i'?d be happy to help|i would be happy to help|\bhello\s+sir\b",
+    re.I,
+)
+_BARE_GREETING_CLAIM_RE = re.compile(
+    r"\bhi!\b|\bhello!\b|\bhey!\b|\bhey there\b|"
+    r"starts with ['\"]?(?:hi|hello|hey)[!.,]?['\"]?|"
+    r"uses ['\"]?(?:hi|hello|hey)[!.,]?['\"]?|"
+    r"opening with ['\"]?(?:hi|hello|hey)",
+    re.I,
+)
+
+
+def _is_overbroad_banned_opening_violation(v: dict[str, Any], turns: list[dict[str, Any]]) -> bool:
+    """Drop false positives that treat bare Hi!/Hello! as the banned-opening rule."""
+    hint = str(v.get("rule_hint") or "")
+    reason = str(v.get("reason") or "")
+    blob = f"{hint}\n{reason}"
+    about_banned_openings = bool(
+        re.search(
+            r"禁止开场|banned opening|prohibited opening|forbidden opening|"
+            r"disallowed as (an )?opening|forbidden as an opening|"
+            r"not allowed as (a )?greeting|prohibiting greetings|"
+            r"hi there|great news|hello sir|i'?d be happy to help",
+            blob,
+            re.I,
+        )
+    )
+    if not about_banned_openings:
+        return False
+
+    eid = str(v.get("evidence_id") or "")
+    reply = ""
+    for t in turns:
+        if str(t.get("evidence_id") or "") == eid:
+            reply = str(((t.get("reply") or {}).get("text") or ""))
+            break
+    if reply and _BANNED_OPENING_RE.search(reply):
+        return False  # real listed phrase in the actual reply — keep
+    return True
 
 
 def audit_conversation(
@@ -179,14 +229,15 @@ def audit_conversation(
             )
         ):
             continue
-        violations.append(
-            {
-                "evidence_id": str(v.get("evidence_id")),
-                "rule_hint": str(v.get("rule_hint") or "")[:200],
-                "reason": reason[:600],
-                "confidence": conf,
-            }
-        )
+        candidate = {
+            "evidence_id": str(v.get("evidence_id")),
+            "rule_hint": str(v.get("rule_hint") or "")[:200],
+            "reason": reason[:600],
+            "confidence": conf,
+        }
+        if _is_overbroad_banned_opening_violation(candidate, turns):
+            continue
+        violations.append(candidate)
 
     goods = []
     for g in result.get("good_examples") or []:
@@ -410,12 +461,16 @@ def run_llm_conformance_audit(
     llm_call: AuditFn | None = None,
     skip_audited: bool = True,
     combine_with_structured: bool = True,
+    report_suffix: str = "",
 ) -> dict[str, Any]:
     """Scan recent Evidence conversations with LLM vs LIVE-RULES; write reports only."""
     now = now or datetime.now(timezone.utc)
     if now.tzinfo is None:
         now = now.replace(tzinfo=timezone.utc)
     day = now.strftime("%Y-%m-%d")
+    suffix = (report_suffix or os.getenv("COACH_AUDIT_REPORT_SUFFIX") or "").strip()
+    if suffix and not suffix.startswith("-"):
+        suffix = f"-{suffix}"
     since = now - timedelta(days=window_days)
 
     rules_text = load_live_rules_text(root)
@@ -500,7 +555,7 @@ def run_llm_conformance_audit(
     if write:
         out_dir = coach_output_dir(root)
         out_dir.mkdir(parents=True, exist_ok=True)
-        report_path = out_dir / f"{day}-llm-audit.md"
+        report_path = out_dir / f"{day}-llm-audit{suffix}.md"
         report_path.write_text(markdown, encoding="utf-8")
         good_paths = persist_good_examples(goods, all_turns, day=day, root=root)
 
@@ -513,7 +568,7 @@ def run_llm_conformance_audit(
             patterns = scan_patterns(channel=channel, root=root, now=now)
             structured = build_rule_proposal_markdown(patterns, window_days=7)
             combined = build_combined_rule_proposals_markdown(structured, markdown)
-            combined_path = out_dir / f"{day}-rule-proposals.md"
+            combined_path = out_dir / f"{day}-rule-proposals{suffix}.md"
             combined_path.write_text(combined, encoding="utf-8")
 
         # State: remember audited ids (cap growth)

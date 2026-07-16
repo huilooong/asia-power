@@ -590,6 +590,13 @@
                 ${renderBuyBoxActions(item, u)}
               </div>
 
+              <ol class="hc-item-detail__process" aria-label="${t('hc.buyProcessTitle', 'How buying works')}">
+                <li>${escapeHtml(t('hc.buyProcessInspect', 'Inspect — Confirm photos, VIN/engine code and condition before quote.'))}</li>
+                <li>${escapeHtml(t('hc.buyProcessQuote', 'Quote — EXW price plus CIF options to your destination port on request.'))}</li>
+                <li>${escapeHtml(t('hc.buyProcessLogistics', 'Logistics — Crating, export docs and ocean freight coordinated after order confirm.'))}</li>
+                <li>${escapeHtml(t('hc.buyProcessPayment', 'Payment — Terms confirmed in writing before shipment; inventory held after deposit as agreed.'))}</li>
+              </ol>
+
               <ul class="hc-item-detail__trust" aria-label="${t('hc.whyBuy', 'Why buy from AsiaPower')}">${trustHtml}</ul>
               ${supplierNotice}
             </aside>

@@ -1075,6 +1075,11 @@ async function serveStatic(req, res, pathname, search = '') {
     '/half-cuts.html': '/half-cuts/',
   };
   if (redirectMap[pathname]) return redirect(res, redirectMap[pathname]);
+  // Canonical Construction channel is /machinery/ (not half-cuts/?cat=machinery).
+  if (pathname === '/half-cuts/' || pathname === '/half-cuts') {
+    const cat = new URLSearchParams(String(search || '').replace(/^\?/, '')).get('cat');
+    if (cat === 'machinery') return redirect(res, '/machinery/');
+  }
   if (pathname === '/index.html') return redirect(res, '/');
   const indexMatch = pathname.match(/^(.+)\/index\.html$/);
   if (indexMatch) return redirect(res, `${indexMatch[1]}/`);

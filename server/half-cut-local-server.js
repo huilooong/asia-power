@@ -213,6 +213,14 @@ function serveStatic(req, res, pathname) {
     '/half-cuts.html': '/half-cuts/',
   };
   if (redirectMap[pathname]) return redirect(res, redirectMap[pathname]);
+  if (pathname === '/half-cuts/' || pathname === '/half-cuts') {
+    try {
+      const cat = new URL(req.url || '', 'http://localhost').searchParams.get('cat');
+      if (cat === 'machinery') return redirect(res, '/machinery/');
+    } catch {
+      // ignore
+    }
+  }
 
   let cleanPath;
   try {

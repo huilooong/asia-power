@@ -61,6 +61,69 @@ class CoachLlmAuditTests(unittest.TestCase):
         self.assertEqual(result["violations"][0]["evidence_id"], "ev-vin-2")
         self.assertEqual(len(result["good_examples"]), 1)
 
+    def test_bare_hi_not_banned_opening_violation(self) -> None:
+        turns = [
+            {
+                "evidence_id": "ev-hi-1",
+                "at": "2026-07-16T11:00:00Z",
+                "customer": {"message": "Hello! Can I get more info?"},
+                "reply": {
+                    "text": "Hi! You can check www.asia-power.com. What are you looking for?"
+                },
+                "decision": {"next_action": "ask_need"},
+            }
+        ]
+
+        def fake_llm(compact, rules_text: str):
+            return {
+                "violations": [
+                    {
+                        "evidence_id": "ev-hi-1",
+                        "rule_hint": "禁止开场：Hi there! / Great news!",
+                        "reason": "Reply starts with 'Hi!' which is prohibited opening.",
+                        "confidence": "high",
+                    },
+                    {
+                        "evidence_id": "ev-hi-1",
+                        "rule_hint": "禁止开场：Hi there!",
+                        "reason": "Reply starts with 'Hi there.' which matches the ban.",
+                        "confidence": "high",
+                    },
+                ],
+                "good_examples": [],
+            }
+
+        # Second fake violation claims Hi there but reply is only Hi! — both should drop
+        # unless reply actually contains banned phrase:
+        result = llm_audit.audit_conversation(turns, "rules", llm_call=fake_llm)
+        self.assertEqual(result["violations"], [])
+
+        turns2 = [
+            {
+                **turns[0],
+                "evidence_id": "ev-hithere-1",
+                "reply": {
+                    "text": "Hi there. Please call 054 913 5916 or visit www.asia-power.com."
+                },
+            }
+        ]
+
+        def fake_llm_real(compact, rules_text: str):
+            return {
+                "violations": [
+                    {
+                        "evidence_id": "ev-hithere-1",
+                        "rule_hint": "禁止开场：Hi there!",
+                        "reason": "Reply starts with Hi there.",
+                        "confidence": "high",
+                    }
+                ],
+                "good_examples": [],
+            }
+
+        kept = llm_audit.audit_conversation(turns2, "rules", llm_call=fake_llm_real)
+        self.assertEqual(len(kept["violations"]), 1)
+
     def test_clean_conversation_no_false_positive(self) -> None:
         turns = [
             {

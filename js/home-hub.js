@@ -151,7 +151,7 @@
     },
     'top-rated': {
       filter: (item) => utils()?.isMachineryItem?.(item),
-      seeAll: 'half-cuts/?cat=machinery',
+      seeAll: 'machinery/',
       variant: 'rated',
       limit: 12,
       sort: sortByHeat,

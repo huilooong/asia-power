@@ -17,18 +17,18 @@
       <p class="login-lead" id="login-lead">One page for buyers and suppliers. Guests can still browse and inquire without an account.</p>
 
       <div id="session-panel" class="session-panel" hidden>
-        <p id="session-label">已登录</p>
+        <p id="session-label" data-i18n="login.signedIn">Signed in</p>
         <div class="session-actions">
-          <a class="btn btn-primary" id="session-continue" href="/buyer-portal/">进入工作台</a>
-          <button type="button" class="btn btn-ghost" id="session-logout">退出登录</button>
+          <a class="btn btn-primary" id="session-continue" href="/buyer-portal/" data-i18n="login.continueWorkspace">Go to workspace</a>
+          <button type="button" class="btn btn-ghost" id="session-logout" data-i18n="login.signOut">Sign out</button>
         </div>
       </div>
 
       <div id="oauth-banner" class="oauth-banner" hidden></div>
 
       <div class="role-tabs" role="tablist">
-        <button type="button" class="role-tab on" data-role="buyer" role="tab" aria-selected="true">Buyer · 采购商</button>
-        <button type="button" class="role-tab" data-role="supplier" role="tab" aria-selected="false">Supplier · 供应商</button>
+        <button type="button" class="role-tab on" data-role="buyer" role="tab" aria-selected="true" data-i18n="login.tabBuyer">Buyer</button>
+        <button type="button" class="role-tab" data-role="supplier" role="tab" aria-selected="false" data-i18n="login.tabSupplier">Supplier</button>
       </div>
 
       <div id="buyer-pane" class="role-pane on">
@@ -38,11 +38,11 @@
             Continue with Google
           </button>
         </div>
-        <div class="divider"><span>or phone · 或手机号</span></div>
+        <div class="divider"><span data-i18n="login.orPhone">or phone</span></div>
 
         <div class="buyer-mode-tabs">
-          <button type="button" class="mini-tab on" data-buyer-mode="password">密码登录</button>
-          <button type="button" class="mini-tab" data-buyer-mode="register">注册</button>
+          <button type="button" class="mini-tab on" data-buyer-mode="password" data-i18n="login.passwordTab">Password sign in</button>
+          <button type="button" class="mini-tab" data-buyer-mode="register" data-i18n="login.registerTab">Register</button>
         </div>
 
         <div id="buyer-password-box">
@@ -60,20 +60,20 @@
               </select>
             </div>
             <div class="field">
-              <label>Phone · 手机</label>
+              <label data-i18n="login.phone">Phone</label>
               <input id="buyer-pw-phone" inputmode="tel" autocomplete="tel" placeholder="8012345678" />
             </div>
           </div>
           <div class="field">
-            <label>Password · 密码</label>
+            <label data-i18n="login.password">Password</label>
             <input id="buyer-pw-password" type="password" autocomplete="current-password" />
           </div>
           <button class="btn btn-primary btn-block" type="button" id="buyer-pw-login">Sign in with password</button>
-          <div class="hint" id="buyer-pw-hint">已有密码账号：填手机号 + 密码登录。没有账号请点「注册」。短信验证码暂隐藏。</div>
+          <div class="hint" id="buyer-pw-hint" data-i18n="login.buyerPwHint">Existing password account: phone + password. No account? Tap Register. SMS OTP temporarily hidden.</div>
         </div>
 
         <div id="buyer-register-box" hidden>
-          <p class="reg-intro">新采购商：手机号 + 设置密码（二次确认）即可注册。短信验证码暂隐藏，待国内通道就绪再开。</p>
+          <p class="reg-intro" data-i18n="login.buyerRegIntro">New buyer: phone + password (confirm twice). SMS OTP temporarily hidden until the China SMS channel is ready.</p>
           <div class="row">
             <div class="field" style="max-width:110px">
               <label>Code</label>
@@ -88,16 +88,16 @@
               </select>
             </div>
             <div class="field">
-              <label>Phone · 手机 *</label>
+              <label>Phone *</label>
               <input id="buyer-reg-phone" inputmode="tel" autocomplete="tel" placeholder="8012345678" />
             </div>
           </div>
           <div class="field">
-            <label>Password · 设置密码 *</label>
+            <label>Set password *</label>
             <input id="buyer-reg-password" type="password" autocomplete="new-password" />
           </div>
           <div class="field">
-            <label>Confirm · 确认密码 *</label>
+            <label>Confirm password *</label>
             <input id="buyer-reg-password2" type="password" autocomplete="new-password" />
           </div>
           <div class="field">
@@ -108,8 +108,8 @@
             <label>Company / name (optional)</label>
             <input id="buyer-reg-name" autocomplete="organization" placeholder="Lagos Motors Ltd" />
           </div>
-          <button class="btn btn-primary btn-block" type="button" id="buyer-reg-submit">Create buyer account · 注册</button>
-          <div class="hint" id="buyer-reg-hint">密码至少 8 位。注册后可用手机号+密码登录。</div>
+          <button class="btn btn-primary btn-block" type="button" id="buyer-reg-submit">Create buyer account</button>
+          <div class="hint" id="buyer-reg-hint" data-i18n="login.buyerRegHint">Password at least 8 characters. After register, sign in with phone + password.</div>
         </div>
 
         <!-- OTP UI hidden (CEO 2026-07-10): keep markup for later re-enable, not shown -->
@@ -123,13 +123,13 @@
               </select>
             </div>
             <div class="field">
-              <label>Phone · 手机</label>
+              <label>Phone</label>
               <input id="buyer-phone" inputmode="tel" autocomplete="tel" />
             </div>
           </div>
           <div class="row">
             <div class="field">
-              <label>SMS code · 验证码</label>
+              <label>SMS code</label>
               <input id="buyer-otp" inputmode="numeric" autocomplete="one-time-code" />
             </div>
             <button class="btn btn-ghost" type="button" id="buyer-send-otp">Send</button>
@@ -141,9 +141,9 @@
 
       <div id="supplier-pane" class="role-pane">
         <div class="supplier-mode-tabs">
-          <button type="button" class="mini-tab on" data-mode="password">密码登录</button>
-          <button type="button" class="mini-tab" data-mode="set-password">设密 / 改密</button>
-          <button type="button" class="mini-tab" data-mode="register">Register · 注册</button>
+          <button type="button" class="mini-tab on" data-mode="password">Password sign in</button>
+          <button type="button" class="mini-tab" data-mode="set-password">Set / change password</button>
+          <button type="button" class="mini-tab" data-mode="register">Register</button>
         </div>
 
         <div id="supplier-password-box">
@@ -158,20 +158,20 @@
               </select>
             </div>
             <div class="field">
-              <label>Phone · 手机 *</label>
+              <label>Phone *</label>
               <input id="sup-pw-phone" inputmode="tel" autocomplete="tel" placeholder="16638801930" />
             </div>
           </div>
           <div class="field">
-            <label>Password · 密码 *</label>
+            <label>Password *</label>
             <input id="sup-pw-password" type="password" autocomplete="current-password" />
           </div>
           <button class="btn btn-primary btn-block" type="button" id="sup-pw-login">Sign in with password</button>
-          <div class="hint" id="sup-pw-hint">已设密供应商：手机号 + 密码登录。历史上传按手机号自动带出，不丢车。短信验证码暂隐藏。</div>
+          <div class="hint" id="sup-pw-hint">Suppliers with a password: sign in with phone + password. Past uploads stay linked to your phone. SMS OTP temporarily hidden.</div>
         </div>
 
         <div id="supplier-set-password-box" hidden>
-          <p class="reg-intro">输入历史上传用过的手机号 → 匹配成功后直接设置/修改密码（无需短信）。匹配成功后登录可看到原库存。</p>
+          <p class="reg-intro">Enter the phone number used for past uploads → set or update your password (no SMS). After sign-in you can see prior inventory.</p>
           <div class="row">
             <div class="field" style="max-width:110px">
               <label>Code</label>
@@ -183,20 +183,20 @@
               </select>
             </div>
             <div class="field">
-              <label>Phone · 手机 *</label>
+              <label>Phone *</label>
               <input id="sup-set-phone" inputmode="tel" autocomplete="tel" placeholder="16638801930" />
             </div>
           </div>
           <div class="field">
-            <label>New password · 新密码 *</label>
+            <label>New password *</label>
             <input id="sup-set-password" type="password" autocomplete="new-password" />
           </div>
           <div class="field">
-            <label>Confirm · 确认密码 *</label>
+            <label>Confirm password *</label>
             <input id="sup-set-password2" type="password" autocomplete="new-password" />
           </div>
-          <button class="btn btn-primary btn-block" type="button" id="sup-set-submit">Set password · 设密</button>
-          <div class="hint" id="sup-set-hint">匹配字段：账号 phoneNormalized 或库存 supplierPhone。公司名不参与匹配。短信验证码暂隐藏。</div>
+          <button class="btn btn-primary btn-block" type="button" id="sup-set-submit">Set password</button>
+          <div class="hint" id="sup-set-hint">Match by account phone or inventory supplier phone. Company name is not used. SMS OTP temporarily hidden.</div>
         </div>
 
         <!-- OTP login hidden (CEO 2026-07-10) -->
@@ -209,13 +209,13 @@
               </select>
             </div>
             <div class="field">
-              <label>Phone · 手机 *</label>
+              <label>Phone *</label>
               <input id="sup-phone" inputmode="tel" autocomplete="tel" />
             </div>
           </div>
           <div class="row">
             <div class="field">
-              <label>SMS code · 验证码 *</label>
+              <label>SMS code *</label>
               <input id="sup-otp" inputmode="numeric" autocomplete="one-time-code" />
             </div>
             <button class="btn btn-ghost" type="button" id="sup-send-otp">Send</button>
@@ -225,7 +225,7 @@
         </div>
 
         <div id="supplier-register-box" hidden>
-          <p class="reg-intro">新供应商：填写公司资料 + 设置密码即可注册。短信验证码暂隐藏。</p>
+          <p class="reg-intro">New supplier: company profile + password. SMS OTP temporarily hidden.</p>
           <div class="row">
             <div class="field" style="max-width:110px">
               <label>Code *</label>
@@ -237,57 +237,57 @@
               </select>
             </div>
             <div class="field">
-              <label>Phone · 手机 *</label>
+              <label>Phone *</label>
               <input id="reg-phone" inputmode="tel" autocomplete="tel" />
             </div>
           </div>
           <div class="field">
-            <label>Password · 设置密码 *</label>
+            <label>Set password *</label>
             <input id="reg-password" type="password" autocomplete="new-password" />
           </div>
           <div class="field">
-            <label>Confirm · 确认密码 *</label>
+            <label>Confirm password *</label>
             <input id="reg-password2" type="password" autocomplete="new-password" />
           </div>
-          <div class="field"><label>Company · 公司名称 *</label><input id="reg-company" autocomplete="organization" /></div>
+          <div class="field"><label>Company name *</label><input id="reg-company" autocomplete="organization" /></div>
           <div class="row">
             <div class="field">
-              <label>Business type · 业务类型 *</label>
+              <label>Business type *</label>
               <select id="reg-business">
                 <option value="">Select</option>
-                <option value="dismantling-yard">Dismantling yard · 拆解厂</option>
-                <option value="auto-recycler">Auto recycler · 回收商</option>
-                <option value="reconditioner">Reconditioner · 翻新商</option>
-                <option value="export-dealer">Export dealer · 出口商</option>
-                <option value="other">Other · 其他</option>
+                <option value="dismantling-yard">Dismantling yard</option>
+                <option value="auto-recycler">Auto recycler</option>
+                <option value="reconditioner">Reconditioner</option>
+                <option value="export-dealer">Export dealer</option>
+                <option value="other">Other</option>
               </select>
             </div>
-            <div class="field"><label>Contact · 联系人 *</label><input id="reg-contact" autocomplete="name" /></div>
+            <div class="field"><label>Contact *</label><input id="reg-contact" autocomplete="name" /></div>
           </div>
           <div class="row">
             <div class="field">
-              <label>Country · 国家 *</label>
+              <label>Country *</label>
               <select id="reg-country">
-                <option value="china" selected>China · 中国</option>
-                <option value="japan">Japan · 日本</option>
-                <option value="korea">Korea · 韩国</option>
-                <option value="other">Other · 其他</option>
+                <option value="china" selected>China</option>
+                <option value="japan">Japan</option>
+                <option value="korea">Korea</option>
+                <option value="other">Other</option>
               </select>
             </div>
-            <div class="field"><label>Email · 邮箱 *</label><input id="reg-email" type="email" autocomplete="email" /></div>
+            <div class="field"><label>Email *</label><input id="reg-email" type="email" autocomplete="email" /></div>
           </div>
-          <div class="field"><label>Address · 经营地址 *</label><input id="reg-address" autocomplete="street-address" /></div>
+          <div class="field"><label>Business address *</label><input id="reg-address" autocomplete="street-address" /></div>
           <div class="field">
-            <label>Specialization · 主营品类 *</label>
+            <label>Specialization *</label>
             <select id="reg-spec">
               <option value="">Select</option>
-              <option value="engines">Engines · 发动机</option>
-              <option value="gearboxes">Gearboxes · 变速箱</option>
+              <option value="engines">Engines</option>
+              <option value="gearboxes">Gearboxes</option>
               <option value="both">Engines &amp; gearboxes</option>
-              <option value="half-cuts">Half-cuts · 半截车</option>
-              <option value="full-vehicle">Full vehicle · 整车</option>
-              <option value="trucks">Trucks · 卡车</option>
-              <option value="other">Other · 其他</option>
+              <option value="half-cuts">Half-cuts</option>
+              <option value="full-vehicle">Full vehicle</option>
+              <option value="trucks">Trucks</option>
+              <option value="other">Other</option>
             </select>
           </div>
           <div class="row">
@@ -306,10 +306,9 @@
           <label class="reg-terms">
             <input type="checkbox" id="reg-terms" />
             I confirm the information is accurate and agree to AsiaPower supplier standards.
-            <span lang="zh-CN">我确认信息真实，并同意 AsiaPower 供应商标准。</span>
           </label>
-          <button class="btn btn-gold btn-block" type="button" id="reg-submit">Create supplier account · 完成注册</button>
-          <div class="hint" id="reg-hint" role="status" aria-live="polite">密码至少 8 位。注册后用手机号+密码登录。</div>
+          <button class="btn btn-gold btn-block" type="button" id="reg-submit">Create supplier account</button>
+          <div class="hint" id="reg-hint" role="status" aria-live="polite" data-i18n="login.supplierRegHint">Password at least 8 characters. After register, sign in with phone + password.</div>
         </div>
       </div>
 
@@ -324,8 +323,10 @@
   </main>
 
   <div class="toast" id="toast"></div>
+  <script src="/js/path-utils.js?v=site-lang-fix-v1"></script>
+  <script src="/js/public-i18n.js?v=site-lang-fix-v1"></script>
   <script src="/js/v4-portal-shell.js?v=auth-nav-once-v2"></script>
-  <script src="/js/login.js?v=reg-feedback-v1"></script>
+  <script src="/js/login.js?v=site-lang-fix-v1"></script>
   <script>window.AsiaPowerV4PortalShell?.mount('login');</script>
 </body>
 </html>

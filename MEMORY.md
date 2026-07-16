@@ -183,3 +183,19 @@
 - Kompass/Europages/ExportHub：DataDome / 人机墙，需真人浏览器。
 - 进度板：`docs/ops/directory-backlink-weekly-progress.md`
 
+## openclaw_reply_not_json（2026-07-15）
+
+- sales-agent 回复前后多字也会失败；用 `apsales-parse-agent-reply.mjs` 宽松抽 JSON，失败打 `rawText`。
+- 异常兜底必须读 `deal_state`：已有 VIN 禁止再问 VIN/model（成交节骨眼会砸单）。
+
+## 加纳员工交接通知（2026-07-15）
+
+- +233 agent 回复含 `054 913 5916`（或 +233 写法）时，bridge 异步 WhatsApp 通知 `+233549135916`（客户号+最近 Evidence 摘要）。
+- 模块：`deploy/apsales-live-draft/ghana-staff-handoff.mjs`；失败不影响客户回复。
+
+## 公开站语言与 Construction URL（2026-07-16）
+
+- 公开页语言只认 `localStorage.asiapower.lang`（可 `?lang=`）；遗留 `ares-lang` 应清理，不得另起一套。
+- HTML 默认英文；`js/public-i18n.js` 的 `STRINGS[key].en` 要齐全——否则 EN 模式下中文默认值会原样露出（供应商门户曾踩坑）。
+- Construction 权威路径：`/machinery/`；`/half-cuts/?cat=machinery` 应 301 过去。
+
