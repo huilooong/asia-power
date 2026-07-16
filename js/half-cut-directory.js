@@ -646,10 +646,25 @@
     return url;
   }
 
+  /** Extract YouTube video id from watch / youtu.be / embed / shorts URLs. */
+  function youtubeVideoId(url) {
+    const raw = String(url || '').trim();
+    if (!raw) return '';
+    let m = raw.match(/[?&]v=([a-zA-Z0-9_-]{6,})/);
+    if (m) return m[1];
+    m = raw.match(/(?:youtu\.be\/|youtube\.com\/(?:embed|shorts|live)\/)([a-zA-Z0-9_-]{6,})/i);
+    return m ? m[1] : '';
+  }
+
+  function isYouTubeVideoUrl(url) {
+    return !!youtubeVideoId(url);
+  }
+
   function videoMimeType(item) {
     if (item?.video?.mimeType === 'video/mp4') return 'video/mp4';
     if (item?.video?.mimeType === 'video/webm') return 'video/webm';
     const src = videoSource(item);
+    if (isYouTubeVideoUrl(src)) return '';
     if (/\.mp4(\?|$)/i.test(src)) return 'video/mp4';
     if (/\.webm(\?|$)/i.test(src)) return 'video/webm';
     if (/\.mov(\?|$)/i.test(src) || item?.video?.mimeType === 'video/quicktime') return '';
@@ -658,6 +673,7 @@
 
   function isQuickTimeVideo(item) {
     const src = videoSource(item);
+    if (isYouTubeVideoUrl(src)) return false;
     return /\.mov(\?|$)/i.test(src) || item?.video?.mimeType === 'video/quicktime';
   }
 
@@ -671,6 +687,23 @@
     const opts = options || {};
     const className = opts.className || 'half-cut-video';
     const title = opts.title || 'Vehicle walkthrough video';
+    const safeTitle = title.replace(/"/g, '&quot;');
+    const ytId = youtubeVideoId(src);
+    if (ytId) {
+      const embed = `https://www.youtube.com/embed/${ytId}?rel=0&modestbranding=1`;
+      return `
+      <div class="${className} ${className}--youtube">
+        <div class="${className}__frame">
+          <iframe class="${className}__player ${className}__iframe"
+            src="${embed}"
+            title="${safeTitle}"
+            loading="lazy"
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+            allowfullscreen
+            referrerpolicy="strict-origin-when-cross-origin"></iframe>
+        </div>
+      </div>`;
+    }
     const mime = videoMimeType(item);
     const typeAttr = mime ? ` type="${mime}"` : '';
     const quickTime = isQuickTimeVideo(item);
@@ -687,7 +720,7 @@
     const posterAttr = posterUrl ? ` poster="${posterUrl.replace(/"/g, '&quot;')}"` : '';
     return `
       <div class="${className}">
-        <video class="${className}__player" controls playsinline preload="none"${posterAttr} aria-label="${title.replace(/"/g, '&quot;')}">
+        <video class="${className}__player" controls playsinline preload="none"${posterAttr} aria-label="${safeTitle}">
           <source src="${src}"${typeAttr}>
           Your browser does not support embedded video.
         </video>
@@ -2030,6 +2063,8 @@
     firstPhotoThumbUrl,
     hasVideo,
     videoSource,
+    youtubeVideoId,
+    isYouTubeVideoUrl,
     videoMimeType,
     renderVideoPlayer,
     maskVin: (vin) => window.HalfCutVin?.maskVin(vin) || '',

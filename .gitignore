@@ -64,3 +64,6 @@ data/qxb-photos/
 # Local work dumps
 work/half-cut-approved-prod.json
 runtime/apbd/
+
+# YouTube inventory migrate (videos + OAuth tokens)
+work/youtube-inventory-migrate/

@@ -5335,6 +5335,26 @@ html[lang="zh-CN"] .market-stat__zh {
   display: block;
 }
 
+.half-cut-video__frame,
+.half-cut-detail__video-player__frame {
+  position: relative;
+  width: 100%;
+  padding-top: 56.25%;
+  border-radius: 12px;
+  overflow: hidden;
+  background: #000;
+}
+
+.half-cut-video__iframe,
+.half-cut-detail__video-player__iframe {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  max-height: none;
+  border: 0;
+}
+
 .half-cut-video__fallback {
   margin: 10px 0 0;
   font-size: .9rem;
