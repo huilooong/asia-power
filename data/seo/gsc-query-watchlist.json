@@ -3,6 +3,25 @@
   "generatedAt": "2026-07-16",
   "site": "https://asia-power.com",
   "purpose": "Track Google Search Console query and landing-page performance for APSEO-012 weekly review cycles.",
+  "dataStatus": "Historical GSC signals are present in prior SEO diagnosis, but no raw GSC export file or direct authenticated GSC session was available during this check.",
+  "knownGscSignals": [
+    {
+      "signal": "Naked brand query is weak",
+      "query": "asia power",
+      "metric": "average_position",
+      "value": "~34",
+      "source": "docs/ops/seo-brand-query-asia-power-diagnosis-2026-07-15.md",
+      "interpretation": "The naked brand query competes with electrical equipment and geopolitical power-index entities, so it should be monitored separately from commercial long-tail terms."
+    },
+    {
+      "signal": "Ghana intent terms are strong",
+      "query": "Ghana intent queries",
+      "metric": "average_position",
+      "value": "~2.1",
+      "source": "docs/ops/seo-brand-query-asia-power-diagnosis-2026-07-15.md",
+      "interpretation": "Country/product-intent long-tail terms are the better KPI set for the current SEO phase."
+    }
+  ],
   "trackedPages": [
     {
       "page": "/guides/",

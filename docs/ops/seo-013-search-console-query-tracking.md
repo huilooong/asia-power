@@ -1,7 +1,7 @@
 # SEO-013 Search Console Query Tracking
 
 Date: 2026-07-16
-Status: Framework implemented, waiting for real GSC export data
+Status: Framework implemented; historical GSC signals found; raw export/direct session still needed for full query rows
 Production impact: none
 
 ## Purpose
@@ -57,9 +57,16 @@ The script flags:
 - new query candidates not covered by the tracked page's target query list
 - tracked pages missing from the export
 
-## Current Blocker
+## Data Status
 
-No real Search Console export was found in the repo during this implementation step. Until GSC rows are available, this is a tracking framework and baseline, not a performance diagnosis.
+Prior SEO diagnosis already references GSC-derived signals:
+
+- naked brand query `asia power`: average position around 34
+- Ghana intent queries: average position around 2.1
+
+Source: `docs/ops/seo-brand-query-asia-power-diagnosis-2026-07-15.md`
+
+During this implementation step, no raw Search Console export file was found in the repo, the in-app browser was not authenticated, and the Chrome extension browser was unavailable. So this framework can include known historical GSC signals now, but still needs a raw GSC export or authenticated browser/API session for full query/page rows.
 
 ## Next Operating Step
 

@@ -5,12 +5,20 @@ Watchlist: `data/seo/gsc-query-watchlist.json`
 
 ## Summary
 
+- Data status: Historical GSC signals are present in prior SEO diagnosis, but no raw GSC export file or direct authenticated GSC session was available during this check.
 - CSV rows reviewed: 0
 - Tracked landing-page rows: 0
 - Tracked clicks: 0
 - Tracked impressions: 0
 - Tracked average CTR: 0.00%
 - Tracked weighted average position: 0.0
+
+## Known GSC Signals Already Recorded
+
+| Signal | Query scope | Metric | Value | Source | Interpretation |
+| --- | --- | --- | ---: | --- | --- |
+| Naked brand query is weak | asia power | average_position | ~34 | `docs/ops/seo-brand-query-asia-power-diagnosis-2026-07-15.md` | The naked brand query competes with electrical equipment and geopolitical power-index entities, so it should be monitored separately from commercial long-tail terms. |
+| Ghana intent terms are strong | Ghana intent queries | average_position | ~2.1 | `docs/ops/seo-brand-query-asia-power-diagnosis-2026-07-15.md` | Country/product-intent long-tail terms are the better KPI set for the current SEO phase. |
 
 ## Watchlist Coverage
 

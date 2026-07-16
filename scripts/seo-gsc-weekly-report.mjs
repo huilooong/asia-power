@@ -164,6 +164,7 @@ function buildReport({ args, watchlist, records }) {
   out.push('');
   out.push('## Summary');
   out.push('');
+  if (watchlist.dataStatus) out.push(`- Data status: ${watchlist.dataStatus}`);
   out.push(`- CSV rows reviewed: ${records.length}`);
   out.push(`- Tracked landing-page rows: ${trackedRows.length}`);
   out.push(`- Tracked clicks: ${totalClicks}`);
@@ -171,6 +172,18 @@ function buildReport({ args, watchlist, records }) {
   out.push(`- Tracked average CTR: ${totalImpressions ? formatPct(totalClicks / totalImpressions) : '0.00%'}`);
   out.push(`- Tracked weighted average position: ${avgPosition(trackedRows).toFixed(1)}`);
   out.push('');
+
+  const knownSignals = watchlist.knownGscSignals || [];
+  if (knownSignals.length) {
+    out.push('## Known GSC Signals Already Recorded');
+    out.push('');
+    out.push('| Signal | Query scope | Metric | Value | Source | Interpretation |');
+    out.push('| --- | --- | --- | ---: | --- | --- |');
+    knownSignals.forEach((signal) => {
+      out.push(`| ${signal.signal} | ${signal.query} | ${signal.metric} | ${signal.value} | \`${signal.source}\` | ${signal.interpretation} |`);
+    });
+    out.push('');
+  }
 
   out.push('## Watchlist Coverage');
   out.push('');

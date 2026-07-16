@@ -271,9 +271,12 @@ The watchlist now tracks the guide, country-engine and model-intent pages added 
 - `/engines/toyota-engines-for-ghana-importers.html`
 - `/engines/hyundai-kia-engines-for-nigeria-importers.html`
 
-Current blocker:
+GSC data status:
 
-- No real GSC export file was found in the repo during this step, so the framework can generate a watchlist baseline now and a query/page performance report once GSC CSV rows are available.
+- Historical GSC signals do exist in `docs/ops/seo-brand-query-asia-power-diagnosis-2026-07-15.md`: naked brand query `asia power` average position around 34, and Ghana intent queries average position around 2.1.
+- No raw GSC export file was found in the repo during this step.
+- The in-app browser was not authenticated for Search Console, and the Chrome extension browser was unavailable in this session.
+- Therefore the framework now records known historical GSC signals and can generate a watchlist baseline immediately, but full query/page analysis still needs a raw GSC export or authenticated GSC session.
 
 Validation:
 
