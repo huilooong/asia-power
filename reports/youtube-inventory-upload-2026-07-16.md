@@ -30,3 +30,10 @@
 
 1. 部署 chrome/home：`js/half-cut-directory.js` + detail cache bust（`youtube-embed-v1`）→ 详情页播 YouTube  
 2. 明日重传剩余 3 条并再 patch JSON  
+
+## 重试 2026-07-17
+
+- CEO 批准继续上传；立即重试仍 `uploadLimitExceeded`（频道日限额未恢复）
+- 已启动后台每 2 小时自动重试：`scripts/youtube_retry_remaining.sh`（最多 12 次）
+- 日志：`work/youtube-inventory-migrate/retry.log`
+
