@@ -57,7 +57,7 @@ function candidateBodies(raw) {
 
 /**
  * @param {string} text - agent payload text
- * @returns {{ reply: string, needsPriceConfirmation: boolean, supportLineUnreachable: boolean, buyingIntentConfirmed: boolean, quoteDeclineReasonCaptured: string }}
+ * @returns {{ reply: string, needsPriceConfirmation: boolean, supportLineUnreachable: boolean, buyingIntentConfirmed: boolean, quoteDeclineReasonCaptured: string, chatAngleUsed: string }}
  * @throws Error with message openclaw_reply_not_json | openclaw_reply_invalid; may set err.rawText
  */
 export function parseAgentReply(text) {
@@ -82,12 +82,17 @@ export function parseAgentReply(text) {
     const declineRaw = payload.quote_decline_reason_captured;
     const quoteDeclineReasonCaptured =
       typeof declineRaw === "string" ? declineRaw.trim().slice(0, 240) : "";
+    const chatAngleUsed =
+      typeof payload.chat_angle_used === "string"
+        ? payload.chat_angle_used.trim().slice(0, 40)
+        : "";
     return {
       reply,
       needsPriceConfirmation: payload.needs_price_confirmation === true,
       supportLineUnreachable: payload.support_line_unreachable === true,
       buyingIntentConfirmed: payload.buying_intent_confirmed === true,
       quoteDeclineReasonCaptured,
+      chatAngleUsed,
     };
   }
 

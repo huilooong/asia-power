@@ -51,21 +51,14 @@ function turnsPath(workspace) {
   return path.join(workspace, "data", "evidence", "whatsapp", "turns.ndjson");
 }
 
-/** Read recent Evidence turns for one customer; human-readable summary. */
-export async function buildHandoffSummary({
-  workspace,
-  customerId,
-  maxTurns = 4,
-  readFile = fs.readFile,
-}) {
+async function loadCustomerTurns({ workspace, customerId, readFile = fs.readFile }) {
   let lines = [];
   try {
     const raw = await readFile(turnsPath(workspace), "utf8");
     lines = raw.split("\n").filter(Boolean);
   } catch {
-    return null;
+    return [];
   }
-
   const turns = [];
   for (const line of lines) {
     try {
@@ -75,7 +68,31 @@ export async function buildHandoffSummary({
       /* skip malformed */
     }
   }
+  return turns;
+}
 
+/** Recent agent reply texts for one customer (oldest → newest). */
+export async function loadRecentAgentReplies({
+  workspace,
+  customerId,
+  maxTurns = 2,
+  readFile = fs.readFile,
+}) {
+  const turns = await loadCustomerTurns({ workspace, customerId, readFile });
+  return turns
+    .slice(-maxTurns)
+    .map((t) => String(t.reply?.text || "").trim())
+    .filter(Boolean);
+}
+
+/** Read recent Evidence turns for one customer; human-readable summary. */
+export async function buildHandoffSummary({
+  workspace,
+  customerId,
+  maxTurns = 4,
+  readFile = fs.readFile,
+}) {
+  const turns = await loadCustomerTurns({ workspace, customerId, readFile });
   const recent = turns.slice(-maxTurns);
   if (!recent.length) return null;
 

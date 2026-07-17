@@ -69,6 +69,18 @@ test("parseAgentReply: quote_decline_reason_captured string", async () => {
   assert.equal(empty.quoteDeclineReasonCaptured, "");
 });
 
+test("parseAgentReply: chat_angle_used", async () => {
+  const { parseAgentReply } = await load();
+  const out = parseAgentReply(
+    JSON.stringify({
+      customer_reply: "Still waiting on the team price — which port will you use?",
+      needs_price_confirmation: true,
+      chat_angle_used: "where",
+    }),
+  );
+  assert.equal(out.chatAngleUsed, "where");
+});
+
 test("parseAgentReply: ```json fence happy path", async () => {
   const { parseAgentReply } = await load();
   const out = parseAgentReply(`\`\`\`json
