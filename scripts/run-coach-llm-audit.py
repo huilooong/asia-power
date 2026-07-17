@@ -102,6 +102,17 @@ def main(argv: list[str] | None = None) -> int:
     )
     slim = {k: v for k, v in result.items() if k != "markdown"}
     print(json.dumps(slim, ensure_ascii=False, indent=2))
+
+    # Closed loop: worth-CEO items → approval_gate Telegram; rest → digest file.
+    if result.get("ok") and not _env_truthy("COACH_ESCALATION_OFF"):
+        try:
+            from sales_coach.escalation import escalate_violations_to_ceo
+
+            esc = escalate_violations_to_ceo(result.get("violations") or [])
+            print(json.dumps({"escalation": esc}, ensure_ascii=False, indent=2, default=str))
+        except Exception as exc:  # noqa: BLE001 — audit report already written
+            print(f"[coach-llm-audit] escalation failed: {type(exc).__name__}: {exc}", file=sys.stderr)
+
     return 0 if result.get("ok") else 1
 
 

@@ -561,7 +561,7 @@ function deployApsales() {
     `${ROOT}/agents/apbd/`,
     `${AP}/agents/apbd/`,
   ]);
-  run('rsync', ['-av',
+  run('rsync', ['-av', '--exclude', '__pycache__',
     `${ROOT}/sales_coach/`,
     `${AP}/sales_coach/`,
   ]);
@@ -571,6 +571,32 @@ function deployApsales() {
     `${ROOT}/docs/zijing-training/LIVE-RULES.md`,
     `${AP}/docs/zijing-training/LIVE-RULES.md`,
   ]);
+  // Sales Coach closed loop (2026-07-17): cron entrypoints + approval dispatch.
+  run('rsync', ['-av',
+    `${ROOT}/scripts/run-coach-llm-audit.py`,
+    `${ROOT}/scripts/run-coach-structured.py`,
+    `${ROOT}/scripts/run-coach-plan-completion-watch.py`,
+    `${ROOT}/scripts/verify-coach-live-rules-abcd.py`,
+    `${AP}/scripts/`,
+  ]);
+  run('rsync', ['-av',
+    `${ROOT}/coo_core/approval_gate.py`,
+    `${ROOT}/coo_core/dispatcher.py`,
+    `${AP}/coo_core/`,
+  ]);
+  run('rsync', ['-av',
+    `${ROOT}/deploy/cron/apsales-sales-coach.cron`,
+    `${REMOTE}:/tmp/apsales-sales-coach.cron`,
+  ]);
+  ssh(`
+set -euo pipefail
+install -m 644 /tmp/apsales-sales-coach.cron /etc/cron.d/apsales-sales-coach
+touch /var/log/apsales-sales-coach.log
+chmod 644 /var/log/apsales-sales-coach.log || true
+test -f /etc/cron.d/apsales-sales-coach
+grep -q run-coach-structured /etc/cron.d/apsales-sales-coach
+echo "[deploy:apsales] sales-coach cron installed"
+`);
 }
 
 function deployApsalesOpenClaw() {

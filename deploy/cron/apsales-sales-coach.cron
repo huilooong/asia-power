@@ -1,0 +1,15 @@
+# AsiaPower Sales Coach closed loop
+# Install: sudo cp deploy/cron/apsales-sales-coach.cron /etc/cron.d/apsales-sales-coach && sudo chmod 644 /etc/cron.d/apsales-sales-coach
+# Logs: /var/log/apsales-sales-coach.log
+
+SHELL=/bin/bash
+PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+
+# Structured detectors (no LLM) — hourly
+15 * * * * root cd /root/.openclaw/workspace/AsiaPower && .venv/bin/python3 scripts/run-coach-structured.py >> /var/log/apsales-sales-coach.log 2>&1
+
+# LLM LIVE-RULES audit — 09:00 / 14:00 / 19:00 UTC (cost-aware)
+0 9,14,19 * * * root cd /root/.openclaw/workspace/AsiaPower && .venv/bin/python3 scripts/run-coach-llm-audit.py >> /var/log/apsales-sales-coach.log 2>&1
+
+# Watch coach-fix-*.md Cursor reports → Telegram CEO (with LLM cadence)
+5 9,14,19 * * * root cd /root/.openclaw/workspace/AsiaPower && .venv/bin/python3 scripts/run-coach-plan-completion-watch.py >> /var/log/apsales-sales-coach.log 2>&1

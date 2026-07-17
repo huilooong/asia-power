@@ -44,6 +44,8 @@ _ACTION_LEVEL: dict[str, ApprovalLevel] = {
     "payment": ApprovalLevel.CRITICAL,
     "api_key": ApprovalLevel.CRITICAL,
     "bank_operation": ApprovalLevel.CRITICAL,
+    # Sales Coach → CEO → Cursor plan file (no direct prod code change).
+    "agent_prompt_fix": ApprovalLevel.MEDIUM,
 }
 
 # L4 — human only. Agent must escalate; "approved" still does NOT authorize agent execution.
@@ -243,6 +245,12 @@ def format_resolution(result: dict[str, Any]) -> str:
             return (
                 f"已记录你对「{rec['action']}」的授权（{rec['id']}）。\n"
                 "这是 L4 人类专属动作,我不代为执行,请你亲自操作。已留审计记录。"
+            )
+        if rec.get("action") == "agent_prompt_fix":
+            plan = result.get("cursor_plan_path") or "(生成失败,请看日志)"
+            return (
+                f"收到,已授权「{rec['action']}」（{rec['id']}）。\n"
+                f"已生成 Cursor 任务文件 `{plan}`,Cursor 会自动接手,做完我会告诉你。"
             )
         return (
             f"收到,已授权「{rec['action']}」（{rec['id']}）。\n"

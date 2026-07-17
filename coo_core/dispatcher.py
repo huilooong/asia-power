@@ -317,6 +317,20 @@ def dispatch_message(
 
     resolved = resolve_reply(message)
     if resolved:
+        # Sales Coach closed loop: approved agent_prompt_fix → write Cursor plan file only.
+        if (
+            resolved.get("decision") == "approved"
+            and (resolved.get("record") or {}).get("action") == "agent_prompt_fix"
+        ):
+            try:
+                from sales_coach.dispatch_to_cursor import write_coach_fix_plan
+
+                plan_path = write_coach_fix_plan(resolved["record"])
+                resolved["cursor_plan_path"] = str(plan_path)
+                print(f"[APCOO DEBUG] mode=coach_dispatch_plan path={plan_path}", flush=True)
+            except Exception as exc:  # noqa: BLE001
+                resolved["cursor_plan_path"] = ""
+                print(f"[APCOO DEBUG] mode=coach_dispatch_failed error={exc}", flush=True)
         visible = format_resolution(resolved)
         memory_tool.log_conversation(
             message, visible, source="apcoo", channel=source, important=True,
