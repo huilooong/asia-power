@@ -1504,6 +1504,37 @@
     const offer = buildProductOffer(item, canonical);
     if (offer) product.offers = offer;
 
+    // GSC Video Index: declare YouTube embeds (and any remaining self-hosted mp4).
+    const ytId = youtubeVideoId(item?.video?.url || item?.videoUrl || item?.youtubeVideoId || item?.video?.youtubeId);
+    const rawVideo = String(item?.video?.url || item?.videoUrl || '').trim();
+    const selfHosted = rawVideo.includes('/uploads/videos/') ? rawVideo : '';
+    if (ytId || selfHosted) {
+      const abs = (u) => {
+        if (!u) return '';
+        if (/^https?:\/\//i.test(u)) return u;
+        try {
+          return new URL(u, window.location.origin).href;
+        } catch {
+          return u;
+        }
+      };
+      const thumbs = productImages(item, base);
+      const video = {
+        '@type': 'VideoObject',
+        name: `${listingTitle(item) || item.title || item.stockId} — startup video`,
+        description: item.shortDescription || product.description || '',
+        thumbnailUrl: [
+          ytId ? `https://i.ytimg.com/vi/${ytId}/hqdefault.jpg` : abs(thumbs[0] || ''),
+        ].filter(Boolean),
+        url: canonical,
+      };
+      if (ytId) video.embedUrl = `https://www.youtube.com/embed/${ytId}`;
+      if (selfHosted) video.contentUrl = abs(selfHosted);
+      const uploadDate = item.updatedAt || item.createdAt || item.approvedAt;
+      if (uploadDate) video.uploadDate = String(uploadDate).slice(0, 10);
+      product.video = video;
+    }
+
     return product;
   }
 

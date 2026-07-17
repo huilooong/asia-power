@@ -118,6 +118,68 @@ function parsePriceUsd(item) {
   return null;
 }
 
+/** Extract YouTube id from watch / youtu.be / embed / shorts, or item.youtubeVideoId. */
+function youtubeVideoId(itemOrUrl) {
+  if (itemOrUrl && typeof itemOrUrl === 'object') {
+    const direct = String(itemOrUrl.youtubeVideoId || itemOrUrl.video?.youtubeId || '').trim();
+    if (direct) return direct;
+    return youtubeVideoId(itemOrUrl.video?.url || itemOrUrl.videoUrl || '');
+  }
+  const raw = String(itemOrUrl || '').trim();
+  if (!raw) return '';
+  let m = raw.match(/[?&]v=([a-zA-Z0-9_-]{6,})/);
+  if (m) return m[1];
+  m = raw.match(/(?:youtu\.be\/|youtube\.com\/(?:embed|shorts|live)\/)([a-zA-Z0-9_-]{6,})/i);
+  return m ? m[1] : '';
+}
+
+function absoluteMediaUrl(url, siteUrl) {
+  const raw = String(url || '').trim();
+  if (!raw || raw.startsWith('data:')) return '';
+  if (/^https?:\/\//i.test(raw)) return raw;
+  const base = String(siteUrl || SITE_DEFAULT).replace(/\/$/, '');
+  return `${base}${raw.startsWith('/') ? '' : '/'}${raw}`;
+}
+
+/**
+ * VideoObject for GSC / Google video features after migrating playback to YouTube.
+ * Prefer embedUrl (YouTube). Keep contentUrl only for first-party /uploads/videos files.
+ */
+function videoObjectJsonLd(item, siteUrl, detailPath = '/half-cuts/detail.html') {
+  const ytId = youtubeVideoId(item);
+  const rawUrl = String(item?.video?.url || item?.videoUrl || '').trim();
+  const selfHosted = absoluteMediaUrl(
+    rawUrl.includes('/uploads/videos/') ? rawUrl : (item?.video?.sourceLocalPath || ''),
+    siteUrl,
+  );
+  // Only advertise self-hosted contentUrl when the public URL is still a site mp4
+  // (not a YouTube watch page). YouTube playback uses embedUrl.
+  const contentUrl = rawUrl.includes('/uploads/videos/') ? absoluteMediaUrl(rawUrl, siteUrl) : '';
+  if (!ytId && !contentUrl) return null;
+
+  const images = productImages(item, siteUrl);
+  const thumb = ytId
+    ? `https://i.ytimg.com/vi/${ytId}/hqdefault.jpg`
+    : (images[0] || defaultProductImage(siteUrl));
+  const name = `${displayTitle(item)} — startup video`;
+  const description = item.shortDescription || seoDescription(item);
+  const uploadDate = item.updatedAt || item.createdAt || item.approvedAt || item.listedAt || null;
+  const video = {
+    '@type': 'VideoObject',
+    name,
+    description,
+    thumbnailUrl: [thumb],
+    url: canonicalUrl(siteUrl, item.slug, detailPath),
+  };
+  if (uploadDate) video.uploadDate = String(uploadDate).slice(0, 10);
+  if (ytId) video.embedUrl = `https://www.youtube.com/embed/${ytId}`;
+  if (contentUrl) video.contentUrl = contentUrl;
+  else if (selfHosted && selfHosted.includes('/uploads/videos/') && !ytId) {
+    video.contentUrl = selfHosted;
+  }
+  return video;
+}
+
 function productJsonLd(item, siteUrl, detailPath = '/half-cuts/detail.html') {
   const canonical = canonicalUrl(siteUrl, item.slug, detailPath);
   const product = {
@@ -142,6 +204,8 @@ function productJsonLd(item, siteUrl, detailPath = '/half-cuts/detail.html') {
       seller: { '@type': 'Organization', name: 'AsiaPower', url: String(siteUrl || SITE_DEFAULT).replace(/\/$/, '') },
     };
   }
+  const video = videoObjectJsonLd(item, siteUrl, detailPath);
+  if (video) product.video = video;
   return product;
 }
 
@@ -260,6 +324,24 @@ function buildDetailRootHtml(item, siteUrl) {
         }).join('')}</div></div>` : ''}
       </div>`
     : `<div class="hc-item-detail__gallery hc-item-detail__gallery--empty"><div class="hc-item-detail__placeholder"><span>Photos on request</span></div></div>`;
+  // Server-rendered YouTube iframe so Googlebot sees a prominent video without waiting on client JS.
+  const ytId = youtubeVideoId(item);
+  const prerenderVideo = ytId
+    ? `<section class="hc-item-detail__video" data-prerender-youtube>
+        <h3 class="hc-item-detail__video-title">Vehicle Video</h3>
+        <div class="half-cut-detail__video-player half-cut-detail__video-player--youtube">
+          <div class="half-cut-detail__video-player__frame">
+            <iframe class="half-cut-detail__video-player__player half-cut-detail__video-player__iframe"
+              src="https://www.youtube.com/embed/${escapeAttr(ytId)}?rel=0&amp;modestbranding=1"
+              title="${escapeAttr(titleText)} video"
+              loading="lazy"
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+              allowfullscreen
+              referrerpolicy="strict-origin-when-cross-origin"></iframe>
+          </div>
+        </div>
+      </section>`
+    : '';
   const parts = sanitizeIncludedParts(Array.isArray(item.includedParts) ? item.includedParts : []);
   const intro = escapeHtml(`${titleText}. EXW export from China — availability, photos and CIF shipping confirmed on enquiry.`);
   const specRow = (label, value) => (value ? `<div class="hc-item-detail__spec"><dt>${label}</dt><dd>${value}</dd></div>` : '');
@@ -316,6 +398,7 @@ function buildDetailRootHtml(item, siteUrl) {
             <h3 class="hc-item-detail__about-subtitle">Vehicle information</h3>
             <dl class="hc-item-detail__specifics hc-item-detail__specifics--about">${vehicleInfoHtml}</dl>
           </div>
+          ${prerenderVideo}
           ${parts.length ? `<h3 class="half-cut-detail__parts-title">Included Parts</h3><ul class="half-cut-detail__parts">${parts.map((part) => `<li>${escapeHtml(part)}</li>`).join('')}</ul>` : ''}
           <p class="hc-item-detail__about-disclaimer">${INVENTORY_DISCLAIMER}</p>
         </section>
@@ -373,6 +456,8 @@ module.exports = {
   canonicalUrl,
   resolveDetailPath,
   productJsonLd,
+  videoObjectJsonLd,
+  youtubeVideoId,
   buildDetailRootHtml,
   noscriptSummary,
   displayTitle,
