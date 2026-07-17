@@ -715,7 +715,7 @@ Environment=APSALES_AUDIO_MAX_BYTES=8388608
 Environment=APSALES_OCR_PROVIDER=google
 Environment=APSALES_STT_PROVIDER=google
 Environment=APSALES_BUYING_INTENT_NOTIFY_E164=+8618603773077
-Environment=APSALES_QUOTE_FOLLOWUP_SEND=false
+Environment=APSALES_QUOTE_FOLLOWUP_SEND=true
 Environment=APSALES_SOFT_ANGLE_SEND=false
 EnvironmentFile=-/root/.openclaw/workspace/AsiaPower/.env
 EOF

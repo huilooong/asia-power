@@ -141,9 +141,9 @@ const QUOTE_FOLLOWUP_MS = Number.parseInt(
   process.env.APSALES_QUOTE_FOLLOWUP_MS || String(24 * 60 * 60 * 1000),
   10,
 );
-/** Default dry-run: log/preview only until CEO enables real send. */
+/** Quote concern follow-up: send to customer when true (CEO enabled 2026-07-17). */
 const QUOTE_FOLLOWUP_SEND = ["1", "true", "on", "yes"].includes(
-  String(process.env.APSALES_QUOTE_FOLLOWUP_SEND || "false").trim().toLowerCase(),
+  String(process.env.APSALES_QUOTE_FOLLOWUP_SEND || "true").trim().toLowerCase(),
 );
 /**
  * Stage-3 soft 5W2H angle: default dry-run records chat_angle_used only;
