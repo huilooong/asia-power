@@ -642,6 +642,10 @@ function deployApsalesOpenClaw() {
     `${REMOTE}:/root/.openclaw/extensions/apsales-live-draft/apsales-deal-qualify.mjs`,
   );
   rsync(
+    `${ROOT}/deploy/apsales-live-draft/apsales-vin-card.mjs`,
+    `${REMOTE}:/root/.openclaw/extensions/apsales-live-draft/apsales-vin-card.mjs`,
+  );
+  rsync(
     `${ROOT}/deploy/apsales-whatsapp-bridge.service`,
     `${REMOTE}:/tmp/apsales-whatsapp-bridge.service`,
   );
@@ -697,6 +701,7 @@ test -s "\$BRIDGE_DIR/apsales-internal-staff.mjs"
 test -s "\$BRIDGE_DIR/apsales-closing-memory.mjs"
 test -s "\$BRIDGE_DIR/apsales-soft-angle.mjs"
 test -s "\$BRIDGE_DIR/apsales-deal-qualify.mjs"
+test -s "\$BRIDGE_DIR/apsales-vin-card.mjs"
 CHECK=\$(mktemp /tmp/apsales-bridge-check-XXXXXX.mjs)
 SESSION_CHECK=\$(mktemp /tmp/apsales-session-check-XXXXXX.mjs)
 cp "$NEXT" "$CHECK"
@@ -707,6 +712,7 @@ cp "$SESSION_NEXT" "$SESSION_CHECK"
 /usr/bin/node --check "\$BRIDGE_DIR/apsales-closing-memory.mjs"
 /usr/bin/node --check "\$BRIDGE_DIR/apsales-soft-angle.mjs"
 /usr/bin/node --check "\$BRIDGE_DIR/apsales-deal-qualify.mjs"
+/usr/bin/node --check "\$BRIDGE_DIR/apsales-vin-card.mjs"
 /usr/bin/node --check "\$BRIDGE_DIR/ghana-staff-handoff.mjs"
 /usr/bin/node --check "\$BRIDGE_DIR/apsales-parse-agent-reply.mjs"
 /usr/bin/node --check /tmp/apsales-bridge-crash-logger.mjs
@@ -714,7 +720,7 @@ rm -f "$CHECK" "$SESSION_CHECK"
 mkdir -p "$BACKUP" /etc/systemd/system/apsales-whatsapp-bridge.service.d
 cp -a "$BRIDGE" "$BACKUP/bridge.mjs"
 if [ -f "$SESSION" ]; then cp -a "$SESSION" "$BACKUP/apsales-whatsapp-session.mjs"; fi
-for f in ghana-staff-handoff.mjs apsales-parse-agent-reply.mjs apsales-internal-staff.mjs apsales-closing-memory.mjs apsales-soft-angle.mjs apsales-deal-qualify.mjs; do
+for f in ghana-staff-handoff.mjs apsales-parse-agent-reply.mjs apsales-internal-staff.mjs apsales-closing-memory.mjs apsales-soft-angle.mjs apsales-deal-qualify.mjs apsales-vin-card.mjs; do
   if [ -f "\$BRIDGE_DIR/\$f" ]; then cp -a "\$BRIDGE_DIR/\$f" "\$BACKUP/\$f"; fi
 done
 if [ -f /etc/systemd/system/apsales-whatsapp-bridge.service.d/openclaw-sales-agent.conf ]; then

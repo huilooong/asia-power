@@ -113,6 +113,8 @@ class VehicleSnapshot:
     year: str = ""
     engine_code: str = ""
     engine_desc: str = ""
+    # Liters from NHTSA DisplacementL, e.g. "2.5L" (empty when provider has none).
+    displacement: str = ""
     transmission: str = ""
     plant_country: str = ""
     # Provider / trust
@@ -142,6 +144,8 @@ class VehicleSnapshot:
             out.append("engine_code")
         elif self.engine_desc:
             out.append("engine_desc")
+        if self.displacement:
+            out.append("displacement")
         if self.transmission:
             out.append("transmission")
         if self.plant_country:
@@ -261,6 +265,7 @@ def _snapshot_from_cache_row(vin: str, row: dict[str, Any]) -> VehicleSnapshot:
         year=str(row.get("year") or ""),
         engine_code=str(row.get("engine_code") or ""),
         engine_desc=str(row.get("engine_desc") or ""),
+        displacement=str(row.get("displacement") or ""),
         transmission=str(row.get("transmission") or ""),
         plant_country=str(row.get("plant_country") or ""),
         provider_source=provider,
@@ -290,10 +295,19 @@ def _nhtsa_flat_to_snapshot(vin: str, flat: dict[str, Any], *, raw_ref: str = ""
     model = g("Model")
     year = g("ModelYear")
     engine_code = g("EngineModel")
+    displacement_raw = g("DisplacementL")
+    displacement = ""
+    if displacement_raw:
+        # NHTSA returns bare liters ("2.5"); normalize to "2.5L" for customer cards.
+        displacement = (
+            displacement_raw
+            if re.search(r"[a-zA-Z]", displacement_raw)
+            else f"{displacement_raw}L"
+        )
     engine_desc = " ".join(
         x
         for x in [
-            g("DisplacementL"),
+            displacement_raw or "",
             g("EngineCylinders") and f"{g('EngineCylinders')}cyl",
             g("FuelTypePrimary"),
         ]
@@ -312,6 +326,7 @@ def _nhtsa_flat_to_snapshot(vin: str, flat: dict[str, Any], *, raw_ref: str = ""
         year=year,
         engine_code=engine_code,
         engine_desc=engine_desc,
+        displacement=displacement,
         transmission=transmission,
         plant_country=plant,
         provider_source="nhtsa_vpic",
@@ -377,6 +392,7 @@ def write_knowledge(snapshot: VehicleSnapshot, root: Path | None = None, *, reas
         "year": snapshot.year,
         "engine_code": snapshot.engine_code,
         "engine_desc": snapshot.engine_desc,
+        "displacement": snapshot.displacement,
         "transmission": snapshot.transmission,
         "plant_country": snapshot.plant_country,
         "provider_source": snapshot.provider_source or snapshot.source,

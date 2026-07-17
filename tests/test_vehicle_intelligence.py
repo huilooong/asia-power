@@ -10,6 +10,7 @@ from unittest import mock
 
 from sales_core.vehicle_intelligence import (
     VehicleSnapshot,
+    _nhtsa_flat_to_snapshot,
     build_sales_decision,
     build_whatsapp_reply,
     enrich_from_vin,
@@ -98,6 +99,33 @@ class VehicleIntelligenceTests(unittest.TestCase):
             self.assertEqual(cache["1HGCM82633A004352"]["verification_status"], "provider_reported")
             second = enrich_from_vin("1HGCM82633A004352", root=root, allow_external=False)
             self.assertTrue(second.knowledge_hit)
+
+    def test_nhtsa_displacement_field(self):
+        snap = _nhtsa_flat_to_snapshot(
+            "1N4AL3AP8JC123456",
+            {
+                "Make": "NISSAN",
+                "Model": "Altima",
+                "ModelYear": "2018",
+                "EngineModel": "",
+                "DisplacementL": "2.5",
+                "ErrorCode": "0",
+            },
+        )
+        self.assertEqual(snap.displacement, "2.5L")
+        self.assertIn("displacement", snap.to_public_dict())
+        empty = _nhtsa_flat_to_snapshot(
+            "X",
+            {
+                "Make": "NISSAN",
+                "Model": "Hardbody",
+                "ModelYear": "2021",
+                "EngineModel": "YD25",
+                "DisplacementL": "",
+                "ErrorCode": "0",
+            },
+        )
+        self.assertEqual(empty.displacement, "")
 
 
 if __name__ == "__main__":

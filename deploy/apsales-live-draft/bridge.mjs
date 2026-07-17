@@ -56,6 +56,7 @@ import {
   extractVehicleQualifyFromText,
   mergeVehicleQualifyFields,
 } from "./apsales-deal-qualify.mjs";
+import { formatVehicleConfirmationCard } from "./apsales-vin-card.mjs";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const _require = createRequire(import.meta.url);
@@ -1089,23 +1090,8 @@ async function buildMediaContext(message, session, senderId) {
 function plateSuccessReply(mediaContext) {
   const vehicle = mediaContext?.vin_decode?.vehicle;
   if (!vehicle || mediaContext?.vin_decode?.status !== "success") return null;
-  const brand = String(vehicle.brand || vehicle.manufacturer || "").trim();
-  const engine = String(vehicle.engine_code || "").trim();
-  const frame = String(vehicle.frame_no || "").trim();
-  const model = String(vehicle.model || vehicle.model_code || "").trim();
-  const year = String(vehicle.year || "").trim();
-  const vin = String(vehicle.vin || "").trim();
-  const bits = [];
-  if (brand) bits.push(brand);
-  if (year) bits.push(year);
-  if (model && !frame) bits.push(model);
-  if (frame) bits.push(frame);
-  if (engine) bits.push(engine);
-  // OCR-only path (e.g. China VIN with empty NHTSA): still confirm the ID we read.
-  if (!bits.length && vin && !vin.includes("*")) bits.push(vin);
-  if (!bits.length) return null;
-  // Deterministic path: never let chat history override a successful plate read.
-  return `Got it — ${bits.join(" / ")}. Do you need the engine, gearbox, or the half-cut?`;
+  // Deterministic multi-line confirmation card — never let chat history override a successful plate read.
+  return formatVehicleConfirmationCard(vehicle);
 }
 
 // plateFailureReply imported from apsales-human-visibility.mjs — uses dealState
