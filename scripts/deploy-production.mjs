@@ -744,15 +744,24 @@ EOF
 
 mv "$SESSION_NEXT" "$SESSION"
 mv "$NEXT" "$BRIDGE"
-# Stop bare node bridge.mjs if started outside systemd (avoids 440 conflict).
-pkill -f '/root/.openclaw/extensions/apsales-live-draft/bridge.mjs' 2>/dev/null || true
-sleep 1
 systemctl daemon-reload
 systemctl enable apsales-whatsapp-bridge.service
-systemctl restart apsales-whatsapp-bridge.service
+systemctl stop apsales-whatsapp-bridge.service || true
+# Kill ANY leftover bridge (bare `node bridge.mjs` or full path) before start — avoids 440 conflict.
+pkill -f 'apsales-live-draft/bridge\.mjs' 2>/dev/null || true
+pkill -f '[n]ode bridge\.mjs' 2>/dev/null || true
+sleep 2
+systemctl start apsales-whatsapp-bridge.service
 sleep 3
 systemctl is-active --quiet apsales-whatsapp-bridge.service
+# Assert single bridge process under systemd
+MAIN=\$(systemctl show apsales-whatsapp-bridge.service -p MainPID --value)
+COUNT=\$(pgrep -fc 'bridge\.mjs' || true)
+echo "[deploy:apsales-openclaw] MainPID=\$MAIN bridge_procs=\$COUNT Restart=\$(systemctl show apsales-whatsapp-bridge.service -p Restart --value)"
 systemctl show apsales-whatsapp-bridge.service -p Environment -p Restart -p FragmentPath --no-pager
+if [ "\$COUNT" != "1" ]; then
+  echo "[deploy:apsales-openclaw] WARN: expected 1 bridge.mjs process, found \$COUNT" >&2
+fi
 echo "[deploy:apsales-openclaw] backup=$BACKUP"
 `);
 }
