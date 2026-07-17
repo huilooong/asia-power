@@ -57,7 +57,7 @@ function candidateBodies(raw) {
 
 /**
  * @param {string} text - agent payload text
- * @returns {{ reply: string, needsPriceConfirmation: boolean, supportLineUnreachable: boolean }}
+ * @returns {{ reply: string, needsPriceConfirmation: boolean, supportLineUnreachable: boolean, buyingIntentConfirmed: boolean }}
  * @throws Error with message openclaw_reply_not_json | openclaw_reply_invalid; may set err.rawText
  */
 export function parseAgentReply(text) {
@@ -83,6 +83,7 @@ export function parseAgentReply(text) {
       reply,
       needsPriceConfirmation: payload.needs_price_confirmation === true,
       supportLineUnreachable: payload.support_line_unreachable === true,
+      buyingIntentConfirmed: payload.buying_intent_confirmed === true,
     };
   }
 

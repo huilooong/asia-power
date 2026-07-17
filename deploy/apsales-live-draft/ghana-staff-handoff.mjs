@@ -83,7 +83,7 @@ export async function buildHandoffSummary({
     .map((t) => {
       const msg = String(t.customer?.message || "").slice(0, 200);
       const reply = String(t.reply?.text || "").slice(0, 200);
-      return `客户: ${msg}\n子敬: ${reply}`;
+      return `Customer: ${msg}\nAgent: ${reply}`;
     })
     .join("\n---\n");
 }
@@ -107,9 +107,9 @@ export async function notifyGhanaStaffIfHandingOff({
     const customerId = `wa:${digitsOnly(senderId)}`;
     const summary = await buildHandoffSummary({ workspace, customerId });
     const lines = [
-      "📞 客户可能会联系你",
-      `客户号码: ${senderId}`,
-      summary ? `\n最近聊天概况:\n${summary}` : "(暂无聊天记录摘要)",
+      "New contact shared with a customer",
+      `Customer number: ${senderId}`,
+      summary ? `\nRecent chat summary:\n${summary}` : "(no chat summary available yet)",
     ];
 
     await session.sendText(contactE164, lines.join("\n"));

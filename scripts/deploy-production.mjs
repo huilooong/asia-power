@@ -600,6 +600,14 @@ function deployApsalesOpenClaw() {
     `${REMOTE}:/root/.openclaw/extensions/apsales-live-draft/ghana-staff-handoff.mjs`,
   );
   rsync(
+    `${ROOT}/deploy/apsales-live-draft/apsales-internal-staff.mjs`,
+    `${REMOTE}:/root/.openclaw/extensions/apsales-live-draft/apsales-internal-staff.mjs`,
+  );
+  rsync(
+    `${ROOT}/deploy/apsales-live-draft/apsales-closing-memory.mjs`,
+    `${REMOTE}:/root/.openclaw/extensions/apsales-live-draft/apsales-closing-memory.mjs`,
+  );
+  rsync(
     `${ROOT}/server/lib/asiapower-evidence.js`,
     `${REMOTE}:/root/.openclaw/workspace/AsiaPower/server/lib/asiapower-evidence.js`,
   );
@@ -634,16 +642,25 @@ SESSION_NEXT=\${SESSION}.next
 BACKUP=/root/.openclaw/releases/apsales-openclaw-\$(date -u +%Y%m%dT%H%M%SZ)
 test -s "$NEXT"
 test -s "$SESSION_NEXT"
+test -s "\$BRIDGE_DIR/apsales-internal-staff.mjs"
+test -s "\$BRIDGE_DIR/apsales-closing-memory.mjs"
 CHECK=\$(mktemp /tmp/apsales-bridge-check-XXXXXX.mjs)
 SESSION_CHECK=\$(mktemp /tmp/apsales-session-check-XXXXXX.mjs)
 cp "$NEXT" "$CHECK"
 cp "$SESSION_NEXT" "$SESSION_CHECK"
 /usr/bin/node --check "$CHECK"
 /usr/bin/node --check "$SESSION_CHECK"
+/usr/bin/node --check "\$BRIDGE_DIR/apsales-internal-staff.mjs"
+/usr/bin/node --check "\$BRIDGE_DIR/apsales-closing-memory.mjs"
+/usr/bin/node --check "\$BRIDGE_DIR/ghana-staff-handoff.mjs"
+/usr/bin/node --check "\$BRIDGE_DIR/apsales-parse-agent-reply.mjs"
 rm -f "$CHECK" "$SESSION_CHECK"
 mkdir -p "$BACKUP" /etc/systemd/system/apsales-whatsapp-bridge.service.d
 cp -a "$BRIDGE" "$BACKUP/bridge.mjs"
 if [ -f "$SESSION" ]; then cp -a "$SESSION" "$BACKUP/apsales-whatsapp-session.mjs"; fi
+for f in ghana-staff-handoff.mjs apsales-parse-agent-reply.mjs apsales-internal-staff.mjs apsales-closing-memory.mjs; do
+  if [ -f "\$BRIDGE_DIR/\$f" ]; then cp -a "\$BRIDGE_DIR/\$f" "\$BACKUP/\$f"; fi
+done
 if [ -f /etc/systemd/system/apsales-whatsapp-bridge.service.d/openclaw-sales-agent.conf ]; then
   cp -a /etc/systemd/system/apsales-whatsapp-bridge.service.d/openclaw-sales-agent.conf "$BACKUP/openclaw-sales-agent.conf"
 fi

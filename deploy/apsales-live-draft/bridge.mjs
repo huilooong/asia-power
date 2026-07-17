@@ -21,6 +21,17 @@ import {
   notifyGhanaStaffIfHandingOff,
   notifyGhanaStaffSupportLineUnreachable,
 } from "./ghana-staff-handoff.mjs";
+import {
+  parseInternalStaffNumbers,
+  isInternalStaffNumber,
+} from "./apsales-internal-staff.mjs";
+import {
+  extractClosingFieldsFromText,
+  mergeClosingFields,
+  stampBuyingIntentConfirmed,
+  shouldAlertHotDealStall,
+  formatHotDealStallAlert,
+} from "./apsales-closing-memory.mjs";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const _require = createRequire(import.meta.url);
@@ -94,6 +105,18 @@ const GHANA_SUPPORT_CONTACT_LOCAL =
   process.env.APSALES_GHANA_SUPPORT_CONTACT_LOCAL || "054 913 5916";
 const GHANA_SUPPORT_CONTACT_E164 =
   process.env.APSALES_GHANA_SUPPORT_CONTACT_E164 || "+233549135916";
+const INTERNAL_STAFF_NUMBERS_E164 = parseInternalStaffNumbers(
+  process.env.APSALES_INTERNAL_STAFF_NUMBERS_E164,
+  GHANA_SUPPORT_CONTACT_E164,
+);
+const HOT_DEAL_STALL_MS = Number.parseInt(
+  process.env.APSALES_HOT_DEAL_STALL_MS || String(2 * 60 * 60 * 1000),
+  10,
+);
+const HOT_DEAL_STALL_CHECK_MS = Number.parseInt(
+  process.env.APSALES_HOT_DEAL_STALL_CHECK_MS || String(15 * 60 * 1000),
+  10,
+);
 function log(message, data = {}) {
   console.log(JSON.stringify({ ts: new Date().toISOString(), message, ...data }));
 }
@@ -213,9 +236,15 @@ async function loadDealState(senderId) {
 
 async function saveDealState(senderId, patch) {
   const prev = (await loadDealState(senderId)) || {};
+  const safePatch = { ...(patch || {}) };
+  // New real progress clears stall alert so a later stall can re-alert.
+  const progressKeys = Object.keys(safePatch).filter((k) => k !== "stall_alert_sent_at");
+  if (prev.stall_alert_sent_at && progressKeys.length) {
+    safePatch.stall_alert_sent_at = null;
+  }
   const next = {
     ...prev,
-    ...patch,
+    ...safePatch,
     customer_e164: senderId,
     updated_at: new Date().toISOString(),
   };
@@ -271,8 +300,9 @@ async function rememberDealFromContext(senderId, mediaContext, text) {
   if (part) patch.part_intent = part;
   if (/\b(automatic|auto)\b/i.test(String(text || ""))) patch.transmission = "automatic";
   if (/\b(manual)\b/i.test(String(text || ""))) patch.transmission = "manual";
-  if (!Object.keys(patch).length) return loadDealState(senderId);
   const prev = (await loadDealState(senderId)) || {};
+  Object.assign(patch, mergeClosingFields(prev, extractClosingFieldsFromText(text)));
+  if (!Object.keys(patch).length) return prev;
   // Data-only: first clear part/vin/engine → part_first_requested_at (no display/decision use).
   const stamped = withPartFirstRequestedAt(prev, patch, new Date().toISOString());
   return saveDealState(senderId, stamped);
@@ -371,9 +401,10 @@ async function runOpenClawReply({ text, senderId, messageId, chatId, observedAt,
     "- If the customer asks to speak to a human or wants a direct contact number, and support_contact is present in structured context, you may give that number.",
     "- The ONLY phone number you may ever give a customer as a number to call is support_contact. NEVER state customer_e164 (the customer's own number) back to them as a number to call — that is always wrong, even by accident.",
     "- Set support_line_unreachable to true ONLY when the customer clearly says they tried contacting support_contact (or the number you gave) and could not get through / no answer. Do not keyword-match one phrase — judge the meaning. If true: apologize briefly, do NOT claim the line is broken or that you checked it, and tell the customer the team will reach out to them directly instead. Signal problems are common; never assert the line itself is dead.",
+    "- Set buying_intent_confirmed to true ONLY when the customer clearly shows purchase intent this turn (e.g. yes let's proceed, ask payment/pickup arrangements to buy). Judge meaning — do not keyword-match. This flag is for internal ops only; do NOT change your sales style or force checklist questions about port/qty/payment.",
     "- Never mention OCR, VIN decode tools, internal analysis, policy, Gateway, JSON, approval, sales_hint, deal_state, or this instruction.",
     liveRules ? "CEO LIVE-RULES (highest priority style/commercial rules):\n" + liveRules : "",
-    'Return exactly one JSON object: {"customer_reply":"...","needs_price_confirmation":true|false,"support_line_unreachable":true|false}. Set needs_price_confirmation to true ONLY when this reply told the customer a price still needs team confirmation (not listed on site, or discount beyond 5%); false otherwise. Set support_line_unreachable to true ONLY when the customer said they could not reach support_contact; false otherwise.',
+    'Return exactly one JSON object: {"customer_reply":"...","needs_price_confirmation":true|false,"support_line_unreachable":true|false,"buying_intent_confirmed":true|false}. Set needs_price_confirmation to true ONLY when this reply told the customer a price still needs team confirmation (not listed on site, or discount beyond 5%); false otherwise. Set support_line_unreachable to true ONLY when the customer said they could not reach support_contact; false otherwise. Set buying_intent_confirmed to true ONLY when the customer clearly wants to proceed with purchase this turn; false otherwise.',
     "Structured context:",
     JSON.stringify({
       channel: "whatsapp_business_app",
@@ -439,13 +470,17 @@ async function runOpenClawReply({ text, senderId, messageId, chatId, observedAt,
       try {
         const response = JSON.parse(out);
         const agentMeta = response?.result?.meta?.agentMeta || {};
-        const { reply, needsPriceConfirmation, supportLineUnreachable } = parseAgentReply(
-          response?.result?.payloads?.[0]?.text,
-        );
+        const {
+          reply,
+          needsPriceConfirmation,
+          supportLineUnreachable,
+          buyingIntentConfirmed,
+        } = parseAgentReply(response?.result?.payloads?.[0]?.text);
         resolve({
           reply,
           needsPriceConfirmation,
           supportLineUnreachable,
+          buyingIntentConfirmed,
           sessionKey,
           runId: String(response?.runId || ""),
           model: String(agentMeta.model || ""),
@@ -1069,6 +1104,18 @@ async function handleMessage(message, state, session) {
     return;
   }
   const senderId = message.fromPhoneE164;
+  if (isInternalStaffNumber(senderId, INTERNAL_STAFF_NUMBERS_E164)) {
+    log("ignored inbound from internal staff number", {
+      senderId,
+      messageId: message.messageId,
+    });
+    await appendActivity(
+      "apsales_internal_staff_message_skipped",
+      `内部同事消息不自动回复 ${senderId}`,
+      "skipped",
+    );
+    return;
+  }
   const voiceContext = await buildVoiceContext(message, session, senderId);
   const imageContext = voiceContext ? null : await buildMediaContext(message, session, senderId);
   let mediaContext = voiceContext || imageContext;
@@ -1237,6 +1284,17 @@ async function handleMessage(message, state, session) {
         });
       }
       generated.reply = ownNumberGuard.text;
+      if (generated.buyingIntentConfirmed) {
+        const prevDeal = (await loadDealState(senderId)) || {};
+        const intentPatch = stampBuyingIntentConfirmed(
+          prevDeal,
+          true,
+          new Date().toISOString(),
+        );
+        if (Object.keys(intentPatch).length) {
+          await saveDealState(senderId, intentPatch);
+        }
+      }
       const result = await sendCustomerText(session, senderId, generated.reply);
       recordReplyForEvidence({
         senderId,
@@ -1405,6 +1463,61 @@ async function handleMessage(message, state, session) {
   }
 }
 
+let lastHotDealStallCheckAt = 0;
+
+/** Ops safety net: team quoted + buying intent + quiet too long → Telegram + Ghana WA. */
+async function checkHotDealStalls(session) {
+  const now = Date.now();
+  if (now - lastHotDealStallCheckAt < HOT_DEAL_STALL_CHECK_MS) return;
+  lastHotDealStallCheckAt = now;
+  let names = [];
+  try {
+    names = await fs.readdir(DEAL_STATE_DIR);
+  } catch {
+    return;
+  }
+  for (const name of names) {
+    if (!name.endsWith(".json")) continue;
+    let deal;
+    try {
+      deal = JSON.parse(await fs.readFile(path.join(DEAL_STATE_DIR, name), "utf8"));
+    } catch {
+      continue;
+    }
+    if (!shouldAlertHotDealStall(deal, now, HOT_DEAL_STALL_MS)) continue;
+    const fromName = name.replace(/\.json$/, "");
+    const senderId =
+      deal.customer_e164 ||
+      (fromName.startsWith("+") ? fromName : `+${fromName.replace(/\D/g, "")}`);
+    const body = formatHotDealStallAlert(deal, senderId);
+    try {
+      await sendTelegram(body);
+    } catch (err) {
+      log("hot deal stall telegram failed", {
+        senderId,
+        error: err instanceof Error ? err.message : String(err),
+      });
+    }
+    if (session?.sendText && GHANA_SUPPORT_CONTACT_E164) {
+      try {
+        await session.sendText(GHANA_SUPPORT_CONTACT_E164, body);
+      } catch (err) {
+        log("hot deal stall ghana notify failed", {
+          senderId,
+          error: err instanceof Error ? err.message : String(err),
+        });
+      }
+    }
+    await saveDealState(senderId, { stall_alert_sent_at: new Date().toISOString() });
+    await appendActivity(
+      "apsales_hot_deal_stall_alerted",
+      `热单卡住提醒 ${senderId}`,
+      "sent",
+    );
+    log("hot deal stall alerted", { senderId });
+  }
+}
+
 async function main() {
   let state = await readState();
   log("bridge boot", {
@@ -1414,6 +1527,8 @@ async function main() {
     ocrProvider: process.env.APSALES_OCR_PROVIDER || "tesseract",
     sttProvider: process.env.APSALES_STT_PROVIDER || "none",
     openclawTimeoutSeconds: OPENCLAW_TIMEOUT_SECONDS,
+    internalStaffCount: INTERNAL_STAFF_NUMBERS_E164.length,
+    hotDealStallMs: HOT_DEAL_STALL_MS,
   });
   while (true) {
     let session;
@@ -1428,6 +1543,7 @@ async function main() {
       while (true) {
         try {
           await processOutboundQueue(session);
+          await checkHotDealStalls(session);
           const msg = await session.waitForMessage({
             timeoutMs: 5000,
             observedAfter: new Date(Date.now() - 60000),
@@ -1438,6 +1554,7 @@ async function main() {
         } catch (err) {
           if (!String(err?.message ?? err).includes("timed out waiting")) throw err;
           await processOutboundQueue(session);
+          await checkHotDealStalls(session);
         }
       }
     } catch (err) {

@@ -31,7 +31,21 @@ test("parseAgentReply: support_line_unreachable true", async () => {
     }),
   );
   assert.equal(out.supportLineUnreachable, true);
+  assert.equal(out.buyingIntentConfirmed, false);
   assert.ok(!/checked|verified|confirmed that/i.test(out.reply));
+});
+
+test("parseAgentReply: buying_intent_confirmed true", async () => {
+  const { parseAgentReply } = await load();
+  const out = parseAgentReply(
+    JSON.stringify({
+      customer_reply: "Great — I'll arrange pickup with our Ghana team.",
+      needs_price_confirmation: false,
+      support_line_unreachable: false,
+      buying_intent_confirmed: true,
+    }),
+  );
+  assert.equal(out.buyingIntentConfirmed, true);
 });
 
 test("parseAgentReply: ```json fence happy path", async () => {

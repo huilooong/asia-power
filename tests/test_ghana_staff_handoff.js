@@ -117,8 +117,31 @@ test('buildHandoffSummary: only matching customer, last N turns', async () => {
   assert.ok(summary);
   assert.match(summary, /need engine/);
   assert.match(summary, /Accra pickup/);
-  assert.match(summary, /子敬/);
+  assert.match(summary, /Customer:/);
+  assert.match(summary, /Agent:/);
+  assert.ok(!/子敬/.test(summary));
   assert.ok(!/other/.test(summary));
+});
+
+test('notifyGhanaStaffIfHandingOff: english template (no Chinese)', async () => {
+  const { notifyGhanaStaffIfHandingOff } = await load();
+  const calls = [];
+  await notifyGhanaStaffIfHandingOff({
+    senderId: '+233543709670',
+    replyText: 'Please contact 054 913 5916 for Accra pickup.',
+    workspace: '/tmp',
+    session: {
+      sendText: async (to, text) => {
+        calls.push({ to, text });
+      },
+    },
+    contactLocal: CONTACT,
+    contactE164: '+233549135916',
+  });
+  assert.equal(calls.length, 1);
+  assert.match(calls[0].text, /New contact shared with a customer/);
+  assert.match(calls[0].text, /Customer number:/);
+  assert.ok(!/客户可能会联系你|客户号码|最近聊天概况/.test(calls[0].text));
 });
 
 test('notifyGhanaStaffIfHandingOff: hits contact → sendText to staff', async () => {
