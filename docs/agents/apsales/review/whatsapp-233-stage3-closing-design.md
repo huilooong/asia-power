@@ -98,3 +98,5 @@
 **验证**: `node --test tests/test_apsales_closing_memory.mjs tests/test_openclaw_parse_agent_reply.mjs` → 通过
 
 **阶段三**: 未开工（禁止强制追问港口/数量/付款）
+
+**生产 Release**: `REL-20260717015327-apsales-openclaw-61c87ee6b`（服务 active；boot 日志 internalStaffCount=1, hotDealStallMs=7200000）

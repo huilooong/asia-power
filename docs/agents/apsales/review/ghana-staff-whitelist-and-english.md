@@ -119,3 +119,5 @@ return recent
 **未做 / 人工后续**:
 - 生产上让加纳同事给业务号发一条消息，确认无自动回复 + 日志有 `ignored inbound from internal staff number`
 - 正常客户触发一次分享联系方式，确认同事收到英文交接通知
+
+**生产 Release**: `REL-20260717015327-apsales-openclaw-61c87ee6b`（服务 active；boot 日志 internalStaffCount=1, hotDealStallMs=7200000）
