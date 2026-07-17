@@ -48,3 +48,33 @@ Is this correct? What part are you looking for — engine, gearbox, or half-cut?
 <!-- 追加,不要覆盖之前记录 -->
 
 - 已开始 2026-07-17 ~23:21 Asia/Shanghai（Cursor）
+
+### 完成报告 — 2026-07-17 ~23:26 Asia/Shanghai（Cursor）
+
+**状态**: 已落地并上生产
+
+#### 改动
+1. `sales_core/vehicle_intelligence.py`：从 NHTSA `DisplacementL` 提取独立字段 `displacement`（如 `2.5` → `2.5L`），写入 cache / `to_public_dict`
+2. 新增 `deploy/apsales-live-draft/apsales-vin-card.mjs`：`formatVehicleConfirmationCard()` 多行卡片（有值才显示行）
+3. `bridge.mjs` `plateSuccessReply()` 改为发卡片，收尾仍问 engine/gearbox/half-cut
+4. 仍是 VIN 成功时的一次性确定性回复（`plate_direct`），不会每轮重复发
+
+#### LIVE-RULES.md
+- **未改**：本次只是成功识别后的展示格式，不新增对话措辞规则；「VIN 确认后不要重复问」仍由现有 hard rule + deal_state 保证
+
+#### 验证
+- `node --test tests/test_apsales_vin_card.mjs` 全绿（全字段 / 无排量跳过 / 仅排量）
+- `pytest tests/test_vehicle_intelligence.py::…::test_nhtsa_displacement_field` 通过
+- 真实 API 抽查：NHTSA 返回确有 `DisplacementL`
+- Zambia 样式预览（无排量）与完整字段预览均已人工看过
+- 生产节点跑同卡文案 OK；bridge `listener connected`
+
+**生产 Release**:
+- apsales: `REL-20260717232350-apsales-21cf9ef2c`
+- apsales-openclaw: `REL-20260717232432-apsales-openclaw-21cf9ef2c`
+
+| 项 | 结果 | 下一步 |
+|---|---|---|
+| 卡片格式 | 成功 | 等客户再发底盘号看真实 WhatsApp 显示 |
+| 排量字段 | 成功 | 老车型无 DisplacementL 时自动跳过该行 |
+| LIVE-RULES | 无需改 | — |
