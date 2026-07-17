@@ -146,11 +146,11 @@ const QUOTE_FOLLOWUP_SEND = ["1", "true", "on", "yes"].includes(
   String(process.env.APSALES_QUOTE_FOLLOWUP_SEND || "true").trim().toLowerCase(),
 );
 /**
- * Stage-3 soft 5W2H angle: default dry-run records chat_angle_used only;
- * set true to let the model weave one uncovered angle into the customer reply.
+ * Stage-3 soft 5W2H angle: CEO enabled 2026-07-17 — weave one uncovered angle
+ * into the reply when possible_repeat_detected (still max one question).
  */
 const SOFT_ANGLE_SEND = ["1", "true", "on", "yes"].includes(
-  String(process.env.APSALES_SOFT_ANGLE_SEND || "false").trim().toLowerCase(),
+  String(process.env.APSALES_SOFT_ANGLE_SEND || "true").trim().toLowerCase(),
 );
 function log(message, data = {}) {
   console.log(JSON.stringify({ ts: new Date().toISOString(), message, ...data }));
