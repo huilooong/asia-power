@@ -128,3 +128,27 @@
 <!-- 追加,不要覆盖之前记录 -->
 
 - 已开始 2026-07-17 ~03:19 Asia/Shanghai（Cursor）
+
+### 完成报告 — 2026-07-17 ~03:24（Cursor）
+
+**状态**: 已落地并部署
+
+**生产 Release**: `REL-20260717032220-apsales-openclaw-942e092dd`  
+boot: `buyingIntentNotifyE164=+8618603773077`, `quoteFollowupSend=false`（24h 跟进默认 dry-run）, listener connected
+
+**做了什么**:
+1. `deal_state` 并行维度：`payment_status` + `fulfillment_stage`（付全款也不跳过视频/检测；`inspection_failed`→sourcing 且付款不变）
+2. `LIVE-RULES.md`「成交推进」追加：两种付款选项、视频+检测不可省、$50 换机不重收、放弃不主动提退款
+3. 买入意愿**即时**提醒：首次 `buying_intent_confirmed` → WhatsApp `+8618603773077` + Telegram（保留原 2h 热单卡住兜底）
+4. 报价未接受 24h 温和跟进：问顾虑（非催单）；默认 **dry-run 不真发**；客户回复经 `quote_decline_reason_captured` 写入 `quote_decline_reason`
+5. 团队 WhatsApp 文案可推进：`video sent` / `inspection passed|failed` / `$50 paid` 等
+
+**验证**:
+- 单元测试 closing-memory + parse：全部通过
+- 生产 dry-run 已命中一例预览：`+233543596750`（未发给客户）
+
+**待 CEO 决定**:
+- 抽查 dry-run 文案后，若要真发给客户：systemd/环境设 `APSALES_QUOTE_FOLLOWUP_SEND=true` 后重启 bridge（或再跑一次 openclaw 部署）
+- 端到端两条付款路径仍建议人工走一遍确认话术
+
+**未做**: stage3 阶段三软追问（按方案顺序，本文件优先；阶段三仍须另批）
