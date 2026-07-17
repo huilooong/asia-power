@@ -11,6 +11,7 @@ import {
   writeValidationReports,
   stampReleaseIdIntoConfig,
 } from './post-release-validation.mjs';
+import { checkCacheBustConsistency } from './cache-bust-check.mjs';
 
 export const VALID_TARGETS = ['nginx', 'api', 'engines', 'apsales', 'apsales-openclaw', 'finalize', 'home', 'portal', 'chrome', 'categories', 'admin'];
 
@@ -326,6 +327,28 @@ export function listChangedFiles(root, target) {
   return { planned: [...files].sort(), dirty: [...dirtySet].sort() };
 }
 
+/** Paths changed in working tree + unpushed commits (for cache-bust etc.). */
+export function listGitChangedPaths(root) {
+  const out = new Set();
+  const porcelain = gitOutput(['status', '--porcelain'], root);
+  for (const line of porcelain.split('\n').filter(Boolean)) {
+    const raw = line.slice(3).trim();
+    // rename: "old -> new"
+    const arrow = raw.indexOf(' -> ');
+    out.add(arrow >= 0 ? raw.slice(arrow + 4) : raw);
+  }
+  const upstream = gitOutput(['rev-parse', '--abbrev-ref', '@{u}'], root);
+  const range = upstream ? `${upstream}...HEAD` : 'HEAD~1...HEAD';
+  const names = gitOutput(['diff', '--name-only', range], root);
+  for (const f of names.split('\n').filter(Boolean)) out.add(f);
+  if (!out.size) {
+    // clean + already pushed: still check files in HEAD commit
+    const headNames = gitOutput(['diff-tree', '--no-commit-id', '--name-only', '-r', 'HEAD'], root);
+    for (const f of headNames.split('\n').filter(Boolean)) out.add(f);
+  }
+  return [...out].sort();
+}
+
 /**
  * HEAD must already be on the remote tracking branch (pushed to GitHub).
  * Emergency bypass: DEPLOY_ALLOW_UNPUSHED=1 (logged as warn).
@@ -418,6 +441,38 @@ export function runPreDeployValidation({ root, target, remote, allowDirty, yes, 
     status: planned.length ? 'pass' : 'warn',
     detail: planned.length ? `${planned.length} planned file(s)` : 'no source files resolved',
   });
+
+  // Cache-bust: scan live HTML refs (no handwritten table). Warn if a
+  // git-changed shared js/css is referenced with inconsistent ?v= across ≥2 pages.
+  try {
+    const gitChanged = listGitChangedPaths(root);
+    const cacheBust = checkCacheBustConsistency({
+      root,
+      changedFiles: gitChanged,
+    });
+    checks.push({
+      name: 'cache_bust_consistency',
+      status: cacheBust.status,
+      detail: cacheBust.detail,
+    });
+    if (cacheBust.status === 'warn' && cacheBust.inconsistencies?.length) {
+      for (const inc of cacheBust.inconsistencies.slice(0, 5)) {
+        const verLine = inc.versions
+          .map((v) => `${v.version}×${v.count}`)
+          .join(', ');
+        console.warn(`[release] cache-bust WARN ${inc.asset}: ${verLine}`);
+        for (const v of inc.versions.slice(0, 3)) {
+          console.warn(`  ?v=${v.version} e.g. ${v.samplePages.slice(0, 3).join(', ')}`);
+        }
+      }
+    }
+  } catch (err) {
+    checks.push({
+      name: 'cache_bust_consistency',
+      status: 'warn',
+      detail: `cache-bust check error: ${err?.message || err}`,
+    });
+  }
 
   if (yes) {
     checks.push({ name: 'target_confirmation', status: 'pass', detail: '--yes flag set' });
