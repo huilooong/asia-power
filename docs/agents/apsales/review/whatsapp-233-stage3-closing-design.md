@@ -127,3 +127,25 @@
 **生产 Release**: `REL-20260717015327-apsales-openclaw-61c87ee6b`（服务 active；boot 日志 internalStaffCount=1, hotDealStallMs=7200000）
 
 - 已开始 2026-07-17 ~03:38 Asia/Shanghai（Cursor；仅阶段三重新设计版）
+
+### 完成报告 — 2026-07-17 ~03:41（Cursor）— 阶段三（重新设计版）
+
+**状态**: 已落地并部署（默认 dry-run）
+
+**开工前 schema 核对（closing-flow 已落地，无冲突）**:
+- 沿用 `payment_status` / `fulfillment_stage` / `destination_port` / `quantity` / `payment_notes` 等，**未**新增并行的 `closing_stage`
+- 阶段三仅新增审计字段：`last_chat_angle` / `last_chat_angle_at` / `last_chat_angle_dry_run`
+
+**阶段三做了什么**:
+1. 硬性反重复：读最近 2 轮 agent 回复，holding/wait 类连续出现 → `possible_repeat_detected`
+2. `uncovered_closing_angles`：基于已有港口/数量/付款笔记（+ why/when 会话向）列可选素材，不是必填清单
+3. prompt：命中重复时最多带一个角度；退出信号则跳过；目标是成交推进不是调研
+4. JSON `chat_angle_used`；默认 `APSALES_SOFT_ANGLE_SEND=false` → **只记录角度、不把 5W2H 问卷写进客户回复**
+5. 新模块 `apsales-soft-angle.mjs`
+
+**生产 Release**: `REL-20260717034033-apsales-openclaw-b06d732b4`  
+boot 预期：`softAngleSend=false`
+
+**验证**: soft-angle + parse + closing-memory 测试全部通过
+
+**待 CEO**: 抽查几天 `apsales_soft_angle_dry_run` 活动日志后，若自然再开 `APSALES_SOFT_ANGLE_SEND=true`
