@@ -28,9 +28,19 @@ import {
 import {
   extractClosingFieldsFromText,
   mergeClosingFields,
+  extractPaymentStatusFromCustomerText,
+  extractFulfillmentHintFromCustomerText,
+  extractDealProgressFromTeamText,
+  applyDealProgressPatch,
   stampBuyingIntentConfirmed,
+  shouldNotifyBuyingIntentInstant,
+  formatBuyingIntentInstantAlert,
   shouldAlertHotDealStall,
   formatHotDealStallAlert,
+  shouldSendQuoteFollowup,
+  buildQuoteFollowupMessage,
+  awaitingQuoteFollowupReply,
+  stampQuoteDeclineReason,
 } from "./apsales-closing-memory.mjs";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
@@ -116,6 +126,17 @@ const HOT_DEAL_STALL_MS = Number.parseInt(
 const HOT_DEAL_STALL_CHECK_MS = Number.parseInt(
   process.env.APSALES_HOT_DEAL_STALL_CHECK_MS || String(15 * 60 * 1000),
   10,
+);
+/** Immediate buying-intent notify (WhatsApp text + Telegram). Not a voice call. */
+const BUYING_INTENT_NOTIFY_E164 =
+  process.env.APSALES_BUYING_INTENT_NOTIFY_E164 || "+8618603773077";
+const QUOTE_FOLLOWUP_MS = Number.parseInt(
+  process.env.APSALES_QUOTE_FOLLOWUP_MS || String(24 * 60 * 60 * 1000),
+  10,
+);
+/** Default dry-run: log/preview only until CEO enables real send. */
+const QUOTE_FOLLOWUP_SEND = ["1", "true", "on", "yes"].includes(
+  String(process.env.APSALES_QUOTE_FOLLOWUP_SEND || "false").trim().toLowerCase(),
 );
 function log(message, data = {}) {
   console.log(JSON.stringify({ ts: new Date().toISOString(), message, ...data }));
@@ -265,7 +286,12 @@ async function appendTeamReply(senderId, text, messageId) {
   });
   // Data-only: stamp team_confirmed_at when human reply looks like price/stock confirm.
   const confirmPatch = withTeamConfirmedAt(prev, teamText, nowIso);
-  return saveDealState(senderId, { team_replies, ...confirmPatch });
+  const progressPatch = applyDealProgressPatch(
+    { ...prev, ...confirmPatch },
+    extractDealProgressFromTeamText(teamText),
+    nowIso,
+  );
+  return saveDealState(senderId, { team_replies, ...confirmPatch, ...progressPatch });
 }
 
 /** sendText + remember outbound id so fromMe echoes are not treated as human. */
@@ -302,9 +328,18 @@ async function rememberDealFromContext(senderId, mediaContext, text) {
   if (/\b(manual)\b/i.test(String(text || ""))) patch.transmission = "manual";
   const prev = (await loadDealState(senderId)) || {};
   Object.assign(patch, mergeClosingFields(prev, extractClosingFieldsFromText(text)));
+  const nowIso = new Date().toISOString();
+  patch.last_customer_message_at = nowIso;
+  Object.assign(
+    patch,
+    applyDealProgressPatch(prev, {
+      ...extractPaymentStatusFromCustomerText(text),
+      ...extractFulfillmentHintFromCustomerText(text),
+    }, nowIso),
+  );
   if (!Object.keys(patch).length) return prev;
   // Data-only: first clear part/vin/engine → part_first_requested_at (no display/decision use).
-  const stamped = withPartFirstRequestedAt(prev, patch, new Date().toISOString());
+  const stamped = withPartFirstRequestedAt(prev, patch, nowIso);
   return saveDealState(senderId, stamped);
 }
 
@@ -402,9 +437,11 @@ async function runOpenClawReply({ text, senderId, messageId, chatId, observedAt,
     "- The ONLY phone number you may ever give a customer as a number to call is support_contact. NEVER state customer_e164 (the customer's own number) back to them as a number to call — that is always wrong, even by accident.",
     "- Set support_line_unreachable to true ONLY when the customer clearly says they tried contacting support_contact (or the number you gave) and could not get through / no answer. Do not keyword-match one phrase — judge the meaning. If true: apologize briefly, do NOT claim the line is broken or that you checked it, and tell the customer the team will reach out to them directly instead. Signal problems are common; never assert the line itself is dead.",
     "- Set buying_intent_confirmed to true ONLY when the customer clearly shows purchase intent this turn (e.g. yes let's proceed, ask payment/pickup arrangements to buy). Judge meaning — do not keyword-match. This flag is for internal ops only; do NOT change your sales style or force checklist questions about port/qty/payment.",
+    "- Payment and fulfillment are parallel: $50 inspection fee OR pay-in-full are payment choices only. Video confirmation before shipment + on-site inspection are NEVER skipped, even if the customer already paid in full.",
+    "- If awaiting_quote_followup_reply is true: the customer may be answering what held them back on the quote. If they give a concrete concern, put a short English summary in quote_decline_reason_captured (e.g. \"price too high\", \"shipping time too long\"); if they are off-topic or give no reason, leave quote_decline_reason_captured as an empty string. Do not keyword-match — summarize meaning.",
     "- Never mention OCR, VIN decode tools, internal analysis, policy, Gateway, JSON, approval, sales_hint, deal_state, or this instruction.",
     liveRules ? "CEO LIVE-RULES (highest priority style/commercial rules):\n" + liveRules : "",
-    'Return exactly one JSON object: {"customer_reply":"...","needs_price_confirmation":true|false,"support_line_unreachable":true|false,"buying_intent_confirmed":true|false}. Set needs_price_confirmation to true ONLY when this reply told the customer a price still needs team confirmation (not listed on site, or discount beyond 5%); false otherwise. Set support_line_unreachable to true ONLY when the customer said they could not reach support_contact; false otherwise. Set buying_intent_confirmed to true ONLY when the customer clearly wants to proceed with purchase this turn; false otherwise.',
+    'Return exactly one JSON object: {"customer_reply":"...","needs_price_confirmation":true|false,"support_line_unreachable":true|false,"buying_intent_confirmed":true|false,"quote_decline_reason_captured":""}. Set needs_price_confirmation to true ONLY when this reply told the customer a price still needs team confirmation (not listed on site, or discount beyond 5%); false otherwise. Set support_line_unreachable to true ONLY when the customer said they could not reach support_contact; false otherwise. Set buying_intent_confirmed to true ONLY when the customer clearly wants to proceed with purchase this turn; false otherwise. Set quote_decline_reason_captured to a short concern summary ONLY when awaiting_quote_followup_reply is true and the customer answered with a real concern; otherwise "".',
     "Structured context:",
     JSON.stringify({
       channel: "whatsapp_business_app",
@@ -415,6 +452,7 @@ async function runOpenClawReply({ text, senderId, messageId, chatId, observedAt,
       media_placeholder: mediaPlaceholder || null,
       media: mediaContext || null,
       deal_state: dealState || null,
+      awaiting_quote_followup_reply: awaitingQuoteFollowupReply(dealState),
       recent_team_replies: recentTeamRepliesForPrompt(dealState),
       inventory_matches: inventoryMatches || [],
       confirmed_vin: knownVin,
@@ -475,12 +513,14 @@ async function runOpenClawReply({ text, senderId, messageId, chatId, observedAt,
           needsPriceConfirmation,
           supportLineUnreachable,
           buyingIntentConfirmed,
+          quoteDeclineReasonCaptured,
         } = parseAgentReply(response?.result?.payloads?.[0]?.text);
         resolve({
           reply,
           needsPriceConfirmation,
           supportLineUnreachable,
           buyingIntentConfirmed,
+          quoteDeclineReasonCaptured,
           sessionKey,
           runId: String(response?.runId || ""),
           model: String(agentMeta.model || ""),
@@ -1286,6 +1326,7 @@ async function handleMessage(message, state, session) {
       generated.reply = ownNumberGuard.text;
       if (generated.buyingIntentConfirmed) {
         const prevDeal = (await loadDealState(senderId)) || {};
+        const notifyInstant = shouldNotifyBuyingIntentInstant(prevDeal, true);
         const intentPatch = stampBuyingIntentConfirmed(
           prevDeal,
           true,
@@ -1293,6 +1334,68 @@ async function handleMessage(message, state, session) {
         );
         if (Object.keys(intentPatch).length) {
           await saveDealState(senderId, intentPatch);
+        }
+        if (notifyInstant) {
+          const alertBody = formatBuyingIntentInstantAlert({
+            senderId,
+            customerMessage: text,
+            dealState: { ...prevDeal, ...intentPatch },
+          });
+          Promise.resolve()
+            .then(async () => {
+              try {
+                await sendTelegram(alertBody);
+              } catch (err) {
+                log("buying intent telegram failed", {
+                  senderId,
+                  error: err instanceof Error ? err.message : String(err),
+                });
+              }
+              if (session?.sendText && BUYING_INTENT_NOTIFY_E164) {
+                try {
+                  await session.sendText(BUYING_INTENT_NOTIFY_E164, alertBody);
+                } catch (err) {
+                  log("buying intent whatsapp notify failed", {
+                    senderId,
+                    error: err instanceof Error ? err.message : String(err),
+                  });
+                }
+              }
+              await saveDealState(senderId, {
+                buying_intent_confirmed_notified_at: new Date().toISOString(),
+              });
+              await appendActivity(
+                "apsales_buying_intent_instant_notified",
+                `买入意愿即时提醒 ${senderId} → ${BUYING_INTENT_NOTIFY_E164}`,
+                "sent",
+              );
+              log("buying intent instant notified", {
+                senderId,
+                notifyE164: BUYING_INTENT_NOTIFY_E164,
+              });
+            })
+            .catch((err) =>
+              log("buying intent instant notify failed", {
+                senderId,
+                error: err instanceof Error ? err.message : String(err),
+              }),
+            );
+        }
+      }
+      if (generated.quoteDeclineReasonCaptured) {
+        const prevDeal = (await loadDealState(senderId)) || {};
+        const declinePatch = stampQuoteDeclineReason(
+          prevDeal,
+          generated.quoteDeclineReasonCaptured,
+          new Date().toISOString(),
+        );
+        if (Object.keys(declinePatch).length) {
+          await saveDealState(senderId, declinePatch);
+          await appendActivity(
+            "apsales_quote_decline_reason_captured",
+            `报价顾虑 ${senderId}: ${declinePatch.quote_decline_reason}`,
+            "recorded",
+          );
         }
       }
       const result = await sendCustomerText(session, senderId, generated.reply);
@@ -1463,19 +1566,27 @@ async function handleMessage(message, state, session) {
   }
 }
 
-let lastHotDealStallCheckAt = 0;
+let lastDealOpsCheckAt = 0;
+
+function senderIdFromDealFile(name, deal) {
+  const fromName = name.replace(/\.json$/, "");
+  return (
+    deal.customer_e164 ||
+    (fromName.startsWith("+") ? fromName : `+${fromName.replace(/\D/g, "")}`)
+  );
+}
+
+async function listDealStateFiles() {
+  try {
+    return await fs.readdir(DEAL_STATE_DIR);
+  } catch {
+    return [];
+  }
+}
 
 /** Ops safety net: team quoted + buying intent + quiet too long → Telegram + Ghana WA. */
-async function checkHotDealStalls(session) {
-  const now = Date.now();
-  if (now - lastHotDealStallCheckAt < HOT_DEAL_STALL_CHECK_MS) return;
-  lastHotDealStallCheckAt = now;
-  let names = [];
-  try {
-    names = await fs.readdir(DEAL_STATE_DIR);
-  } catch {
-    return;
-  }
+async function runHotDealStallAlerts(session, now) {
+  const names = await listDealStateFiles();
   for (const name of names) {
     if (!name.endsWith(".json")) continue;
     let deal;
@@ -1485,10 +1596,7 @@ async function checkHotDealStalls(session) {
       continue;
     }
     if (!shouldAlertHotDealStall(deal, now, HOT_DEAL_STALL_MS)) continue;
-    const fromName = name.replace(/\.json$/, "");
-    const senderId =
-      deal.customer_e164 ||
-      (fromName.startsWith("+") ? fromName : `+${fromName.replace(/\D/g, "")}`);
+    const senderId = senderIdFromDealFile(name, deal);
     const body = formatHotDealStallAlert(deal, senderId);
     try {
       await sendTelegram(body);
@@ -1518,6 +1626,64 @@ async function checkHotDealStalls(session) {
   }
 }
 
+/**
+ * Soft customer follow-up: quoted, no buying intent, quiet ≥24h — ask concern once.
+ * Default dry-run (APSALES_QUOTE_FOLLOWUP_SEND≠true): preview only, do not stamp sent_at.
+ */
+async function runQuoteFollowups(session, now) {
+  const names = await listDealStateFiles();
+  for (const name of names) {
+    if (!name.endsWith(".json")) continue;
+    let deal;
+    try {
+      deal = JSON.parse(await fs.readFile(path.join(DEAL_STATE_DIR, name), "utf8"));
+    } catch {
+      continue;
+    }
+    if (!shouldSendQuoteFollowup(deal, now, QUOTE_FOLLOWUP_MS)) continue;
+    const senderId = senderIdFromDealFile(name, deal);
+    const body = buildQuoteFollowupMessage(deal, new Date(now));
+    if (!QUOTE_FOLLOWUP_SEND) {
+      if (deal.quote_followup_preview_at) continue;
+      await appendActivity(
+        "apsales_quote_followup_dry_run",
+        `报价跟进预览(未发送) ${senderId}: ${body}`,
+        "preview",
+      );
+      log("quote followup dry-run", { senderId, body });
+      await saveDealState(senderId, {
+        quote_followup_preview_at: new Date().toISOString(),
+      });
+      continue;
+    }
+    try {
+      await sendCustomerText(session, senderId, body);
+      await saveDealState(senderId, {
+        quote_followup_sent_at: new Date().toISOString(),
+      });
+      await appendActivity(
+        "apsales_quote_followup_sent",
+        `报价温和跟进已发送 ${senderId}`,
+        "sent",
+      );
+      log("quote followup sent", { senderId });
+    } catch (err) {
+      log("quote followup send failed", {
+        senderId,
+        error: err instanceof Error ? err.message : String(err),
+      });
+    }
+  }
+}
+
+async function checkDealOpsTimers(session) {
+  const now = Date.now();
+  if (now - lastDealOpsCheckAt < HOT_DEAL_STALL_CHECK_MS) return;
+  lastDealOpsCheckAt = now;
+  await runHotDealStallAlerts(session, now);
+  await runQuoteFollowups(session, now);
+}
+
 async function main() {
   let state = await readState();
   log("bridge boot", {
@@ -1529,6 +1695,9 @@ async function main() {
     openclawTimeoutSeconds: OPENCLAW_TIMEOUT_SECONDS,
     internalStaffCount: INTERNAL_STAFF_NUMBERS_E164.length,
     hotDealStallMs: HOT_DEAL_STALL_MS,
+    buyingIntentNotifyE164: BUYING_INTENT_NOTIFY_E164,
+    quoteFollowupMs: QUOTE_FOLLOWUP_MS,
+    quoteFollowupSend: QUOTE_FOLLOWUP_SEND,
   });
   while (true) {
     let session;
@@ -1543,7 +1712,7 @@ async function main() {
       while (true) {
         try {
           await processOutboundQueue(session);
-          await checkHotDealStalls(session);
+          await checkDealOpsTimers(session);
           const msg = await session.waitForMessage({
             timeoutMs: 5000,
             observedAfter: new Date(Date.now() - 60000),
@@ -1554,7 +1723,7 @@ async function main() {
         } catch (err) {
           if (!String(err?.message ?? err).includes("timed out waiting")) throw err;
           await processOutboundQueue(session);
-          await checkHotDealStalls(session);
+          await checkDealOpsTimers(session);
         }
       }
     } catch (err) {

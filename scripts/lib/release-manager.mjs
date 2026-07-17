@@ -133,6 +133,7 @@ export const TARGET_SOURCE_FILES = {
     'deploy/apsales-live-draft/apsales-parse-agent-reply.mjs',
     'deploy/apsales-live-draft/apsales-internal-staff.mjs',
     'deploy/apsales-live-draft/apsales-closing-memory.mjs',
+    'docs/zijing-training/LIVE-RULES.md',
     'server/lib/asiapower-evidence.js',
     'scripts/apsales-media-vin-ocr.py',
     'scripts/apsales-media-vin-intelligence.py',

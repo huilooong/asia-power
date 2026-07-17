@@ -46,6 +46,27 @@ test("parseAgentReply: buying_intent_confirmed true", async () => {
     }),
   );
   assert.equal(out.buyingIntentConfirmed, true);
+  assert.equal(out.quoteDeclineReasonCaptured, "");
+});
+
+test("parseAgentReply: quote_decline_reason_captured string", async () => {
+  const { parseAgentReply } = await load();
+  const withReason = parseAgentReply(
+    JSON.stringify({
+      customer_reply: "Got it — thanks for sharing.",
+      needs_price_confirmation: false,
+      quote_decline_reason_captured: "price too high",
+    }),
+  );
+  assert.equal(withReason.quoteDeclineReasonCaptured, "price too high");
+  const empty = parseAgentReply(
+    JSON.stringify({
+      customer_reply: "Ok.",
+      needs_price_confirmation: false,
+      quote_decline_reason_captured: "",
+    }),
+  );
+  assert.equal(empty.quoteDeclineReasonCaptured, "");
 });
 
 test("parseAgentReply: ```json fence happy path", async () => {

@@ -607,6 +607,11 @@ function deployApsalesOpenClaw() {
     `${ROOT}/deploy/apsales-live-draft/apsales-closing-memory.mjs`,
     `${REMOTE}:/root/.openclaw/extensions/apsales-live-draft/apsales-closing-memory.mjs`,
   );
+  // Bridge loads LIVE-RULES from AsiaPower workspace — keep in sync on openclaw deploys.
+  rsync(
+    `${ROOT}/docs/zijing-training/LIVE-RULES.md`,
+    `${REMOTE}:/root/.openclaw/workspace/AsiaPower/docs/zijing-training/LIVE-RULES.md`,
+  );
   rsync(
     `${ROOT}/server/lib/asiapower-evidence.js`,
     `${REMOTE}:/root/.openclaw/workspace/AsiaPower/server/lib/asiapower-evidence.js`,
@@ -677,6 +682,8 @@ Environment=APSALES_VOICE_STT_ENABLED=true
 Environment=APSALES_AUDIO_MAX_BYTES=8388608
 Environment=APSALES_OCR_PROVIDER=google
 Environment=APSALES_STT_PROVIDER=google
+Environment=APSALES_BUYING_INTENT_NOTIFY_E164=+8618603773077
+Environment=APSALES_QUOTE_FOLLOWUP_SEND=false
 EnvironmentFile=-/root/.openclaw/workspace/AsiaPower/.env
 EOF
 mv "$SESSION_NEXT" "$SESSION"
