@@ -123,3 +123,30 @@ request_and_notify(
 <!-- 追加,不要覆盖之前记录 -->
 
 - 已开始 2026-07-17 ~03:42 Asia/Shanghai（Cursor；按阶段零→一→二顺序）
+
+### 完成报告 — 2026-07-17 ~03:48（Cursor）— 阶段零 → 一 → 二
+
+**状态**: 三阶段均已落地并部署
+
+#### 阶段零（LIVE-RULES 缺口）
+- 补 A（禁止回客户自己的号）、B（内部同事不是客户）、D（禁止编造已核实）；强化 C（报价必须带货币单位）
+- 文首加「同步规矩」：改 bridge prompt 必须同步 LIVE-RULES
+- 验证：`scripts/verify-coach-live-rules-abcd.py` → A/B/C/D **四条全部 high 命中**
+
+#### 阶段一（cron）
+- `/etc/cron.d/apsales-sales-coach`：结构化每小时；LLM 09/14/19 UTC；完成通知同节奏 +5min
+- 日志：`/var/log/apsales-sales-coach.log`
+- 入口：`run-coach-structured.py` / `run-coach-llm-audit.py`（无人值守）
+
+#### 阶段二（审批闭环）
+- `sales_coach/escalation.py`：high 或跨客户重复≥2 才推 Telegram；7 天冷却（新证据可再问）
+- `approval_gate` 新增 `agent_prompt_fix`（MEDIUM）
+- 批准后写 `.claude/plans/coach-fix-<rule>-YYYYMMDD.md`（含 LIVE-RULES 同步检查项）
+- `format_resolution` 改为「已生成 Cursor 任务文件…」
+- `run-coach-plan-completion-watch.py`：实施报告有实质内容 → Telegram 提醒复核
+
+**生产 Release**:
+- apsales: `REL-20260717034546-apsales-c8ba6d231`
+- apsales-openclaw（LIVE-RULES 给 bridge）: 见同次部署日志
+
+**待人工走通一次**: Telegram 收到 coach 推送 → 回复「同意」→ 确认 `.claude/plans/coach-fix-*.md` 出现
