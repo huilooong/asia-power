@@ -753,7 +753,7 @@ mv "$NEXT" "$BRIDGE"
 systemctl daemon-reload
 systemctl enable apsales-whatsapp-bridge.service
 systemctl stop apsales-whatsapp-bridge.service || true
-# Kill ANY leftover bridge (bare `node bridge.mjs` or full path) before start — avoids 440 conflict.
+# Kill ANY leftover bridge (bare node bridge.mjs or full path) before start — avoids 440 conflict.
 pkill -f 'apsales-live-draft/bridge\.mjs' 2>/dev/null || true
 pkill -f '[n]ode bridge\.mjs' 2>/dev/null || true
 sleep 2
