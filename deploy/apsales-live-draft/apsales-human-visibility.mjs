@@ -109,7 +109,11 @@ export function partIntentFromText(text) {
   if (/\b(windscreen|windshield)\b/.test(lower)) bodyHits.push("windscreen");
   if (/\b(head\s*lights?|headlamps?)\b/.test(lower)) bodyHits.push("headlight");
   if (/\b(tail\s*lights?|taillights?)\b/.test(lower)) bodyHits.push("taillight");
-  if (/\b(side\s*mirror|driving\s*mirror|wing\s*mirror|rear[\s-]?view\s*mirror|mirrors?)\b/.test(lower)) {
+  if (
+    /\b(side\s*mirror|driving\s*mirror|wing\s*mirror|rear[\s-]?view\s*mirror|mirrors?|r[eé]troviseurs?)\b/.test(
+      lower,
+    )
+  ) {
     bodyHits.push("mirror");
   }
   if (/\b(grille|grill|front\s*grille)\b/.test(lower)) bodyHits.push("grille");

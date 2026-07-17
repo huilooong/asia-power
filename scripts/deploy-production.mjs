@@ -637,6 +637,22 @@ function deployApsalesOpenClaw() {
     `${ROOT}/deploy/apsales-live-draft/apsales-soft-angle.mjs`,
     `${REMOTE}:/root/.openclaw/extensions/apsales-live-draft/apsales-soft-angle.mjs`,
   );
+  rsync(
+    `${ROOT}/deploy/apsales-live-draft/apsales-deal-qualify.mjs`,
+    `${REMOTE}:/root/.openclaw/extensions/apsales-live-draft/apsales-deal-qualify.mjs`,
+  );
+  rsync(
+    `${ROOT}/deploy/apsales-whatsapp-bridge.service`,
+    `${REMOTE}:/tmp/apsales-whatsapp-bridge.service`,
+  );
+  rsync(
+    `${ROOT}/deploy/apsales-whatsapp-bridge.service.d/crash-logger.conf`,
+    `${REMOTE}:/tmp/apsales-bridge-crash-logger.conf`,
+  );
+  rsync(
+    `${ROOT}/deploy/apsales-bridge-crash-logger.mjs`,
+    `${REMOTE}:/tmp/apsales-bridge-crash-logger.mjs`,
+  );
   // Bridge loads LIVE-RULES from AsiaPower workspace — keep in sync on openclaw deploys.
   rsync(
     `${ROOT}/docs/zijing-training/LIVE-RULES.md`,
@@ -680,6 +696,7 @@ test -s "$SESSION_NEXT"
 test -s "\$BRIDGE_DIR/apsales-internal-staff.mjs"
 test -s "\$BRIDGE_DIR/apsales-closing-memory.mjs"
 test -s "\$BRIDGE_DIR/apsales-soft-angle.mjs"
+test -s "\$BRIDGE_DIR/apsales-deal-qualify.mjs"
 CHECK=\$(mktemp /tmp/apsales-bridge-check-XXXXXX.mjs)
 SESSION_CHECK=\$(mktemp /tmp/apsales-session-check-XXXXXX.mjs)
 cp "$NEXT" "$CHECK"
@@ -689,18 +706,23 @@ cp "$SESSION_NEXT" "$SESSION_CHECK"
 /usr/bin/node --check "\$BRIDGE_DIR/apsales-internal-staff.mjs"
 /usr/bin/node --check "\$BRIDGE_DIR/apsales-closing-memory.mjs"
 /usr/bin/node --check "\$BRIDGE_DIR/apsales-soft-angle.mjs"
+/usr/bin/node --check "\$BRIDGE_DIR/apsales-deal-qualify.mjs"
 /usr/bin/node --check "\$BRIDGE_DIR/ghana-staff-handoff.mjs"
 /usr/bin/node --check "\$BRIDGE_DIR/apsales-parse-agent-reply.mjs"
+/usr/bin/node --check /tmp/apsales-bridge-crash-logger.mjs
 rm -f "$CHECK" "$SESSION_CHECK"
 mkdir -p "$BACKUP" /etc/systemd/system/apsales-whatsapp-bridge.service.d
 cp -a "$BRIDGE" "$BACKUP/bridge.mjs"
 if [ -f "$SESSION" ]; then cp -a "$SESSION" "$BACKUP/apsales-whatsapp-session.mjs"; fi
-for f in ghana-staff-handoff.mjs apsales-parse-agent-reply.mjs apsales-internal-staff.mjs apsales-closing-memory.mjs apsales-soft-angle.mjs; do
+for f in ghana-staff-handoff.mjs apsales-parse-agent-reply.mjs apsales-internal-staff.mjs apsales-closing-memory.mjs apsales-soft-angle.mjs apsales-deal-qualify.mjs; do
   if [ -f "\$BRIDGE_DIR/\$f" ]; then cp -a "\$BRIDGE_DIR/\$f" "\$BACKUP/\$f"; fi
 done
 if [ -f /etc/systemd/system/apsales-whatsapp-bridge.service.d/openclaw-sales-agent.conf ]; then
   cp -a /etc/systemd/system/apsales-whatsapp-bridge.service.d/openclaw-sales-agent.conf "$BACKUP/openclaw-sales-agent.conf"
 fi
+install -m 644 /tmp/apsales-whatsapp-bridge.service /etc/systemd/system/apsales-whatsapp-bridge.service
+install -m 644 /tmp/apsales-bridge-crash-logger.conf /etc/systemd/system/apsales-whatsapp-bridge.service.d/crash-logger.conf
+install -m 644 /tmp/apsales-bridge-crash-logger.mjs /root/.openclaw/scripts/apsales-bridge-crash-logger.mjs
 # OCR: google Vision free tier (CEO 2026-07-14); STT stays none until vendor key.
 # EnvironmentFile loads GOOGLE_PLACES_API_KEY / APSALES_GOOGLE_VISION_API_KEY from AsiaPower .env
 cat > /etc/systemd/system/apsales-whatsapp-bridge.service.d/openclaw-sales-agent.conf <<'EOF'
@@ -722,11 +744,15 @@ EOF
 
 mv "$SESSION_NEXT" "$SESSION"
 mv "$NEXT" "$BRIDGE"
+# Stop bare node bridge.mjs if started outside systemd (avoids 440 conflict).
+pkill -f '/root/.openclaw/extensions/apsales-live-draft/bridge.mjs' 2>/dev/null || true
+sleep 1
 systemctl daemon-reload
+systemctl enable apsales-whatsapp-bridge.service
 systemctl restart apsales-whatsapp-bridge.service
-sleep 2
+sleep 3
 systemctl is-active --quiet apsales-whatsapp-bridge.service
-systemctl show apsales-whatsapp-bridge.service -p Environment --no-pager
+systemctl show apsales-whatsapp-bridge.service -p Environment -p Restart -p FragmentPath --no-pager
 echo "[deploy:apsales-openclaw] backup=$BACKUP"
 `);
 }

@@ -1,0 +1,18 @@
+[Unit]
+Description=APSales WhatsApp inbound bridge
+After=network-online.target
+Wants=network-online.target
+StartLimitIntervalSec=120
+StartLimitBurst=5
+
+[Service]
+Type=simple
+WorkingDirectory=/root/.openclaw/extensions/apsales-live-draft
+ExecStart=/usr/bin/node /root/.openclaw/extensions/apsales-live-draft/bridge.mjs
+# Crash → restart; clean exit (e.g. logged-out waiting for human QR) → stay down.
+Restart=on-failure
+RestartSec=10
+Environment=NODE_ENV=production
+
+[Install]
+WantedBy=multi-user.target
