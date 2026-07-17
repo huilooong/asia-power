@@ -149,3 +149,48 @@ const inspectionFeeApplicable = HIGH_VALUE_PARTS.has(String(dealState?.part_inte
 <!-- 追加,不要覆盖之前记录 -->
 
 - 已开始 2026-07-17 ~23:08 Asia/Shanghai（Cursor；做 A+C+D+B 全项）
+
+### 完成报告 — 2026-07-17 ~23:15 Asia/Shanghai（Cursor）— A+B+C+D
+
+**状态**: 四项均已落地并上生产
+
+#### A — `must_qualify_before_price`
+- 新增 `deploy/apsales-live-draft/apsales-deal-qualify.mjs`：代码算旗标，不再靠加 prompt bullet
+- `bridge.mjs` structured context 注入 `must_qualify_before_price`；Hard rule 只解释如何服从旗标
+- 文本侧补 `year` / `engine_code` 抽取写入 `deal_state`
+- 验证：mock「Mercedes Benz C 180 diesel engine」→ `mustQualify=true`；有 VIN 或 year+engine_code → `false`
+- 测试：`node --test tests/test_apsales_deal_qualify.mjs` 全绿
+
+#### C — `inspection_fee_applicable`
+- 仅 `part_intent` ∈ `{engine, gearbox}` 为 true；后视镜等小件 false
+- 法语 `rétroviseur` 已加入 `partIntentFromText`（复现 +212 事故）
+- Hard rule 改成引用旗标；**视频确认未取消**（任何配件仍要视频）
+- **LIVE-RULES.md 已同步**（第 94 行附近：仅发动机/变速箱提 $50）
+
+#### D — 报价前问数量（只做一半）
+- 新增旗标 `must_ask_quantity_before_price`（A 未过时不问数量；已有 `deal_state.quantity` 不重复问）
+- LIVE-RULES 第三段 + 第 112 行已改成「报价前必问数量」，去掉「没别的可问才问数量」
+- **明确不做**：批发/零售定价公式、起订量、折扣 —— **等龙哥给具体规则再做第二阶段**；`deal_state.quantity` 接口已留好
+
+#### B — bridge 看护
+- 现状澄清：生产本就有 `apsales-whatsapp-bridge.service`，但白天被停掉后改成裸跑 `node bridge.mjs`
+- 已迁回 systemd：`Restart=on-failure`、`RestartSec=10`、`StartLimitBurst=5`
+- crash-logger 增加 Telegram 崩溃通知（clean stop 不发）
+- bridge 内：401 登出 → Telegram「需人工扫码」+ `exit 0`（不狂重启）；440 冲突风暴 → 独立「登出多余会话」通知；失败消息进重试队列，`listener connected` 后补处理
+- 验证：`kill -9` MainPID → ~12s 内 systemd 拉起，`listener connected`；crash jsonl 有 signal 记录
+- 部署时曾短暂 440（旧裸跑进程未杀掉）；已杀掉 orphan，deploy 脚本已修下次防再犯
+
+#### LIVE-RULES.md
+- **有改**：第三段数量、成交 $50 限定发动机/变速箱、VIN qualify P0、去掉「没别的才问数量」
+- 原因：本次改的是 prompt 行为规则 + 结构化旗标，必须同步 coach 依据文档
+
+**生产 Release**: `REL-20260717231218-apsales-openclaw-92a983775`  
+**Commits**: `92a983775`（主改动）, `33680cd47`（deploy orphan 清理）
+
+| 项 | 结果 | 下一步 |
+|---|---|---|
+| A/C/D 旗标+测试 | 成功 | 等真实客户再观察一轮回复是否服从旗标 |
+| LIVE-RULES 同步 | 成功 | — |
+| systemd 看护 + kill-9 | 成功 | — |
+| 批发定价数值 | 未做（按方案） | 等龙哥给起订量/折扣规则 |
+| 401/440/补发 | 代码已上；401/补发待真实复现 | 下次掉线/冲突时看 Telegram 文案是否清晰 |
