@@ -1,0 +1,9 @@
+# AsiaPower Facebook hourly scheduled posts (2 listings / hour)
+# Install: sudo cp deploy/cron/apsales-facebook-scheduled-post.cron /etc/cron.d/apsales-facebook-scheduled-post && sudo chmod 644 /etc/cron.d/apsales-facebook-scheduled-post
+# Logs: /var/log/apsales-facebook-scheduled-post.log
+
+SHELL=/bin/bash
+PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+
+# Top of every hour — 2 unused Available listings (dedup via data/fb-posted-stock-ids.json)
+0 * * * * root cd /root/.openclaw/workspace/AsiaPower && .venv/bin/python3 scripts/apsales-facebook-scheduled-post.py >> /var/log/apsales-facebook-scheduled-post.log 2>&1

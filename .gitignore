@@ -67,3 +67,4 @@ runtime/apbd/
 
 # YouTube inventory migrate (videos + OAuth tokens)
 work/youtube-inventory-migrate/
+data/fb-posted-stock-ids.json

@@ -577,6 +577,7 @@ function deployApsales() {
     `${ROOT}/scripts/run-coach-structured.py`,
     `${ROOT}/scripts/run-coach-plan-completion-watch.py`,
     `${ROOT}/scripts/verify-coach-live-rules-abcd.py`,
+    `${ROOT}/scripts/apsales-facebook-scheduled-post.py`,
     `${AP}/scripts/`,
   ]);
   run('rsync', ['-av',
@@ -588,6 +589,10 @@ function deployApsales() {
     `${ROOT}/deploy/cron/apsales-sales-coach.cron`,
     `${REMOTE}:/tmp/apsales-sales-coach.cron`,
   ]);
+  run('rsync', ['-av',
+    `${ROOT}/deploy/cron/apsales-facebook-scheduled-post.cron`,
+    `${REMOTE}:/tmp/apsales-facebook-scheduled-post.cron`,
+  ]);
   ssh(`
 set -euo pipefail
 install -m 644 /tmp/apsales-sales-coach.cron /etc/cron.d/apsales-sales-coach
@@ -596,6 +601,12 @@ chmod 644 /var/log/apsales-sales-coach.log || true
 test -f /etc/cron.d/apsales-sales-coach
 grep -q run-coach-structured /etc/cron.d/apsales-sales-coach
 echo "[deploy:apsales] sales-coach cron installed"
+install -m 644 /tmp/apsales-facebook-scheduled-post.cron /etc/cron.d/apsales-facebook-scheduled-post
+touch /var/log/apsales-facebook-scheduled-post.log
+chmod 644 /var/log/apsales-facebook-scheduled-post.log || true
+test -f /etc/cron.d/apsales-facebook-scheduled-post
+grep -q apsales-facebook-scheduled-post.py /etc/cron.d/apsales-facebook-scheduled-post
+echo "[deploy:apsales] facebook hourly post cron installed"
 `);
 }
 
