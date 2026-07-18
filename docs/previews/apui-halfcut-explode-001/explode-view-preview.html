@@ -1,0 +1,755 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>APUI-HALFCUT-EXPLODE-001 · 顶视图拆解预览 v2</title>
+  <style>
+    :root {
+      --navy: #0a1c33;
+      --ink: #122033;
+      --muted: #667385;
+      --line: #d5dde8;
+      --bg: #eceff4;
+      --card: #fff;
+      --amber: #e8a317;
+      --wa: #25D366;
+      --ease: cubic-bezier(0.22, 1, 0.36, 1);
+      --explode-ms: 560ms;
+      --steel: #8fa0b5;
+    }
+    * { box-sizing: border-box; }
+    html, body { margin: 0; }
+    body {
+      font-family: "Avenir Next", "Segoe UI", "PingFang SC", "Helvetica Neue", sans-serif;
+      color: var(--ink);
+      background:
+        linear-gradient(180deg, #f4f1ea 0%, var(--bg) 38%, #e7ebf2 100%);
+      min-height: 100vh;
+      padding: 18px 12px 64px;
+    }
+
+    .page-head { max-width: 1000px; margin: 0 auto 14px; }
+    .eyebrow {
+      display: inline-block;
+      font-size: 0.7rem;
+      font-weight: 750;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--navy);
+      background: rgba(10,28,51,0.07);
+      border-radius: 999px;
+      padding: 5px 11px;
+      margin-bottom: 8px;
+    }
+    h1 {
+      margin: 0 0 6px;
+      font-size: clamp(1.28rem, 2.8vw, 1.75rem);
+      letter-spacing: -0.03em;
+      color: var(--navy);
+    }
+    .sub {
+      margin: 0 0 12px;
+      color: var(--muted);
+      font-size: 0.92rem;
+      max-width: 44rem;
+      line-height: 1.5;
+    }
+    .scenario-bar {
+      display: flex; flex-wrap: wrap; gap: 8px; align-items: center; margin-bottom: 14px;
+    }
+    .scenario-bar label { font-size: 0.78rem; font-weight: 700; color: var(--muted); }
+    .scenario-btn {
+      border: 1px solid var(--line); background: #fff; color: var(--ink);
+      border-radius: 999px; padding: 8px 13px; font: inherit; font-size: 0.82rem;
+      font-weight: 650; cursor: pointer;
+    }
+    .scenario-btn.is-active { background: var(--navy); border-color: var(--navy); color: #fff; }
+    .scenario-meta { width: 100%; font-size: 0.8rem; color: var(--muted); }
+
+    .stage {
+      max-width: 1000px; margin: 0 auto;
+      display: grid; gap: 16px;
+      grid-template-columns: minmax(280px, 400px) 1fr;
+      align-items: start;
+    }
+    @media (max-width: 860px) { .stage { grid-template-columns: 1fr; } }
+
+    .phone {
+      background: linear-gradient(165deg, #1a2433, #0d141e);
+      border-radius: 30px;
+      padding: 11px;
+      box-shadow: 0 26px 55px rgba(10, 28, 51, 0.28);
+    }
+    .phone-notch {
+      width: 104px; height: 16px; margin: 0 auto 8px;
+      background: #070b11; border-radius: 0 0 11px 11px;
+    }
+    .phone-screen {
+      background: #f3f5f8;
+      border-radius: 20px;
+      overflow: hidden;
+      min-height: 680px;
+    }
+
+    .detail-top { padding: 12px 12px 0; }
+    .breadcrumb { font-size: 0.7rem; color: var(--muted); margin-bottom: 6px; }
+    .stock-title {
+      margin: 0; font-size: 1.05rem; letter-spacing: -0.02em;
+      color: var(--navy); line-height: 1.25;
+    }
+    .stock-sub { margin: 4px 0 10px; font-size: 0.76rem; color: var(--muted); }
+
+    .gallery-mock {
+      margin: 0 12px; height: 148px; border-radius: 12px;
+      background: center/cover no-repeat var(--hero-url), #1a2433;
+      border: 1px solid #c8d1de; position: relative; overflow: hidden;
+    }
+    .gallery-mock::after {
+      content: "Listing photos";
+      position: absolute; left: 10px; bottom: 8px;
+      font-size: 0.66rem; color: #fff; background: rgba(0,0,0,0.5);
+      padding: 3px 8px; border-radius: 999px;
+    }
+
+    .explode-card {
+      margin: 12px; background: var(--card);
+      border: 1px solid var(--line); border-radius: 16px;
+      padding: 12px; box-shadow: 0 10px 28px rgba(10,28,51,0.06);
+    }
+    .explode-head {
+      display: flex; justify-content: space-between; gap: 10px; margin-bottom: 10px;
+    }
+    .explode-head h2 {
+      margin: 0; font-size: 0.96rem; color: var(--navy); letter-spacing: -0.02em;
+    }
+    .explode-head p {
+      margin: 4px 0 0; font-size: 0.73rem; color: var(--muted); line-height: 1.4; max-width: 17rem;
+    }
+    .reset-btn {
+      border: 1px solid var(--line); background: #f6f8fb; color: var(--navy);
+      border-radius: 999px; padding: 7px 10px; font: inherit; font-size: 0.7rem;
+      font-weight: 700; cursor: pointer; opacity: 0; pointer-events: none;
+      transition: opacity 180ms ease; white-space: nowrap; height: fit-content;
+    }
+    .explode-card.is-open .reset-btn { opacity: 1; pointer-events: auto; }
+
+    .explode-stage {
+      position: relative;
+      height: 430px;
+      border-radius: 14px;
+      background:
+        linear-gradient(#e8eef6 1px, transparent 1px) 0 0 / 22px 22px,
+        linear-gradient(90deg, #e8eef6 1px, transparent 1px) 0 0 / 22px 22px,
+        radial-gradient(circle at 50% 46%, #ffffff 0%, #eef3f9 70%, #e3ebf4 100%);
+      border: 1px solid #c9d3e1;
+      overflow: visible;
+      touch-action: manipulation;
+    }
+    .view-tag {
+      position: absolute; top: 8px; left: 8px; z-index: 5;
+      font-size: 0.6rem; font-weight: 800; letter-spacing: 0.05em;
+      text-transform: uppercase; color: var(--navy);
+      background: rgba(255,255,255,0.94); border: 1px solid var(--line);
+      border-radius: 999px; padding: 4px 8px; pointer-events: none;
+    }
+
+    .car-shell {
+      position: absolute; inset: 0;
+      display: grid; place-items: center;
+      cursor: pointer; z-index: 2; padding-bottom: 34px;
+      transition: opacity var(--explode-ms) var(--ease), transform var(--explode-ms) var(--ease);
+    }
+    .car-shell:focus-visible { outline: 2px solid var(--amber); outline-offset: -4px; }
+    .car-shell svg {
+      width: min(52%, 158px);
+      height: auto;
+      filter: drop-shadow(0 14px 22px rgba(10, 28, 51, 0.16));
+    }
+    .tap-hint {
+      position: absolute; bottom: 12px; left: 50%;
+      transform: translateX(-50%);
+      font-size: 0.72rem; font-weight: 750; color: var(--navy);
+      background: rgba(255,255,255,0.95); border: 1px solid var(--line);
+      border-radius: 999px; padding: 7px 12px; white-space: nowrap;
+      box-shadow: 0 8px 18px rgba(10,28,51,0.1);
+      animation: pulseHint 1.9s ease-in-out infinite;
+    }
+    @keyframes pulseHint {
+      0%, 100% { transform: translateX(-50%) scale(1); }
+      50% { transform: translateX(-50%) scale(1.03); }
+    }
+    .explode-card.is-open .car-shell {
+      opacity: 0; transform: scale(0.78); pointer-events: none;
+    }
+
+    .parts-layer { position: absolute; inset: 0; z-index: 3; pointer-events: none; }
+    .explode-card.is-open .parts-layer { pointer-events: auto; }
+
+    .part {
+      --dx: 0px; --dy: 0px; --delay: 0ms;
+      position: absolute; left: 50%; top: 48%;
+      width: 92px; border: 0; padding: 0; background: transparent; cursor: pointer;
+      transform: translate(-50%, -50%) scale(0.28);
+      opacity: 0;
+      transition:
+        transform var(--explode-ms) var(--ease),
+        opacity calc(var(--explode-ms) - 90ms) ease;
+      transition-delay: var(--delay);
+    }
+    .explode-card.is-open .part {
+      transform: translate(calc(-50% + var(--dx)), calc(-50% + var(--dy))) scale(1);
+      opacity: 1;
+    }
+    .part-face {
+      position: relative;
+      background: #fff;
+      border: 1px solid #c5d0df;
+      border-radius: 16px;
+      overflow: hidden;
+      box-shadow: 0 10px 22px rgba(10, 28, 51, 0.12);
+      transition: transform 160ms ease, box-shadow 160ms ease, border-color 160ms ease;
+    }
+    .part:hover .part-face,
+    .part:active .part-face {
+      transform: translateY(-2px);
+      border-color: var(--navy);
+      box-shadow: 0 14px 26px rgba(10, 28, 51, 0.16);
+    }
+    .part-thumb {
+      display: block; width: 100%; aspect-ratio: 1.15 / 1;
+      object-fit: cover; background: #1a2433;
+    }
+    .part-thumb-fallback {
+      aspect-ratio: 1.15 / 1;
+      display: grid; place-items: center;
+      background:
+        radial-gradient(circle at 50% 40%, #2a3d56, #121a26 72%);
+      color: #d7e2ef;
+    }
+    .part-thumb-fallback svg { width: 34px; height: 34px; opacity: 0.92; }
+    .part-caption {
+      padding: 7px 7px 8px;
+      text-align: center;
+      border-top: 1px solid #e6ebf2;
+      background: #fff;
+    }
+    .part-label {
+      display: block; font-size: 0.66rem; font-weight: 800;
+      color: var(--navy); letter-spacing: -0.01em; line-height: 1.15;
+    }
+    .part-zh {
+      display: block; margin-top: 2px; font-size: 0.56rem;
+      font-weight: 600; color: var(--muted);
+    }
+    .badge-rec {
+      position: absolute; top: 6px; left: 6px; z-index: 2;
+      font-size: 0.54rem; font-weight: 800; color: #4d3200;
+      background: var(--amber); border-radius: 999px; padding: 2px 6px;
+      box-shadow: 0 2px 6px rgba(232,163,23,0.4);
+    }
+    .photo-dot {
+      position: absolute; top: 6px; right: 6px; z-index: 2;
+      width: 8px; height: 8px; border-radius: 50%;
+      background: #2ecc71; box-shadow: 0 0 0 2px #fff;
+    }
+    .photo-dot.is-off { background: #95a1b2; }
+
+    .hint-line {
+      margin: 10px 0 0; font-size: 0.71rem; color: var(--muted);
+      text-align: center; line-height: 1.35;
+    }
+
+    .side-panel {
+      background: rgba(255,255,255,0.86);
+      border: 1px solid var(--line); border-radius: 18px;
+      padding: 16px; backdrop-filter: blur(8px);
+    }
+    .side-panel h3 { margin: 0 0 8px; font-size: 1rem; color: var(--navy); }
+    .side-panel ol {
+      margin: 0; padding-left: 1.15rem; color: var(--muted);
+      font-size: 0.85rem; line-height: 1.55;
+    }
+    .side-panel li + li { margin-top: 6px; }
+
+    /* Modal */
+    .modal {
+      position: fixed; inset: 0; z-index: 40;
+      display: grid; place-items: end center;
+      padding: 12px; background: rgba(8, 12, 20, 0.58);
+      opacity: 0; pointer-events: none; transition: opacity 180ms ease;
+    }
+    .modal.is-open { opacity: 1; pointer-events: auto; }
+    @media (min-width: 720px) { .modal { place-items: center; } }
+    .sheet {
+      width: min(440px, 100%);
+      background: #0f1622;
+      border-radius: 20px;
+      overflow: hidden;
+      transform: translateY(16px) scale(0.985);
+      transition: transform 220ms var(--ease);
+      box-shadow: 0 28px 60px rgba(0,0,0,0.4);
+      color: #eef3f8;
+    }
+    .modal.is-open .sheet { transform: none; }
+    .sheet-photo-wrap {
+      position: relative;
+      background: #070b12;
+      min-height: 260px;
+      max-height: 52vh;
+      display: grid;
+      place-items: center;
+    }
+    .sheet-photo-wrap img {
+      display: block;
+      width: 100%;
+      max-height: 52vh;
+      object-fit: contain;
+      background: #070b12;
+    }
+    .sheet-photo-wrap.is-fallback {
+      min-height: 220px;
+      background:
+        radial-gradient(circle at 50% 40%, #243448, #0b111a 70%);
+    }
+    .fallback-art {
+      display: grid; gap: 10px; justify-items: center; padding: 28px 16px;
+      color: #d5e0ec;
+    }
+    .fallback-art svg { width: 72px; height: 72px; opacity: 0.95; }
+    .fallback-art p {
+      margin: 0; font-size: 0.78rem; color: #9aabbf; text-align: center; max-width: 16rem;
+    }
+    .sheet-tag {
+      position: absolute; left: 12px; top: 12px;
+      font-size: 0.68rem; font-weight: 750; color: #fff;
+      background: rgba(0,0,0,0.55); border: 1px solid rgba(255,255,255,0.12);
+      border-radius: 999px; padding: 4px 9px;
+    }
+    .sheet-body {
+      padding: 14px 14px 16px;
+      background: linear-gradient(180deg, #152033, #101826);
+    }
+    .sheet-body h3 {
+      margin: 0 0 4px; font-size: 1.18rem; letter-spacing: -0.02em; color: #fff;
+    }
+    .sheet-body .meta { margin: 0 0 10px; font-size: 0.78rem; color: #93a4b8; }
+    .sheet-body .note {
+      margin: 0 0 12px; font-size: 0.8rem; line-height: 1.45; color: #d5deea;
+      background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 12px; padding: 10px 11px;
+    }
+    .wa-btn {
+      display: flex; align-items: center; justify-content: center; gap: 8px;
+      width: 100%; text-decoration: none; background: var(--wa); color: #08351a;
+      font-weight: 800; font-size: 0.94rem; border-radius: 12px; padding: 13px 14px;
+      box-shadow: 0 8px 18px rgba(37, 211, 102, 0.25);
+    }
+    .wa-btn svg { width: 20px; height: 20px; }
+    .close-btn {
+      width: 100%; margin-top: 8px; border: 1px solid rgba(255,255,255,0.14);
+      background: transparent; border-radius: 12px; padding: 11px;
+      font: inherit; font-weight: 700; color: #d7e1ec; cursor: pointer;
+    }
+
+    .toast {
+      position: fixed; left: 50%; bottom: 16px;
+      transform: translateX(-50%) translateY(18px);
+      background: var(--navy); color: #fff; font-size: 0.78rem; font-weight: 650;
+      padding: 10px 14px; border-radius: 999px; opacity: 0; pointer-events: none;
+      transition: opacity 180ms ease, transform 180ms ease; z-index: 50;
+      max-width: min(92vw, 420px); text-align: center;
+    }
+    .toast.is-show { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+    @media (max-width: 420px) {
+      .explode-stage { height: 400px; }
+      .part { width: 80px; }
+      .part-label { font-size: 0.6rem; }
+    }
+  </style>
+</head>
+<body>
+  <header class="page-head">
+    <div class="eyebrow">APUI-HALFCUT-EXPLODE-001 · Visual polish v2</div>
+    <h1>顶视图拆解 · 画质重做版</h1>
+    <p class="sub">
+      保留爆炸动画；整车改为干净的顶视蓝图线稿；部位卡片优先显示<strong>真实照片缩略图</strong>；弹层大图用 contain 完整展示，不再硬裁切。
+    </p>
+    <div class="scenario-bar">
+      <label>场景</label>
+      <button type="button" class="scenario-btn is-active" data-scenario="a">A · 标签齐全</button>
+      <button type="button" class="scenario-btn" data-scenario="b">B · 仅 Photo 编号</button>
+      <p class="scenario-meta" id="scenarioMeta"></p>
+    </div>
+  </header>
+
+  <div class="stage">
+    <div class="phone">
+      <div class="phone-notch"></div>
+      <div class="phone-screen">
+        <div class="detail-top">
+          <div class="breadcrumb">Half-Cuts / Detail</div>
+          <h2 class="stock-title" id="stockTitle">—</h2>
+          <p class="stock-sub" id="stockSub">—</p>
+        </div>
+        <div class="gallery-mock" id="galleryMock"></div>
+
+        <section class="explode-card" id="explodeCard">
+          <div class="explode-head">
+            <div>
+              <h2>Custom dismantle · 定制拆解</h2>
+              <p>Top-view blueprint. Tap to explode — every part is inquireable.</p>
+            </div>
+            <button type="button" class="reset-btn" id="resetBtn">Reset</button>
+          </div>
+
+          <div class="explode-stage" id="explodeStage">
+            <div class="view-tag">Top view</div>
+            <div class="car-shell" id="carShell" role="button" tabindex="0" aria-label="Top-view car — tap to explode">
+              <!-- Clean top-view sedan blueprint (front = up) -->
+              <svg viewBox="0 0 200 360" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                <defs>
+                  <linearGradient id="bodyFill" x1="100" y1="20" x2="100" y2="340" gradientUnits="userSpaceOnUse">
+                    <stop stop-color="#f7fafc"/>
+                    <stop offset="1" stop-color="#e8eef5"/>
+                  </linearGradient>
+                </defs>
+                <!-- shadow -->
+                <ellipse cx="100" cy="338" rx="52" ry="8" fill="rgba(10,28,51,0.12)"/>
+                <!-- outer body -->
+                <path d="M62 48
+                  C62 28 78 16 100 16
+                  C122 16 138 28 138 48
+                  L142 118
+                  C146 128 148 140 148 160
+                  L148 230
+                  C148 252 144 270 138 286
+                  L138 318
+                  C138 336 122 346 100 346
+                  C78 346 62 336 62 318
+                  L62 286
+                  C56 270 52 252 52 230
+                  L52 160
+                  C52 140 54 128 58 118
+                  Z"
+                  fill="url(#bodyFill)" stroke="#0a1c33" stroke-width="2.8" stroke-linejoin="round"/>
+                <!-- front bumper -->
+                <path d="M78 28h44" stroke="#0a1c33" stroke-width="2.2" stroke-linecap="round"/>
+                <path d="M84 22h32" stroke="#e8a317" stroke-width="2.4" stroke-linecap="round"/>
+                <!-- hood -->
+                <path d="M70 52
+                  C78 40 122 40 130 52
+                  L134 96
+                  C120 104 80 104 66 96
+                  Z" fill="rgba(232,163,23,0.12)" stroke="#0a1c33" stroke-width="1.8" stroke-linejoin="round"/>
+                <!-- windshield -->
+                <path d="M68 108
+                  L132 108
+                  L126 148
+                  L74 148
+                  Z" fill="rgba(10,28,51,0.06)" stroke="#0a1c33" stroke-width="1.8" stroke-linejoin="round"/>
+                <!-- dash -->
+                <rect x="76" y="152" width="48" height="14" rx="3" fill="#fff" stroke="#0a1c33" stroke-width="1.6"/>
+                <path d="M84 159h32" stroke="#e8a317" stroke-width="2" stroke-linecap="round"/>
+                <!-- cabin -->
+                <path d="M58 170h84" stroke="#0a1c33" stroke-width="1.4" opacity="0.35"/>
+                <path d="M100 148v110" stroke="#0a1c33" stroke-width="1.3" stroke-dasharray="3 4" opacity="0.35"/>
+                <!-- doors -->
+                <path d="M52 175v55M148 175v55" stroke="#0a1c33" stroke-width="2" stroke-linecap="round" opacity="0.55"/>
+                <circle cx="66" cy="198" r="2.2" fill="#0a1c33" opacity="0.55"/>
+                <circle cx="134" cy="198" r="2.2" fill="#0a1c33" opacity="0.55"/>
+                <!-- rear glass -->
+                <path d="M74 268
+                  L126 268
+                  L132 300
+                  L68 300
+                  Z" fill="rgba(10,28,51,0.05)" stroke="#0a1c33" stroke-width="1.8" stroke-linejoin="round"/>
+                <!-- trunk -->
+                <path d="M72 308h56" stroke="#0a1c33" stroke-width="1.6" stroke-linecap="round" opacity="0.7"/>
+                <path d="M86 334h28" stroke="#0a1c33" stroke-width="2.2" stroke-linecap="round"/>
+                <!-- wheels as side capsules -->
+                <rect x="39" y="88" width="11" height="34" rx="5.5" fill="#0a1c33"/>
+                <rect x="150" y="88" width="11" height="34" rx="5.5" fill="#0a1c33"/>
+                <rect x="39" y="236" width="11" height="34" rx="5.5" fill="#0a1c33"/>
+                <rect x="150" y="236" width="11" height="34" rx="5.5" fill="#0a1c33"/>
+                <!-- center explode point -->
+                <circle cx="100" cy="210" r="4" fill="#e8a317"/>
+                <circle cx="100" cy="210" r="9" stroke="#e8a317" stroke-width="1.4" opacity="0.45"/>
+              </svg>
+              <div class="tap-hint">Tap to explode · 点顶视图拆解</div>
+            </div>
+            <div class="parts-layer" id="partsLayer"></div>
+          </div>
+          <p class="hint-line">绿点 = 有真实部位照片 · 灰点 = 图标兜底（仍可询价）</p>
+        </section>
+      </div>
+    </div>
+
+    <aside class="side-panel">
+      <h3>本版视觉升级</h3>
+      <ol>
+        <li>整车：干净顶视蓝图，去掉粗糙文字标。</li>
+        <li>部位：有标签照片时直接显示缩略图，不再只靠简陋图标。</li>
+        <li>弹层：大图完整显示（contain），暗色相框，更像看真图。</li>
+        <li>无图部位：精简线稿兜底，不破图。</li>
+      </ol>
+    </aside>
+  </div>
+
+  <div class="modal" id="modal" aria-hidden="true">
+    <div class="sheet" role="dialog" aria-modal="true" aria-labelledby="sheetTitle">
+      <div class="sheet-photo-wrap" id="sheetPhotoWrap">
+        <span class="sheet-tag" id="sheetTag">Real photo</span>
+        <img id="sheetImg" alt="" />
+        <div class="fallback-art" id="sheetFallback" hidden>
+          <svg id="sheetFallbackSvg" viewBox="0 0 24 24" fill="none"></svg>
+          <p>This stock has no part-tagged photo yet. You can still inquire — our team confirms with real unit photos.</p>
+        </div>
+      </div>
+      <div class="sheet-body">
+        <h3 id="sheetTitle">Engine</h3>
+        <p class="meta" id="sheetMeta">—</p>
+        <p class="note" id="sheetNote">—</p>
+        <a class="wa-btn" id="waBtn" href="#" target="_blank" rel="noopener">
+          <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M20.5 3.5A11 11 0 0 0 3.4 17.7L2 22l4.4-1.2A11 11 0 1 0 20.5 3.5zm-8.5 17a9 9 0 0 1-4.6-1.3l-.3-.2-2.6.7.7-2.5-.2-.3a9 9 0 1 1 7 3.6zm5-6.7c-.3-.1-1.6-.8-1.9-.9-.3-.1-.5-.1-.7.2-.2.3-.8.9-.9 1.1-.2.2-.3.2-.6.1-.3-.1-1.2-.4-2.3-1.4-.8-.8-1.4-1.7-1.6-2-.2-.3 0-.4.1-.6l.4-.5c.1-.2.2-.3.3-.5.1-.2 0-.4 0-.5-.1-.1-.7-1.7-.9-2.3-.3-.6-.5-.5-.7-.5h-.6c-.2 0-.5.1-.8.4-.3.3-1 1-1 2.4s1 2.8 1.2 3c.1.2 2 3.1 4.8 4.3 1.8.8 2.5.8 3.4.7.5-.1 1.6-.7 1.8-1.3.2-.6.2-1.2.2-1.3 0-.1-.2-.2-.5-.3z"/></svg>
+          WhatsApp inquire this part
+        </a>
+        <button type="button" class="close-btn" id="closeModal">Close</button>
+      </div>
+    </div>
+  </div>
+  <div class="toast" id="toast" role="status"></div>
+
+  <script>
+    const WA_NUMBER = '8616638801930';
+    const PHOTO_BASE = 'https://asia-power.com';
+
+    const ICONS = {
+      engine: '<path d="M5 11h2.2l1.3-2.5h6.8L16.6 11H19v3.2h-1.4V17H8.2v-2.8H5V11z" stroke="currentColor" stroke-width="1.6" fill="none" stroke-linejoin="round"/><circle cx="12" cy="12.5" r="2" stroke="currentColor" stroke-width="1.5"/>',
+      gear: '<circle cx="12" cy="12" r="2.6" stroke="currentColor" stroke-width="1.6"/><path d="M12 3.8v2.1M12 18.1v2.1M3.8 12h2.1M18.1 12h2.1M6.1 6.1l1.5 1.5M16.4 16.4l1.5 1.5M6.1 17.9l1.5-1.5M16.4 7.6l1.5-1.5" stroke="currentColor" stroke-width="1.55" stroke-linecap="round"/>',
+      front: '<path d="M5 14.5 7.8 8.2h8.4L19 14.5v2.8H5v-2.8z" stroke="currentColor" stroke-width="1.6" fill="none" stroke-linejoin="round"/><path d="M8.2 17.8h1.6M14.2 17.8h1.6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>',
+      rear: '<path d="M6 13.5h12v4H6v-4zM8 13.5l1.8-4.2h4.4L16 13.5" stroke="currentColor" stroke-width="1.6" fill="none" stroke-linejoin="round"/>',
+      dash: '<rect x="3.5" y="7.5" width="17" height="9" rx="2" stroke="currentColor" stroke-width="1.6"/><path d="M7 12h4.5M13.8 12h3.2" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/>',
+      door: '<rect x="7.2" y="3.5" width="9.6" height="17" rx="1.6" stroke="currentColor" stroke-width="1.6"/><circle cx="14.2" cy="12" r="0.9" fill="currentColor"/>',
+      wheel: '<circle cx="12" cy="12" r="6.4" stroke="currentColor" stroke-width="1.6"/><circle cx="12" cy="12" r="2" fill="currentColor"/><path d="M12 5.8v2.2M12 16v2.2M5.8 12h2.2M16 12h2.2" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/>',
+      wire: '<path d="M4 8.2c3.5 0 3.5 7.6 7.5 7.6S15 8.2 18.5 8.2M4 15.8c3.5 0 3.5-7.6 7.5-7.6s4 7.6 7.5 7.6" stroke="currentColor" stroke-width="1.6" fill="none" stroke-linecap="round"/>',
+      vin: '<rect x="3.5" y="6.5" width="17" height="11" rx="2" stroke="currentColor" stroke-width="1.6"/><path d="M6.5 10.2h11M6.5 13.5h7.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>',
+    };
+
+    /* Top-view explode map: screen up = vehicle front */
+    const PARTS = [
+      { id: 'front', en: 'Front clip', zh: '前嘴', icon: 'front', match: [/vehicle front|^front$|cab front/i], dx: 0, dy: -168, delay: 20 },
+      { id: 'engine', en: 'Engine', zh: '发动机', icon: 'engine', match: [/engine/i], dx: -82, dy: -100, delay: 55 },
+      { id: 'gearbox', en: 'Gearbox', zh: '变速箱', icon: 'gear', match: [/gear|trans/i], dx: 82, dy: -100, delay: 90 },
+      { id: 'dash', en: 'Dashboard', zh: '仪表台', icon: 'dash', match: [/dashboard|interior|cab interior|cab overview/i], dx: 0, dy: -28, delay: 125 },
+      { id: 'doors', en: 'Doors', zh: '车门', icon: 'door', match: [/door/i], dx: -124, dy: 28, delay: 160 },
+      { id: 'wiring', en: 'Wiring', zh: '线路电子', icon: 'wire', match: [/wir|electric|harness/i], dx: 124, dy: 28, delay: 195 },
+      { id: 'chassis', en: 'Chassis', zh: '轮毂底盘', icon: 'wheel', match: [/side|chassis|wheel/i], dx: -92, dy: 128, delay: 230 },
+      { id: 'vin', en: 'VIN plate', zh: '车架铭牌', icon: 'vin', match: [/vin/i], dx: 18, dy: 140, delay: 265 },
+      { id: 'rear', en: 'Rear', zh: '尾部', icon: 'rear', match: [/vehicle rear|^rear$|cab rear/i], dx: 104, dy: 140, delay: 300 },
+    ];
+
+    const SCENARIOS = {
+      a: {
+        name: 'A · 标签齐全',
+        stockId: 'HC250126',
+        brand: 'JAC',
+        model: 'Shuailing',
+        year: 2017,
+        engineCode: '',
+        passengerPartType: 'front',
+        hero: '/uploads/photos/photo-1782354255177-bfaa6bd0.webp',
+        photos: [
+          { label: 'Cab Front', url: '/uploads/photos/photo-1782354255177-bfaa6bd0.webp' },
+          { label: 'Cab Rear', url: '/uploads/photos/photo-1782354259553-3a002c44.webp' },
+          { label: 'Left Side', url: '/uploads/photos/photo-1782354265167-78135fa0.webp' },
+          { label: 'Right Side', url: '/uploads/photos/photo-1782354270035-de143506.webp' },
+          { label: 'Dashboard', url: '/uploads/photos/photo-1782354276360-15b6b7ba.webp' },
+          { label: 'Door Interior', url: '/uploads/photos/photo-1782354288136-ba1b335e.webp' },
+          { label: 'VIN Plate', url: '/uploads/photos/photo-1782354293273-8c84732f.webp' },
+          { label: 'Cab Overview', url: '/uploads/photos/photo-1782354298710-45b5464c.webp' },
+        ],
+        // Extra engine/front/rear fulls from passenger stock for visual demo of those part slots
+        // still labeled honestly in UI via photo.label when matched; engine uses Jeep sample only if no local Engine label
+        note: '用标签覆盖更全的卡车半切样本（Dashboard / Door / VIN / Side）。绿点部位=真图缩略图。',
+      },
+      b: {
+        name: 'B · 仅 Photo 编号',
+        stockId: 'HC250507',
+        brand: 'Honda',
+        model: 'CR-V',
+        year: 2007,
+        engineCode: 'R20A3',
+        passengerPartType: '',
+        hero: '/uploads/photos/photo-1782875302753-79b82442.webp',
+        photos: [
+          { label: 'Photo 01', url: '/uploads/photos/photo-1782875302753-79b82442.webp' },
+          { label: 'Photo 02', url: '/uploads/photos/photo-1782875304013-79368772.webp' },
+          { label: 'Photo 03', url: '/uploads/photos/photo-1782875305712-3bd1beda.webp' },
+          { label: 'Photo 04', url: '/uploads/photos/photo-1782875307431-ff478258.webp' },
+        ],
+        note: '只有 Photo 01/02… 时全部走精致线稿兜底 + 仍可询价，验证不破图。',
+      },
+    };
+
+    // For scenario A, also attach a few high-quality labeled photos from HC250514
+    // so Engine / Vehicle Front / Rear slots are not empty (common gap on truck cab lots).
+    SCENARIOS.a.photos = SCENARIOS.a.photos.concat([
+      { label: 'Engine', url: '/uploads/photos/photo-1783071262461-ca60ee12_full.webp' },
+      { label: 'Vehicle Front', url: '/uploads/photos/photo-1783071238088-5b94b174_full.webp' },
+      { label: 'Vehicle Rear', url: '/uploads/photos/photo-1783071261392-e7c8bee9_full.webp' },
+    ]);
+
+    let scenarioKey = 'a';
+    let open = false;
+
+    const el = {
+      card: document.getElementById('explodeCard'),
+      layer: document.getElementById('partsLayer'),
+      car: document.getElementById('carShell'),
+      reset: document.getElementById('resetBtn'),
+      title: document.getElementById('stockTitle'),
+      sub: document.getElementById('stockSub'),
+      gallery: document.getElementById('galleryMock'),
+      meta: document.getElementById('scenarioMeta'),
+      modal: document.getElementById('modal'),
+      wrap: document.getElementById('sheetPhotoWrap'),
+      img: document.getElementById('sheetImg'),
+      fallback: document.getElementById('sheetFallback'),
+      fallbackSvg: document.getElementById('sheetFallbackSvg'),
+      tag: document.getElementById('sheetTag'),
+      sheetTitle: document.getElementById('sheetTitle'),
+      sheetMeta: document.getElementById('sheetMeta'),
+      sheetNote: document.getElementById('sheetNote'),
+      waBtn: document.getElementById('waBtn'),
+      closeModal: document.getElementById('closeModal'),
+      toast: document.getElementById('toast'),
+    };
+
+    function resolvePhoto(part, stock) {
+      for (const photo of stock.photos || []) {
+        const label = String(photo.label || '');
+        if (/^photo\s*\d+/i.test(label)) continue;
+        if (part.match.some((re) => re.test(label))) {
+          return { url: PHOTO_BASE + photo.url, label, real: true };
+        }
+      }
+      return { url: '', label: '', real: false };
+    }
+
+    function waHref(part, stock) {
+      const text = `Hi, I'm interested in the ${part.en} from Stock ID ${stock.stockId} (${stock.year} ${stock.brand} ${stock.model})`;
+      return `https://wa.me/${WA_NUMBER}?text=${encodeURIComponent(text)}`;
+    }
+
+    function renderParts() {
+      const stock = SCENARIOS[scenarioKey];
+      const ppt = String(stock.passengerPartType || '').toLowerCase();
+      el.layer.innerHTML = PARTS.map((part) => {
+        const photo = resolvePhoto(part, stock);
+        const rec = ppt && ppt === part.id;
+        const thumb = photo.real
+          ? `<img class="part-thumb" src="${photo.url}" alt="${part.en}" loading="lazy" decoding="async">`
+          : `<div class="part-thumb-fallback" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none">${ICONS[part.icon]}</svg></div>`;
+        return `
+          <button type="button" class="part" data-part="${part.id}"
+            style="--dx:${part.dx}px;--dy:${part.dy}px;--delay:${part.delay}ms"
+            aria-label="${part.en}">
+            <span class="part-face">
+              ${rec ? '<span class="badge-rec">推荐</span>' : ''}
+              <span class="photo-dot ${photo.real ? '' : 'is-off'}" title="${photo.real ? 'Has real photo' : 'Icon fallback'}"></span>
+              ${thumb}
+              <span class="part-caption">
+                <span class="part-label">${part.en}</span>
+                <span class="part-zh">${part.zh}</span>
+              </span>
+            </span>
+          </button>`;
+      }).join('');
+      el.layer.querySelectorAll('.part').forEach((btn) => {
+        btn.addEventListener('click', () => openPart(btn.dataset.part));
+      });
+    }
+
+    function applyScenario(key) {
+      scenarioKey = key;
+      const stock = SCENARIOS[key];
+      document.querySelectorAll('.scenario-btn').forEach((b) => {
+        b.classList.toggle('is-active', b.dataset.scenario === key);
+      });
+      el.title.textContent = `${stock.year} ${stock.brand} ${stock.model} Half-Cut`;
+      el.sub.textContent = `Stock ${stock.stockId}${stock.engineCode ? ' · ' + stock.engineCode : ''}`;
+      el.gallery.style.setProperty('--hero-url', `url("${PHOTO_BASE}${stock.hero}")`);
+      el.meta.textContent = stock.note;
+      setOpen(false);
+      renderParts();
+    }
+
+    function setOpen(next) {
+      open = next;
+      el.card.classList.toggle('is-open', open);
+    }
+
+    function openPart(partId) {
+      const stock = SCENARIOS[scenarioKey];
+      const part = PARTS.find((p) => p.id === partId);
+      if (!part) return;
+      const photo = resolvePhoto(part, stock);
+
+      el.sheetTitle.textContent = `${part.en} · ${part.zh}`;
+      el.sheetMeta.textContent = `${stock.stockId} · ${stock.year} ${stock.brand} ${stock.model}`;
+
+      if (photo.real) {
+        el.wrap.classList.remove('is-fallback');
+        el.img.hidden = false;
+        el.img.src = photo.url;
+        el.img.alt = `${part.en} — ${photo.label}`;
+        el.fallback.hidden = true;
+        el.tag.textContent = `Real photo · ${photo.label}`;
+        el.sheetNote.textContent = '真实库存照片（按部位标签匹配）。询价后由团队确认价格、工艺与交期。';
+      } else {
+        el.wrap.classList.add('is-fallback');
+        el.img.hidden = true;
+        el.img.removeAttribute('src');
+        el.fallback.hidden = false;
+        el.fallbackSvg.innerHTML = ICONS[part.icon];
+        el.tag.textContent = 'No part-tagged photo';
+        el.sheetNote.textContent = '这条库存还没有该部位标签照片。界面用线稿兜底，不破图；仍可正常询价，团队会补发实拍。';
+      }
+
+      el.waBtn.href = waHref(part, stock);
+      el.modal.classList.add('is-open');
+      el.modal.setAttribute('aria-hidden', 'false');
+      showToast(`${part.en} · ${stock.stockId}`);
+    }
+
+    function closeModal() {
+      el.modal.classList.remove('is-open');
+      el.modal.setAttribute('aria-hidden', 'true');
+    }
+
+    let toastTimer;
+    function showToast(msg) {
+      el.toast.textContent = msg;
+      el.toast.classList.add('is-show');
+      clearTimeout(toastTimer);
+      toastTimer = setTimeout(() => el.toast.classList.remove('is-show'), 1800);
+    }
+
+    el.car.addEventListener('click', () => setOpen(true));
+    el.car.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); setOpen(true); }
+    });
+    el.reset.addEventListener('click', () => setOpen(false));
+    el.closeModal.addEventListener('click', closeModal);
+    el.modal.addEventListener('click', (e) => { if (e.target === el.modal) closeModal(); });
+    document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeModal(); });
+    document.querySelectorAll('.scenario-btn').forEach((btn) => {
+      btn.addEventListener('click', () => applyScenario(btn.dataset.scenario));
+    });
+
+    applyScenario('a');
+  </script>
+</body>
+</html>

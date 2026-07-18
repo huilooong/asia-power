@@ -150,3 +150,5 @@ request_and_notify(
 - apsales-openclaw（LIVE-RULES 给 bridge）: 见同次部署日志
 
 **待人工走通一次**: Telegram 收到 coach 推送 → 回复「同意」→ 确认 `.claude/plans/coach-fix-*.md` 出现
+
+**apsales-openclaw Release**: `REL-20260717034628-apsales-openclaw-c8ba6d231`（LIVE-RULES 已同步到 bridge 热读路径）

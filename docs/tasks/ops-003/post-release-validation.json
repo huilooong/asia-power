@@ -2,9 +2,9 @@
   "report": {
     "status": "pass",
     "base_url": "https://asia-power.com",
-    "release_id": "REL-20260716140746-chrome-c19c0d62b",
+    "release_id": "REL-20260717014051-chrome-13a48ef0c",
     "expected_whatsapp": "8616638801930",
-    "checked_at": "2026-07-16T14:10:41.286Z",
+    "checked_at": "2026-07-17T01:43:52.668Z",
     "checks": [
       {
         "name": "homepage_http",
@@ -44,7 +44,7 @@
       {
         "name": "homepage_config_whatsapp",
         "status": "pass",
-        "detail": "float will use wa.me/8616638801930 via https://asia-power.com/js/config.js?v=apcontact-002"
+        "detail": "float will use wa.me/8616638801930 via https://asia-power.com/js/config.js?v=seo-guides-20260716"
       },
       {
         "name": "contact_http",
@@ -84,7 +84,7 @@
       {
         "name": "contact_config_whatsapp",
         "status": "pass",
-        "detail": "float will use wa.me/8616638801930 via https://asia-power.com/js/config.js?v=apcontact-002"
+        "detail": "float will use wa.me/8616638801930 via https://asia-power.com/js/config.js?v=seo-guides-20260716"
       },
       {
         "name": "brand_http",
@@ -119,7 +119,7 @@
       {
         "name": "brand_config_whatsapp",
         "status": "pass",
-        "detail": "float will use wa.me/8616638801930 via https://asia-power.com/js/config.js?v=apcontact-002"
+        "detail": "float will use wa.me/8616638801930 via https://asia-power.com/js/config.js?v=seo-guides-20260716"
       },
       {
         "name": "engine_http",
@@ -154,7 +154,7 @@
       {
         "name": "engine_config_whatsapp",
         "status": "pass",
-        "detail": "float will use wa.me/8616638801930 via https://asia-power.com/js/config.js?v=apcontact-002"
+        "detail": "float will use wa.me/8616638801930 via https://asia-power.com/js/config.js?v=seo-guides-20260716"
       },
       {
         "name": "gearbox_http",
@@ -189,7 +189,7 @@
       {
         "name": "gearbox_config_whatsapp",
         "status": "pass",
-        "detail": "float will use wa.me/8616638801930 via https://asia-power.com/js/config.js?v=apcontact-002"
+        "detail": "float will use wa.me/8616638801930 via https://asia-power.com/js/config.js?v=seo-guides-20260716"
       },
       {
         "name": "half_cut_http",
@@ -224,7 +224,7 @@
       {
         "name": "half_cut_config_whatsapp",
         "status": "pass",
-        "detail": "float will use wa.me/8616638801930 via https://asia-power.com/js/config.js?v=apcontact-002"
+        "detail": "float will use wa.me/8616638801930 via https://asia-power.com/js/config.js?v=seo-guides-20260716"
       },
       {
         "name": "guides_http",
@@ -234,7 +234,7 @@
       {
         "name": "guides_title",
         "status": "pass",
-        "detail": "Buyer Guides | AsiaPower"
+        "detail": "Used Engine Import Guides | AsiaPower"
       },
       {
         "name": "guides_canonical",
@@ -243,8 +243,8 @@
       },
       {
         "name": "guides_whatsapp_static",
-        "status": "skip",
-        "detail": "no static wa.me (float may use config)"
+        "status": "pass",
+        "detail": "wa.me/8616638801930"
       },
       {
         "name": "guides_logo",
@@ -259,7 +259,7 @@
       {
         "name": "guides_config_whatsapp",
         "status": "pass",
-        "detail": "float will use wa.me/8616638801930 via https://asia-power.com/js/config.js?v=contact-20260625"
+        "detail": "float will use wa.me/8616638801930 via https://asia-power.com/js/config.js?v=seo-guides-20260716"
       },
       {
         "name": "guide_buying_used_engines_http",
@@ -269,7 +269,7 @@
       {
         "name": "guide_buying_used_engines_title",
         "status": "pass",
-        "detail": "How to Buy a Used Engine From China — Buyer's Guide | AsiaPower"
+        "detail": "Buying Used Engines from China | AsiaPower Guide"
       },
       {
         "name": "guide_buying_used_engines_canonical",
@@ -278,8 +278,8 @@
       },
       {
         "name": "guide_buying_used_engines_whatsapp_static",
-        "status": "skip",
-        "detail": "no static wa.me (float may use config)"
+        "status": "pass",
+        "detail": "wa.me/8616638801930"
       },
       {
         "name": "guide_buying_used_engines_logo",
@@ -294,7 +294,7 @@
       {
         "name": "guide_buying_used_engines_config_whatsapp",
         "status": "pass",
-        "detail": "float will use wa.me/8616638801930 via https://asia-power.com/js/config.js?v=contact-20260625"
+        "detail": "float will use wa.me/8616638801930 via https://asia-power.com/js/config.js?v=seo-guides-20260716"
       },
       {
         "name": "guide_fob_cif_http",
@@ -304,7 +304,7 @@
       {
         "name": "guide_fob_cif_title",
         "status": "pass",
-        "detail": "FOB vs CIF: Which Shipping Term Should You Choose? | AsiaPower"
+        "detail": "FOB vs CIF Shipping Guide | AsiaPower"
       },
       {
         "name": "guide_fob_cif_canonical",
@@ -313,8 +313,8 @@
       },
       {
         "name": "guide_fob_cif_whatsapp_static",
-        "status": "skip",
-        "detail": "no static wa.me (float may use config)"
+        "status": "pass",
+        "detail": "wa.me/8616638801930"
       },
       {
         "name": "guide_fob_cif_logo",
@@ -329,7 +329,147 @@
       {
         "name": "guide_fob_cif_config_whatsapp",
         "status": "pass",
-        "detail": "float will use wa.me/8616638801930 via https://asia-power.com/js/config.js?v=contact-20260625"
+        "detail": "float will use wa.me/8616638801930 via https://asia-power.com/js/config.js?v=seo-guides-20260716"
+      },
+      {
+        "name": "engine_ghana_used_engines_http",
+        "status": "pass",
+        "detail": "HTTP 200"
+      },
+      {
+        "name": "engine_ghana_used_engines_title",
+        "status": "pass",
+        "detail": "Used Engines from China for Ghana | AsiaPower"
+      },
+      {
+        "name": "engine_ghana_used_engines_canonical",
+        "status": "pass",
+        "detail": "https://asia-power.com/engines/ghana-used-engines-from-china.html"
+      },
+      {
+        "name": "engine_ghana_used_engines_whatsapp_static",
+        "status": "pass",
+        "detail": "wa.me/8616638801930"
+      },
+      {
+        "name": "engine_ghana_used_engines_logo",
+        "status": "skip",
+        "detail": "no logo signal"
+      },
+      {
+        "name": "engine_ghana_used_engines_float_mount",
+        "status": "pass",
+        "detail": "#site-whatsapp present"
+      },
+      {
+        "name": "engine_ghana_used_engines_config_whatsapp",
+        "status": "pass",
+        "detail": "float will use wa.me/8616638801930 via https://asia-power.com/js/config.js?v=seo-guides-20260716"
+      },
+      {
+        "name": "engine_toyota_ghana_http",
+        "status": "pass",
+        "detail": "HTTP 200"
+      },
+      {
+        "name": "engine_toyota_ghana_title",
+        "status": "pass",
+        "detail": "Toyota Engines for Ghana Importers | AsiaPower"
+      },
+      {
+        "name": "engine_toyota_ghana_canonical",
+        "status": "pass",
+        "detail": "https://asia-power.com/engines/toyota-engines-for-ghana-importers.html"
+      },
+      {
+        "name": "engine_toyota_ghana_whatsapp_static",
+        "status": "pass",
+        "detail": "wa.me/8616638801930"
+      },
+      {
+        "name": "engine_toyota_ghana_logo",
+        "status": "skip",
+        "detail": "no logo signal"
+      },
+      {
+        "name": "engine_toyota_ghana_float_mount",
+        "status": "pass",
+        "detail": "#site-whatsapp present"
+      },
+      {
+        "name": "engine_toyota_ghana_config_whatsapp",
+        "status": "pass",
+        "detail": "float will use wa.me/8616638801930 via https://asia-power.com/js/config.js?v=seo-guides-20260716"
+      },
+      {
+        "name": "engine_nigeria_used_engines_http",
+        "status": "pass",
+        "detail": "HTTP 200"
+      },
+      {
+        "name": "engine_nigeria_used_engines_title",
+        "status": "pass",
+        "detail": "Used Engines from China for Nigeria | AsiaPower"
+      },
+      {
+        "name": "engine_nigeria_used_engines_canonical",
+        "status": "pass",
+        "detail": "https://asia-power.com/engines/nigeria-used-engines-from-china.html"
+      },
+      {
+        "name": "engine_nigeria_used_engines_whatsapp_static",
+        "status": "pass",
+        "detail": "wa.me/8616638801930"
+      },
+      {
+        "name": "engine_nigeria_used_engines_logo",
+        "status": "skip",
+        "detail": "no logo signal"
+      },
+      {
+        "name": "engine_nigeria_used_engines_float_mount",
+        "status": "pass",
+        "detail": "#site-whatsapp present"
+      },
+      {
+        "name": "engine_nigeria_used_engines_config_whatsapp",
+        "status": "pass",
+        "detail": "float will use wa.me/8616638801930 via https://asia-power.com/js/config.js?v=seo-guides-20260716"
+      },
+      {
+        "name": "engine_hyundai_kia_nigeria_http",
+        "status": "pass",
+        "detail": "HTTP 200"
+      },
+      {
+        "name": "engine_hyundai_kia_nigeria_title",
+        "status": "pass",
+        "detail": "Hyundai and Kia Engines for Nigeria Importers | AsiaPower"
+      },
+      {
+        "name": "engine_hyundai_kia_nigeria_canonical",
+        "status": "pass",
+        "detail": "https://asia-power.com/engines/hyundai-kia-engines-for-nigeria-importers.html"
+      },
+      {
+        "name": "engine_hyundai_kia_nigeria_whatsapp_static",
+        "status": "pass",
+        "detail": "wa.me/8616638801930"
+      },
+      {
+        "name": "engine_hyundai_kia_nigeria_logo",
+        "status": "skip",
+        "detail": "no logo signal"
+      },
+      {
+        "name": "engine_hyundai_kia_nigeria_float_mount",
+        "status": "pass",
+        "detail": "#site-whatsapp present"
+      },
+      {
+        "name": "engine_hyundai_kia_nigeria_config_whatsapp",
+        "status": "pass",
+        "detail": "float will use wa.me/8616638801930 via https://asia-power.com/js/config.js?v=seo-guides-20260716"
       },
       {
         "name": "supplier_portal_http",
@@ -389,7 +529,7 @@
       {
         "name": "config_js_release_id",
         "status": "pass",
-        "detail": "releaseId=REL-20260716140746-chrome-c19c0d62b"
+        "detail": "releaseId=REL-20260717014051-chrome-13a48ef0c"
       },
       {
         "name": "sw_js_http",
@@ -434,7 +574,7 @@
       {
         "name": "sitemap_content",
         "status": "pass",
-        "detail": "bytes=151439"
+        "detail": "bytes=152461"
       },
       {
         "name": "sitemap_content_type",
@@ -449,7 +589,7 @@
       {
         "name": "seo_sitemap_url_count",
         "status": "pass",
-        "detail": "711 URLs"
+        "detail": "716 URLs"
       },
       {
         "name": "seo_sitemap_test_like_urls",
@@ -457,9 +597,9 @@
         "detail": "no obvious test/demo/QA URLs in sitemap"
       },
       {
-        "name": "seo_sitemap_guides",
+        "name": "seo_sitemap_static_growth_pages",
         "status": "pass",
-        "detail": "guide hub and articles present"
+        "detail": "guide and country engine pages present"
       },
       {
         "name": "seo_half_cut_sample_present",
@@ -484,7 +624,7 @@
       {
         "name": "seo_truck_sample_present",
         "status": "pass",
-        "detail": "https://asia-power.com/trucks/detail.html?slug=volvo-xc60-2017-b4204t11-truck-cab-hc250581"
+        "detail": "https://asia-power.com/trucks/detail.html?slug=dongfeng-2024-cab-truck-cab-hc250582"
       },
       {
         "name": "seo_truck_detail_http",
@@ -494,17 +634,17 @@
       {
         "name": "seo_truck_canonical",
         "status": "pass",
-        "detail": "https://asia-power.com/trucks/detail.html?slug=volvo-xc60-2017-b4204t11-truck-cab-hc250581"
+        "detail": "https://asia-power.com/trucks/detail.html?slug=dongfeng-2024-cab-truck-cab-hc250582"
       },
       {
         "name": "seo_truck_product_jsonld_url",
         "status": "pass",
-        "detail": "https://asia-power.com/trucks/detail.html?slug=volvo-xc60-2017-b4204t11-truck-cab-hc250581"
+        "detail": "https://asia-power.com/trucks/detail.html?slug=dongfeng-2024-cab-truck-cab-hc250582"
       },
       {
         "name": "seo_truck_legacy_redirect",
         "status": "pass",
-        "detail": "HTTP 301 -> /trucks/detail.html?slug=volvo-xc60-2017-b4204t11-truck-cab-hc250581"
+        "detail": "HTTP 301 -> /trucks/detail.html?slug=dongfeng-2024-cab-truck-cab-hc250582"
       },
       {
         "name": "seo_machinery_sample_present",
@@ -553,15 +693,15 @@
         "wa_me": [
           "8616638801930"
         ],
-        "config_script_src": "js/config.js?v=apcontact-002",
+        "config_script_src": "js/config.js?v=seo-guides-20260716",
         "has_logo": true,
         "has_json_ld": true,
         "has_site_whatsapp": true,
-        "resolved_config_url": "https://asia-power.com/js/config.js?v=apcontact-002",
+        "resolved_config_url": "https://asia-power.com/js/config.js?v=seo-guides-20260716",
         "resolved_config_whatsapp": "8616638801930",
         "resolved_config_cache": {
           "cache_control": "public, max-age=14400, must-revalidate",
-          "cf_cache_status": "HIT",
+          "cf_cache_status": "EXPIRED",
           "etag": ""
         }
       },
@@ -580,11 +720,11 @@
         "wa_me": [
           "8616638801930"
         ],
-        "config_script_src": "js/config.js?v=apcontact-002",
+        "config_script_src": "js/config.js?v=seo-guides-20260716",
         "has_logo": false,
         "has_json_ld": true,
         "has_site_whatsapp": true,
-        "resolved_config_url": "https://asia-power.com/js/config.js?v=apcontact-002",
+        "resolved_config_url": "https://asia-power.com/js/config.js?v=seo-guides-20260716",
         "resolved_config_whatsapp": "8616638801930",
         "resolved_config_cache": {
           "cache_control": "public, max-age=14400, must-revalidate",
@@ -605,11 +745,11 @@
         "title": "Brands We Support | AsiaPower",
         "canonical": "https://asia-power.com/brands.html",
         "wa_me": [],
-        "config_script_src": "js/config.js?v=apcontact-002",
+        "config_script_src": "js/config.js?v=seo-guides-20260716",
         "has_logo": false,
         "has_json_ld": false,
         "has_site_whatsapp": true,
-        "resolved_config_url": "https://asia-power.com/js/config.js?v=apcontact-002",
+        "resolved_config_url": "https://asia-power.com/js/config.js?v=seo-guides-20260716",
         "resolved_config_whatsapp": "8616638801930",
         "resolved_config_cache": {
           "cache_control": "public, max-age=14400, must-revalidate",
@@ -632,11 +772,11 @@
         "wa_me": [
           "8616638801930"
         ],
-        "config_script_src": "../js/config.js?v=apcontact-002",
+        "config_script_src": "../js/config.js?v=seo-guides-20260716",
         "has_logo": false,
         "has_json_ld": true,
         "has_site_whatsapp": true,
-        "resolved_config_url": "https://asia-power.com/js/config.js?v=apcontact-002",
+        "resolved_config_url": "https://asia-power.com/js/config.js?v=seo-guides-20260716",
         "resolved_config_whatsapp": "8616638801930",
         "resolved_config_cache": {
           "cache_control": "public, max-age=14400, must-revalidate",
@@ -657,11 +797,11 @@
         "title": "Gearbox Catalog | AsiaPower",
         "canonical": "https://asia-power.com/gearboxes/",
         "wa_me": [],
-        "config_script_src": "../js/config.js?v=apcontact-002",
+        "config_script_src": "../js/config.js?v=seo-guides-20260716",
         "has_logo": false,
         "has_json_ld": true,
         "has_site_whatsapp": true,
-        "resolved_config_url": "https://asia-power.com/js/config.js?v=apcontact-002",
+        "resolved_config_url": "https://asia-power.com/js/config.js?v=seo-guides-20260716",
         "resolved_config_whatsapp": "8616638801930",
         "resolved_config_cache": {
           "cache_control": "public, max-age=14400, must-revalidate",
@@ -684,11 +824,11 @@
         "wa_me": [
           "8616638801930"
         ],
-        "config_script_src": "../js/config.js?v=apcontact-002",
+        "config_script_src": "../js/config.js?v=seo-guides-20260716",
         "has_logo": false,
         "has_json_ld": true,
         "has_site_whatsapp": true,
-        "resolved_config_url": "https://asia-power.com/js/config.js?v=apcontact-002",
+        "resolved_config_url": "https://asia-power.com/js/config.js?v=seo-guides-20260716",
         "resolved_config_whatsapp": "8616638801930",
         "resolved_config_cache": {
           "cache_control": "public, max-age=14400, must-revalidate",
@@ -706,18 +846,20 @@
           "age": "",
           "last_modified": ""
         },
-        "title": "Buyer Guides | AsiaPower",
+        "title": "Used Engine Import Guides | AsiaPower",
         "canonical": "https://asia-power.com/guides/",
-        "wa_me": [],
-        "config_script_src": "../js/config.js?v=contact-20260625",
+        "wa_me": [
+          "8616638801930"
+        ],
+        "config_script_src": "../js/config.js?v=seo-guides-20260716",
         "has_logo": false,
-        "has_json_ld": false,
+        "has_json_ld": true,
         "has_site_whatsapp": true,
-        "resolved_config_url": "https://asia-power.com/js/config.js?v=contact-20260625",
+        "resolved_config_url": "https://asia-power.com/js/config.js?v=seo-guides-20260716",
         "resolved_config_whatsapp": "8616638801930",
         "resolved_config_cache": {
           "cache_control": "public, max-age=14400, must-revalidate",
-          "cf_cache_status": "EXPIRED",
+          "cf_cache_status": "HIT",
           "etag": ""
         }
       },
@@ -731,14 +873,16 @@
           "age": "",
           "last_modified": ""
         },
-        "title": "How to Buy a Used Engine From China — Buyer's Guide | AsiaPower",
+        "title": "Buying Used Engines from China | AsiaPower Guide",
         "canonical": "https://asia-power.com/guides/buying-used-engines-from-china.html",
-        "wa_me": [],
-        "config_script_src": "../js/config.js?v=contact-20260625",
+        "wa_me": [
+          "8616638801930"
+        ],
+        "config_script_src": "../js/config.js?v=seo-guides-20260716",
         "has_logo": false,
-        "has_json_ld": false,
+        "has_json_ld": true,
         "has_site_whatsapp": true,
-        "resolved_config_url": "https://asia-power.com/js/config.js?v=contact-20260625",
+        "resolved_config_url": "https://asia-power.com/js/config.js?v=seo-guides-20260716",
         "resolved_config_whatsapp": "8616638801930",
         "resolved_config_cache": {
           "cache_control": "public, max-age=14400, must-revalidate",
@@ -756,14 +900,124 @@
           "age": "",
           "last_modified": ""
         },
-        "title": "FOB vs CIF: Which Shipping Term Should You Choose? | AsiaPower",
+        "title": "FOB vs CIF Shipping Guide | AsiaPower",
         "canonical": "https://asia-power.com/guides/fob-vs-cif-shipping-guide.html",
-        "wa_me": [],
-        "config_script_src": "../js/config.js?v=contact-20260625",
+        "wa_me": [
+          "8616638801930"
+        ],
+        "config_script_src": "../js/config.js?v=seo-guides-20260716",
         "has_logo": false,
-        "has_json_ld": false,
+        "has_json_ld": true,
         "has_site_whatsapp": true,
-        "resolved_config_url": "https://asia-power.com/js/config.js?v=contact-20260625",
+        "resolved_config_url": "https://asia-power.com/js/config.js?v=seo-guides-20260716",
+        "resolved_config_whatsapp": "8616638801930",
+        "resolved_config_cache": {
+          "cache_control": "public, max-age=14400, must-revalidate",
+          "cf_cache_status": "HIT",
+          "etag": ""
+        }
+      },
+      "engine_ghana_used_engines": {
+        "url": "https://asia-power.com/engines/ghana-used-engines-from-china.html",
+        "http_status": 200,
+        "cache": {
+          "cache_control": "no-cache, no-store, must-revalidate",
+          "cf_cache_status": "DYNAMIC",
+          "etag": "",
+          "age": "",
+          "last_modified": ""
+        },
+        "title": "Used Engines from China for Ghana | AsiaPower",
+        "canonical": "https://asia-power.com/engines/ghana-used-engines-from-china.html",
+        "wa_me": [
+          "8616638801930"
+        ],
+        "config_script_src": "../js/config.js?v=seo-guides-20260716",
+        "has_logo": false,
+        "has_json_ld": true,
+        "has_site_whatsapp": true,
+        "resolved_config_url": "https://asia-power.com/js/config.js?v=seo-guides-20260716",
+        "resolved_config_whatsapp": "8616638801930",
+        "resolved_config_cache": {
+          "cache_control": "public, max-age=14400, must-revalidate",
+          "cf_cache_status": "HIT",
+          "etag": ""
+        }
+      },
+      "engine_toyota_ghana": {
+        "url": "https://asia-power.com/engines/toyota-engines-for-ghana-importers.html",
+        "http_status": 200,
+        "cache": {
+          "cache_control": "no-cache, no-store, must-revalidate",
+          "cf_cache_status": "DYNAMIC",
+          "etag": "",
+          "age": "",
+          "last_modified": ""
+        },
+        "title": "Toyota Engines for Ghana Importers | AsiaPower",
+        "canonical": "https://asia-power.com/engines/toyota-engines-for-ghana-importers.html",
+        "wa_me": [
+          "8616638801930"
+        ],
+        "config_script_src": "../js/config.js?v=seo-guides-20260716",
+        "has_logo": false,
+        "has_json_ld": true,
+        "has_site_whatsapp": true,
+        "resolved_config_url": "https://asia-power.com/js/config.js?v=seo-guides-20260716",
+        "resolved_config_whatsapp": "8616638801930",
+        "resolved_config_cache": {
+          "cache_control": "public, max-age=14400, must-revalidate",
+          "cf_cache_status": "HIT",
+          "etag": ""
+        }
+      },
+      "engine_nigeria_used_engines": {
+        "url": "https://asia-power.com/engines/nigeria-used-engines-from-china.html",
+        "http_status": 200,
+        "cache": {
+          "cache_control": "no-cache, no-store, must-revalidate",
+          "cf_cache_status": "DYNAMIC",
+          "etag": "",
+          "age": "",
+          "last_modified": ""
+        },
+        "title": "Used Engines from China for Nigeria | AsiaPower",
+        "canonical": "https://asia-power.com/engines/nigeria-used-engines-from-china.html",
+        "wa_me": [
+          "8616638801930"
+        ],
+        "config_script_src": "../js/config.js?v=seo-guides-20260716",
+        "has_logo": false,
+        "has_json_ld": true,
+        "has_site_whatsapp": true,
+        "resolved_config_url": "https://asia-power.com/js/config.js?v=seo-guides-20260716",
+        "resolved_config_whatsapp": "8616638801930",
+        "resolved_config_cache": {
+          "cache_control": "public, max-age=14400, must-revalidate",
+          "cf_cache_status": "HIT",
+          "etag": ""
+        }
+      },
+      "engine_hyundai_kia_nigeria": {
+        "url": "https://asia-power.com/engines/hyundai-kia-engines-for-nigeria-importers.html",
+        "http_status": 200,
+        "cache": {
+          "cache_control": "no-cache, no-store, must-revalidate",
+          "cf_cache_status": "DYNAMIC",
+          "etag": "",
+          "age": "",
+          "last_modified": ""
+        },
+        "title": "Hyundai and Kia Engines for Nigeria Importers | AsiaPower",
+        "canonical": "https://asia-power.com/engines/hyundai-kia-engines-for-nigeria-importers.html",
+        "wa_me": [
+          "8616638801930"
+        ],
+        "config_script_src": "../js/config.js?v=seo-guides-20260716",
+        "has_logo": false,
+        "has_json_ld": true,
+        "has_site_whatsapp": true,
+        "resolved_config_url": "https://asia-power.com/js/config.js?v=seo-guides-20260716",
         "resolved_config_whatsapp": "8616638801930",
         "resolved_config_cache": {
           "cache_control": "public, max-age=14400, must-revalidate",
@@ -792,7 +1046,7 @@
         "resolved_config_whatsapp": "8616638801930",
         "resolved_config_cache": {
           "cache_control": "public, max-age=14400, must-revalidate",
-          "cf_cache_status": "HIT",
+          "cf_cache_status": "EXPIRED",
           "etag": ""
         }
       },
@@ -804,10 +1058,10 @@
           "cf_cache_status": "EXPIRED",
           "etag": "",
           "age": "",
-          "last_modified": "Thu, 16 Jul 2026 14:10:37 GMT"
+          "last_modified": "Fri, 17 Jul 2026 01:43:49 GMT"
         },
         "whatsapp": "8616638801930",
-        "release_id": "REL-20260716140746-chrome-c19c0d62b"
+        "release_id": "REL-20260717014051-chrome-13a48ef0c"
       },
       "sw_js": {
         "url": "https://asia-power.com/sw.js",
@@ -817,7 +1071,7 @@
           "cf_cache_status": "EXPIRED",
           "etag": "",
           "age": "",
-          "last_modified": "Thu, 16 Jul 2026 14:10:38 GMT"
+          "last_modified": "Fri, 17 Jul 2026 01:43:49 GMT"
         },
         "cache_version": "pwa-app-v6b"
       },
@@ -844,7 +1098,7 @@
         }
       },
       "seo_canonical": {
-        "sitemap_url_count": 711,
+        "sitemap_url_count": 716,
         "samples": {
           "half_cut": {
             "loc": "https://asia-power.com/half-cuts/detail.html?slug=geely-2009-jl-6mt186-passenger-transmission-hc250580",
@@ -853,14 +1107,14 @@
             "product_jsonld_url": "https://asia-power.com/half-cuts/detail.html?slug=geely-2009-jl-6mt186-passenger-transmission-hc250580"
           },
           "truck": {
-            "loc": "https://asia-power.com/trucks/detail.html?slug=volvo-xc60-2017-b4204t11-truck-cab-hc250581",
+            "loc": "https://asia-power.com/trucks/detail.html?slug=dongfeng-2024-cab-truck-cab-hc250582",
             "http_status": 200,
-            "canonical": "https://asia-power.com/trucks/detail.html?slug=volvo-xc60-2017-b4204t11-truck-cab-hc250581",
-            "product_jsonld_url": "https://asia-power.com/trucks/detail.html?slug=volvo-xc60-2017-b4204t11-truck-cab-hc250581",
+            "canonical": "https://asia-power.com/trucks/detail.html?slug=dongfeng-2024-cab-truck-cab-hc250582",
+            "product_jsonld_url": "https://asia-power.com/trucks/detail.html?slug=dongfeng-2024-cab-truck-cab-hc250582",
             "legacy": {
-              "url": "https://asia-power.com/half-cuts/detail.html?slug=volvo-xc60-2017-b4204t11-truck-cab-hc250581",
+              "url": "https://asia-power.com/half-cuts/detail.html?slug=dongfeng-2024-cab-truck-cab-hc250582",
               "status": 301,
-              "location": "/trucks/detail.html?slug=volvo-xc60-2017-b4204t11-truck-cab-hc250581"
+              "location": "/trucks/detail.html?slug=dongfeng-2024-cab-truck-cab-hc250582"
             }
           },
           "machinery": {
@@ -882,7 +1136,7 @@
       }
     },
     "fail_count": 0,
-    "pass_count": 90
+    "pass_count": 117
   },
   "purge": {
     "status": "manual_action_required",
