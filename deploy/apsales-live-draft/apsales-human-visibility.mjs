@@ -126,33 +126,113 @@ export function partIntentFromText(text) {
   return null;
 }
 
+/** Anti-spam window for identical plate-failure asks (deterministic path, not LLM). */
+export const PLATE_FAILURE_DEDUP_MS = 8 * 60 * 1000;
+/** Within the window, send a different ask on this many consecutive failures. */
+export const PLATE_FAILURE_ESCALATE_AT = 3;
+
+/** Primary ask: nameplate/VIN sticker — not "photo was blurry". */
+export function plateFailureAskCopy(kind = "primary") {
+  if (kind === "escalate") {
+    return (
+      "Still no nameplate/VIN in these photos. Easiest is to type the chassis/VIN number here " +
+      "(the letter-number string on the metal plate or sticker)."
+    );
+  }
+  return (
+    "Got your photo — I don't see a chassis nameplate/VIN sticker in it. " +
+    "I need a photo of that metal plate or sticker with the letter-number code on the vehicle " +
+    "(not a general shot of the car/engine). Or just type the VIN/frame number here."
+  );
+}
+
 /**
  * Image OCR failed: pick copy from deal context.
  * - part_intent set → treat as accessory/part photo (not a plate ask)
  * - vin/engine already confirmed (Bug A) → don't ask to resend plate
- * - else → ask for clearer VIN/frame photo
+ * - else → ask for nameplate/VIN photo (not "clearer" blur wording)
+ *
+ * Dedup: short-window silence so stacked photos don't spam the same line.
+ * OCR still ran before this is called; success path is unaffected.
+ *
+ * @returns {{ reply: string|null, silence: boolean, dealPatch: object }}
  */
-export function plateFailureReply(mediaContext, dealState) {
-  if (mediaContext?.message_type !== "image") return null;
+export function decidePlateFailureReply(mediaContext, dealState, nowMs = Date.now()) {
+  const empty = { reply: null, silence: false, dealPatch: {} };
+  if (mediaContext?.message_type !== "image") return empty;
   const status = mediaContext?.vin_decode?.status;
-  if (status === "success") return null;
-  if (!status) return null;
+  if (status === "success") return empty;
+  if (!status) return empty;
 
   const partIntent = String(dealState?.part_intent || "").trim();
   if (partIntent) {
     const label = partIntentLabel(partIntent);
-    return `Got your photo — noted for your ${label} request. Anything else, or should we get you a price?`;
+    return {
+      reply: `Got your photo — noted for your ${label} request. Anything else, or should we get you a price?`,
+      silence: false,
+      dealPatch: {},
+    };
   }
 
   if (dealState?.vin || dealState?.engine_code) {
     const bits = [dealState.brand, dealState.model, dealState.year, dealState.engine_code]
       .filter(Boolean);
-    return bits.length
-      ? `No worries — we already have your vehicle confirmed (${bits.join(" / ")}). You don't need to resend the plate.`
-      : "No worries — we already have your vehicle details confirmed from your earlier photo.";
+    return {
+      reply: bits.length
+        ? `No worries — we already have your vehicle confirmed (${bits.join(" / ")}). You don't need to resend the plate.`
+        : "No worries — we already have your vehicle details confirmed from your earlier photo.",
+      silence: false,
+      dealPatch: {},
+    };
   }
 
-  return "Got your photo — I couldn't read the plate clearly. Could you send a clearer photo of the VIN/frame number, or type it here?";
+  const lastAt = Date.parse(String(dealState?.last_plate_failure_reply_at || ""));
+  const withinWindow = Number.isFinite(lastAt) && nowMs - lastAt < PLATE_FAILURE_DEDUP_MS;
+  const prevStreak = withinWindow ? Number(dealState?.plate_failure_streak || 0) : 0;
+  const streak = prevStreak + 1;
+  const lastKind = withinWindow ? String(dealState?.last_plate_failure_reply_kind || "") : "";
+
+  // 1st in window → primary; 3rd → escalate once; other in-window failures → silence.
+  let kind = null;
+  if (!withinWindow || streak === 1) {
+    kind = "primary";
+  } else if (streak === PLATE_FAILURE_ESCALATE_AT && lastKind !== "escalate") {
+    kind = "escalate";
+  }
+
+  if (!kind) {
+    return {
+      reply: null,
+      silence: true,
+      dealPatch: {
+        plate_failure_streak: streak,
+      },
+    };
+  }
+
+  return {
+    reply: plateFailureAskCopy(kind),
+    silence: false,
+    dealPatch: {
+      last_plate_failure_reply_at: new Date(nowMs).toISOString(),
+      plate_failure_streak: streak,
+      last_plate_failure_reply_kind: kind,
+    },
+  };
+}
+
+/** @deprecated Prefer decidePlateFailureReply — kept for older call sites/tests. */
+export function plateFailureReply(mediaContext, dealState, nowMs = Date.now()) {
+  return decidePlateFailureReply(mediaContext, dealState, nowMs).reply;
+}
+
+/** Clear failure-ask streak after a successful plate/VIN decode. */
+export function plateFailureResetPatch() {
+  return {
+    plate_failure_streak: 0,
+    last_plate_failure_reply_at: null,
+    last_plate_failure_reply_kind: null,
+  };
 }
 
 /** Keep last N team (human) replies for prompt context. */

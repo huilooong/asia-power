@@ -8,7 +8,8 @@ import { startApsalesWhatsAppSession } from "./apsales-whatsapp-session.mjs";
 import { recordInboundForEvidence, recordReplyForEvidence } from "./evidence-hook.mjs";
 import {
   noteBotSend,
-  plateFailureReply,
+  decidePlateFailureReply,
+  plateFailureResetPatch,
   partIntentFromText,
   nextTeamReplies,
   recentTeamRepliesForPrompt,
@@ -1083,7 +1084,7 @@ async function buildMediaContext(message, session, senderId) {
     sales_hint:
       vinDecode.status === "success"
         ? "Nameplate/VIN facts are in vin_decode.vehicle. Acknowledge the vehicle briefly and ask ONE sales question (engine/half-cut/destination)."
-        : "Photo received but plate OCR incomplete. Ask once for a clearer plate photo or the FRAME/VIN number.",
+        : "Photo received but no chassis nameplate/VIN sticker found. Ask once for a photo of the metal plate/sticker with the letter-number code (not a general car/engine shot), or ask them to type the VIN/frame number.",
   };
 }
 
@@ -1094,8 +1095,9 @@ function plateSuccessReply(mediaContext) {
   return formatVehicleConfirmationCard(vehicle);
 }
 
-// plateFailureReply imported from apsales-human-visibility.mjs — uses dealState
-// so we don't ask for another plate photo when VIN/engine is already confirmed.
+// decidePlateFailureReply imported from apsales-human-visibility.mjs — uses dealState
+// so we don't ask for another plate photo when VIN/engine is already confirmed,
+// and short-window silence stops stacked failure photos from spamming the same ask.
 
 function voiceFailureReply(voiceContext) {
   if (voiceContext?.message_type !== "voice") return null;
@@ -1377,6 +1379,7 @@ async function handleMessage(message, state, session) {
 
       const direct = plateSuccessReply(mediaContext);
       if (direct) {
+        await saveDealState(senderId, plateFailureResetPatch()).catch(() => {});
         const result = await sendCustomerText(session, senderId, direct);
         recordReplyForEvidence({
           senderId,
@@ -1406,8 +1409,33 @@ async function handleMessage(message, state, session) {
         return;
       }
 
-      const failDirect = plateFailureReply(mediaContext, dealState);
-      if (failDirect) {
+      const failDecision = decidePlateFailureReply(mediaContext, dealState);
+      if (failDecision.dealPatch && Object.keys(failDecision.dealPatch).length) {
+        await saveDealState(senderId, failDecision.dealPatch).catch((err) =>
+          log("plate failure dealState patch failed", {
+            senderId,
+            error: err instanceof Error ? err.message : String(err),
+          }),
+        );
+      }
+      if (failDecision.silence) {
+        log("plate fallback silenced (dedup window)", {
+          senderId,
+          messageId: message.messageId,
+          elapsedMs: Date.now() - startedAt,
+          decodeStatus: mediaContext?.vin_decode?.status || null,
+          decodeError: mediaContext?.vin_decode?.error || null,
+          streak: failDecision.dealPatch?.plate_failure_streak || null,
+        });
+        await appendActivity(
+          "apsales_plate_fallback_silenced",
+          `客户 ${senderId}: plate failure silenced (OCR still ran)`,
+          "silenced",
+        );
+        return;
+      }
+      if (failDecision.reply) {
+        const failDirect = failDecision.reply;
         const result = await sendCustomerText(session, senderId, failDirect);
         recordReplyForEvidence({
           senderId,
@@ -1429,6 +1457,7 @@ async function handleMessage(message, state, session) {
           reply: failDirect,
           decodeStatus: mediaContext?.vin_decode?.status || null,
           decodeError: mediaContext?.vin_decode?.error || null,
+          kind: failDecision.dealPatch?.last_plate_failure_reply_kind || null,
         });
         await appendActivity(
           "apsales_plate_fallback_direct_reply_sent",

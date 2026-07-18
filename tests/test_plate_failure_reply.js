@@ -10,13 +10,16 @@ async function loadHelpers() {
   return import(pathToFileURL(mod).href);
 }
 
-test('plateFailureReply: no dealState keeps unclear-photo copy', async () => {
+const failImg = { message_type: 'image', vin_decode: { status: 'failed', error: 'no_vin' } };
+const t0 = Date.parse('2026-07-18T05:00:00.000Z');
+
+test('plateFailureReply: no dealState asks for nameplate/VIN sticker (not blur wording)', async () => {
   const { plateFailureReply } = await loadHelpers();
-  const reply = plateFailureReply(
-    { message_type: 'image', vin_decode: { status: 'failed', error: 'no_vin' } },
-    null,
-  );
-  assert.match(reply, /couldn't read the plate clearly/i);
+  const reply = plateFailureReply(failImg, null);
+  assert.match(reply, /nameplate\/VIN sticker/i);
+  assert.match(reply, /not a general shot/i);
+  assert.ok(!/couldn't read the plate clearly/i.test(reply));
+  assert.ok(!/clearer photo/i.test(reply));
 });
 
 test('plateFailureReply: dealState.vin uses already-confirmed copy', async () => {
@@ -28,7 +31,7 @@ test('plateFailureReply: dealState.vin uses already-confirmed copy', async () =>
   assert.match(reply, /already have your vehicle confirmed/i);
   assert.match(reply, /Toyota/);
   assert.match(reply, /2AZ-FE/);
-  assert.ok(!/couldn't read the plate clearly/i.test(reply));
+  assert.ok(!/nameplate\/VIN sticker/i.test(reply));
 });
 
 test('plateFailureReply: part_intent without vin uses parts-photo copy (not plate ask)', async () => {
@@ -38,7 +41,7 @@ test('plateFailureReply: part_intent without vin uses parts-photo copy (not plat
     { part_intent: 'engine' },
   );
   assert.match(reply, /noted for your engine request/i);
-  assert.ok(!/couldn't read the plate clearly/i.test(reply));
+  assert.ok(!/nameplate\/VIN sticker/i.test(reply));
 });
 
 test('plateFailureReply: body-part intent (windscreen) acknowledges part photo', async () => {
@@ -49,7 +52,7 @@ test('plateFailureReply: body-part intent (windscreen) acknowledges part photo',
   );
   assert.match(reply, /noted for your windscreen request/i);
   assert.match(reply, /get you a price/i);
-  assert.ok(!/couldn't read the plate clearly/i.test(reply));
+  assert.ok(!/nameplate\/VIN sticker/i.test(reply));
 });
 
 test('plateFailureReply: part_intent wins over junk/confirmed vin on OCR fail', async () => {
@@ -59,17 +62,76 @@ test('plateFailureReply: part_intent wins over junk/confirmed vin on OCR fail', 
     { part_intent: 'parts', vin: 'AAAYRWMZ42FJ4A777' },
   );
   assert.match(reply, /noted for your parts request/i);
-  assert.ok(!/couldn't read the plate clearly/i.test(reply));
+  assert.ok(!/nameplate\/VIN sticker/i.test(reply));
   assert.ok(!/already have your vehicle confirmed/i.test(reply));
 });
 
-test('plateFailureReply: empty dealState (no part_intent, no vin) keeps unclear-photo copy', async () => {
+test('plateFailureReply: empty dealState (no part_intent, no vin) asks for nameplate', async () => {
   const { plateFailureReply } = await loadHelpers();
-  const reply = plateFailureReply(
-    { message_type: 'image', vin_decode: { status: 'failed', error: 'no_vin' } },
-    {},
+  const reply = plateFailureReply(failImg, {});
+  assert.match(reply, /nameplate\/VIN sticker/i);
+});
+
+test('decidePlateFailureReply: 2nd failure in window is silence; OCR path still returns decision', async () => {
+  const { decidePlateFailureReply, plateFailureAskCopy } = await loadHelpers();
+  const first = decidePlateFailureReply(failImg, {}, t0);
+  assert.equal(first.silence, false);
+  assert.equal(first.reply, plateFailureAskCopy('primary'));
+  assert.equal(first.dealPatch.plate_failure_streak, 1);
+  assert.equal(first.dealPatch.last_plate_failure_reply_kind, 'primary');
+
+  const second = decidePlateFailureReply(
+    failImg,
+    {
+      last_plate_failure_reply_at: first.dealPatch.last_plate_failure_reply_at,
+      plate_failure_streak: 1,
+      last_plate_failure_reply_kind: 'primary',
+    },
+    t0 + 60_000,
   );
-  assert.match(reply, /couldn't read the plate clearly/i);
+  assert.equal(second.silence, true);
+  assert.equal(second.reply, null);
+  assert.equal(second.dealPatch.plate_failure_streak, 2);
+
+  const third = decidePlateFailureReply(
+    failImg,
+    {
+      last_plate_failure_reply_at: first.dealPatch.last_plate_failure_reply_at,
+      plate_failure_streak: 2,
+      last_plate_failure_reply_kind: 'primary',
+    },
+    t0 + 120_000,
+  );
+  assert.equal(third.silence, false);
+  assert.equal(third.reply, plateFailureAskCopy('escalate'));
+  assert.equal(third.dealPatch.last_plate_failure_reply_kind, 'escalate');
+  assert.match(third.reply, /type the chassis\/VIN/i);
+});
+
+test('decidePlateFailureReply: after window expires, primary ask again', async () => {
+  const { decidePlateFailureReply, PLATE_FAILURE_DEDUP_MS } = await loadHelpers();
+  const again = decidePlateFailureReply(
+    failImg,
+    {
+      last_plate_failure_reply_at: new Date(t0).toISOString(),
+      plate_failure_streak: 5,
+      last_plate_failure_reply_kind: 'escalate',
+    },
+    t0 + PLATE_FAILURE_DEDUP_MS + 1,
+  );
+  assert.equal(again.silence, false);
+  assert.match(again.reply, /nameplate\/VIN sticker/i);
+  assert.equal(again.dealPatch.plate_failure_streak, 1);
+  assert.equal(again.dealPatch.last_plate_failure_reply_kind, 'primary');
+});
+
+test('plateFailureResetPatch clears streak fields', async () => {
+  const { plateFailureResetPatch } = await loadHelpers();
+  assert.deepEqual(plateFailureResetPatch(), {
+    plate_failure_streak: 0,
+    last_plate_failure_reply_at: null,
+    last_plate_failure_reply_kind: null,
+  });
 });
 
 test('partIntentFromText: body-part list from CEO case maps to parts', async () => {
