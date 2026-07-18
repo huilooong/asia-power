@@ -310,8 +310,11 @@ def post_listing(
     stock_id = str(item.get("stockId") or "")
     photos = pick_photos(item)
     if force_bad_url and photos:
-        photos = list(photos)
-        photos[0] = {**photos[0], "url": "/uploads/photos/__missing_force_404__.jpg"}
+        # Validation mode: break every URL so the listing cannot publish.
+        photos = [
+            {**p, "url": f"/uploads/photos/__missing_force_404_{i}__.jpg"}
+            for i, p in enumerate(photos)
+        ]
 
     caption = build_caption(item)
     log(f"  photos={len(photos)} labeled_score={labeled_photo_score(item)}")
@@ -333,8 +336,9 @@ def post_listing(
         except Exception as exc:
             log(f"  photo upload failed ({url}): {exc}")
 
-    if not media_ids:
-        log(f"  skip {stock_id}: no media uploaded")
+    # Need a real album (≥4). Partial failures must not publish a thin/broken post.
+    if len(media_ids) < 4:
+        log(f"  skip {stock_id}: only {len(media_ids)} media uploaded (need ≥4)")
         return None
 
     params: dict[str, Any] = {"message": caption}
