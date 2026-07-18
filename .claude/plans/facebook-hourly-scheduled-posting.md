@@ -43,3 +43,28 @@
 <!-- 追加,不要覆盖之前记录 -->
 
 - 已开始 2026-07-18 ~05:15 Asia/Shanghai（Cursor）
+
+### 完成报告 — 2026-07-18 ~05:20 Asia/Shanghai（Cursor）
+
+**状态**: 已落地、已验证、cron 已装
+
+#### 交付物
+- `scripts/apsales-facebook-scheduled-post.py`：每轮挑 2 条未发 Available（≥4 图），相册帖发布；失败跳过不写账本
+- `deploy/cron/apsales-facebook-scheduled-post.cron`：`0 * * * *` → `/var/log/apsales-facebook-scheduled-post.log`
+- 去重账本：`AsiaPower/data/fb-posted-stock-ids.json`（今天 10 条已在此；方案里写的 inventory-site 路径作镜像写入）
+- 文案三种：车头 cab / 卡车半切 / 乘用半切（沿用今天验证过的措辞）
+- **不做**：加量、Instagram、智能选品
+
+#### 验证
+| 项 | 结果 |
+|---|---|
+| 单元测试 | `tests/test_apsales_facebook_scheduled_post.py` 通过 |
+| 手动跑 #1 | HC250066、HC250103 发布成功（跳过已发 10 条） |
+| 手动跑 #2 | HC250102 成功；HC250067 feed HTTP 500 跳过且**未**入账本 |
+| 坏图模拟 | 全 URL 404 → skip、账本长度不变 |
+| cron | `/etc/cron.d/apsales-facebook-scheduled-post` 已装；日志可写 |
+
+**生产 Release**: `REL-20260718051617-apsales-3fa025ebe`  
+**Commits**: `3fa025ebe`（主功能）, `5bc6da925`（≥4 图门槛）
+
+**下一步**: 等下一个整点看日志是否自动跑；若要改频率等龙哥说。
