@@ -65,7 +65,7 @@
 | B 去重 | 成功 — 8 分钟窗口：第1条 primary、窗口内静默、第3次 escalate；成功路径 `plateFailureResetPatch` |
 | LIVE-RULES | 成功 — 「身份与 VIN」增加铭牌照片 + 短窗口不刷屏一条 |
 | 测试 | 成功 — `node --test tests/test_plate_failure_reply.js` 15/15 |
-| 部署 | 进行中 — 见下方 Release ID |
+| 部署 | 成功 — `REL-20260718052600-apsales-openclaw-7645643a8` |
 
 **改动文件**
 - `deploy/apsales-live-draft/apsales-human-visibility.mjs`
@@ -78,3 +78,4 @@
 2. `decidePlateFailureReply`：窗口内第 2 张静默（仍跑 OCR）；第 3 张换 escalate 话术；超时后重新 primary。
 3. 未并入 `detectPossibleRepeat`。
 
+**Release:** `REL-20260718052600-apsales-openclaw-7645643a8`（commit `7645643a8`）
