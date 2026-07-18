@@ -471,6 +471,7 @@
     const links = [
       { href: 'admin/inventory.html', label: '库存', id: 'admin-inventory' },
       { href: 'admin/leads.html', label: '询价', id: 'admin-leads' },
+      { href: 'admin/emails.html', label: '邮件', id: 'admin-emails' },
       { href: 'admin/analytics.html', label: '访问统计', id: 'admin-analytics' },
       { href: 'admin/apsales-progress.html', label: '推广', id: 'admin-apsales-progress' },
     ];
@@ -661,6 +662,7 @@
     const links = [
       { href: 'admin/inventory.html', label: '库存' },
       { href: 'admin/leads.html', label: '询价' },
+      { href: 'admin/emails.html', label: '邮件' },
       { href: 'admin/analytics.html', label: '访问统计' },
       { href: 'admin/apsales-progress.html', label: '推广' },
       { href: 'index.html', label: '返回官网' },

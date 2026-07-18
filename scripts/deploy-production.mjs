@@ -496,10 +496,12 @@ function deployAdmin() {
   rsync(`${ROOT}/js/admin-analytics.js`, `${pub}/js/admin-analytics.js`);
   rsync(`${ROOT}/js/admin-leads.js`, `${pub}/js/admin-leads.js`);
   rsync(`${ROOT}/js/admin-apsales-progress.js`, `${pub}/js/admin-apsales-progress.js`);
+  rsync(`${ROOT}/js/admin-emails.js`, `${pub}/js/admin-emails.js`);
   rsync(`${ROOT}/admin/inventory.html`, `${pub}/admin/inventory.html`);
   rsync(`${ROOT}/admin/analytics.html`, `${pub}/admin/analytics.html`);
   rsync(`${ROOT}/admin/leads.html`, `${pub}/admin/leads.html`);
   rsync(`${ROOT}/admin/apsales-progress.html`, `${pub}/admin/apsales-progress.html`);
+  rsync(`${ROOT}/admin/emails.html`, `${pub}/admin/emails.html`);
   ssh(`
 set -e
 PUB=/root/.openclaw/workspace/inventory-site/public
@@ -507,16 +509,19 @@ test -f "$PUB/css/admin-v4.css"
 test -f "$PUB/js/admin-common.js"
 test -f "$PUB/js/admin-analytics.js"
 test -f "$PUB/js/admin-inventory-hub.js"
+test -f "$PUB/js/admin-emails.js"
 test -f "$PUB/admin/inventory.html"
 test -f "$PUB/admin/analytics.html"
 test -f "$PUB/admin/leads.html"
 test -f "$PUB/admin/apsales-progress.html"
+test -f "$PUB/admin/emails.html"
 # IA markers
 grep -q 'admin-ia-reorg-v1' "$PUB/admin/inventory.html"
 grep -q 'admin-ia-reorg-v1' "$PUB/admin/analytics.html"
 grep -q 'data-admin-ia="analytics-only-v1"' "$PUB/js/admin-analytics.js" || grep -q 'analytics-only-v1' "$PUB/js/admin-analytics.js"
 grep -q '访问统计' "$PUB/js/components.js"
 grep -q 'apsales-progress.html' "$PUB/js/components.js"
+grep -q 'admin/emails.html' "$PUB/js/components.js"
 grep -q 'data-admin-google-login' "$PUB/js/admin-common.js"
 # Must NOT have embedded inventory review tabs on analytics page scripts list
 ! grep -q 'admin-inventory-hub' "$PUB/admin/analytics.html"

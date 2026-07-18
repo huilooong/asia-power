@@ -75,7 +75,7 @@ function shouldForwardToCeo(toAddress) {
     .toLowerCase()
     .replace(/^.*<([^>]+)>.*$/, '$1')
     .split('@')[0];
-  return local === 'sales' || local === 'inquiry';
+  return local === 'sales' || local === 'inquiry' || local === 'weylon';
 }
 
 function extractPlainText(raw) {
