@@ -1592,6 +1592,36 @@ async function handleMessage(message, state, session) {
           });
         }
       }
+      if (generated.needsPriceConfirmation) {
+        // CEO price authority gate: >5% self-discount or no listed price on site.
+        // Hold BEFORE send — this must never reach the customer without CEO sign-off.
+        const pendingId = `pc-${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 8)}`;
+        await saveDealState(senderId, {
+          pending_price_confirmation: {
+            id: pendingId,
+            proposed_reply: generated.reply,
+            customer_message: text.slice(0, 500),
+            created_at: new Date().toISOString(),
+            runId: generated.runId,
+            sessionKey: generated.sessionKey,
+          },
+        });
+        await appendActivity(
+          "apsales_price_confirmation_held",
+          `客户 ${senderId}: 报价超5%自主让利权限或网站无此价，已拦截未发送，等待CEO确认 (${pendingId})`,
+          "held",
+        );
+        log("price confirmation held before send", {
+          senderId,
+          messageId: message.messageId,
+          pendingId,
+          proposedReply: generated.reply,
+        });
+        await sendTelegram(
+          `⛔ 报价已拦截，未发送给客户（超5%自主让利权限或网站无此价）\n客户: ${senderId}\n客户说: ${text.slice(0, 300)}\n待发送回复: ${generated.reply}\nGateway run: ${generated.runId}\nID: ${pendingId}\n\n需要你人工确认价格后，直接在 WhatsApp 联系该客户处理，或修改后转子敬继续跟进。`,
+        ).catch((err) => log("telegram price confirmation alert failed", { error: err instanceof Error ? err.message : String(err) }));
+        return;
+      }
       const result = await sendCustomerText(session, senderId, generated.reply);
       recordReplyForEvidence({
         senderId,
@@ -1681,11 +1711,6 @@ async function handleMessage(message, state, session) {
               error: err instanceof Error ? err.message : String(err),
             }),
           );
-      }
-      if (generated.needsPriceConfirmation) {
-        await sendTelegram(
-          `💰 客户询价，网站上没有这个价格（或超出5%自主让利权限），需要你确认\n客户: ${senderId}\n客户说: ${text.slice(0, 300)}\nbot 回复: ${generated.reply}\nGateway run: ${generated.runId}\nsession: ${generated.sessionKey}`,
-        ).catch((err) => log("telegram price confirmation alert failed", { error: err instanceof Error ? err.message : String(err) }));
       }
       return;
     }
