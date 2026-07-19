@@ -4,7 +4,7 @@
 (function () {
   'use strict';
 
-  const ADS_CONVERSION_ID = 'AW-4801206293';
+  const ADS_CONVERSION_ID = 'AW-5641180568'; // Google Ads account 564-118-0568 (2026-07-19)
   const ADS_GENERATE_LEAD_LABEL = '';
   const ADS_GENERATE_LEAD_SEND_TO = ADS_GENERATE_LEAD_LABEL
     ? `${ADS_CONVERSION_ID}/${ADS_GENERATE_LEAD_LABEL}`
