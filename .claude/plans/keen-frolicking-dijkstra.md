@@ -202,3 +202,8 @@ _(等待 Cursor 开始/完成后在这里追加记录)_
 - `server/lib/contact-leads.js`, `docs/zijing-training/LIVE-RULES.md`
 - `docs/previews/apui-halfcut-explode-001/explode-view-preview.html`
 
+**Release IDs**
+- chrome: `REL-20260719033435-chrome-4664bad2e`
+- api: `REL-20260719033843-api-4664bad2e`（post 校验有 Cloudflare releaseId 缓存差，contact-leads 已同步）
+- apsales-openclaw: 首次因未把 `apsales-inventory-links.mjs` 列入 rsync 导致 bridge 短暂挂起 → 已热修 scp + restart；deploy 脚本已补 rsync 后需再部署一次
+
