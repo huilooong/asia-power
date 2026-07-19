@@ -1,8 +1,8 @@
 # OPS-003 Production Health
 
-- Checked at: 2026-07-17T01:43:52.668Z
+- Checked at: 2026-07-18T20:46:32.777Z
 - Base URL: https://asia-power.com
-- Release: REL-20260717014051-chrome-13a48ef0c
+- Release: REL-20260718204501-admin-d1e20afc8
 - Status: **PASS**
 - Pass: 117 / Fail: 0
 - Expected WhatsApp: 8616638801930
@@ -113,7 +113,7 @@
 - **PASS** `config_js_whatsapp`: whatsapp=8616638801930
 - **PASS** `config_js_cache_policy`: public, max-age=14400, must-revalidate
 - **PASS** `config_js_cf`: cf=EXPIRED age=0
-- **PASS** `config_js_release_id`: releaseId=REL-20260717014051-chrome-13a48ef0c
+- **PASS** `config_js_release_id`: releaseId=REL-20260718204501-admin-d1e20afc8
 - **PASS** `sw_js_http`: HTTP 200
 - **PASS** `sw_version`: CACHE_VERSION=pwa-app-v6b
 - **PASS** `sw_precache_config`: no bare config.js precache (or versioned)
@@ -122,16 +122,16 @@
 - **PASS** `robots_content`: bytes=349
 - **PASS** `robots_content_type`: text/plain; charset=utf-8
 - **PASS** `sitemap_http`: HTTP 200
-- **PASS** `sitemap_content`: bytes=152461
+- **PASS** `sitemap_content`: bytes=152684
 - **PASS** `sitemap_content_type`: application/xml; charset=utf-8
 - **PASS** `sitemap_head_http`: HEAD HTTP 200
-- **PASS** `seo_sitemap_url_count`: 716 URLs
+- **PASS** `seo_sitemap_url_count`: 717 URLs
 - **PASS** `seo_sitemap_test_like_urls`: no obvious test/demo/QA URLs in sitemap
 - **PASS** `seo_sitemap_static_growth_pages`: guide and country engine pages present
-- **PASS** `seo_half_cut_sample_present`: https://asia-power.com/half-cuts/detail.html?slug=geely-2009-jl-6mt186-passenger-transmission-hc250580
+- **PASS** `seo_half_cut_sample_present`: https://asia-power.com/half-cuts/detail.html?slug=haval-h6-2013-4g69-s4m-half-cut-hc250583
 - **PASS** `seo_half_cut_detail_http`: HTTP 200
-- **PASS** `seo_half_cut_canonical`: https://asia-power.com/half-cuts/detail.html?slug=geely-2009-jl-6mt186-passenger-transmission-hc250580
-- **PASS** `seo_half_cut_product_jsonld_url`: https://asia-power.com/half-cuts/detail.html?slug=geely-2009-jl-6mt186-passenger-transmission-hc250580
+- **PASS** `seo_half_cut_canonical`: https://asia-power.com/half-cuts/detail.html?slug=haval-h6-2013-4g69-s4m-half-cut-hc250583
+- **PASS** `seo_half_cut_product_jsonld_url`: https://asia-power.com/half-cuts/detail.html?slug=haval-h6-2013-4g69-s4m-half-cut-hc250583
 - **PASS** `seo_truck_sample_present`: https://asia-power.com/trucks/detail.html?slug=dongfeng-2024-cab-truck-cab-hc250582
 - **PASS** `seo_truck_detail_http`: HTTP 200
 - **PASS** `seo_truck_canonical`: https://asia-power.com/trucks/detail.html?slug=dongfeng-2024-cab-truck-cab-hc250582

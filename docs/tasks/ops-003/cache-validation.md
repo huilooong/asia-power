@@ -118,14 +118,14 @@
 - Cache-Control: public, max-age=14400, must-revalidate
 - ETag: —
 - Age: —
-- Last-Modified: Fri, 17 Jul 2026 01:43:49 GMT
+- Last-Modified: Sat, 18 Jul 2026 20:46:29 GMT
 ## sw_js
 - URL: https://asia-power.com/sw.js
 - CF-Cache-Status: EXPIRED
 - Cache-Control: public, max-age=14400, must-revalidate
 - ETag: —
 - Age: —
-- Last-Modified: Fri, 17 Jul 2026 01:43:49 GMT
+- Last-Modified: Sat, 18 Jul 2026 20:46:29 GMT
 ## robots
 - URL: https://asia-power.com/robots.txt
 - CF-Cache-Status: BYPASS

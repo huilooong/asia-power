@@ -2,9 +2,9 @@
   "report": {
     "status": "pass",
     "base_url": "https://asia-power.com",
-    "release_id": "REL-20260717014051-chrome-13a48ef0c",
+    "release_id": "REL-20260718204501-admin-d1e20afc8",
     "expected_whatsapp": "8616638801930",
-    "checked_at": "2026-07-17T01:43:52.668Z",
+    "checked_at": "2026-07-18T20:46:32.777Z",
     "checks": [
       {
         "name": "homepage_http",
@@ -529,7 +529,7 @@
       {
         "name": "config_js_release_id",
         "status": "pass",
-        "detail": "releaseId=REL-20260717014051-chrome-13a48ef0c"
+        "detail": "releaseId=REL-20260718204501-admin-d1e20afc8"
       },
       {
         "name": "sw_js_http",
@@ -574,7 +574,7 @@
       {
         "name": "sitemap_content",
         "status": "pass",
-        "detail": "bytes=152461"
+        "detail": "bytes=152684"
       },
       {
         "name": "sitemap_content_type",
@@ -589,7 +589,7 @@
       {
         "name": "seo_sitemap_url_count",
         "status": "pass",
-        "detail": "716 URLs"
+        "detail": "717 URLs"
       },
       {
         "name": "seo_sitemap_test_like_urls",
@@ -604,7 +604,7 @@
       {
         "name": "seo_half_cut_sample_present",
         "status": "pass",
-        "detail": "https://asia-power.com/half-cuts/detail.html?slug=geely-2009-jl-6mt186-passenger-transmission-hc250580"
+        "detail": "https://asia-power.com/half-cuts/detail.html?slug=haval-h6-2013-4g69-s4m-half-cut-hc250583"
       },
       {
         "name": "seo_half_cut_detail_http",
@@ -614,12 +614,12 @@
       {
         "name": "seo_half_cut_canonical",
         "status": "pass",
-        "detail": "https://asia-power.com/half-cuts/detail.html?slug=geely-2009-jl-6mt186-passenger-transmission-hc250580"
+        "detail": "https://asia-power.com/half-cuts/detail.html?slug=haval-h6-2013-4g69-s4m-half-cut-hc250583"
       },
       {
         "name": "seo_half_cut_product_jsonld_url",
         "status": "pass",
-        "detail": "https://asia-power.com/half-cuts/detail.html?slug=geely-2009-jl-6mt186-passenger-transmission-hc250580"
+        "detail": "https://asia-power.com/half-cuts/detail.html?slug=haval-h6-2013-4g69-s4m-half-cut-hc250583"
       },
       {
         "name": "seo_truck_sample_present",
@@ -1058,10 +1058,10 @@
           "cf_cache_status": "EXPIRED",
           "etag": "",
           "age": "",
-          "last_modified": "Fri, 17 Jul 2026 01:43:49 GMT"
+          "last_modified": "Sat, 18 Jul 2026 20:46:29 GMT"
         },
         "whatsapp": "8616638801930",
-        "release_id": "REL-20260717014051-chrome-13a48ef0c"
+        "release_id": "REL-20260718204501-admin-d1e20afc8"
       },
       "sw_js": {
         "url": "https://asia-power.com/sw.js",
@@ -1071,7 +1071,7 @@
           "cf_cache_status": "EXPIRED",
           "etag": "",
           "age": "",
-          "last_modified": "Fri, 17 Jul 2026 01:43:49 GMT"
+          "last_modified": "Sat, 18 Jul 2026 20:46:29 GMT"
         },
         "cache_version": "pwa-app-v6b"
       },
@@ -1098,13 +1098,13 @@
         }
       },
       "seo_canonical": {
-        "sitemap_url_count": 716,
+        "sitemap_url_count": 717,
         "samples": {
           "half_cut": {
-            "loc": "https://asia-power.com/half-cuts/detail.html?slug=geely-2009-jl-6mt186-passenger-transmission-hc250580",
+            "loc": "https://asia-power.com/half-cuts/detail.html?slug=haval-h6-2013-4g69-s4m-half-cut-hc250583",
             "http_status": 200,
-            "canonical": "https://asia-power.com/half-cuts/detail.html?slug=geely-2009-jl-6mt186-passenger-transmission-hc250580",
-            "product_jsonld_url": "https://asia-power.com/half-cuts/detail.html?slug=geely-2009-jl-6mt186-passenger-transmission-hc250580"
+            "canonical": "https://asia-power.com/half-cuts/detail.html?slug=haval-h6-2013-4g69-s4m-half-cut-hc250583",
+            "product_jsonld_url": "https://asia-power.com/half-cuts/detail.html?slug=haval-h6-2013-4g69-s4m-half-cut-hc250583"
           },
           "truck": {
             "loc": "https://asia-power.com/trucks/detail.html?slug=dongfeng-2024-cab-truck-cab-hc250582",
