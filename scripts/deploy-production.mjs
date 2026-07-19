@@ -336,6 +336,8 @@ function deployChrome() {
   rsync(`${ROOT}/machinery/detail.html`, `${pub}/machinery/detail.html`);
   // Detail page must always upgrade truncated catalog photos → full album
   rsync(`${ROOT}/js/half-cut-detail.js`, `${pub}/js/half-cut-detail.js`);
+  rsync(`${ROOT}/js/half-cut-leads.js`, `${pub}/js/half-cut-leads.js`);
+
   // Catalog indexes + static chrome (about/contact/countries/brands). engines/*.html SEO → deploy engines.
   for (const rel of [
     'half-cuts/index.html',
