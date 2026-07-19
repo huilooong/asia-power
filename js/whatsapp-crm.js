@@ -19,6 +19,29 @@
     return `https://wa.me/${waNumber()}?text=${encodeURIComponent(msg)}`;
   }
 
+  /** Multi-item quote list → one WhatsApp message (not N separate jumps). */
+  function buildBulkWhatsAppMessage(items) {
+    if (window.QuoteList?.buildBulkMessage) return window.QuoteList.buildBulkMessage(items);
+    const list = Array.isArray(items) ? items : [];
+    if (!list.length) return 'Hello AsiaPower, I would like a quote.';
+    const lines = ['Hello AsiaPower — quote list inquiry', `Items: ${list.length}`, ''];
+    list.forEach((it, i) => {
+      lines.push(
+        `${i + 1}. ${it.stockId || it.stock_id || 'item'}` +
+          (it.priceUsd != null || it.price_usd != null
+            ? ` · EXW $${Math.round(Number(it.priceUsd ?? it.price_usd))} USD`
+            : '') +
+          ` · qty ${it.qty || 1}`,
+      );
+    });
+    lines.push('', 'Destination country: [please advise]');
+    return lines.join('\n');
+  }
+
+  function buildBulkUrl(items, leadId) {
+    return buildUrl(buildBulkWhatsAppMessage(items), leadId);
+  }
+
   function openWhatsApp(text, leadId) {
     window.open(buildUrl(text, leadId), '_blank', 'noopener,noreferrer');
   }
@@ -38,6 +61,8 @@
     waNumber,
     appendReference,
     buildUrl,
+    buildBulkWhatsAppMessage,
+    buildBulkUrl,
     openWhatsApp,
     truckPrefill,
     quotePageUrl,

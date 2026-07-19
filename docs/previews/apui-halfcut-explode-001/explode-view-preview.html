@@ -510,7 +510,11 @@
       <div class="sheet-body">
         <h3 id="sheetTitle">Engine</h3>
         <p class="meta" id="sheetMeta">—</p>
+        <p class="price" id="sheetPrice" style="font-weight:700;font-size:1.15rem;margin:0.35rem 0">—</p>
         <p class="note" id="sheetNote">—</p>
+        <button type="button" class="wa-btn" id="addListBtn" style="background:#0f172a;margin-bottom:0.5rem">
+          Add to quote list
+        </button>
         <a class="wa-btn" id="waBtn" href="#" target="_blank" rel="noopener">
           <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M20.5 3.5A11 11 0 0 0 3.4 17.7L2 22l4.4-1.2A11 11 0 1 0 20.5 3.5zm-8.5 17a9 9 0 0 1-4.6-1.3l-.3-.2-2.6.7.7-2.5-.2-.3a9 9 0 1 1 7 3.6zm5-6.7c-.3-.1-1.6-.8-1.9-.9-.3-.1-.5-.1-.7.2-.2.3-.8.9-.9 1.1-.2.2-.3.2-.6.1-.3-.1-1.2-.4-2.3-1.4-.8-.8-1.4-1.7-1.6-2-.2-.3 0-.4.1-.6l.4-.5c.1-.2.2-.3.3-.5.1-.2 0-.4 0-.5-.1-.1-.7-1.7-.9-2.3-.3-.6-.5-.5-.7-.5h-.6c-.2 0-.5.1-.8.4-.3.3-1 1-1 2.4s1 2.8 1.2 3c.1.2 2 3.1 4.8 4.3 1.8.8 2.5.8 3.4.7.5-.1 1.6-.7 1.8-1.3.2-.6.2-1.2.2-1.3 0-.1-.2-.2-.5-.3z"/></svg>
           WhatsApp inquire this part
@@ -550,6 +554,20 @@
       { id: 'rear', en: 'Rear', zh: '尾部', icon: 'rear', match: [/vehicle rear|^rear$|cab rear/i], dx: 104, dy: 140, delay: 300 },
     ];
 
+    /* Part EXW estimates from whole-unit priceUsd × ratio (same idea as HalfCutUtils.PART_PRICE_RATIOS).
+       priceSource documents the approved stock row / ratio — not invented numbers. */
+    const PART_PRICE_RATIOS = {
+      engine: 0.65,
+      gearbox: 0.35,
+      front: 0.25,
+      chassis: 0.28,
+      dash: 0.12,
+      doors: 0.15,
+      wiring: 0.08,
+      vin: null,
+      rear: 0.18,
+    };
+
     const SCENARIOS = {
       a: {
         name: 'A · 标签齐全',
@@ -558,6 +576,8 @@
         model: 'Shuailing',
         year: 2017,
         engineCode: '',
+        priceUsd: 2200,
+        priceSource: 'approved stock HC250126 priceUsd (whole half-cut EXW)',
         passengerPartType: 'front',
         hero: '/uploads/photos/photo-1782354255177-bfaa6bd0.webp',
         photos: [
@@ -581,6 +601,8 @@
         model: 'CR-V',
         year: 2007,
         engineCode: 'R20A3',
+        priceUsd: 1450,
+        priceSource: 'approved stock HC250507 priceUsd (whole half-cut EXW)',
         passengerPartType: '',
         hero: '/uploads/photos/photo-1782875302753-79b82442.webp',
         photos: [
@@ -621,11 +643,29 @@
       tag: document.getElementById('sheetTag'),
       sheetTitle: document.getElementById('sheetTitle'),
       sheetMeta: document.getElementById('sheetMeta'),
+      sheetPrice: document.getElementById('sheetPrice'),
       sheetNote: document.getElementById('sheetNote'),
       waBtn: document.getElementById('waBtn'),
+      addListBtn: document.getElementById('addListBtn'),
       closeModal: document.getElementById('closeModal'),
       toast: document.getElementById('toast'),
     };
+
+    function partPrice(part, stock) {
+      const whole = Number(stock.priceUsd);
+      if (!Number.isFinite(whole) || whole <= 0) {
+        return { amount: null, note: 'no whole-unit priceUsd on scenario', source: stock.priceSource || '' };
+      }
+      const ratio = PART_PRICE_RATIOS[part.id];
+      if (ratio == null || !Number.isFinite(ratio)) {
+        return { amount: null, note: 'inquire (no part ratio)', source: stock.priceSource || '' };
+      }
+      return {
+        amount: Math.round(whole * ratio),
+        note: `estimate = whole EXW $${whole} × ${ratio} (${part.id})`,
+        source: stock.priceSource || '',
+      };
+    }
 
     function resolvePhoto(part, stock) {
       for (const photo of stock.photos || []) {
@@ -639,7 +679,11 @@
     }
 
     function waHref(part, stock) {
-      const text = `Hi, I'm interested in the ${part.en} from Stock ID ${stock.stockId} (${stock.year} ${stock.brand} ${stock.model})`;
+      const priced = partPrice(part, stock);
+      const priceLine = priced.amount != null
+        ? `Estimated EXW $${priced.amount} USD (${priced.note})`
+        : 'EXW: please confirm';
+      const text = `Hi, I'm interested in the ${part.en} from Stock ID ${stock.stockId} (${stock.year} ${stock.brand} ${stock.model}). ${priceLine}. Source: ${priced.source || 'scenario'}`;
       return `https://wa.me/${WA_NUMBER}?text=${encodeURIComponent(text)}`;
     }
 
@@ -699,6 +743,11 @@
 
       el.sheetTitle.textContent = `${part.en} · ${part.zh}`;
       el.sheetMeta.textContent = `${stock.stockId} · ${stock.year} ${stock.brand} ${stock.model}`;
+      const priced = partPrice(part, stock);
+      el.sheetPrice.textContent = priced.amount != null
+        ? `Est. EXW $${priced.amount} USD`
+        : 'EXW: inquire';
+      el.sheetPrice.title = [priced.note, priced.source].filter(Boolean).join(' · ');
 
       if (photo.real) {
         el.wrap.classList.remove('is-fallback');
@@ -707,7 +756,7 @@
         el.img.alt = `${part.en} — ${photo.label}`;
         el.fallback.hidden = true;
         el.tag.textContent = `Real photo · ${photo.label}`;
-        el.sheetNote.textContent = '真实库存照片（按部位标签匹配）。询价后由团队确认价格、工艺与交期。';
+        el.sheetNote.textContent = `真实库存照片（按部位标签匹配）。价格来源：${priced.source || 'scenario'}；${priced.note || '询价确认'}。`;
       } else {
         el.wrap.classList.add('is-fallback');
         el.img.hidden = true;
@@ -715,10 +764,37 @@
         el.fallback.hidden = false;
         el.fallbackSvg.innerHTML = ICONS[part.icon];
         el.tag.textContent = 'No part-tagged photo';
-        el.sheetNote.textContent = '这条库存还没有该部位标签照片。界面用线稿兜底，不破图；仍可正常询价，团队会补发实拍。';
+        el.sheetNote.textContent = `这条库存还没有该部位标签照片。价格来源：${priced.source || 'scenario'}；${priced.note || '询价确认'}。`;
       }
 
       el.waBtn.href = waHref(part, stock);
+      el.addListBtn.onclick = () => {
+        try {
+          const key = 'asiapower-quote-list-v1';
+          const list = JSON.parse(localStorage.getItem(key) || '[]');
+          const row = {
+            stockId: stock.stockId,
+            brand: stock.brand,
+            model: stock.model,
+            year: stock.year,
+            engineCode: stock.engineCode || '',
+            partType: part.id,
+            partLabel: part.en,
+            priceUsd: priced.amount,
+            priceNote: priced.note,
+            pageUrl: location.href,
+            qty: 1,
+            addedAt: new Date().toISOString(),
+          };
+          const idx = list.findIndex((x) => x.stockId === row.stockId && x.partType === row.partType);
+          if (idx >= 0) list[idx] = { ...list[idx], ...row };
+          else list.push(row);
+          localStorage.setItem(key, JSON.stringify(list));
+          showToast(`Added ${part.en} to quote list (${list.length})`);
+        } catch (err) {
+          showToast('Could not add to list');
+        }
+      };
       el.modal.classList.add('is-open');
       el.modal.setAttribute('aria-hidden', 'false');
       showToast(`${part.en} · ${stock.stockId}`);

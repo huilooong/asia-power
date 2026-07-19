@@ -313,9 +313,12 @@ function deployChrome() {
   rsync(`${ROOT}/js/engine-catalog.js`, `${pub}/js/engine-catalog.js`);
   rsync(`${ROOT}/js/engine-detail.js`, `${pub}/js/engine-detail.js`);
   rsync(`${ROOT}/js/brand-page.js`, `${pub}/js/brand-page.js`);
+  rsync(`${ROOT}/js/quote-list.js`, `${pub}/js/quote-list.js`);
+  rsync(`${ROOT}/js/whatsapp-crm.js`, `${pub}/js/whatsapp-crm.js`);
   rsync(`${ROOT}/css/ebay-layout.css`, `${pub}/css/ebay-layout.css`);
   rsync(`${ROOT}/css/styles.css`, `${pub}/css/styles.css`);
   rsync(`${ROOT}/css/login.css`, `${pub}/css/login.css`);
+  rsync(`${ROOT}/css/quote-list.css`, `${pub}/css/quote-list.css`);
   // Parts catalog placeholders (category marketing + brand SVG) — display only
   ssh('mkdir -p /root/.openclaw/workspace/inventory-site/public/assets/images');
   rsync(`${ROOT}/assets/images/parts-placeholder.svg`, `${pub}/assets/images/parts-placeholder.svg`);
@@ -354,6 +357,7 @@ function deployChrome() {
     'ghana.html',
     'nigeria.html',
     'kenya.html',
+    'quote-list.html',
     'guides/index.html',
     'guides/buying-used-engines-from-china.html',
     'guides/fob-vs-cif-shipping-guide.html',
@@ -373,6 +377,9 @@ test -f "$PUB/js/ebay-layout.js"
 test -f "$PUB/js/half-cut-directory.js"
 test -f "$PUB/js/ebay-catalog-hub.js"
 test -f "$PUB/js/half-cut-detail.js"
+test -f "$PUB/js/quote-list.js"
+test -f "$PUB/css/quote-list.css"
+test -f "$PUB/quote-list.html"
 test -f "$PUB/css/ebay-layout.css"
 test -f "$PUB/css/styles.css"
 test -f "$PUB/about.html"

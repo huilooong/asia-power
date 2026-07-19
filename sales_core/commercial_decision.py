@@ -169,6 +169,8 @@ class CommercialDecision:
     ask_keys: list[str] = field(default_factory=list)
     ask_list: list[str] = field(default_factory=list)
     reply: str = ""
+    needs_price_confirmation: bool = False
+    inventory_matches: list = field(default_factory=list)
     module: str = "SALES_DECISION"
     version: str = "commercial_decision_v1"
 
@@ -929,7 +931,7 @@ def decide_commercial(
         or (understanding or {}).get("is_correction")
     )
 
-    reply = _render_reply(
+    reply, needs_price_confirmation, inv_matches = _render_reply(
         nba=nba,
         snapshot=snapshot,
         engine_claim=engine_claim,
@@ -938,6 +940,8 @@ def decide_commercial(
         price_intent=price_intent,
         acknowledge_claim=acknowledge_claim,
         image_received=image_fulfills_request,
+        customer_message=text,
+        product_type=product_type,
     )
     reply = apply_channel_policy(reply, cfg)
 
@@ -969,11 +973,15 @@ def decide_commercial(
         next_best_action=nba,
         expected_result=expected_map.get(nba, "customer_replied_without_progress"),
         alternative_actions=alts,
-        human_review_required=human or nba == "request_manual_review",
+        human_review_required=human
+        or nba == "request_manual_review"
+        or needs_price_confirmation,
         decision_reason=reason,
         ask_keys=ask_keys,
         ask_list=ask_list,
         reply=reply,
+        needs_price_confirmation=needs_price_confirmation,
+        inventory_matches=inv_matches or [],
     )
 
 
@@ -987,11 +995,18 @@ def _render_reply(
     price_intent: bool,
     acknowledge_claim: bool = False,
     image_received: bool = False,
-) -> str:
+    customer_message: str = "",
+    product_type: str = "",
+) -> tuple[str, bool, list]:
+    """Return (reply_text, needs_price_confirmation, inventory_matches)."""
     vin_shown = ""
     ident = ""
+    brand = ""
+    model = ""
     if snapshot is not None:
         vin_shown = str(getattr(snapshot, "vin_masked", "") or "")
+        brand = str(getattr(snapshot, "brand", "") or "")
+        model = str(getattr(snapshot, "model", "") or "")
         if hasattr(snapshot, "identity_line"):
             try:
                 ident = snapshot.identity_line() or ""
@@ -1000,73 +1015,81 @@ def _render_reply(
 
     img_ack = "Thanks — we received your photo.\n\n" if image_received else ""
 
+    def _done(text: str, needs_confirm: bool = False, matches: list | None = None):
+        return text, needs_confirm, matches or []
+
     if conflict:
-        return (
+        return _done(
             "Thanks — possible mismatch between factory VIN data and the engine now installed.\n\n"
             "To avoid wrong freight, duty, and fitment loss, please send a clear engine plate photo."
         )
     if nba == "request_manual_review":
         if image_received:
-            return (
+            return _done(
                 "Thanks — we received your photo.\n\n"
                 "Our team will review it shortly to confirm the currently installed engine."
             )
         ack = f"Got it — you’re confirming the engine code as {engine_claim}.\n\n" if (
             acknowledge_claim and engine_claim
         ) else ""
-        return (
+        return _done(
             f"{ack}"
             "We want to double-check before moving ahead, so you don't risk ocean freight, "
             "duty, and install costs on the wrong unit. Our team will review shortly."
         )
     if nba == "decline_wrong_supply":
-        return (
+        return _done(
             "We should pause this supply path — better confirm the currently installed "
             "engine than ship the wrong one."
         )
     if nba == "ask_engine_plate":
         if acknowledge_claim and engine_claim:
-            return (
+            return _done(
                 f"Got it — you’re confirming the engine code as {engine_claim}.\n\n"
                 "To avoid supplying the wrong version, please send a clear engine plate photo."
             )
         claim = f" You mentioned {engine_claim}." if engine_claim else ""
-        return (
+        return _done(
             f"Got it.{claim} Before quantity/port, please confirm the engine currently installed "
             f"(VIN is factory config only).\n\n"
             f"Please send a clear engine plate photo."
         )
     if nba == "ask_engine_photo":
         if acknowledge_claim and engine_claim:
-            return (
+            return _done(
                 f"Got it — you’re confirming the engine code as {engine_claim}.\n\n"
                 "To avoid supplying the wrong version, please send a clear photo of the engine if available."
             )
-        return "Please send a clear photo of the engine currently in the car."
+        return _done("Please send a clear photo of the engine currently in the car.")
     if nba == "ask_vin":
         if acknowledge_claim and engine_claim:
-            return (
+            return _done(
                 f"Got it — you’re confirming the engine code as {engine_claim}.\n\n"
                 "If easier, please send the VIN (or VIN plate photo)."
             )
         if price_intent:
-            return "Yes — we can help with pricing once identity is solid.\n\nPlease send the VIN (or engine plate photo)."
-        return "Please send the VIN so we can match the vehicle record."
+            return _done(
+                "Yes — we can help with pricing once identity is solid.\n\n"
+                "Please send the VIN (or engine plate photo)."
+            )
+        return _done("Please send the VIN so we can match the vehicle record.")
     if nba == "ask_vin_plate":
-        return "VIN decode needs a clearer source — please send a VIN plate photo."
+        return _done("VIN decode needs a clearer source — please send a VIN plate photo.")
     if nba == "ask_registration":
         if acknowledge_claim and engine_claim:
-            return (
+            return _done(
                 f"Got it — you’re confirming the engine code as {engine_claim}.\n\n"
                 "Please send a vehicle registration photo as an alternative."
             )
-        return "Please send a vehicle registration photo so we can continue matching."
+        return _done("Please send a vehicle registration photo so we can continue matching.")
     if nba == "ask_oe_label":
-        return "Please send a clear OE / parts label photo."
+        return _done("Please send a clear OE / parts label photo.")
     if nba == "ask_vehicle_photo":
-        return "Please send a clear vehicle photo."
+        return _done("Please send a clear vehicle photo.")
 
     lines: list[str] = []
+    needs_confirm = False
+    inv_matches: list = []
     if vin_shown and ident:
         lines.append(f"Got VIN {vin_shown}. Matched: {ident}.")
         vs = str(getattr(snapshot, "verification_status", "") or "")
@@ -1091,16 +1114,47 @@ def _render_reply(
     elif nba == "ask_destination":
         lines.append("Which destination port?")
     elif nba in {"prepare_quote", "check_supplier"}:
-        lines.append(
-            "Thanks — enough to check supply and prepare quotation "
-            "(no price number until confirmed)."
+        from sales_core.inventory_public import (
+            find_inventory_matches,
+            format_prepare_quote_reply,
+            infer_part_intent,
+            quote_within_self_authority,
+            parse_price_usd,
         )
+
+        part_intent = infer_part_intent(customer_message, product_type)
+        inv_matches = find_inventory_matches(
+            brand=brand,
+            model=model,
+            part_intent=part_intent,
+            engine_code=engine_claim or None,
+            text=customer_message or engine_claim,
+        )
+        quote_text, needs_confirm = format_prepare_quote_reply(
+            inv_matches, part_intent=part_intent
+        )
+        # Self-discount guard: composed quote must stay within listed EXW − 5%.
+        if inv_matches and not needs_confirm:
+            listed = parse_price_usd(inv_matches[0].get("price_usd"))
+            if listed is not None:
+                import re as _re
+
+                mprice = _re.search(r"EXW\s+(\d+(?:\.\d+)?)\s*USD", quote_text, _re.I)
+                if mprice:
+                    quoted = float(mprice.group(1))
+                    if not quote_within_self_authority(listed, quoted):
+                        needs_confirm = True
+                        quote_text = (
+                            "Thanks — enough to check supply and prepare quotation "
+                            "(price needs team confirmation — beyond 5% self-discount)."
+                        )
+        lines.append(quote_text)
     elif nba == "wait_customer":
         lines.append("What do you need for this vehicle?")
     body = "\n\n".join([x for x in lines if x]).strip()
     if image_received and img_ack and nba not in {"ask_engine_plate", "ask_engine_photo"}:
-        return f"{img_ack}{body}".strip()
-    return body
+        return _done(f"{img_ack}{body}".strip(), needs_confirm, inv_matches)
+    return _done(body, needs_confirm, inv_matches)
 
 
 def decide_from_vin_result(

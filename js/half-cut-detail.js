@@ -248,6 +248,20 @@
     if (item.status === 'Available') {
       secondary.push(u.facebookShareLink(item, 'hc-item-detail__btn hc-item-detail__btn--secondary hc-item-detail__btn--facebook', t('hc.shareFacebook', 'Share on Facebook')));
       secondary.push(u.whatsappLink(item, 'hc-item-detail__btn hc-item-detail__btn--secondary hc-item-detail__btn--whatsapp', 'WhatsApp'));
+      const price = Number(item.priceUsd);
+      secondary.push(
+        `<button type="button" class="hc-item-detail__btn hc-item-detail__btn--secondary hc-item-detail__btn--quote" data-quote-add`
+        + ` data-stock-id="${escapeHtml(item.stockId || '')}"`
+        + ` data-slug="${escapeHtml(item.slug || '')}"`
+        + ` data-title="${escapeHtml(item.title || '')}"`
+        + ` data-brand="${escapeHtml(item.brand || '')}"`
+        + ` data-model="${escapeHtml(item.model || '')}"`
+        + ` data-year="${escapeHtml(String(item.year || ''))}"`
+        + ` data-engine="${escapeHtml(item.engineCode || '')}"`
+        + ` data-price-usd="${Number.isFinite(price) ? price : ''}"`
+        + ` data-page-url="${escapeHtml(u.listingSharePageUrl?.(item) || u.detailUrl?.(item) || '')}"`
+        + `>${t('hc.addToQuoteList', 'Add to quote list')}</button>`,
+      );
     } else if (item.status === 'Reserved' || item.status === 'In Transit') {
       secondary.push(u.leadLink(item, 'availability', 'hc-item-detail__btn hc-item-detail__btn--secondary', t('hc.checkAvailability', 'Check Availability')));
     }
@@ -663,6 +677,7 @@
       item,
     });
     window.AsiaPowerEbayLayout?.bindCarousels?.();
+    window.QuoteList?.wireAddButtons?.(root);
   }
 
   function bindDetailReadMore(root) {

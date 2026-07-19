@@ -1,0 +1,119 @@
+/* Quote list badge + toast (报价清单, not checkout cart) */
+.ap-quote-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.28rem 0.55rem;
+  border-radius: 999px;
+  border: 1px solid rgba(15, 23, 42, 0.14);
+  background: #fff;
+  color: #0f172a;
+  font-size: 0.78rem;
+  font-weight: 600;
+  text-decoration: none;
+  white-space: nowrap;
+}
+.ap-quote-badge:hover {
+  border-color: rgba(15, 23, 42, 0.28);
+}
+.ap-quote-badge__count {
+  min-width: 1.15rem;
+  height: 1.15rem;
+  padding: 0 0.3rem;
+  border-radius: 999px;
+  background: #0f172a;
+  color: #fff;
+  font-size: 0.7rem;
+  line-height: 1.15rem;
+  text-align: center;
+}
+.ap-quote-badge__count.is-empty,
+.ap-quote-badge__count[hidden] {
+  display: none;
+}
+.ap-quote-toast {
+  position: fixed;
+  left: 50%;
+  bottom: 1.25rem;
+  transform: translateX(-50%) translateY(120%);
+  z-index: 9999;
+  padding: 0.65rem 1rem;
+  border-radius: 0.6rem;
+  background: #0f172a;
+  color: #fff;
+  font-size: 0.85rem;
+  opacity: 0;
+  transition: transform 0.2s ease, opacity 0.2s ease;
+  pointer-events: none;
+}
+.ap-quote-toast.is-show {
+  transform: translateX(-50%) translateY(0);
+  opacity: 1;
+}
+.hc-item-detail__btn--quote {
+  background: #f8fafc;
+  border: 1px solid #cbd5e1;
+  color: #0f172a;
+}
+.quote-list-page {
+  max-width: 720px;
+  margin: 0 auto;
+  padding: 1.25rem 1rem 3rem;
+}
+.quote-list-page h1 {
+  font-size: 1.45rem;
+  margin: 0 0 0.35rem;
+}
+.quote-list-page .lead {
+  color: #475569;
+  margin: 0 0 1.25rem;
+}
+.quote-list-empty {
+  padding: 1.5rem;
+  border: 1px dashed #cbd5e1;
+  border-radius: 0.75rem;
+  color: #64748b;
+}
+.quote-list-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.92rem;
+}
+.quote-list-table th,
+.quote-list-table td {
+  text-align: left;
+  padding: 0.65rem 0.4rem;
+  border-bottom: 1px solid #e2e8f0;
+  vertical-align: top;
+}
+.quote-list-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6rem;
+  margin-top: 1.25rem;
+}
+.quote-list-actions .btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.7rem 1rem;
+  border-radius: 0.55rem;
+  text-decoration: none;
+  font-weight: 600;
+  border: 0;
+  cursor: pointer;
+}
+.quote-list-actions .btn-wa {
+  background: #128c7e;
+  color: #fff;
+}
+.quote-list-actions .btn-clear {
+  background: #fff;
+  border: 1px solid #cbd5e1;
+  color: #334155;
+}
+.quote-list-price-note {
+  display: block;
+  color: #64748b;
+  font-size: 0.78rem;
+}

@@ -131,6 +131,7 @@
           <span class="ap-topbar__tagline">Where Used Becomes Useful Again · 110+ Countries · EXW Zhengzhou</span>
           <div class="ap-topbar__right">
             ${switcher}
+            ${typeof window.QuoteList !== 'undefined' ? window.QuoteList.badgeHtml('ap-quote-badge--topbar') : `<a class="ap-quote-badge ap-quote-badge--topbar" href="${href('quote-list.html')}" data-quote-list-badge aria-label="Quote list"><span class="ap-quote-badge__label">List</span><span class="ap-quote-badge__count" data-quote-count hidden>0</span></a>`}
             <a href="contact.html" class="ap-topbar__link">Contact</a>
             ${renderLoginEntry({ variant: 'topbar' })}
             <a href="supplier-portal.html" class="ap-topbar__link">Supplier Portal</a>
@@ -430,6 +431,7 @@
         <div class="ebay-toolbar__inner">
           <p class="ebay-toolbar__promo" data-i18n="ebay.promoBar">Every Used Asset Has Value</p>
           <div class="ebay-toolbar__right">
+            ${typeof window.QuoteList !== 'undefined' ? window.QuoteList.badgeHtml('ap-quote-badge--ebay') : `<a class="ap-quote-badge ap-quote-badge--ebay" href="${href('quote-list.html')}" data-quote-list-badge aria-label="Quote list"><span class="ap-quote-badge__label">List</span><span class="ap-quote-badge__count" data-quote-count hidden>0</span></a>`}
             ${switcher ? `<div class="ebay-toolbar__lang">${switcher}</div>` : ''}
             ${renderLoginEntry({ compact: true })}
           </div>
@@ -923,6 +925,7 @@
       document.body.insertAdjacentHTML('beforeend', renderAppBottomNav(activeId));
     }
     ensurePwaAppShellAssets();
+    ensureQuoteListAssets();
 
     const pub = i18n();
     if (pub) {
@@ -934,6 +937,30 @@
     hydrateAuthSlots(document);
     bindMobileNavDrawer();
     window.dispatchEvent(new CustomEvent('asiapower:layoutrefresh'));
+  }
+
+  function ensureQuoteListAssets() {
+    if (!document.querySelector('link[data-quote-list-css]')) {
+      const link = document.createElement('link');
+      link.rel = 'stylesheet';
+      link.href = href('css/quote-list.css?v=quote-list-v1');
+      link.setAttribute('data-quote-list-css', '1');
+      document.head.appendChild(link);
+    }
+    if (!document.querySelector('script[data-quote-list-js]')) {
+      const script = document.createElement('script');
+      script.src = href('js/quote-list.js?v=quote-list-v1');
+      script.setAttribute('data-quote-list-js', '1');
+      script.onload = () => {
+        if (window.QuoteList) {
+          window.QuoteList.refreshBadges();
+          window.QuoteList.wireAddButtons();
+        }
+      };
+      document.head.appendChild(script);
+    } else if (window.QuoteList) {
+      window.QuoteList.refreshBadges();
+    }
   }
 
   function ensurePwaAppShellAssets() {

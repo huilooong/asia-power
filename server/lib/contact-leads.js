@@ -118,7 +118,37 @@ function baseLead(body, meta = {}) {
     utmContent: trim(body.utm_content || body.utmContent || captured.utmContent, 120),
     utmTerm: trim(body.utm_term || body.utmTerm || captured.utmTerm, 120),
   };
+  // Optional multi-item quote list (cart lead). Other lead paths omit this field.
+  const items = normalizeLeadItems(body.items);
+  if (items.length) draft.items = items;
   return enrichLeadFields(draft);
+}
+
+function normalizeLeadItems(raw) {
+  if (!Array.isArray(raw)) return [];
+  return raw.slice(0, 40).map((it) => {
+    if (!it || typeof it !== 'object') return null;
+    const stockId = trim(it.stockId || it.stock_id, 40);
+    if (!stockId) return null;
+    const priceRaw = it.priceUsd ?? it.price_usd;
+    let priceUsd = null;
+    if (priceRaw !== '' && priceRaw != null) {
+      const n = Number(priceRaw);
+      if (Number.isFinite(n) && n > 0) priceUsd = Math.round(n);
+    }
+    return {
+      stockId,
+      slug: trim(it.slug, 180),
+      title: trim(it.title, 200),
+      brand: trim(it.brand, 80),
+      model: trim(it.model, 120),
+      partType: trim(it.partType || it.part_type, 40),
+      partLabel: trim(it.partLabel || it.part_label, 80),
+      qty: Math.max(1, Math.min(999, Number(it.qty) || 1)),
+      priceUsd,
+      pageUrl: trim(it.pageUrl || it.page_url, 240),
+    };
+  }).filter(Boolean);
 }
 
 function buildContactLead(body, meta = {}) {
