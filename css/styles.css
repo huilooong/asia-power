@@ -372,6 +372,33 @@ h1, h2, h3, h4 {
   transition: var(--transition);
 }
 
+/* Shared compact mobile header drawer (mnav) — reused by home-v4-hybrid + ebay-layout headers.
+   Desktop-safe defaults here; each header system adds its own mobile media-query override
+   at its own breakpoint (home-v4-hybrid:900px, ebay-layout:768px). */
+.mnav-toggle {
+  display: none;
+  flex-direction: column;
+  gap: 5px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 10px;
+  min-width: 44px;
+  min-height: 44px;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  -webkit-tap-highlight-color: transparent;
+}
+.mnav-toggle span {
+  display: block;
+  width: 22px;
+  height: 2px;
+  background: var(--navy-800);
+  transition: var(--transition);
+}
+.mnav-drawer { display: contents; }
+
 /* Hero — Home */
 .hero-home {
   position: relative;

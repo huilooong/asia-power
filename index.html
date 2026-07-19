@@ -13,8 +13,8 @@
   <link rel="preconnect" href="https://www.googletagmanager.com">
   <link rel="preload" href="/api/half-cuts/public" as="fetch" crossorigin>
   <link rel="stylesheet" href="css/fonts.css?v=self-hosted-fonts-v1">
-  <link rel="stylesheet" href="css/styles.css?v=lang-sync-v2">
-  <link rel="stylesheet" href="css/home-v4-hybrid.css?v=home-scroll-v5">
+  <link rel="stylesheet" href="css/styles.css?v=mnav-drawer-v1">
+  <link rel="stylesheet" href="css/home-v4-hybrid.css?v=mnav-drawer-v2">
   <link rel="stylesheet" href="css/pwa-install.css?v=pwa-app-v6b">
   <link rel="icon" href="assets/favicon.png" type="image/png">
   <link rel="manifest" href="/manifest.json">
@@ -50,20 +50,23 @@
   <main id="main-content">
     <nav class="ap-nav" aria-label="Primary">
       <div class="nav-w">
+        <button type="button" class="mnav-toggle" data-mnav-toggle aria-label="Open menu" aria-expanded="false" aria-controls="ap-nav-drawer"><span></span><span></span><span></span></button>
         <a class="ap-logo" href="/">Asia<span>Power</span></a>
-        <div class="nav-links">
-          <a href="/half-cuts/" data-i18n="home.v4.nav.halfCuts">Half-Cuts</a>
-          <a href="/engines/" data-i18n="home.v4.nav.engines">Engines</a>
-          <a href="/trucks/" data-i18n="home.v4.nav.trucks">Trucks</a>
-          <a href="/machinery/" data-i18n="home.v4.nav.construction">Construction</a>
-          <a href="/half-cuts/?cat=used-cars" data-i18n="home.v4.nav.usedCars">Used Cars</a>
-          <a href="/guides/">Guides</a>
+        <div class="mnav-drawer" id="ap-nav-drawer" data-mnav-drawer>
+          <div class="nav-links">
+            <a href="/half-cuts/" data-i18n="home.v4.nav.halfCuts">Half-Cuts</a>
+            <a href="/engines/" data-i18n="home.v4.nav.engines">Engines</a>
+            <a href="/trucks/" data-i18n="home.v4.nav.trucks">Trucks</a>
+            <a href="/machinery/" data-i18n="home.v4.nav.construction">Construction</a>
+            <a href="/half-cuts/?cat=used-cars" data-i18n="home.v4.nav.usedCars">Used Cars</a>
+            <a href="/guides/">Guides</a>
+          </div>
+          <div class="nav-right">
+            <div id="nav-lang" class="nav-lang" aria-label="Language"></div>
+            <span class="ap-auth-slot" data-ap-auth-slot data-variant="home"><a href="/login/" class="nav-signin" data-i18n="nav.signIn">Sign in</a></span>
+          </div>
         </div>
-        <div class="nav-right">
-          <div id="nav-lang" class="nav-lang" aria-label="Language"></div>
-          <span class="ap-auth-slot" data-ap-auth-slot data-variant="home"><a href="/login/" class="nav-signin" data-i18n="nav.signIn">Sign in</a></span>
-          <a id="nav-wa" href="https://wa.me/8616638801930" class="nav-wa" target="_blank" rel="noopener">WhatsApp</a>
-        </div>
+        <a id="nav-wa" href="https://wa.me/8616638801930" class="nav-wa" target="_blank" rel="noopener">WhatsApp</a>
       </div>
     </nav>
 
@@ -216,7 +219,7 @@
   <script src="js/config.js?v=seo-guides-20260716"></script>
   <script src="js/whatsapp-crm.js?v=1"></script>
   <script src="js/seo.js?v=p3-seo-v1"></script>
-  <script src="js/components.js?v=seo-guides-20260716" defer></script>
+  <script src="js/components.js?v=mnav-drawer-v3" defer></script>
   <script src="js/engine-directory.js?v=vehicle-engine-001c"></script>
   <script src="js/engine-card-label.js?v=vehicle-engine-001c"></script>
 <script src="js/home-v4-hybrid.js?v=price-ratio-hide-v1" defer></script>

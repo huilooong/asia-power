@@ -6,7 +6,7 @@
 
   // Must bump when ebay-layout.css changes — injectEbayStylesheet rewrites all pages to this query.
   // Stale CDN entries for old ?v= keys (e.g. v4-listing-card-v1) can keep serving 66px parts thumbs.
-  const SITE_EBAY_LAYOUT_VER = 'site-consistency-v2';
+  const SITE_EBAY_LAYOUT_VER = 'mnav-drawer-v3';
   const SITE_COMPONENTS_VER = 'parts-photo-contain-v1';
   // Deploy markers (keep strings discoverable): auth-nav-v1 · auth-nav-once-v2 · auth-nav-sitewide-v1 · login-entry-v1 · lang-sync-v2 · contact-center-v1 · about-type-v2 · list-photo-uniform-v1 · list-photo-uniform-v2 · list-photo-uniform-v2b · parts-photo-v2 · integrity-audit-v1 · parts-placeholder-v1 · parts-parallel-v1 · stock-id-search-v1 · dedicated-price-v1 · catalog-search-v1
   // login-entry-v1 = catalog footer Sign in + clearer toolbar login pill; buyer dial codes expanded (local WIP, not deployed)
@@ -426,7 +426,7 @@
     const pub = i18n();
     const switcher = pub ? pub.renderLangSwitcher() : '';
     return `
-      <div class="ebay-toolbar">
+      <div class="ebay-toolbar" id="ebay-nav-drawer" data-mnav-drawer>
         <div class="ebay-toolbar__inner">
           <p class="ebay-toolbar__promo" data-i18n="ebay.promoBar">Every Used Asset Has Value</p>
           <div class="ebay-toolbar__right">
@@ -447,6 +447,7 @@
         ${renderEbayToolbar()}
         <div class="ebay-header__inner">
           <div class="ebay-header__row">
+            <button type="button" class="mnav-toggle ebay-header__toggle" data-mnav-toggle aria-label="Open menu" aria-expanded="false" aria-controls="ebay-nav-drawer"><span></span><span></span><span></span></button>
             ${textLogo('ebay-header__logo ap-logo')}
             <div class="ebay-header__main">
               <form class="ebay-search" data-ebay-search role="search">
@@ -803,6 +804,57 @@
     }
   }
 
+  /** Shared hamburger→drawer toggle for the compact mobile header (home-v4-hybrid + ebay-layout). */
+  function bindMobileNavDrawer() {
+    if (window.__mnavBound) return;
+    window.__mnavBound = true;
+
+    function activeDrawer() {
+      return document.querySelector('[data-mnav-drawer].open');
+    }
+    function activeToggle() {
+      return document.querySelector('[data-mnav-toggle][aria-expanded="true"]');
+    }
+    function setOpen(toggle, drawer, open) {
+      drawer.classList.toggle('open', open);
+      toggle.setAttribute('aria-expanded', String(open));
+      document.body.classList.toggle('mnav-open', open);
+    }
+    function updateHeaderHeightVar() {
+      const header = document.querySelector('.ebay-header') || document.querySelector('.ap-nav');
+      const topBar = document.getElementById('site-topbar');
+      const hasTopBar = topBar && topBar.offsetHeight > 0 && !topBar.classList.contains('site-topbar--hidden');
+      const height = (hasTopBar ? topBar.offsetHeight : 0) + (header?.offsetHeight || 0);
+      document.documentElement.style.setProperty('--site-header-height', `${height}px`);
+    }
+
+    updateHeaderHeightVar();
+    window.addEventListener('resize', updateHeaderHeightVar, { passive: true });
+    window.addEventListener('orientationchange', updateHeaderHeightVar);
+    window.addEventListener('asiapower:layoutrefresh', updateHeaderHeightVar);
+
+    document.addEventListener('click', (event) => {
+      const toggle = event.target.closest('[data-mnav-toggle]');
+      if (toggle) {
+        const drawer = document.getElementById(toggle.getAttribute('aria-controls') || '');
+        if (drawer) setOpen(toggle, drawer, !drawer.classList.contains('open'));
+        return;
+      }
+      const drawer = activeDrawer();
+      if (!drawer) return;
+      if (drawer.contains(event.target) && !event.target.closest('a, .lang-switcher__btn')) return;
+      const toggleEl = activeToggle();
+      if (toggleEl) setOpen(toggleEl, drawer, false);
+    });
+
+    document.addEventListener('keydown', (event) => {
+      if (event.key !== 'Escape') return;
+      const drawer = activeDrawer();
+      const toggle = activeToggle();
+      if (drawer && toggle) setOpen(toggle, drawer, false);
+    });
+  }
+
   function injectLayout() {
     const activeId = currentPageId();
     const topBar = document.getElementById('site-topbar');
@@ -880,6 +932,7 @@
     if (useEbayLayout()) syncEbaySearchPlaceholder();
 
     hydrateAuthSlots(document);
+    bindMobileNavDrawer();
     window.dispatchEvent(new CustomEvent('asiapower:layoutrefresh'));
   }
 

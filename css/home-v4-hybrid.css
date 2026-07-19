@@ -785,41 +785,73 @@ img { display:block; max-width:100% }
 @media (max-width: 900px) {
   .cat-grid, .stats-row, .trust-w, .showcase-card, .footer-g { grid-template-columns: 1fr !important; }
   .shelf-rail .pcard { flex-basis: 200px; }
-  /* Keep language switcher clickable — category links move to second row */
+  /* Single-row compact header: toggle + logo + WhatsApp; nav/lang/signin move into .mnav-drawer */
   .nav-w {
-    flex-wrap: wrap;
+    flex-wrap: nowrap;
+    justify-content: space-between;
     height: auto;
     min-height: 52px;
-    gap: 0 12px;
+    gap: 10px;
     padding: 0 12px;
   }
+  .mnav-toggle { display: flex; }
   .ap-logo { order: 1; }
-  .nav-right {
-    order: 2;
-    margin-left: auto;
-    gap: 8px;
-  }
-  .nav-links {
-    order: 3;
-    flex: 1 1 100%;
-    justify-content: flex-start;
-    overflow-x: auto;
+  .nav-wa { order: 3; }
+  .mnav-drawer {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    position: fixed;
+    top: 100%;
+    left: 0;
+    right: 0;
+    height: 100vh;
+    max-width: 100vw;
+    background: #fff;
+    padding: 16px 16px max(24px, env(safe-area-inset-bottom));
+    box-shadow: 0 12px 32px rgba(10, 28, 51, .18);
+    transform: translateY(-110%);
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+    transition: transform .28s cubic-bezier(.22, 1, .36, 1), opacity .28s, visibility .28s;
+    z-index: 999;
+    overflow-y: auto;
     -webkit-overflow-scrolling: touch;
-    gap: 0;
-    border-top: 1px solid var(--b2);
   }
-  .nav-links a {
-    flex-shrink: 0;
-    padding: 0 12px;
-    height: 40px;
-    font-size: 12px;
+  .mnav-drawer.open {
+    transform: translateY(0);
+    opacity: 1;
+    visibility: visible;
+    pointer-events: auto;
+  }
+  .mnav-drawer .nav-links {
+    flex-direction: column;
+    gap: 2px;
+    overflow-x: visible;
+    border-top: 0;
+  }
+  .mnav-drawer .nav-links a {
+    height: auto;
+    padding: 13px 8px;
+    font-size: 14px;
+    border-bottom: 1px solid var(--b2);
+  }
+  .mnav-drawer .nav-right {
+    margin: 14px 0 0;
+    padding-top: 14px;
+    border-top: 1px solid var(--b2);
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
   }
   .page-home-v4-hybrid .nav-lang .lang-switcher__btn {
-    padding: 6px 8px;
+    padding: 8px;
     min-height: 32px;
+    font-size: 13px;
   }
   .page-home-v4-hybrid .nav-signin {
-    padding: 0 10px;
+    padding: 8px 12px;
   }
 }
 
