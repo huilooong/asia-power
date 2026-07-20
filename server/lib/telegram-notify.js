@@ -1,34 +1,72 @@
 'use strict';
 
+/**
+ * Two Telegram lanes (CEO 2026-07-20):
+ * - alerts (default): TELEGRAM_BOT_TOKEN → @weylonbot 孔明 — 待审核/线索/运维
+ * - whatsapp: ASIAPOWER_TELEGRAM_* → @Asiapower86166_bot — Cloud WA 盯梢+报价 only
+ */
+
 const https = require('https');
 
-let cached = null;
+let cachedAlerts = null;
+let cachedWhatsApp = null;
 
 function resetConfig() {
-  cached = null;
+  cachedAlerts = null;
+  cachedWhatsApp = null;
 }
 
-function config() {
-  if (cached) return cached;
-  // Prefer dedicated AsiaPower bot. If ASIAPOWER_* is set, never fall back to
-  // TELEGRAM_BOT_TOKEN (often OpenClaw @weylonbot / 孔明) — dual-bot waste + quote bugs.
-  const asiaToken = String(process.env.ASIAPOWER_TELEGRAM_BOT_TOKEN || '').trim();
-  const asiaChat = String(process.env.ASIAPOWER_TELEGRAM_CHAT_ID || '').trim();
-  const token = asiaToken || String(process.env.TELEGRAM_BOT_TOKEN || '').trim();
-  const chatId = asiaChat || String(process.env.TELEGRAM_CHAT_ID || '').trim();
-  cached = {
+function envFirst(...keys) {
+  for (const key of keys) {
+    const v = String(process.env[key] || '').trim();
+    if (v) return v;
+  }
+  return '';
+}
+
+/** Kongming / general ops alerts */
+function alertsConfig() {
+  if (cachedAlerts) return cachedAlerts;
+  const token = envFirst('TELEGRAM_BOT_TOKEN');
+  const chatId = envFirst('TELEGRAM_CHAT_ID', 'ASIAPOWER_TELEGRAM_CHAT_ID');
+  cachedAlerts = {
+    channel: 'alerts',
     enabled: Boolean(token && chatId),
     token,
     chatId,
-    dedicated: Boolean(asiaToken),
   };
-  return cached;
+  return cachedAlerts;
 }
 
-function telegramApi(method, payload) {
-  const cfg = config();
+/** WhatsApp Cloud monitor + quote bridge only */
+function whatsappConfig() {
+  if (cachedWhatsApp) return cachedWhatsApp;
+  const token = envFirst('ASIAPOWER_TELEGRAM_BOT_TOKEN');
+  const chatId = envFirst('ASIAPOWER_TELEGRAM_CHAT_ID', 'TELEGRAM_CHAT_ID');
+  cachedWhatsApp = {
+    channel: 'whatsapp',
+    enabled: Boolean(token && chatId),
+    token,
+    chatId,
+    dedicated: Boolean(token),
+  };
+  return cachedWhatsApp;
+}
+
+/** @deprecated alias — default lane is alerts (孔明), not WhatsApp */
+function config() {
+  return alertsConfig();
+}
+
+function resolveConfig(channel) {
+  if (channel === 'whatsapp') return whatsappConfig();
+  return alertsConfig();
+}
+
+function telegramApi(method, payload, options = {}) {
+  const cfg = resolveConfig(options.channel || 'alerts');
   if (!cfg.token) {
-    return Promise.resolve({ ok: false, skipped: true, reason: 'no_token' });
+    return Promise.resolve({ ok: false, skipped: true, reason: 'no_token', channel: cfg.channel });
   }
   const body = JSON.stringify(payload || {});
   return new Promise((resolve, reject) => {
@@ -53,6 +91,7 @@ function telegramApi(method, payload) {
                 ok: true,
                 data,
                 messageId: data.result?.message_id,
+                channel: cfg.channel,
               });
               return;
             }
@@ -71,15 +110,16 @@ function telegramApi(method, payload) {
 
 /**
  * @param {string} text
- * @param {{ chatId?: string|number, reply_markup?: object }} [options]
+ * @param {{ chatId?: string|number, reply_markup?: object, channel?: 'alerts'|'whatsapp' }} [options]
  */
 function sendTelegram(text, options = {}) {
-  const cfg = config();
-  if (!cfg.enabled && !options.chatId) {
-    return Promise.resolve({ ok: false, skipped: true });
+  const channel = options.channel || 'alerts';
+  const cfg = resolveConfig(channel);
+  if (!cfg.enabled && options.chatId == null) {
+    return Promise.resolve({ ok: false, skipped: true, channel });
   }
   if (!cfg.token) {
-    return Promise.resolve({ ok: false, skipped: true });
+    return Promise.resolve({ ok: false, skipped: true, channel });
   }
 
   const payload = {
@@ -89,21 +129,25 @@ function sendTelegram(text, options = {}) {
   };
   if (options.reply_markup) payload.reply_markup = options.reply_markup;
 
-  return telegramApi('sendMessage', payload);
+  return telegramApi('sendMessage', payload, { channel });
 }
 
 function notify(text, options = {}) {
-  const cfg = config();
+  const channel = options.channel || 'alerts';
+  const cfg = resolveConfig(channel);
   if (!cfg.enabled && options.chatId == null) {
-    console.warn('[telegram] skipped: ASIAPOWER_TELEGRAM_BOT_TOKEN or ASIAPOWER_TELEGRAM_CHAT_ID not configured');
-    return Promise.resolve({ ok: false, skipped: true });
+    const need = channel === 'whatsapp'
+      ? 'ASIAPOWER_TELEGRAM_BOT_TOKEN / ASIAPOWER_TELEGRAM_CHAT_ID'
+      : 'TELEGRAM_BOT_TOKEN / TELEGRAM_CHAT_ID';
+    console.warn(`[telegram:${channel}] skipped: ${need} not configured`);
+    return Promise.resolve({ ok: false, skipped: true, channel });
   }
   return sendTelegram(text, options).then((result) => {
-    console.log('[telegram] sent');
+    console.log(`[telegram:${channel}] sent`);
     return result;
   }).catch((err) => {
-    console.error('[telegram] send failed:', err.message);
-    return { ok: false, error: err.message };
+    console.error(`[telegram:${channel}] send failed:`, err.message);
+    return { ok: false, error: err.message, channel };
   });
 }
 
@@ -113,26 +157,42 @@ function notifyAsync(text, options = {}) {
   });
 }
 
+function notifyWhatsApp(text, options = {}) {
+  return notify(text, { ...options, channel: 'whatsapp' });
+}
+
+function notifyWhatsAppAsync(text, options = {}) {
+  notifyWhatsApp(text, options).catch((err) => {
+    console.error('[telegram:whatsapp] async error:', err.message);
+  });
+}
+
 function isEnabled() {
-  return config().enabled;
+  return alertsConfig().enabled;
+}
+
+function isWhatsAppEnabled() {
+  return whatsappConfig().enabled;
 }
 
 async function answerCallbackQuery(callbackQueryId, opts = {}) {
   if (!callbackQueryId) return { ok: false, skipped: true };
+  const channel = opts.channel || 'whatsapp';
   try {
     return await telegramApi('answerCallbackQuery', {
       callback_query_id: callbackQueryId,
       text: opts.text ? String(opts.text).slice(0, 200) : undefined,
       show_alert: Boolean(opts.show_alert),
-    });
+    }, { channel });
   } catch (err) {
-    console.error('[telegram] answerCallbackQuery failed:', err.message);
+    console.error(`[telegram:${channel}] answerCallbackQuery failed:`, err.message);
     return { ok: false, error: err.message };
   }
 }
 
 async function editMessageText(text, opts = {}) {
-  const cfg = config();
+  const channel = opts.channel || 'whatsapp';
+  const cfg = resolveConfig(channel);
   const chatId = opts.chat_id != null ? opts.chat_id : cfg.chatId;
   if (!cfg.token || chatId == null || opts.message_id == null) {
     return { ok: false, skipped: true };
@@ -146,21 +206,21 @@ async function editMessageText(text, opts = {}) {
     };
     if (opts.reply_markup !== undefined) payload.reply_markup = opts.reply_markup;
     else payload.reply_markup = { inline_keyboard: [] };
-    return await telegramApi('editMessageText', payload);
+    return await telegramApi('editMessageText', payload, { channel });
   } catch (err) {
-    console.error('[telegram] editMessageText failed:', err.message);
+    console.error(`[telegram:${channel}] editMessageText failed:`, err.message);
     return { ok: false, error: err.message };
   }
 }
 
 /**
- * Send a photo (or document fallback) to CEO Telegram.
- * @param {{ buffer: Buffer, filename?: string, caption?: string, mimeType?: string, asDocument?: boolean }} opts
+ * @param {{ buffer: Buffer, filename?: string, caption?: string, mimeType?: string, asDocument?: boolean, channel?: 'alerts'|'whatsapp' }} opts
  */
 async function sendTelegramMedia(opts = {}) {
-  const cfg = config();
+  const channel = opts.channel || 'alerts';
+  const cfg = resolveConfig(channel);
   if (!cfg.enabled) {
-    return { ok: false, skipped: true };
+    return { ok: false, skipped: true, channel };
   }
   const buffer = opts.buffer;
   if (!buffer || !Buffer.isBuffer(buffer) || !buffer.length) {
@@ -193,20 +253,22 @@ async function sendTelegramMedia(opts = {}) {
     data,
     method,
     messageId: data.result?.message_id,
+    channel,
   };
 }
 
-function notifyMedia(opts) {
-  const cfg = config();
+function notifyMedia(opts = {}) {
+  const channel = opts.channel || 'alerts';
+  const cfg = resolveConfig(channel);
   if (!cfg.enabled) {
-    return Promise.resolve({ ok: false, skipped: true });
+    return Promise.resolve({ ok: false, skipped: true, channel });
   }
   return sendTelegramMedia(opts).then((result) => {
-    console.log(`[telegram] ${result.method || 'media'} sent`);
+    console.log(`[telegram:${channel}] ${result.method || 'media'} sent`);
     return result;
   }).catch((err) => {
-    console.error('[telegram] media send failed:', err.message);
-    return { ok: false, error: err.message };
+    console.error(`[telegram:${channel}] media send failed:`, err.message);
+    return { ok: false, error: err.message, channel };
   });
 }
 
@@ -216,17 +278,27 @@ function notifyMediaAsync(opts) {
   });
 }
 
+function notifyWhatsAppMedia(opts = {}) {
+  return notifyMedia({ ...opts, channel: 'whatsapp' });
+}
+
 module.exports = {
   sendTelegram,
   notify,
   notifyAsync,
+  notifyWhatsApp,
+  notifyWhatsAppAsync,
   sendTelegramMedia,
   notifyMedia,
   notifyMediaAsync,
+  notifyWhatsAppMedia,
   answerCallbackQuery,
   editMessageText,
   telegramApi,
   isEnabled,
+  isWhatsAppEnabled,
   resetConfig,
   config,
+  alertsConfig,
+  whatsappConfig,
 };

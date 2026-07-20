@@ -14,7 +14,12 @@ const crypto = require('crypto');
 const fs = require('fs');
 const path = require('path');
 const { sendText } = require('./whatsapp-cloud-send');
-const { notify, answerCallbackQuery, editMessageText, config: telegramConfig } = require('./telegram-notify');
+const {
+  notifyWhatsApp,
+  answerCallbackQuery,
+  editMessageText,
+  whatsappConfig,
+} = require('./telegram-notify');
 
 const BINDING_TTL_MS = 7 * 24 * 60 * 60 * 1000;
 const PENDING_TTL_MS = 30 * 60 * 1000;
@@ -194,7 +199,7 @@ function defaultPhoneNumberId(binding) {
 }
 
 function allowedChatId() {
-  return String(telegramConfig().chatId || '').trim();
+  return String(whatsappConfig().chatId || '').trim();
 }
 
 function isAllowedChat(chatId) {
@@ -226,7 +231,7 @@ async function startQuoteFromReply(rootDir, { replyToMessageId, text, chatId, fr
 
   const binding = getBinding(rootDir, replyToMessageId);
   if (!binding) {
-    await notify(
+    await notifyWhatsApp(
       [
         '⚠️ 未绑定客户，已忽略（防发错）',
         '',
@@ -246,7 +251,7 @@ async function startQuoteFromReply(rootDir, { replyToMessageId, text, chatId, fr
 
   const quote = parseQuoteInput(text);
   if (!quote) {
-    await notify(
+    await notifyWhatsApp(
       [
         '⚠️ 看不懂报价格式（未发送）',
         `绑定客户: ${maskWa(binding.wa_id)}${binding.profile_name ? ` (${binding.profile_name})` : ''}`,
@@ -294,7 +299,7 @@ async function startQuoteFromReply(rootDir, { replyToMessageId, text, chatId, fr
     '确认无误再点「确认发送」。点错对象请「取消」。',
   ].filter(Boolean).join('\n');
 
-  const result = await notify(confirmText, { reply_markup: confirmKeyboard(id) });
+  const result = await notifyWhatsApp(confirmText, { reply_markup: confirmKeyboard(id) });
   appendAudit(rootDir, {
     event: 'confirm_prompted',
     pending_id: id,
@@ -403,7 +408,7 @@ async function handleCallback(rootDir, callbackQuery) {
         show_alert: true,
       });
     }
-    await notify(
+    await notifyWhatsApp(
       [
         '⚠️ WhatsApp 报价发送失败（未标记已发送）',
         `客户: ${maskWa(pending.wa_id)}`,

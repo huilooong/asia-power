@@ -8,7 +8,12 @@
  * Kill switch: WHATSAPP_TELEGRAM_MONITOR=off
  */
 
-const { notify, notifyAsync, notifyMedia, isEnabled } = require('./telegram-notify');
+const {
+  notifyWhatsApp,
+  notifyWhatsAppAsync,
+  notifyWhatsAppMedia,
+  isWhatsAppEnabled,
+} = require('./telegram-notify');
 
 /** Telegram sendMessage hard limit is 4096; keep headroom for safety. */
 const TG_TEXT_MAX = 3900;
@@ -30,7 +35,7 @@ function env(...keys) {
 function monitorEnabled() {
   const flag = env('WHATSAPP_TELEGRAM_MONITOR', 'WHATSAPP_CLOUD_TELEGRAM_MONITOR').toLowerCase();
   if (flag === '0' || flag === 'false' || flag === 'off' || flag === 'no') return false;
-  return isEnabled();
+  return isWhatsAppEnabled();
 }
 
 function quoteHintEnabled() {
@@ -181,7 +186,7 @@ function notifyFullText(text, binding) {
   const parts = chunkTelegramText(text);
   // Bind every chunk to the same customer — reply-to any chunk is safe.
   for (const part of parts) {
-    notify(part)
+    notifyWhatsApp(part)
       .then((result) => bindFromResult(result, binding))
       .catch((err) => {
         console.error('[telegram-monitor] notify failed:', err && err.message ? err.message : err);
@@ -197,7 +202,7 @@ async function forwardInboundMedia(msg, mode) {
     const asDocument = !String(file.mimeType || '').startsWith('image/')
       || String(msg.message_type || '') === 'document';
     const { caption, overflow } = mediaCaption(msg, mode);
-    const result = await notifyMedia({
+    const result = await notifyWhatsAppMedia({
       buffer: file.buffer,
       filename: file.filename,
       mimeType: file.mimeType,
@@ -233,7 +238,7 @@ async function forwardInboundMedia(msg, mode) {
     }
     return result;
   } catch (err) {
-    notifyAsync(
+    notifyWhatsAppAsync(
       [
         `⚠️ WhatsApp 媒体转发失败 · ${mode || 'live'}`,
         `客户: ${maskWa(msg.wa_id)}`,

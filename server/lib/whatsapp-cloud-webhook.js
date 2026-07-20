@@ -236,12 +236,12 @@ function buildTelegramText(normalizedMessages, normalizedStatuses, mode) {
     // Delivery receipts are noisy in live — only push in observe/off
     const modeLower = String(mode || autonomyMode() || '').toLowerCase();
     if ((modeLower === 'observe' || modeLower === 'off') && normalizedStatuses.length) {
-      const { notifyAsync } = require('./telegram-notify');
+      const { notifyWhatsAppAsync } = require('./telegram-notify');
       const summary = normalizedStatuses
         .slice(0, 5)
         .map((s) => `${s.status}:${String(s.recipient_id || '').slice(-4)}`)
         .join(', ');
-      notifyAsync(`AsiaPower Cloud API status: ${summary}`);
+      notifyWhatsAppAsync(`AsiaPower Cloud API status: ${summary}`);
     }
   } catch {
     /* telegram optional */

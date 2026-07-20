@@ -30,8 +30,8 @@ Things like:
 
 ### Telegram
 
-- **WhatsApp Cloud monitor + quote bot** (env `ASIAPOWER_TELEGRAM_BOT_TOKEN` / `ASIAPOWER_TELEGRAM_CHAT_ID`) = **`@Asiapower86166_bot`** — dedicated; webhook `/api/telegram/whatsapp-quote`. Do **not** share token with OpenClaw.
-- Legacy note: site `TELEGRAM_BOT_TOKEN` may still equal Kongming `@weylonbot`; `telegram-notify.js` prefers `ASIAPOWER_*` first. lead/upload/reminder pushes via `server/lib/telegram-notify.js` now go to the dedicated bot when `ASIAPOWER_*` is set.
+- **WhatsApp Cloud monitor + quote bot** (`ASIAPOWER_TELEGRAM_*`) = **`@Asiapower86166_bot`** only — WA inbound/outbound/media + quote confirm; webhook `/api/telegram/whatsapp-quote`.
+- **Ops alerts bot** (`TELEGRAM_BOT_TOKEN` / `TELEGRAM_CHAT_ID`) = **`@weylonbot` 孔明** — 待审核、线索、备份告警等（`notify` / `notifyAsync` default lane）.
 - **Sam = COO bot = `@APCOO_BOT`** (env `COO_TELEGRAM_BOT_TOKEN`), the dispatcher: takes CEO message → `coo_core/dispatcher.py` `dispatch_message` → approval gate → `route_with_profile()` assigns to other agents. **PRIVATE CHAT ONLY** — `integrations/telegram_access.py` hard-rejects group/supergroup (`non_private`). Whitelist `COO_TELEGRAM_ALLOWED_CHAT_IDS=8918522756` (= Weylon Hui private chat). DM **@APCOO_BOT** directly; do NOT @ it in a group, and `@Asiapower_sam_bot` does NOT exist.
 - **Sursor bot** = `@sursor_bot` (周瑜) (all Sursor ack + replies — not Sam)
 - **Work group** `Asia-power AI Command Ceter` · chat_id `-1004428287084` — multi-agent in-group reporting/discussion is NOT implemented (premature; bot rejects group chats). Private chat with Sam only for now.

@@ -45,8 +45,8 @@ test('binding is keyed by telegram message id only', () => {
 
 test('free-floating telegram text is never handled as quote', async () => {
   const root = fs.mkdtempSync(path.join(os.tmpdir(), 'wa-quote-'));
-  process.env.TELEGRAM_CHAT_ID = '8918522756';
   process.env.ASIAPOWER_TELEGRAM_CHAT_ID = '8918522756';
+  process.env.ASIAPOWER_TELEGRAM_BOT_TOKEN = process.env.ASIAPOWER_TELEGRAM_BOT_TOKEN || '0:test';
   const { resetConfig } = require('../server/lib/telegram-notify.js');
   resetConfig();
   const result = await handleTelegramUpdate(root, {
