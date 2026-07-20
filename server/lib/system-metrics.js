@@ -185,7 +185,52 @@ function formatMetricsSummary(metrics) {
   }
 }
 
+const DISK_WARN_PCT = Number(process.env.MEMORY_WATCH_DISK_WARN_PCT || 85);
+const DISK_CRIT_PCT = Number(process.env.MEMORY_WATCH_DISK_CRIT_PCT || 95);
+const MEM_WARN_PCT = Number(process.env.MEMORY_WATCH_MEM_WARN_PCT || 85);
+const MEM_CRIT_PCT = Number(process.env.MEMORY_WATCH_MEM_CRIT_PCT || 95);
+
+/**
+ * Returns alert strings in "key: message" form (key used by callers for
+ * per-alert cooldown dedup). Never throws — degrades to no alerts.
+ */
+function evaluateAlerts(metrics) {
+  const alerts = [];
+  try {
+    const m = metrics && typeof metrics === 'object' ? metrics : {};
+
+    if (m.disk && Number.isFinite(m.disk.usedPct)) {
+      const gb = m.disk.usedGb != null && m.disk.totalGb != null ? ` (${m.disk.usedGb}/${m.disk.totalGb} GB)` : '';
+      if (m.disk.usedPct >= DISK_CRIT_PCT) {
+        alerts.push(`disk_critical: Disk ${m.disk.usedPct}% used${gb} — critical`);
+      } else if (m.disk.usedPct >= DISK_WARN_PCT) {
+        alerts.push(`disk_warning: Disk ${m.disk.usedPct}% used${gb} — high`);
+      }
+    }
+
+    if (m.memory && Number.isFinite(m.memory.usedPct)) {
+      const mb = m.memory.usedMb != null && m.memory.totalMb != null ? ` (${m.memory.usedMb}/${m.memory.totalMb} MB)` : '';
+      if (m.memory.usedPct >= MEM_CRIT_PCT) {
+        alerts.push(`memory_critical: Memory ${m.memory.usedPct}% used${mb} — critical`);
+      } else if (m.memory.usedPct >= MEM_WARN_PCT) {
+        alerts.push(`memory_warning: Memory ${m.memory.usedPct}% used${mb} — high`);
+      }
+    }
+
+    const services = m.services && typeof m.services === 'object' ? m.services : {};
+    for (const [name, status] of Object.entries(services)) {
+      if (status && status !== 'active') {
+        alerts.push(`service_${name}: ${name} is "${status}" (expected active)`);
+      }
+    }
+  } catch {
+    return [];
+  }
+  return alerts;
+}
+
 module.exports = {
   collectSystemMetrics,
   formatMetricsSummary,
+  evaluateAlerts,
 };
