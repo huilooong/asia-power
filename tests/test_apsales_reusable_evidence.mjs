@@ -44,6 +44,26 @@ test("Chinese colloquial money and bargaining language cannot enter reusable sto
   for (const text of replies) assert.equal(classifyHumanAnswerForReuse(text).reusable, false, text);
 });
 
+test("Chinese verb-plus-quantifier price phrases cannot enter reusable storage", async () => {
+  const replies = [
+    "可以做，我先给你报个价。",
+    "这个可以打个折。",
+    "这批货一口价，不再议价。",
+    "我问个价再回复你。",
+    "客户想砍个价。",
+    "先谈个价，确认后再下单。",
+    "请给客户开个价。",
+    "我给你算一下价。",
+    "这单可以讲个价。",
+  ];
+  const root = await fs.mkdtemp(path.join(os.tmpdir(), "apsales-evidence-cn-inserted-"));
+  for (const teamText of replies) {
+    assert.equal(classifyHumanAnswerForReuse(teamText).reusable, false, teamText);
+    assert.equal((await storeReusableFact({ workspace: root, teamText, dealState: { part_intent: "engine" } })).stored, false, teamText);
+  }
+  await assert.rejects(fs.access(path.join(root, "memory", "sales_evidence", "reusable_facts.ndjson")));
+});
+
 test("French price and delivery commitments and English rate are excluded", () => {
   for (const text of ["Le prix est 900 EUR.", "Remise de 10% avec livraison.", "Our rate is 1200 USD."]) {
     assert.equal(classifyHumanAnswerForReuse(text).reusable, false, text);
