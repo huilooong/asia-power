@@ -25,6 +25,8 @@ import {
 import {
   notifyGhanaStaffIfHandingOff,
   notifyGhanaStaffSupportLineUnreachable,
+  notifyGhanaStaffPriceConfirmation,
+  routePriceConfirmationHandoff,
   loadRecentAgentReplies,
 } from "./ghana-staff-handoff.mjs";
 import {
@@ -1662,6 +1664,18 @@ async function handleMessage(message, state, session) {
           priceGateReason: priceGate.reason,
           proposedReply: generated.reply,
         });
+        const handoffRoute = routePriceConfirmationHandoff(priceGate);
+        if (handoffRoute === "ghana_staff") {
+          const ghana = await notifyGhanaStaffPriceConfirmation({
+            senderId, customerMessage: text, proposedReply: generated.reply, pendingId,
+            reason: priceGate.reason, session, contactE164: GHANA_SUPPORT_CONTACT_E164,
+          });
+          if (ghana.notified) {
+            await appendActivity("apsales_price_confirmation_routed_ghana", `客户 ${senderId}: 常规核价已交给 Ghana 团队 (${pendingId})`, "sent");
+            return;
+          }
+          log("ghana price handoff failed; escalating CEO", { senderId, pendingId, error: ghana.error });
+        }
         await sendTelegram(
           `⛔ 报价已拦截，未发送给客户（超5%自主让利权限或网站无此价）\n客户: ${senderId}\n客户说: ${text.slice(0, 300)}\n待发送回复: ${generated.reply}\nGateway run: ${generated.runId}\nID: ${pendingId}\n\n需要你人工确认价格后，直接在 WhatsApp 联系该客户处理，或修改后转子敬继续跟进。`,
         ).catch((err) => log("telegram price confirmation alert failed", { error: err instanceof Error ? err.message : String(err) }));
