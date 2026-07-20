@@ -568,6 +568,7 @@ async function handleSandboxInbound(rootDir, normalized) {
     decision,
     waId: normalized.wa_id,
     profileName: normalized.profile_name,
+    phoneNumberId,
     inboundType: normalized.message_type,
     inboundText: normalized.text,
     replyText,

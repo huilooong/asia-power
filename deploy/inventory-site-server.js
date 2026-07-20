@@ -28,6 +28,13 @@ const whatsappCloudWebhookPath = [
 const { createWhatsAppCloudWebhook } = whatsappCloudWebhookPath
   ? require(whatsappCloudWebhookPath)
   : { createWhatsAppCloudWebhook: () => null };
+const telegramQuotePath = [
+  path.join(__dirname, 'lib', 'whatsapp-cloud-telegram-quote.js'),
+  path.join(__dirname, '..', 'server', 'lib', 'whatsapp-cloud-telegram-quote.js'),
+].find((candidate) => fs.existsSync(candidate));
+const { createTelegramQuoteWebhook } = telegramQuotePath
+  ? require(telegramQuotePath)
+  : { createTelegramQuoteWebhook: () => null };
 
 const halfCutApiPath = [
   path.join(__dirname, 'lib', 'half-cut-api.js'),
@@ -151,6 +158,9 @@ const emailOutbound = emailProxy && createEmailOutbound
 const siteAnalytics = createSiteAnalytics(DATA_DIR);
 const handleWhatsAppCloudWebhook = createWhatsAppCloudWebhook
   ? createWhatsAppCloudWebhook(ROOT)
+  : null;
+const handleTelegramQuoteWebhook = createTelegramQuoteWebhook
+  ? createTelegramQuoteWebhook(ROOT)
   : null;
 
 // Base currency: 1 USD = x currency
@@ -1219,6 +1229,10 @@ const server = http.createServer(async (req, res) => {
     try {
       if (handleWhatsAppCloudWebhook && p === '/api/whatsapp/webhook') {
         await handleWhatsAppCloudWebhook(req, res, url, json);
+        return;
+      }
+      if (handleTelegramQuoteWebhook && p === '/api/telegram/whatsapp-quote') {
+        await handleTelegramQuoteWebhook(req, res, url, json);
         return;
       }
 

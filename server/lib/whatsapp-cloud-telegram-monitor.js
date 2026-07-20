@@ -4,13 +4,20 @@
  * WhatsApp Cloud API → CEO Telegram monitor (option B, 2026-07-14)
  * - inbound/outbound: FULL original text (no summary clip) — CEO request 2026-07-14
  * - media: download Graph media → Telegram photo/document
+ * - quote bridge: bind Telegram message_id → wa_id (reply-to only; no guessing)
  * Kill switch: WHATSAPP_TELEGRAM_MONITOR=off
  */
 
-const { notifyAsync, isEnabled } = require('./telegram-notify');
+const { notify, notifyAsync, notifyMedia, isEnabled } = require('./telegram-notify');
 
 /** Telegram sendMessage hard limit is 4096; keep headroom for safety. */
 const TG_TEXT_MAX = 3900;
+
+let _rootDir = '';
+
+function configureMonitor({ rootDir } = {}) {
+  if (rootDir) _rootDir = String(rootDir);
+}
 
 function env(...keys) {
   for (const key of keys) {
@@ -24,6 +31,12 @@ function monitorEnabled() {
   const flag = env('WHATSAPP_TELEGRAM_MONITOR', 'WHATSAPP_CLOUD_TELEGRAM_MONITOR').toLowerCase();
   if (flag === '0' || flag === 'false' || flag === 'off' || flag === 'no') return false;
   return isEnabled();
+}
+
+function quoteHintEnabled() {
+  const flag = env('WHATSAPP_TELEGRAM_QUOTE', 'WHATSAPP_CLOUD_TELEGRAM_QUOTE').toLowerCase();
+  if (flag === '0' || flag === 'false' || flag === 'off' || flag === 'no') return false;
+  return true;
 }
 
 function maskWa(waId) {
@@ -51,6 +64,16 @@ function inboundBody(msg) {
   return `[${t}]`;
 }
 
+function quoteFooter() {
+  if (!quoteHintEnabled()) return '';
+  return [
+    '',
+    '———',
+    '报价：回复本条，写 450 或 450 USD（须点确认后才发给这位客户）',
+    '自定义：450 USD | Your message here',
+  ].join('\n');
+}
+
 /**
  * One Telegram message per inbound — full customer text.
  * Returns string or string[] if over Telegram limit.
@@ -64,6 +87,7 @@ function formatInboundMessage(msg, mode) {
     `类型: ${msg.message_type || 'text'}`,
     '',
     body,
+    quoteFooter(),
   ].join('\n');
 }
 
@@ -101,6 +125,7 @@ function formatOutboundLines({
     '',
     '—— 子敬原文 ——',
     reply,
+    quoteFooter(),
   ].join('\n');
 }
 
@@ -142,9 +167,25 @@ function chunkTelegramText(text, max = TG_TEXT_MAX) {
   return parts;
 }
 
-function notifyFullText(text) {
-  for (const part of chunkTelegramText(text)) {
-    notifyAsync(part);
+function bindFromResult(result, binding) {
+  if (!_rootDir || !result?.ok || !result.messageId) return;
+  try {
+    const { registerBinding } = require('./whatsapp-cloud-telegram-quote');
+    registerBinding(_rootDir, result.messageId, binding);
+  } catch {
+    /* optional */
+  }
+}
+
+function notifyFullText(text, binding) {
+  const parts = chunkTelegramText(text);
+  // Bind every chunk to the same customer — reply-to any chunk is safe.
+  for (const part of parts) {
+    notify(part)
+      .then((result) => bindFromResult(result, binding))
+      .catch((err) => {
+        console.error('[telegram-monitor] notify failed:', err && err.message ? err.message : err);
+      });
   }
 }
 
@@ -156,13 +197,20 @@ async function forwardInboundMedia(msg, mode) {
     const asDocument = !String(file.mimeType || '').startsWith('image/')
       || String(msg.message_type || '') === 'document';
     const { caption, overflow } = mediaCaption(msg, mode);
-    const { notifyMedia } = require('./telegram-notify');
     const result = await notifyMedia({
       buffer: file.buffer,
       filename: file.filename,
       mimeType: file.mimeType,
       caption,
       asDocument,
+    });
+    bindFromResult(result, {
+      wa_id: msg.wa_id,
+      profile_name: msg.profile_name || '',
+      phone_number_id: msg.phone_number_id || '',
+      inbound_snippet: inboundBody(msg),
+      mode: mode || '',
+      source: 'inbound_media',
     });
     if (overflow) {
       notifyFullText(
@@ -171,7 +219,16 @@ async function forwardInboundMedia(msg, mode) {
           `客户: ${maskWa(msg.wa_id)}`,
           '',
           overflow,
+          quoteFooter(),
         ].join('\n'),
+        {
+          wa_id: msg.wa_id,
+          profile_name: msg.profile_name || '',
+          phone_number_id: msg.phone_number_id || '',
+          inbound_snippet: overflow,
+          mode: mode || '',
+          source: 'inbound_media_caption',
+        },
       );
     }
     return result;
@@ -191,9 +248,15 @@ async function forwardInboundMedia(msg, mode) {
 function notifyInbound(normalizedMessages, mode) {
   if (!monitorEnabled() || !normalizedMessages || !normalizedMessages.length) return;
   try {
-    // One full-text Telegram per customer message (no summary)
     for (const msg of normalizedMessages.slice(0, 10)) {
-      notifyFullText(formatInboundMessage(msg, mode));
+      notifyFullText(formatInboundMessage(msg, mode), {
+        wa_id: msg.wa_id,
+        profile_name: msg.profile_name || '',
+        phone_number_id: msg.phone_number_id || '',
+        inbound_snippet: inboundBody(msg),
+        mode: mode || '',
+        source: 'inbound',
+      });
     }
     const mediaMsgs = normalizedMessages.filter(shouldForwardMedia).slice(0, 8);
     for (const msg of mediaMsgs) {
@@ -209,7 +272,15 @@ function notifyInbound(normalizedMessages, mode) {
 function notifyOutbound(payload) {
   if (!monitorEnabled()) return;
   try {
-    notifyFullText(formatOutboundLines(payload || {}));
+    const p = payload || {};
+    notifyFullText(formatOutboundLines(p), {
+      wa_id: p.waId,
+      profile_name: p.profileName || '',
+      phone_number_id: p.phoneNumberId || '',
+      inbound_snippet: fullText(p.inboundText) || `[${p.inboundType || 'media'}]`,
+      mode: p.mode || '',
+      source: 'outbound',
+    });
   } catch {
     /* optional */
   }
@@ -236,7 +307,16 @@ function notifySkip(payload) {
         '',
         '—— 客户原文 ——',
         customer,
+        quoteFooter(),
       ].join('\n'),
+      {
+        wa_id: payload.waId,
+        profile_name: payload.profileName || '',
+        phone_number_id: payload.phoneNumberId || '',
+        inbound_snippet: customer,
+        mode: payload.mode || '',
+        source: 'skip',
+      },
     );
   } catch {
     /* optional */
@@ -244,6 +324,7 @@ function notifySkip(payload) {
 }
 
 module.exports = {
+  configureMonitor,
   monitorEnabled,
   maskWa,
   clip: clipLabel,

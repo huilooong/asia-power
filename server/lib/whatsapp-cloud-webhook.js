@@ -12,7 +12,7 @@ const crypto = require('crypto');
 const fs = require('fs');
 const path = require('path');
 const { handleSandboxInbound } = require('./whatsapp-cloud-sandbox');
-const { notifyInbound } = require('./whatsapp-cloud-telegram-monitor');
+const { notifyInbound, configureMonitor } = require('./whatsapp-cloud-telegram-monitor');
 
 const PARSER_VERSION = 'apwa-002-sandbox-1.0.0';
 const SCHEMA_VERSION = 'apwa-normalized-v1';
@@ -249,6 +249,7 @@ function buildTelegramText(normalizedMessages, normalizedStatuses, mode) {
 }
 
 function createWhatsAppCloudWebhook(rootDir) {
+  configureMonitor({ rootDir });
   const base = path.join(rootDir, 'data', 'whatsapp_cloud');
   const rawDir = path.join(base, 'raw');
   const normDir = path.join(base, 'normalized');

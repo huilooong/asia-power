@@ -20,23 +20,17 @@ function config() {
   return cached;
 }
 
-function sendTelegram(text) {
+function telegramApi(method, payload) {
   const cfg = config();
-  if (!cfg.enabled) {
-    return Promise.resolve({ ok: false, skipped: true });
+  if (!cfg.token) {
+    return Promise.resolve({ ok: false, skipped: true, reason: 'no_token' });
   }
-
-  const body = JSON.stringify({
-    chat_id: cfg.chatId,
-    text: String(text).slice(0, 3900),
-    disable_web_page_preview: true,
-  });
-
+  const body = JSON.stringify(payload || {});
   return new Promise((resolve, reject) => {
     const req = https.request(
       {
         hostname: 'api.telegram.org',
-        path: `/bot${cfg.token}/sendMessage`,
+        path: `/bot${cfg.token}/${method}`,
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -50,7 +44,11 @@ function sendTelegram(text) {
           try {
             const data = JSON.parse(raw || '{}');
             if (res.statusCode >= 200 && res.statusCode < 300 && data.ok) {
-              resolve({ ok: true, data });
+              resolve({
+                ok: true,
+                data,
+                messageId: data.result?.message_id,
+              });
               return;
             }
             reject(new Error(data.description || `Telegram HTTP ${res.statusCode}`));
@@ -58,7 +56,7 @@ function sendTelegram(text) {
             reject(err);
           }
         });
-      }
+      },
     );
     req.on('error', reject);
     req.write(body);
@@ -66,13 +64,36 @@ function sendTelegram(text) {
   });
 }
 
-function notify(text) {
+/**
+ * @param {string} text
+ * @param {{ chatId?: string|number, reply_markup?: object }} [options]
+ */
+function sendTelegram(text, options = {}) {
   const cfg = config();
-  if (!cfg.enabled) {
+  if (!cfg.enabled && !options.chatId) {
+    return Promise.resolve({ ok: false, skipped: true });
+  }
+  if (!cfg.token) {
+    return Promise.resolve({ ok: false, skipped: true });
+  }
+
+  const payload = {
+    chat_id: options.chatId != null ? options.chatId : cfg.chatId,
+    text: String(text).slice(0, 3900),
+    disable_web_page_preview: true,
+  };
+  if (options.reply_markup) payload.reply_markup = options.reply_markup;
+
+  return telegramApi('sendMessage', payload);
+}
+
+function notify(text, options = {}) {
+  const cfg = config();
+  if (!cfg.enabled && options.chatId == null) {
     console.warn('[telegram] skipped: ASIAPOWER_TELEGRAM_BOT_TOKEN or ASIAPOWER_TELEGRAM_CHAT_ID not configured');
     return Promise.resolve({ ok: false, skipped: true });
   }
-  return sendTelegram(text).then((result) => {
+  return sendTelegram(text, options).then((result) => {
     console.log('[telegram] sent');
     return result;
   }).catch((err) => {
@@ -81,14 +102,50 @@ function notify(text) {
   });
 }
 
-function notifyAsync(text) {
-  notify(text).catch((err) => {
+function notifyAsync(text, options = {}) {
+  notify(text, options).catch((err) => {
     console.error('[telegram] async error:', err.message);
   });
 }
 
 function isEnabled() {
   return config().enabled;
+}
+
+async function answerCallbackQuery(callbackQueryId, opts = {}) {
+  if (!callbackQueryId) return { ok: false, skipped: true };
+  try {
+    return await telegramApi('answerCallbackQuery', {
+      callback_query_id: callbackQueryId,
+      text: opts.text ? String(opts.text).slice(0, 200) : undefined,
+      show_alert: Boolean(opts.show_alert),
+    });
+  } catch (err) {
+    console.error('[telegram] answerCallbackQuery failed:', err.message);
+    return { ok: false, error: err.message };
+  }
+}
+
+async function editMessageText(text, opts = {}) {
+  const cfg = config();
+  const chatId = opts.chat_id != null ? opts.chat_id : cfg.chatId;
+  if (!cfg.token || chatId == null || opts.message_id == null) {
+    return { ok: false, skipped: true };
+  }
+  try {
+    const payload = {
+      chat_id: chatId,
+      message_id: opts.message_id,
+      text: String(text).slice(0, 3900),
+      disable_web_page_preview: true,
+    };
+    if (opts.reply_markup !== undefined) payload.reply_markup = opts.reply_markup;
+    else payload.reply_markup = { inline_keyboard: [] };
+    return await telegramApi('editMessageText', payload);
+  } catch (err) {
+    console.error('[telegram] editMessageText failed:', err.message);
+    return { ok: false, error: err.message };
+  }
 }
 
 /**
@@ -126,7 +183,12 @@ async function sendTelegramMedia(opts = {}) {
     err.data = data;
     throw err;
   }
-  return { ok: true, data, method };
+  return {
+    ok: true,
+    data,
+    method,
+    messageId: data.result?.message_id,
+  };
 }
 
 function notifyMedia(opts) {
@@ -156,6 +218,10 @@ module.exports = {
   sendTelegramMedia,
   notifyMedia,
   notifyMediaAsync,
+  answerCallbackQuery,
+  editMessageText,
+  telegramApi,
   isEnabled,
   resetConfig,
+  config,
 };

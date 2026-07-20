@@ -19,6 +19,7 @@ const { isContactSpam } = require('./lib/lead-spam');
 const { createVinDecodeHandler } = require('./lib/vin/decode-route');
 const { loadEnv } = require('./lib/load-env');
 const { createWhatsAppCloudWebhook } = require('./lib/whatsapp-cloud-webhook');
+const { createTelegramQuoteWebhook } = require('./lib/whatsapp-cloud-telegram-quote');
 const { buildSitemapXml, sendSitemap } = require('./lib/sitemap');
 
 const ROOT = path.join(__dirname, '..');
@@ -33,6 +34,7 @@ const limitRememberModel = createRateLimiter({ windowMs: 60 * 60 * 1000, max: 60
 const contactLeads = createContactLeadStore(path.join(ROOT, 'data', 'contact-leads.json'));
 const handleVinDecode = createVinDecodeHandler(ROOT);
 const handleWhatsAppCloudWebhook = createWhatsAppCloudWebhook(ROOT);
+const handleTelegramQuoteWebhook = createTelegramQuoteWebhook(ROOT);
 
 function json(res, code, payload) {
   applySecurityHeaders(res);
@@ -400,6 +402,10 @@ const server = http.createServer(async (req, res) => {
 
       if (p === '/api/whatsapp/webhook') {
         await handleWhatsAppCloudWebhook(req, res, url, json);
+        return;
+      }
+      if (p === '/api/telegram/whatsapp-quote') {
+        await handleTelegramQuoteWebhook(req, res, url, json);
         return;
       }
       if (req.method === 'POST' && p === '/api/leads/contact') {
