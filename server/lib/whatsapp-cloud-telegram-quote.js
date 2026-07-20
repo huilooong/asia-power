@@ -221,6 +221,62 @@ function confirmKeyboard(id) {
   };
 }
 
+async function promptConfirmSend(rootDir, {
+  binding,
+  replyToMessageId,
+  fromUser,
+  label,
+  outbound,
+  amount = '',
+  currency = '',
+  incoterm = '',
+  kind = 'message',
+}) {
+  const id = shortId();
+  const paths = storePaths(rootDir);
+  const pending = prunePending(readJson(paths.pending, {}));
+  pending[id] = {
+    wa_id: binding.wa_id,
+    profile_name: binding.profile_name || '',
+    phone_number_id: defaultPhoneNumberId(binding),
+    inbound_snippet: binding.inbound_snippet || '',
+    amount,
+    currency,
+    incoterm,
+    label,
+    outbound,
+    kind,
+    created_at: new Date().toISOString(),
+    created_by: String(fromUser || ''),
+    reply_to_message_id: String(replyToMessageId),
+  };
+  writeJsonAtomic(paths.pending, pending);
+
+  const title = kind === 'quote' ? '🧾 报价确认（尚未发给客户）' : '✉️ 发消息确认（尚未发给客户）';
+  const confirmText = [
+    title,
+    `客户: ${maskWa(binding.wa_id)}${binding.profile_name ? ` (${binding.profile_name})` : ''}`,
+    binding.inbound_snippet ? `客户原话: ${binding.inbound_snippet}` : null,
+    label ? `摘要: ${label}` : null,
+    '',
+    '—— 将发送的 WhatsApp 原文 ——',
+    outbound,
+    '',
+    '确认无误再点「确认发送」。点错对象请「取消」。',
+  ].filter(Boolean).join('\n');
+
+  const result = await notifyWhatsApp(confirmText, { reply_markup: confirmKeyboard(id) });
+  appendAudit(rootDir, {
+    event: 'confirm_prompted',
+    pending_id: id,
+    wa_id_mask: maskWa(binding.wa_id),
+    label,
+    kind,
+    telegram_ok: Boolean(result?.ok),
+  });
+  return { handled: true, reason: 'confirm_prompted', pending_id: id };
+}
+
 async function startQuoteFromReply(rootDir, { replyToMessageId, text, chatId, fromUser }) {
   if (!quoteEnabled()) {
     return { handled: false, reason: 'quote_off' };
@@ -235,9 +291,9 @@ async function startQuoteFromReply(rootDir, { replyToMessageId, text, chatId, fr
       [
         '⚠️ 未绑定客户，已忽略（防发错）',
         '',
-        '请「回复」某条 WhatsApp 盯梢消息再写价格。',
-        '例：回复客户原文那条，输入 450 USD',
-        '不会根据“最近一位客户”猜测对象。',
+        '请「回复」某条 WhatsApp 盯梢消息，再写要发给客户的内容。',
+        '例：回复客户原文 → 直接写英文话术，或写 450 USD',
+        '空白聊天里下指令不会发送（也不会猜尾号）。',
       ].join('\n'),
     );
     appendAudit(rootDir, {
@@ -249,65 +305,51 @@ async function startQuoteFromReply(rootDir, { replyToMessageId, text, chatId, fr
     return { handled: true, reason: 'unbound' };
   }
 
-  const quote = parseQuoteInput(text);
-  if (!quote) {
-    await notifyWhatsApp(
-      [
-        '⚠️ 看不懂报价格式（未发送）',
-        `绑定客户: ${maskWa(binding.wa_id)}${binding.profile_name ? ` (${binding.profile_name})` : ''}`,
-        '',
-        '请用：450 / 450 USD / EXW 450',
-        '自定义话术：450 USD | Your message here',
-      ].join('\n'),
-    );
-    appendAudit(rootDir, {
-      event: 'parse_fail',
-      wa_id_mask: maskWa(binding.wa_id),
-      text: clip(text, 80),
-    });
-    return { handled: true, reason: 'parse_fail' };
+  const raw = String(text || '').trim();
+  if (!raw) {
+    return { handled: false, reason: 'empty_text' };
   }
 
-  const id = shortId();
-  const paths = storePaths(rootDir);
-  const pending = prunePending(readJson(paths.pending, {}));
-  pending[id] = {
-    wa_id: binding.wa_id,
-    profile_name: binding.profile_name || '',
-    phone_number_id: defaultPhoneNumberId(binding),
-    inbound_snippet: binding.inbound_snippet || '',
-    amount: quote.amount,
-    currency: quote.currency,
-    incoterm: quote.incoterm || '',
-    label: quote.label,
-    outbound: quote.outbound,
-    created_at: new Date().toISOString(),
-    created_by: String(fromUser || ''),
-    reply_to_message_id: String(replyToMessageId),
-  };
-  writeJsonAtomic(paths.pending, pending);
+  const quote = parseQuoteInput(raw);
+  if (quote) {
+    return promptConfirmSend(rootDir, {
+      binding,
+      replyToMessageId,
+      fromUser,
+      label: quote.label,
+      outbound: quote.outbound,
+      amount: quote.amount,
+      currency: quote.currency,
+      incoterm: quote.incoterm || '',
+      kind: 'quote',
+    });
+  }
 
-  const confirmText = [
-    '🧾 报价确认（尚未发给客户）',
-    `客户: ${maskWa(binding.wa_id)}${binding.profile_name ? ` (${binding.profile_name})` : ''}`,
-    binding.inbound_snippet ? `客户原话: ${binding.inbound_snippet}` : null,
-    `金额: ${quote.label}`,
-    '',
-    '—— 将发送的 WhatsApp 原文 ——',
-    quote.outbound,
-    '',
-    '确认无误再点「确认发送」。点错对象请「取消」。',
-  ].filter(Boolean).join('\n');
-
-  const result = await notifyWhatsApp(confirmText, { reply_markup: confirmKeyboard(id) });
-  appendAudit(rootDir, {
-    event: 'confirm_prompted',
-    pending_id: id,
-    wa_id_mask: maskWa(binding.wa_id),
-    label: quote.label,
-    telegram_ok: Boolean(result?.ok),
+  // Any other reply-to-bound text = custom WhatsApp message (CEO instruction / stock note / etc.)
+  return promptConfirmSend(rootDir, {
+    binding,
+    replyToMessageId,
+    fromUser,
+    label: clip(raw, 60),
+    outbound: raw.slice(0, 3500),
+    kind: 'message',
   });
-  return { handled: true, reason: 'confirm_prompted', pending_id: id };
+}
+
+async function explainPlainChatHelp() {
+  await notifyWhatsApp(
+    [
+      'ℹ️ 本 Bot 不会执行空白聊天里的指令（防发错人）',
+      '',
+      '正确做法：',
+      '1. 找到该客户的 📲/🤖 盯梢消息',
+      '2. 点「回复」那一条',
+      '3. 写下要发给客户的原文（英文/中文都行）',
+      '4. 核对确认卡里的尾号 → 点「确认发送」',
+      '',
+      '报价简写仍可用：450 / 450 USD / EXW 450',
+    ].join('\n'),
+  );
 }
 
 async function handleCallback(rootDir, callbackQuery) {
@@ -440,15 +482,22 @@ async function handleTelegramUpdate(rootDir, update) {
   const replyTo = message.reply_to_message?.message_id;
   const text = message.text || message.caption || '';
   if (!replyTo) {
-    // Safety: never treat free-floating text as a quote.
+    // Safety: never guess customer from free-floating text — but explain how to use.
+    if (isAllowedChat(message.chat?.id) && String(text || '').trim()) {
+      await explainPlainChatHelp();
+      appendAudit(rootDir, {
+        event: 'plain_chat_help',
+        text: clip(text, 120),
+        from: message.from?.username || message.from?.first_name || '',
+      });
+      return { handled: true, reason: 'plain_chat_help' };
+    }
     return { handled: false, reason: 'not_reply' };
   }
   if (!String(text || '').trim()) {
     return { handled: false, reason: 'empty_text' };
   }
 
-  // Only engage if it looks like a quote OR the parent is bound.
-  // If parent unbound → warn. If bound but not parseable → warn.
   return startQuoteFromReply(rootDir, {
     replyToMessageId: replyTo,
     text,

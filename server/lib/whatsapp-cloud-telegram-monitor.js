@@ -74,8 +74,8 @@ function quoteFooter() {
   return [
     '',
     '———',
-    '报价：回复本条，写 450 或 450 USD（须点确认后才发给这位客户）',
-    '自定义：450 USD | Your message here',
+    '回客户：回复本条，直接写要发给他的话（须点确认）',
+    '报价简写：450 / 450 USD / EXW 450',
   ].join('\n');
 }
 

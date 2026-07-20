@@ -29,6 +29,7 @@ test('formatInboundMessage keeps full customer text (no summary clip)', () => {
   assert.ok(text.includes(long), 'must include full customer body');
   assert.ok(!text.includes('…A'), 'must not truncate with ellipsis mid-body');
   assert.match(text, /回复本条/);
+  assert.match(text, /回客户|报价/);
 });
 
 test('formatOutboundLines keeps full customer + reply originals', () => {
