@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Preview · 本周精选压缩 + 周日自动换新</title>
+  <link rel="stylesheet" href="../../../css/home-v4-hybrid.css?v=featured-weekly-compact-v1">
+  <style>
+    body { margin: 0; font-family: "SF Pro Text", "PingFang SC", system-ui, sans-serif; background: #f5f5f7; color: #1d1d1f; }
+    .banner {
+      position: sticky; top: 0; z-index: 20;
+      background: #1d1d1f; color: #f5f5f7;
+      padding: 12px 20px; font-size: 13px; line-height: 1.45;
+      display: flex; flex-wrap: wrap; gap: 8px 18px; justify-content: space-between;
+    }
+    .banner strong { color: #f5a623; }
+    .banner a { color: #7dd3fc; }
+    .note { max-width: 1100px; margin: 20px auto; padding: 0 24px; font-size: 14px; color: #6e6e73; }
+    .note ul { margin: 8px 0 0; padding-left: 18px; }
+    .compare { max-width: 1100px; margin: 0 auto 32px; padding: 0 24px; display: grid; gap: 12px; }
+    .label { font-size: 12px; font-weight: 700; letter-spacing: .04em; text-transform: uppercase; color: #86868b; }
+    .old .sc-img, .old .sc-img.real { min-height: 320px !important; height: 320px !important; max-height: none !important; }
+    .old .showcase-card { grid-template-columns: 1fr 360px !important; }
+    .old .sc-body { padding: 32px !important; }
+    .rail-fake {
+      max-width: 1100px; margin: 0 auto 48px; padding: 0 24px;
+    }
+    .rail-fake h2 { margin: 0 0 10px; font-size: 22px; }
+    .rail {
+      display: flex; gap: 12px; overflow: hidden;
+    }
+    .rail .box {
+      flex: 0 0 220px; height: 140px; border-radius: 14px;
+      background: #fff; border: 1.5px solid #e5e5ea;
+      display: grid; place-items: center; color: #86868b; font-size: 13px;
+    }
+  </style>
+</head>
+<body>
+  <div class="banner">
+    <div><strong>PREVIEW</strong> · 本周精选桌面压缩 + 每周日 0 点（北京时间）自动换新 · 未上生产</div>
+    <div><a href="../../../index.html">打开本地首页看真效果 →</a></div>
+  </div>
+
+  <div class="note">
+    <strong>改什么</strong>
+    <ul>
+      <li>电脑端精选区图片高度约 320px → <strong>188px</strong>，右侧信息栏变窄，下面货架更早露出来。</li>
+      <li>手机端基本不动（仍全宽大图）。</li>
+      <li>精选不再写死库存号：每周日北京时间 0 点自动换一辆（有图优先，卡车车头 / 有视频半切等轮换）。</li>
+    </ul>
+  </div>
+
+  <div class="compare">
+    <div class="label">After · 压缩版（生产将用这个）</div>
+  </div>
+  <div class="showcase-wrap" style="padding-top:0;padding-bottom:28px">
+    <div class="showcase-head" style="margin-bottom:12px">
+      <div class="sec-kicker">精选车源</div>
+      <div class="sec-h" style="margin-bottom:0">本周精选</div>
+      <div class="sc-note" style="margin:6px 0 0">每周日 0 点（北京时间）自动更换</div>
+    </div>
+    <div class="showcase-card">
+      <div class="sc-img real" style="background:#d9dee5">
+        <div class="sc-badges"><span class="sc-badge vf">✓ In Stock</span></div>
+        <span class="sc-hc-tag">HC250066</span>
+      </div>
+      <div class="sc-body">
+        <div>
+          <div class="sc-kicker">Sinotruk · 2018</div>
+          <div class="sc-name">HOWO<br>Truck Cab</div>
+          <div class="sc-specs">
+            <div class="sc-spec"><span class="sc-spec-k">Engine</span><span class="sc-spec-v">—</span></div>
+            <div class="sc-spec"><span class="sc-spec-k">Stock ID</span><span class="sc-spec-v mono">HC250066</span></div>
+          </div>
+        </div>
+        <div class="sc-price-area">
+          <div class="sc-price">$4,800 <span class="sc-exw">EXW</span></div>
+          <div class="sc-note">Live inventory · asia-power.com</div>
+          <div class="sc-ctas">
+            <a class="sc-wa" href="#">WhatsApp</a>
+            <a class="sc-view" href="#">View Details →</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="rail-fake">
+    <h2>下面货架（示意）</h2>
+    <div class="rail">
+      <div class="box">Half-cut 1</div>
+      <div class="box">Half-cut 2</div>
+      <div class="box">Half-cut 3</div>
+      <div class="box">Half-cut 4</div>
+    </div>
+  </div>
+
+  <div class="compare">
+    <div class="label">Before · 旧版高度对比（仅示意）</div>
+  </div>
+  <div class="showcase-wrap old" style="padding-top:0">
+    <div class="showcase-card">
+      <div class="sc-img real" style="background:#cfd6de">
+        <span class="sc-hc-tag">旧 · ~320px 高</span>
+      </div>
+      <div class="sc-body">
+        <div class="sc-name">旧版过高，货架被推下去</div>
+        <div class="sc-note">桌面首屏很难马上看到列表</div>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

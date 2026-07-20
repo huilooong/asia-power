@@ -207,3 +207,4 @@
 - `pwa-install.js` 必须 short-cache，不可 year-immutable（CF 会冻死 `?v=`）。
 
 - **PWA SW 修复已判定有效（2026-07-16）**：Claude 真机复验通过；现网干净。沙盒未能完整复现「旧访客升级瞬间」属测试环境限制，不否定修复。证据在 `site-template-consistency-audit.md`。
+- 首页 v4（home-v4-hybrid）变更必须用 deploy **home**，不是 chrome。

@@ -220,6 +220,11 @@
     'home.v4.emptyShelf': { zh: '该分类暂无库存。', fr: 'Aucun article dans cette catégorie pour le moment.', ar: 'لا توجد عناصر في هذه الفئة حالياً.' },
     'home.v4.featured': { zh: '精选车源', fr: 'Annonce vedette', ar: 'إعلان مميز' },
     'home.v4.handpicked': { zh: '本周精选', fr: 'Sélection de la semaine', ar: 'مختارات هذا الأسبوع' },
+    'home.v4.featuredRotate': {
+      zh: '每周日 0 点（北京时间）自动更换',
+      fr: 'Mise à jour automatique chaque dimanche',
+      ar: 'يتجدد تلقائياً كل يوم أحد',
+    },
     'home.v4.inStock': { zh: '✓ 现货', fr: '✓ En stock', ar: '✓ متوفر' },
     'home.v4.videoVerifiedBadge': { zh: '✓ 视频已验证', fr: '✓ Vidéo vérifiée', ar: '✓ فيديو موثق' },
     'home.v4.watchVideo': { zh: '观看视频', fr: 'Voir la vidéo', ar: 'شاهد الفيديو' },

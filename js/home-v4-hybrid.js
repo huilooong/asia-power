@@ -256,6 +256,66 @@
     return `<div style="padding:28px 12px;color:var(--t3);font-size:14px">${esc(msg)}</div>`;
   }
 
+  /**
+   * Week index flips every Sunday 00:00 Asia/Shanghai (北京时间周日 0 点).
+   * Same week → same pick for all visitors (deterministic).
+   */
+  function featuredWeekIndex(nowMs = Date.now()) {
+    const parts = new Intl.DateTimeFormat('en-US', {
+      timeZone: 'Asia/Shanghai',
+      year: 'numeric',
+      month: 'numeric',
+      day: 'numeric',
+      hour: 'numeric',
+      hourCycle: 'h23',
+    }).formatToParts(new Date(nowMs));
+    const get = (type) => Number(parts.find((p) => p.type === type)?.value);
+    const y = get('year');
+    const m = get('month');
+    const d = get('day');
+    const utcNoon = Date.UTC(y, m - 1, d, 12);
+    const dow = new Date(utcNoon).getUTCDay(); // 0 = Sunday
+    const sundayUtc = utcNoon - dow * 864e5;
+    const epochSunday = Date.UTC(2024, 0, 7, 12); // known Sunday
+    return Math.floor((sundayUtc - epochSunday) / (7 * 864e5));
+  }
+
+  function showcaseScore(item) {
+    let s = 0;
+    if (firstPhoto(item)) s += 10;
+    if (hasVideo(item)) s += 5;
+    if (isTruckCab(item)) s += 3;
+    else if (isPassengerHalf(item)) s += 2;
+    else if (isMachinery(item)) s += 2;
+    if (Number(item?.priceUsd) > 0) s += 1;
+    return s;
+  }
+
+  /** Auto-rotate featured listing each Sunday 00:00 Asia/Shanghai. */
+  function pickWeeklyFeatured(live) {
+    const week = featuredWeekIndex();
+    const pool = (live || [])
+      .filter((x) => showcaseScore(x) >= 10)
+      .sort((a, b) => {
+        const ds = showcaseScore(b) - showcaseScore(a);
+        if (ds) return ds;
+        return String(a.stockId || '').localeCompare(String(b.stockId || ''));
+      })
+      .slice(0, 24);
+    if (!pool.length) return live[0] || null;
+    // Rotate category preference by week so trucks / video half-cuts alternate
+    const preferFns = [
+      (x) => isTruckCab(x),
+      (x) => isPassengerHalf(x) && hasVideo(x),
+      (x) => isPassengerHalf(x),
+      (x) => isMachinery(x) || isTruckCab(x),
+    ];
+    const prefer = preferFns[((week % preferFns.length) + preferFns.length) % preferFns.length];
+    const preferred = pool.filter(prefer);
+    const use = preferred.length ? preferred : pool;
+    return use[((week % use.length) + use.length) % use.length];
+  }
+
   function renderShowcase(item) {
     if (!item) return '';
     const img = photoUrl(item);
@@ -268,9 +328,10 @@
       : `<div class="sc-img"><div class="sc-img-ph">${ICONS.photo}<span>${esc(t('home.v4.productPhoto', 'Product photo'))}</span></div><span class="sc-hc-tag">${esc(item.stockId)}</span></div>`;
 
     return `
-      <div style="margin-bottom:18px">
+      <div class="showcase-head" style="margin-bottom:12px">
         <div class="sec-kicker">${esc(t('home.v4.featured', 'Featured listing'))}</div>
         <div class="sec-h" style="margin-bottom:0">${esc(t('home.v4.handpicked', 'Handpicked this week'))}</div>
+        <div class="sc-note" style="margin:6px 0 0">${esc(t('home.v4.featuredRotate', 'Auto-updates every Sunday'))}</div>
       </div>
       <div class="showcase-card">
         ${imgBlock}
@@ -320,13 +381,8 @@
     const engines = live.filter(isPassengerEngine);
     const brands = new Set(live.map((x) => x.brand).filter(Boolean));
 
-    // CEO 2026-07-20: 本周精选改为卡车车头（东风 HC250582）
-    let featured = live.find((x) => x.stockId === 'HC250582' && isTruckCab(x))
-      || trucks[0]
-      || live.find((x) => hasVideo(x) && isPassengerHalf(x))
-      || half[0]
-      || live[0]
-      || null;
+    // Weekly auto-pick (Sunday 00:00 Asia/Shanghai); no hard-coded stockId
+    const featured = pickWeeklyFeatured(live);
 
     return {
       generatedAt: new Date().toISOString(),
