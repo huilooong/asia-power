@@ -68,6 +68,7 @@ import {
   mergeVehicleQualifyFields,
 } from "./apsales-deal-qualify.mjs";
 import { formatVehicleConfirmationCard } from "./apsales-vin-card.mjs";
+import { storeReusableFact, retrieveReusableFacts } from "./apsales-reusable-evidence.mjs";
 import { buildLiveRulesPrompt } from "./apsales-live-rules.mjs";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
@@ -458,6 +459,7 @@ async function runOpenClawReply({ text, senderId, messageId, chatId, observedAt,
     .then((result) => String(result?.intent || "unknown"))
     .catch(() => "unknown");
   const liveRules = buildLiveRulesPrompt(liveRulesSource, customerIntent);
+  const reusableEvidence = await retrieveReusableFacts({ workspace: WORKSPACE, dealState }).catch(() => []);
   const customerId = `wa:${String(senderId || "").replace(/\D/g, "")}`;
   const recentAgentReplies = await loadRecentAgentReplies({
     workspace: WORKSPACE,
@@ -541,6 +543,7 @@ async function runOpenClawReply({ text, senderId, messageId, chatId, observedAt,
       recent_team_replies: recentTeamRepliesForPrompt(dealState),
       inventory_matches: matches,
       approximate_matches: approximateMatches || [],
+      reusable_technical_facts: reusableEvidence,
       category_page_url: categoryPageFallback,
       confirmed_vin: knownVin,
       customer_message: text,
@@ -1293,11 +1296,13 @@ async function handleMessage(message, state, session) {
       return;
     }
     const senderId = message.fromPhoneE164;
-    await appendTeamReply(senderId, teamText, message.messageId);
+    const updatedDeal = await appendTeamReply(senderId, teamText, message.messageId);
+    const reusable = await storeReusableFact({ workspace: WORKSPACE, teamText, dealState: updatedDeal });
     log("recorded team reply", {
       senderId,
       messageId: message.messageId,
       text: teamText.slice(0, 180),
+      reusableEvidenceStored: reusable.stored,
     });
     await appendActivity(
       "apsales_team_reply_recorded",
