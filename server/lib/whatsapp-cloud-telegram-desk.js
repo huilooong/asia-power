@@ -100,7 +100,29 @@ function resolveCustomer(rootDir, { last4, waId, name }) {
 
 function heuristicIntent(text, recent) {
   const t = String(text || '').trim();
-  const last4m = t.match(/(?:尾号|后四位|\.\.\.|…|#)?\s*(\d{4})\b/);
+
+  // Identity — must run before list heuristics (avoid matching 谁 inside 你是谁)
+  if (/^(你是谁|你是谁[？?]?|你叫什么|自我介绍|who are you\??)$/i.test(t)
+    || /你是谁|你叫什么名字|介绍一下你自己/i.test(t)) {
+    return {
+      action: 'chat',
+      ceo_reply: [
+        '我是 AsiaPower 的 WhatsApp 接待台（@Asiapower86166_bot）。',
+        '负责：+86 Cloud 客户消息盯梢、按你指令起草回复、二次确认后发送。',
+        '不是孔明——孔明管网站/任务；待审核提醒也在孔明那边。',
+        '',
+        '你可以这样用：',
+        '· 给尾号4122回消息，说…',
+        '· 最近客户',
+        '· 或直接回复某条盯梢消息写话术 → 点确认发送',
+      ].join('\n'),
+      confidence: 1,
+      source: 'heuristic',
+    };
+  }
+
+  const last4m = t.match(/(?:尾号|后四位|\.\.\.|…|#)\s*(\d{4})\b/)
+    || t.match(/\b(\d{4})\b/);
   const last4 = last4m ? last4m[1] : '';
   const wantsSend = /回(消息|复)|告诉|跟他说|发(给|消息)|通知|安排|现货|报价|拆/.test(t);
   if (wantsSend && last4) {
@@ -132,7 +154,8 @@ function heuristicIntent(text, recent) {
       };
     }
   }
-  if (/最近|谁|客户列表|有哪些/.test(t)) {
+  // Do NOT match bare 谁 (breaks 你是谁)
+  if (/最近客户|客户列表|有哪些客户|最近有谁|list customers/i.test(t)) {
     return { action: 'list', ceo_reply: '', confidence: 0.9, source: 'heuristic' };
   }
   return null;

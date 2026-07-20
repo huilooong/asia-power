@@ -22,6 +22,13 @@ test('heuristicIntent detects last4 + stock/dismantle instruction', () => {
   assert.match(intent.outbound, /dismantl/i);
 });
 
+test('你是谁 is identity chat, not customer list', () => {
+  const intent = heuristicIntent('你是谁', []);
+  assert.equal(intent.action, 'chat');
+  assert.match(intent.ceo_reply, /接待台|WhatsApp/);
+  assert.ok(!/最近 WhatsApp 客户/.test(intent.ceo_reply));
+});
+
 test('resolveCustomer matches unique last4 from bindings', () => {
   const root = fs.mkdtempSync(path.join(os.tmpdir(), 'wa-desk-'));
   registerBinding(root, '9', {
