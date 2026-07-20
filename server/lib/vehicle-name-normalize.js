@@ -417,6 +417,28 @@ function normalizeListingMeta(record) {
       };
     }
     const passengerPartType = String(record.passengerPartType || '').trim();
+    // Explicit dedicated part types win over legacy slug/condition heuristics
+    // (e.g. HC250585 reclassified tire while slug still said -front-cut-).
+    if (['engine', 'transmission', 'chassis', 'tire', 'other'].includes(passengerPartType)) {
+      const labels = {
+        engine: 'Engine Assembly',
+        transmission: 'Transmission Assembly',
+        chassis: 'Chassis Part',
+        tire: 'Used Tire',
+        other: 'Part',
+      };
+      return {
+        ...record,
+        vehicleCategory: 'passenger',
+        truckPartType: '',
+        passengerPartType,
+        vehicleCondition: (passengerPartType === 'tire' && condition === 'Scrap Tire')
+          ? 'Scrap Tire'
+          : (condition && condition !== 'Front Cut' && condition !== 'Half Cut'
+            ? condition
+            : (labels[passengerPartType] || 'Part')),
+      };
+    }
     if (slug.includes('-front-cut-') || passengerPartType === 'front' || condition === 'Front Cut') {
       return {
         ...record,

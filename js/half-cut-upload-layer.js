@@ -220,6 +220,19 @@
     if (slug.includes('-truck-half-cut-')) {
       return { vehicleCategory: 'truck', truckPartType: 'vehicle', vehicleCondition: 'Truck Half Cut' };
     }
+    // Explicit dedicated part types win over legacy slug/condition heuristics
+    if (['engine', 'transmission', 'chassis', 'tire', 'other'].includes(passengerPartType)) {
+      return {
+        vehicleCategory: 'passenger',
+        truckPartType: '',
+        passengerPartType,
+        vehicleCondition: (passengerPartType === 'tire' && condition === 'Scrap Tire')
+          ? 'Scrap Tire'
+          : (condition && condition !== 'Front Cut' && condition !== 'Half Cut'
+            ? condition
+            : (PASSENGER_PART_CONDITIONS[passengerPartType] || 'Part')),
+      };
+    }
     if (slug.includes('-front-cut-') || passengerPartType === 'front' || condition === 'Front Cut') {
       return {
         vehicleCategory: 'passenger',
