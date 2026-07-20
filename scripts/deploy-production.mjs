@@ -630,6 +630,12 @@ function deployApsalesOpenClaw() {
     `${ROOT}/deploy/apsales-live-draft/bridge.mjs`,
     `${REMOTE}:/root/.openclaw/extensions/apsales-live-draft/bridge.mjs.next`,
   );
+  // Keep bridge imports staged with the bridge itself. Copying bridge first
+  // without this module can leave systemd in a restart loop after an update.
+  rsync(
+    `${ROOT}/deploy/apsales-live-draft/apsales-price-confirmation-gate.mjs`,
+    `${REMOTE}:/root/.openclaw/extensions/apsales-live-draft/apsales-price-confirmation-gate.mjs.next`,
+  );
   rsync(
     `${ROOT}/deploy/apsales-live-draft/apsales-whatsapp-session.mjs`,
     `${REMOTE}:/root/.openclaw/extensions/apsales-live-draft/apsales-whatsapp-session.mjs.next`,
@@ -719,9 +725,12 @@ BRIDGE=\$BRIDGE_DIR/bridge.mjs
 SESSION=\$BRIDGE_DIR/apsales-whatsapp-session.mjs
 NEXT=\${BRIDGE}.next
 SESSION_NEXT=\${SESSION}.next
+PRICE_GATE=\$BRIDGE_DIR/apsales-price-confirmation-gate.mjs
+PRICE_GATE_NEXT=\${PRICE_GATE}.next
 BACKUP=/root/.openclaw/releases/apsales-openclaw-\$(date -u +%Y%m%dT%H%M%SZ)
 test -s "$NEXT"
 test -s "$SESSION_NEXT"
+test -s "$PRICE_GATE_NEXT"
 test -s "\$BRIDGE_DIR/apsales-internal-staff.mjs"
 test -s "\$BRIDGE_DIR/apsales-closing-memory.mjs"
 test -s "\$BRIDGE_DIR/apsales-soft-angle.mjs"
@@ -729,10 +738,13 @@ test -s "\$BRIDGE_DIR/apsales-deal-qualify.mjs"
 test -s "\$BRIDGE_DIR/apsales-vin-card.mjs"
 CHECK=\$(mktemp /tmp/apsales-bridge-check-XXXXXX.mjs)
 SESSION_CHECK=\$(mktemp /tmp/apsales-session-check-XXXXXX.mjs)
+PRICE_GATE_CHECK=\$(mktemp /tmp/apsales-price-gate-check-XXXXXX.mjs)
 cp "$NEXT" "$CHECK"
 cp "$SESSION_NEXT" "$SESSION_CHECK"
+cp "$PRICE_GATE_NEXT" "$PRICE_GATE_CHECK"
 /usr/bin/node --check "$CHECK"
 /usr/bin/node --check "$SESSION_CHECK"
+/usr/bin/node --check "$PRICE_GATE_CHECK"
 /usr/bin/node --check "\$BRIDGE_DIR/apsales-internal-staff.mjs"
 /usr/bin/node --check "\$BRIDGE_DIR/apsales-closing-memory.mjs"
 /usr/bin/node --check "\$BRIDGE_DIR/apsales-soft-angle.mjs"
@@ -741,7 +753,7 @@ cp "$SESSION_NEXT" "$SESSION_CHECK"
 /usr/bin/node --check "\$BRIDGE_DIR/ghana-staff-handoff.mjs"
 /usr/bin/node --check "\$BRIDGE_DIR/apsales-parse-agent-reply.mjs"
 /usr/bin/node --check /tmp/apsales-bridge-crash-logger.mjs
-rm -f "$CHECK" "$SESSION_CHECK"
+rm -f "$CHECK" "$SESSION_CHECK" "$PRICE_GATE_CHECK"
 mkdir -p "$BACKUP" /etc/systemd/system/apsales-whatsapp-bridge.service.d
 cp -a "$BRIDGE" "$BACKUP/bridge.mjs"
 if [ -f "$SESSION" ]; then cp -a "$SESSION" "$BACKUP/apsales-whatsapp-session.mjs"; fi
@@ -774,6 +786,7 @@ EnvironmentFile=-/root/.openclaw/workspace/AsiaPower/.env
 EOF
 
 mv "$SESSION_NEXT" "$SESSION"
+mv "$PRICE_GATE_NEXT" "$PRICE_GATE"
 mv "$NEXT" "$BRIDGE"
 systemctl daemon-reload
 systemctl enable apsales-whatsapp-bridge.service
