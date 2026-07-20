@@ -1338,6 +1338,7 @@ async function handleMessage(message, state, session) {
   });
   // Step 0 evidence context is frozen before the model writes its reply.
   const privateBusinessFactContext = buildPrivateBusinessFactContext({
+    customerMessage: text,
     dealState,
     inventoryMatches,
   });
@@ -1612,7 +1613,6 @@ async function handleMessage(message, state, session) {
       }
       const priceGate = priceConfirmationGate({
         preGenerationContext: privateBusinessFactContext,
-        replyText: generated.reply,
         modelNeedsPriceConfirmation: generated.needsPriceConfirmation,
       });
       if (priceGate.hold) {
