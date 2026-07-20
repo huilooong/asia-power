@@ -248,12 +248,13 @@
   function passengerInventoryPartType(item) {
     if (!item) return '';
     const explicit = String(item.passengerPartType || '').trim().toLowerCase();
-    if (['front', 'engine', 'transmission', 'chassis', 'other'].includes(explicit)) return explicit;
+    if (['front', 'engine', 'transmission', 'chassis', 'tire', 'other'].includes(explicit)) return explicit;
 
     const slug = String(item.slug || '').toLowerCase();
     if (slug.includes('-passenger-engine-')) return 'engine';
     if (slug.includes('-passenger-transmission-')) return 'transmission';
     if (slug.includes('-passenger-chassis-')) return 'chassis';
+    if (slug.includes('-passenger-tire-')) return 'tire';
     if (slug.includes('-front-cut-')) return 'front';
     if (slug.includes('-passenger-part-')) return 'other';
 
@@ -261,6 +262,7 @@
     if (cond === 'engine assembly') return 'engine';
     if (cond === 'transmission assembly') return 'transmission';
     if (cond === 'chassis part') return 'chassis';
+    if (cond === 'used tire' || cond === 'scrap tire') return 'tire';
     if (cond === 'front cut' || cond.includes('nose cut')) return 'front';
     if (cond === 'part') return 'other';
     return '';
@@ -269,7 +271,7 @@
   function isHalfCutLikeListing(item) {
     if (!item) return false;
     const slug = String(item.slug || '').toLowerCase();
-    if (/(^|-)(half-cut|front-cut|passenger-engine|passenger-transmission|passenger-chassis|passenger-part)(-|$)/.test(slug)) {
+    if (/(^|-)(half-cut|front-cut|passenger-engine|passenger-transmission|passenger-chassis|passenger-tire|passenger-part)(-|$)/.test(slug)) {
       return true;
     }
     const cond = String(item.vehicleCondition || '').trim().toLowerCase();
@@ -348,6 +350,7 @@
       return isPassengerHalfCutItem(item);
     }
     if (category === 'chassis') return hasChassisCatalogEvidence(item);
+    if (category === 'tires') return partType === 'tire';
     if (category === 'engines') {
       if (partType) return partType === 'engine';
       return isPassengerHalfCutItem(item) && Boolean(String(item.engineCode || '').trim());
@@ -1082,6 +1085,7 @@
     front: ['vehicle front', '车辆前脸', 'cab front', '驾驶室正面', 'front cut', '前头'],
     transmission: ['transmission', 'gearbox', '变速箱'],
     chassis: ['chassis', '底盘'],
+    tire: ['tire', 'tyre', '轮胎', '废旧轮胎'],
   };
 
   /** Dedicated part uploads (passenger-parts / truck engine) — not half-cut borrowed photos. */
@@ -1107,6 +1111,11 @@
         ppt: ppt === 'chassis',
         slug: slug.includes('-passenger-chassis-'),
         cond: cond === 'chassis part',
+      },
+      tire: {
+        ppt: ppt === 'tire',
+        slug: slug.includes('-passenger-tire-'),
+        cond: cond === 'used tire' || cond === 'scrap tire',
       },
       front: {
         ppt: ppt === 'front',

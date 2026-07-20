@@ -104,6 +104,7 @@ const ASIAPOWER = {
     { label: 'Engines', href: 'engines/' },
     { label: 'Gearboxes', href: 'gearboxes/' },
     { label: 'Chassis Parts', href: 'chassis-parts/' },
+    { label: 'Used Tires', href: 'tires/' },
   ],
   seoEngines: [
     { code: '1NZ-FE', slug: 'toyota-1nz-fe' },

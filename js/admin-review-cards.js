@@ -54,6 +54,7 @@
       engine: 'passengerPartEngine',
       transmission: 'passengerPartTransmission',
       chassis: 'passengerPartChassis',
+      tire: 'passengerPartTire',
       other: 'passengerPartOther',
     };
     return I18n()?.labelInline(map[type] || 'passengerPartOther') || type;
@@ -231,6 +232,7 @@
             <option value="engine" ${meta.passengerPartType === 'engine' ? 'selected' : ''}>${I18n().labelInline('passengerPartEngine')}</option>
             <option value="transmission" ${meta.passengerPartType === 'transmission' ? 'selected' : ''}>${I18n().labelInline('passengerPartTransmission')}</option>
             <option value="chassis" ${meta.passengerPartType === 'chassis' ? 'selected' : ''}>${I18n().labelInline('passengerPartChassis')}</option>
+            <option value="tire" ${meta.passengerPartType === 'tire' ? 'selected' : ''}>${I18n().labelInline('passengerPartTire')}</option>
             <option value="other" ${meta.passengerPartType === 'other' ? 'selected' : ''}>${I18n().labelInline('passengerPartOther')}</option>
           </select></label>
           <label>${t('inventoryStatus')} <select data-edit="inventoryStatus">${statusOptions}</select></label>

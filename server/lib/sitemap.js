@@ -17,6 +17,7 @@ const CORE_PAGES = [
   { loc: '/gearboxes/', changefreq: 'weekly', priority: '0.7' },
   { loc: '/chassis-parts/', changefreq: 'weekly', priority: '0.7' },
   { loc: '/front-cuts/', changefreq: 'weekly', priority: '0.7' },
+  { loc: '/tires/', changefreq: 'weekly', priority: '0.7' },
   { loc: '/half-cuts/', changefreq: 'daily', priority: '0.8' },
   { loc: '/truck-heads/', changefreq: 'weekly', priority: '0.85' },
   { loc: '/trucks/', changefreq: 'weekly', priority: '0.7' },

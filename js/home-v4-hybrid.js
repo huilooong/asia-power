@@ -146,17 +146,19 @@
 
   function passengerPartType(item) {
     const explicit = String(item?.passengerPartType || '').trim().toLowerCase();
-    if (['front', 'engine', 'transmission', 'chassis', 'other'].includes(explicit)) return explicit;
+    if (['front', 'engine', 'transmission', 'chassis', 'tire', 'other'].includes(explicit)) return explicit;
     const slug = String(item?.slug || '').toLowerCase();
     if (slug.includes('-passenger-engine-')) return 'engine';
     if (slug.includes('-passenger-transmission-')) return 'transmission';
     if (slug.includes('-passenger-chassis-')) return 'chassis';
+    if (slug.includes('-passenger-tire-')) return 'tire';
     if (slug.includes('-front-cut-')) return 'front';
     if (slug.includes('-passenger-part-')) return 'other';
     const cond = String(item?.vehicleCondition || '').trim().toLowerCase();
     if (cond === 'engine assembly') return 'engine';
     if (cond === 'transmission assembly') return 'transmission';
     if (cond === 'chassis part') return 'chassis';
+    if (cond === 'used tire' || cond === 'scrap tire') return 'tire';
     if (cond === 'front cut' || cond.includes('nose cut')) return 'front';
     if (cond === 'part') return 'other';
     return '';

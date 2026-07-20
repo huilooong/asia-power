@@ -453,6 +453,15 @@ function normalizeListingMeta(record) {
         vehicleCondition: condition || 'Chassis Part',
       };
     }
+    if (slug.includes('-passenger-tire-') || passengerPartType === 'tire' || condition === 'Used Tire' || condition === 'Scrap Tire') {
+      return {
+        ...record,
+        vehicleCategory: 'passenger',
+        truckPartType: '',
+        passengerPartType: 'tire',
+        vehicleCondition: condition === 'Scrap Tire' ? 'Scrap Tire' : 'Used Tire',
+      };
+    }
     if (slug.includes('-passenger-part-') || passengerPartType === 'other' || condition === 'Part') {
       return {
         ...record,
@@ -462,12 +471,13 @@ function normalizeListingMeta(record) {
         vehicleCondition: condition || 'Part',
       };
     }
-    if (['front', 'engine', 'transmission', 'chassis', 'other'].includes(passengerPartType)) {
+    if (['front', 'engine', 'transmission', 'chassis', 'tire', 'other'].includes(passengerPartType)) {
       const labels = {
         front: 'Front Cut',
         engine: 'Engine Assembly',
         transmission: 'Transmission Assembly',
         chassis: 'Chassis Part',
+        tire: 'Used Tire',
         other: 'Part',
       };
       return {
@@ -500,6 +510,7 @@ function catalogCutLabel(item) {
   if (item?.passengerPartType === 'engine') return 'Engine Assembly';
   if (item?.passengerPartType === 'transmission') return 'Transmission Assembly';
   if (item?.passengerPartType === 'chassis') return 'Chassis Part';
+  if (item?.passengerPartType === 'tire') return 'Used Tire';
   if (item?.passengerPartType === 'other') return 'Part';
   if (item?.vehicleCategory === 'truck') return 'Truck Half Cut';
   if (item?.vehicleCategory === 'machinery') {
@@ -524,6 +535,7 @@ function catalogSlugCutSegment(item) {
   if (item?.passengerPartType === 'engine') return 'passenger-engine';
   if (item?.passengerPartType === 'transmission') return 'passenger-transmission';
   if (item?.passengerPartType === 'chassis') return 'passenger-chassis';
+  if (item?.passengerPartType === 'tire') return 'passenger-tire';
   if (item?.passengerPartType === 'other') return 'passenger-part';
   return 'half-cut';
 }
@@ -601,7 +613,7 @@ function rebuildInventoryDerivedFields(item) {
       const standardPart = /^(Engine|Front clip|Wiring harness|Radiator pack|Cab|Driver cab|Transmission)/i;
       const looksSupplierRemark = next.includedParts.length === 1
         && !standardPart.test(String(next.includedParts[0] || '').trim());
-      const isDedicatedPassengerPart = ['front', 'engine', 'transmission', 'chassis', 'other']
+      const isDedicatedPassengerPart = ['front', 'engine', 'transmission', 'chassis', 'tire', 'other']
         .includes(String(next.passengerPartType || '').trim());
       if (!isDedicatedPassengerPart && (
         contactRedact.containsContactInfo(joined)
@@ -610,19 +622,26 @@ function rebuildInventoryDerivedFields(item) {
       )) {
         next.includedParts = ['Engine & gearbox assembly', 'Front clip', 'Wiring harness', 'Radiator pack'];
       }
-      if (isDedicatedPassengerPart && (
-        contactRedact.containsContactInfo(joined)
-        || next.includedParts.some((part) => halfCutTitle.isRemarkBoilerplate(part) || /^原始车型:/.test(part))
-        || next.includedParts.join('|') === 'Engine & gearbox assembly|Front clip|Wiring harness|Radiator pack'
-      )) {
+      if (isDedicatedPassengerPart) {
         const defaults = {
           front: ['Front clip assembly'],
           engine: ['Engine assembly'],
           transmission: ['Transmission assembly'],
           chassis: ['Chassis part'],
+          tire: ['Used/scrap tires'],
           other: ['Part'],
         };
-        next.includedParts = defaults[String(next.passengerPartType).trim()] || ['Part'];
+        const ppt = String(next.passengerPartType).trim();
+        const expected = defaults[ppt] || ['Part'];
+        const wrongForTire = ppt === 'tire' && /front clip|engine assembly|transmission|chassis part/i.test(joined);
+        if (
+          contactRedact.containsContactInfo(joined)
+          || next.includedParts.some((part) => halfCutTitle.isRemarkBoilerplate(part) || /^原始车型:/.test(part))
+          || next.includedParts.join('|') === 'Engine & gearbox assembly|Front clip|Wiring harness|Radiator pack'
+          || wrongForTire
+        ) {
+          next.includedParts = expected;
+        }
       }
     }
   }

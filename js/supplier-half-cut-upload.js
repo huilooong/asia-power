@@ -167,10 +167,10 @@
 
     function uploadPassengerPartType() {
       const fromBody = document.body?.dataset?.uploadPart;
-      if (fromBody && ['front', 'engine', 'transmission', 'chassis', 'other'].includes(fromBody)) return fromBody;
+      if (fromBody && ['front', 'engine', 'transmission', 'chassis', 'tire', 'other'].includes(fromBody)) return fromBody;
       const params = new URLSearchParams(window.location.search);
       const part = params.get('part');
-      if (['front', 'engine', 'transmission', 'chassis', 'other'].includes(part)) return part;
+      if (['front', 'engine', 'transmission', 'chassis', 'tire', 'other'].includes(part)) return part;
       return 'front';
     }
 
@@ -212,6 +212,7 @@
       engine: 'passengerPartEngineHint',
       transmission: 'passengerPartTransmissionHint',
       chassis: 'passengerPartChassisHint',
+      tire: 'passengerPartTireHint',
       other: 'passengerPartOtherHint',
     };
     const TRUCK_PART_CONDITIONS = {
@@ -225,6 +226,7 @@
       engine: 'Engine Assembly',
       transmission: 'Transmission Assembly',
       chassis: 'Chassis Part',
+      tire: 'Used Tire',
       other: 'Part',
     };
     let truckPartType = isTruckPartsUpload ? defaultPartType : (isTruckVehicleUpload ? 'vehicle' : '');
@@ -259,6 +261,7 @@
       ['Engine Removed', 'conditionEngineRemoved'],
       ['Transmission Assembly', 'conditionTransmissionAssembly'],
       ['Chassis Part', 'conditionChassisPart'],
+      ['Used Tire', 'conditionUsedTire'],
       ['Part', 'conditionPart'],
     ].map(([val, key]) => `<option value="${val}">${I18n().labelInline(key)}</option>`).join('');
 
@@ -286,6 +289,7 @@
                   <option value="engine"${defaultPassengerPartType === 'engine' ? ' selected' : ''}>${I18n().labelInline('passengerPartEngine')}</option>
                   <option value="transmission"${defaultPassengerPartType === 'transmission' ? ' selected' : ''}>${I18n().labelInline('passengerPartTransmission')}</option>
                   <option value="chassis"${defaultPassengerPartType === 'chassis' ? ' selected' : ''}>${I18n().labelInline('passengerPartChassis')}</option>
+                  <option value="tire"${defaultPassengerPartType === 'tire' ? ' selected' : ''}>${I18n().labelInline('passengerPartTire')}</option>
                   <option value="other"${defaultPassengerPartType === 'other' ? ' selected' : ''}>${I18n().labelInline('passengerPartOther')}</option>
                 </select>
                 <p class="form-hint" id="passenger-part-hint">${th(PASSENGER_PART_HINTS[defaultPassengerPartType] || 'passengerPartFrontHint')}</p>
@@ -1745,7 +1749,7 @@
       });
       refreshPartSelectLabels(document.getElementById('passengerPartType'), {
         front: 'passengerPartFront', engine: 'passengerPartEngine', transmission: 'passengerPartTransmission',
-        chassis: 'passengerPartChassis', other: 'passengerPartOther',
+        chassis: 'passengerPartChassis', tire: 'passengerPartTire', other: 'passengerPartOther',
       });
       refreshPartSelectLabels(document.getElementById('vehicleListingType'), {
         scrap: 'listingTypeScrap', used: 'listingTypeUsed',
@@ -1755,7 +1759,7 @@
         'Truck Half Cut': 'conditionTruckHalfCut', 'Driver Cab': 'conditionDriverCab',
         'Front Cut': 'conditionFrontCut', 'Dismantled': 'conditionDismantled',
         'Engine Removed': 'conditionEngineRemoved', 'Transmission Assembly': 'conditionTransmissionAssembly',
-        'Chassis Part': 'conditionChassisPart', 'Part': 'conditionPart',
+        'Chassis Part': 'conditionChassisPart', 'Used Tire': 'conditionUsedTire', 'Part': 'conditionPart',
       });
       refreshPartSelectLabels(document.getElementById('fuelType'), {
         Petrol: 'fuelPetrol', Diesel: 'fuelDiesel', Hybrid: 'fuelHybrid',

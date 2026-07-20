@@ -923,6 +923,12 @@
     window.AsiaPowerEbayCatalogHub.initInventoryParts('frontcuts', root);
   }
 
+  function initTireCatalogPage() {
+    const root = document.getElementById('tire-catalog-root');
+    if (!root || !window.AsiaPowerEbayCatalogHub?.initInventoryParts) return;
+    window.AsiaPowerEbayCatalogHub.initInventoryParts('tires', root);
+  }
+
   function initPlatformOffices() {
     const el = document.getElementById('platform-offices');
     const config = window.ASIAPOWER;
@@ -1519,6 +1525,7 @@
     initGearboxCatalogPage();
     initChassisCatalogPage();
     initFrontCutCatalogPage();
+    initTireCatalogPage();
     initWhatsAppAnalytics();
     initGenericWhatsAppLeadCapture();
     initCaseStudyVideos();
@@ -1541,6 +1548,7 @@
     initGearboxCatalogPage();
     initChassisCatalogPage();
     initFrontCutCatalogPage();
+    initTireCatalogPage();
     if (document.getElementById('brand-matrix') || document.getElementById('brand-featured-matrix')) {
       brandsDirectoryHydrateBound = false;
       initBrandDirectory();

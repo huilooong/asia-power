@@ -166,6 +166,7 @@
     gearboxes: { labelKey: 'catalog.gearboxes', label: 'Gearboxes', href: 'gearboxes/', typeLabelKey: 'filter.transmissionType', typeLabel: 'Transmission type' },
     chassis: { labelKey: 'catalog.chassis', label: 'Chassis parts', href: 'chassis-parts/', typeLabelKey: 'filter.partType', typeLabel: 'Part type' },
     frontcuts: { labelKey: 'parts.submoduleFrontCut', label: 'Front cut', href: 'front-cuts/', typeLabelKey: 'filter.partType', typeLabel: 'Part type' },
+    tires: { labelKey: 'catalog.tires', label: 'Used tires', href: 'tires/', typeLabelKey: 'filter.partType', typeLabel: 'Part type' },
   };
 
   const ENGINE_FUEL_FILTERS = [
@@ -1010,6 +1011,7 @@
     gearboxes: 'transmission',
     chassis: 'chassis',
     frontcuts: 'front',
+    tires: 'tire',
   };
 
   function filterInventoryPartItems(items, state, partType) {
@@ -1585,6 +1587,7 @@
       gearboxes: { key: 'gearboxes.title', fallback: 'Gearbox Catalog' },
       chassis: { key: 'catalog.chassis', fallback: 'Chassis Parts' },
       frontcuts: { key: 'parts.submoduleFrontCut', fallback: 'Front Cut' },
+      tires: { key: 'catalog.tires', fallback: 'Used Tires' },
     };
     const meta = titles[page] || titles.engines;
     const title = t(meta.key, meta.fallback);

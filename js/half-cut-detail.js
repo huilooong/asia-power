@@ -498,6 +498,9 @@
     } else if (passengerPart === 'chassis') {
       catalogLabel = t('catalog.chassis', 'Chassis Parts');
       catalogHref = `${b}chassis-parts/`;
+    } else if (passengerPart === 'tire') {
+      catalogLabel = t('catalog.tires', 'Used Tires');
+      catalogHref = `${b}tires/`;
     } else if (isTruck && item.truckPartType === 'engine') {
       catalogHref = `${b}trucks/?part=engine`;
     } else if (isTruck && item.truckPartType === 'cab') {

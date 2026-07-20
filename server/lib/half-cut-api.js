@@ -957,7 +957,7 @@ function createHalfCutApi(rootDir, options = {}) {
     const isLooseTruckPart = meta?.vehicleCategory === 'truck'
       && ['cab', 'engine', 'axle', 'other'].includes(meta?.truckPartType);
     const isLoosePassengerPart = meta?.vehicleCategory === 'passenger'
-      && ['front', 'engine', 'transmission', 'chassis', 'other'].includes(meta?.passengerPartType);
+      && ['front', 'engine', 'transmission', 'chassis', 'tire', 'other'].includes(meta?.passengerPartType);
     const isLoosePart = isLooseTruckPart || isLoosePassengerPart;
     const isMachinery = meta?.vehicleCategory === 'machinery';
     const vin = String(submission.vin || '').trim();

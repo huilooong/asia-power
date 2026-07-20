@@ -66,7 +66,7 @@
   }
 
   const CATALOG_PAGE_IDS = new Set(['halfcuts', 'trucks', 'machinery']);
-  const PARTS_CATALOG_PAGE_IDS = new Set(['engines', 'gearboxes', 'chassis', 'frontcuts']);
+  const PARTS_CATALOG_PAGE_IDS = new Set(['engines', 'gearboxes', 'chassis', 'frontcuts', 'tires']);
 
   function isCatalogHubPage() {
     return CATALOG_PAGE_IDS.has(pageId());
@@ -87,6 +87,7 @@
     gearboxes: { layout: 'category', title: 'Gearboxes', hub: 'Export Parts & Vehicles' },
     chassis: { layout: 'category', title: 'Chassis Parts', hub: 'Export Parts & Vehicles' },
     frontcuts: { layout: 'category', title: 'Front Cut', hub: 'Export Parts & Vehicles' },
+    tires: { layout: 'category', title: 'Used Tires', hub: 'Export Parts & Vehicles' },
     'halfcut-detail': { layout: 'detail', title: 'Half-Cut Detail', hub: 'Half-Cuts' },
     'engine-detail': { layout: 'detail', title: 'Engine Detail', hub: 'Engines' },
     brands: { layout: 'static', title: 'Brand Directory', hub: 'Export Parts & Vehicles' },
@@ -101,7 +102,7 @@
 
   function activeCategoryId() {
     const id = pageId();
-    if (id === 'engines' || id === 'gearboxes' || id === 'chassis' || id === 'frontcuts') return 'parts';
+    if (id === 'engines' || id === 'gearboxes' || id === 'chassis' || id === 'frontcuts' || id === 'tires') return 'parts';
     if (id.startsWith('brand-')) return 'used-cars';
     if (id === 'halfcut-detail') return 'halfcuts';
     if (id === 'halfcuts') return catalogCategoryFromUrl();
@@ -214,6 +215,7 @@
     { id: 'gearboxes', labelKey: 'parts.submoduleGearboxes', label: 'Gearboxes', href: 'gearboxes/' },
     { id: 'chassis', labelKey: 'parts.submoduleChassis', label: 'Chassis', href: 'chassis-parts/' },
     { id: 'frontcut', labelKey: 'parts.submoduleFrontCut', label: 'Front cut', href: 'front-cuts/' },
+    { id: 'tires', labelKey: 'parts.submoduleTires', label: 'Used tires', href: 'tires/' },
   ];
 
   function activePartsSubmoduleId() {
@@ -222,6 +224,7 @@
     if (id === 'gearboxes') return 'gearboxes';
     if (id === 'chassis') return 'chassis';
     if (id === 'frontcuts') return 'frontcut';
+    if (id === 'tires') return 'tires';
     return '';
   }
 

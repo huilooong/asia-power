@@ -225,6 +225,8 @@
       cutSegment = 'passenger-transmission';
     } else if (record.passengerPartType === 'chassis') {
       cutSegment = 'passenger-chassis';
+    } else if (record.passengerPartType === 'tire') {
+      cutSegment = 'passenger-tire';
     } else if (record.passengerPartType === 'other') {
       cutSegment = 'passenger-part';
     }
@@ -269,6 +271,9 @@
     }
     if (record.passengerPartType === 'chassis') {
       return `${record.brand} ${record.model} Chassis Part`;
+    }
+    if (record.passengerPartType === 'tire') {
+      return `${record.brand} ${record.model} Used Tire`;
     }
     if (record.passengerPartType === 'other') {
       return `${record.brand} ${record.model} Part`;
@@ -316,6 +321,9 @@
       }
       if (submission.passengerPartType === 'chassis') {
         return `${submission.year} ${submission.brand} ${submission.model} chassis part — supplier-verified listing via AsiaPower.`;
+      }
+      if (submission.passengerPartType === 'tire') {
+        return `${submission.year} ${submission.brand} ${submission.model} used/scrap tire — EXW per piece · supplier-verified listing via AsiaPower.`;
       }
       if (submission.passengerPartType === 'other') {
         return `${submission.year} ${submission.brand} ${submission.model} part — supplier-verified listing via AsiaPower.`;

@@ -249,7 +249,7 @@ echo "[deploy:categories] category filters OK on remote"
 
 /** Login / register / buyer+supplier portals (does NOT rsync full public/) */
 function deployPortal() {
-  console.log('[deploy:portal] syncing login + portal pages');
+  console.log('[deploy:portal] syncing login + portal pages + supplier upload');
   const pub = `${SITE}/public`;
   ssh('mkdir -p /root/.openclaw/workspace/inventory-site/public/login /root/.openclaw/workspace/inventory-site/public/buyer-portal /root/.openclaw/workspace/inventory-site/public/supplier-portal /root/.openclaw/workspace/inventory-site/public/css /root/.openclaw/workspace/inventory-site/public/js');
   rsync(`${ROOT}/login/index.html`, `${pub}/login/index.html`);
@@ -261,8 +261,12 @@ function deployPortal() {
   rsync(`${ROOT}/js/v4-portal-shell.js`, `${pub}/js/v4-portal-shell.js`);
   rsync(`${ROOT}/js/main.js`, `${pub}/js/main.js`);
   rsync(`${ROOT}/js/public-i18n.js`, `${pub}/js/public-i18n.js`);
+  rsync(`${ROOT}/js/half-cut-upload-layer.js`, `${pub}/js/half-cut-upload-layer.js`);
+  rsync(`${ROOT}/js/supplier-half-cut-upload.js`, `${pub}/js/supplier-half-cut-upload.js`);
+  rsync(`${ROOT}/js/half-cut-supplier-i18n.js`, `${pub}/js/half-cut-supplier-i18n.js`);
   rsync(`${ROOT}/buyer-portal/index.html`, `${pub}/buyer-portal/index.html`);
   rsync(`${ROOT}/supplier-portal/dashboard.html`, `${pub}/supplier-portal/dashboard.html`);
+  rsync(`${ROOT}/supplier-portal/passenger-parts-upload.html`, `${pub}/supplier-portal/passenger-parts-upload.html`);
   rsync(`${ROOT}/supplier-portal.html`, `${pub}/supplier-portal.html`);
   ssh(`
 set -e
@@ -273,7 +277,10 @@ test -f "$PUB/css/login.css"
 test -f "$PUB/css/portal-app.css"
 test -f "$PUB/buyer-portal/index.html"
 test -f "$PUB/supplier-portal/dashboard.html"
+test -f "$PUB/supplier-portal/passenger-parts-upload.html"
 test -f "$PUB/supplier-portal.html"
+test -f "$PUB/js/supplier-half-cut-upload.js"
+test -f "$PUB/js/half-cut-upload-layer.js"
 grep -q 'data-ap-auth-slot' "$PUB/js/v4-portal-shell.js"
 grep -E -q 'AsiaPowerAuthNav|data-ap-account' "$PUB/js/v4-portal-shell.js"
 grep -q 'supplier-register-box' "$PUB/login/index.html"
@@ -282,6 +289,9 @@ grep -q 'supplier-password-box' "$PUB/login/index.html"
 grep -q '/api/auth/phone/password/login' "$PUB/js/login.js"
 grep -q '/api/supplier/register' "$PUB/js/login.js"
 grep -q 'mode=register' "$PUB/supplier-portal.html"
+grep -q "passengerPartTire" "$PUB/js/half-cut-supplier-i18n.js"
+grep -q "value=\\\"tire\\\"" "$PUB/js/supplier-half-cut-upload.js"
+grep -q 'Used Tire' "$PUB/js/half-cut-upload-layer.js"
 echo "[deploy:portal] files OK on remote"
 `);
 }
@@ -290,7 +300,7 @@ echo "[deploy:portal] files OK on remote"
 function deployChrome() {
   console.log('[deploy:chrome] syncing listing chrome + catalog shells + static chrome pages');
   const pub = `${SITE}/public`;
-  ssh('mkdir -p /root/.openclaw/workspace/inventory-site/public/css /root/.openclaw/workspace/inventory-site/public/js /root/.openclaw/workspace/inventory-site/public/half-cuts /root/.openclaw/workspace/inventory-site/public/trucks /root/.openclaw/workspace/inventory-site/public/machinery /root/.openclaw/workspace/inventory-site/public/engines /root/.openclaw/workspace/inventory-site/public/gearboxes /root/.openclaw/workspace/inventory-site/public/front-cuts /root/.openclaw/workspace/inventory-site/public/chassis-parts /root/.openclaw/workspace/inventory-site/public/guides');
+  ssh('mkdir -p /root/.openclaw/workspace/inventory-site/public/css /root/.openclaw/workspace/inventory-site/public/js /root/.openclaw/workspace/inventory-site/public/half-cuts /root/.openclaw/workspace/inventory-site/public/trucks /root/.openclaw/workspace/inventory-site/public/machinery /root/.openclaw/workspace/inventory-site/public/engines /root/.openclaw/workspace/inventory-site/public/gearboxes /root/.openclaw/workspace/inventory-site/public/front-cuts /root/.openclaw/workspace/inventory-site/public/chassis-parts /root/.openclaw/workspace/inventory-site/public/tires /root/.openclaw/workspace/inventory-site/public/guides');
   // Shared listing assets
   rsync(`${ROOT}/js/components.js`, `${pub}/js/components.js`);
   rsync(`${ROOT}/js/config.js`, `${pub}/js/config.js`);
@@ -351,6 +361,7 @@ function deployChrome() {
     'gearboxes/index.html',
     'front-cuts/index.html',
     'chassis-parts/index.html',
+    'tires/index.html',
     'about.html',
     'contact.html',
     'privacy.html',
@@ -490,6 +501,11 @@ grep -E -q 'catalog-search-v1|catalog-search-v2|stock-id-search-v[12]|dedicated-
 test -f "$PUB/assets/images/parts-placeholder.svg"
 test -f "$PUB/assets/images/ford-asiapower-powertrain-placeholder.svg"
 test -f "$PUB/assets/images/ford-asiapower-powertrain-placeholder.png"
+test -f "$PUB/tires/index.html"
+grep -q 'data-page="tires"' "$PUB/tires/index.html"
+grep -q 'tire-catalog-root' "$PUB/tires/index.html"
+grep -q "passengerPartType === 'tire'" "$PUB/js/half-cut-directory.js" || grep -q "category === 'tires'" "$PUB/js/half-cut-directory.js"
+grep -q "tires: 'tire'" "$PUB/js/ebay-catalog-hub.js"
 echo "[deploy:chrome] listing + static chrome OK on remote"
 `);
 }
@@ -508,6 +524,7 @@ function deployAdmin() {
   rsync(`${ROOT}/js/admin-leads.js`, `${pub}/js/admin-leads.js`);
   rsync(`${ROOT}/js/admin-apsales-progress.js`, `${pub}/js/admin-apsales-progress.js`);
   rsync(`${ROOT}/js/admin-emails.js`, `${pub}/js/admin-emails.js`);
+  rsync(`${ROOT}/js/admin-review-cards.js`, `${pub}/js/admin-review-cards.js`);
   rsync(`${ROOT}/admin/inventory.html`, `${pub}/admin/inventory.html`);
   rsync(`${ROOT}/admin/analytics.html`, `${pub}/admin/analytics.html`);
   rsync(`${ROOT}/admin/leads.html`, `${pub}/admin/leads.html`);

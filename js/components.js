@@ -714,6 +714,7 @@
               <li><a href="${href('gearboxes/')}" data-i18n="home.catGearboxes">Gearboxes</a></li>
               <li><a href="${href('trucks/')}" data-i18n="nav.trucks">Trucks &amp; Cabs</a></li>
               <li><a href="${href('chassis-parts/')}" data-i18n="home.catChassis">Chassis Parts</a></li>
+              <li><a href="${href('tires/')}" data-i18n="catalog.tires">Used Tires</a></li>
             </ul>
           </div>
           <div class="ap-footer__col">

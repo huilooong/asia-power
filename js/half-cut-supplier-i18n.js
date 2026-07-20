@@ -110,6 +110,7 @@
     passengerPartEngine: bi('Engine', '发动机'),
     passengerPartTransmission: bi('Transmission', '变速箱'),
     passengerPartChassis: bi('Chassis', '底盘'),
+    passengerPartTire: bi('Used / scrap tires', '废旧轮胎'),
     passengerPartOther: bi('Other parts', '其他'),
     passengerPartFrontHint: bi(
       'Front clip / nose cut — VIN optional.',
@@ -127,6 +128,10 @@
       'Chassis / suspension parts — VIN optional.',
       '底盘/悬挂件 — VIN可留空。'
     ),
+    passengerPartTireHint: bi(
+      'Used/scrap tires — price is EXW per tire; put sizes & quantities in notes. VIN optional.',
+      '废旧轮胎 — 单价为每条 EXW；备注写清尺寸与数量。VIN可留空。'
+    ),
     passengerPartOtherHint: bi(
       'Other passenger parts — VIN optional.',
       '其他乘用车配件 — VIN可留空。'
@@ -134,6 +139,7 @@
     conditionFrontCut: bi('Front Cut', '前头'),
     conditionTransmissionAssembly: bi('Transmission Assembly', '变速箱总成'),
     conditionChassisPart: bi('Chassis Part', '底盘件'),
+    conditionUsedTire: bi('Used Tire', '废旧轮胎'),
     conditionPart: bi('Part', '配件'),
     vinPartsSkipHint: bi(
       'No VIN for this part? Tap Next — enter brand, model and photos on the following steps.',

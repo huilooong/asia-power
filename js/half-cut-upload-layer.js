@@ -101,7 +101,7 @@
   }
 
   function isLoosePassengerPartType(passengerPartType) {
-    return ['front', 'engine', 'transmission', 'chassis', 'other'].includes(String(passengerPartType || '').trim());
+    return ['front', 'engine', 'transmission', 'chassis', 'tire', 'other'].includes(String(passengerPartType || '').trim());
   }
 
   const PASSENGER_PART_CONDITIONS = {
@@ -109,6 +109,7 @@
     engine: 'Engine Assembly',
     transmission: 'Transmission Assembly',
     chassis: 'Chassis Part',
+    tire: 'Used Tire',
     other: 'Part',
   };
 
@@ -252,6 +253,14 @@
         truckPartType: '',
         passengerPartType: 'chassis',
         vehicleCondition: condition || 'Chassis Part',
+      };
+    }
+    if (slug.includes('-passenger-tire-') || passengerPartType === 'tire' || condition === 'Used Tire' || condition === 'Scrap Tire') {
+      return {
+        vehicleCategory: 'passenger',
+        truckPartType: '',
+        passengerPartType: 'tire',
+        vehicleCondition: condition === 'Scrap Tire' ? 'Scrap Tire' : 'Used Tire',
       };
     }
     if (slug.includes('-passenger-part-') || passengerPartType === 'other' || condition === 'Part') {
