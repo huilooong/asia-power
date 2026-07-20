@@ -65,7 +65,11 @@
 
   function detailUrl(item) {
     const slug = item?.slug || '';
-    return `${base()}half-cuts/detail.html?slug=${encodeURIComponent(slug)}`;
+    const q = `detail.html?slug=${encodeURIComponent(slug)}`;
+    if (isTruckCab(item) || isTruckListing(item)) return `${base()}trucks/${q}`;
+    if (isMachinery(item)) return `${base()}machinery/${q}`;
+    if (isUsedCar(item)) return `${base()}used-cars/${q}`;
+    return `${base()}half-cuts/${q}`;
   }
 
   function money(n) {
@@ -273,7 +277,11 @@
         <div class="sc-body">
           <div>
             <div class="sc-kicker">${esc(item.brand || '')} · ${esc(item.year || '')}</div>
-            <div class="sc-name">${esc(item.model || '')}<br>${esc(item.engineCode || '')} ${esc(t('home.v4.halfCutSuffix', 'Half-Cut'))}${item.drivetrain ? ', ' + esc(item.drivetrain) : ''}</div>
+            <div class="sc-name">${esc(item.model || '')}<br>${esc(
+              isTruckCab(item)
+                ? (item.engineCode ? `${item.engineCode} ` : '') + t('home.v4.cabSuffix', 'Truck Cab')
+                : `${item.engineCode || ''} ${t('home.v4.halfCutSuffix', 'Half-Cut')}`.trim()
+            )}${item.drivetrain ? ', ' + esc(item.drivetrain) : ''}</div>
             <div class="sc-specs">
               <div class="sc-spec"><span class="sc-spec-k">${esc(t('home.v4.spec.engine', 'Engine'))}</span><span class="sc-spec-v">${esc(item.engineCode || '—')}</span></div>
               <div class="sc-spec"><span class="sc-spec-k">${esc(t('home.v4.spec.transmission', 'Transmission'))}</span><span class="sc-spec-v">${esc(item.transmissionCode || '—')}</span></div>
@@ -312,7 +320,9 @@
     const engines = live.filter(isPassengerEngine);
     const brands = new Set(live.map((x) => x.brand).filter(Boolean));
 
-    let featured = live.find((x) => x.stockId === 'HC250127')
+    // CEO 2026-07-20: 本周精选改为卡车车头（东风 HC250582）
+    let featured = live.find((x) => x.stockId === 'HC250582' && isTruckCab(x))
+      || trucks[0]
       || live.find((x) => hasVideo(x) && isPassengerHalf(x))
       || half[0]
       || live[0]
