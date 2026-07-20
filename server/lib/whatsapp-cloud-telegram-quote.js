@@ -482,8 +482,20 @@ async function handleTelegramUpdate(rootDir, update) {
   const replyTo = message.reply_to_message?.message_id;
   const text = message.text || message.caption || '';
   if (!replyTo) {
-    // Safety: never guess customer from free-floating text — but explain how to use.
     if (isAllowedChat(message.chat?.id) && String(text || '').trim()) {
+      // Kongming-like chat desk (still confirm before WhatsApp send)
+      try {
+        const { handleDeskChat, deskEnabled } = require('./whatsapp-cloud-telegram-desk');
+        if (deskEnabled()) {
+          return await handleDeskChat(rootDir, {
+            text,
+            chatId: message.chat?.id,
+            fromUser: message.from?.username || message.from?.first_name || '',
+          });
+        }
+      } catch (err) {
+        console.error('[telegram-desk]', err && err.message ? err.message : err);
+      }
       await explainPlainChatHelp();
       appendAudit(rootDir, {
         event: 'plain_chat_help',
@@ -542,9 +554,12 @@ function createTelegramQuoteWebhook(rootDir) {
 module.exports = {
   quoteEnabled,
   maskWa,
+  clip,
+  appendAudit,
   parseQuoteInput,
   registerBinding,
   getBinding,
+  promptConfirmSend,
   startQuoteFromReply,
   handleCallback,
   handleTelegramUpdate,

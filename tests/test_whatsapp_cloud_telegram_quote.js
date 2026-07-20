@@ -43,22 +43,38 @@ test('binding is keyed by telegram message id only', () => {
   assert.equal(getBinding(root, '999'), null);
 });
 
-test('free-floating telegram text never sends; only explains help', async () => {
+test('free-floating text with unknown last4 does not create pending send', async () => {
   const root = fs.mkdtempSync(path.join(os.tmpdir(), 'wa-quote-'));
   process.env.ASIAPOWER_TELEGRAM_CHAT_ID = '8918522756';
   process.env.ASIAPOWER_TELEGRAM_BOT_TOKEN = '0:test';
+  process.env.WHATSAPP_TELEGRAM_DESK = 'on';
+  const prevOpenAi = process.env.OPENAI_API_KEY;
+  const prevOr = process.env.OPENROUTER_API_KEY;
+  // Keep keys present-but-empty so loadEnv(AsiaPower) won't refill them.
+  process.env.OPENAI_API_KEY = '';
+  process.env.OPENROUTER_API_KEY = '';
   const { resetConfig } = require('../server/lib/telegram-notify.js');
   resetConfig();
-  const result = await handleTelegramUpdate(root, {
-    message: {
-      chat: { id: 8918522756 },
-      text: '给尾号4122回消息说有现货',
-      from: { username: 'ceo' },
-    },
-  });
-  assert.equal(result.handled, true);
-  assert.equal(result.reason, 'plain_chat_help');
-  assert.equal(fs.existsSync(path.join(root, 'data/whatsapp_cloud/telegram_quote/pending.json')), false);
+  try {
+    const result = await handleTelegramUpdate(root, {
+      message: {
+        chat: { id: 8918522756 },
+        text: '给尾号9999回消息说有现货',
+        from: { username: 'ceo' },
+      },
+    });
+    assert.equal(result.handled, true);
+    assert.ok(
+      ['desk_resolve_fail', 'desk_fallback', 'desk_chat', 'plain_chat_help'].includes(result.reason),
+      `unexpected reason ${result.reason}`,
+    );
+    assert.equal(fs.existsSync(path.join(root, 'data/whatsapp_cloud/telegram_quote/pending.json')), false);
+  } finally {
+    if (prevOpenAi) process.env.OPENAI_API_KEY = prevOpenAi;
+    else delete process.env.OPENAI_API_KEY;
+    if (prevOr) process.env.OPENROUTER_API_KEY = prevOr;
+    else delete process.env.OPENROUTER_API_KEY;
+  }
 });
 
 test('reply-to bound message accepts custom non-price text', async () => {
