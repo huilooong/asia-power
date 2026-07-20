@@ -2,7 +2,7 @@ import fs from "node:fs/promises";
 import path from "node:path";
 
 // This is intentionally a separate physical store from per-customer deal_state.
-const FORBIDDEN = /(?:\$\s*\d|\b(?:usd|ghs|rmb|cny|eur|gbp|price|quote|discount|payment|deposit|invoice|delivery|shipping|freight|address)\b|\b\d+\s*(?:days?|weeks?)\b)/iu;
+const FORBIDDEN = /(?:\$\s*\d|\b(?:usd|ghs|rmb|cny|eur|gbp|price|quote|rate|discount|payment|deposit|invoice|delivery|shipping|freight|address)\b|\b\d+\s*(?:days?|weeks?)\b|(?:价格|报价|美元|人民币|元|折扣|优惠|定金|付款|发票|运费|运送|地址|交期|天|周)|(?:prix|tarif|co[uû]t|devis|remise|r[eé]duction|acompte|paiement|facture|livraison|fret|adresse|d[eé]lai))/iu;
 const REUSABLE = /(?:\b(?:we\s+can\s+(?:supply|provide|source|do)|compatible|fits?|same\s+(?:engine|model))\b|(?:可(?:以|做)|兼容|适配))/iu;
 
 export function classifyHumanAnswerForReuse(teamText) {
