@@ -18,6 +18,7 @@ import {
   withTeamConfirmedAt,
 } from "./apsales-human-visibility.mjs";
 import { parseAgentReply, buildExceptionFallback } from "./apsales-parse-agent-reply.mjs";
+import { priceConfirmationGate } from "./apsales-price-confirmation-gate.mjs";
 import {
   notifyGhanaStaffIfHandingOff,
   notifyGhanaStaffSupportLineUnreachable,
@@ -1601,7 +1602,11 @@ async function handleMessage(message, state, session) {
           });
         }
       }
-      if (generated.needsPriceConfirmation) {
+      const priceGate = priceConfirmationGate({
+        replyText: generated.reply,
+        modelNeedsPriceConfirmation: generated.needsPriceConfirmation,
+      });
+      if (priceGate.hold) {
         // CEO price authority gate: >5% self-discount or no listed price on site.
         // Hold BEFORE send — this must never reach the customer without CEO sign-off.
         const pendingId = `pc-${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 8)}`;
@@ -1617,13 +1622,14 @@ async function handleMessage(message, state, session) {
         });
         await appendActivity(
           "apsales_price_confirmation_held",
-          `客户 ${senderId}: 报价超5%自主让利权限或网站无此价，已拦截未发送，等待CEO确认 (${pendingId})`,
+          `客户 ${senderId}: ${priceGate.reason}，已拦截未发送，等待CEO确认 (${pendingId})`,
           "held",
         );
         log("price confirmation held before send", {
           senderId,
           messageId: message.messageId,
           pendingId,
+          priceGateReason: priceGate.reason,
           proposedReply: generated.reply,
         });
         await sendTelegram(
