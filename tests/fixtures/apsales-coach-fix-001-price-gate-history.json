@@ -1,0 +1,19 @@
+[
+  {"case_id":"1","evidence_id":"ev-2026-07-15T003804506Z-6383a222","customer_message":"What price is this?","legacy_reply_regex":"CAUGHT","deal_state":{}},
+  {"case_id":"2","evidence_id":"ev-2026-07-15T003839320Z-80431f2d","customer_message":"I was thinking that, this is the price","legacy_reply_regex":"MISSED","deal_state":{}},
+  {"case_id":"3","evidence_id":"ev-2026-07-15T003937507Z-32d93973","customer_message":"But what price is this 👆","legacy_reply_regex":"CAUGHT","deal_state":{}},
+  {"case_id":"4","evidence_id":"ev-2026-07-15T090811921Z-0c64d011","customer_message":"So Send me Price for engine and gearbox together, or gearbox only","legacy_reply_regex":"MISSED","deal_state":{}},
+  {"case_id":"5","evidence_id":"ev-2026-07-15T093825240Z-e30c85b4","customer_message":"And how much it cost","legacy_reply_regex":"MISSED","deal_state":{}},
+  {"case_id":"6","evidence_id":"ev-2026-07-15T170129375Z-6ef7029e","customer_message":"The two off theme and the price","legacy_reply_regex":"CAUGHT","deal_state":{}},
+  {"case_id":"7","evidence_id":"ev-2026-07-17T175122262Z-ff6591a2","customer_message":"Toyota land cruiser 2013 4cylinder engine","legacy_reply_regex":"MISSED","deal_state":{"part_intent":"engine","year":"2013"}},
+  {"case_id":"8","evidence_id":"ev-2026-07-17T130811055Z-17004f2e","customer_message":"Le prix stp 🙏","legacy_reply_regex":"MISSED","deal_state":{}},
+  {"case_id":"9","evidence_id":"ev-2026-07-17T123843845Z-17459dfe","customer_message":"So what’s your final price for this","legacy_reply_regex":"MISSED","deal_state":{}},
+  {"case_id":"10","evidence_id":"ev-2026-07-17T143516251Z-2c0b0623","customer_message":"Provided the price is moderate, l will","legacy_reply_regex":"CAUGHT","deal_state":{}},
+  {"case_id":"11","evidence_id":"ev-2026-07-17T174221801Z-8b2eed4d","customer_message":"AUDI A4 1.8 APT AUTOMATIC ENGINE IS HOW MUCH??","legacy_reply_regex":"MISSED","deal_state":{}},
+  {"case_id":"12","evidence_id":"ev-2026-07-17T182905647Z-bae8f264","customer_message":"I need a Jeep Cherokee engine. Your price must include delivery to Lusaka, Zambia.","legacy_reply_regex":"CAUGHT","deal_state":{}},
+  {"case_id":"13","evidence_id":"ev-2026-07-17T202109717Z-180068e7","customer_message":"2az engine for ipsum car how much","legacy_reply_regex":"MISSED","deal_state":{}},
+  {"case_id":"14","evidence_id":"ev-2026-07-18T065228795Z-340e4c6d","customer_message":"straight 6 landcruser 2H diesel engine how much","legacy_reply_regex":"CAUGHT","deal_state":{}},
+  {"case_id":"15","evidence_id":"ev-2026-07-18T175705408Z-313ffff3","customer_message":"How much is the full amount?","legacy_reply_regex":"CAUGHT","deal_state":{}},
+  {"case_id":"16","evidence_id":"ev-2026-07-18T195653883Z-8a67c1a2","customer_message":"Price","legacy_reply_regex":"CAUGHT","deal_state":{}},
+  {"case_id":"16","evidence_id":"ev-2026-07-18T195713898Z-9fd0e0a7","customer_message":"Get me the price","legacy_reply_regex":"CAUGHT","deal_state":{}}
+]

@@ -18,7 +18,10 @@ import {
   withTeamConfirmedAt,
 } from "./apsales-human-visibility.mjs";
 import { parseAgentReply, buildExceptionFallback } from "./apsales-parse-agent-reply.mjs";
-import { priceConfirmationGate } from "./apsales-price-confirmation-gate.mjs";
+import {
+  buildPrivateBusinessFactContext,
+  priceConfirmationGate,
+} from "./apsales-price-confirmation-gate.mjs";
 import {
   notifyGhanaStaffIfHandingOff,
   notifyGhanaStaffSupportLineUnreachable,
@@ -1333,6 +1336,11 @@ async function handleMessage(message, state, session) {
     log("inventory match failed", { error: err instanceof Error ? err.message : String(err) });
     return [];
   });
+  // Step 0 evidence context is frozen before the model writes its reply.
+  const privateBusinessFactContext = buildPrivateBusinessFactContext({
+    dealState,
+    inventoryMatches,
+  });
 
   log("inbound", {
     senderId,
@@ -1603,6 +1611,7 @@ async function handleMessage(message, state, session) {
         }
       }
       const priceGate = priceConfirmationGate({
+        preGenerationContext: privateBusinessFactContext,
         replyText: generated.reply,
         modelNeedsPriceConfirmation: generated.needsPriceConfirmation,
       });
