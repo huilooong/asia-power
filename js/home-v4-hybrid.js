@@ -326,7 +326,7 @@
       ? `<span class="sc-badge vf">${esc(t('home.v4.videoVerifiedBadge', '✓ Video Verified'))}</span><span class="sc-badge vid">${esc(t('home.v4.watchVideo', 'Watch Video'))}</span>`
       : `<span class="sc-badge vf">${esc(t('home.v4.inStock', '✓ In Stock'))}</span>`;
     const imgBlock = img
-      ? `<div class="sc-img real"><img src="${esc(img)}" alt=""><div class="sc-badges">${badges}</div><span class="sc-hc-tag">${esc(item.stockId)}</span></div>`
+      ? `<div class="sc-img real"><img src="${esc(img)}" alt="" loading="eager" decoding="async"><div class="sc-badges">${badges}</div><span class="sc-hc-tag">${esc(item.stockId)}</span></div>`
       : `<div class="sc-img"><div class="sc-img-ph">${ICONS.photo}<span>${esc(t('home.v4.productPhoto', 'Product photo'))}</span></div><span class="sc-hc-tag">${esc(item.stockId)}</span></div>`;
 
     return `
@@ -362,6 +362,22 @@
           </div>
         </div>
       </div>`;
+  }
+
+  /** Match featured frame to photo orientation (mixed 4:3 / 3:4 inventory). */
+  function bindShowcasePhotoOrient(root) {
+    const wrap = root || document.getElementById('showcase-wrap');
+    if (!wrap) return;
+    wrap.querySelectorAll('.sc-img.real img').forEach((el) => {
+      const apply = () => {
+        if (!el.naturalWidth || !el.naturalHeight) return;
+        const box = el.closest('.sc-img');
+        if (!box) return;
+        box.dataset.orient = el.naturalHeight > el.naturalWidth ? 'portrait' : 'landscape';
+      };
+      if (el.complete) apply();
+      else el.addEventListener('load', apply, { once: true });
+    });
   }
 
   function fillRail(id, items, variant) {
@@ -459,7 +475,10 @@
     }
 
     const showcase = document.getElementById('showcase-wrap');
-    if (showcase) showcase.innerHTML = renderShowcase(data.featured);
+    if (showcase) {
+      showcase.innerHTML = renderShowcase(data.featured);
+      bindShowcasePhotoOrient(showcase);
+    }
 
     const seeHalf = document.getElementById('see-half');
     if (seeHalf) {

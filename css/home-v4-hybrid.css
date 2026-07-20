@@ -323,33 +323,54 @@ img { display:block; max-width:100% }
   border:1.5px solid var(--b2);
   border-radius:var(--r-xl);
   overflow:hidden;
-  display:grid; grid-template-columns:1.45fr 320px;
+  display:grid;
+  grid-template-columns:1fr;
   transition:box-shadow .2s;
 }
 .showcase-card:hover { box-shadow:var(--shadow-md) }
 .sc-img {
-  min-height:340px;
+  aspect-ratio:4 / 3;
+  min-height:0;
   background:linear-gradient(90deg,#ececec 25%,#e4e4e4 37%,#ececec 63%);
   background-size:800px 100%; animation:sk 1.6s ease-in-out infinite;
   position:relative; display:flex; align-items:center; justify-content:center;
   overflow:hidden;
 }
-/* Desktop: photo-led card — fill the frame (not postage stamp, not cropped stub) */
+/*
+  Smart featured frame (CEO 2026-07-20):
+  Inventory photos are mixed landscape (4:3) and portrait (3:4).
+  Match the frame to the photo → cover fills edge-to-edge without
+  postage-stamp letterboxing or stub-cropping the wrong axis.
+*/
 @media (min-width: 901px) {
   .showcase-wrap { padding:0 24px 36px; }
-  .showcase-card { grid-template-columns:1.55fr 300px; min-height:360px; }
+  .showcase-card {
+    grid-template-columns:auto 1fr;
+    align-items:stretch;
+    min-height:0;
+  }
   .sc-img,
   .sc-img.real {
-    min-height:360px;
-    height:100%;
+    min-height:0;
+    height:auto;
     max-height:none;
     align-self:stretch;
   }
+  .sc-img.real[data-orient="landscape"],
+  .sc-img.real:not([data-orient]) {
+    aspect-ratio:4 / 3;
+    width:min(520px, 46vw);
+  }
+  .sc-img.real[data-orient="portrait"] {
+    aspect-ratio:3 / 4;
+    width:min(300px, 30vw);
+  }
   .sc-body {
-    padding:22px 22px;
+    padding:22px 24px;
     display:flex;
     flex-direction:column;
     justify-content:space-between;
+    min-width:0;
   }
   .sc-kicker { margin-bottom:6px; }
   .sc-name { font-size:18px; margin-bottom:14px; letter-spacing:-.25px; }
@@ -803,29 +824,29 @@ img { display:block; max-width:100% }
 }
 .preview-note strong { color: #f5a623; }
 .preview-note a { color: #7dd3fc; }
-.pc-img.real img,
+.pc-img.real img { width:100%; height:100%; object-fit:cover; display:block; }
 .sc-img.real img {
   width:100%;
   height:100%;
   object-fit:cover;
-  object-position:center 45%;
+  object-position:center center;
   display:block;
 }
 .sc-img.real {
   animation:none;
-  background:#1a1c1e;
-  min-height:340px;
-}
-@media (min-width: 901px) {
-  .sc-img.real {
-    min-height:360px;
-    height:100%;
-    max-height:none;
-  }
+  background:#111;
 }
 @media (max-width: 900px) {
   .sc-img,
-  .sc-img.real { min-height:240px; }
+  .sc-img.real {
+    aspect-ratio:4 / 3;
+    width:100%;
+  }
+  .sc-img.real[data-orient="portrait"] {
+    aspect-ratio:3 / 4;
+    max-height:min(70vw, 420px);
+    margin:0 auto;
+  }
 }
 .pc-img.real { animation:none; background:#e8ecf0; }
 .ap-nav { top: 42px; }
