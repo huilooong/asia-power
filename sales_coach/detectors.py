@@ -195,7 +195,11 @@ def is_allowed_network_phrasing(reply: str) -> bool:
 # ---------------------------------------------------------------------------
 
 _PRICE_INTENT_RE = re.compile(
-    r"\b(?:how\s*much|best\s*price|quotation|quote|price\s*list|cheap(?:er)?|pricing|cost)\b",
+    r"\b(?:how\s*much|best\s*price|quotation|quote|price(?:\s*(?:list|book))?|cheap(?:er)?|pricing|cost|"
+    r"final\s+(?:price|amount)|rate)\b|"
+    r"\b(?:prix|combien|tarif|co[uû]t|devis)\b|"
+    r"\b(?:precio|cu[aá]nto|cotizaci[oó]n|pre[cç]o|quanto|cota[cç][aã]o)\b|"
+    r"(?:سعر|كم\s*سعر|بكم|ثمن)|(?:价格|多少钱|报价|价钱|费用)",
     re.I,
 )
 _GREETING_RE = re.compile(
@@ -203,7 +207,45 @@ _GREETING_RE = re.compile(
     re.I,
 )
 _CLOSING_INTENT_RE = re.compile(
-    r"\b(?:i\s+want\s+to\s+(?:buy|order|purchase)|ready\s+to\s+(?:buy|order)|proforma|pi\s+please)\b",
+    r"\b(?:i\s+want\s+to\s+(?:buy|order|purchase)|ready\s+to\s+(?:buy|order)|proforma|pi\s+please|"
+    r"je\s+veux\s+(?:acheter|commander)|pr[eê]t\s+[aà]\s+acheter|"
+    r"quiero\s+(?:comprar|pedir)|quero\s+(?:comprar|encomendar))\b|(?:أريد\s+(?:شراء|طلب)|جاهز\s+للشراء)",
+    re.I,
+)
+_VIN_OR_PART_ID_RE = re.compile(
+    r"\b(?:vin|chassis|frame|engine\s*(?:no|number)|motor\s*(?:no|number))\b|"
+    r"(?:num[eé]ro\s+(?:de\s+)?(?:ch[aâ]ssis|s[eé]rie)|num[eé]ro\s+moteur|"
+    r"رقم\s+(?:الشاسيه|الهيكل|المحرك))|\b[A-HJ-NPR-Z0-9]{17}\b",
+    re.I,
+)
+_SHIPPING_INTENT_RE = re.compile(
+    r"\b(?:ship|shipping|freight|port|eta|delivery|deliver|lead\s*time|arrival)\b|"
+    r"\b(?:livraison|livrer|exp[eé]dition|d[eé]lai|port)\b|"
+    r"\b(?:env[ií]o|entrega|prazo)\b|(?:شحن|توصيل|موعد\s+الوصول|ميناء)|(?:交期|运费|发货)",
+    re.I,
+)
+_AVAILABILITY_INTENT_RE = re.compile(
+    r"\b(?:in\s*stock|available|availability|have\s+you|do\s+you\s+have)\b|"
+    r"\b(?:disponible|disponibilit[eé]|en\s+stock|estoque|existencia)\b|"
+    r"(?:متوفر|مخزون)|(?:有货|库存)",
+    re.I,
+)
+_NEGOTIATION_INTENT_RE = re.compile(
+    r"\b(?:discount|too\s+high|negotiate|cheaper|reduce)\b|"
+    r"\b(?:r[eé]duction|trop\s+cher|n[eé]goci)\b|\b(?:descuento|barato)\b|"
+    r"(?:خصم|غالي)|(?:优惠|太贵)",
+    re.I,
+)
+_COMPLAINT_INTENT_RE = re.compile(
+    r"\b(?:complaint|wrong|damaged|refund|not\s+getting|problem)\b|"
+    r"\b(?:plainte|mauvais|endommag[eé]|remboursement|probl[eè]me)\b|"
+    r"\b(?:queja|da[nñ]ado|reembolso)\b|(?:شكوى|تالف|استرداد|مشكلة)|(?:投诉|损坏|退款)",
+    re.I,
+)
+_PRODUCT_INTENT_RE = re.compile(
+    r"\b(?:engine|gearbox|half.?cut|g4k|2kd|1kd|parts?)\b|"
+    r"\b(?:moteur|bo[iî]te(?:\s+de\s+vitesse)?|pi[eè]ces?)\b|"
+    r"\b(?:motor|caja\s+de\s+cambios|repuestos?)\b|(?:محرك|جير|قطع\s+غيار)|(?:发动机|变速箱|配件)",
     re.I,
 )
 _ADVANCE_SIGNAL_RE = re.compile(
@@ -230,15 +272,15 @@ def classify_customer_intent(inbound: str) -> str:
         return "quotation"
     if _CLOSING_INTENT_RE.search(body):
         return "closing"
-    if re.search(r"\b(?:ship|shipping|freight|port|eta)\b", body, re.I):
+    if _SHIPPING_INTENT_RE.search(body):
         return "shipping"
-    if re.search(r"\b(?:in\s*stock|available|have\s+you)\b", body, re.I):
+    if _AVAILABILITY_INTENT_RE.search(body):
         return "availability"
-    if re.search(r"\b(?:discount|too\s+high|negotiate)\b", body, re.I):
+    if _NEGOTIATION_INTENT_RE.search(body):
         return "negotiation"
-    if re.search(r"\b(?:complaint|wrong|damaged|refund)\b", body, re.I):
+    if _COMPLAINT_INTENT_RE.search(body):
         return "complaint"
-    if re.search(r"\b(?:engine|gearbox|half.?cut|g4k|2kd|1kd|parts?)\b", body, re.I):
+    if _VIN_OR_PART_ID_RE.search(body) or _PRODUCT_INTENT_RE.search(body):
         return "product_enquiry"
     return "unknown"
 

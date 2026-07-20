@@ -636,6 +636,8 @@ function deployApsalesOpenClaw() {
     `${ROOT}/deploy/apsales-live-draft/apsales-price-confirmation-gate.mjs`,
     `${REMOTE}:/root/.openclaw/extensions/apsales-live-draft/apsales-price-confirmation-gate.mjs.next`,
   );
+  rsync(`${ROOT}/deploy/apsales-live-draft/apsales-live-rules.mjs`, `${REMOTE}:/root/.openclaw/extensions/apsales-live-draft/apsales-live-rules.mjs.next`);
+  rsync(`${ROOT}/scripts/apsales-classify-customer-intent.py`, `${REMOTE}:/root/.openclaw/workspace/AsiaPower/scripts/apsales-classify-customer-intent.py`);
   rsync(
     `${ROOT}/deploy/apsales-live-draft/apsales-whatsapp-session.mjs`,
     `${REMOTE}:/root/.openclaw/extensions/apsales-live-draft/apsales-whatsapp-session.mjs.next`,
@@ -727,10 +729,14 @@ NEXT=\${BRIDGE}.next
 SESSION_NEXT=\${SESSION}.next
 PRICE_GATE=\$BRIDGE_DIR/apsales-price-confirmation-gate.mjs
 PRICE_GATE_NEXT=\${PRICE_GATE}.next
+LIVE_RULES=\$BRIDGE_DIR/apsales-live-rules.mjs
+LIVE_RULES_NEXT=\${LIVE_RULES}.next
 BACKUP=/root/.openclaw/releases/apsales-openclaw-\$(date -u +%Y%m%dT%H%M%SZ)
 test -s "$NEXT"
 test -s "$SESSION_NEXT"
 test -s "$PRICE_GATE_NEXT"
+test -s "$LIVE_RULES_NEXT"
+test -s /root/.openclaw/workspace/AsiaPower/scripts/apsales-classify-customer-intent.py
 test -s "\$BRIDGE_DIR/apsales-internal-staff.mjs"
 test -s "\$BRIDGE_DIR/apsales-closing-memory.mjs"
 test -s "\$BRIDGE_DIR/apsales-soft-angle.mjs"
@@ -739,12 +745,16 @@ test -s "\$BRIDGE_DIR/apsales-vin-card.mjs"
 CHECK=\$(mktemp /tmp/apsales-bridge-check-XXXXXX.mjs)
 SESSION_CHECK=\$(mktemp /tmp/apsales-session-check-XXXXXX.mjs)
 PRICE_GATE_CHECK=\$(mktemp /tmp/apsales-price-gate-check-XXXXXX.mjs)
+LIVE_RULES_CHECK=\$(mktemp /tmp/apsales-live-rules-check-XXXXXX.mjs)
 cp "$NEXT" "$CHECK"
 cp "$SESSION_NEXT" "$SESSION_CHECK"
 cp "$PRICE_GATE_NEXT" "$PRICE_GATE_CHECK"
+cp "$LIVE_RULES_NEXT" "$LIVE_RULES_CHECK"
 /usr/bin/node --check "$CHECK"
 /usr/bin/node --check "$SESSION_CHECK"
 /usr/bin/node --check "$PRICE_GATE_CHECK"
+/usr/bin/node --check "$LIVE_RULES_CHECK"
+/root/.openclaw/workspace/AsiaPower/.venv/bin/python3 -m py_compile /root/.openclaw/workspace/AsiaPower/scripts/apsales-classify-customer-intent.py
 /usr/bin/node --check "\$BRIDGE_DIR/apsales-internal-staff.mjs"
 /usr/bin/node --check "\$BRIDGE_DIR/apsales-closing-memory.mjs"
 /usr/bin/node --check "\$BRIDGE_DIR/apsales-soft-angle.mjs"
@@ -753,7 +763,7 @@ cp "$PRICE_GATE_NEXT" "$PRICE_GATE_CHECK"
 /usr/bin/node --check "\$BRIDGE_DIR/ghana-staff-handoff.mjs"
 /usr/bin/node --check "\$BRIDGE_DIR/apsales-parse-agent-reply.mjs"
 /usr/bin/node --check /tmp/apsales-bridge-crash-logger.mjs
-rm -f "$CHECK" "$SESSION_CHECK" "$PRICE_GATE_CHECK"
+rm -f "$CHECK" "$SESSION_CHECK" "$PRICE_GATE_CHECK" "$LIVE_RULES_CHECK"
 mkdir -p "$BACKUP" /etc/systemd/system/apsales-whatsapp-bridge.service.d
 cp -a "$BRIDGE" "$BACKUP/bridge.mjs"
 if [ -f "$SESSION" ]; then cp -a "$SESSION" "$BACKUP/apsales-whatsapp-session.mjs"; fi
@@ -787,6 +797,7 @@ EOF
 
 mv "$SESSION_NEXT" "$SESSION"
 mv "$PRICE_GATE_NEXT" "$PRICE_GATE"
+mv "$LIVE_RULES_NEXT" "$LIVE_RULES"
 mv "$NEXT" "$BRIDGE"
 systemctl daemon-reload
 systemctl enable apsales-whatsapp-bridge.service

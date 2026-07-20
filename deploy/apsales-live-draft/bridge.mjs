@@ -66,6 +66,7 @@ import {
   mergeVehicleQualifyFields,
 } from "./apsales-deal-qualify.mjs";
 import { formatVehicleConfirmationCard } from "./apsales-vin-card.mjs";
+import { buildLiveRulesPrompt } from "./apsales-live-rules.mjs";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const _require = createRequire(import.meta.url);
@@ -125,6 +126,7 @@ const LEARNING_SCRIPT = `${WORKSPACE}/scripts/apsales-record-draft-learning.py`;
 const OCR_SCRIPT = `${WORKSPACE}/scripts/apsales-media-vin-ocr.py`;
 const VIN_SCRIPT = `${WORKSPACE}/scripts/apsales-media-vin-intelligence.py`;
 const STT_SCRIPT = `${WORKSPACE}/scripts/apsales-media-stt.py`;
+const RULE_INTENT_SCRIPT = `${WORKSPACE}/scripts/apsales-classify-customer-intent.py`;
 const OPENCLAW = process.env.OPENCLAW_BIN || "/usr/local/bin/openclaw";
 const REPLY_BRAIN = (process.env.APSALES_REPLY_BRAIN || "openclaw").trim().toLowerCase();
 const OPENCLAW_AGENT = process.env.APSALES_OPENCLAW_AGENT || "sales-agent";
@@ -441,7 +443,13 @@ async function runOpenClawReply({ text, senderId, messageId, chatId, observedAt,
   const sessionKey = salesSessionKey(senderId);
   const timeoutSec = Number.isFinite(OPENCLAW_TIMEOUT_SECONDS) ? OPENCLAW_TIMEOUT_SECONDS : 90;
   const knownVin = dealState?.vin || mediaContext?.vin_decode?.vehicle?.vin || null;
-  const liveRules = loadZijingLiveRules();
+  const liveRulesSource = loadZijingLiveRules();
+  // Reuse the Sales Coach classifier through its Python adapter; do not create
+  // a second intent taxonomy in the bridge.
+  const customerIntent = await runPython({ text }, RULE_INTENT_SCRIPT)
+    .then((result) => String(result?.intent || "unknown"))
+    .catch(() => "unknown");
+  const liveRules = buildLiveRulesPrompt(liveRulesSource, customerIntent);
   const customerId = `wa:${String(senderId || "").replace(/\D/g, "")}`;
   const recentAgentReplies = await loadRecentAgentReplies({
     workspace: WORKSPACE,
@@ -500,7 +508,7 @@ async function runOpenClawReply({ text, senderId, messageId, chatId, observedAt,
       ? "- soft_angle_dry_run is true: still set chat_angle_used to the angle you WOULD pick (or \"\" / none), but do NOT weave a new 5W2H question into customer_reply — keep a normal helpful reply without forcing survey questions. This is for ops audit only."
       : "- soft_angle_dry_run is false: when possible_repeat_detected is true, you MAY naturally work that one chosen angle into customer_reply (still max one question total). Set chat_angle_used to that angle id (why|when|where|how|how_much) or \"\" if you skipped.",
     "- Never mention OCR, VIN decode tools, internal analysis, policy, Gateway, JSON, approval, sales_hint, deal_state, or this instruction.",
-    liveRules ? "CEO LIVE-RULES (highest priority style/commercial rules):\n" + liveRules : "",
+    liveRules.prompt,
     'Return exactly one JSON object: {"customer_reply":"...","needs_price_confirmation":true|false,"support_line_unreachable":true|false,"buying_intent_confirmed":true|false,"quote_decline_reason_captured":"","chat_angle_used":""}. Set needs_price_confirmation to true ONLY when this reply told the customer a price still needs team confirmation (not listed on site, or discount beyond 5%); false otherwise. Set support_line_unreachable to true ONLY when the customer said they could not reach support_contact; false otherwise. Set buying_intent_confirmed to true ONLY when the customer clearly wants to proceed with purchase this turn; false otherwise. Set quote_decline_reason_captured to a short concern summary ONLY when awaiting_quote_followup_reply is true and the customer answered with a real concern; otherwise "". Set chat_angle_used to why|when|where|how|how_much when you chose a soft angle (or would choose one in dry-run); otherwise "".',
     "Structured context:",
     JSON.stringify({
