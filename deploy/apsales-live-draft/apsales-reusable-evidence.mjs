@@ -2,7 +2,7 @@ import fs from "node:fs/promises";
 import path from "node:path";
 
 // This is intentionally a separate physical store from per-customer deal_state.
-const FORBIDDEN = /(?:\$\s*\d|\b(?:usd|ghs|rmb|cny|eur|gbp|price|quote|rate|discount|payment|deposit|invoice|delivery|shipping|freight|address)\b|\b\d+\s*(?:days?|weeks?)\b|(?:价格|报价|美元|人民币|元|折扣|优惠|定金|付款|发票|运费|运送|地址|交期|天|周)|(?:prix|tarif|co[uû]t|devis|remise|r[eé]duction|acompte|paiement|facture|livraison|fret|adresse|d[eé]lai))/iu;
+const FORBIDDEN = /(?:\$\s*\d|\b(?:usd|ghs|rmb|cny|eur|gbp|price|quote|rate|discount|payment|deposit|invoice|delivery|shipping|freight|address)\b|\b\d+\s*(?:days?|weeks?)\b|\d+\s*(?:块|毛|分|元|美元|人民币)|(?:价格|价钱|报价|售价|单价|底价|总价|差价|特价|低价|高价|便宜|贵|议价|还价|砍价|面议|另议|打折|折扣|优惠|几折|成本|利润|加价|减价|涨价|降价|钱|块|毛|分|美元|人民币|定金|订金|押金|预付款|全款|尾款|付款|收款|发票|税|关税|运费|海运费|运送|地址|交期|天|周)|(?:prix|tarif|co[uû]t|devis|remise|r[eé]duction|acompte|paiement|facture|livraison|fret|adresse|d[eé]lai))/iu;
 const REUSABLE = /(?:\b(?:we\s+can\s+(?:supply|provide|source|do)|compatible|fits?|same\s+(?:engine|model))\b|(?:可(?:以|做)|兼容|适配))/iu;
 
 export function classifyHumanAnswerForReuse(teamText) {

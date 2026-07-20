@@ -29,6 +29,21 @@ test("five Chinese price or discount commitments cannot enter reusable storage",
   await assert.rejects(fs.access(path.join(root, "memory", "sales_evidence", "reusable_facts.ndjson")));
 });
 
+test("Chinese colloquial money and bargaining language cannot enter reusable storage", () => {
+  const replies = [
+    "可以，500块。",
+    "可以做，多少钱另算。",
+    "兼容，这个便宜。",
+    "可以，价钱另议。",
+    "这个贵一点，给客户少点钱。",
+    "可以还价，但是别砍价太多。",
+    "给他打折，尾款到齐再发。",
+    "成本太高，最低价就是这样。",
+    "收款后开票，海运费另算。",
+  ];
+  for (const text of replies) assert.equal(classifyHumanAnswerForReuse(text).reusable, false, text);
+});
+
 test("French price and delivery commitments and English rate are excluded", () => {
   for (const text of ["Le prix est 900 EUR.", "Remise de 10% avec livraison.", "Our rate is 1200 USD."]) {
     assert.equal(classifyHumanAnswerForReuse(text).reusable, false, text);
