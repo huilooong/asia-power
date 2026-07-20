@@ -638,6 +638,7 @@ function deployApsalesOpenClaw() {
   );
   rsync(`${ROOT}/deploy/apsales-live-draft/apsales-live-rules.mjs`, `${REMOTE}:/root/.openclaw/extensions/apsales-live-draft/apsales-live-rules.mjs.next`);
   rsync(`${ROOT}/scripts/apsales-classify-customer-intent.py`, `${REMOTE}:/root/.openclaw/workspace/AsiaPower/scripts/apsales-classify-customer-intent.py`);
+  rsync(`${ROOT}/sales_coach/detectors.py`, `${REMOTE}:/root/.openclaw/workspace/AsiaPower/sales_coach/detectors.py`);
   rsync(
     `${ROOT}/deploy/apsales-live-draft/apsales-whatsapp-session.mjs`,
     `${REMOTE}:/root/.openclaw/extensions/apsales-live-draft/apsales-whatsapp-session.mjs.next`,
@@ -737,6 +738,7 @@ test -s "$SESSION_NEXT"
 test -s "$PRICE_GATE_NEXT"
 test -s "$LIVE_RULES_NEXT"
 test -s /root/.openclaw/workspace/AsiaPower/scripts/apsales-classify-customer-intent.py
+test -s /root/.openclaw/workspace/AsiaPower/sales_coach/detectors.py
 test -s "\$BRIDGE_DIR/apsales-internal-staff.mjs"
 test -s "\$BRIDGE_DIR/apsales-closing-memory.mjs"
 test -s "\$BRIDGE_DIR/apsales-soft-angle.mjs"
@@ -755,6 +757,7 @@ cp "$LIVE_RULES_NEXT" "$LIVE_RULES_CHECK"
 /usr/bin/node --check "$PRICE_GATE_CHECK"
 /usr/bin/node --check "$LIVE_RULES_CHECK"
 /root/.openclaw/workspace/AsiaPower/.venv/bin/python3 -m py_compile /root/.openclaw/workspace/AsiaPower/scripts/apsales-classify-customer-intent.py
+/root/.openclaw/workspace/AsiaPower/.venv/bin/python3 -m py_compile /root/.openclaw/workspace/AsiaPower/sales_coach/detectors.py
 /usr/bin/node --check "\$BRIDGE_DIR/apsales-internal-staff.mjs"
 /usr/bin/node --check "\$BRIDGE_DIR/apsales-closing-memory.mjs"
 /usr/bin/node --check "\$BRIDGE_DIR/apsales-soft-angle.mjs"
