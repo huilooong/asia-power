@@ -414,14 +414,14 @@ function inventoryPartMatches(item, partIntent) {
   return true;
 }
 
-async function findInventoryMatches({ brand, model, partIntent, text }) {
+async function findInventoryEvidence({ brand, model, partIntent, text }) {
   const b = String(brand || "").trim().toLowerCase();
   const m = String(model || "").trim().toLowerCase();
-  if (!b && !m) return [];
+  if (!b && !m) return { exact: [], approximate: [] };
   const catalog = await getInventoryCatalog();
-  if (!catalog.length) return [];
+  if (!catalog.length) return { exact: [], approximate: [] };
   const t = String(text || "").toLowerCase();
-  return catalog
+  const exact = catalog
     .filter((item) => {
       const ib = String(item.brand || "").toLowerCase();
       const im = String(item.model || "").toLowerCase();
@@ -431,6 +431,12 @@ async function findInventoryMatches({ brand, model, partIntent, text }) {
     })
     .slice(0, 5)
     .map((item) => enrichInventoryMatch(item));
+  if (exact.length) return { exact, approximate: [] };
+  const approximate = catalog.filter((item) => {
+    const ib = String(item.brand || "").toLowerCase();
+    return item.status === "Available" && inventoryPartMatches(item, partIntent) && Boolean(b) && ib === b;
+  }).slice(0, 5).map((item) => enrichInventoryMatch(item));
+  return { exact, approximate };
 }
 
 /** When brand/model missing but part intent is clear → category page (not homepage). */
@@ -439,7 +445,7 @@ function inventoryCategoryFallbackUrl(partIntent) {
   return categoryPageUrl(partIntent);
 }
 
-async function runOpenClawReply({ text, senderId, messageId, chatId, observedAt, mediaPlaceholder, mediaContext, dealState, inventoryMatches }) {
+async function runOpenClawReply({ text, senderId, messageId, chatId, observedAt, mediaPlaceholder, mediaContext, dealState, inventoryMatches, approximateMatches }) {
   const sessionKey = salesSessionKey(senderId);
   const timeoutSec = Number.isFinite(OPENCLAW_TIMEOUT_SECONDS) ? OPENCLAW_TIMEOUT_SECONDS : 90;
   const knownVin = dealState?.vin || mediaContext?.vin_decode?.vehicle?.vin || null;
@@ -483,13 +489,14 @@ async function runOpenClawReply({ text, senderId, messageId, chatId, observedAt,
     "- If an item has a known condition issue (repaired/replaced part), state it plainly, do not hide it.",
     "- Keep apologies to one short line, no over-explaining.",
     "- End the reply on a concrete question or next step, not an open-ended \"let me know\".",
-    "- If vin_decode.status is success, use those vehicle facts in plain language (brand/model/engine/frame).",
+    "- If vin_decode.status is success, use those vehicle facts in plain language (brand/model/engine/frame). If vin_reasoning_evidence is present, it is raw customer VIN input plus deterministic checksum candidates: you may use your general VIN/WMI knowledge to reason helpfully, clearly mark uncertainty, and never claim provider verification.",
     "- If deal_state has vin/frame_no/part_intent, that is already confirmed — NEVER ask for VIN again, NEVER reset to website browse, continue that deal.",
     "- If recent_team_replies is non-empty, a human teammate already messaged this customer directly — do NOT contradict, deny, or restate those quotes as \"still checking\"; only add new info or ask one missing question.",
     "- On first greeting a new customer (no deal_state), mention our website www.asia-power.com.",
     "- Do not claim stock, payment, delivery date, or shipment confirmation unless already in structured context.",
     "- Never claim you personally checked, verified, confirmed, or dialed an external fact (phone line status, shipment tracking, warehouse inventory) unless that fact is already present in structured context. Say you will follow up with the team instead.",
     "- inventory_matches lists real stock from www.asia-power.com with the actual price_usd for each item — when it has a match for what the customer wants, quote that exact price_usd as the EXW price. Do not call web_fetch or web_search for pricing, they are not reliable for this.",
+    "- approximate_matches are similar same-brand/category references only, NOT confirmed stock and NOT price evidence. You may mention that we can check a similar option, but never quote their price or say the requested item is available from them.",
     "- When inventory_matches is non-empty, also include 1–3 of the most relevant detail_url (or category_url) links from those matches in customer_reply — never only the homepage when a product/category page is available.",
     "- When inventory_matches is empty but category_page_url is present (customer only named a part type), send that category page instead of the homepage.",
     "- You may self-authorize a discount off that real listed price, but never more than 5% below it — anything beyond that needs a team member to confirm, and set needs_price_confirmation to true.",
@@ -531,6 +538,7 @@ async function runOpenClawReply({ text, senderId, messageId, chatId, observedAt,
       soft_angle_dry_run: softAngleDryRun,
       recent_team_replies: recentTeamRepliesForPrompt(dealState),
       inventory_matches: matches,
+      approximate_matches: approximateMatches || [],
       category_page_url: categoryPageFallback,
       confirmed_vin: knownVin,
       customer_message: text,
@@ -1101,6 +1109,7 @@ async function buildMediaContext(message, session, senderId) {
       verification_status: vinDecode.verification_status || null,
       confidence: vinDecode.confidence || null,
       error: vinDecode.error || null,
+      vin_reasoning_evidence: vinDecode.vin_reasoning_evidence || null,
     },
     sales_hint:
       vinDecode.status === "success"
@@ -1335,20 +1344,23 @@ async function handleMessage(message, state, session) {
 
   // Persist confirmed VIN / part intent so later turns cannot "forget" a VIN the customer already typed.
   const dealState = await rememberDealFromContext(senderId, mediaContext, text);
-  const inventoryMatches = await findInventoryMatches({
+  const inventoryEvidence = await findInventoryEvidence({
     brand: dealState?.brand,
     model: dealState?.model,
     partIntent: dealState?.part_intent,
     text,
   }).catch((err) => {
     log("inventory match failed", { error: err instanceof Error ? err.message : String(err) });
-    return [];
+    return { exact: [], approximate: [] };
   });
+  const inventoryMatches = inventoryEvidence.exact;
+  const approximateMatches = inventoryEvidence.approximate;
   // Step 0 evidence context is frozen before the model writes its reply.
   const privateBusinessFactContext = buildPrivateBusinessFactContext({
     customerMessage: text,
     dealState,
-    inventoryMatches,
+      inventoryMatches,
+      approximateMatches,
   });
 
   log("inbound", {
@@ -1504,6 +1516,7 @@ async function handleMessage(message, state, session) {
         mediaContext,
         dealState,
         inventoryMatches,
+        approximateMatches,
       });
       const ownNumberGuard = sanitizeAgentReplyOwnNumberLeak(
         generated.reply,

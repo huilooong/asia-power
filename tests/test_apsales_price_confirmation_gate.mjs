@@ -87,6 +87,17 @@ test("Step 0: real Layer 2 inventory evidence permits a price request", async ()
   assert.equal(result.hold, false);
 });
 
+test("Step 0: approximate inventory is not price-confirmation evidence", async () => {
+  const { buildPrivateBusinessFactContext, priceConfirmationGate } = await loadGate();
+  const result = priceConfirmationGate({
+    preGenerationContext: context(buildPrivateBusinessFactContext, "How much is this engine?", {}, []),
+    approximateMatches: [{ stock_id: "SIMILAR-1", price_usd: 900 }],
+    modelNeedsPriceConfirmation: false,
+  });
+  assert.equal(result.hold, true);
+  assert.match(result.reason, /missing_private_business_evidence/);
+});
+
 test("Step 0: unverified VIN technical inference is default-allowed", async () => {
   const { buildPrivateBusinessFactContext, priceConfirmationGate } = await loadGate();
   const result = priceConfirmationGate({

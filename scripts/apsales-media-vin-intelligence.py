@@ -74,6 +74,7 @@ def main() -> int:
 
         snapshot = enrich_from_vin(vin17, allow_external=True)
         public = snapshot.to_public_dict()
+        reasoning = getattr(snapshot, "vin_reasoning_evidence", None)
         print(
             json.dumps(
                 {
@@ -83,6 +84,7 @@ def main() -> int:
                     "provider_source": snapshot.provider_source,
                     "verification_status": snapshot.verification_status,
                     "confidence": snapshot.confidence,
+                    "vin_reasoning_evidence": reasoning,
                 },
                 ensure_ascii=False,
             )
