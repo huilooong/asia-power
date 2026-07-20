@@ -1,6 +1,7 @@
 #!/usr/bin/env node
 /**
- * Register Telegram webhook for WhatsApp Cloud quote bridge (@weylonbot / site TELEGRAM_BOT_TOKEN).
+ * Register Telegram webhook for WhatsApp Cloud quote bridge
+ * (dedicated @Asiapower86166_bot via ASIAPOWER_TELEGRAM_BOT_TOKEN — not @weylonbot).
  *
  * Usage (on prod or with prod env loaded):
  *   node scripts/set-telegram-whatsapp-quote-webhook.mjs

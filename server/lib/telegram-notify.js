@@ -10,12 +10,17 @@ function resetConfig() {
 
 function config() {
   if (cached) return cached;
-  const token = String(process.env.ASIAPOWER_TELEGRAM_BOT_TOKEN || process.env.TELEGRAM_BOT_TOKEN || '').trim();
-  const chatId = String(process.env.ASIAPOWER_TELEGRAM_CHAT_ID || process.env.TELEGRAM_CHAT_ID || '').trim();
+  // Prefer dedicated AsiaPower bot. If ASIAPOWER_* is set, never fall back to
+  // TELEGRAM_BOT_TOKEN (often OpenClaw @weylonbot / 孔明) — dual-bot waste + quote bugs.
+  const asiaToken = String(process.env.ASIAPOWER_TELEGRAM_BOT_TOKEN || '').trim();
+  const asiaChat = String(process.env.ASIAPOWER_TELEGRAM_CHAT_ID || '').trim();
+  const token = asiaToken || String(process.env.TELEGRAM_BOT_TOKEN || '').trim();
+  const chatId = asiaChat || String(process.env.TELEGRAM_CHAT_ID || '').trim();
   cached = {
     enabled: Boolean(token && chatId),
     token,
     chatId,
+    dedicated: Boolean(asiaToken),
   };
   return cached;
 }
