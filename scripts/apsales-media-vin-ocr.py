@@ -73,6 +73,39 @@ def _vin_check_digit_ok(vin: str) -> bool:
     return v[8] == expected
 
 
+def vin_check_digit_hint(vin: str) -> dict[str, Any]:
+    """Deterministic OCR typo candidates; never claims a vehicle identity."""
+    normalized = _normalize_vin(vin)
+    if not VIN_FULL.fullmatch(normalized):
+        return {"vin": normalized, "check_digit_valid": False, "candidates": []}
+    if _vin_check_digit_ok(normalized):
+        return {"vin": normalized, "check_digit_valid": True, "candidates": []}
+    swaps = {"O": "0", "0": "O", "I": "1", "1": "I", "M": "W", "W": "M"}
+    candidates: list[dict[str, Any]] = []
+    for index, char in enumerate(normalized):
+        replacement = swaps.get(char)
+        if not replacement:
+            continue
+        candidate = f"{normalized[:index]}{replacement}{normalized[index + 1:]}"
+        if _vin_check_digit_ok(candidate):
+            candidates.append({"position": index + 1, "from": char, "to": replacement, "vin": candidate})
+    return {"vin": normalized, "check_digit_valid": False, "candidates": candidates}
+
+
+def _reasoning_evidence_from_ocr(raw_text: str) -> dict[str, Any] | None:
+    """Keep one full-length OCR token even when checksum validation rejects it."""
+    for token in VIN_FIND.findall(str(raw_text or "").upper()):
+        normalized = _normalize_vin(token)
+        if VIN_FULL.fullmatch(normalized):
+            hint = vin_check_digit_hint(normalized)
+            return {
+                "raw_vin": normalized,
+                "check_digit_valid": hint["check_digit_valid"],
+                "candidates": hint["candidates"],
+            }
+    return None
+
+
 def _is_valid_vin(vin: str) -> bool:
     v = _normalize_vin(vin)
     if not VIN_FULL.fullmatch(v):
@@ -454,6 +487,7 @@ def main() -> int:
                     "ocr_provider_requested": provider,
                     "cloud_error": cloud_error,
                     "ocr_text": raw[:1200],
+                    "vin_reasoning_evidence": _reasoning_evidence_from_ocr(raw),
                     "plate_facts": facts,
                     "vin_candidates": candidates,
                     "best_vin": best["vin"] if best else None,

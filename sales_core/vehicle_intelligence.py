@@ -17,6 +17,7 @@ Phase 1 ≠ final solution.
 from __future__ import annotations
 
 import hashlib
+import importlib.util
 import json
 import re
 import urllib.error
@@ -99,6 +100,18 @@ def vin_hash(vin: str) -> str:
 def extract_vin(text: str) -> str:
     m = _VIN_RE.search(text or "")
     return (m.group(1) if m else "").upper()
+
+
+def vin_reasoning_evidence(vin: str) -> dict[str, Any]:
+    """Deterministic checksum hints for model reasoning, never identity proof."""
+    path = workspace_root() / "scripts" / "apsales-media-vin-ocr.py"
+    spec = importlib.util.spec_from_file_location("apsales_media_vin_ocr", path)
+    if not spec or not spec.loader:
+        return {"raw_vin": vin, "check_digit_valid": None, "candidates": []}
+    module = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(module)
+    hint = module.vin_check_digit_hint(vin)
+    return {"raw_vin": vin, "check_digit_valid": hint["check_digit_valid"], "candidates": hint["candidates"]}
 
 
 @dataclass
@@ -494,6 +507,7 @@ def enrich_from_vin(
     # 4) Manual Review needed
     snap.verification_status = VS_UNVERIFIED
     snap.error = snap.error or "needs_manual_review"
+    setattr(snap, "vin_reasoning_evidence", vin_reasoning_evidence(vin))
     return snap
 
 

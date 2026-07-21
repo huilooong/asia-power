@@ -1,0 +1,12 @@
+{
+  "customer": "+233540679424",
+  "at": "2026-07-21T09:23:21.192Z",
+  "message_id": "3A2447BBEBC578AEE81B",
+  "media_context": {
+    "message_type": "image",
+    "media": {"ocr_text": ""},
+    "vin_decode": {"status": "failed", "error": "no_plate_facts"}
+  },
+  "deal_state": {"part_intent": "engine"},
+  "forbidden_old_reply": "Got your photo — noted for your engine request. Anything else, or should we get you a price?"
+}

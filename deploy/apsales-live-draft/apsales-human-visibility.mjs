@@ -140,22 +140,36 @@ export function plateFailureAskCopy(kind = "primary") {
     );
   }
   return (
-    "Got your photo — I don't see a chassis nameplate/VIN sticker in it. " +
-    "I need a photo of that metal plate or sticker with the letter-number code on the vehicle " +
-    "(not a general shot of the car/engine). Or just type the VIN/frame number here."
+    "This photo doesn't show a readable chassis/VIN plate. Please take a closer photo of the metal plate or sticker in brighter light, " +
+    "or type the vehicle model, year, and engine code here."
   );
+}
+
+export function partialVinReasoningEvidence(mediaContext) {
+  const raw = String(mediaContext?.media?.ocr_text || "").trim().slice(0, 500);
+  if (!raw) return null;
+  const candidates = [...new Set(
+    raw.toUpperCase().match(/[A-HJ-NPR-Z0-9][A-HJ-NPR-Z0-9\-_/]{3,24}/g) || [],
+  )].slice(0, 8);
+  if (!candidates.length) return null;
+  return {
+    source: "image_ocr_partial",
+    raw_ocr_text: raw,
+    partial_candidates: candidates,
+    note: "Unverified partial OCR signals for model reasoning; not a confirmed VIN or vehicle identity.",
+  };
 }
 
 /**
  * Image OCR failed: pick copy from deal context.
- * - part_intent set → treat as accessory/part photo (not a plate ask)
- * - vin/engine already confirmed (Bug A) → don't ask to resend plate
- * - else → ask for nameplate/VIN photo (not "clearer" blur wording)
+ * - vin/engine already confirmed → don't ask to resend plate
+ * - unconfirmed + partial OCR → let the model reason from raw signals
+ * - unconfirmed + no OCR signal → guide a closer/brighter photo or typed identity
  *
  * Dedup: short-window silence so stacked photos don't spam the same line.
  * OCR still ran before this is called; success path is unaffected.
  *
- * @returns {{ reply: string|null, silence: boolean, dealPatch: object }}
+ * @returns {{ reply: string|null, silence: boolean, deferToModel?: boolean, dealPatch: object }}
  */
 export function decidePlateFailureReply(mediaContext, dealState, nowMs = Date.now()) {
   const empty = { reply: null, silence: false, dealPatch: {} };
@@ -163,16 +177,6 @@ export function decidePlateFailureReply(mediaContext, dealState, nowMs = Date.no
   const status = mediaContext?.vin_decode?.status;
   if (status === "success") return empty;
   if (!status) return empty;
-
-  const partIntent = String(dealState?.part_intent || "").trim();
-  if (partIntent) {
-    const label = partIntentLabel(partIntent);
-    return {
-      reply: `Got your photo — noted for your ${label} request. Anything else, or should we get you a price?`,
-      silence: false,
-      dealPatch: {},
-    };
-  }
 
   if (dealState?.vin || dealState?.engine_code) {
     const bits = [dealState.brand, dealState.model, dealState.year, dealState.engine_code]
@@ -206,6 +210,20 @@ export function decidePlateFailureReply(mediaContext, dealState, nowMs = Date.no
       silence: true,
       dealPatch: {
         plate_failure_streak: streak,
+      },
+    };
+  }
+
+  const reasoningEvidence = partialVinReasoningEvidence(mediaContext);
+  if (reasoningEvidence && kind === "primary") {
+    return {
+      reply: null,
+      silence: false,
+      deferToModel: true,
+      dealPatch: {
+        last_plate_failure_reply_at: new Date(nowMs).toISOString(),
+        plate_failure_streak: streak,
+        last_plate_failure_reply_kind: kind,
       },
     };
   }

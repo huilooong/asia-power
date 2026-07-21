@@ -16,6 +16,7 @@ import {
   classifyFromMeMessage,
   withPartFirstRequestedAt,
   withTeamConfirmedAt,
+  partialVinReasoningEvidence,
 } from "./apsales-human-visibility.mjs";
 import { parseAgentReply, buildExceptionFallback } from "./apsales-parse-agent-reply.mjs";
 import { buildEvidenceBoundedFallback } from "./apsales-reasoning-policy.mjs";
@@ -1168,7 +1169,11 @@ async function buildMediaContext(message, session, senderId) {
       verification_status: vinDecode.verification_status || null,
       confidence: vinDecode.confidence || null,
       error: vinDecode.error || null,
-      vin_reasoning_evidence: vinDecode.vin_reasoning_evidence || null,
+      vin_reasoning_evidence:
+        vinDecode.vin_reasoning_evidence ||
+        ocr?.vin_reasoning_evidence ||
+        partialVinReasoningEvidence({ message_type: "image", media: { ocr_text: String(ocr?.ocr_text || "") } }) ||
+        null,
     },
     sales_hint:
       vinDecode.status === "success"
@@ -1565,6 +1570,15 @@ async function handleMessage(message, state, session) {
           "sent",
         );
         return;
+      }
+      if (failDecision.deferToModel) {
+        log("plate failure partial OCR delegated to model", {
+          senderId,
+          messageId: message.messageId,
+          partialCandidateCount: Array.isArray(mediaContext?.vin_decode?.vin_reasoning_evidence?.partial_candidates)
+            ? mediaContext.vin_decode.vin_reasoning_evidence.partial_candidates.length
+            : 0,
+        });
       }
 
       let generated = await runOpenClawReply({

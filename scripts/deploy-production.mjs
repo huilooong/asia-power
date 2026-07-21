@@ -743,6 +743,10 @@ function deployApsalesOpenClaw() {
     `${REMOTE}:/root/.openclaw/workspace/AsiaPower/scripts/apsales-media-vin-intelligence.py`,
   );
   rsync(
+    `${ROOT}/sales_core/vehicle_intelligence.py`,
+    `${REMOTE}:/root/.openclaw/workspace/AsiaPower/sales_core/vehicle_intelligence.py`,
+  );
+  rsync(
     `${ROOT}/scripts/apsales-media-stt.py`,
     `${REMOTE}:/root/.openclaw/workspace/AsiaPower/scripts/apsales-media-stt.py`,
   );
@@ -769,6 +773,7 @@ test -s "\$BRIDGE_DIR/apsales-inventory-links.mjs"
 test -s "\$BRIDGE_DIR/apsales-price-confirmation-gate.mjs"
 test -s "\$BRIDGE_DIR/apsales-reusable-evidence.mjs"
 test -s "\$BRIDGE_DIR/apsales-live-rules.mjs"
+test -s /root/.openclaw/workspace/AsiaPower/sales_core/vehicle_intelligence.py
 CHECK=\$(mktemp /tmp/apsales-bridge-check-XXXXXX.mjs)
 SESSION_CHECK=\$(mktemp /tmp/apsales-session-check-XXXXXX.mjs)
 cp "$NEXT" "$CHECK"
@@ -784,6 +789,7 @@ cp "$SESSION_NEXT" "$SESSION_CHECK"
 /usr/bin/node --check "\$BRIDGE_DIR/apsales-price-confirmation-gate.mjs"
 /usr/bin/node --check "\$BRIDGE_DIR/apsales-reusable-evidence.mjs"
 /usr/bin/node --check "\$BRIDGE_DIR/apsales-live-rules.mjs"
+/root/.openclaw/workspace/AsiaPower/.venv/bin/python3 -m py_compile /root/.openclaw/workspace/AsiaPower/sales_core/vehicle_intelligence.py
 /usr/bin/node --check "\$BRIDGE_DIR/ghana-staff-handoff.mjs"
 /usr/bin/node --check "\$BRIDGE_DIR/apsales-parse-agent-reply.mjs"
 /usr/bin/node --check /tmp/apsales-bridge-crash-logger.mjs

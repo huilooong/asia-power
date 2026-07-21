@@ -127,6 +127,18 @@ class VehicleIntelligenceTests(unittest.TestCase):
         )
         self.assertEqual(empty.displacement, "")
 
+    def test_failed_vin_exposes_deterministic_reasoning_evidence(self):
+        failed = VehicleSnapshot(vin="WMMZC5C54DWP33784", ok=False, error="nhtsa_empty")
+        with mock.patch("sales_core.vehicle_intelligence.fetch_nhtsa", return_value=failed):
+            snap = enrich_from_vin("WMMZC5C54DWP33784", allow_external=True)
+        evidence = getattr(snap, "vin_reasoning_evidence")
+        self.assertEqual(evidence["raw_vin"], "WMMZC5C54DWP33784")
+        self.assertFalse(evidence["check_digit_valid"])
+        self.assertIn(
+            {"position": 3, "from": "M", "to": "W", "vin": "WMWZC5C54DWP33784"},
+            evidence["candidates"],
+        )
+
 
 if __name__ == "__main__":
     unittest.main()
