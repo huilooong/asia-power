@@ -1,0 +1,80 @@
+import test from "node:test";
+import assert from "node:assert/strict";
+import fs from "node:fs/promises";
+import os from "node:os";
+import path from "node:path";
+import { classifyHumanAnswerForReuse, storeReusableFact, retrieveReusableFacts } from "../deploy/apsales-live-draft/apsales-reusable-evidence.mjs";
+
+test("prices and customer commitments cannot enter reusable evidence storage", async () => {
+  assert.equal(classifyHumanAnswerForReuse("We can supply this engine for 900 USD.").reusable, false);
+  const root = await fs.mkdtemp(path.join(os.tmpdir(), "apsales-evidence-"));
+  const stored = await storeReusableFact({ workspace: root, teamText: "We can supply this engine for 900 USD.", dealState: { part_intent: "engine" } });
+  assert.equal(stored.stored, false);
+  await assert.rejects(fs.access(path.join(root, "memory", "sales_evidence", "reusable_facts.ndjson")));
+});
+
+test("five Chinese price or discount commitments cannot enter reusable storage", async () => {
+  const replies = [
+    "可以，价格是900美元。",
+    "这台发动机报价6500元，今天给你优惠。",
+    "给这个客户打九折，最终价格800 USD。",
+    "请先付500元定金，我们再安排发货。",
+    "运费和发票费用已经包含在这个报价里。",
+  ];
+  const root = await fs.mkdtemp(path.join(os.tmpdir(), "apsales-evidence-cn-"));
+  for (const teamText of replies) {
+    assert.equal(classifyHumanAnswerForReuse(teamText).reusable, false, teamText);
+    assert.equal((await storeReusableFact({ workspace: root, teamText, dealState: { part_intent: "engine" } })).stored, false, teamText);
+  }
+  await assert.rejects(fs.access(path.join(root, "memory", "sales_evidence", "reusable_facts.ndjson")));
+});
+
+test("Chinese colloquial money and bargaining language cannot enter reusable storage", () => {
+  const replies = [
+    "可以，500块。",
+    "可以做，多少钱另算。",
+    "兼容，这个便宜。",
+    "可以，价钱另议。",
+    "这个贵一点，给客户少点钱。",
+    "可以还价，但是别砍价太多。",
+    "给他打折，尾款到齐再发。",
+    "成本太高，最低价就是这样。",
+    "收款后开票，海运费另算。",
+  ];
+  for (const text of replies) assert.equal(classifyHumanAnswerForReuse(text).reusable, false, text);
+});
+
+test("Chinese verb-plus-quantifier price phrases cannot enter reusable storage", async () => {
+  const replies = [
+    "可以做，我先给你报个价。",
+    "这个可以打个折。",
+    "这批货一口价，不再议价。",
+    "我问个价再回复你。",
+    "客户想砍个价。",
+    "先谈个价，确认后再下单。",
+    "请给客户开个价。",
+    "我给你算一下价。",
+    "这单可以讲个价。",
+  ];
+  const root = await fs.mkdtemp(path.join(os.tmpdir(), "apsales-evidence-cn-inserted-"));
+  for (const teamText of replies) {
+    assert.equal(classifyHumanAnswerForReuse(teamText).reusable, false, teamText);
+    assert.equal((await storeReusableFact({ workspace: root, teamText, dealState: { part_intent: "engine" } })).stored, false, teamText);
+  }
+  await assert.rejects(fs.access(path.join(root, "memory", "sales_evidence", "reusable_facts.ndjson")));
+});
+
+test("French price and delivery commitments and English rate are excluded", () => {
+  for (const text of ["Le prix est 900 EUR.", "Remise de 10% avec livraison.", "Our rate is 1200 USD."]) {
+    assert.equal(classifyHumanAnswerForReuse(text).reusable, false, text);
+  }
+});
+
+test("explicit general technical facts use a physically separate reusable store", async () => {
+  const root = await fs.mkdtemp(path.join(os.tmpdir(), "apsales-evidence-"));
+  const stored = await storeReusableFact({ workspace: root, teamText: "We can supply a compatible YD25 engine for this model.", dealState: { part_intent: "engine", engine_code: "YD25" } });
+  assert.equal(stored.stored, true);
+  const facts = await retrieveReusableFacts({ workspace: root, dealState: { part_intent: "engine", engine_code: "YD25" } });
+  assert.equal(facts.length, 1);
+  assert.match(facts[0].text, /compatible YD25/);
+});

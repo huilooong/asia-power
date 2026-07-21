@@ -73,6 +73,25 @@ def _vin_check_digit_ok(vin: str) -> bool:
     return v[8] == expected
 
 
+def vin_check_digit_hint(vin: str) -> dict[str, Any]:
+    """Deterministic OCR typo candidates; never claims a vehicle identity."""
+    normalized = _normalize_vin(vin)
+    if not VIN_FULL.fullmatch(normalized):
+        return {"vin": normalized, "check_digit_valid": False, "candidates": []}
+    if _vin_check_digit_ok(normalized):
+        return {"vin": normalized, "check_digit_valid": True, "candidates": []}
+    swaps = {"O": "0", "0": "O", "I": "1", "1": "I", "M": "W", "W": "M"}
+    candidates: list[dict[str, Any]] = []
+    for index, char in enumerate(normalized):
+        replacement = swaps.get(char)
+        if not replacement:
+            continue
+        candidate = f"{normalized[:index]}{replacement}{normalized[index + 1:]}"
+        if _vin_check_digit_ok(candidate):
+            candidates.append({"position": index + 1, "from": char, "to": replacement, "vin": candidate})
+    return {"vin": normalized, "check_digit_valid": False, "candidates": candidates}
+
+
 def _is_valid_vin(vin: str) -> bool:
     v = _normalize_vin(vin)
     if not VIN_FULL.fullmatch(v):
