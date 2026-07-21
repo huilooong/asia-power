@@ -667,6 +667,7 @@ function deployApsalesOpenClaw() {
   );
   for (const moduleName of [
     'apsales-price-confirmation-gate.mjs',
+    'apsales-reasoning-policy.mjs',
     'apsales-reusable-evidence.mjs',
     'apsales-live-rules.mjs',
   ]) {
