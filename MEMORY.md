@@ -37,6 +37,7 @@
 - **SEO、公开站页面、GSC 技术修复、站点质量收尾** → 默认交给 **Cursor** 执行。
 - **不要默认丢给 Codex**，除非龙哥明确说 Cursor 在忙 / 指定 Codex。
 - 计划源例：`~/.claude/plans/seo-real-data-triage-and-quality-first.md`（真实 GSC 28 天数据驱动：先修 bug、救活已曝光页，暂停按国家批量扩页）。
+- **批量改 HTML 禁忌：** `re.sub` 替换串里若正文以数字开头（如 `540+`），拼在 `\1` 后会变成 `\154…` 捕获组，吃掉 `og:description` 标签；必须用回调或 `\g<1>`。
 
 - 企微应用对外名仍是 **AsiaPower 库存 Agent**（腾讯后台已建），**实际主责是子龙**；销售类问题可路由给子敬，但子敬的主阵地不是企微。
 - 子敬已学 WhatsApp 聊天记录（524 会话 / 12724 消息，2026-06-29 导入）；数据问 `python -m truth.verified_sales_intelligence "问题"`。
