@@ -1,6 +1,7 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 import path from "node:path";
+import fs from "node:fs";
 import { fileURLToPath, pathToFileURL } from "node:url";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
@@ -37,13 +38,19 @@ test("detectPossibleRepeat: single reply → miss", async () => {
   );
 });
 
-test("uncoveredClosingAngles: respects existing port/qty/payment_notes only", async () => {
+test("uncoveredClosingAngles: third-stage angles require vehicle anchor and part", async () => {
   const { uncoveredClosingAngles } = await load();
   const empty = uncoveredClosingAngles({});
-  assert.ok(empty.includes("where"));
-  assert.ok(empty.includes("how_much"));
-  assert.ok(empty.includes("how"));
+  assert.deepEqual(empty, ["why", "when"]);
+  assert.deepEqual(uncoveredClosingAngles({ part_intent: "engine" }), ["why", "when"]);
+  assert.deepEqual(uncoveredClosingAngles({ brand: "Toyota", year: "2012" }), ["why", "when"]);
+  const ready = uncoveredClosingAngles({ year: "2012", part_intent: "engine" });
+  assert.ok(ready.includes("where"));
+  assert.ok(ready.includes("how"));
+  assert.ok(ready.includes("how_much"));
   const partial = uncoveredClosingAngles({
+    frame_no: "WOSURGL50-115858",
+    part_intent: "engine",
     destination_port: "Tema",
     quantity: "2 units",
     payment_notes: "T/T",
@@ -55,6 +62,30 @@ test("uncoveredClosingAngles: respects existing port/qty/payment_notes only", as
   assert.ok(!partial.includes("how_much"));
   assert.ok(!partial.includes("how"));
   assert.ok(partial.includes("why") || partial.includes("when"));
+});
+
+test("2026-07-21 Evidence replay exposes closing angles without repeat trigger", async () => {
+  const { uncoveredClosingAngles, detectPossibleRepeat } = await load();
+  const rows = JSON.parse(fs.readFileSync(
+    new URL("./fixtures/apsales-5w2h-real-replay-2026-07-21.json", import.meta.url),
+    "utf8",
+  ));
+  for (const row of rows) {
+    assert.equal(detectPossibleRepeat(row.recent_agent_replies).possible_repeat_detected, false, row.evidence_id);
+    const angles = uncoveredClosingAngles(row.deal_state);
+    for (const expected of row.expected_uncovered) {
+      assert.ok(angles.includes(expected), `${row.evidence_id}: ${expected}`);
+    }
+    for (const covered of row.expected_covered) {
+      assert.ok(!angles.includes(covered), `${row.evidence_id}: ${covered}`);
+    }
+  }
+});
+
+test("exit signal remains ineligible for a soft-angle prompt", async () => {
+  const { isSoftAngleExitSignal } = await load();
+  assert.equal(isSoftAngleExitSignal("Maybe later, I am busy now"), true);
+  assert.equal(isSoftAngleExitSignal("Please quote for two engines"), false);
 });
 
 test("stampChatAngle / normalizeChatAngleUsed", async () => {

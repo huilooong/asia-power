@@ -1,5 +1,5 @@
 /**
- * Stage-3 soft chat angles (5W2H as optional material when about to repeat).
+ * Layer-3 soft chat angles (5W2H as continuous reasoning context).
  * Does NOT touch payment_status / fulfillment_stage from closing-flow.
  */
 
@@ -17,6 +17,12 @@ const HOLDING_PHRASE_RES = [
 ];
 
 export const CHAT_ANGLES = Object.freeze(["why", "when", "where", "how", "how_much", "none"]);
+
+const EXIT_SIGNAL = /(?:\b(?:later|wait|hold\s+on|not\s+now|maybe\s+another\s+time|stop|busy|no\s+thanks?)\b|(?:稍后|等等|先不用|不需要|忙|以后再说)|(?:plus\s+tard|attendez|pas\s+maintenant|non\s+merci))/iu;
+
+export function isSoftAngleExitSignal(customerMessage) {
+  return EXIT_SIGNAL.test(String(customerMessage || ""));
+}
 
 function normalizeReply(text) {
   return String(text || "")
@@ -80,6 +86,13 @@ export function uncoveredClosingAngles(dealState) {
   // why / when are conversational; no dedicated schema fields from closing-flow
   if (d.last_chat_angle !== "why") uncovered.push("why");
   if (d.last_chat_angle !== "when") uncovered.push("when");
+  const vehicleKnown = Boolean(
+    d.vin || d.frame_no || d.brand || d.model || d.year,
+  );
+  const partKnown = Boolean(String(d.part_intent || "").trim());
+  // Where / How / How much belong to the closing approach. Do not surface
+  // them until Which/What has at least one vehicle anchor and a confirmed part.
+  if (!vehicleKnown || !partKnown) return uncovered;
   if (!d.destination_port && d.last_chat_angle !== "where") uncovered.push("where");
   const payKnown =
     Boolean(d.payment_notes) ||

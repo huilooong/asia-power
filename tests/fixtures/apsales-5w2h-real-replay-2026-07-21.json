@@ -1,0 +1,26 @@
+[
+  {
+    "evidence_id": "ev-2026-07-21T025459370Z-7af575b6",
+    "customer_message": "Nissan patrol\nYear 1984\nEngine only",
+    "recent_agent_replies": ["Vehicle confirmed: Nissan, frame WOSURGL50-115858.", "Okay, we've confirmed it's a Nissan Patrol 1984 and you need the engine."],
+    "deal_state": {"frame_no":"WOSURGL50-115858","brand":"NISSAN","year":"1984","part_intent":"engine","quantity":"1984\nEngine"},
+    "expected_uncovered": ["where","how"],
+    "expected_covered": ["how_much"]
+  },
+  {
+    "evidence_id": "ev-2026-07-21T061656196Z-317975b6",
+    "customer_message": "KIA RIO 5 ENGINE CAPACITY 1.6 YEAR 2008",
+    "recent_agent_replies": ["Thanks. Please share the VIN.", "Can you share the VIN so I can check compatible options?"],
+    "deal_state": {"brand":"KIA","model":"RIO","year":"2008","part_intent":"engine"},
+    "expected_uncovered": ["where","how","how_much"],
+    "expected_covered": []
+  },
+  {
+    "evidence_id": "ev-2026-07-21T094757853Z-75f2b77c",
+    "customer_message": "Model 1996 Toyota Prado engine",
+    "recent_agent_replies": ["Sea freight to Zambia usually takes 45-60 days.", "Please provide the VIN or engine code."],
+    "deal_state": {"brand":"TOYOTA","model":"PRADO","year":"1996","engine_code":"1KZ","part_intent":"engine","destination_port":"Zambia"},
+    "expected_uncovered": ["how","how_much"],
+    "expected_covered": ["where"]
+  }
+]

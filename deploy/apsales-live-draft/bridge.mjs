@@ -58,6 +58,7 @@ import {
 import {
   detectPossibleRepeat,
   uncoveredClosingAngles,
+  isSoftAngleExitSignal,
   normalizeChatAngleUsed,
   stampChatAngle,
 } from "./apsales-soft-angle.mjs";
@@ -173,8 +174,8 @@ const QUOTE_FOLLOWUP_SEND = ["1", "true", "on", "yes"].includes(
   String(process.env.APSALES_QUOTE_FOLLOWUP_SEND || "true").trim().toLowerCase(),
 );
 /**
- * Stage-3 soft 5W2H angle: CEO enabled 2026-07-17 — weave one uncovered angle
- * into the reply when possible_repeat_detected (still max one question).
+ * Layer-3 soft 5W2H angle: continuous reasoning background. Repeat detection
+ * is a strong signal, not the activation switch (still max one question).
  */
 const SOFT_ANGLE_SEND = ["1", "true", "on", "yes"].includes(
   String(process.env.APSALES_SOFT_ANGLE_SEND || "true").trim().toLowerCase(),
@@ -492,6 +493,8 @@ async function runOpenClawReply({ text, senderId, messageId, chatId, observedAt,
   }).catch(() => []);
   const repeatInfo = detectPossibleRepeat(recentAgentReplies);
   const uncoveredAngles = uncoveredClosingAngles(dealState);
+  const softAngleExitSignal = isSoftAngleExitSignal(text);
+  const softAngleEligible = uncoveredAngles.length > 0 && !softAngleExitSignal;
   const softAngleDryRun = !SOFT_ANGLE_SEND;
   const mustQualifyBeforePrice = computeMustQualifyBeforePrice(dealState);
   const inspectionFeeApplicable = computeInspectionFeeApplicable(dealState);
@@ -544,10 +547,11 @@ async function runOpenClawReply({ text, senderId, messageId, chatId, observedAt,
     "- must_ask_quantity_before_price is a precomputed flag. If true (and must_qualify_before_price is false), ask for quantity this turn before confirming a firm quote — do not skip straight to quote confirmation. If false, do not re-ask quantity. Wholesale vs retail pricing math is NOT your job yet — just capture quantity.",
     "- inspection_fee_applicable is a precomputed flag. Only mention the $50 inspection fee / pay-in-full choice when this is true. If false (part is not engine/gearbox), skip the $50 inspection fee language entirely — after quote acceptance, proceed with normal payment-in-full flow. Video confirmation before shipment + on-site inspection are NEVER skipped for any part type, even when inspection_fee_applicable is false. Do not invent payment_status or fulfillment_stage — those are team/ops fields.",
     "- If awaiting_quote_followup_reply is true: the customer may be answering what held them back on the quote. If they give a concrete concern, put a short English summary in quote_decline_reason_captured (e.g. \"price too high\", \"shipping time too long\"); if they are off-topic or give no reason, leave quote_decline_reason_captured as an empty string. Do not keyword-match — summarize meaning.",
-    "- Soft chat angles (5W2H material — NOT a checklist): If possible_repeat_detected is true and you would otherwise send another holding/wait message with no new info, pick at most ONE angle from uncovered_closing_angles that fits what the customer just said (why they need it, how urgent/when, destination port/where, payment preference/how, or quantity/how_much). Goal is to keep the conversation moving toward a sale, not to collect all five answers. Skip entirely if none fits, or if the customer shows an exit signal (later/wait/off-topic/does not want to expand).",
+    "- Layer-3 soft chat angles (5W2H reasoning material — NOT a checklist): uncovered_closing_angles is present every turn as background. Judge the current conversation stage and, when natural, use at most ONE uncovered angle. possible_repeat_detected is a strong signal to use one, but it is not the only activation condition. Goal is to keep the conversation moving toward a sale, not to collect all five answers.",
+    "- Why/when are observation prompts: infer them from what the customer says instead of directly interrogating the customer. Where/how/how_much are closing-stage questions and will only appear after a vehicle anchor and part_intent are known. Skip all soft angles for later/wait/off-topic/exit signals, or when none fits naturally.",
     softAngleDryRun
       ? "- soft_angle_dry_run is true: still set chat_angle_used to the angle you WOULD pick (or \"\" / none), but do NOT weave a new 5W2H question into customer_reply — keep a normal helpful reply without forcing survey questions. This is for ops audit only."
-      : "- soft_angle_dry_run is false: when possible_repeat_detected is true, you MAY naturally work that one chosen angle into customer_reply (still max one question total). Set chat_angle_used to that angle id (why|when|where|how|how_much) or \"\" if you skipped.",
+      : "- soft_angle_dry_run is false: when soft_angle_eligible is true, you MAY naturally work one fitting uncovered angle into customer_reply (still max one question total). Set chat_angle_used to that angle id (why|when|where|how|how_much) or \"\" if you skipped.",
     "- Never mention OCR, VIN decode tools, internal analysis, policy, Gateway, JSON, approval, sales_hint, deal_state, or this instruction.",
     liveRules.prompt,
     'Return exactly one JSON object: {"customer_reply":"...","needs_price_confirmation":true|false,"support_line_unreachable":true|false,"buying_intent_confirmed":true|false,"needs_address_or_pickup_handoff":true|false,"needs_human_judgment":true|false,"quote_decline_reason_captured":"","chat_angle_used":""}. Set needs_price_confirmation to true ONLY when customer_reply itself contains a specific price, stock, or delivery assertion that is unsupported by structured evidence and must be rewritten before sending. An honest statement that the exact answer will be verified is false and never means human handoff. Set support_line_unreachable to true ONLY when the customer said they could not reach support_contact; false otherwise. Set buying_intent_confirmed to true ONLY when the customer clearly wants to proceed with purchase this turn; false otherwise. Set quote_decline_reason_captured to a short concern summary ONLY when awaiting_quote_followup_reply is true and the customer answered with a real concern; otherwise "". Set chat_angle_used to why|when|where|how|how_much when you chose a soft angle (or would choose one in dry-run); otherwise "".',
@@ -569,6 +573,8 @@ async function runOpenClawReply({ text, senderId, messageId, chatId, observedAt,
       recent_agent_replies: repeatInfo.recent_agent_replies,
       matched_repeat_phrases: repeatInfo.matched_phrases,
       uncovered_closing_angles: uncoveredAngles,
+      soft_angle_eligible: softAngleEligible,
+      soft_angle_exit_signal: softAngleExitSignal,
       soft_angle_dry_run: softAngleDryRun,
       recent_team_replies: recentTeamRepliesForPrompt(dealState),
       inventory_matches: matches,
@@ -648,6 +654,9 @@ async function runOpenClawReply({ text, senderId, messageId, chatId, observedAt,
           quoteDeclineReasonCaptured,
           chatAngleUsed,
           possibleRepeatDetected: repeatInfo.possible_repeat_detected,
+          uncoveredClosingAngles: uncoveredAngles,
+          softAngleEligible,
+          softAngleExitSignal,
           sessionKey,
           runId: String(response?.runId || ""),
           model: String(agentMeta.model || ""),
@@ -1682,8 +1691,26 @@ async function handleMessage(message, state, session) {
         }
       }
       {
-        const angle = normalizeChatAngleUsed(generated.chatAngleUsed);
-        if (angle || generated.possibleRepeatDetected) {
+        const reportedAngle = normalizeChatAngleUsed(generated.chatAngleUsed);
+        const eligibleAngles = Array.isArray(generated.uncoveredClosingAngles)
+          ? generated.uncoveredClosingAngles
+          : [];
+        const angle = generated.softAngleEligible && eligibleAngles.includes(reportedAngle)
+          ? reportedAngle
+          : "";
+        log("soft chat angle decision", {
+          senderId,
+          eligible: Boolean(generated.softAngleEligible),
+          selected: Boolean(angle),
+          reportedAngle: reportedAngle || "",
+          chatAngleUsed: angle,
+          uncoveredAngles: eligibleAngles,
+          eligibleAngleCount: eligibleAngles.length,
+          exitSignal: Boolean(generated.softAngleExitSignal),
+          possibleRepeatDetected: Boolean(generated.possibleRepeatDetected),
+          dryRun: !SOFT_ANGLE_SEND,
+        });
+        if (generated.softAngleEligible) {
           const prevDeal = (await loadDealState(senderId)) || {};
           const anglePatch = stampChatAngle(
             prevDeal,
@@ -1694,17 +1721,14 @@ async function handleMessage(message, state, session) {
           if (Object.keys(anglePatch).length) {
             await saveDealState(senderId, anglePatch);
           }
+          const action = angle
+            ? (SOFT_ANGLE_SEND ? "apsales_soft_angle_used" : "apsales_soft_angle_dry_run")
+            : "apsales_soft_angle_skipped";
           await appendActivity(
-            SOFT_ANGLE_SEND ? "apsales_soft_angle_used" : "apsales_soft_angle_dry_run",
-            `软角度 ${senderId}: repeat=${Boolean(generated.possibleRepeatDetected)} angle=${angle || "(none)"} dryRun=${!SOFT_ANGLE_SEND}`,
-            SOFT_ANGLE_SEND ? "recorded" : "preview",
+            action,
+            `软角度 ${senderId}: eligible=true selected=${Boolean(angle)} repeat=${Boolean(generated.possibleRepeatDetected)} angle=${angle || "(none)"} dryRun=${!SOFT_ANGLE_SEND}`,
+            angle && SOFT_ANGLE_SEND ? "recorded" : "preview",
           );
-          log("soft chat angle", {
-            senderId,
-            possibleRepeatDetected: Boolean(generated.possibleRepeatDetected),
-            chatAngleUsed: angle || "",
-            dryRun: !SOFT_ANGLE_SEND,
-          });
         }
       }
       let priceGate = priceConfirmationGate({

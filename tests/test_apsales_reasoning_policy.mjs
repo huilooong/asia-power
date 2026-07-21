@@ -19,3 +19,11 @@ test("bridge prompt grants reasoning authority and defines closing-only handoff"
   assert.match(source, /needs_address_or_pickup_handoff/);
   assert.doesNotMatch(source, /If inventory_matches is empty or has no good match, do not invent a number — say you'll confirm the price with the team/);
 });
+
+test("bridge prompt treats 5W2H as continuous Layer-3 context", () => {
+  const source = fs.readFileSync(new URL("../deploy/apsales-live-draft/bridge.mjs", import.meta.url), "utf8");
+  assert.match(source, /uncovered_closing_angles is present every turn as background/);
+  assert.match(source, /possible_repeat_detected is a strong signal.*not the only activation condition/);
+  assert.match(source, /soft chat angle decision/);
+  assert.doesNotMatch(source, /If possible_repeat_detected is true and you would otherwise send another holding\/wait message/);
+});
