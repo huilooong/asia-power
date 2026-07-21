@@ -80,6 +80,12 @@ export function uncoveredClosingAngles(dealState) {
   // why / when are conversational; no dedicated schema fields from closing-flow
   if (d.last_chat_angle !== "why") uncovered.push("why");
   if (d.last_chat_angle !== "when") uncovered.push("when");
+  // where/how/how_much (port, payment, quantity) are stage-3 per LIVE-RULES
+  // three-stage flow — do not surface until vehicle + part are locked
+  // (stage 1), otherwise the agent gets nudged to ask port/payment/quantity
+  // before it even knows what it's selling.
+  const vehiclePartLocked = Boolean((d.vin || d.frame_no) && d.part_intent);
+  if (!vehiclePartLocked) return uncovered;
   if (!d.destination_port && d.last_chat_angle !== "where") uncovered.push("where");
   const payKnown =
     Boolean(d.payment_notes) ||

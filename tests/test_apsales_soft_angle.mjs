@@ -37,13 +37,26 @@ test("detectPossibleRepeat: single reply → miss", async () => {
   );
 });
 
-test("uncoveredClosingAngles: respects existing port/qty/payment_notes only", async () => {
+test("uncoveredClosingAngles: gates where/how/how_much until vehicle + part locked", async () => {
   const { uncoveredClosingAngles } = await load();
   const empty = uncoveredClosingAngles({});
-  assert.ok(empty.includes("where"));
-  assert.ok(empty.includes("how_much"));
-  assert.ok(empty.includes("how"));
+  // stage 1 (vehicle + part) not locked yet — must not nudge toward stage-3 angles
+  assert.ok(!empty.includes("where"));
+  assert.ok(!empty.includes("how_much"));
+  assert.ok(!empty.includes("how"));
+  assert.ok(empty.includes("why"));
+  assert.ok(empty.includes("when"));
+});
+
+test("uncoveredClosingAngles: respects existing port/qty/payment_notes once locked", async () => {
+  const { uncoveredClosingAngles } = await load();
+  const locked = { vin: "1HGCM82633A004352", part_intent: "engine" };
+  const unmet = uncoveredClosingAngles(locked);
+  assert.ok(unmet.includes("where"));
+  assert.ok(unmet.includes("how_much"));
+  assert.ok(unmet.includes("how"));
   const partial = uncoveredClosingAngles({
+    ...locked,
     destination_port: "Tema",
     quantity: "2 units",
     payment_notes: "T/T",
