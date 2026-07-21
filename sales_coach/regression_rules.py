@@ -57,7 +57,7 @@ REGRESSION_RULES: list[dict[str, Any]] = [
         "rule_id": "claim_shipping_sla",
         "module": "TRUTH_GUARD",
         "severity": "P0",
-        "description": "Guangzhou / N working days without logistics evidence",
+        "description": "Non-standard delivery SLA or Guangzhou node without logistics evidence",
         "match_rule_ids": ["claim_shipping_sla"],
         "synthetic_inbound": "How long to Tema?",
         "synthetic_reply": "We ship from Guangzhou port in 7 working days.",

@@ -9,6 +9,7 @@ import re
 from typing import Any
 
 from sales_coach.modules import MODULES  # noqa: F401 — document dependency
+from sales_core.enquiry_context import has_non_africa_destination
 
 
 # ---------------------------------------------------------------------------
@@ -73,6 +74,34 @@ _ALLOWED_NETWORK_RE = re.compile(
     re.I,
 )
 
+_SHIPPING_SLA_RE = re.compile(
+    r"\b(?:\d+\s*[-–]?\s*\d*\s*working\s*days?|"
+    r"\d+\s*[-–—]\s*\d+\s*days?|"
+    r"guangzhou\s+port|"
+    r"ship(?:ping)?\s+(?:in|within)\s+\d+)\b|"
+    r"\d+\s*[-–—]\s*\d+\s*天",
+    re.I,
+)
+_STANDARD_SEA_FREIGHT_TIME_RE = re.compile(r"45\s*[-–—]\s*60\s*(?:days?|天)", re.I)
+_STANDARD_SEA_FREIGHT_CONTEXT_RE = re.compile(
+    r"(?:\b(?:sea\s*freight|by\s+sea|ship(?:ped|s|ping)?\s+from\s+china|china.{0,40}(?:sea|ship))\b|海运|中国.{0,30}(?:发货|运输|海运))",
+    re.I,
+)
+
+
+def is_standard_africa_sea_freight_statement(reply: str, inbound: str = "") -> bool:
+    """True only for the approved 45–60 day China sea-freight statement family."""
+    text = reply or ""
+    if has_non_africa_destination(inbound):
+        return False
+    if not _STANDARD_SEA_FREIGHT_TIME_RE.search(text):
+        return False
+    if not _STANDARD_SEA_FREIGHT_CONTEXT_RE.search(text):
+        return False
+    remainder = _STANDARD_SEA_FREIGHT_TIME_RE.sub("", text)
+    return not _SHIPPING_SLA_RE.search(remainder)
+
+
 _CLAIM_SPECS: list[tuple[str, re.Pattern[str], str, str]] = [
     (
         "claim_identified_suppliers",
@@ -97,13 +126,7 @@ _CLAIM_SPECS: list[tuple[str, re.Pattern[str], str, str]] = [
     ),
     (
         "claim_shipping_sla",
-        re.compile(
-            r"\b(?:\d+\s*[-–]?\s*\d*\s*working\s*days?|"
-            r"\d+\s*[-–]\s*\d+\s*days?|"
-            r"guangzhou\s+port|"
-            r"ship(?:ping)?\s+(?:in|within)\s+\d+)\b",
-            re.I,
-        ),
+        _SHIPPING_SLA_RE,
         "logistics_quote",
         "Promised shipping SLA / named port without logistics evidence.",
     ),
@@ -132,6 +155,7 @@ def detect_unsupported_claims(
     reply: str,
     *,
     evidence: dict[str, Any] | None = None,
+    inbound: str = "",
 ) -> list[dict[str, Any]]:
     """
     Flag factual claims that lack matching evidence keys.
@@ -147,6 +171,10 @@ def detect_unsupported_claims(
     for rule_id, pattern, need_key, why in _CLAIM_SPECS:
         m = pattern.search(text)
         if not m:
+            continue
+        if rule_id == "claim_shipping_sla" and is_standard_africa_sea_freight_statement(
+            text, inbound
+        ):
             continue
         # Network boilerplate alone is not "identified suppliers"
         if rule_id == "claim_identified_suppliers":
@@ -445,7 +473,7 @@ def run_all_detectors(
     """Run all detectors on one turn. Target = final outbound reply."""
     found: list[dict[str, Any]] = []
     found.extend(detect_internal_leakage(reply))
-    found.extend(detect_unsupported_claims(reply, evidence=evidence))
+    found.extend(detect_unsupported_claims(reply, evidence=evidence, inbound=inbound))
     found.extend(detect_sales_progress(inbound, reply))
     found.extend(detect_conversation_style(inbound, reply))
     for issue in found:

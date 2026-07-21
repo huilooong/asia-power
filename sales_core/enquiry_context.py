@@ -47,6 +47,20 @@ _COUNTRY_RE = re.compile(
     r"中国|china|美国|usa|英国|uk)",
     re.I,
 )
+_NON_AFRICA_DESTINATIONS = frozenset(
+    {
+        "阿联酋", "uae", "迪拜", "dubai", "沙特", "saudi", "卡塔尔", "qatar",
+        "中国", "china", "美国", "usa", "英国", "uk",
+    }
+)
+
+
+def has_non_africa_destination(text: str) -> bool:
+    """Use the canonical country matcher to detect an explicit non-Africa destination."""
+    return any(
+        match.group(1).strip().lower() in _NON_AFRICA_DESTINATIONS
+        for match in _COUNTRY_RE.finditer(text or "")
+    )
 _QUANTITY_RE = re.compile(
     r"(\d+)\s*(?:台|个|套|件|units?|pcs?|pieces?|sets?)|"
     r"(?:数量|qty|quantity)\s*[:：]?\s*(\d+)",

@@ -46,6 +46,48 @@ class DetectorTests(unittest.TestCase):
         )
         self.assertTrue(any(i["rule_id"] == "claim_shipping_sla" for i in bad))
 
+    def test_standard_africa_45_60_day_sea_freight_is_exempt(self) -> None:
+        replies = [
+            "We will check stock with the team. Our items ship from China and usually take 45-60 days by sea. What part are you looking for—engine, gearbox, or half-cut?",
+            "Our products ship from China by sea and usually take 45–60 days. Please provide your vehicle's year and VIN.",
+            "中国海运约45-60天，请提供车架号。",
+        ]
+        for reply in replies:
+            issues = detect_unsupported_claims(
+                reply, inbound="When can you deliver to Ghana?", evidence={}
+            )
+            self.assertFalse(
+                any(i["rule_id"] == "claim_shipping_sla" for i in issues),
+                msg=reply,
+            )
+
+    def test_real_2026_07_18_guangzhou_final_answer_still_blocked(self) -> None:
+        inbound = "[Email] Subject: Verify your email in TikTok MarketingAPI ... USA"
+        reply = (
+            "Typical shipping timeline from our side:\n"
+            "- Ready-stock engines: within 7 working days to Guangzhou port "
+            "after sourcing confirmation\n"
+            "- Custom dismantling: usually an additional 3–7 working days"
+        )
+        issues = detect_unsupported_claims(reply, inbound=inbound, evidence={})
+        self.assertTrue(any(i["rule_id"] == "claim_shipping_sla" for i in issues))
+
+    def test_standard_45_60_is_not_exempt_for_non_africa_destination(self) -> None:
+        issues = detect_unsupported_claims(
+            "Our products ship from China by sea and usually take 45-60 days.",
+            inbound="Please deliver this engine to Dubai, UAE.",
+            evidence={},
+        )
+        self.assertTrue(any(i["rule_id"] == "claim_shipping_sla" for i in issues))
+
+    def test_standard_sentence_cannot_hide_second_nonstandard_sla(self) -> None:
+        issues = detect_unsupported_claims(
+            "China sea freight takes 45-60 days; ready stock reaches Guangzhou port in 7 working days.",
+            inbound="Delivery to Ghana",
+            evidence={},
+        )
+        self.assertTrue(any(i["rule_id"] == "claim_shipping_sla" for i in issues))
+
     def test_price_advance_ok(self) -> None:
         inbound = "Best price?"
         reply = (
