@@ -665,6 +665,16 @@ function deployApsalesOpenClaw() {
     `${ROOT}/deploy/apsales-live-draft/apsales-parse-agent-reply.mjs`,
     `${REMOTE}:/root/.openclaw/extensions/apsales-live-draft/apsales-parse-agent-reply.mjs`,
   );
+  for (const moduleName of [
+    'apsales-price-confirmation-gate.mjs',
+    'apsales-reusable-evidence.mjs',
+    'apsales-live-rules.mjs',
+  ]) {
+    rsync(
+      `${ROOT}/deploy/apsales-live-draft/${moduleName}`,
+      `${REMOTE}:/root/.openclaw/extensions/apsales-live-draft/${moduleName}`,
+    );
+  }
   rsync(
     `${ROOT}/deploy/apsales-live-draft/ghana-staff-handoff.mjs`,
     `${REMOTE}:/root/.openclaw/extensions/apsales-live-draft/ghana-staff-handoff.mjs`,
@@ -735,6 +745,10 @@ function deployApsalesOpenClaw() {
     `${ROOT}/scripts/apsales-media-stt.py`,
     `${REMOTE}:/root/.openclaw/workspace/AsiaPower/scripts/apsales-media-stt.py`,
   );
+  rsync(
+    `${ROOT}/scripts/apsales-classify-customer-intent.py`,
+    `${REMOTE}:/root/.openclaw/workspace/AsiaPower/scripts/apsales-classify-customer-intent.py`,
+  );
   ssh(`
 set -euo pipefail
 BRIDGE_DIR=/root/.openclaw/extensions/apsales-live-draft
@@ -751,6 +765,9 @@ test -s "\$BRIDGE_DIR/apsales-soft-angle.mjs"
 test -s "\$BRIDGE_DIR/apsales-deal-qualify.mjs"
 test -s "\$BRIDGE_DIR/apsales-vin-card.mjs"
 test -s "\$BRIDGE_DIR/apsales-inventory-links.mjs"
+test -s "\$BRIDGE_DIR/apsales-price-confirmation-gate.mjs"
+test -s "\$BRIDGE_DIR/apsales-reusable-evidence.mjs"
+test -s "\$BRIDGE_DIR/apsales-live-rules.mjs"
 CHECK=\$(mktemp /tmp/apsales-bridge-check-XXXXXX.mjs)
 SESSION_CHECK=\$(mktemp /tmp/apsales-session-check-XXXXXX.mjs)
 cp "$NEXT" "$CHECK"
@@ -763,6 +780,9 @@ cp "$SESSION_NEXT" "$SESSION_CHECK"
 /usr/bin/node --check "\$BRIDGE_DIR/apsales-deal-qualify.mjs"
 /usr/bin/node --check "\$BRIDGE_DIR/apsales-vin-card.mjs"
 /usr/bin/node --check "\$BRIDGE_DIR/apsales-inventory-links.mjs"
+/usr/bin/node --check "\$BRIDGE_DIR/apsales-price-confirmation-gate.mjs"
+/usr/bin/node --check "\$BRIDGE_DIR/apsales-reusable-evidence.mjs"
+/usr/bin/node --check "\$BRIDGE_DIR/apsales-live-rules.mjs"
 /usr/bin/node --check "\$BRIDGE_DIR/ghana-staff-handoff.mjs"
 /usr/bin/node --check "\$BRIDGE_DIR/apsales-parse-agent-reply.mjs"
 /usr/bin/node --check /tmp/apsales-bridge-crash-logger.mjs
@@ -770,7 +790,7 @@ rm -f "$CHECK" "$SESSION_CHECK"
 mkdir -p "$BACKUP" /etc/systemd/system/apsales-whatsapp-bridge.service.d
 cp -a "$BRIDGE" "$BACKUP/bridge.mjs"
 if [ -f "$SESSION" ]; then cp -a "$SESSION" "$BACKUP/apsales-whatsapp-session.mjs"; fi
-for f in ghana-staff-handoff.mjs apsales-parse-agent-reply.mjs apsales-internal-staff.mjs apsales-closing-memory.mjs apsales-soft-angle.mjs apsales-deal-qualify.mjs apsales-vin-card.mjs apsales-inventory-links.mjs; do
+for f in ghana-staff-handoff.mjs apsales-parse-agent-reply.mjs apsales-internal-staff.mjs apsales-closing-memory.mjs apsales-soft-angle.mjs apsales-deal-qualify.mjs apsales-vin-card.mjs apsales-inventory-links.mjs apsales-price-confirmation-gate.mjs apsales-reusable-evidence.mjs apsales-live-rules.mjs; do
   if [ -f "\$BRIDGE_DIR/\$f" ]; then cp -a "\$BRIDGE_DIR/\$f" "\$BACKUP/\$f"; fi
 done
 if [ -f /etc/systemd/system/apsales-whatsapp-bridge.service.d/openclaw-sales-agent.conf ]; then

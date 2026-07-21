@@ -140,6 +140,9 @@ export const TARGET_SOURCE_FILES = {
     'deploy/apsales-live-draft/evidence-hook.mjs',
     'deploy/apsales-live-draft/ghana-staff-handoff.mjs',
     'deploy/apsales-live-draft/apsales-parse-agent-reply.mjs',
+    'deploy/apsales-live-draft/apsales-price-confirmation-gate.mjs',
+    'deploy/apsales-live-draft/apsales-reusable-evidence.mjs',
+    'deploy/apsales-live-draft/apsales-live-rules.mjs',
     'deploy/apsales-live-draft/apsales-internal-staff.mjs',
     'deploy/apsales-live-draft/apsales-closing-memory.mjs',
     'deploy/apsales-live-draft/apsales-soft-angle.mjs',
@@ -148,6 +151,7 @@ export const TARGET_SOURCE_FILES = {
     'scripts/apsales-media-vin-ocr.py',
     'scripts/apsales-media-vin-intelligence.py',
     'scripts/apsales-media-stt.py',
+    'scripts/apsales-classify-customer-intent.py',
     'scripts/deploy-production.mjs',
   ],
   finalize: [
