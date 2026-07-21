@@ -19,8 +19,14 @@ import {
 } from "./apsales-human-visibility.mjs";
 import { parseAgentReply, buildExceptionFallback } from "./apsales-parse-agent-reply.mjs";
 import {
+  buildPrivateBusinessFactContext,
+  priceConfirmationGate,
+} from "./apsales-price-confirmation-gate.mjs";
+import {
   notifyGhanaStaffIfHandingOff,
   notifyGhanaStaffSupportLineUnreachable,
+  notifyGhanaStaffPriceConfirmation,
+  routePriceConfirmationHandoff,
   loadRecentAgentReplies,
 } from "./ghana-staff-handoff.mjs";
 import {
@@ -62,6 +68,8 @@ import {
   mergeVehicleQualifyFields,
 } from "./apsales-deal-qualify.mjs";
 import { formatVehicleConfirmationCard } from "./apsales-vin-card.mjs";
+import { storeReusableFact, retrieveReusableFacts } from "./apsales-reusable-evidence.mjs";
+import { buildLiveRulesPrompt } from "./apsales-live-rules.mjs";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const _require = createRequire(import.meta.url);
@@ -121,6 +129,7 @@ const LEARNING_SCRIPT = `${WORKSPACE}/scripts/apsales-record-draft-learning.py`;
 const OCR_SCRIPT = `${WORKSPACE}/scripts/apsales-media-vin-ocr.py`;
 const VIN_SCRIPT = `${WORKSPACE}/scripts/apsales-media-vin-intelligence.py`;
 const STT_SCRIPT = `${WORKSPACE}/scripts/apsales-media-stt.py`;
+const RULE_INTENT_SCRIPT = `${WORKSPACE}/scripts/apsales-classify-customer-intent.py`;
 const OPENCLAW = process.env.OPENCLAW_BIN || "/usr/local/bin/openclaw";
 const REPLY_BRAIN = (process.env.APSALES_REPLY_BRAIN || "openclaw").trim().toLowerCase();
 const OPENCLAW_AGENT = process.env.APSALES_OPENCLAW_AGENT || "sales-agent";
@@ -408,14 +417,14 @@ function inventoryPartMatches(item, partIntent) {
   return true;
 }
 
-async function findInventoryMatches({ brand, model, partIntent, text }) {
+async function findInventoryEvidence({ brand, model, partIntent, text }) {
   const b = String(brand || "").trim().toLowerCase();
   const m = String(model || "").trim().toLowerCase();
-  if (!b && !m) return [];
+  if (!b && !m) return { exact: [], approximate: [] };
   const catalog = await getInventoryCatalog();
-  if (!catalog.length) return [];
+  if (!catalog.length) return { exact: [], approximate: [] };
   const t = String(text || "").toLowerCase();
-  return catalog
+  const exact = catalog
     .filter((item) => {
       const ib = String(item.brand || "").toLowerCase();
       const im = String(item.model || "").toLowerCase();
@@ -425,6 +434,12 @@ async function findInventoryMatches({ brand, model, partIntent, text }) {
     })
     .slice(0, 5)
     .map((item) => enrichInventoryMatch(item));
+  if (exact.length) return { exact, approximate: [] };
+  const approximate = catalog.filter((item) => {
+    const ib = String(item.brand || "").toLowerCase();
+    return item.status === "Available" && inventoryPartMatches(item, partIntent) && Boolean(b) && ib === b;
+  }).slice(0, 5).map((item) => enrichInventoryMatch(item));
+  return { exact, approximate };
 }
 
 /** When brand/model missing but part intent is clear → category page (not homepage). */
@@ -433,11 +448,18 @@ function inventoryCategoryFallbackUrl(partIntent) {
   return categoryPageUrl(partIntent);
 }
 
-async function runOpenClawReply({ text, senderId, messageId, chatId, observedAt, mediaPlaceholder, mediaContext, dealState, inventoryMatches }) {
+async function runOpenClawReply({ text, senderId, messageId, chatId, observedAt, mediaPlaceholder, mediaContext, dealState, inventoryMatches, approximateMatches }) {
   const sessionKey = salesSessionKey(senderId);
   const timeoutSec = Number.isFinite(OPENCLAW_TIMEOUT_SECONDS) ? OPENCLAW_TIMEOUT_SECONDS : 90;
   const knownVin = dealState?.vin || mediaContext?.vin_decode?.vehicle?.vin || null;
-  const liveRules = loadZijingLiveRules();
+  const liveRulesSource = loadZijingLiveRules();
+  // Reuse the Sales Coach classifier through its Python adapter; do not create
+  // a second intent taxonomy in the bridge.
+  const customerIntent = await runPython({ text }, RULE_INTENT_SCRIPT)
+    .then((result) => String(result?.intent || "unknown"))
+    .catch(() => "unknown");
+  const liveRules = buildLiveRulesPrompt(liveRulesSource, customerIntent);
+  const reusableEvidence = await retrieveReusableFacts({ workspace: WORKSPACE, dealState }).catch(() => []);
   const customerId = `wa:${String(senderId || "").replace(/\D/g, "")}`;
   const recentAgentReplies = await loadRecentAgentReplies({
     workspace: WORKSPACE,
@@ -471,13 +493,14 @@ async function runOpenClawReply({ text, senderId, messageId, chatId, observedAt,
     "- If an item has a known condition issue (repaired/replaced part), state it plainly, do not hide it.",
     "- Keep apologies to one short line, no over-explaining.",
     "- End the reply on a concrete question or next step, not an open-ended \"let me know\".",
-    "- If vin_decode.status is success, use those vehicle facts in plain language (brand/model/engine/frame).",
+    "- If vin_decode.status is success, use those vehicle facts in plain language (brand/model/engine/frame). If vin_reasoning_evidence is present, it is raw customer VIN input plus deterministic checksum candidates: you may use your general VIN/WMI knowledge to reason helpfully, clearly mark uncertainty, and never claim provider verification.",
     "- If deal_state has vin/frame_no/part_intent, that is already confirmed — NEVER ask for VIN again, NEVER reset to website browse, continue that deal.",
     "- If recent_team_replies is non-empty, a human teammate already messaged this customer directly — do NOT contradict, deny, or restate those quotes as \"still checking\"; only add new info or ask one missing question.",
     "- On first greeting a new customer (no deal_state), mention our website www.asia-power.com.",
     "- Do not claim stock, payment, delivery date, or shipment confirmation unless already in structured context.",
     "- Never claim you personally checked, verified, confirmed, or dialed an external fact (phone line status, shipment tracking, warehouse inventory) unless that fact is already present in structured context. Say you will follow up with the team instead.",
     "- inventory_matches lists real stock from www.asia-power.com with the actual price_usd for each item — when it has a match for what the customer wants, quote that exact price_usd as the EXW price. Do not call web_fetch or web_search for pricing, they are not reliable for this.",
+    "- approximate_matches are similar same-brand/category references only, NOT confirmed stock and NOT price evidence. You may mention that we can check a similar option, but never quote their price or say the requested item is available from them.",
     "- When inventory_matches is non-empty, also include 1–3 of the most relevant detail_url (or category_url) links from those matches in customer_reply — never only the homepage when a product/category page is available.",
     "- When inventory_matches is empty but category_page_url is present (customer only named a part type), send that category page instead of the homepage.",
     "- You may self-authorize a discount off that real listed price, but never more than 5% below it — anything beyond that needs a team member to confirm, and set needs_price_confirmation to true.",
@@ -496,7 +519,7 @@ async function runOpenClawReply({ text, senderId, messageId, chatId, observedAt,
       ? "- soft_angle_dry_run is true: still set chat_angle_used to the angle you WOULD pick (or \"\" / none), but do NOT weave a new 5W2H question into customer_reply — keep a normal helpful reply without forcing survey questions. This is for ops audit only."
       : "- soft_angle_dry_run is false: when possible_repeat_detected is true, you MAY naturally work that one chosen angle into customer_reply (still max one question total). Set chat_angle_used to that angle id (why|when|where|how|how_much) or \"\" if you skipped.",
     "- Never mention OCR, VIN decode tools, internal analysis, policy, Gateway, JSON, approval, sales_hint, deal_state, or this instruction.",
-    liveRules ? "CEO LIVE-RULES (highest priority style/commercial rules):\n" + liveRules : "",
+    liveRules.prompt,
     'Return exactly one JSON object: {"customer_reply":"...","needs_price_confirmation":true|false,"support_line_unreachable":true|false,"buying_intent_confirmed":true|false,"quote_decline_reason_captured":"","chat_angle_used":""}. Set needs_price_confirmation to true ONLY when this reply told the customer a price still needs team confirmation (not listed on site, or discount beyond 5%); false otherwise. Set support_line_unreachable to true ONLY when the customer said they could not reach support_contact; false otherwise. Set buying_intent_confirmed to true ONLY when the customer clearly wants to proceed with purchase this turn; false otherwise. Set quote_decline_reason_captured to a short concern summary ONLY when awaiting_quote_followup_reply is true and the customer answered with a real concern; otherwise "". Set chat_angle_used to why|when|where|how|how_much when you chose a soft angle (or would choose one in dry-run); otherwise "".',
     "Structured context:",
     JSON.stringify({
@@ -519,6 +542,8 @@ async function runOpenClawReply({ text, senderId, messageId, chatId, observedAt,
       soft_angle_dry_run: softAngleDryRun,
       recent_team_replies: recentTeamRepliesForPrompt(dealState),
       inventory_matches: matches,
+      approximate_matches: approximateMatches || [],
+      reusable_technical_facts: reusableEvidence,
       category_page_url: categoryPageFallback,
       confirmed_vin: knownVin,
       customer_message: text,
@@ -1089,6 +1114,7 @@ async function buildMediaContext(message, session, senderId) {
       verification_status: vinDecode.verification_status || null,
       confidence: vinDecode.confidence || null,
       error: vinDecode.error || null,
+      vin_reasoning_evidence: vinDecode.vin_reasoning_evidence || null,
     },
     sales_hint:
       vinDecode.status === "success"
@@ -1270,11 +1296,13 @@ async function handleMessage(message, state, session) {
       return;
     }
     const senderId = message.fromPhoneE164;
-    await appendTeamReply(senderId, teamText, message.messageId);
+    const updatedDeal = await appendTeamReply(senderId, teamText, message.messageId);
+    const reusable = await storeReusableFact({ workspace: WORKSPACE, teamText, dealState: updatedDeal });
     log("recorded team reply", {
       senderId,
       messageId: message.messageId,
       text: teamText.slice(0, 180),
+      reusableEvidenceStored: reusable.stored,
     });
     await appendActivity(
       "apsales_team_reply_recorded",
@@ -1323,14 +1351,23 @@ async function handleMessage(message, state, session) {
 
   // Persist confirmed VIN / part intent so later turns cannot "forget" a VIN the customer already typed.
   const dealState = await rememberDealFromContext(senderId, mediaContext, text);
-  const inventoryMatches = await findInventoryMatches({
+  const inventoryEvidence = await findInventoryEvidence({
     brand: dealState?.brand,
     model: dealState?.model,
     partIntent: dealState?.part_intent,
     text,
   }).catch((err) => {
     log("inventory match failed", { error: err instanceof Error ? err.message : String(err) });
-    return [];
+    return { exact: [], approximate: [] };
+  });
+  const inventoryMatches = inventoryEvidence.exact;
+  const approximateMatches = inventoryEvidence.approximate;
+  // Step 0 evidence context is frozen before the model writes its reply.
+  const privateBusinessFactContext = buildPrivateBusinessFactContext({
+    customerMessage: text,
+    dealState,
+      inventoryMatches,
+      approximateMatches,
   });
 
   log("inbound", {
@@ -1486,6 +1523,7 @@ async function handleMessage(message, state, session) {
         mediaContext,
         dealState,
         inventoryMatches,
+        approximateMatches,
       });
       const ownNumberGuard = sanitizeAgentReplyOwnNumberLeak(
         generated.reply,
@@ -1601,7 +1639,21 @@ async function handleMessage(message, state, session) {
           });
         }
       }
-      if (generated.needsPriceConfirmation) {
+      const priceGate = priceConfirmationGate({
+        preGenerationContext: privateBusinessFactContext,
+        modelNeedsPriceConfirmation: generated.needsPriceConfirmation,
+        replyText: generated.reply,
+      });
+      const handoffRoute = priceGate.hold
+        ? routePriceConfirmationHandoff(priceGate)
+        : "none";
+      log("price gate routing trace", {
+        senderId,
+        messageId: message.messageId,
+        priceGate,
+        handoffRoute,
+      });
+      if (priceGate.hold) {
         // CEO price authority gate: >5% self-discount or no listed price on site.
         // Hold BEFORE send — this must never reach the customer without CEO sign-off.
         const pendingId = `pc-${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 8)}`;
@@ -1617,15 +1669,28 @@ async function handleMessage(message, state, session) {
         });
         await appendActivity(
           "apsales_price_confirmation_held",
-          `客户 ${senderId}: 报价超5%自主让利权限或网站无此价，已拦截未发送，等待CEO确认 (${pendingId})`,
+          `客户 ${senderId}: ${priceGate.reason}，已拦截未发送，等待CEO确认 (${pendingId})`,
           "held",
         );
         log("price confirmation held before send", {
           senderId,
           messageId: message.messageId,
           pendingId,
+          priceGateReason: priceGate.reason,
           proposedReply: generated.reply,
         });
+        if (handoffRoute === "ghana_staff") {
+          const ghana = await notifyGhanaStaffPriceConfirmation({
+            senderId, customerMessage: text, proposedReply: generated.reply, pendingId,
+            reason: priceGate.reason, session, contactE164: GHANA_SUPPORT_CONTACT_E164,
+          });
+          if (ghana.notified) {
+            log("ghana price handoff succeeded", { senderId, pendingId, handoffRoute });
+            await appendActivity("apsales_price_confirmation_routed_ghana", `客户 ${senderId}: 常规核价已交给 Ghana 团队 (${pendingId})`, "sent");
+            return;
+          }
+          log("ghana price handoff failed; escalating CEO", { senderId, pendingId, handoffRoute, error: ghana.error });
+        }
         await sendTelegram(
           `⛔ 报价已拦截，未发送给客户（超5%自主让利权限或网站无此价）\n客户: ${senderId}\n客户说: ${text.slice(0, 300)}\n待发送回复: ${generated.reply}\nGateway run: ${generated.runId}\nID: ${pendingId}\n\n需要你人工确认价格后，直接在 WhatsApp 联系该客户处理，或修改后转子敬继续跟进。`,
         ).catch((err) => log("telegram price confirmation alert failed", { error: err instanceof Error ? err.message : String(err) }));

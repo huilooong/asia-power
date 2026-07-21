@@ -136,6 +136,31 @@ export async function notifyGhanaStaffIfHandingOff({
   }
 }
 
+/** Route routine price/availability checks to Ghana; unknown/model-only holds stay CEO. */
+export function routePriceConfirmationHandoff({ reason, requestedFacts = [] }) {
+  const facts = new Set(Array.isArray(requestedFacts) ? requestedFacts : []);
+  if (String(reason || "").startsWith("missing_private_business_evidence:") && (facts.has("price") || facts.has("inventory"))) {
+    return "ghana_staff";
+  }
+  return "ceo";
+}
+
+export async function notifyGhanaStaffPriceConfirmation({ senderId, customerMessage, proposedReply, pendingId, reason, session, contactE164 }) {
+  try {
+    if (!session?.sendText || !contactE164) return { notified: false, error: "missing_session_or_contact" };
+    await session.sendText(contactE164, [
+      "Price/inventory confirmation needed",
+      `Customer: ${senderId}`,
+      `Customer message: ${String(customerMessage || "").slice(0, 300)}`,
+      `Held draft: ${String(proposedReply || "").slice(0, 400)}`,
+      `Request ID: ${pendingId} (${reason})`,
+    ].join("\n"));
+    return { notified: true };
+  } catch (err) {
+    return { notified: false, error: String(err?.message || err) };
+  }
+}
+
 /**
  * Separate from address/contact handoff: customer said they could not reach
  * support_contact. Wording must NOT claim the line is broken — signal issues
