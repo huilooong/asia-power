@@ -85,6 +85,14 @@ test("2026-07-21 Evidence replay exposes closing angles without repeat trigger",
 test("exit signal remains ineligible for a soft-angle prompt", async () => {
   const { isSoftAngleExitSignal } = await load();
   assert.equal(isSoftAngleExitSignal("Maybe later, I am busy now"), true);
+  assert.equal(isSoftAngleExitSignal("稍后再说"), true);
+  assert.equal(isSoftAngleExitSignal("Let's talk later"), true);
+  assert.equal(isSoftAngleExitSignal("Wait, not now"), true);
+  assert.equal(
+    isSoftAngleExitSignal("Even wit that I needed a reduction because it's business am doing, but you later came up with night pricd"),
+    false,
+  );
+  assert.equal(isSoftAngleExitSignal("How long is the wait time for shipping"), false);
   assert.equal(isSoftAngleExitSignal("Please quote for two engines"), false);
 });
 

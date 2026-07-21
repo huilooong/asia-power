@@ -18,10 +18,12 @@ const HOLDING_PHRASE_RES = [
 
 export const CHAT_ANGLES = Object.freeze(["why", "when", "where", "how", "how_much", "none"]);
 
-const EXIT_SIGNAL = /(?:\b(?:later|wait|hold\s+on|not\s+now|maybe\s+another\s+time|stop|busy|no\s+thanks?)\b|(?:稍后|等等|先不用|不需要|忙|以后再说)|(?:plus\s+tard|attendez|pas\s+maintenant|non\s+merci))/iu;
+const SHORT_EXIT_SIGNAL = /^(?:(?:maybe\s+)?later(?:[,.!\s]+(?:please|i(?:'m|\s+am)\s+busy(?:\s+now)?))?|(?:please\s+)?wait(?:[,.!\s]+(?:a\s+(?:moment|minute)|not\s+now))?|hold\s+on|not\s+(?:right\s+)?now|maybe\s+another\s+time|stop|i(?:'m|\s+am)\s+busy(?:\s+now)?|no\s+thanks?)[.!]?$/iu;
+const EXPLICIT_EXIT_SIGNAL = /(?:\b(?:let['’]?s|we\s+can|can\s+we)\s+(?:talk|continue|discuss)\s+later\b|\b(?:call|message|contact)\s+me\s+later\b|(?:稍后再说|等会再聊|以后再说|先不用|现在没空|我在忙)|(?:on\s+parle\s+plus\s+tard|pas\s+maintenant|non\s+merci))/iu;
 
 export function isSoftAngleExitSignal(customerMessage) {
-  return EXIT_SIGNAL.test(String(customerMessage || ""));
+  const text = String(customerMessage || "").trim();
+  return Boolean(text && (SHORT_EXIT_SIGNAL.test(text) || EXPLICIT_EXIT_SIGNAL.test(text)));
 }
 
 function normalizeReply(text) {

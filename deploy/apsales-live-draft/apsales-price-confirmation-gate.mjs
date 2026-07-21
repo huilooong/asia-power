@@ -76,7 +76,7 @@ const QUALIFICATION_REQUEST = /(?:\b(?:vin|chassis|frame\s*(?:no|number)?|year|m
 const QUESTION_CUE = /[?？]|\b(?:please\s+(?:send|share|confirm|tell|provide)|can\s+you|could\s+you|i\s+(?:would\s+)?need|what|which|when|do\s+you\s+have|j['’]ai\s+besoin|veuillez|pouvez[- ]vous|quel(?:le)?|envoyez|confirmez)\b|(?:请(?:发|提供|确认|告诉)|麻烦(?:发|提供|确认)|能否|可以(?:发|提供|确认)|请问|需要(?:确认|知道|提供)|具体(?:是|车型|品牌)|哪个(?:品牌|车型))/iu;
 const EMPTY_DEFERRAL = /(?:\b(?:(?:our|the)\s+)?team\b.{0,45}\b(?:check|confirm|verify|get\s+back|reply|respond)\b|\b(?:check|confirm|verify)\b.{0,45}\bwith\s+(?:(?:our|the)\s+)?team\b|(?:团队|同事).{0,20}(?:核|查|确认|回复|答复|稍后)|(?:核|查|确认).{0,20}(?:团队|同事)|(?:l['’]?[eé]quipe|coll[eè]gue).{0,45}(?:v[eé]rifier|confirmer|r[eé]pondre|revenir))/iu;
 const SPECIFIC_PRICE_ASSERTION = /(?:\$\s*\d|\b\d+(?:[.,]\d+)?\s*(?:usd|ghs|ghc|rmb|cny|eur|gbp)\b|\b(?:usd|ghs|ghc|rmb|cny|eur|gbp)\s*\d)/iu;
-const STOCK_ASSERTION = /\b(?:we\s+have|in\s+stock|ready\s+stock|is\s+available|available\s+now|库存有|有现货|有货)\b/iu;
+const STOCK_ASSERTION = /(?:\bwe\s+(?:do\s+)?have\b|\b(?:it|this|that|the\s+(?:item|part|engine|gearbox))\s+(?:is|'s)\s+(?:in\s+stock|available(?:\s+now)?)\b|(?:^|[.!]\s*)(?:in\s+stock|ready\s+stock|available\s+now)\b|库存有|有现货|有货)/iu;
 const NON_AFRICA_DESTINATION = /\b(?:uae|dubai|saudi(?:\s+arabia)?|qatar|china|usa|united\s+states|uk|united\s+kingdom)\b|(?:阿联酋|迪拜|沙特|卡塔尔|中国|美国|英国)/iu;
 const STANDARD_SEA_FREIGHT_TIME = /45\s*[-–—]\s*60\s*(?:days?|天)/iu;
 const STANDARD_SEA_FREIGHT_CONTEXT = /(?:\b(?:sea\s*freight|by\s+sea|ship(?:ped|s|ping)?\s+from\s+china|china.{0,40}(?:sea|ship(?:ped|s|ping)?))\b|海运|中国.{0,30}(?:发货|运输|海运))/iu;
@@ -93,6 +93,9 @@ export function isStandardAfricaSeaFreightStatement(replyText, customerMessage =
 export function isPureQualificationQuestion(replyText, customerMessage = "") {
   const text = String(replyText || "").trim();
   if (!text || !QUALIFICATION_REQUEST.test(text) || !QUESTION_CUE.test(text)) return false;
+  // A stock claim followed by a real question is still a mixed assertion,
+  // exactly like "900 USD, how many do you need?".
+  if (STOCK_ASSERTION.test(text)) return false;
   // A concrete amount or lead-time is still an assertion even if followed by a question.
   const commitmentText = isStandardAfricaSeaFreightStatement(text, customerMessage)
     ? text.replace(STANDARD_SEA_FREIGHT_TIME, "")

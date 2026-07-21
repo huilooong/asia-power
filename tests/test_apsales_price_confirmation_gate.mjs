@@ -49,6 +49,20 @@ test("specific price assertion without evidence is held for rewrite, not human h
   assert.equal(routePriceConfirmationHandoff(out), "none");
 });
 
+test("stock assertion cannot hide behind a qualification question", () => {
+  const out = gate("Yes we have it in stock, how many do you need?");
+  assert.equal(out.asksForQualification, false);
+  assert.equal(out.replyHasStockAssertion, true);
+  assert.equal(out.hold, true);
+  assert.equal(out.reason, "unsupported_private_business_assertion:inventory");
+});
+
+test("stock question is not misclassified as a stock assertion", () => {
+  const out = gate("Do you have it in stock?");
+  assert.equal(out.replyHasStockAssertion, false);
+  assert.equal(out.hold, false);
+});
+
 test("honest team-confirmation deferral is sent normally", () => {
   const out = gate("Our team is checking the price and will get back to you.", true);
   assert.equal(out.hold, false);
