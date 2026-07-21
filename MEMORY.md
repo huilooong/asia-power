@@ -32,6 +32,12 @@
 | **子龙** | 赵云 · `apinventory` | **企业微信（供应商群）** | 供应商助理：收图上传、库存/VIN、**持续学习拆车厂专业知识**、认车型发动机、给经营建议 |
 | **孔明** | 诸葛亮 · `apcoo` | 全渠道路由 | 战略、审批、跨部门、子敬 failover |
 
+## SEO / 网站改动默认走 Cursor（CEO 2026-07-21）
+
+- **SEO、公开站页面、GSC 技术修复、站点质量收尾** → 默认交给 **Cursor** 执行。
+- **不要默认丢给 Codex**，除非龙哥明确说 Cursor 在忙 / 指定 Codex。
+- 计划源例：`~/.claude/plans/seo-real-data-triage-and-quality-first.md`（真实 GSC 28 天数据驱动：先修 bug、救活已曝光页，暂停按国家批量扩页）。
+
 - 企微应用对外名仍是 **AsiaPower 库存 Agent**（腾讯后台已建），**实际主责是子龙**；销售类问题可路由给子敬，但子敬的主阵地不是企微。
 - 子敬已学 WhatsApp 聊天记录（524 会话 / 12724 消息，2026-06-29 导入）；数据问 `python -m truth.verified_sales_intelligence "问题"`。
 - **客服 SOP（必读）**：`docs/customer-service-sop.md` — 含标准开场话术、四段回复格式、车型知识、报价规范、客户记录要求。每次上岗前必须遵守此文档，不得重复龙哥已纠正过的错误。

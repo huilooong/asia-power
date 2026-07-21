@@ -112,7 +112,12 @@ const halfCutPrerenderPath = [
   path.join(__dirname, 'lib', 'half-cut-prerender.js'),
   path.join(__dirname, '..', 'server', 'lib', 'half-cut-prerender.js'),
 ].find((candidate) => fs.existsSync(candidate));
-const { renderHalfCutDetailPage, sendPrerenderedHtml } = require(
+const {
+  renderHalfCutDetailPage,
+  renderMissingCatalogDetailPage,
+  sendPrerenderedHtml,
+  sendMissingDetailHtml,
+} = require(
   halfCutPrerenderPath || path.join(__dirname, '..', 'server', 'lib', 'half-cut-prerender.js')
 );
 const halfCutSeoPath = [
@@ -2003,6 +2008,10 @@ const server = http.createServer(async (req, res) => {
             head: req.method === 'HEAD',
           });
         }
+        // Sold / removed / unknown slug: do not fall through to bare detail shell (200, no canonical).
+        const goneHtml = renderMissingCatalogDetailPage({ siteUrl, detailPath: p, slug });
+        siteAnalytics.recordPageView(req, `${p}${url.search || ''}`);
+        return sendMissingDetailHtml(res, goneHtml, { head: req.method === 'HEAD' });
       } catch (err) {
         console.error('[prerender]', err);
       }

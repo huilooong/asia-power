@@ -83,6 +83,47 @@ function injectHalfCutPrerender(html, item, siteUrl, detailPath = '/half-cuts/de
   return out;
 }
 
+function catalogHomeForDetailPath(detailPath = '/half-cuts/detail.html') {
+  const p = String(detailPath || '/half-cuts/detail.html');
+  if (p.startsWith('/trucks/')) return '/trucks/';
+  if (p.startsWith('/machinery/')) return '/machinery/';
+  return '/half-cuts/';
+}
+
+/**
+ * Missing / sold-out slug: never serve the bare detail shell as 200 without canonical.
+ * Return 410 Gone + canonical to the catalog list + noindex so Google can drop stale URLs.
+ */
+function renderMissingCatalogDetailPage({ siteUrl, detailPath = '/half-cuts/detail.html', slug = '' }) {
+  const home = catalogHomeForDetailPath(detailPath);
+  const base = String(siteUrl || 'https://asia-power.com').replace(/\/$/, '');
+  const canonical = `${base}${home}`;
+  const safeSlug = escapeAttr(String(slug || '').slice(0, 160));
+  const title = 'Listing unavailable | AsiaPower';
+  const description = 'This inventory listing is no longer available. Browse current stock on AsiaPower.';
+  return `<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>${escapeAttr(title)}</title>
+  <meta name="description" content="${escapeAttr(description)}">
+  <meta name="robots" content="noindex, follow">
+  <link rel="canonical" href="${escapeAttr(canonical)}">
+  <meta property="og:title" content="${escapeAttr(title)}">
+  <meta property="og:description" content="${escapeAttr(description)}">
+  <meta property="og:url" content="${escapeAttr(canonical)}">
+</head>
+<body data-page="catalog-detail-gone" data-missing-slug="${safeSlug}">
+  <main style="max-width:640px;margin:48px auto;padding:0 16px;font-family:system-ui,sans-serif">
+    <h1>Listing unavailable</h1>
+    <p>This stock item is no longer listed (sold, reserved, or removed).</p>
+    <p><a href="${escapeAttr(home)}">Browse current inventory</a> · <a href="/contact.html">Contact us</a></p>
+  </main>
+</body>
+</html>`;
+}
+
 function renderHalfCutDetailPage({ publicDir, slug, catalog, siteUrl, detailPath = '/half-cuts/detail.html' }) {
   const resolved = findApprovedItem(catalog, slug);
   if (!resolved?.item) return null;
@@ -117,9 +158,23 @@ function sendPrerenderedHtml(res, html, redirectSlug = null, detailPath = '/half
   res.end(html);
 }
 
+function sendMissingDetailHtml(res, html, options = {}) {
+  res.writeHead(410, {
+    'Content-Type': 'text/html; charset=utf-8',
+    'Cache-Control': 'public, max-age=300',
+    'X-Content-Type-Options': 'nosniff',
+    'X-AsiaPower-Prerender': 'catalog-gone',
+  });
+  if (options.head) return res.end();
+  res.end(html);
+}
+
 module.exports = {
   findApprovedItem,
+  catalogHomeForDetailPath,
   injectHalfCutPrerender,
+  renderMissingCatalogDetailPage,
   renderHalfCutDetailPage,
   sendPrerenderedHtml,
+  sendMissingDetailHtml,
 };
