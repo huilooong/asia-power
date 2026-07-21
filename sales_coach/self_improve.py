@@ -3,66 +3,79 @@
 from __future__ import annotations
 
 import hashlib
-import json
 from datetime import date, datetime, timezone
 from pathlib import Path
 from typing import Any
 
 from sales_coach import config
 from sales_coach.detectors import classify_customer_intent, run_all_detectors
+from sales_coach.evidence import turns_for_day
 from sales_coach.modules import LESSON_STATUSES
 from sales_coach.regression_rules import REGRESSION_RULES, match_issues_to_regression
 from sales_coach.sources import load_json, parse_day, save_json
 
 
-def sandbox_decisions_path(root: Path | None = None) -> Path:
-    root = root or config.workspace_root()
-    # Prefer local mirror; fall back to sibling inventory-site
-    local = root / "data" / "whatsapp_cloud" / "sandbox" / "decisions.ndjson"
-    if local.is_file():
-        return local
-    inv = config.inventory_site_root()
-    if inv:
-        cand = inv / "data" / "whatsapp_cloud" / "sandbox" / "decisions.ndjson"
-        if cand.is_file():
-            return cand
-    return local
+def evidence_turn_as_detector_turn(row: dict[str, Any]) -> dict[str, Any]:
+    """Adapt canonical Evidence schema to the detector's compact turn schema."""
+    customer = row.get("customer") or {}
+    reply_obj = row.get("reply") or {}
+    decision = row.get("decision") or {}
+    commercial = row.get("commercial_decision") or {}
+    truth_guard = row.get("truth_guard") or {}
+    flags = decision.get("flags") or {}
+    evidence_items = commercial.get("evidence") or []
+    evidence_types = {
+        str(item.get("type") or "")
+        for item in evidence_items
+        if isinstance(item, dict)
+    }
+    inventory_matches = commercial.get("inventory_matches") or []
+    inbound = str(customer.get("message") or "")
+    reply = str(reply_obj.get("text") or row.get("outbound_reply") or "")
+    evidence = {
+        "supplier_query": bool(
+            evidence_types & {"supplier_query", "supplier_result", "supplier_match"}
+        ),
+        "inventory_record": bool(
+            inventory_matches
+            or evidence_types & {"inventory_record", "inventory_match", "stock_record"}
+        ),
+        "approved_quote": bool(
+            flags.get("quote_now")
+            or evidence_types & {"approved_quote", "confirmed_quote", "team_quote"}
+        ),
+        "vin_decode": bool(
+            flags.get("vin_enriched")
+            or evidence_types & {"vin_decode", "verified_vin", "verified_vehicle"}
+        ),
+        "logistics_quote": bool(
+            evidence_types & {"logistics_quote", "shipping_quote", "confirmed_delivery"}
+        ),
+        "policy_approval": bool(
+            evidence_types & {"policy_approval", "ceo_approval"}
+            or (row.get("ceo") or {}).get("modified")
+        ),
+    }
+    return {
+        "source": "evidence_whatsapp",
+        "at": row.get("at"),
+        "inbound": inbound,
+        "reply": reply,
+        "intent": customer.get("intent") or classify_customer_intent(inbound),
+        "evidence": evidence,
+        "evidence_id": row.get("evidence_id"),
+        "customer_id": customer.get("customer_id"),
+        "wamid_out": reply_obj.get("outbound_wamid"),
+        "reason_code": truth_guard.get("reason_code") or decision.get("reason_code"),
+        "risk_blocked": truth_guard.get("risk_blocked"),
+    }
 
 
-def load_sandbox_turns_for_day(day: date, root: Path | None = None) -> list[dict[str, Any]]:
-    path = sandbox_decisions_path(root)
-    if not path.is_file():
-        return []
-    turns: list[dict[str, Any]] = []
-    for line in path.read_text(encoding="utf-8", errors="replace").splitlines():
-        line = line.strip()
-        if not line:
-            continue
-        try:
-            row = json.loads(line)
-        except json.JSONDecodeError:
-            continue
-        at = str(row.get("at") or "")
-        if not at.startswith(day.isoformat()):
-            continue
-        inbound = str(row.get("inbound_excerpt") or "")
-        reply = str(row.get("reply_excerpt") or "")
-        turns.append(
-            {
-                "source": "whatsapp_sandbox",
-                "at": at,
-                "inbound": inbound,
-                "reply": reply,
-                "wa_suffix": row.get("wa_suffix"),
-                "wamid_out": row.get("wamid_out"),
-                "reason_code": row.get("reason_code"),
-                "risk_blocked": row.get("risk_blocked"),
-                "intent": classify_customer_intent(inbound),
-                # Sandbox currently has no supplier/inventory evidence attached
-                "evidence": {},
-            }
-        )
-    return turns
+def load_evidence_turns_for_day(day: date, root: Path | None = None) -> list[dict[str, Any]]:
+    return [
+        evidence_turn_as_detector_turn(row)
+        for row in turns_for_day(day.isoformat(), root=root)
+    ]
 
 
 def drafts_as_turns(drafts: list[dict[str, Any]]) -> list[dict[str, Any]]:
@@ -370,10 +383,7 @@ def run_self_improve(
     root = root or config.workspace_root()
     d = parse_day(day)
 
-    from sales_coach.sources import load_drafts_for_day
-
-    turns = load_sandbox_turns_for_day(d, root)
-    turns += drafts_as_turns(load_drafts_for_day(d, root))
+    turns = load_evidence_turns_for_day(d, root)
     if extra_turns:
         turns.extend(extra_turns)
 

@@ -341,6 +341,29 @@ async function sendCustomerText(session, senderId, text) {
   return result;
 }
 
+async function clearPendingPriceConfirmationIfMatches(senderId, pendingId) {
+  const expected = String(pendingId || "").trim();
+  if (!expected) return { cleared: false, reason: "missing_pending_id" };
+  const prev = (await loadDealState(senderId)) || {};
+  const current = prev.pending_price_confirmation;
+  if (!current || String(current.id || "") !== expected) {
+    return {
+      cleared: false,
+      reason: current ? "pending_id_changed" : "already_clear",
+      currentPendingId: current?.id || null,
+    };
+  }
+  await saveDealState(senderId, {
+    pending_price_confirmation: null,
+    last_resolved_price_confirmation: {
+      id: expected,
+      resolution: "released_after_reply_aware_gate_replay",
+      resolved_at: new Date().toISOString(),
+    },
+  });
+  return { cleared: true, reason: "matched" };
+}
+
 async function rememberDealFromContext(senderId, mediaContext, text) {
   const vehicle = mediaContext?.vin_decode?.vehicle || {};
   const decodeOk = mediaContext?.vin_decode?.status === "success";
@@ -669,7 +692,14 @@ async function processOutboundQueue(session) {
       log("sending approved whatsapp draft", { draftId: job.draft_id, jobId: job.job_id, target });
       const result = await sendCustomerText(session, target, text);
       const sentAt = new Date().toISOString();
+      const pendingClear = job.clear_pending_price_confirmation_id
+        ? await clearPendingPriceConfirmationIfMatches(
+          target,
+          job.clear_pending_price_confirmation_id,
+        )
+        : null;
       const sentJob = { ...job, status: "sent", sent_at: sentAt, result };
+      if (pendingClear) sentJob.pending_clear = pendingClear;
       await moveJsonFile(jobPath, OUTBOX_SENT_DIR, sentJob);
       await updateDraftAfterSend(job, {
         status: "sent",
@@ -682,6 +712,20 @@ async function processOutboundQueue(session) {
         log("draft learning sent record failed", { draftId: job.draft_id, error: err instanceof Error ? err.message : String(err) });
       });
       await appendActivity("apsales_whatsapp_sent", `客户 ${target}: 已发送批准草稿 draft=${job.draft_id || ""}`, "sent");
+      if (job.source === "silent_price_hold_replay") {
+        log("silent price hold replay sent", {
+          target,
+          pendingId: job.clear_pending_price_confirmation_id || "",
+          text,
+          whatsappMessageId: result?.messageId || "",
+          pendingClear,
+        });
+        await appendActivity(
+          "apsales_silent_price_hold_replay_sent",
+          `客户 ${target}: 原文补发 pending=${job.clear_pending_price_confirmation_id || ""} text=${text}`,
+          "sent",
+        );
+      }
       await sendTelegram(`✅ 子敬已发送 WhatsApp 草稿\n客户: ${job.customer_name || target}\n草稿: ${job.draft_id}\nWhatsApp messageId: ${result?.messageId || "(unknown)"}`);
     } catch (err) {
       const error = err instanceof Error ? err.message : String(err);

@@ -70,7 +70,7 @@ export function buildPrivateBusinessFactContext({ customerMessage, dealState, in
  * the customer, whether the model invented a number or merely says to wait.
  */
 const QUALIFICATION_REQUEST = /(?:\b(?:vin|chassis|frame\s*(?:no|number)?|year|model|make|brand|engine\s*(?:code|number|size)?|gearbox|transmission|part|photo|picture|quantity|how\s+many)\b|(?:车架号|底盘号|年份|年款|车型|品牌|发动机(?:代码|型号|号码)?|变速箱|零件|配件|照片|图片|数量)|(?:num[eé]ro\s+de\s+ch[aâ]ssis|ann[eé]e|mod[eè]le|marque|code\s+moteur|moteur|bo[iî]te\s+de\s+vitesses|photo|quantit[eé]))/iu;
-const QUESTION_CUE = /[?？]|\b(?:please\s+(?:send|share|confirm|tell)|can\s+you|could\s+you|what|which|when|do\s+you\s+have|j['’]ai\s+besoin|veuillez|pouvez[- ]vous|quel(?:le)?|envoyez|confirmez|请(?:发|提供|确认|告诉)|麻烦(?:发|提供|确认)|能否|可以(?:发|提供|确认)|请问)\b/iu;
+const QUESTION_CUE = /[?？]|\b(?:please\s+(?:send|share|confirm|tell|provide)|can\s+you|could\s+you|i\s+(?:would\s+)?need|what|which|when|do\s+you\s+have|j['’]ai\s+besoin|veuillez|pouvez[- ]vous|quel(?:le)?|envoyez|confirmez)\b|(?:请(?:发|提供|确认|告诉)|麻烦(?:发|提供|确认)|能否|可以(?:发|提供|确认)|请问|需要(?:确认|知道|提供)|具体(?:是|车型|品牌)|哪个(?:品牌|车型))/iu;
 const EMPTY_DEFERRAL = /(?:\b(?:(?:our|the)\s+)?team\b.{0,45}\b(?:check|confirm|verify|get\s+back|reply|respond)\b|\b(?:check|confirm|verify)\b.{0,45}\bwith\s+(?:(?:our|the)\s+)?team\b|(?:团队|同事).{0,20}(?:核|查|确认|回复|答复|稍后)|(?:核|查|确认).{0,20}(?:团队|同事)|(?:l['’]?[eé]quipe|coll[eè]gue).{0,45}(?:v[eé]rifier|confirmer|r[eé]pondre|revenir))/iu;
 
 export function isPureQualificationQuestion(replyText) {

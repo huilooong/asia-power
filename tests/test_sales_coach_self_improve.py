@@ -3,6 +3,10 @@
 from __future__ import annotations
 
 import unittest
+import json
+import tempfile
+from datetime import date
+from pathlib import Path
 
 from sales_coach.detectors import (
     detect_conversation_style,
@@ -13,6 +17,7 @@ from sales_coach.detectors import (
     run_all_detectors,
 )
 from sales_coach.regression_rules import verify_regression_rules
+from sales_coach.self_improve import load_evidence_turns_for_day, run_self_improve
 
 
 class DetectorTests(unittest.TestCase):
@@ -100,6 +105,47 @@ class DetectorTests(unittest.TestCase):
         results = verify_regression_rules()
         failed = [r for r in results if not r["ok"]]
         self.assertEqual(failed, [], msg=str(failed))
+
+    def test_self_improve_reads_and_adapts_canonical_evidence(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            evidence_dir = root / "data" / "evidence" / "whatsapp"
+            evidence_dir.mkdir(parents=True)
+            rows = [
+                {
+                    "type": "evidence_turn",
+                    "evidence_id": "ev-real-1",
+                    "at": "2026-07-20T10:00:00Z",
+                    "customer": {"message": "Best price?", "customer_id": "wa:2331"},
+                    "outbound_reply": "We cannot quote.",
+                    "truth_guard": {"reason_code": "openclaw_reply", "risk_blocked": False},
+                },
+                {
+                    "type": "evidence_turn",
+                    "evidence_id": "ev-real-2",
+                    "at": "2026-07-20T11:00:00Z",
+                    "customer": {"message": "Need engine", "customer_id": "wa:2332"},
+                    "reply": {"text": "Yes, ready stock available now.", "sent": True},
+                    "commercial_decision": {"evidence": []},
+                },
+            ]
+            (evidence_dir / "turns.ndjson").write_text(
+                "\n".join(json.dumps(row) for row in rows) + "\n",
+                encoding="utf-8",
+            )
+
+            turns = load_evidence_turns_for_day(date(2026, 7, 20), root)
+            self.assertEqual(len(turns), 2)
+            self.assertEqual(turns[0]["inbound"], "Best price?")
+            self.assertEqual(turns[0]["reply"], "We cannot quote.")
+            self.assertEqual(turns[0]["source"], "evidence_whatsapp")
+            self.assertEqual(turns[0]["evidence_id"], "ev-real-1")
+
+            result = run_self_improve("2026-07-20", root=root, write=False)
+            self.assertEqual(result["turns"], 2)
+            rules = {issue["rule_id"] for issue in result["issues"]}
+            self.assertIn("price_no_advance", rules)
+            self.assertIn("claim_ready_stock", rules)
 
 
 if __name__ == "__main__":

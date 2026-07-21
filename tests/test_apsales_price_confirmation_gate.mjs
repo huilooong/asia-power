@@ -34,6 +34,8 @@ test("price request without evidence: VIN question is released even when model f
 test("qualification detection covers Chinese and conversational French", () => {
   assert.equal(isPureQualificationQuestion("请发一下车架号、年份和发动机代码？"), true);
   assert.equal(isPureQualificationQuestion("Pouvez-vous envoyer le numéro de châssis et l'année ?"), true);
+  assert.equal(isPureQualificationQuestion("我们需要确认具体是哪个品牌或车型，这样才能匹配V8发动机。"), true);
+  assert.equal(isPureQualificationQuestion("For a gearbox, I would need your VIN or the year and engine code."), true);
 });
 
 test("specific price assertion without evidence is held and routed to Ghana", () => {
