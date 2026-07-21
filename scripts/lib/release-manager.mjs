@@ -136,6 +136,7 @@ export const TARGET_SOURCE_FILES = {
   ],
   'apsales-openclaw': [
     'deploy/apsales-live-draft/bridge.mjs',
+    'deploy/apsales-live-draft/apsales-human-visibility.mjs',
     'deploy/apsales-live-draft/apsales-whatsapp-session.mjs',
     'deploy/apsales-live-draft/evidence-hook.mjs',
     'deploy/apsales-live-draft/ghana-staff-handoff.mjs',
@@ -270,6 +271,7 @@ export const TARGET_REMOTE_PATHS = {
   ],
   'apsales-openclaw': [
     '/root/.openclaw/extensions/apsales-live-draft/bridge.mjs',
+    '/root/.openclaw/extensions/apsales-live-draft/apsales-human-visibility.mjs',
     '/root/.openclaw/extensions/apsales-live-draft/apsales-whatsapp-session.mjs',
     '/root/.openclaw/extensions/apsales-live-draft/evidence-hook.mjs',
     '/root/.openclaw/extensions/apsales-live-draft/ghana-staff-handoff.mjs',
