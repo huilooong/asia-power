@@ -49,6 +49,20 @@ test("parseAgentReply: buying_intent_confirmed true", async () => {
   assert.equal(out.quoteDeclineReasonCaptured, "");
 });
 
+test("parseAgentReply: closing handoff requires its own explicit flag", async () => {
+  const { parseAgentReply } = await load();
+  const out = parseAgentReply(JSON.stringify({
+    customer_reply: "You're ready to proceed; our Ghana colleague will arrange collection.",
+    needs_price_confirmation: false,
+    buying_intent_confirmed: true,
+    needs_address_or_pickup_handoff: true,
+    needs_human_judgment: false,
+  }));
+  assert.equal(out.buyingIntentConfirmed, true);
+  assert.equal(out.needsAddressOrPickupHandoff, true);
+  assert.equal(out.needsHumanJudgment, false);
+});
+
 test("parseAgentReply: quote_decline_reason_captured string", async () => {
   const { parseAgentReply } = await load();
   const withReason = parseAgentReply(

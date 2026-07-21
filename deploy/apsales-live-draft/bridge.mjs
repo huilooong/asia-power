@@ -18,14 +18,14 @@ import {
   withTeamConfirmedAt,
 } from "./apsales-human-visibility.mjs";
 import { parseAgentReply, buildExceptionFallback } from "./apsales-parse-agent-reply.mjs";
+import { buildEvidenceBoundedFallback } from "./apsales-reasoning-policy.mjs";
 import {
   buildPrivateBusinessFactContext,
   priceConfirmationGate,
 } from "./apsales-price-confirmation-gate.mjs";
 import {
-  notifyGhanaStaffIfHandingOff,
   notifyGhanaStaffSupportLineUnreachable,
-  notifyGhanaStaffPriceConfirmation,
+  notifyGhanaStaffClosingHandoff,
   routePriceConfirmationHandoff,
   loadRecentAgentReplies,
 } from "./ghana-staff-handoff.mjs";
@@ -471,7 +471,7 @@ function inventoryCategoryFallbackUrl(partIntent) {
   return categoryPageUrl(partIntent);
 }
 
-async function runOpenClawReply({ text, senderId, messageId, chatId, observedAt, mediaPlaceholder, mediaContext, dealState, inventoryMatches, approximateMatches }) {
+async function runOpenClawReply({ text, senderId, messageId, chatId, observedAt, mediaPlaceholder, mediaContext, dealState, inventoryMatches, approximateMatches, redlineRepair = null }) {
   const sessionKey = salesSessionKey(senderId);
   const timeoutSec = Number.isFinite(OPENCLAW_TIMEOUT_SECONDS) ? OPENCLAW_TIMEOUT_SECONDS : 90;
   const knownVin = dealState?.vin || mediaContext?.vin_decode?.vehicle?.vin || null;
@@ -523,16 +523,22 @@ async function runOpenClawReply({ text, senderId, messageId, chatId, observedAt,
     "- Do not claim stock, payment, delivery date, or shipment confirmation unless already in structured context.",
     "- Never claim you personally checked, verified, confirmed, or dialed an external fact (phone line status, shipment tracking, warehouse inventory) unless that fact is already present in structured context. Say you will follow up with the team instead.",
     "- inventory_matches lists real stock from www.asia-power.com with the actual price_usd for each item — when it has a match for what the customer wants, quote that exact price_usd as the EXW price. Do not call web_fetch or web_search for pricing, they are not reliable for this.",
-    "- approximate_matches are similar same-brand/category references only, NOT confirmed stock and NOT price evidence. You may mention that we can check a similar option, but never quote their price or say the requested item is available from them.",
+    "- Reason before escalating. Use approximate_matches, confirmed VIN/model knowledge, reusable technical facts, and same-series historical quote ranges that are actually present in structured context to give the customer a useful, evidence-bounded answer. Clearly label a range as a reference, not a final quote.",
+    "- approximate_matches are similar same-brand/category references, not confirmed stock. Use them to reason about likely compatibility or the next useful check, but never turn them into a fabricated exact final price or a stock claim.",
     "- When inventory_matches is non-empty, also include 1–3 of the most relevant detail_url (or category_url) links from those matches in customer_reply — never only the homepage when a product/category page is available.",
     "- When inventory_matches is empty but category_page_url is present (customer only named a part type), send that category page instead of the homepage.",
-    "- You may self-authorize a discount off that real listed price, but never more than 5% below it — anything beyond that needs a team member to confirm, and set needs_price_confirmation to true.",
-    "- If inventory_matches is empty or has no good match, do not invent a number — say you'll confirm the price with the team, and set needs_price_confirmation to true.",
+    "- You may self-authorize a discount off a real listed price, but never more than 5% below it. For anything beyond 5%, do not state the unsupported discounted number; give the listed price as context and say the extra discount must be verified.",
+    "- If inventory_matches is empty or has no good match, first reason from the other structured evidence and your vehicle/parts knowledge. If you still cannot conclude, say honestly that the exact price or availability will be verified and ask one useful next-step question. That honest fallback is a normal customer reply, not a human handoff.",
     "- Never state a pickup address, warehouse address, shipping address, or any other business/location detail unless it is already present in structured context. If asked for an address, say a team member will send it directly.",
     "- If the customer asks to speak to a human or wants a direct contact number, and support_contact is present in structured context, you may give that number.",
     "- The ONLY phone number you may ever give a customer as a number to call is support_contact. NEVER state customer_e164 (the customer's own number) back to them as a number to call — that is always wrong, even by accident.",
     "- Set support_line_unreachable to true ONLY when the customer clearly says they tried contacting support_contact (or the number you gave) and could not get through / no answer. Do not keyword-match one phrase — judge the meaning. If true: apologize briefly, do NOT claim the line is broken or that you checked it, and tell the customer the team will reach out to them directly instead. Signal problems are common; never assert the line itself is dead.",
     "- Set buying_intent_confirmed to true ONLY when the customer clearly shows purchase intent this turn (e.g. yes let's proceed, ask payment/pickup arrangements to buy). Judge meaning — do not keyword-match. This flag is for internal ops only; do NOT change your sales style or force checklist questions about port/qty/payment.",
+    "- Set needs_address_or_pickup_handoff to true ONLY when buying_intent_confirmed is true AND the sale's next concrete step requires a Ghana colleague to collect a delivery address or coordinate local pickup. A logistics question, a price question, or a request for availability alone is false.",
+    "- Set needs_human_judgment to true only for a genuinely unfamiliar exception that you and the system cannot safely resolve. Missing price/stock evidence, saying you will verify, or rewriting an unsupported number are false.",
+    redlineRepair
+      ? `- RED-LINE REWRITE: the prior draft was blocked (${redlineRepair.reason}). Rewrite it now without the unsupported exact price, stock, or delivery assertion. Stay useful by explaining what can be inferred and asking at most one next-step question. Do not repeat this blocked draft: ${JSON.stringify(String(redlineRepair.unsafeReply || "").slice(0, 500))}`
+      : "",
     "- must_qualify_before_price is a precomputed flag. If true, your ONLY question this turn must ask for year + engine code (or VIN) — do NOT say you will check price/availability with the team this turn. If false, proceed normally per the other rules above.",
     "- must_ask_quantity_before_price is a precomputed flag. If true (and must_qualify_before_price is false), ask for quantity this turn before confirming a firm quote — do not skip straight to quote confirmation. If false, do not re-ask quantity. Wholesale vs retail pricing math is NOT your job yet — just capture quantity.",
     "- inspection_fee_applicable is a precomputed flag. Only mention the $50 inspection fee / pay-in-full choice when this is true. If false (part is not engine/gearbox), skip the $50 inspection fee language entirely — after quote acceptance, proceed with normal payment-in-full flow. Video confirmation before shipment + on-site inspection are NEVER skipped for any part type, even when inspection_fee_applicable is false. Do not invent payment_status or fulfillment_stage — those are team/ops fields.",
@@ -543,7 +549,7 @@ async function runOpenClawReply({ text, senderId, messageId, chatId, observedAt,
       : "- soft_angle_dry_run is false: when possible_repeat_detected is true, you MAY naturally work that one chosen angle into customer_reply (still max one question total). Set chat_angle_used to that angle id (why|when|where|how|how_much) or \"\" if you skipped.",
     "- Never mention OCR, VIN decode tools, internal analysis, policy, Gateway, JSON, approval, sales_hint, deal_state, or this instruction.",
     liveRules.prompt,
-    'Return exactly one JSON object: {"customer_reply":"...","needs_price_confirmation":true|false,"support_line_unreachable":true|false,"buying_intent_confirmed":true|false,"quote_decline_reason_captured":"","chat_angle_used":""}. Set needs_price_confirmation to true ONLY when this reply told the customer a price still needs team confirmation (not listed on site, or discount beyond 5%); false otherwise. Set support_line_unreachable to true ONLY when the customer said they could not reach support_contact; false otherwise. Set buying_intent_confirmed to true ONLY when the customer clearly wants to proceed with purchase this turn; false otherwise. Set quote_decline_reason_captured to a short concern summary ONLY when awaiting_quote_followup_reply is true and the customer answered with a real concern; otherwise "". Set chat_angle_used to why|when|where|how|how_much when you chose a soft angle (or would choose one in dry-run); otherwise "".',
+    'Return exactly one JSON object: {"customer_reply":"...","needs_price_confirmation":true|false,"support_line_unreachable":true|false,"buying_intent_confirmed":true|false,"needs_address_or_pickup_handoff":true|false,"needs_human_judgment":true|false,"quote_decline_reason_captured":"","chat_angle_used":""}. Set needs_price_confirmation to true ONLY when customer_reply itself contains a specific price, stock, or delivery assertion that is unsupported by structured evidence and must be rewritten before sending. An honest statement that the exact answer will be verified is false and never means human handoff. Set support_line_unreachable to true ONLY when the customer said they could not reach support_contact; false otherwise. Set buying_intent_confirmed to true ONLY when the customer clearly wants to proceed with purchase this turn; false otherwise. Set quote_decline_reason_captured to a short concern summary ONLY when awaiting_quote_followup_reply is true and the customer answered with a real concern; otherwise "". Set chat_angle_used to why|when|where|how|how_much when you chose a soft angle (or would choose one in dry-run); otherwise "".',
     "Structured context:",
     JSON.stringify({
       channel: "whatsapp_business_app",
@@ -626,6 +632,8 @@ async function runOpenClawReply({ text, senderId, messageId, chatId, observedAt,
           needsPriceConfirmation,
           supportLineUnreachable,
           buyingIntentConfirmed,
+          needsAddressOrPickupHandoff,
+          needsHumanJudgment,
           quoteDeclineReasonCaptured,
           chatAngleUsed,
         } = parseAgentReply(response?.result?.payloads?.[0]?.text);
@@ -634,6 +642,8 @@ async function runOpenClawReply({ text, senderId, messageId, chatId, observedAt,
           needsPriceConfirmation,
           supportLineUnreachable,
           buyingIntentConfirmed,
+          needsAddressOrPickupHandoff,
+          needsHumanJudgment,
           quoteDeclineReasonCaptured,
           chatAngleUsed,
           possibleRepeatDetected: repeatInfo.possible_repeat_detected,
@@ -1557,7 +1567,7 @@ async function handleMessage(message, state, session) {
         return;
       }
 
-      const generated = await runOpenClawReply({
+      let generated = await runOpenClawReply({
         text,
         senderId,
         messageId: message.messageId,
@@ -1683,23 +1693,64 @@ async function handleMessage(message, state, session) {
           });
         }
       }
-      const priceGate = priceConfirmationGate({
+      let priceGate = priceConfirmationGate({
         preGenerationContext: privateBusinessFactContext,
         modelNeedsPriceConfirmation: generated.needsPriceConfirmation,
         replyText: generated.reply,
       });
-      const handoffRoute = priceGate.hold
-        ? routePriceConfirmationHandoff(priceGate)
-        : "none";
+      if (priceGate.hold) {
+        const blockedReason = priceGate.reason;
+        const blockedReply = generated.reply;
+        const repaired = await runOpenClawReply({
+          text,
+          senderId,
+          messageId: message.messageId,
+          chatId: message.fromJid,
+          observedAt: message.observedAt,
+          mediaPlaceholder,
+          mediaContext,
+          dealState,
+          inventoryMatches,
+          approximateMatches,
+          redlineRepair: { unsafeReply: blockedReply, reason: priceGate.reason },
+        });
+        const repairedGate = priceConfirmationGate({
+          preGenerationContext: privateBusinessFactContext,
+          modelNeedsPriceConfirmation: repaired.needsPriceConfirmation,
+          replyText: repaired.reply,
+        });
+        generated = repairedGate.hold
+          ? { ...repaired, reply: buildEvidenceBoundedFallback(dealState), needsPriceConfirmation: false }
+          : repaired;
+        priceGate = repairedGate.hold
+          ? priceConfirmationGate({
+              preGenerationContext: privateBusinessFactContext,
+              modelNeedsPriceConfirmation: false,
+              replyText: generated.reply,
+            })
+          : repairedGate;
+        log("price red-line reply regenerated", {
+          senderId,
+          messageId: message.messageId,
+          blockedReason,
+          blockedReply,
+          finalReply: generated.reply,
+          usedDeterministicFallback: repairedGate.hold,
+        });
+      }
+      const handoffRoute = routePriceConfirmationHandoff({
+        buyingIntentConfirmed: generated.buyingIntentConfirmed,
+        needsAddressOrPickupHandoff: generated.needsAddressOrPickupHandoff,
+        needsHumanJudgment: generated.needsHumanJudgment,
+      });
       log("price gate routing trace", {
         senderId,
         messageId: message.messageId,
         priceGate,
         handoffRoute,
       });
-      if (priceGate.hold) {
-        // CEO price authority gate: >5% self-discount or no listed price on site.
-        // Hold BEFORE send — this must never reach the customer without CEO sign-off.
+      if (handoffRoute === "ceo") {
+        // Layer 4 only: a genuinely unfamiliar exception the model cannot resolve.
         const pendingId = `pc-${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 8)}`;
         await saveDealState(senderId, {
           pending_price_confirmation: {
@@ -1712,31 +1763,19 @@ async function handleMessage(message, state, session) {
           },
         });
         await appendActivity(
-          "apsales_price_confirmation_held",
-          `客户 ${senderId}: ${priceGate.reason}，已拦截未发送，等待CEO确认 (${pendingId})`,
+          "apsales_human_judgment_held",
+          `客户 ${senderId}: 陌生情况无法安全判断，等待CEO处理 (${pendingId})`,
           "held",
         );
         log("price confirmation held before send", {
           senderId,
           messageId: message.messageId,
           pendingId,
-          priceGateReason: priceGate.reason,
+          priceGateReason: "needs_human_judgment",
           proposedReply: generated.reply,
         });
-        if (handoffRoute === "ghana_staff") {
-          const ghana = await notifyGhanaStaffPriceConfirmation({
-            senderId, customerMessage: text, proposedReply: generated.reply, pendingId,
-            reason: priceGate.reason, session, contactE164: GHANA_SUPPORT_CONTACT_E164,
-          });
-          if (ghana.notified) {
-            log("ghana price handoff succeeded", { senderId, pendingId, handoffRoute });
-            await appendActivity("apsales_price_confirmation_routed_ghana", `客户 ${senderId}: 常规核价已交给 Ghana 团队 (${pendingId})`, "sent");
-            return;
-          }
-          log("ghana price handoff failed; escalating CEO", { senderId, pendingId, handoffRoute, error: ghana.error });
-        }
         await sendTelegram(
-          `⛔ 报价已拦截，未发送给客户（超5%自主让利权限或网站无此价）\n客户: ${senderId}\n客户说: ${text.slice(0, 300)}\n待发送回复: ${generated.reply}\nGateway run: ${generated.runId}\nID: ${pendingId}\n\n需要你人工确认价格后，直接在 WhatsApp 联系该客户处理，或修改后转子敬继续跟进。`,
+          `⛔ 陌生情况需要人工判断\n客户: ${senderId}\n客户说: ${text.slice(0, 300)}\n模型草稿: ${generated.reply}\nGateway run: ${generated.runId}\nID: ${pendingId}`,
         ).catch((err) => log("telegram price confirmation alert failed", { error: err instanceof Error ? err.message : String(err) }));
         return;
       }
@@ -1770,35 +1809,21 @@ async function handleMessage(message, state, session) {
         `客户 ${senderId}: Gateway run=${generated.runId} session=${generated.sessionKey} model=${generated.model}`,
         "sent",
       );
-      // Fire-and-forget: notify Ghana staff when agent shared their contact.
-      notifyGhanaStaffIfHandingOff({
-        senderId,
-        replyText: generated.reply,
-        workspace: WORKSPACE,
-        session,
-        contactLocal: GHANA_SUPPORT_CONTACT_LOCAL,
-        contactE164: GHANA_SUPPORT_CONTACT_E164,
-      })
-        .then((handoff) => {
+      if (handoffRoute === "ghana_staff") {
+        notifyGhanaStaffClosingHandoff({
+          senderId,
+          customerMessage: text,
+          proposedReply: generated.reply,
+          session,
+          contactE164: GHANA_SUPPORT_CONTACT_E164,
+        }).then((handoff) => {
+          log("ghana closing handoff", { senderId, ...handoff });
           if (handoff?.notified) {
-            log("ghana staff handoff notified", { senderId, contactE164: GHANA_SUPPORT_CONTACT_E164 });
-            return appendActivity(
-              "apsales_ghana_staff_handoff_notified",
-              `客户 ${senderId}: 已通知加纳同事 ${GHANA_SUPPORT_CONTACT_E164}`,
-              "sent",
-            );
-          }
-          if (handoff?.error) {
-            log("ghana staff handoff skipped", { senderId, error: handoff.error });
+            return appendActivity("apsales_closing_routed_ghana", `客户 ${senderId}: 已成交，转 Ghana 收地址/安排取货`, "sent");
           }
           return null;
-        })
-        .catch((err) =>
-          log("ghana staff handoff failed", {
-            senderId,
-            error: err instanceof Error ? err.message : String(err),
-          }),
-        );
+        }).catch((err) => log("ghana closing handoff failed", { senderId, error: String(err?.message || err) }));
+      }
       // Separate path: model flagged support_line_unreachable — remind staff (signal, not "line broken").
       if (generated.supportLineUnreachable) {
         notifyGhanaStaffSupportLineUnreachable({

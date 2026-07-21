@@ -136,13 +136,20 @@ export async function notifyGhanaStaffIfHandingOff({
   }
 }
 
-/** Route routine price/availability checks to Ghana; unknown/model-only holds stay CEO. */
-export function routePriceConfirmationHandoff({ reason, requestedFacts = [] }) {
-  const facts = new Set(Array.isArray(requestedFacts) ? requestedFacts : []);
-  if (String(reason || "").startsWith("missing_private_business_evidence:") && (facts.has("price") || facts.has("inventory"))) {
+/**
+ * Human handoff is a closing-stage decision, not a missing-evidence reaction.
+ * Price/inventory gaps and a red-line rewrite are explicitly insufficient.
+ */
+export function routePriceConfirmationHandoff({
+  buyingIntentConfirmed = false,
+  needsAddressOrPickupHandoff = false,
+  needsHumanJudgment = false,
+} = {}) {
+  if (needsHumanJudgment === true) return "ceo";
+  if (buyingIntentConfirmed === true && needsAddressOrPickupHandoff === true) {
     return "ghana_staff";
   }
-  return "ceo";
+  return "none";
 }
 
 export async function notifyGhanaStaffPriceConfirmation({ senderId, customerMessage, proposedReply, pendingId, reason, session, contactE164 }) {
@@ -154,6 +161,27 @@ export async function notifyGhanaStaffPriceConfirmation({ senderId, customerMess
       `Customer message: ${String(customerMessage || "").slice(0, 300)}`,
       `Held draft: ${String(proposedReply || "").slice(0, 400)}`,
       `Request ID: ${pendingId} (${reason})`,
+    ].join("\n"));
+    return { notified: true };
+  } catch (err) {
+    return { notified: false, error: String(err?.message || err) };
+  }
+}
+
+export async function notifyGhanaStaffClosingHandoff({
+  senderId,
+  customerMessage,
+  proposedReply,
+  session,
+  contactE164,
+}) {
+  try {
+    if (!session?.sendText || !contactE164) return { notified: false, error: "missing_session_or_contact" };
+    await session.sendText(contactE164, [
+      "Customer is ready to buy — address/pickup coordination needed",
+      `Customer: ${senderId}`,
+      `Customer message: ${String(customerMessage || "").slice(0, 300)}`,
+      `Sales reply: ${String(proposedReply || "").slice(0, 400)}`,
     ].join("\n"));
     return { notified: true };
   } catch (err) {

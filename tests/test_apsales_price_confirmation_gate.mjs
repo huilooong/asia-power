@@ -1,7 +1,9 @@
 import test from "node:test";
 import assert from "node:assert/strict";
+import fs from "node:fs";
 
 import {
+  buildPrivateBusinessFactContext,
   isStandardAfricaSeaFreightStatement,
   isPureQualificationQuestion,
   priceConfirmationGate,
@@ -39,31 +41,54 @@ test("qualification detection covers Chinese and conversational French", () => {
   assert.equal(isPureQualificationQuestion("For a gearbox, I would need your VIN or the year and engine code."), true);
 });
 
-test("specific price assertion without evidence is held and routed to Ghana", () => {
+test("specific price assertion without evidence is held for rewrite, not human handoff", () => {
   const out = gate("The price is 900 USD and delivery takes 7 days.");
   assert.equal(out.hold, true);
-  assert.match(out.reason, /^missing_private_business_evidence:/);
+  assert.match(out.reason, /^unsupported_private_business_assertion:/);
   assert.equal(out.replyHasForbiddenCommitment, true);
-  assert.equal(routePriceConfirmationHandoff(out), "ghana_staff");
+  assert.equal(routePriceConfirmationHandoff(out), "none");
 });
 
-test("empty team-confirmation deferral remains held and routed to Ghana", () => {
+test("honest team-confirmation deferral is sent normally", () => {
   const out = gate("Our team is checking the price and will get back to you.", true);
-  assert.equal(out.hold, true);
+  assert.equal(out.hold, false);
   assert.equal(out.replyIsEmptyDeferral, true);
-  assert.match(out.reason, /^missing_private_business_evidence:/);
-  assert.equal(routePriceConfirmationHandoff(out), "ghana_staff");
+  assert.equal(routePriceConfirmationHandoff(out), "none");
 });
 
-test("model-only hold with no private-business request stays on CEO route", () => {
+test("legacy model price flag alone does not hold or route", () => {
   const out = priceConfirmationGate({
     preGenerationContext: { requestedFacts: [], evidence: {} },
     modelNeedsPriceConfirmation: true,
     replyText: "I need a team member to review this unusual case.",
   });
-  assert.equal(out.hold, true);
-  assert.equal(out.reason, "model_needs_price_confirmation");
-  assert.equal(routePriceConfirmationHandoff(out), "ceo");
+  assert.equal(out.hold, false);
+  assert.equal(routePriceConfirmationHandoff(out), "none");
+});
+
+test("only confirmed buying intent plus address/pickup need routes Ghana", () => {
+  assert.equal(routePriceConfirmationHandoff({ buyingIntentConfirmed: true, needsAddressOrPickupHandoff: true }), "ghana_staff");
+  assert.equal(routePriceConfirmationHandoff({ buyingIntentConfirmed: false, needsAddressOrPickupHandoff: true }), "none");
+  assert.equal(routePriceConfirmationHandoff({ buyingIntentConfirmed: true, needsAddressOrPickupHandoff: false }), "none");
+  assert.equal(routePriceConfirmationHandoff({ needsHumanJudgment: true }), "ceo");
+});
+
+test("2026-07-21 Kia Rio production turns replay without Ghana handoff", () => {
+  const cases = JSON.parse(fs.readFileSync(new URL("./fixtures/apsales-step0-real-replay-2026-07-21.json", import.meta.url), "utf8"));
+  for (const row of cases) {
+    const context = buildPrivateBusinessFactContext({
+      customerMessage: row.customer_message,
+      dealState: row.deal_state,
+      inventoryMatches: [],
+    });
+    const out = priceConfirmationGate({
+      preGenerationContext: context,
+      modelNeedsPriceConfirmation: row.model_needs_price_confirmation,
+      replyText: row.proposed_reply,
+    });
+    assert.equal(out.hold, row.expected_hold, row.id);
+    assert.equal(routePriceConfirmationHandoff({ buyingIntentConfirmed: false, needsAddressOrPickupHandoff: false }), row.expected_route, row.id);
+  }
 });
 
 test("question containing the word quote is still released when it only asks for VIN", () => {
@@ -114,7 +139,7 @@ test("2026-07-18 Guangzhou/7-working-day final answer remains held", () => {
     replyText,
   });
   assert.equal(out.hold, true);
-  assert.match(out.reason, /^missing_private_business_evidence:delivery/);
+  assert.match(out.reason, /^unsupported_private_business_assertion:delivery/);
 });
 
 test("45-60 day standard phrase remains held when customer states Dubai", () => {

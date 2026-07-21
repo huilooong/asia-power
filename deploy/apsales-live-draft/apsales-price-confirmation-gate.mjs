@@ -43,8 +43,11 @@ export function classifyPrivateBusinessFactRequest(customerMessage, dealState = 
 export function buildPrivateBusinessEvidence({ inventoryMatches, dealState = {} }) {
   const hasInventoryMatch = Array.isArray(inventoryMatches) && inventoryMatches.length > 0;
   const hasConfirmedQuote =
-    String(dealState.confirmation_status || "") === "team_quoted" &&
-    Boolean(dealState.team_confirmed_at);
+    (String(dealState.confirmation_status || "") === "team_quoted" &&
+      Boolean(dealState.team_confirmed_at)) ||
+    (Array.isArray(dealState.team_replies) && dealState.team_replies.some((row) =>
+      /(?:\$\s*\d|\b\d+(?:[.,]\d+)?\s*(?:usd|ghs|ghc|rmb|cny|eur|gbp)\b)/iu.test(String(row?.text || "")),
+    ));
   const hasConfirmedDelivery = Boolean(
     dealState.delivery_quote_confirmed_at ||
     dealState.shipping_quote_confirmed_at ||
@@ -65,17 +68,18 @@ export function buildPrivateBusinessFactContext({ customerMessage, dealState, in
 /**
  * Determine the pre-send hold from independent safety signals.
  *
- * The model flag is an unconditional handoff request: it must never be
- * weakened by request classification or evidence. Separately, a private
- * business request without Layer 2 evidence is held before its reply reaches
- * the customer, whether the model invented a number or merely says to wait.
+ * Missing Layer 2 evidence is not itself a hold or handoff. Only an unsupported
+ * concrete assertion is blocked for one automatic rewrite. The model flag is
+ * diagnostic and shares that narrow meaning; it never routes a human by itself.
  */
 const QUALIFICATION_REQUEST = /(?:\b(?:vin|chassis|frame\s*(?:no|number)?|year|model|make|brand|engine\s*(?:code|number|size)?|gearbox|transmission|part|photo|picture|quantity|how\s+many)\b|(?:车架号|底盘号|年份|年款|车型|品牌|发动机(?:代码|型号|号码)?|变速箱|零件|配件|照片|图片|数量)|(?:num[eé]ro\s+de\s+ch[aâ]ssis|ann[eé]e|mod[eè]le|marque|code\s+moteur|moteur|bo[iî]te\s+de\s+vitesses|photo|quantit[eé]))/iu;
 const QUESTION_CUE = /[?？]|\b(?:please\s+(?:send|share|confirm|tell|provide)|can\s+you|could\s+you|i\s+(?:would\s+)?need|what|which|when|do\s+you\s+have|j['’]ai\s+besoin|veuillez|pouvez[- ]vous|quel(?:le)?|envoyez|confirmez)\b|(?:请(?:发|提供|确认|告诉)|麻烦(?:发|提供|确认)|能否|可以(?:发|提供|确认)|请问|需要(?:确认|知道|提供)|具体(?:是|车型|品牌)|哪个(?:品牌|车型))/iu;
 const EMPTY_DEFERRAL = /(?:\b(?:(?:our|the)\s+)?team\b.{0,45}\b(?:check|confirm|verify|get\s+back|reply|respond)\b|\b(?:check|confirm|verify)\b.{0,45}\bwith\s+(?:(?:our|the)\s+)?team\b|(?:团队|同事).{0,20}(?:核|查|确认|回复|答复|稍后)|(?:核|查|确认).{0,20}(?:团队|同事)|(?:l['’]?[eé]quipe|coll[eè]gue).{0,45}(?:v[eé]rifier|confirmer|r[eé]pondre|revenir))/iu;
+const SPECIFIC_PRICE_ASSERTION = /(?:\$\s*\d|\b\d+(?:[.,]\d+)?\s*(?:usd|ghs|ghc|rmb|cny|eur|gbp)\b|\b(?:usd|ghs|ghc|rmb|cny|eur|gbp)\s*\d)/iu;
+const STOCK_ASSERTION = /\b(?:we\s+have|in\s+stock|ready\s+stock|is\s+available|available\s+now|库存有|有现货|有货)\b/iu;
 const NON_AFRICA_DESTINATION = /\b(?:uae|dubai|saudi(?:\s+arabia)?|qatar|china|usa|united\s+states|uk|united\s+kingdom)\b|(?:阿联酋|迪拜|沙特|卡塔尔|中国|美国|英国)/iu;
 const STANDARD_SEA_FREIGHT_TIME = /45\s*[-–—]\s*60\s*(?:days?|天)/iu;
-const STANDARD_SEA_FREIGHT_CONTEXT = /(?:\b(?:sea\s*freight|by\s+sea|ship(?:ped|s|ping)?\s+from\s+china|china.{0,40}(?:sea|ship))\b|海运|中国.{0,30}(?:发货|运输|海运))/iu;
+const STANDARD_SEA_FREIGHT_CONTEXT = /(?:\b(?:sea\s*freight|by\s+sea|ship(?:ped|s|ping)?\s+from\s+china|china.{0,40}(?:sea|ship(?:ped|s|ping)?))\b|海运|中国.{0,30}(?:发货|运输|海运))/iu;
 const ANY_NON_STANDARD_DELIVERY = /(?:\b\d+\s*[-–]?\s*\d*\s*working\s*days?\b|\b\d+\s*[-–—]\s*\d+\s*days?\b|\bguangzhou\s+port\b|\bship(?:ping)?\s+(?:in|within)\s+\d+\b|\d+\s*[-–—]\s*\d+\s*天)/iu;
 
 export function isStandardAfricaSeaFreightStatement(replyText, customerMessage = "") {
@@ -109,45 +113,27 @@ export function priceConfirmationGate({ preGenerationContext, modelNeedsPriceCon
   const asksForQualification = isPureQualificationQuestion(replyText, customerMessage);
   const replyHasForbiddenCommitment = containsForbiddenCustomerCommitment(replyText);
   const replyIsEmptyDeferral = EMPTY_DEFERRAL.test(String(replyText || ""));
+  const replyHasSpecificPriceAssertion = SPECIFIC_PRICE_ASSERTION.test(String(replyText || ""));
+  const replyHasStockAssertion = STOCK_ASSERTION.test(String(replyText || ""));
   const replyHasNonStandardDeliveryCommitment = !standardDeliveryExempt &&
     ANY_NON_STANDARD_DELIVERY.test(String(replyText || ""));
 
   const evidence = preGenerationContext?.evidence || {};
-  const missingEvidence = requestedFacts.filter((fact) => {
-    if (fact === "delivery") {
-      return !standardDeliveryExempt && !evidence.hasConfirmedDelivery;
-    }
-    // A verified inventory match or a human-confirmed quote is real evidence
-    // for price and availability. Model inference is never evidence here.
-    return !(evidence.hasInventoryMatch || evidence.hasConfirmedQuote);
-  });
-  if (
-    missingEvidence.length &&
-    (replyHasForbiddenCommitment || replyHasNonStandardDeliveryCommitment || replyIsEmptyDeferral) &&
-    !asksForQualification
-  ) {
+  const unsupportedFacts = [];
+  if (replyHasSpecificPriceAssertion && !evidence.hasInventoryMatch && !evidence.hasConfirmedQuote) unsupportedFacts.push("price");
+  if (replyHasStockAssertion && !evidence.hasInventoryMatch && !evidence.hasConfirmedQuote) unsupportedFacts.push("inventory");
+  if (replyHasNonStandardDeliveryCommitment && !evidence.hasConfirmedDelivery) unsupportedFacts.push("delivery");
+  if (unsupportedFacts.length && !asksForQualification) {
     return {
       hold: true,
-      reason: `missing_private_business_evidence:${missingEvidence.join(",")}`,
+      reason: `unsupported_private_business_assertion:${[...new Set(unsupportedFacts)].join(",")}`,
       requestedFacts,
       modelNeedsPriceConfirmation: false,
       asksForQualification,
       replyHasForbiddenCommitment,
       replyIsEmptyDeferral,
-      replyHasNonStandardDeliveryCommitment,
-      standardDeliveryExempt,
-    };
-  }
-
-  if (modelNeedsPriceConfirmation === true && !asksForQualification) {
-    return {
-      hold: true,
-      reason: "model_needs_price_confirmation",
-      requestedFacts,
-      modelNeedsPriceConfirmation: true,
-      asksForQualification,
-      replyHasForbiddenCommitment,
-      replyIsEmptyDeferral,
+      replyHasSpecificPriceAssertion,
+      replyHasStockAssertion,
       replyHasNonStandardDeliveryCommitment,
       standardDeliveryExempt,
     };
@@ -161,6 +147,8 @@ export function priceConfirmationGate({ preGenerationContext, modelNeedsPriceCon
     asksForQualification,
     replyHasForbiddenCommitment,
     replyIsEmptyDeferral,
+    replyHasSpecificPriceAssertion,
+    replyHasStockAssertion,
     replyHasNonStandardDeliveryCommitment,
     standardDeliveryExempt,
   };

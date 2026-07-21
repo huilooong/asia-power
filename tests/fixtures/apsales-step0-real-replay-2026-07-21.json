@@ -1,0 +1,35 @@
+[
+  {
+    "id": "kia-0634-vin-honest-check",
+    "customer": "+233244489144",
+    "at": "2026-07-21T06:34:04.488Z",
+    "customer_message": "Vin number 241286308482",
+    "proposed_reply": "Thanks for the VIN. I'll check with the team for the pricing and availability of the Kia Rio side mirrors and dashboard parts for you.",
+    "model_needs_price_confirmation": false,
+    "deal_state": {"brand":"KIA","model":"RIO","year":"2008","part_intent":"parts"},
+    "expected_hold": false,
+    "expected_route": "none"
+  },
+  {
+    "id": "kia-0804-human-quote-already-present",
+    "customer": "+233244489144",
+    "at": "2026-07-21T08:04:15.608Z",
+    "customer_message": "What does it come with with the gearbox and what",
+    "proposed_reply": "Your gearbox is 16000 GHS. I am confirming with the team what exactly is included with it for your KIA Rio.",
+    "model_needs_price_confirmation": false,
+    "deal_state": {"brand":"KIA","model":"RIO","year":"2008","part_intent":"gearbox","team_replies":[{"at":"2026-07-21T07:41:10.449Z","text":"16000ghc"}]},
+    "expected_hold": false,
+    "expected_route": "none"
+  },
+  {
+    "id": "kia-0816-doorstep-logistics-question",
+    "customer": "+233244489144",
+    "at": "2026-07-21T08:16:04.944Z",
+    "customer_message": "Is it to my door step",
+    "proposed_reply": "The 16000 GHS price for the manual transmission gearbox is EXW China. Shipping to your doorstep takes about 45-60 days.",
+    "model_needs_price_confirmation": false,
+    "deal_state": {"brand":"KIA","model":"RIO","year":"2008","part_intent":"gearbox","team_replies":[{"at":"2026-07-21T07:41:10.449Z","text":"16000ghc"}]},
+    "expected_hold": false,
+    "expected_route": "none"
+  }
+]
