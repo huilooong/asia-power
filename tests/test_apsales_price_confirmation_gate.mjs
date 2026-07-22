@@ -28,14 +28,15 @@ test("historical corpus records the audited legacy reply-regex baseline", async 
   const cases = await loadHistory();
   assert.equal(cases.length, 17, "16 independent cases plus the 16b repeated customer turn");
   const legacyCaughtCases = new Set(cases.filter((c) => c.legacy_reply_regex === "CAUGHT").map((c) => c.case_id));
-  assert.equal(legacyCaughtCases.size, 8, "audited legacy reply regex result: 8/16 cases");
-  console.log("historical replay baseline: legacy reply-regex 8/16 independent cases caught (17 messages retained as provenance)");
+  assert.equal(legacyCaughtCases.size, 8, "audited legacy reply-regex result: 8/16 cases");
 });
 
-test("Step 0: all real price-handoff cases are held from request plus evidence", async () => {
+test("P0: explicit price/delivery asks still hold without Layer-2 evidence", async () => {
   const { buildPrivateBusinessFactContext, priceConfirmationGate } = await loadGate();
   const cases = await loadHistory();
-  for (const sample of cases) {
+  // Case 7 is a part listing without an explicit price ask — must NOT auto-hold.
+  const priceLike = cases.filter((c) => c.case_id !== "7");
+  for (const sample of priceLike) {
     const result = priceConfirmationGate({
       preGenerationContext: context(
         buildPrivateBusinessFactContext,
@@ -46,7 +47,103 @@ test("Step 0: all real price-handoff cases are held from request plus evidence",
     });
     assert.equal(result.hold, true, `${sample.evidence_id} should hold; got ${result.reason}`);
   }
-  console.log("historical replay: legacy reply-regex 8/16 independent cases; request-and-evidence gate 16/16 cases, 17/17 messages held");
+  const case7 = cases.find((c) => c.case_id === "7");
+  const case7Result = priceConfirmationGate({
+    preGenerationContext: context(
+      buildPrivateBusinessFactContext,
+      case7.customer_message,
+      case7.deal_state,
+    ),
+    modelNeedsPriceConfirmation: false,
+  });
+  assert.equal(case7Result.hold, false, "part listing without price ask must not silent-hold");
+});
+
+test("P0: locked part+vehicle alone does not invent inventory request", async () => {
+  const { classifyPrivateBusinessFactRequest, priceConfirmationGate, buildPrivateBusinessFactContext } =
+    await loadGate();
+  const deal = {
+    part_intent: "engine",
+    brand: "AUDI",
+    model: "A4",
+    year: "2005",
+    vin: "WAUZZZ8E25A123456",
+  };
+  assert.deepEqual(classifyPrivateBusinessFactRequest("Yes. This is it.", deal), []);
+  assert.deepEqual(
+    classifyPrivateBusinessFactRequest("Can you share the engine code still?", deal),
+    [],
+  );
+  const held = priceConfirmationGate({
+    preGenerationContext: buildPrivateBusinessFactContext({
+      customerMessage: "Yes. This is it.",
+      dealState: deal,
+      inventoryMatches: [],
+    }),
+    modelNeedsPriceConfirmation: false,
+  });
+  assert.equal(held.hold, false);
+});
+
+test("P0: How much still holds until team_quoted or inventory match", async () => {
+  const { buildPrivateBusinessFactContext, priceConfirmationGate } = await loadGate();
+  const deal = {
+    part_intent: "engine",
+    brand: "AUDI",
+    model: "A4",
+    year: "2005",
+  };
+  const open = priceConfirmationGate({
+    preGenerationContext: buildPrivateBusinessFactContext({
+      customerMessage: "How much",
+      dealState: deal,
+      inventoryMatches: [],
+    }),
+    modelNeedsPriceConfirmation: false,
+  });
+  assert.equal(open.hold, true);
+
+  const quoted = priceConfirmationGate({
+    preGenerationContext: buildPrivateBusinessFactContext({
+      customerMessage: "How much",
+      dealState: {
+        ...deal,
+        confirmation_status: "team_quoted",
+        team_confirmed_at: "2026-07-22T09:02:00.816Z",
+      },
+      inventoryMatches: [],
+    }),
+    modelNeedsPriceConfirmation: false,
+  });
+  assert.equal(quoted.hold, false);
+});
+
+test("P0: import/Ghana ask uses delivery class; team ETA unlocks", async () => {
+  const { buildPrivateBusinessFactContext, priceConfirmationGate } = await loadGate();
+  const deal = { part_intent: "engine", brand: "AUDI", model: "A4", year: "2005" };
+  const open = priceConfirmationGate({
+    preGenerationContext: buildPrivateBusinessFactContext({
+      customerMessage: "Is it in Ghana or it will now be imported",
+      dealState: deal,
+      inventoryMatches: [],
+    }),
+    modelNeedsPriceConfirmation: false,
+  });
+  assert.equal(open.hold, true);
+  assert.match(open.reason, /delivery/);
+
+  const withTeam = priceConfirmationGate({
+    preGenerationContext: buildPrivateBusinessFactContext({
+      customerMessage: "Is it in Ghana or it will now be imported",
+      dealState: {
+        ...deal,
+        team_replies: [{ text: "Need to import from China", at: "2026-07-22T09:41:37Z" }],
+      },
+      inventoryMatches: [],
+    }),
+    modelNeedsPriceConfirmation: false,
+  });
+  assert.equal(withTeam.hold, false);
 });
 
 test("Step 0: model confirmation flag independently holds a non-numeric reply", async () => {
@@ -58,14 +155,10 @@ test("Step 0: model confirmation flag independently holds a non-numeric reply", 
   );
   const withoutModelFlag = priceConfirmationGate({
     preGenerationContext,
-    // This non-numeric waiting reply is deliberately not an input to the
-    // request-and-evidence gate. The model flag must decide independently.
-    replyText: "I will ask the team and come back to you.",
     modelNeedsPriceConfirmation: false,
   });
   const result = priceConfirmationGate({
     preGenerationContext,
-    replyText: "I will ask the team and come back to you.",
     modelNeedsPriceConfirmation: true,
   });
   assert.equal(withoutModelFlag.hold, false);

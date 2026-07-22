@@ -111,7 +111,7 @@ test("parseAgentReply: bare object buried in prose", async () => {
   assert.match(out.reply, /1280 covers engine/i);
 });
 
-test("parseAgentReply: no JSON still throws openclaw_reply_not_json with rawText", async () => {
+test("parseAgentReply: refuse messages still throw openclaw_reply_not_json with rawText", async () => {
   const { parseAgentReply } = await load();
   let caught;
   try {
@@ -122,6 +122,16 @@ test("parseAgentReply: no JSON still throws openclaw_reply_not_json with rawText
   assert.ok(caught);
   assert.equal(caught.message, "openclaw_reply_not_json");
   assert.match(String(caught.rawText || ""), /cannot format that as JSON/i);
+});
+
+test("parseAgentReply: plain customer-facing text is recovered (2555 case)", async () => {
+  const { parseAgentReply } = await load();
+  const out = parseAgentReply(
+    "We source from China, so the engine will be imported which takes about 45-60 days by sea cargo.",
+  );
+  assert.equal(out.plainTextRecovered, true);
+  assert.match(out.reply, /45-60 days/i);
+  assert.equal(out.needsPriceConfirmation, false);
 });
 
 test("parseAgentReply: empty customer_reply → openclaw_reply_invalid", async () => {
@@ -141,10 +151,10 @@ test("buildExceptionFallback: dealState.vin never re-asks VIN (CEO +233543709670
     engine_code: "2AZ-FE",
     part_intent: "gearbox",
   });
-  assert.match(reply, /already have/i);
-  assert.match(reply, /TOYOTA|2AZ-FE|gearbox/i);
+  assert.match(reply, /on file|TOYOTA|RAV4|2AZ-FE/i);
   assert.ok(!/what VIN or model/i.test(reply));
   assert.ok(!/share the VIN/i.test(reply));
+  assert.ok(!/what do you need next/i.test(reply));
 });
 
 test("buildExceptionFallback: no dealState keeps stock/VIN ask", async () => {
@@ -152,4 +162,39 @@ test("buildExceptionFallback: no dealState keeps stock/VIN ask", async () => {
   const reply = buildExceptionFallback("hello", null, null);
   assert.match(reply, /asia-power\.com/i);
   assert.match(reply, /VIN or model/i);
+});
+
+test("buildExceptionFallback: answers How much from team_replies (2555)", async () => {
+  const { buildExceptionFallback } = await load();
+  const reply = buildExceptionFallback("How much", null, {
+    brand: "AUDI",
+    model: "A4",
+    year: "2005",
+    part_intent: "engine",
+    vin: "WAUZZZ8E25A123456",
+    confirmation_status: "team_quoted",
+    team_confirmed_at: "2026-07-22T09:02:00Z",
+    team_replies: [{ text: "750usd", at: "2026-07-22T09:02:00Z" }],
+  });
+  assert.match(reply, /750/i);
+  assert.ok(!/what do you need next/i.test(reply));
+});
+
+test("buildExceptionFallback: answers import/Ghana without carousel", async () => {
+  const { buildExceptionFallback } = await load();
+  const reply = buildExceptionFallback(
+    "Is it in Ghana or it will now be imported",
+    null,
+    {
+      brand: "AUDI",
+      model: "A4",
+      year: "2005",
+      part_intent: "engine",
+      quantity: "Just one",
+      team_replies: [{ text: "Need to import from China", at: "2026-07-22T09:41:37Z" }],
+    },
+  );
+  assert.match(reply, /China|45/i);
+  assert.ok(!/what do you need next/i.test(reply));
+  assert.ok(!/Continuing the engine deal/i.test(reply));
 });

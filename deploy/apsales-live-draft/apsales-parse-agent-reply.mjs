@@ -1,6 +1,9 @@
 /**
  * Parse sales-agent WhatsApp JSON replies and build deal-aware exception fallbacks.
  * Extracted for unit tests (openclaw_reply_not_json hardening).
+ *
+ * P0 (2026-07-22): recover plain-text model replies; never send the
+ * "Continuing the … deal — what do you need next?" carousal fallback.
  */
 
 export function extractFirstJsonObject(raw) {
@@ -46,7 +49,6 @@ function candidateBodies(raw) {
   bodies.push(raw);
   const extracted = extractFirstJsonObject(raw);
   if (extracted) bodies.push(extracted.trim());
-  // de-dupe while preserving order
   const seen = new Set();
   return bodies.filter((b) => {
     if (!b || seen.has(b)) return false;
@@ -55,9 +57,38 @@ function candidateBodies(raw) {
   });
 }
 
+function emptyParsedFlags() {
+  return {
+    needsPriceConfirmation: false,
+    supportLineUnreachable: false,
+    buyingIntentConfirmed: false,
+    quoteDeclineReasonCaptured: "",
+    chatAngleUsed: "",
+  };
+}
+
+/**
+ * When the model forgot the JSON wrapper but wrote a real customer-facing
+ * answer, recover it instead of throwing openclaw_reply_not_json.
+ */
+export function looksLikePlainCustomerReply(raw) {
+  const t = String(raw || "").trim();
+  if (!t || t.length < 12 || t.length > 500) return false;
+  if (/^\s*You are AsiaPower/i.test(t)) return false;
+  if (/\b(needs_price_confirmation|deal_state|Gateway|sales_hint|customer_reply)\b/i.test(t)) {
+    return false;
+  }
+  if (/^(sorry\s+i\s+cannot|i\s+cannot\s+format|error:|traceback)/i.test(t)) return false;
+  if (/^\s*\{[\s\S]*\}\s*$/.test(t)) return false; // bare JSON that failed earlier parse
+  // Prefer sentence-like text (letters + space / punctuation).
+  if (!/[A-Za-z\u4e00-\u9fff]{8,}/.test(t)) return false;
+  if ((t.match(/\n/g) || []).length > 6) return false;
+  return true;
+}
+
 /**
  * @param {string} text - agent payload text
- * @returns {{ reply: string, needsPriceConfirmation: boolean, supportLineUnreachable: boolean, buyingIntentConfirmed: boolean, quoteDeclineReasonCaptured: string, chatAngleUsed: string }}
+ * @returns {{ reply: string, needsPriceConfirmation: boolean, supportLineUnreachable: boolean, buyingIntentConfirmed: boolean, quoteDeclineReasonCaptured: string, chatAngleUsed: string, plainTextRecovered?: boolean }}
  * @throws Error with message openclaw_reply_not_json | openclaw_reply_invalid; may set err.rawText
  */
 export function parseAgentReply(text) {
@@ -101,6 +132,15 @@ export function parseAgentReply(text) {
     err.rawText = raw.slice(0, 1000);
     throw err;
   }
+
+  if (looksLikePlainCustomerReply(raw)) {
+    return {
+      reply: raw.slice(0, 500).trim(),
+      ...emptyParsedFlags(),
+      plainTextRecovered: true,
+    };
+  }
+
   const err = new Error("openclaw_reply_not_json");
   err.rawText = raw.slice(0, 1000);
   throw err;
@@ -115,51 +155,105 @@ function extractVinOrFrameFromText(text) {
   return null;
 }
 
+function latestTeamText(dealState) {
+  const team = Array.isArray(dealState?.team_replies) ? dealState.team_replies : [];
+  for (let i = team.length - 1; i >= 0; i -= 1) {
+    const t = String(team[i]?.text || "").trim();
+    if (t) return t;
+  }
+  return "";
+}
+
+function vehicleLabel(dealState) {
+  const brand = String(dealState?.brand || "").trim();
+  const model = String(dealState?.model || "").trim();
+  const year = String(dealState?.year || "").trim();
+  const engine = String(dealState?.engine_code || "").trim();
+  return [year, brand, model, engine].filter(Boolean).join(" ").trim();
+}
+
 /**
  * Exception / rate-limit fallback. Must respect dealState so we never re-ask VIN
  * after the customer already confirmed a vehicle on an active deal.
+ *
+ * Answers the customer's CURRENT question when possible; never asks the vague
+ * "what do you need next?" carousel question.
  */
 export function buildExceptionFallback(text, mediaPlaceholder, dealState = null) {
   const typed = extractVinOrFrameFromText(text);
   const lower = String(text || "").toLowerCase();
-  const wantsGear = /\b(gear\s*box|gearbox|transmission|auto|manual)\b/i.test(lower);
   const knownVin = String(dealState?.vin || "").trim();
   const knownFrame = String(dealState?.frame_no || "").trim();
-  const knownId = knownVin || knownFrame || typed?.id || "";
-  const brand = String(dealState?.brand || "").trim();
-  const model = String(dealState?.model || "").trim();
-  const engine = String(dealState?.engine_code || "").trim();
   const part = String(dealState?.part_intent || "").trim();
-  const vehicleBits = [brand, model, engine].filter(Boolean).join(" / ");
+  const vehicle = vehicleLabel(dealState) || "your vehicle";
+  const teamText = latestTeamText(dealState);
+  const teamQuoted =
+    String(dealState?.confirmation_status || "") === "team_quoted" ||
+    Boolean(dealState?.team_confirmed_at);
+  const hasQuantity = Boolean(String(dealState?.quantity || "").trim());
 
-  // Active deal with confirmed VIN — never ask for VIN/model again.
+  const asksPrice = /\b(?:how\s*much|price|cost|quote|pricing)\b|多少钱|报价/i.test(lower);
+  const asksDelivery =
+    /\b(?:days?|shipping|delivery|freight|eta|import|china|ghana|stock|local)\b|几天|多久|海运|进口/i.test(
+      lower,
+    );
+  const asksPayment = /\b(?:pay|payment|deposit|half|full)\b|付款|定金/i.test(lower);
+
+  if (asksPrice) {
+    if (teamText && /\d/.test(teamText)) {
+      const snippet = teamText.length > 160 ? `${teamText.slice(0, 157)}…` : teamText;
+      return hasQuantity
+        ? `Our team quoted: ${snippet}. Which port should we ship to?`
+        : `Our team quoted: ${snippet}. How many units do you need?`;
+    }
+    if (teamQuoted) {
+      return hasQuantity
+        ? `We already have a team price on file for this ${part || "unit"}. Which port should we ship to?`
+        : `We already have a team price on file for this ${part || "unit"}. How many units do you need?`;
+    }
+    return `I'll confirm the exact price with the team for your ${vehicle}. How many units do you need?`;
+  }
+
+  if (asksDelivery) {
+    if (/china|import|45|60|sea/i.test(teamText)) {
+      return `Yes — it ships from China by sea, about 45–60 days (not Accra local stock). Freight/duty is separate. ${
+        hasQuantity ? "Which port should we use?" : "How many units do you need?"
+      }`;
+    }
+    return `Stock is in China and ships by sea — usually about 45–60 days, not Accra local stock. ${
+      hasQuantity ? "Want the payment steps next?" : "How many units do you need?"
+    }`;
+  }
+
+  if (asksPayment) {
+    return `Ghana customers can usually pay half to ship; others pay in full before shipping. Sea freight is about 45–60 days. ${
+      hasQuantity ? "Which port should we use?" : "How many units do you need?"
+    }`;
+  }
+
+  // Active deal — advance with ONE missing closing detail (never "what next?").
   if (knownVin || knownFrame || dealState?.brand) {
-    if (part === "gearbox" || wantsGear) {
-      return vehicleBits
-        ? `Got it — we already have ${vehicleBits} on file. Continuing the gearbox deal — what do you need next?`
-        : "Got it — we already have your VIN on file. Continuing this gearbox deal — what do you need next?";
+    if (!hasQuantity) {
+      return `Got it — ${vehicle} is on file. How many units do you need?`;
     }
-    if (part === "engine") {
-      return vehicleBits
-        ? `Got it — we already have ${vehicleBits} on file. Continuing the engine deal — what do you need next?`
-        : "Got it — we already have your VIN on file. Continuing this engine deal — what do you need next?";
+    if (part === "engine" && !String(dealState?.engine_code || "").trim()) {
+      return `Got it — ${vehicle} is on file. What's the engine code so we can lock the exact unit?`;
     }
-    return vehicleBits
-      ? `Got it — we already have ${vehicleBits} on file. Sorry for the short delay — what do you need next on this deal?`
-      : "Got it — we already have your VIN on file. Sorry for the short delay — what do you need next on this deal?";
+    if (!String(dealState?.destination_port || "").trim()) {
+      return `Got it — ${vehicle} is on file. Which port or city should we ship to?`;
+    }
+    if (teamText) {
+      const snippet = teamText.length > 140 ? `${teamText.slice(0, 137)}…` : teamText;
+      return `Got it — staying with ${vehicle}. Latest from the team: ${snippet}`;
+    }
+    return `Got it — ${vehicle} is on file. I'll have the team follow up on the next step here on WhatsApp.`;
   }
 
   if (typed?.id) {
-    return wantsGear
-      ? `Got it — ${typed.id}. Real stock, photos and VIN are on www.asia-power.com — for the gearbox, automatic or manual, and which city/port?`
-      : `Got it — ${typed.id}. See real stock, photos and VIN on www.asia-power.com — engine, gearbox, or half-cut?`;
-  }
-  if (wantsGear) {
-    return "Real stock, photos and VIN are on www.asia-power.com — for the gearbox, automatic or manual, and please share the VIN/frame so I can match the right unit.";
+    return `Got it — ${typed.id}. See real stock on www.asia-power.com — engine, gearbox, or half-cut?`;
   }
   if (mediaPlaceholder) {
-    return "Got your photo — you can see our real stock, photos and VIN on www.asia-power.com. Could you also send the VIN or chassis number?";
+    return "Got your photo — you can see our real stock on www.asia-power.com. Could you also send the VIN or chassis number?";
   }
-  void knownId;
-  return "Please check our real stock, photos, VIN and custom half-cuts at www.asia-power.com — what VIN or model are you looking for?";
+  return "Please check our real stock at www.asia-power.com — what VIN or model are you looking for?";
 }

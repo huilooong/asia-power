@@ -1,5 +1,5 @@
 /**
- * APSALES-COACH-FIX-001 / Step 0
+ * APSALES-COACH-FIX-001 / Step 0 (+ 2026-07-22 P0 hold narrowing)
  *
  * This is a pre-send safety gate, but its inputs are fixed before generation:
  * customer request classification and Layer 2 evidence. It never tries to
@@ -8,33 +8,31 @@
  * Blacklist boundary: only private business facts need evidence -- price,
  * inventory/availability, and delivery commitments. All other requests are
  * allowed by default. This is deliberately not a technical-fact whitelist.
+ *
+ * P0 (2026-07-22): do NOT treat "deal already has part + vehicle" as an
+ * implicit inventory request. That over-hold silenced qualify/advance turns
+ * (engine-code asks, Ghana/import asks) — see +233202102555.
  */
 
 const PRIVATE_BUSINESS_REQUEST = Object.freeze({
   price: /\b(?:how\s*much|price|cost|quote|quotation|pricing|rate|final\s+amount)\b|\b(?:prix|combien|tarif|co[uû]t|devis)\b|\b(?:pre[cç]o|quanto|cota[cç][aã]o)\b|\b(?:precio|cu[aá]nto|cotizaci[oó]n)\b|价格|多少钱|报价|价钱|费用|سعر|كم\s*(?:سعر|ثمن)?/iu,
   inventory: /\b(?:in\s+stock|available|availability|have\s+it|can\s+you\s+source|stock)\b|\b(?:disponible|disponibilit[eé]|en\s+stock)\b|\b(?:dispon[ií]vel|estoque)\b|\b(?:disponible|existencia)\b|库存|有货|现货|能做|متوفر|مخزون/iu,
-  delivery: /\b(?:delivery|deliver|shipping|ship(?:ping)?\s+time|freight|lead\s+time|arrival|arrive|eta)\b|\b(?:livraison|livrer|d[eé]lai|exp[eé]dition)\b|\b(?:entrega|envio|prazo)\b|\b(?:entrega|env[ií]o|plazo)\b|交期|多久到|运费|海运|发货|配送|شحن|توصيل|موعد\s+الوصول/iu,
+  delivery: /\b(?:delivery|deliver|shipping|ship(?:ping)?\s+time|freight|lead\s+time|arrival|arrive|eta|import(?:ed|ing)?|from\s+china|in\s+ghana)\b|\b(?:livraison|livrer|d[eé]lai|exp[eé]dition)\b|\b(?:entrega|envio|prazo)\b|\b(?:entrega|env[ií]o|plazo)\b|交期|多久到|运费|海运|发货|配送|进口|加纳|شحن|توصيل|موعد\s+الوصول/iu,
 });
 
 /**
- * Classify only requests for facts unique to our business. A specific part and
- * vehicle context is also an implicit availability request; a VIN alone is
- * not. This keeps technical VIN reasoning outside the blacklist.
+ * Classify only requests for facts unique to our business from THIS message.
+ * A locked part+vehicle on deal_state is NOT enough to invent an inventory
+ * request — that caused silent holds on qualify questions.
  */
 export function classifyPrivateBusinessFactRequest(customerMessage, dealState = {}) {
+  void dealState;
   const text = String(customerMessage || "");
   const requestedFacts = new Set(
     Object.entries(PRIVATE_BUSINESS_REQUEST)
       .filter(([, pattern]) => pattern.test(text))
       .map(([fact]) => fact),
   );
-
-  const hasSpecificPart = Boolean(String(dealState.part_intent || "").trim());
-  const hasVehicleIdentity = Boolean(
-    dealState.vin || dealState.frame_no || dealState.year ||
-    (dealState.brand && dealState.model),
-  );
-  if (hasSpecificPart && hasVehicleIdentity) requestedFacts.add("inventory");
 
   return [...requestedFacts];
 }
@@ -47,7 +45,14 @@ export function buildPrivateBusinessEvidence({ inventoryMatches, dealState = {} 
   const hasConfirmedDelivery = Boolean(
     dealState.delivery_quote_confirmed_at ||
     dealState.shipping_quote_confirmed_at ||
-    dealState.logistics_quote_confirmed_at,
+    dealState.logistics_quote_confirmed_at ||
+    // Team already answered import/ETA in-thread — treat as delivery evidence.
+    (Array.isArray(dealState.team_replies) &&
+      dealState.team_replies.some((r) =>
+        /\b(?:45\s*[-–]?\s*60|from\s+china|import|sea\s*freight|days)\b/i.test(
+          String(r?.text || ""),
+        ),
+      )),
   );
   return { hasInventoryMatch, hasConfirmedQuote, hasConfirmedDelivery };
 }

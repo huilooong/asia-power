@@ -1,5 +1,6 @@
 /**
- * Stage-3 soft chat angles (5W2H as optional material when about to repeat).
+ * Stage-3 soft chat angles (5W2H material every turn — judgment-based, not
+ * gated only on possible_repeat_detected; answer the customer first).
  * Does NOT touch payment_status / fulfillment_stage from closing-flow.
  */
 
