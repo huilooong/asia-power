@@ -1,6 +1,6 @@
 # APGEO-001 Generative Engine Optimization Plan
 
-Status: Phase 1 implemented; Phase 2/3 proposed, pending priority call
+Status: Phase 1+2 implemented and ready for production deploy (2026-07-22); Phase 3 remains off-site/PR
 Date: 2026-07-22
 Scope: asia-power.com discoverability and citation quality inside AI answer engines (ChatGPT/SearchGPT, Perplexity, Google AI Overviews/Gemini, Copilot, Claude) — distinct from classic Google-ranking SEO covered by APSEO-011/012
 Owner: AsiaPower SEO / Growth
@@ -39,7 +39,7 @@ AsiaPower has a specific, already-diagnosed GEO risk (see `docs/ops/seo-brand-qu
 
 Neither change touches existing pages, schema, sitemap, or server code.
 
-## Phase 2 — Content Extractability (Proposed, Needs Priority Call)
+## Phase 2 — Content Extractability (Implemented 2026-07-22)
 
 These require judgment calls about tone/scope across many pages, so they are proposed here rather than applied silently:
 
@@ -61,4 +61,11 @@ Do not add: fake reviews, fake ratings, fabricated founding dates, guaranteed av
 
 ## Next Step
 
-Phase 1 is live in the working tree (not yet deployed — deploy is a separate explicit step per existing release process). Recommend reviewing Phase 2 scope/priority against the current APSEO-011/012 backlog before starting page-content edits, since it touches the same pages other in-flight SEO work touches.
+Phase 1+2 are in the working tree for deploy via Release Manager (`chrome` covers `llms.txt`/`robots.txt`/guides; `engines` covers engine code pages). Phase 3 (off-site mentions) remains a separate growth/PR decision — not a website deploy.
+
+### Phase 2 deliverables (this pass)
+
+- Answer-first paragraphs on 20 highest-stock engine pages + both guides + guide hub
+- Conversational buyer Q&A on guide hub / buying guide / FOB guide
+- FAQPage + QAPage schema on guide hub and both guide articles
+- `llms.txt` contact email aligned to `sales@asia-power.com`; `Bytespider` listed in robots

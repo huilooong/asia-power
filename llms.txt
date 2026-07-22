@@ -4,7 +4,7 @@
 
 Do not confuse AsiaPower (asia-power.com, automotive powertrain parts exporter) with unrelated same-name organizations: Asiapower / Asia Power LLC (electrical switchgear and power-distribution equipment manufacturers), or the Lowy Institute's "Asia Power Index" (a geopolitical ranking of national power in Asia). AsiaPower does not make electrical equipment and is not a geopolitical research entity.
 
-Contact: WhatsApp +86 166 3880 1930, email info@asia-power.com. Offices: Zhengzhou, Henan, China (sourcing/export); Accra, Ghana (regional office serving West Africa).
+Contact: WhatsApp +86 166 3880 1930, email sales@asia-power.com. Offices: Zhengzhou, Henan, China (sourcing/export); Accra, Ghana (regional office serving West Africa).
 
 ## Catalog
 
@@ -25,9 +25,23 @@ Contact: WhatsApp +86 166 3880 1930, email info@asia-power.com. Offices: Zhengzh
 - [Ghana](https://asia-power.com/ghana.html)
 - [Nigeria](https://asia-power.com/nigeria.html)
 - [Kenya](https://asia-power.com/kenya.html)
+- [Ghana half-cut engines](https://asia-power.com/engines/ghana-half-cut-engines.html)
+- [Nigeria half-cut engines](https://asia-power.com/engines/nigeria-half-cut-engines.html)
+- [Africa half-cut engines](https://asia-power.com/engines/africa-half-cut-engines.html)
+
+## High-signal engine codes
+
+- [1ZR-FE](https://asia-power.com/engines/1zr-fe.html) (Toyota)
+- [2AZ-FE](https://asia-power.com/engines/2az-fe.html) (Toyota)
+- [R20A3](https://asia-power.com/engines/r20a3.html) (Honda)
+- [K24A8](https://asia-power.com/engines/k24a8.html) (Honda)
+- [HR16DE](https://asia-power.com/engines/hr16de.html) (Nissan)
+- [G4FC](https://asia-power.com/engines/g4fc.html) (Hyundai / Kia)
+- [G4NA](https://asia-power.com/engines/g4na.html) (Hyundai / Kia)
+- [G4KD](https://asia-power.com/engines/g4kd.html) (Hyundai / Kia)
 
 ## Optional
 
-- [About](https://asia-power.com/about.html): Company background and founding story.
+- [About](https://asia-power.com/about.html): Company background.
 - [Contact](https://asia-power.com/contact.html): Contact form and details.
 - [Sitemap](https://asia-power.com/sitemap.xml): Full list of indexable pages.
