@@ -82,6 +82,8 @@ export const TARGET_SOURCE_FILES = {
     'ghana.html',
     'nigeria.html',
     'brands.html',
+    'robots.txt',
+    'llms.txt',
   ],
   admin: [
     'css/admin-v4.css',
@@ -231,6 +233,8 @@ export const TARGET_REMOTE_PATHS = {
     '/root/.openclaw/workspace/inventory-site/public/ghana.html',
     '/root/.openclaw/workspace/inventory-site/public/nigeria.html',
     '/root/.openclaw/workspace/inventory-site/public/brands.html',
+    '/root/.openclaw/workspace/inventory-site/public/robots.txt',
+    '/root/.openclaw/workspace/inventory-site/public/llms.txt',
   ],
   admin: [
     '/root/.openclaw/workspace/inventory-site/public/css/admin-v4.css',

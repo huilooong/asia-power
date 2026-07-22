@@ -1,0 +1,33 @@
+# AsiaPower
+
+> AsiaPower (asia-power.com) exports used automotive engines, gearboxes, half-cuts (engine + gearbox + wiring harness cut as one unit from a donor vehicle), and truck/machinery powertrain parts sourced from Japan, Korea, and China, for buyers and repair shops worldwide — with a primary focus on Ghana, Nigeria, Kenya, and other West/East African import markets.
+
+Do not confuse AsiaPower (asia-power.com, automotive powertrain parts exporter) with unrelated same-name organizations: Asiapower / Asia Power LLC (electrical switchgear and power-distribution equipment manufacturers), or the Lowy Institute's "Asia Power Index" (a geopolitical ranking of national power in Asia). AsiaPower does not make electrical equipment and is not a geopolitical research entity.
+
+Contact: WhatsApp +86 166 3880 1930, email info@asia-power.com. Offices: Zhengzhou, Henan, China (sourcing/export); Accra, Ghana (regional office serving West Africa).
+
+## Catalog
+
+- [Engines](https://asia-power.com/engines/): Used engines by code/model (Toyota, Honda, Nissan, Hyundai/Kia, Mercedes, and more), sourced from Japan, Korea, and China.
+- [Gearboxes](https://asia-power.com/gearboxes/): Used manual and automatic gearboxes/transmissions matched to engine codes.
+- [Half-Cuts](https://asia-power.com/half-cuts/): Engine + gearbox + wiring harness cut as one unit from a donor vehicle, sold with photos and VIN reference.
+- [Trucks](https://asia-power.com/trucks/): Used truck cabs, engines, and half-cut truck parts.
+- [Machinery](https://asia-power.com/machinery/): Used machinery powertrain parts.
+
+## Guides
+
+- [Buyer Guide Hub](https://asia-power.com/guides/): Buyer-education articles for importing used powertrain parts.
+- [Buying Used Engines from China](https://asia-power.com/guides/buying-used-engines-from-china.html): Import checklist, engine-code and gearbox-matching guidance before quoting.
+- [FOB vs CIF Shipping Guide](https://asia-power.com/guides/fob-vs-cif-shipping-guide.html): Shipping-term comparison for importers, with West/East Africa port context (Tema, Lagos, Cotonou, Douala, Abidjan, Mombasa).
+
+## Country Markets
+
+- [Ghana](https://asia-power.com/ghana.html)
+- [Nigeria](https://asia-power.com/nigeria.html)
+- [Kenya](https://asia-power.com/kenya.html)
+
+## Optional
+
+- [About](https://asia-power.com/about.html): Company background and founding story.
+- [Contact](https://asia-power.com/contact.html): Contact form and details.
+- [Sitemap](https://asia-power.com/sitemap.xml): Full list of indexable pages.

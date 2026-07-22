@@ -37,6 +37,7 @@ const DEFAULT_PAGES = [
   { id: 'config_js', url: '/js/config.js', kind: 'config' },
   { id: 'sw_js', url: '/sw.js', kind: 'sw' },
   { id: 'robots', url: '/robots.txt', kind: 'text' },
+  { id: 'llms', url: '/llms.txt', kind: 'llms' },
   { id: 'sitemap', url: '/sitemap.xml', kind: 'xml' },
 ];
 
@@ -571,6 +572,20 @@ export async function runPublicPostReleaseValidation(opts = {}) {
         push('robots_content_type', 'fail', `Content-Type=${contentType || '(none)'} expected text/plain`);
       } else if (page.id === 'robots') {
         push('robots_content_type', 'pass', contentType);
+      }
+    }
+
+    if (page.kind === 'llms') {
+      if (!/AsiaPower/i.test(body) || !/electrical power equipment|Lowy Institute/i.test(body)) {
+        push('llms_content', 'fail', 'llms.txt missing brand summary or disambiguation text');
+      } else {
+        push('llms_content', 'pass', `bytes=${body.length}`);
+      }
+      const contentType = headers['content-type'] || '';
+      if (!/^text\/plain\b/i.test(contentType)) {
+        push('llms_content_type', 'fail', `Content-Type=${contentType || '(none)'} expected text/plain`);
+      } else {
+        push('llms_content_type', 'pass', contentType);
       }
     }
 

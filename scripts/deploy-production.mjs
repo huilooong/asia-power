@@ -377,6 +377,9 @@ function deployChrome() {
   ]) {
     rsync(`${ROOT}/${rel}`, `${pub}/${rel}`);
   }
+  // GEO (APGEO-001): AI-crawler policy + LLM-readable site summary. Additive, no ranking-signal change.
+  rsync(`${ROOT}/robots.txt`, `${pub}/robots.txt`);
+  rsync(`${ROOT}/llms.txt`, `${pub}/llms.txt`);
   ssh('mkdir -p /root/.openclaw/workspace/inventory-site/public/brands');
   run('rsync', ['-av', '--include=*.html', '--exclude=*', `${ROOT}/brands/`, `${pub}/brands/`]);
   ssh(`
@@ -410,6 +413,11 @@ test -f "$PUB/engines/hyundai-kia-engines-for-nigeria-importers.html"
 test -f "$PUB/guides/index.html"
 test -f "$PUB/guides/buying-used-engines-from-china.html"
 test -f "$PUB/guides/fob-vs-cif-shipping-guide.html"
+test -f "$PUB/robots.txt"
+test -f "$PUB/llms.txt"
+grep -q 'AsiaPower' "$PUB/llms.txt"
+grep -q 'electrical power equipment' "$PUB/llms.txt"
+grep -q 'GPTBot' "$PUB/robots.txt"
 grep -q 'AsiaPowerAuthNav' "$PUB/js/components.js"
 grep -q 'getBrandsWithPublicStock' "$PUB/js/main.js"
 grep -q 'Current public stock' "$PUB/js/config.js"
