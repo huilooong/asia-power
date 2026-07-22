@@ -38,6 +38,7 @@ class CoachLlmAuditTests(unittest.TestCase):
                 "violations": [
                     {
                         "evidence_id": "ev-vin-2",
+                        "rule_id": "no_reask_known_part_or_vin",
                         "rule_hint": "身份与VIN",
                         "reason": "客户已确认VIN，回复又问了一遍需求类型/VIN",
                         "confidence": "high",
@@ -47,6 +48,7 @@ class CoachLlmAuditTests(unittest.TestCase):
                     {
                         "evidence_id": "ev-vin-1",
                         "why_good": "准确识别VIN并追问变速箱pin数",
+                        "rule_id": "lock_which_what_first",
                         "rule_hint": "5W2H",
                     }
                 ],
@@ -59,6 +61,7 @@ class CoachLlmAuditTests(unittest.TestCase):
         )
         self.assertEqual(len(result["violations"]), 1)
         self.assertEqual(result["violations"][0]["evidence_id"], "ev-vin-2")
+        self.assertEqual(result["violations"][0]["rule_id"], "no_reask_known_part_or_vin")
         self.assertEqual(len(result["good_examples"]), 1)
 
     def test_bare_hi_not_banned_opening_violation(self) -> None:
@@ -79,12 +82,14 @@ class CoachLlmAuditTests(unittest.TestCase):
                 "violations": [
                     {
                         "evidence_id": "ev-hi-1",
+                        "rule_id": "avoid_banned_opening_phrases",
                         "rule_hint": "禁止开场：Hi there! / Great news!",
                         "reason": "Reply starts with 'Hi!' which is prohibited opening.",
                         "confidence": "high",
                     },
                     {
                         "evidence_id": "ev-hi-1",
+                        "rule_id": "avoid_banned_opening_phrases",
                         "rule_hint": "禁止开场：Hi there!",
                         "reason": "Reply starts with 'Hi there.' which matches the ban.",
                         "confidence": "high",
@@ -113,6 +118,7 @@ class CoachLlmAuditTests(unittest.TestCase):
                 "violations": [
                     {
                         "evidence_id": "ev-hithere-1",
+                        "rule_id": "avoid_banned_opening_phrases",
                         "rule_hint": "禁止开场：Hi there!",
                         "reason": "Reply starts with Hi there.",
                         "confidence": "high",
@@ -173,6 +179,7 @@ class CoachLlmAuditTests(unittest.TestCase):
                     "violations": [
                         {
                             "evidence_id": "ev-run-1",
+                            "rule_id": "no_reask_known_part_or_vin",
                             "rule_hint": "VIN",
                             "reason": "re-asked VIN",
                             "confidence": "high",
@@ -182,6 +189,7 @@ class CoachLlmAuditTests(unittest.TestCase):
                         {
                             "evidence_id": "ev-run-1",
                             "why_good": "placeholder should still write file",
+                            "rule_id": "lock_which_what_first",
                             "rule_hint": "test",
                         }
                     ],
@@ -207,6 +215,45 @@ class CoachLlmAuditTests(unittest.TestCase):
             combined = Path(result["combined_report_path"]).read_text(encoding="utf-8")
             self.assertIn("通道 A", combined)
             self.assertIn("通道 B", combined)
+
+
+    def test_unknown_rule_id_becomes_unclassified(self) -> None:
+        from sales_coach.rule_catalog import unclassified_id
+
+        def fake_llm(compact, rules_text: str):
+            return {
+                "violations": [
+                    {
+                        "evidence_id": "ev-x",
+                        "rule_id": "made_up_free_text_rule",
+                        "rule_hint": "严禁随意甩人工电话号码",
+                        "reason": "bad id must not invent identity from hint",
+                        "confidence": "high",
+                    }
+                ],
+                "good_examples": [],
+            }
+
+        # Injected llm_call bypasses system prompt — coerce path still applies
+        result = llm_audit.audit_conversation(
+            [
+                {
+                    "evidence_id": "ev-x",
+                    "customer": {"message": "hi"},
+                    "reply": {"text": "call 054"},
+                    "decision": {},
+                }
+            ],
+            "rules",
+            llm_call=fake_llm,
+        )
+        self.assertEqual(result["violations"][0]["rule_id"], unclassified_id())
+
+    def test_system_prompt_includes_catalog(self) -> None:
+        prompt = llm_audit._system_prompt("# LIVE-RULES\nphone\n")
+        self.assertIn("rule_id", prompt)
+        self.assertIn("no_leak_staff_phone", prompt)
+        self.assertIn("RULE_ID CATALOG", prompt)
 
 
 class RunCoachLlmAuditCliTests(unittest.TestCase):

@@ -34,18 +34,37 @@ def extract_rule_id_from_record(record: dict[str, Any]) -> str:
     return "unknown"
 
 
+def _extract_field(request_text: str, key: str) -> str:
+    m = re.search(rf"{re.escape(key)}=([^|]+)", request_text or "", re.I)
+    return (m.group(1).strip() if m else "")
+
+
 def render_coach_fix_plan(record: dict[str, Any]) -> str:
     approval_id = str(record.get("id") or "AP-unknown")
     rule_id = extract_rule_id_from_record(record)
     why = str(record.get("why") or "").strip()
     request_text = str(record.get("request_text") or "").strip()
     day = datetime.now(timezone.utc).strftime("%Y-%m-%d")
+    recurrence = _extract_field(request_text, "recurrence") or "1"
+    hist = _extract_field(request_text, "historical_evidence_ids")
+    auto = (
+        approval_id.startswith("AUTO-")
+        or approval_id.startswith("MIGRATE-")
+        or "复发自动派工" in why
+        or "积压清理自动派工" in why
+    )
+    auth_line = (
+        f"**自动派工（跳过 Telegram）：稳定 rule_id `{rule_id}` 此前已问过龙哥且未被拒绝。"
+        f"本文件为第 {recurrence} 次派工（编号 `{approval_id}`）。**"
+        if auto
+        else f"**龙哥已通过审批网关批准本任务（编号 `{approval_id}`）。**"
+    )
 
     return f"""# Coach 修复任务: {rule_id}
 
 ## 给 Cursor 的交付说明
 
-**龙哥已通过审批网关批准本任务（编号 `{approval_id}`）。**
+{auth_line}
 
 开始动手前,先在本文件最下面的「Cursor 实施报告」章节追加一行「已开始 <日期时间>」。做完把结果写进同一章节(追加,不覆盖)。
 
@@ -54,6 +73,9 @@ def render_coach_fix_plan(record: dict[str, Any]) -> str:
 ## Context
 
 - 批准编号: `{approval_id}`
+- 稳定 rule_id: `{rule_id}`
+- 复发次数: {recurrence}
+- 历史 evidence_ids: {hist or "(见证据包)"}
 - 来源 agent: `{record.get("agent") or "sales_coach"}`
 - 动作: `{record.get("action") or "agent_prompt_fix"}`
 - 原因摘要: {why or "(无)"}

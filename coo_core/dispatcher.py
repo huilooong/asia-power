@@ -331,6 +331,21 @@ def dispatch_message(
             except Exception as exc:  # noqa: BLE001
                 resolved["cursor_plan_path"] = ""
                 print(f"[APCOO DEBUG] mode=coach_dispatch_failed error={exc}", flush=True)
+        # Explicit reject → remember rule_id so auto-dispatch will skip forever (until cleared).
+        if (
+            resolved.get("decision") == "rejected"
+            and (resolved.get("record") or {}).get("action") == "agent_prompt_fix"
+        ):
+            try:
+                from sales_coach.escalation import mark_rejected_from_approval_record
+
+                rid = mark_rejected_from_approval_record(
+                    resolved["record"],
+                    note=str(resolved.get("note") or message or "")[:200],
+                )
+                print(f"[APCOO DEBUG] mode=coach_reject_rule rule_id={rid}", flush=True)
+            except Exception as exc:  # noqa: BLE001
+                print(f"[APCOO DEBUG] mode=coach_reject_failed error={exc}", flush=True)
         visible = format_resolution(resolved)
         memory_tool.log_conversation(
             message, visible, source="apcoo", channel=source, important=True,

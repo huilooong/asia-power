@@ -1,0 +1,347 @@
+{
+  "version": 1,
+  "unclassified_id": "unclassified",
+  "rules": [
+    {
+      "id": "no_leak_staff_phone",
+      "summary": "Do not dump the Ghana staff phone (054 913 5916) as a lazy first reply; only when customer asks for human / stuck / urgent callback.",
+      "live_rules_anchor": "禁止随意甩人工电话号码（054 913 5916）",
+      "legacy_aliases": [
+        "严禁随意甩人工电话号码_054_913_5916",
+        "禁止随意甩人工电话号码_054_913_5916",
+        "禁止随意甩人工电话号码",
+        "严禁随意甩人工电话号码"
+      ]
+    },
+    {
+      "id": "no_echo_customer_phone_as_callback",
+      "summary": "Never give the customer's own WhatsApp/phone number back as AsiaPower's callback number.",
+      "live_rules_anchor": "禁止把客户自己的号码回给客户当联系方式",
+      "legacy_aliases": [
+        "禁止把客户自己的号码回给客户当联系方式",
+        "no_echo_customer_phone"
+      ]
+    },
+    {
+      "id": "internal_colleague_not_customer",
+      "summary": "Ghana support / internal numbers are colleagues, not sales leads — do not pitch VIN/price to them.",
+      "live_rules_anchor": "内部同事不是客户",
+      "legacy_aliases": [
+        "内部同事不是客户",
+        "internal_colleague_not_customer"
+      ]
+    },
+    {
+      "id": "quote_with_currency_unit",
+      "summary": "Every price quoted to the customer must include a currency unit (e.g. 900 USD), never a bare number.",
+      "live_rules_anchor": "报价必须带货币单位（P0）",
+      "legacy_aliases": [
+        "价格与单位_-_报价必须带货币单位",
+        "价格与单位_-_报价必须带货币单位_p0",
+        "报价必须带货币单位_p0",
+        "报价必须带货币单位",
+        "bare_price"
+      ]
+    },
+    {
+      "id": "avoid_banned_opening_phrases",
+      "summary": "Ban listed openings: Hi there! / Great news! / I'd be happy to help / every-sentence Hello sir. Bare Hi!/Hello! alone is OK.",
+      "live_rules_anchor": "禁止开场：`Hi there!`",
+      "legacy_aliases": [
+        "禁止开场__hi_there",
+        "声音_-_禁止开场__great_news",
+        "禁止开场",
+        "banned_opening"
+      ]
+    },
+    {
+      "id": "no_repeat_wait_phrases",
+      "summary": "Do not repeat wait/checking phrases (still checking / still waiting / near-paraphrases) in the same conversation.",
+      "live_rules_anchor": "同一对话里不要用\"still checking / still waiting\"",
+      "legacy_aliases": [
+        "禁止重复等待话术",
+        "禁止使用同一轮对话里重复表达等待话术",
+        "禁止重复表达同一等待话术",
+        "重复等待话术",
+        "不能重复使用等待话术",
+        "声音_-_同一对话里不要用_still_checking___still_waiting_反复表达同一个意思",
+        "wait_loop"
+      ]
+    },
+    {
+      "id": "no_reask_known_part_or_vin",
+      "summary": "After VIN/part need is already confirmed, do not re-ask the same key detail.",
+      "live_rules_anchor": "不要再问\"你需要什么配件\"",
+      "legacy_aliases": [
+        "same_question_repeated___same_key_detail_asked_multiple_times",
+        "same_question_repeated",
+        "身份与_vin",
+        "no_reask_vin"
+      ]
+    },
+    {
+      "id": "qualify_before_price",
+      "summary": "Before quoting, require VIN or year+engine code (must_qualify_before_price).",
+      "live_rules_anchor": "报价前先要 VIN 或 year+engine code（P0",
+      "legacy_aliases": [
+        "身份与_vin___报价前先要_vin_或_year_engine_code",
+        "报价前先要_vin_或_year_engine_code_p0_结构化旗标_must_qualify_before_price",
+        "报价前先要_vin_或_year_engine_code_禁止直接说去跟团队确认价格_库存",
+        "qualify_before_price",
+        "ask_vin_before_commit"
+      ]
+    },
+    {
+      "id": "no_fake_verified_claim",
+      "summary": "Do not claim I checked / I verified external facts unless structured context already has them.",
+      "live_rules_anchor": "禁止编造「已核实 / 已检查」（P0）",
+      "legacy_aliases": [
+        "禁止编造已核实",
+        "no_fake_verified_claim"
+      ]
+    },
+    {
+      "id": "no_expose_internal_tools",
+      "summary": "Do not expose translation/OCR/internal tools/JSON/approval process to the customer.",
+      "live_rules_anchor": "暴露翻译软件 / OCR / 内部工具",
+      "legacy_aliases": [
+        "永远不要暴露翻译软件___ocr___内部工具___审批流程",
+        "永远不要暴露翻译软件",
+        "no_expose_internal_tools"
+      ]
+    },
+    {
+      "id": "disclose_china_stock_and_sea_freight",
+      "summary": "Stock is in China with ~45–60 day sea freight; Accra office has no local inventory — disclose early when confirming price.",
+      "live_rules_anchor": "网站目录里的货源都在中国",
+      "legacy_aliases": [
+        "不要等客户问才说__第一次回复_团队在确认价格_时_顺带说清楚这是中国发货_需要海运",
+        "库存与地点",
+        "disclose_china_shipping"
+      ]
+    },
+    {
+      "id": "short_courtesy_reply",
+      "summary": "Thanks/you're welcome → short reply; do not add I'll let you know every time.",
+      "live_rules_anchor": "客户说\"谢谢/不客气/没事\"这类客套话",
+      "legacy_aliases": [
+        "客套话简短回应_不用每次都加尾巴",
+        "客户说_谢谢_这类客套话_简短对应一句就行",
+        "short_courtesy_reply"
+      ]
+    },
+    {
+      "id": "welcome_self_intro_as_luzijing",
+      "summary": "When customer gives their name, welcome them and introduce as 鲁子敬.",
+      "live_rules_anchor": "客户自我介绍（报姓名）时",
+      "legacy_aliases": [
+        "客户自我介绍_报姓名_时_像人类一样欢迎___自我介绍自己是_鲁子敬__不要跳过寒暄直接推销",
+        "welcome_self_intro"
+      ]
+    },
+    {
+      "id": "no_exclamation_spam",
+      "summary": "Do not stack exclamation marks; keep WhatsApp tone natural.",
+      "live_rules_anchor": "不堆感叹号",
+      "legacy_aliases": [
+        "声音_-_不用感叹号",
+        "声音",
+        "no_exclamation_spam"
+      ]
+    },
+    {
+      "id": "lock_which_what_first",
+      "summary": "Stage-1 lock Which (VIN/model/year/code) + What (engine/gearbox/half-cut) before rushing quote.",
+      "live_rules_anchor": "第一段·锁定（Which + What）",
+      "legacy_aliases": [
+        "三段式信息收集___第一段_锁定_which___what",
+        "三段式信息收集_5w2h_按依赖关系分阶段_不是平铺问一遍__-_第一段_锁定_which___what",
+        "整体销售思路_-_三段式信息收集_第一段_锁定_-_which___what",
+        "三段式信息收集_-_第一段锁定_which___what",
+        "第一段_锁定_which___what",
+        "lock_which_what"
+      ]
+    },
+    {
+      "id": "ask_plate_not_generic_photo",
+      "summary": "When OCR fails, ask for metal plate/VIN sticker photo or typed VIN — not 'take a clearer photo'.",
+      "live_rules_anchor": "要铭牌/VIN 照片，不是随便一张车照（P0）",
+      "legacy_aliases": [
+        "要铭牌_vin_照片",
+        "ask_plate_not_generic_photo"
+      ]
+    },
+    {
+      "id": "prefer_detail_url_over_homepage",
+      "summary": "When inventory_matches exist, send detail/category URLs — do not always dump homepage.",
+      "live_rules_anchor": "有库存匹配时发详情/分类页，不发死首页（P0）",
+      "legacy_aliases": [
+        "有库存匹配时发详情",
+        "prefer_detail_url"
+      ]
+    },
+    {
+      "id": "no_invent_price_or_stock",
+      "summary": "Never invent price, stock, ETA, payment, or address facts.",
+      "live_rules_anchor": "编造库存、价格、交期、付款、地址",
+      "legacy_aliases": [
+        "永远不要",
+        "no_invent_price"
+      ]
+    },
+    {
+      "id": "shipping_days_45_60",
+      "summary": "Sea freight ETA is about 45–60 days when asked — do not dodge with vague logistics talk.",
+      "live_rules_anchor": "海运时效：约 45–60 天",
+      "legacy_aliases": [
+        "海运时效",
+        "shipping_days_45_60"
+      ]
+    },
+    {
+      "id": "inspection_fee_engine_gearbox_only",
+      "summary": "$50 inspection fee only for engine/gearbox; small parts use full payment path.",
+      "live_rules_anchor": "$50 检测费仅适用于发动机/变速箱",
+      "legacy_aliases": [
+        "检测费",
+        "inspection_fee_engine_gearbox_only"
+      ]
+    },
+    {
+      "id": "polite_close_not_bare_ok",
+      "summary": "When conversation ends, prefer Good night / Have a nice day over bare Ok./Got it.",
+      "live_rules_anchor": "对话明显要结束了",
+      "legacy_aliases": [
+        "对话明显要结束了",
+        "polite_close"
+      ]
+    },
+    {
+      "id": "confirm_vehicle_vs_halfcut_intent",
+      "summary": "If 'car' intent is ambiguous, confirm whole vehicle vs half-cut/parts before advancing.",
+      "live_rules_anchor": "客户问\"车\"类需求但意图不明确时",
+      "legacy_aliases": [
+        "整车_vs_切割",
+        "confirm_vehicle_vs_halfcut"
+      ]
+    },
+    {
+      "id": "no_nigeria_tema_confusion",
+      "summary": "Do not cite Tema as a Nigeria port — Tema is Ghana only.",
+      "live_rules_anchor": "尼日利亚客户引用 Tema",
+      "legacy_aliases": [
+        "尼日利亚客户引用_tema",
+        "no_nigeria_tema"
+      ]
+    },
+    {
+      "id": "leak_internal_tag",
+      "summary": "Detector: do not leak internal tags / tool markers to the customer.",
+      "live_rules_anchor": "永远不要暴露翻译软件 / OCR / 内部工具",
+      "legacy_aliases": []
+    },
+    {
+      "id": "claim_identified_suppliers",
+      "summary": "Detector: do not claim identified suppliers without evidence.",
+      "live_rules_anchor": "编造库存、价格、交期、付款、地址",
+      "legacy_aliases": []
+    },
+    {
+      "id": "claim_shipping_sla",
+      "summary": "Detector: do not promise shipping SLA / named ports without logistics evidence.",
+      "live_rules_anchor": "海运时效：约 45–60 天",
+      "legacy_aliases": []
+    },
+    {
+      "id": "claim_numeric_price",
+      "summary": "Detector: do not state a numeric price without approved quote evidence.",
+      "live_rules_anchor": "报价必须带货币单位（P0）",
+      "legacy_aliases": []
+    },
+    {
+      "id": "claim_guaranteed_fit",
+      "summary": "Detector: do not guarantee fit without VIN verification evidence.",
+      "live_rules_anchor": "编造库存、价格、交期、付款、地址",
+      "legacy_aliases": []
+    },
+    {
+      "id": "claim_warranty_refund",
+      "summary": "Detector: do not promise warranty/refund without policy approval.",
+      "live_rules_anchor": "永远不要",
+      "legacy_aliases": []
+    },
+    {
+      "id": "price_no_advance",
+      "summary": "Detector: price talk without advancing the sale (next step missing).",
+      "live_rules_anchor": "三段式信息收集",
+      "legacy_aliases": []
+    },
+    {
+      "id": "enquiry_no_next_step",
+      "summary": "Detector: enquiry reply with no clear next step.",
+      "live_rules_anchor": "三段式信息收集",
+      "legacy_aliases": []
+    },
+    {
+      "id": "closing_no_advance",
+      "summary": "Detector: closing moment without advancing the deal.",
+      "live_rules_anchor": "对话明显要结束了",
+      "legacy_aliases": []
+    },
+    {
+      "id": "whatsapp_email_tone",
+      "summary": "Detector: email-like tone on WhatsApp.",
+      "live_rules_anchor": "声音",
+      "legacy_aliases": []
+    },
+    {
+      "id": "reply_too_long",
+      "summary": "Detector: reply is too long for WhatsApp.",
+      "live_rules_anchor": "声音",
+      "legacy_aliases": []
+    },
+    {
+      "id": "too_many_questions",
+      "summary": "Detector: too many questions in one reply.",
+      "live_rules_anchor": "三段式信息收集",
+      "legacy_aliases": []
+    },
+    {
+      "id": "website_spam",
+      "summary": "Detector: dumping homepage / website spam.",
+      "live_rules_anchor": "有库存匹配时发详情/分类页，不发死首页（P0）",
+      "legacy_aliases": []
+    },
+    {
+      "id": "language_mismatch",
+      "summary": "Detector: reply language does not match customer.",
+      "live_rules_anchor": "声音",
+      "legacy_aliases": []
+    },
+    {
+      "id": "no_promise_inventory",
+      "summary": "Detector/CEO: do not promise inventory that is not confirmed.",
+      "live_rules_anchor": "编造库存、价格、交期、付款、地址",
+      "legacy_aliases": []
+    },
+    {
+      "id": "new_unclear_inquiry_include_website",
+      "summary": "New / unclear first inquiry: include website + ask what they need.",
+      "live_rules_anchor": "新客户 / 模糊开场 → 必须带网站 + 问需求",
+      "legacy_aliases": [
+        "新客户___模糊开场___必须带网站___问需求",
+        "reply_must_include_website___ask_for_specific_needs_on_new_unclear_inquiry"
+      ]
+    },
+    {
+      "id": "ask_quantity_before_price",
+      "summary": "Before or in the same turn as quoting, ask quantity (must_ask_quantity_before_price).",
+      "live_rules_anchor": "报价前（或报价同一轮）必须先问数量",
+      "legacy_aliases": [
+        "三段式信息收集_-_must_ask_quantity_before_price",
+        "报价前_或报价同一轮_必须先问数量",
+        "第三段_成交"
+      ]
+    }
+  ]
+}

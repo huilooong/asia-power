@@ -77,7 +77,19 @@ APPROVAL_TAG_RE = re.compile(
 )
 
 _APPROVE_WORDS = {"approved", "approve", "同意", "批准", "ok", "可以", "通过"}
-_REJECT_WORDS = {"reject", "rejected", "拒绝", "不批", "no", "驳回"}
+_REJECT_WORDS = {
+    "reject",
+    "rejected",
+    "拒绝",
+    "不批",
+    "no",
+    "驳回",
+    "不用改",
+    "不用管",
+    "先不管",
+    "这条先不管",
+    "这条不用管",
+}
 
 
 def _now() -> str:

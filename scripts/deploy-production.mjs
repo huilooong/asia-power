@@ -618,6 +618,7 @@ function deployApsales() {
     `${ROOT}/scripts/run-coach-structured.py`,
     `${ROOT}/scripts/run-coach-plan-completion-watch.py`,
     `${ROOT}/scripts/verify-coach-live-rules-abcd.py`,
+    `${ROOT}/scripts/migrate-coach-pending-rule-ids.py`,
     `${ROOT}/scripts/apsales-facebook-scheduled-post.py`,
     `${AP}/scripts/`,
   ]);

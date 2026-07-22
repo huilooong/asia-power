@@ -38,6 +38,7 @@
 - **不要默认丢给 Codex**，除非龙哥明确说 Cursor 在忙 / 指定 Codex。
 - 计划源例：`~/.claude/plans/seo-real-data-triage-and-quality-first.md`（真实 GSC 28 天数据驱动：先修 bug、救活已曝光页，暂停按国家批量扩页）。
 - **批量改 HTML 禁忌：** `re.sub` 替换串里若正文以数字开头（如 `540+`），拼在 `\1` 后会变成 `\154…` 捕获组，吃掉 `og:description` 标签；必须用回调或 `\g<1>`。
+- **APGEO-001（2026-07-22 上线）**：`llms.txt` + robots AI bots；20 个高库存发动机页答案首段；guides hub/两篇指南买家问答 + FAQPage/QAPage。Phase 3 站外未做。方案：`docs/product/seo/apgeo-001-generative-engine-optimization-plan.md`。
 
 - 企微应用对外名仍是 **AsiaPower 库存 Agent**（腾讯后台已建），**实际主责是子龙**；销售类问题可路由给子敬，但子敬的主阵地不是企微。
 - 子敬已学 WhatsApp 聊天记录（524 会话 / 12724 消息，2026-06-29 导入）；数据问 `python -m truth.verified_sales_intelligence "问题"`。
@@ -215,3 +216,10 @@
 
 - **PWA SW 修复已判定有效（2026-07-16）**：Claude 真机复验通过；现网干净。沙盒未能完整复现「旧访客升级瞬间」属测试环境限制，不否定修复。证据在 `site-template-consistency-audit.md`。
 - 首页 v4（home-v4-hybrid）变更必须用 deploy **home**，不是 chrome。
+
+## Sales Coach 升级规则身份（CEO 2026-07-22）
+
+- LLM 审查身份只用稳定 `rule_id`（`sales_coach/rule_catalog.json`），**禁止**用自由文本 `rule_hint` 做冷却/去重。
+- 同一 rule_id 问过龙哥且未拒绝 → 复发直接写 `.claude/plans/coach-fix-*.md`，不再刷 Telegram；全新问题才问人。
+- 产物永远是 markdown 方案，不自动改生产代码/部署；Cursor 做完仍要复核。
+- 132 pending 已于 2026-07-22 归并为 20 个任务；细节见 `memory/2026-07-22.md`。

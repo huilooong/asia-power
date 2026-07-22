@@ -18,6 +18,7 @@ from typing import Any, Callable
 
 from sales_coach.config import COACH_READ_ONLY, coach_memory_dir, coach_output_dir, workspace_root
 from sales_coach.evidence import load_merged_turns
+from sales_coach.rule_catalog import catalog_prompt_block, resolve_stable_rule_id, unclassified_id
 
 assert COACH_READ_ONLY is True
 
@@ -115,6 +116,7 @@ def _extract_json_object(text: str) -> dict[str, Any]:
 
 
 def _system_prompt(rules_text: str) -> str:
+    catalog_block = catalog_prompt_block()
     return (
         "You are AsiaPower Sales Coach (READ ONLY auditor).\n"
         "Your ONLY job: check whether each bot reply conforms to the EXISTING rules below.\n"
@@ -129,10 +131,15 @@ def _system_prompt(rules_text: str) -> str:
         "(e.g. `Hi there.` ≈ `Hi there!`). "
         "Bare short greetings alone (`Hi!`, `Hello!`, `Hi,`, `Hey!`) are NOT violations of that ban.\n"
         "Apply the same discipline to other rules: do not invent stricter versions than the written text.\n\n"
+        "RULE_ID IS MANDATORY FOR IDENTITY:\n"
+        f"- Every violation MUST include rule_id chosen from the catalog (or `{unclassified_id()}`).\n"
+        "- Never invent a new rule_id string. Never put free-text Chinese/English into rule_id.\n"
+        "- rule_hint is human-readable display only; it is NOT used for dedupe/cooldown.\n\n"
+        f"{catalog_block}\n\n"
         "Return ONLY valid JSON with this shape:\n"
         "{\n"
-        '  "violations": [{"evidence_id":"...","rule_hint":"...","reason":"...","confidence":"high|medium|low"}],\n'
-        '  "good_examples": [{"evidence_id":"...","why_good":"...","rule_hint":"..."}]\n'
+        '  "violations": [{"evidence_id":"...","rule_id":"<from catalog>","rule_hint":"...","reason":"...","confidence":"high|medium|low"}],\n'
+        '  "good_examples": [{"evidence_id":"...","why_good":"...","rule_id":"<from catalog or empty>","rule_hint":"..."}]\n'
         "}\n"
         "confidence high = clear written-rule breach with an explicit rule quote; "
         "medium = likely but still must cite a real rule line; low = omit.\n"
@@ -162,10 +169,11 @@ _BARE_GREETING_CLAIM_RE = re.compile(
 
 def _is_overbroad_banned_opening_violation(v: dict[str, Any], turns: list[dict[str, Any]]) -> bool:
     """Drop false positives that treat bare Hi!/Hello! as the banned-opening rule."""
+    rid = str(v.get("rule_id") or "")
     hint = str(v.get("rule_hint") or "")
     reason = str(v.get("reason") or "")
-    blob = f"{hint}\n{reason}"
-    about_banned_openings = bool(
+    blob = f"{rid}\n{hint}\n{reason}"
+    about_banned_openings = rid == "avoid_banned_opening_phrases" or bool(
         re.search(
             r"禁止开场|banned opening|prohibited opening|forbidden opening|"
             r"disallowed as (an )?opening|forbidden as an opening|"
@@ -229,8 +237,14 @@ def audit_conversation(
             )
         ):
             continue
+        stable_id = resolve_stable_rule_id(
+            rule_id=str(v.get("rule_id") or ""),
+            rule_hint=str(v.get("rule_hint") or ""),
+            allow_hint_alias=False,
+        )
         candidate = {
             "evidence_id": str(v.get("evidence_id")),
+            "rule_id": stable_id,
             "rule_hint": str(v.get("rule_hint") or "")[:200],
             "reason": reason[:600],
             "confidence": conf,
@@ -249,6 +263,11 @@ def audit_conversation(
             {
                 "evidence_id": str(g.get("evidence_id")),
                 "why_good": str(g.get("why_good") or "")[:600],
+                "rule_id": resolve_stable_rule_id(
+                    rule_id=str(g.get("rule_id") or ""),
+                    rule_hint=str(g.get("rule_hint") or ""),
+                    allow_hint_alias=False,
+                ),
                 "rule_hint": str(g.get("rule_hint") or "")[:200],
             }
         )
@@ -404,7 +423,8 @@ def build_llm_audit_markdown(
             cust = str(((turn.get("customer") or {}).get("message") or ""))[:160]
             reply = str(((turn.get("reply") or {}).get("text") or ""))[:160]
             lines.append(
-                f"### [{v['evidence_id']}] `{v.get('rule_hint') or '?'}` "
+                f"### [{v['evidence_id']}] `{v.get('rule_id') or unclassified_id()}` "
+                f"/ {v.get('rule_hint') or '?'} "
                 f"（confidence={v.get('confidence')}）"
             )
             lines.append(f"- 客户:「{cust}」")
