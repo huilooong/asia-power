@@ -147,13 +147,84 @@ export function plateFailureAskCopy(kind = "primary") {
 }
 
 /**
+ * Shared short-window dedup for ANY OCR-fail customer reply.
+ * 1st in window → send; 3rd → escalate once (caller supplies escalate copy);
+ * other in-window → silence. Prevents stacked photos from spamming.
+ */
+export function applyPlateFailureDedup({
+  primaryReply,
+  escalateReply,
+  kindPrimary = "primary",
+  kindEscalate = "escalate",
+  dealState = null,
+  nowMs = Date.now(),
+  extraPatch = {},
+}) {
+  const lastAt = Date.parse(String(dealState?.last_plate_failure_reply_at || ""));
+  const withinWindow = Number.isFinite(lastAt) && nowMs - lastAt < PLATE_FAILURE_DEDUP_MS;
+  const prevStreak = withinWindow ? Number(dealState?.plate_failure_streak || 0) : 0;
+  const streak = prevStreak + 1;
+  const lastKind = withinWindow ? String(dealState?.last_plate_failure_reply_kind || "") : "";
+
+  let kind = null;
+  if (!withinWindow || streak === 1) {
+    kind = kindPrimary;
+  } else if (
+    streak === PLATE_FAILURE_ESCALATE_AT &&
+    lastKind !== kindEscalate &&
+    escalateReply
+  ) {
+    kind = kindEscalate;
+  }
+
+  if (!kind) {
+    return {
+      reply: null,
+      silence: true,
+      dealPatch: {
+        plate_failure_streak: streak,
+      },
+    };
+  }
+
+  const reply = kind === kindEscalate ? escalateReply : primaryReply;
+  return {
+    reply,
+    silence: false,
+    dealPatch: {
+      last_plate_failure_reply_at: new Date(nowMs).toISOString(),
+      plate_failure_streak: streak,
+      last_plate_failure_reply_kind: kind,
+      ...extraPatch,
+    },
+  };
+}
+
+function partIntentPhotoEscalateCopy(dealState, label) {
+  const bits = [dealState?.year, dealState?.brand, dealState?.model]
+    .map((x) => String(x || "").trim())
+    .filter(Boolean);
+  const vehicle = bits.length ? bits.join(" ") : "";
+  if (vehicle) {
+    return (
+      `Still no readable VIN in these photos. For your ${vehicle} ${label}, ` +
+      `type the engine code (or a clear metal plate photo) and I can move toward a price.`
+    );
+  }
+  return (
+    `Still no readable VIN in these photos. Type the engine code / chassis number ` +
+    `for your ${label} request and I can move toward a price.`
+  );
+}
+
+/**
  * Image OCR failed: pick copy from deal context.
  * - part_intent set → treat as accessory/part photo (not a plate ask)
  * - vin/engine already confirmed (Bug A) → don't ask to resend plate
  * - else → ask for nameplate/VIN photo (not "clearer" blur wording)
  *
- * Dedup: short-window silence so stacked photos don't spam the same line.
- * OCR still ran before this is called; success path is unaffected.
+ * Dedup applies to ALL branches (incl. part_intent) — CEO 2026-07-22 +233243520405
+ * stacked three identical "noted for your engine" lines because part_intent skipped dedup.
  *
  * @returns {{ reply: string|null, silence: boolean, dealPatch: object }}
  */
@@ -167,58 +238,45 @@ export function decidePlateFailureReply(mediaContext, dealState, nowMs = Date.no
   const partIntent = String(dealState?.part_intent || "").trim();
   if (partIntent) {
     const label = partIntentLabel(partIntent);
-    return {
-      reply: `Got your photo — noted for your ${label} request. Anything else, or should we get you a price?`,
-      silence: false,
-      dealPatch: {},
-    };
+    return applyPlateFailureDedup({
+      primaryReply: `Got your photo — noted for your ${label} request. Anything else, or should we get you a price?`,
+      escalateReply: partIntentPhotoEscalateCopy(dealState, label),
+      kindPrimary: "part_noted",
+      kindEscalate: "part_escalate",
+      dealState,
+      nowMs,
+      // Cue for next text turn: customer may answer "Yes" to the price offer.
+      extraPatch: {
+        last_outbound_cue: "offer_price_go_ahead",
+        last_outbound_cue_at: new Date(nowMs).toISOString(),
+      },
+    });
   }
 
   if (dealState?.vin || dealState?.engine_code) {
     const bits = [dealState.brand, dealState.model, dealState.year, dealState.engine_code]
       .filter(Boolean);
-    return {
-      reply: bits.length
-        ? `No worries — we already have your vehicle confirmed (${bits.join(" / ")}). You don't need to resend the plate.`
-        : "No worries — we already have your vehicle details confirmed from your earlier photo.",
-      silence: false,
-      dealPatch: {},
-    };
+    const primary = bits.length
+      ? `No worries — we already have your vehicle confirmed (${bits.join(" / ")}). You don't need to resend the plate.`
+      : "No worries — we already have your vehicle details confirmed from your earlier photo.";
+    return applyPlateFailureDedup({
+      primaryReply: primary,
+      escalateReply: null, // silence further duplicates in-window
+      kindPrimary: "already_confirmed",
+      kindEscalate: "already_confirmed_escalate",
+      dealState,
+      nowMs,
+    });
   }
 
-  const lastAt = Date.parse(String(dealState?.last_plate_failure_reply_at || ""));
-  const withinWindow = Number.isFinite(lastAt) && nowMs - lastAt < PLATE_FAILURE_DEDUP_MS;
-  const prevStreak = withinWindow ? Number(dealState?.plate_failure_streak || 0) : 0;
-  const streak = prevStreak + 1;
-  const lastKind = withinWindow ? String(dealState?.last_plate_failure_reply_kind || "") : "";
-
-  // 1st in window → primary; 3rd → escalate once; other in-window failures → silence.
-  let kind = null;
-  if (!withinWindow || streak === 1) {
-    kind = "primary";
-  } else if (streak === PLATE_FAILURE_ESCALATE_AT && lastKind !== "escalate") {
-    kind = "escalate";
-  }
-
-  if (!kind) {
-    return {
-      reply: null,
-      silence: true,
-      dealPatch: {
-        plate_failure_streak: streak,
-      },
-    };
-  }
-
-  return {
-    reply: plateFailureAskCopy(kind),
-    silence: false,
-    dealPatch: {
-      last_plate_failure_reply_at: new Date(nowMs).toISOString(),
-      plate_failure_streak: streak,
-      last_plate_failure_reply_kind: kind,
-    },
-  };
+  return applyPlateFailureDedup({
+    primaryReply: plateFailureAskCopy("primary"),
+    escalateReply: plateFailureAskCopy("escalate"),
+    kindPrimary: "primary",
+    kindEscalate: "escalate",
+    dealState,
+    nowMs,
+  });
 }
 
 /** @deprecated Prefer decidePlateFailureReply — kept for older call sites/tests. */

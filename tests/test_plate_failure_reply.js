@@ -44,6 +44,44 @@ test('plateFailureReply: part_intent without vin uses parts-photo copy (not plat
   assert.ok(!/nameplate\/VIN sticker/i.test(reply));
 });
 
+test('decidePlateFailureReply: part_intent stacked photos dedupe (0405 case)', async () => {
+  const { decidePlateFailureReply } = await loadHelpers();
+  const img = { message_type: 'image', vin_decode: { status: 'failed', error: 'no_vin' } };
+  const deal = { part_intent: 'engine', year: '2004', brand: 'Jeep', model: 'Cherokee' };
+  const first = decidePlateFailureReply(img, deal, t0);
+  assert.equal(first.silence, false);
+  assert.match(first.reply, /noted for your engine request/i);
+  assert.equal(first.dealPatch.last_outbound_cue, 'offer_price_go_ahead');
+  assert.equal(first.dealPatch.last_plate_failure_reply_kind, 'part_noted');
+
+  const second = decidePlateFailureReply(
+    img,
+    {
+      ...deal,
+      last_plate_failure_reply_at: first.dealPatch.last_plate_failure_reply_at,
+      plate_failure_streak: 1,
+      last_plate_failure_reply_kind: 'part_noted',
+    },
+    t0 + 30_000,
+  );
+  assert.equal(second.silence, true);
+  assert.equal(second.reply, null);
+
+  const third = decidePlateFailureReply(
+    img,
+    {
+      ...deal,
+      last_plate_failure_reply_at: first.dealPatch.last_plate_failure_reply_at,
+      plate_failure_streak: 2,
+      last_plate_failure_reply_kind: 'part_noted',
+    },
+    t0 + 45_000,
+  );
+  assert.equal(third.silence, false);
+  assert.match(third.reply, /engine code|metal plate/i);
+  assert.ok(!/Anything else, or should we get you a price/i.test(third.reply));
+});
+
 test('plateFailureReply: body-part intent (windscreen) acknowledges part photo', async () => {
   const { plateFailureReply } = await loadHelpers();
   const reply = plateFailureReply(
