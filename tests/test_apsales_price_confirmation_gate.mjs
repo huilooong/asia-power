@@ -217,3 +217,57 @@ test("Step 0: unrelated transport reasoning is also default-allowed", async () =
   assert.equal(result.hold, false);
   assert.deepEqual(result.requestedFacts, []);
 });
+
+test("C-fix: FX / currency chitchat must not enter price hold", async () => {
+  const {
+    classifyPrivateBusinessFactRequest,
+    isCurrencyExchangeAsk,
+    buildPrivateBusinessFactContext,
+    priceConfirmationGate,
+  } = await loadGate();
+
+  const fxSamples = [
+    "How much is the rmb to the dollar",
+    "What's the exchange rate today?",
+    "rmb to the dollar please",
+    "人民币兑美元多少",
+  ];
+  for (const msg of fxSamples) {
+    assert.equal(isCurrencyExchangeAsk(msg), true, msg);
+    assert.deepEqual(classifyPrivateBusinessFactRequest(msg), [], msg);
+    const result = priceConfirmationGate({
+      preGenerationContext: buildPrivateBusinessFactContext({
+        customerMessage: msg,
+        dealState: {},
+        inventoryMatches: [],
+      }),
+      modelNeedsPriceConfirmation: false,
+    });
+    assert.equal(result.hold, false, `${msg} must not silent-hold`);
+  }
+
+  // Even if the model wrongly sets needs_price_confirmation on FX, do not hold.
+  const fxWithModelFlag = priceConfirmationGate({
+    preGenerationContext: buildPrivateBusinessFactContext({
+      customerMessage: "How much is the rmb to the dollar",
+      dealState: {},
+      inventoryMatches: [],
+    }),
+    modelNeedsPriceConfirmation: true,
+  });
+  assert.equal(fxWithModelFlag.hold, false);
+
+  // Real parts pricing in USD must still hold without evidence.
+  const partsPrice = "How much is the 2NZ engine in USD?";
+  assert.equal(isCurrencyExchangeAsk(partsPrice), false);
+  const held = priceConfirmationGate({
+    preGenerationContext: buildPrivateBusinessFactContext({
+      customerMessage: partsPrice,
+      dealState: { part_intent: "engine" },
+      inventoryMatches: [],
+    }),
+    modelNeedsPriceConfirmation: false,
+  });
+  assert.equal(held.hold, true);
+  assert.match(held.reason, /missing_private_business_evidence/);
+});

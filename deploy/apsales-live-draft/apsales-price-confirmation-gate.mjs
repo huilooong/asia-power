@@ -15,10 +15,30 @@
  */
 
 const PRIVATE_BUSINESS_REQUEST = Object.freeze({
-  price: /\b(?:how\s*much|price|cost|quote|quotation|pricing|rate|final\s+amount)\b|\b(?:prix|combien|tarif|co[uû]t|devis)\b|\b(?:pre[cç]o|quanto|cota[cç][aã]o)\b|\b(?:precio|cu[aá]nto|cotizaci[oó]n)\b|价格|多少钱|报价|价钱|费用|سعر|كم\s*(?:سعر|ثمن)?/iu,
+  // Do NOT use bare \brate\b — it false-triggers "exchange rate" / FX chitchat.
+  price: /\b(?:how\s*much|price|cost|quote|quotation|pricing|final\s+amount|price\s+rate)\b|\b(?:prix|combien|tarif|co[uû]t|devis)\b|\b(?:pre[cç]o|quanto|cota[cç][aã]o)\b|\b(?:precio|cu[aá]nto|cotizaci[oó]n)\b|价格|多少钱|报价|价钱|费用|سعر|كم\s*(?:سعر|ثمن)?/iu,
   inventory: /\b(?:in\s+stock|available|availability|have\s+it|can\s+you\s+source|stock)\b|\b(?:disponible|disponibilit[eé]|en\s+stock)\b|\b(?:dispon[ií]vel|estoque)\b|\b(?:disponible|existencia)\b|库存|有货|现货|能做|متوفر|مخزون/iu,
   delivery: /\b(?:delivery|deliver|shipping|ship(?:ping)?\s+time|freight|lead\s+time|arrival|arrive|eta|import(?:ed|ing)?|from\s+china|in\s+ghana)\b|\b(?:livraison|livrer|d[eé]lai|exp[eé]dition)\b|\b(?:entrega|envio|prazo)\b|\b(?:entrega|env[ií]o|plazo)\b|交期|多久到|运费|海运|发货|配送|进口|加纳|شحن|توصيل|موعد\s+الوصول/iu,
 });
+
+/** Currency / FX small-talk — not an AsiaPower parts price request. */
+const FX_OR_CURRENCY_ASK =
+  /\b(?:exchange\s+rate|forex|\bfx\b)\b|\b(?:rmb|cny|yuan|usd|dollars?|ghs|cedis?|euros?|gbp|英镑|美元|人民币|塞地)\b(?:[^.!?\n]{0,48})\b(?:to|vs\.?|versus|against|into|兑换|兑|对)\b(?:[^.!?\n]{0,24})\b(?:the\s+)?(?:rmb|cny|yuan|usd|dollars?|ghs|cedis?|euros?|gbp|英镑|美元|人民币|塞地)\b|\b(?:how\s*much|what(?:\s+is|\s+'s)?)\b[^.!?\n]{0,40}\b(?:rmb|cny|yuan)\b[^.!?\n]{0,40}\b(?:dollar|usd|ghs|cedi)\b|人民币.*(?:美元|美金)|汇率|兑换率/iu;
+
+/** Product / fitment cues — keeps "how much for the engine in USD" as a real price ask. */
+const PARTS_OR_PRODUCT_CUE =
+  /\b(?:engine|gearbox|transmission|half[\s-]?cut|vin|chassis|stock|hc\s*\d|apk|toyota|honda|nissan|mitsubishi|montero|kia|forte|ford|bmw|audi|mazda|suzuki|hyundai|part(?:s)?|battery|turbo)\b|发动机|变速箱|半切|底盘号/iu;
+
+/**
+ * True when the customer is asking FX / currency conversion, not part pricing.
+ * Example that must not enter the price gate: "How much is the rmb to the dollar".
+ */
+export function isCurrencyExchangeAsk(customerMessage) {
+  const text = String(customerMessage || "").trim();
+  if (!text) return false;
+  if (PARTS_OR_PRODUCT_CUE.test(text)) return false;
+  return FX_OR_CURRENCY_ASK.test(text);
+}
 
 /**
  * Classify only requests for facts unique to our business from THIS message.
@@ -33,6 +53,11 @@ export function classifyPrivateBusinessFactRequest(customerMessage, dealState = 
       .filter(([, pattern]) => pattern.test(text))
       .map(([fact]) => fact),
   );
+
+  // FX / currency chitchat often contains "how much" — strip the false price class.
+  if (requestedFacts.has("price") && isCurrencyExchangeAsk(text)) {
+    requestedFacts.delete("price");
+  }
 
   return [...requestedFacts];
 }
@@ -59,9 +84,11 @@ export function buildPrivateBusinessEvidence({ inventoryMatches, dealState = {} 
 
 /** Build this before model generation; it contains no model output. */
 export function buildPrivateBusinessFactContext({ customerMessage, dealState, inventoryMatches }) {
+  const currencyExchangeAsk = isCurrencyExchangeAsk(customerMessage);
   return {
     requestedFacts: classifyPrivateBusinessFactRequest(customerMessage, dealState),
     evidence: buildPrivateBusinessEvidence({ inventoryMatches, dealState }),
+    currencyExchangeAsk,
   };
 }
 
@@ -69,14 +96,25 @@ export function buildPrivateBusinessFactContext({ customerMessage, dealState, in
  * Determine the pre-send hold from independent safety signals.
  *
  * The model flag is an unconditional handoff request: it must never be
- * weakened by request classification or evidence. Separately, a private
- * business request without Layer 2 evidence is held before its reply reaches
- * the customer, whether the model invented a number or merely says to wait.
+ * weakened by request classification or evidence — except FX/currency
+ * chitchat, which is never a parts-price confirmation case.
+ * Separately, a private business request without Layer 2 evidence is held
+ * before its reply reaches the customer.
  */
 export function priceConfirmationGate({ preGenerationContext, modelNeedsPriceConfirmation }) {
   const requestedFacts = Array.isArray(preGenerationContext?.requestedFacts)
     ? preGenerationContext.requestedFacts
     : [];
+
+  // FX / currency small-talk: never silent-hold (CEO 2026-07-23 C-fix).
+  if (preGenerationContext?.currencyExchangeAsk === true) {
+    return {
+      hold: false,
+      reason: "",
+      requestedFacts: [],
+      modelNeedsPriceConfirmation: false,
+    };
+  }
 
   if (modelNeedsPriceConfirmation === true) {
     return {
