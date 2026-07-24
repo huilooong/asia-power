@@ -7,7 +7,10 @@ Documentation=file:///root/.openclaw/workspace/AsiaPower/docs/agents/apbd/lead-d
 Type=simple
 WorkingDirectory=/root/.openclaw/workspace/AsiaPower
 EnvironmentFile=-/root/.openclaw/workspace/AsiaPower/.env
+Environment=PYTHONUNBUFFERED=1
 ExecStart=/root/.openclaw/workspace/AsiaPower/.venv/bin/python3 scripts/apbd_leads_ca_trickle.py --loop --limit 5 --max-cities 1 --load-max 1.8 --idle-sleep 120 --busy-sleep 90
+StandardOutput=journal
+StandardError=journal
 Restart=always
 RestartSec=60
 Nice=15
