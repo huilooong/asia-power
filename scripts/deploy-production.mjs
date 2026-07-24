@@ -86,6 +86,7 @@ function deployApi() {
   rsync(`${ROOT}/deploy/inventory-site-server.js`, `${SITE}/server.js`);
   // Do NOT use --delete: production lib/ may contain hotfix-only modules; deleting breaks approve/normalize.
   run('rsync', ['-av', `${ROOT}/server/lib/`, `${SITE}/lib/`]);
+  rsync(`${ROOT}/scripts/youtube_inventory_upload.py`, `${SITE}/scripts/youtube_inventory_upload.py`);
   rsync(`${ROOT}/deploy/inventory-site.service`, `${REMOTE}:/etc/systemd/system/inventory-site.service`);
   rsync(`${ROOT}/deploy/health-watch.sh`, `${REMOTE}:/usr/local/bin/asiapower-health-watch.sh`);
   if (fs.existsSync(path.join(ROOT, 'package-lock.json'))) {
@@ -96,16 +97,43 @@ function deployApi() {
   }
   ssh(`
 set -e
-for f in machinery-brand-catalog.js powertrain-catalog-memory.js powertrain-labels.js static-powertrain-catalog.js; do
-  test -f /root/.openclaw/workspace/inventory-site/lib/"$f" || { echo "missing lib/$f"; exit 1; }
+SITE=/root/.openclaw/workspace/inventory-site
+for f in machinery-brand-catalog.js powertrain-catalog-memory.js powertrain-labels.js static-powertrain-catalog.js youtube-upload-queue.js; do
+  test -f "$SITE/lib/$f" || { echo "missing lib/$f"; exit 1; }
 done
-node --check /root/.openclaw/workspace/inventory-site/server.js
-grep -q "pwa-install.js" /root/.openclaw/workspace/inventory-site/server.js
-grep -q "pwa-app-shell.js" /root/.openclaw/workspace/inventory-site/server.js
+test -f "$SITE/scripts/youtube_inventory_upload.py" || { echo "missing youtube upload script"; exit 1; }
+# Preserve existing YouTube queue if production already has items
+if [ ! -f "$SITE/reports/youtube-upload-queue.json" ]; then
+  mkdir -p "$SITE/reports"
+  printf '%s\\n' '{ "version": 1, "items": [] }' > "$SITE/reports/youtube-upload-queue.json"
+fi
+node --check "$SITE/server.js"
+node --check "$SITE/lib/youtube-upload-queue.js"
+grep -q "pwa-install.js" "$SITE/server.js"
+grep -q "pwa-app-shell.js" "$SITE/server.js"
+grep -q "startYoutubeSyncWorker" "$SITE/server.js"
+# YouTube worker venv (OAuth token is installed out-of-band; never from git)
+if [ ! -x "$SITE/.venv-youtube/bin/python3" ]; then
+  python3 -m venv "$SITE/.venv-youtube"
+fi
+"$SITE/.venv-youtube/bin/pip" -q install --upgrade pip
+"$SITE/.venv-youtube/bin/pip" -q install google-api-python-client google-auth-oauthlib google-auth-httplib2
+ENV="$SITE/.env"
+ensure_env() {
+  KEY="\$1"; VAL="\$2"
+  if ! grep -q "^\$KEY=" "\$ENV" 2>/dev/null; then
+    echo "\$KEY=\$VAL" >> "\$ENV"
+    echo "[deploy] set default \$KEY=\$VAL"
+  fi
+}
+ensure_env YOUTUBE_PYTHON "$SITE/.venv-youtube/bin/python3"
+ensure_env YOUTUBE_SYNC_ENABLED 1
+ensure_env YOUTUBE_UPLOAD_QUEUE_POLL_MS 120000
+ensure_env PUBLIC_SITE_URL https://asia-power.com
 systemctl daemon-reload
 chmod +x /usr/local/bin/asiapower-health-watch.sh 2>/dev/null || true
-if [ -f /root/.openclaw/workspace/inventory-site/package.json ]; then
-  cd /root/.openclaw/workspace/inventory-site && npm install --omit=dev 2>/dev/null || npm install || true
+if [ -f "$SITE/package.json" ]; then
+  cd "$SITE" && npm install --omit=dev 2>/dev/null || npm install || true
 fi
 systemctl restart inventory-site.service
 systemctl is-active inventory-site.service

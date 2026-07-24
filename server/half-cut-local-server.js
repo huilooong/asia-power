@@ -497,4 +497,7 @@ server.listen(PORT, BIND_HOST, () => {
   console.log(`Half-cut local server: http://${BIND_HOST}:${PORT}`);
   console.log(`Uploads: ${halfCut.UPLOADS_DIR}`);
   console.log(`State: ${halfCut.DATA_DIR}`);
+  if (typeof halfCut.startYoutubeSyncWorker === 'function') {
+    halfCut.startYoutubeSyncWorker();
+  }
 });

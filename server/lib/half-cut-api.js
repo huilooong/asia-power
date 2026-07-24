@@ -32,6 +32,7 @@ const { createPowertrainCatalogMemory } = require('./powertrain-catalog-memory')
 const { loadJson, saveJsonAtomic } = require('./json-store');
 const { createDataIntakeLog } = require('./data-intake-log');
 const { normalizePhone, phonesMatch } = require('./phone-normalize');
+const { createYoutubeUploadQueue } = require('./youtube-upload-queue');
 
 const MAX_PHOTO_BYTES = 8 * 1024 * 1024;
 const MAX_PHOTOS_PER_SUBMISSION = 15;
@@ -199,6 +200,7 @@ function createHalfCutApi(rootDir, options = {}) {
   const intakeLog = createDataIntakeLog(DATA_DIR);
   const modelMemory = createVehicleModelMemory(DATA_DIR, rootDir);
   const powertrainMemory = createPowertrainCatalogMemory(DATA_DIR, rootDir);
+  const youtubeQueue = createYoutubeUploadQueue(rootDir);
 
   function bootstrapCatalogMemory() {
     try {
@@ -561,6 +563,9 @@ function createHalfCutApi(rootDir, options = {}) {
     saveJson(SUBMISSIONS_FILE, submissions);
     saveJson(APPROVED_FILE, approved);
     powertrainMemory.rebuildFromApproved(approved);
+    // If admin/supplier later attaches a self-hosted public video via broader edits,
+    // putState handles enqueue; field-level patch today omits video.
+    youtubeQueue.enqueueIfNeeded(item);
     return item;
   }
 
@@ -584,6 +589,7 @@ function createHalfCutApi(rootDir, options = {}) {
           approved[index] = promoted;
           saveJson(APPROVED_FILE, approved);
           console.log('[half-cut] background media promote complete:', stockId);
+          youtubeQueue.enqueueIfNeeded(promoted);
         } catch (err) {
           console.error('[half-cut] background media promote failed:', stockId, err.message);
         }
@@ -659,7 +665,11 @@ function createHalfCutApi(rootDir, options = {}) {
     notifyHalfCutEvents(events);
 
     const promoteQueued = media.recordNeedsMediaPromote(inventoryItem);
-    if (promoteQueued) queueBackgroundPromote(inventoryItem.stockId);
+    if (promoteQueued) {
+      queueBackgroundPromote(inventoryItem.stockId);
+    } else {
+      youtubeQueue.enqueueIfNeeded(inventoryItem);
+    }
 
     return { ok: true, submission, inventoryItem, promoteQueued };
   }
@@ -732,6 +742,11 @@ function createHalfCutApi(rootDir, options = {}) {
       powertrainMemory.rememberFromHalfCut(item);
     });
     queuePromoteForApprovedList(approved);
+    for (const item of approved) {
+      if (!media.recordNeedsMediaPromote(item)) {
+        youtubeQueue.enqueueIfNeeded(item);
+      }
+    }
     const next = { submissions: normalized.submissions, approved };
     const events = diffHalfCutState(previous, next);
     for (const event of events) {
@@ -1489,6 +1504,8 @@ function createHalfCutApi(rootDir, options = {}) {
     updateOwnUpload,
     modelMemory,
     powertrainMemory,
+    youtubeQueue,
+    startYoutubeSyncWorker: () => youtubeQueue.startWorker(),
   };
 }
 

@@ -2067,4 +2067,7 @@ server.listen(PORT, BIND_HOST, () => {
   console.log(`Inventory site running on http://${BIND_HOST}:${PORT}`);
   console.log(`Half-cut uploads: ${halfCut.UPLOADS_DIR}`);
   console.log(`Half-cut state: ${halfCut.DATA_DIR}`);
+  if (typeof halfCut.startYoutubeSyncWorker === 'function') {
+    halfCut.startYoutubeSyncWorker();
+  }
 });

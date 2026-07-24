@@ -50,10 +50,12 @@
 ## 企业微信 · 子龙供应商助理（2026-07-01 起）
 
 - 认证主体：**南阳芃芃信息科技有限公司**（Corpid `wwe5847049fcf4b72b`）
-- 应用 **AsiaPower 库存 Agent**（AgentId `1000002`）；**生产回调** 国内 Lighthouse `124.222.191.164` → `https://asia-power.cn/wecom/callback`（2026-07-03 部署）
-- **已解决**：`asia-power.cn` 企业备案（南阳芃芃信息科技有限公司）与企微认证主体一致
+- 应用 **AsiaPower 库存 Agent**（AgentId `1000002`）；国内 Lighthouse `124.222.191.164`
+- **ICP 已核（CEO 2026-07-22）**：`asia-power.com.cn` · 企业 · 南阳芃芃信息科技有限公司 · 豫ICP备2026030893号-1 · 审核通过 2026-07-14（公开库 icplishi；腾讯云备案页一致）· IP `124.222.191.164`
+- **正式首页已上**：`https://asia-power.com.cn/` 页脚挂备案号；源文件 `deploy/asia-power.com.cn/index.html`
+- **建议企微回调主域名**：`https://asia-power.com.cn/wecom/callback`（裸 GET 403=正常）；若后台仍报主体校验 → 同主体找企微客服人工放行（文档 40754）
+- **旧文档写的** `asia-power.cn`：DNS/证书仍在；优先用已核备案的 `asia-power.com.cn`
 - **境外备用**：`159.65.86.24` → `https://asia-power.com/wecom/callback`（个人备案，企微后台勿用）
-- **2026-07-02**：`asia-power.cn` 已注册；DNS A → `124.222.191.164`；`deploy/install-wecom-domestic.sh` 已执行
 - 密钥在 `.env`，勿写入 memory
 
 ## QXB 汽修宝批量上传
@@ -62,6 +64,25 @@
 - 本地审核：`QXB_REVIEW_PORT=8789 node work/qxb-agent/review_server.js`
 - 429 = 提交/upload-token 限流（非 VIN decode）；VIN 失败查生产 `knowledge-base.js`
 - 状态文件在 `reports/`（如 `qxb-needs-vin-rows.json`、`qxb-batch-progress.json`）
+
+## YouTube 库存视频自动同步（CEO 2026-07-24）
+
+- **设计：** 审核通过上架后同步上传 YouTube，详情页挂 YouTube 链引流；供应商上传瞬间**不上**频道。
+- **实现：** promote 成功入队 `reports/youtube-upload-queue.json` → `scripts/youtube_inventory_upload.py --process-queue`；站点进程定时 drain。
+- **密钥：** 生产 `work/youtube-inventory-migrate/`（不进 git）；venv `.venv-youtube`；拉视频优先 `INVENTORY_SITE_INTERNAL_URL=http://127.0.0.1:8080`。
+- **手册：** `docs/ops/ops-youtube-oauth-desktop-setup.md`
+
+## 运维 · 扫描流量（CEO 2026-07-24）
+
+- 服务器突然高请求（如 curl / 法国扫描）**先记录、暂不拦截**；看生意看 Analytics/Ads，不看 nginx 总请求数。
+- 影响稳定性或费用时再议 Cloudflare / IP 拦。
+
+## Google Ads（账号 564 · 截至 2026-07-24）
+
+- 账号 `564-118-0568` / 容器 `AW-5641180568`；**转化标签 `ADS_GENERATE_LEAD_LABEL` 仍空**（后台建好后用 `scripts/set-ads-lead-label.mjs` 写入再部署）。
+- 无 Google Ads API：花费/展示/转化以 Ads 后台为准；站侧只能看 UTM/gclid + WA/线索。
+- 7/20–7/24 站侧见少量 `af_search_engines_highintent` 落地 `/engines/`（约 24 HTML / ~21 IP）；效果偏弱，未见稳定 google→线索。
+- CEO 专属开投门：`docs/marketing/google-ads-account-564-ceo-gate-2026-07-20.md`
 
 ## Google Maps / Places 获客（CEO 2026-07-15）
 
