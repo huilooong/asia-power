@@ -1,0 +1,23 @@
+[Unit]
+Description=APBD Canada auto-repair leads trickle (load-gated continuous)
+After=network.target
+Documentation=file:///root/.openclaw/workspace/AsiaPower/docs/agents/apbd/lead-discovery.md
+
+[Service]
+Type=simple
+WorkingDirectory=/root/.openclaw/workspace/AsiaPower
+EnvironmentFile=-/root/.openclaw/workspace/AsiaPower/.env
+ExecStart=/root/.openclaw/workspace/AsiaPower/.venv/bin/python3 scripts/apbd_leads_ca_trickle.py --loop --limit 5 --max-cities 1 --load-max 1.8 --idle-sleep 120 --busy-sleep 90
+Restart=always
+RestartSec=60
+Nice=15
+IOSchedulingClass=best-effort
+IOSchedulingPriority=7
+# Keep this worker small — must not crowd inventory-site / WhatsApp
+MemoryMax=256M
+MemoryHigh=192M
+CPUQuota=35%
+TasksMax=32
+
+[Install]
+WantedBy=multi-user.target

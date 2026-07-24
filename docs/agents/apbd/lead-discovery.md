@@ -46,14 +46,24 @@ python main.py "/apbd leads fixture-load"
 python scripts/apbd_leads_ca_batch.py --limit-per-city 15 --max-cities 8
 ```
 
-### 生产细水长流（推荐）
+### 生产细水长流（持续 · 负载门控）
 
-服务器 cron（`deploy/cron/apbd-ca-leads-trickle.cron`）：**每 4 小时**跑 1 个城市、最多约 6 家新增；负载 >1.8 自动跳过；`flock` 防重叠；`nice`/`ionice` 降优先级。有进展/撞配额/到里程碑时 Telegram 汇报。
+意思是：**负载不高就一直小步采**；网站/WhatsApp 忙时自动停手，不退出服务。
+
+- systemd：`apbd-ca-leads-trickle.service`（`--loop`）
+- 每批：1 城 / 约 5 家；空闲间隔约 120s；负载 >1.8 则等 90s 再看
+- Places 429：休眠约 1 小时再试
+- 到 500：慢巡检（约 6 小时看一次）
+- 资源帽：CPUQuota 35%、MemoryMax 256M、Nice 15
+- Telegram：有进展 / 配额 / 里程碑才报（启动时会报一次）
 
 ```bash
-# 手动试跑（生产）
+systemctl status apbd-ca-leads-trickle.service
+journalctl -u apbd-ca-leads-trickle.service -n 50 --no-pager
+
+# 手动单批（调试）
 cd /root/.openclaw/workspace/AsiaPower
-nice -n 15 .venv/bin/python3 scripts/apbd_leads_ca_trickle.py --limit 6 --max-cities 1
+.venv/bin/python3 scripts/apbd_leads_ca_trickle.py --limit 5 --max-cities 1
 ```
 
 ## Places Key

@@ -1,11 +1,7 @@
-# AsiaPower APBD Canada auto-repair leads — trickle (server-safe)
-# Install via deploy:apsales
-# Logs: /var/log/apbd-ca-leads-trickle.log
-#
-# Schedule: every 4 hours at :25 — 1 city, ~6 new leads max, load-gated.
-# Avoids top-of-hour overlap with Facebook / hourly Telegram jobs.
+# DEPRECATED 2026-07-24 — replaced by systemd continuous trickle:
+#   systemctl status apbd-ca-leads-trickle.service
+# Load-gated loop: works when load is low, pauses when busy.
+# This cron file is intentionally empty (no schedules) so deploy removes bursty 4h jobs.
 
 SHELL=/bin/bash
 PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
-
-25 */4 * * * root cd /root/.openclaw/workspace/AsiaPower && /usr/bin/nice -n 15 /usr/bin/ionice -c2 -n7 .venv/bin/python3 scripts/apbd_leads_ca_trickle.py --limit 6 --max-cities 1 --load-max 1.8 >> /var/log/apbd-ca-leads-trickle.log 2>&1

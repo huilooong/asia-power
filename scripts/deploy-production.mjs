@@ -685,6 +685,10 @@ function deployApsales() {
     `${ROOT}/deploy/cron/apbd-ca-leads-trickle.cron`,
     `${REMOTE}:/tmp/apbd-ca-leads-trickle.cron`,
   ]);
+  run('rsync', ['-av',
+    `${ROOT}/deploy/apbd-ca-leads-trickle.service`,
+    `${REMOTE}:/tmp/apbd-ca-leads-trickle.service`,
+  ]);
   ssh(`
 set -euo pipefail
 install -m 644 /tmp/apsales-sales-coach.cron /etc/cron.d/apsales-sales-coach
@@ -699,14 +703,18 @@ chmod 644 /var/log/apsales-facebook-scheduled-post.log || true
 test -f /etc/cron.d/apsales-facebook-scheduled-post
 grep -q apsales-facebook-scheduled-post.py /etc/cron.d/apsales-facebook-scheduled-post
 echo "[deploy:apsales] facebook hourly post cron installed"
+# Clear old 4h cron schedules — continuous worker is systemd
 install -m 644 /tmp/apbd-ca-leads-trickle.cron /etc/cron.d/apbd-ca-leads-trickle
-touch /var/log/apbd-ca-leads-trickle.log
-chmod 644 /var/log/apbd-ca-leads-trickle.log || true
-test -f /etc/cron.d/apbd-ca-leads-trickle
-grep -q apbd_leads_ca_trickle.py /etc/cron.d/apbd-ca-leads-trickle
+install -m 644 /tmp/apbd-ca-leads-trickle.service /etc/systemd/system/apbd-ca-leads-trickle.service
 mkdir -p /root/.openclaw/workspace/AsiaPower/runtime/apbd/leads/db
 mkdir -p /root/.openclaw/workspace/AsiaPower/docs/agents/apbd /root/.openclaw/workspace/AsiaPower/docs/ops
-echo "[deploy:apsales] APBD CA leads trickle cron installed (every 4h, load-gated)"
+systemctl daemon-reload
+systemctl enable apbd-ca-leads-trickle.service
+systemctl restart apbd-ca-leads-trickle.service
+sleep 2
+systemctl is-active apbd-ca-leads-trickle.service
+test -f /etc/systemd/system/apbd-ca-leads-trickle.service
+echo "[deploy:apsales] APBD CA leads continuous trickle service active (load-gated)"
 `);
 }
 

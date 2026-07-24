@@ -131,6 +131,7 @@ export const TARGET_SOURCE_FILES = {
     'docs/zijing-training/LIVE-RULES.md',
     'deploy/cron/apsales-sales-coach.cron',
     'deploy/cron/apbd-ca-leads-trickle.cron',
+    'deploy/apbd-ca-leads-trickle.service',
     'customer_gateway/growth_autopilot.py',
     'customer_gateway/outreach_engine.py',
     'customer_gateway/distribution_progress.py',
@@ -281,6 +282,7 @@ export const TARGET_REMOTE_PATHS = {
     '/root/.openclaw/workspace/AsiaPower/config/apbd_lead_scoring.yaml',
     '/root/.openclaw/workspace/AsiaPower/agents/apbd',
     '/etc/cron.d/apbd-ca-leads-trickle',
+    '/etc/systemd/system/apbd-ca-leads-trickle.service',
   ],
   'apsales-openclaw': [
     '/root/.openclaw/extensions/apsales-live-draft/bridge.mjs',
