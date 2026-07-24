@@ -65,6 +65,12 @@
 - 429 = 提交/upload-token 限流（非 VIN decode）；VIN 失败查生产 `knowledge-base.js`
 - 状态文件在 `reports/`（如 `qxb-needs-vin-rows.json`、`qxb-batch-progress.json`）
 
+## Facebook 库存轮发（CEO 2026-07-24）
+
+- **规则：** ≥1 张图或可发视频即可；优先视频帖；标题准确（含零件类型 + stockId）；**发过的不重发**；新/更新 Available 自动入池，cron 每小时 2 条（最新优先）。
+- **脚本 / 账本：** `scripts/apsales-facebook-scheduled-post.py` · `data/fb-posted-stock-ids.json`
+- **不是**上架瞬间同步（那是 YouTube）；FB 是按时轮发。
+
 ## YouTube 库存视频自动同步（CEO 2026-07-24）
 
 - **设计：** 审核通过上架后同步上传 YouTube，详情页挂 YouTube 链引流；供应商上传瞬间**不上**频道。

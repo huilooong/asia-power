@@ -1,12 +1,20 @@
 #!/usr/bin/env python3
 """Hourly Facebook Page poster: 2 unused Available listings per run.
 
-Reuses the Graph API album-post flow validated 2026-07-18:
-  POST /{page-id}/photos (published=false) → POST /{page-id}/feed attached_media
+Rules (CEO 2026-07-24):
+  - ≥1 photo OR a postable video is enough
+  - Prefer video post when self-hosted mp4 exists; else photo album / single photo
+  - Titles must be accurate (brand/model/year/part/stockId; no Chinese model junk)
+  - Never re-post a stockId already in the ledger
+  - New/updated Available inventory auto-enters the pool each cron run (newest first)
+
+Graph flows:
+  - Video: POST /{page-id}/videos (file_url + title + description)
+  - Photos: POST /{page-id}/photos (published=false) → POST /{page-id}/feed attached_media
+  - Single photo: POST /{page-id}/photos (published=true, caption)
 
 Dedup ledger: data/fb-posted-stock-ids.json
-Inventory: inventory-site half-cut-approved.json (prod) or local data/ fallback.
-Facebook only — Instagram not wired (account not bound yet).
+Facebook only — Instagram not wired.
 """
 
 from __future__ import annotations
@@ -14,6 +22,7 @@ from __future__ import annotations
 import argparse
 import json
 import os
+import re
 import sys
 import time
 import urllib.error
@@ -33,12 +42,13 @@ try:
 except ModuleNotFoundError:
     pass
 
-SITE_PUBLIC = "https://asia-power.com"
+SITE_PUBLIC = (os.getenv("PUBLIC_SITE_URL") or "https://asia-power.com").rstrip("/")
+R2_PUBLIC = (os.getenv("CLOUDFLARE_R2_PUBLIC_BASE") or "https://media.asia-power.com").rstrip("/")
 GRAPH_BASE = os.getenv("META_GRAPH_API_BASE", "https://graph.facebook.com/v21.0").rstrip("/")
+MIN_MEDIA = 1  # CEO: 1 photo is enough
+CJK_RE = re.compile(r"[\u4e00-\u9fff]+")
 
-# Canonical ledger lives next to AsiaPower scripts (today's batch wrote here).
 POSTED_PATH = ROOT / "data" / "fb-posted-stock-ids.json"
-# Plan also mentioned inventory-site path — keep as secondary mirror.
 POSTED_MIRROR = Path("/root/.openclaw/workspace/inventory-site/data/fb-posted-stock-ids.json")
 
 APPROVED_CANDIDATES = [
@@ -73,14 +83,14 @@ def _graph_get(path: str, token: str, fields: str = "") -> dict[str, Any]:
         return json.loads(resp.read().decode("utf-8"))
 
 
-def _graph_post(path: str, token: str, fields: dict[str, Any]) -> dict[str, Any]:
+def _graph_post(path: str, token: str, fields: dict[str, Any], *, timeout: int = 120) -> dict[str, Any]:
     data = dict(fields)
     data["access_token"] = token
     body = urllib.parse.urlencode(data).encode("utf-8")
     url = f"{GRAPH_BASE}/{path.lstrip('/')}"
     req = urllib.request.Request(url, data=body, method="POST", headers={"Accept": "application/json"})
     try:
-        with urllib.request.urlopen(req, timeout=60) as resp:
+        with urllib.request.urlopen(req, timeout=timeout) as resp:
             return json.loads(resp.read().decode("utf-8"))
     except urllib.error.HTTPError as exc:
         detail = exc.read().decode("utf-8", errors="replace")
@@ -135,15 +145,22 @@ def save_posted(entries: list[dict[str, Any]]) -> None:
         log(f"warn: mirror ledger write failed: {exc}")
 
 
-def photo_url(photo: dict[str, Any]) -> str:
-    url = str(photo.get("url") or "").strip()
+def absolute_media_url(url: str) -> str:
+    url = str(url or "").strip().split("?")[0]
     if not url:
         return ""
     if url.startswith("http://") or url.startswith("https://"):
         return url
     if not url.startswith("/"):
         url = "/" + url
+    # Prefer CDN for uploads when available (R2 public)
+    if url.startswith("/uploads/") and R2_PUBLIC:
+        return R2_PUBLIC + url
     return SITE_PUBLIC + url
+
+
+def photo_url(photo: dict[str, Any]) -> str:
+    return absolute_media_url(str(photo.get("url") or ""))
 
 
 def is_generic_photo_label(label: str) -> bool:
@@ -167,47 +184,194 @@ def labeled_photo_score(item: dict[str, Any]) -> int:
 def pick_photos(item: dict[str, Any], *, max_n: int = 5) -> list[dict[str, Any]]:
     photos = [p for p in (item.get("photos") or []) if isinstance(p, dict) and photo_url(p)]
     labeled = [p for p in photos if not is_generic_photo_label(str(p.get("label") or ""))]
-    chosen = (labeled or photos)[:max_n]
-    if len(chosen) < 4 and photos:
-        # fill from remaining if labeled set too small
+    chosen = list(labeled or photos)[:max_n]
+    if len(chosen) < max_n and photos:
         seen = {id(p) for p in chosen}
         for p in photos:
             if id(p) in seen:
                 continue
             chosen.append(p)
-            if len(chosen) >= 4:
+            if len(chosen) >= max_n:
                 break
     return chosen[:max_n]
 
 
-def build_caption(item: dict[str, Any]) -> str:
-    is_cab = str(item.get("truckPartType") or "").lower() == "cab"
-    is_truck = str(item.get("vehicleCategory") or "").lower() == "truck" and not is_cab
-    brand = str(item.get("brand") or "").strip()
-    model = str(item.get("model") or "").strip()
-    year = str(item.get("year") or "").strip()
-    price = item.get("priceUsd")
-    slug = str(item.get("slug") or "").strip()
-    engine = str(item.get("engineCode") or "").strip()
-    trans = str(item.get("transmissionCode") or "").strip()
+def youtube_url(item: dict[str, Any]) -> str:
+    video = item.get("video") if isinstance(item.get("video"), dict) else {}
+    for raw in (item.get("videoUrl"), video.get("url"), item.get("youtubeVideoId"), video.get("youtubeId")):
+        s = str(raw or "").strip()
+        if not s:
+            continue
+        if "youtube.com" in s or "youtu.be" in s:
+            return s.split("?")[0] if "youtu.be" in s else s
+        if re.fullmatch(r"[A-Za-z0-9_-]{6,}", s):
+            return f"https://www.youtube.com/watch?v={s}"
+    return ""
 
-    if is_cab:
-        title = f"🚛 {year} {brand} {model} Truck Cab".strip()
+
+def self_hosted_video_url(item: dict[str, Any]) -> str:
+    """Public mp4 URL Facebook can fetch (not a YouTube watch page)."""
+    video = item.get("video") if isinstance(item.get("video"), dict) else {}
+    candidates = [
+        video.get("sourceLocalPath"),
+        item.get("videoUrl"),
+        video.get("url"),
+    ]
+    for raw in candidates:
+        u = str(raw or "").strip().split("?")[0]
+        if not u:
+            continue
+        if "youtube.com" in u or "youtu.be" in u:
+            continue
+        if "/uploads/videos/" in u or u.startswith("/uploads/videos/"):
+            if "/uploads/" in u and not u.startswith("/"):
+                # unlikely
+                pass
+            idx = u.find("/uploads/videos/")
+            path = u[idx:] if idx >= 0 else u
+            if not path.startswith("/"):
+                path = "/" + path
+            return absolute_media_url(path)
+        if u.startswith("http") and u.lower().endswith((".mp4", ".mov", ".webm")):
+            return u
+    return ""
+
+
+def has_postable_media(item: dict[str, Any]) -> bool:
+    if self_hosted_video_url(item):
+        return True
+    if pick_photos(item, max_n=1):
+        return True
+    # YouTube-only still counts: we can post a link/caption post
+    if youtube_url(item):
+        return True
+    return False
+
+
+def english_token(value: Any) -> str:
+    s = str(value or "").strip()
+    if not s:
+        return ""
+    if CJK_RE.search(s):
+        return ""
+    return s
+
+
+def model_from_slug(slug: str, brand: str) -> str:
+    raw = str(slug or "").strip().lower()
+    if not raw:
+        return ""
+    parts = [p for p in raw.split("-") if p]
+    brand_l = str(brand or "").strip().lower()
+    if brand_l and parts and parts[0] == brand_l:
+        parts = parts[1:]
+    skip = {
+        "half",
+        "cut",
+        "truck",
+        "engine",
+        "gearbox",
+        "cab",
+        "machinery",
+        "passenger",
+        "2wd",
+        "4wd",
+        "awd",
+    }
+    out: list[str] = []
+    for p in parts:
+        if re.fullmatch(r"hc\d+", p):
+            break
+        if re.fullmatch(r"20\d{2}", p):
+            break
+        if p in skip:
+            continue
+        if re.fullmatch(r"[a-z0-9]+", p) and not re.fullmatch(r"\d+", p):
+            out.append(p.upper() if len(p) <= 3 else p.capitalize())
+        if len(out) >= 2:
+            break
+    return " ".join(out)
+
+
+def part_type_label(item: dict[str, Any]) -> str:
+    truck_part = str(item.get("truckPartType") or "").strip().lower()
+    pass_part = str(item.get("passengerPartType") or "").strip().lower()
+    cat = str(item.get("vehicleCategory") or "").strip().lower()
+    if truck_part == "cab":
+        return "Truck Cab"
+    if truck_part == "engine" or pass_part == "engine":
+        return "Truck Engine" if cat == "truck" else "Engine"
+    if truck_part in ("gearbox", "transmission") or pass_part in ("gearbox", "transmission"):
+        return "Truck Gearbox" if cat == "truck" else "Gearbox"
+    if cat == "machinery":
+        return "Machinery"
+    if cat == "truck":
+        return "Truck Half Cut"
+    return "Half Cut"
+
+
+def resolve_detail_path(item: dict[str, Any]) -> str:
+    cat = str(item.get("vehicleCategory") or "").strip().lower()
+    if cat == "truck":
+        return "/trucks/detail.html"
+    if cat == "machinery":
+        return "/machinery/detail.html"
+    return "/half-cuts/detail.html"
+
+
+def detail_page_url(item: dict[str, Any]) -> str:
+    slug = str(item.get("slug") or "").strip()
+    path = resolve_detail_path(item)
+    if not slug:
+        return f"{SITE_PUBLIC}{path.rsplit('/', 1)[0]}/"
+    return f"{SITE_PUBLIC}{path}?slug={urllib.parse.quote(slug)}"
+
+
+def build_title(item: dict[str, Any]) -> str:
+    """Accurate FB title: year brand model engine part | stockId (English only)."""
+    year = str(item.get("year") or "").strip()
+    brand = english_token(item.get("brand")) or CJK_RE.sub("", str(item.get("brand") or "")).strip()
+    model = english_token(item.get("model")) or model_from_slug(str(item.get("slug") or ""), brand)
+    eng = english_token(item.get("engineCode"))
+    if not eng:
+        eng = CJK_RE.sub("", str(item.get("engineCode") or "")).strip()
+    part = part_type_label(item)
+    sid = str(item.get("stockId") or "").strip()
+    bits = [b for b in (year, brand, model, eng, part) if b]
+    title = re.sub(r"\s+", " ", " ".join(bits)).strip()
+    if sid:
+        title = f"{title} | {sid}" if title else sid
+    return title[:200]
+
+
+def build_caption(item: dict[str, Any]) -> str:
+    title = build_title(item)
+    price = item.get("priceUsd")
+    engine = english_token(item.get("engineCode")) or CJK_RE.sub("", str(item.get("engineCode") or "")).strip()
+    trans = english_token(item.get("transmissionCode")) or CJK_RE.sub(
+        "", str(item.get("transmissionCode") or "")
+    ).strip()
+    part = part_type_label(item)
+    yt = youtube_url(item)
+
+    if part == "Truck Cab":
         body = (
-            "Real, physical unit in China — not a stock photo. "
-            "Complete driver cab, ready to ship. We also do custom dismantle: "
-            "need just one part off it, tell us and we cut only that."
+            "Real physical unit in China — not a stock photo. "
+            "Complete driver cab, ready to ship. Custom dismantle available."
         )
-    elif is_truck:
-        title = f"🚚 {year} {brand} {model} — Half-Cut Truck, Ready to Dismantle".strip()
+    elif "Engine" in part:
         body = (
-            "Real, physical unit in China — not a stock photo. "
-            "Custom dismantle: tell us the exact part you need, we cut and ship only that."
+            "Real physical unit in China — not a stock photo. "
+            "Used engine for export. Ask for compression test / photos of your match."
+        )
+    elif "Gearbox" in part:
+        body = (
+            "Real physical unit in China — not a stock photo. "
+            "Used gearbox for export. Tell us your vehicle match for confirmation."
         )
     else:
-        title = f"🚗 {year} {brand} {model} — Half-Cut, Ready to Dismantle".strip()
         body = (
-            "Real, physical unit in China — not a stock photo. "
+            "Real physical unit in China — not a stock photo. "
             "Custom dismantle: tell us the exact part you need, we cut and ship only that."
         )
 
@@ -216,6 +380,7 @@ def build_caption(item: dict[str, Any]) -> str:
         for x in [
             f"Engine: {engine}" if engine else "",
             f"Transmission: {trans}" if trans else "",
+            f"Type: {part}",
         ]
         if x
     )
@@ -227,8 +392,25 @@ def build_caption(item: dict[str, Any]) -> str:
     parts.append("")
     parts.append(body)
     parts.append("")
-    parts.append(f"Full details & photos: {SITE_PUBLIC}/half-cuts/detail.html?slug={slug}")
+    parts.append(f"Full details: {detail_page_url(item)}")
+    if yt:
+        parts.append(f"Startup video: {yt}")
     return "\n".join(parts)
+
+
+def item_recency_ts(item: dict[str, Any]) -> float:
+    for key in ("updatedAt", "approvedAt", "createdAt"):
+        raw = str(item.get(key) or "").strip()
+        if not raw:
+            continue
+        try:
+            # 2026-07-24T10:41:19Z
+            from datetime import datetime
+
+            return datetime.fromisoformat(raw.replace("Z", "+00:00")).timestamp()
+        except ValueError:
+            continue
+    return 0.0
 
 
 def eligible_candidates(items: list[dict[str, Any]], posted_ids: set[str]) -> list[dict[str, Any]]:
@@ -239,28 +421,25 @@ def eligible_candidates(items: list[dict[str, Any]], posted_ids: set[str]) -> li
             continue
         if str(it.get("status") or "").strip() != "Available":
             continue
-        photos = pick_photos(it)
-        if len(photos) < 4:
-            continue
         if not str(it.get("slug") or "").strip():
             continue
+        if not has_postable_media(it):
+            continue
         out.append(it)
-    out.sort(key=lambda x: (-labeled_photo_score(x), str(x.get("stockId") or "")))
+    # Newest updates first, then photo quality — so new uploads join the front of the queue
+    out.sort(key=lambda x: (-item_recency_ts(x), -labeled_photo_score(x), str(x.get("stockId") or "")))
     return out
 
 
 def select_diverse(candidates: list[dict[str, Any]], limit: int) -> list[dict[str, Any]]:
-    """Prefer labeled-photo quality + brand/category diversity."""
+    """Prefer newest + brand/category diversity."""
     picked: list[dict[str, Any]] = []
     used_brands: set[str] = set()
     used_cats: set[str] = set()
 
     def cat_key(it: dict[str, Any]) -> str:
-        if str(it.get("truckPartType") or "").lower() == "cab":
-            return "cab"
-        return str(it.get("vehicleCategory") or "other").lower()
+        return part_type_label(it)
 
-    # Pass 1: different brand + category when possible
     for it in candidates:
         if len(picked) >= limit:
             break
@@ -275,7 +454,6 @@ def select_diverse(candidates: list[dict[str, Any]], limit: int) -> list[dict[st
             used_brands.add(brand)
         used_cats.add(cat)
 
-    # Pass 2: fill remaining ignoring category, still prefer new brands
     if len(picked) < limit:
         for it in candidates:
             if len(picked) >= limit:
@@ -289,7 +467,6 @@ def select_diverse(candidates: list[dict[str, Any]], limit: int) -> list[dict[st
             if brand:
                 used_brands.add(brand)
 
-    # Pass 3: fill anything left
     if len(picked) < limit:
         for it in candidates:
             if len(picked) >= limit:
@@ -299,30 +476,61 @@ def select_diverse(candidates: list[dict[str, Any]], limit: int) -> list[dict[st
     return picked[:limit]
 
 
-def post_listing(
+def post_video(
     item: dict[str, Any],
     *,
     page_id: str,
     token: str,
-    dry_run: bool = False,
-    force_bad_url: bool = False,
+    video_url: str,
+    title: str,
+    caption: str,
 ) -> str | None:
-    stock_id = str(item.get("stockId") or "")
-    photos = pick_photos(item)
-    if force_bad_url and photos:
-        # Validation mode: break every URL so the listing cannot publish.
-        photos = [
-            {**p, "url": f"/uploads/photos/__missing_force_404_{i}__.jpg"}
-            for i, p in enumerate(photos)
-        ]
+    try:
+        resp = _graph_post(
+            f"{page_id}/videos",
+            token,
+            {
+                "file_url": video_url,
+                "title": title[:255],
+                "description": caption[:5000],
+                "published": "true",
+            },
+            timeout=300,
+        )
+    except Exception as exc:
+        log(f"  video upload failed ({video_url}): {exc}")
+        return None
+    vid = str(resp.get("id") or "").strip()
+    if not vid:
+        return None
+    # Video publish returns video id; page post id is often {page_id}_{video_id}
+    post_id = str(resp.get("post_id") or "").strip() or f"{page_id}_{vid}"
+    log(f"  uploaded video {vid}")
+    return post_id
 
-    caption = build_caption(item)
-    log(f"  photos={len(photos)} labeled_score={labeled_photo_score(item)}")
-    log(f"  caption preview:\n{caption[:280]}{'…' if len(caption) > 280 else ''}")
 
-    if dry_run:
-        log("  dry-run: skip Graph API")
-        return f"dry-run:{stock_id}"
+def post_photos_feed(
+    item: dict[str, Any],
+    *,
+    page_id: str,
+    token: str,
+    photos: list[dict[str, Any]],
+    caption: str,
+) -> str | None:
+    if len(photos) == 1:
+        url = photo_url(photos[0])
+        try:
+            resp = _graph_post(
+                f"{page_id}/photos",
+                token,
+                {"url": url, "published": "true", "caption": caption[:5000]},
+            )
+        except Exception as exc:
+            log(f"  single photo failed ({url}): {exc}")
+            return None
+        pid = str(resp.get("post_id") or resp.get("id") or "").strip()
+        log(f"  uploaded single photo {resp.get('id')}")
+        return pid or None
 
     media_ids: list[str] = []
     for p in photos:
@@ -336,9 +544,8 @@ def post_listing(
         except Exception as exc:
             log(f"  photo upload failed ({url}): {exc}")
 
-    # Need a real album (≥4). Partial failures must not publish a thin/broken post.
-    if len(media_ids) < 4:
-        log(f"  skip {stock_id}: only {len(media_ids)} media uploaded (need ≥4)")
+    if len(media_ids) < MIN_MEDIA:
+        log(f"  skip {item.get('stockId')}: only {len(media_ids)} media uploaded (need ≥{MIN_MEDIA})")
         return None
 
     params: dict[str, Any] = {"message": caption}
@@ -347,10 +554,89 @@ def post_listing(
     try:
         feed = _graph_post(f"{page_id}/feed", token, params)
     except Exception as exc:
-        log(f"  feed post failed for {stock_id}: {exc}")
+        log(f"  feed post failed for {item.get('stockId')}: {exc}")
         return None
-    post_id = str(feed.get("id") or "").strip()
-    return post_id or None
+    return str(feed.get("id") or "").strip() or None
+
+
+def post_link_only(
+    item: dict[str, Any],
+    *,
+    page_id: str,
+    token: str,
+    caption: str,
+    link: str,
+) -> str | None:
+    try:
+        feed = _graph_post(
+            f"{page_id}/feed",
+            token,
+            {"message": caption[:5000], "link": link},
+        )
+    except Exception as exc:
+        log(f"  link post failed for {item.get('stockId')}: {exc}")
+        return None
+    return str(feed.get("id") or "").strip() or None
+
+
+def post_listing(
+    item: dict[str, Any],
+    *,
+    page_id: str,
+    token: str,
+    dry_run: bool = False,
+    force_bad_url: bool = False,
+) -> str | None:
+    stock_id = str(item.get("stockId") or "")
+    title = build_title(item)
+    caption = build_caption(item)
+    photos = pick_photos(item)
+    video = self_hosted_video_url(item)
+    yt = youtube_url(item)
+
+    if force_bad_url:
+        photos = [
+            {**p, "url": f"/uploads/photos/__missing_force_404_{i}__.jpg"}
+            for i, p in enumerate(photos)
+        ]
+        video = f"{SITE_PUBLIC}/uploads/videos/__missing_force_404__.mp4" if video else ""
+
+    log(f"  title: {title}")
+    log(f"  photos={len(photos)} video={'yes' if video else 'no'} youtube={'yes' if yt else 'no'}")
+    log(f"  caption preview:\n{caption[:280]}{'…' if len(caption) > 280 else ''}")
+
+    if dry_run:
+        log("  dry-run: skip Graph API")
+        return f"dry-run:{stock_id}"
+
+    # Prefer real mp4 video post when available
+    if video:
+        post_id = post_video(
+            item,
+            page_id=page_id,
+            token=token,
+            video_url=video,
+            title=title,
+            caption=caption,
+        )
+        if post_id:
+            return post_id
+        log("  video post failed — falling back to photos/link")
+
+    if photos:
+        return post_photos_feed(
+            item,
+            page_id=page_id,
+            token=token,
+            photos=photos,
+            caption=caption,
+        )
+
+    if yt:
+        return post_link_only(item, page_id=page_id, token=token, caption=caption, link=yt)
+
+    log(f"  skip {stock_id}: no usable media")
+    return None
 
 
 def main() -> int:
@@ -361,8 +647,9 @@ def main() -> int:
     ap.add_argument(
         "--simulate-bad-url",
         action="store_true",
-        help="Force first photo URL 404 on first candidate (validation; never marks posted on failure)",
+        help="Force media URLs 404 on first candidate (validation; never marks posted on failure)",
     )
+    ap.add_argument("--stock", action="append", default=[], help="Force include stockId(s) if eligible")
     args = ap.parse_args()
 
     page_id = (os.getenv("META_PAGE_ID") or "").strip()
@@ -388,8 +675,14 @@ def main() -> int:
     log(f"already posted: {len(posted_ids)}")
 
     candidates = eligible_candidates(items, posted_ids)
+    if args.stock:
+        want = {s.strip().upper() for s in args.stock if s.strip()}
+        forced = [c for c in candidates if str(c.get("stockId") or "").upper() in want]
+        others = [c for c in candidates if str(c.get("stockId") or "").upper() not in want]
+        candidates = forced + others
+
     if not candidates:
-        log("本轮无新库存可发 (no unused Available listings with ≥4 photos)")
+        log("本轮无新库存可发 (no unused Available listings with ≥1 photo or video)")
         return 0
 
     selected = select_diverse(candidates, max(1, args.limit))
@@ -398,7 +691,11 @@ def main() -> int:
     ok_count = 0
     for i, item in enumerate(selected):
         stock_id = str(item.get("stockId") or "")
-        log(f"[{i + 1}/{len(selected)}] posting {stock_id} {item.get('brand')} {item.get('model')}…")
+        # Hard guard: never post twice even if race
+        if stock_id in posted_ids and not args.dry_run:
+            log(f"[{i + 1}/{len(selected)}] skip {stock_id} — already in ledger")
+            continue
+        log(f"[{i + 1}/{len(selected)}] posting {stock_id} {build_title(item)}…")
         force_bad = bool(args.simulate_bad_url and i == 0)
         try:
             post_id = post_listing(
@@ -413,7 +710,14 @@ def main() -> int:
             post_id = None
 
         if post_id and not args.dry_run:
-            posted.append({"stockId": stock_id, "post_id": post_id, "ts": time.time()})
+            posted.append(
+                {
+                    "stockId": stock_id,
+                    "post_id": post_id,
+                    "ts": time.time(),
+                    "title": build_title(item),
+                }
+            )
             save_posted(posted)
             posted_ids.add(stock_id)
             ok_count += 1

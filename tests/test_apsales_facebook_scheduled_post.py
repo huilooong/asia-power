@@ -23,26 +23,64 @@ class FacebookScheduledPostTests(unittest.TestCase):
     def setUpClass(cls):
         cls.m = load_mod()
 
+    def test_title_accurate_truck_engine(self):
+        title = self.m.build_title(
+            {
+                "stockId": "HC250589",
+                "brand": "Dongfeng",
+                "model": "Tianlong",
+                "year": 2013,
+                "engineCode": "6bt",
+                "truckPartType": "engine",
+                "vehicleCategory": "truck",
+                "slug": "dongfeng-tianlong-2013-6bt-truck-engine-hc250589",
+            }
+        )
+        self.assertIn("Dongfeng", title)
+        self.assertIn("Tianlong", title)
+        self.assertIn("Truck Engine", title)
+        self.assertIn("HC250589", title)
+        self.assertNotIn("Half-Cut", title)
+
+    def test_title_strips_chinese_model_uses_slug(self):
+        title = self.m.build_title(
+            {
+                "stockId": "HC250588",
+                "brand": "BMW",
+                "model": "宝马X5(进口)",
+                "year": 2006,
+                "engineCode": "M54B30(306S3)",
+                "vehicleCategory": "passenger",
+                "slug": "bmw-x5-2006-m54b30-306s3-half-cut-hc250588",
+            }
+        )
+        self.assertIn("BMW", title)
+        self.assertIn("X5", title)
+        self.assertNotRegex(title, r"[\u4e00-\u9fff]")
+        self.assertIn("HC250588", title)
+
     def test_caption_variants(self):
         cab = self.m.build_caption(
             {
+                "stockId": "HC250582",
                 "brand": "Dongfeng",
-                "model": "东风",
+                "model": "Tianlong",
                 "year": "2024",
                 "priceUsd": 28000,
                 "slug": "dongfeng-2024-cab-truck-cab-hc250582",
                 "truckPartType": "cab",
                 "vehicleCategory": "truck",
-                "engineCode": "康明斯",
-                "transmissionCode": "14档",
+                "engineCode": "ISLe",
+                "transmissionCode": "12JS",
             }
         )
         self.assertIn("Truck Cab", cab)
         self.assertIn("28000 USD", cab)
-        self.assertIn("driver cab", cab.lower())
+        self.assertIn("/trucks/detail.html", cab)
 
         half = self.m.build_caption(
             {
+                "stockId": "HC250552",
                 "brand": "Volkswagen",
                 "model": "Scirocco",
                 "year": "2011",
@@ -52,8 +90,43 @@ class FacebookScheduledPostTests(unittest.TestCase):
                 "engineCode": "CDL",
             }
         )
-        self.assertIn("Half-Cut, Ready to Dismantle", half)
-        self.assertIn("custom dismantle", half.lower())
+        self.assertIn("Half Cut", half)
+        self.assertIn("/half-cuts/detail.html", half)
+
+    def test_one_photo_or_video_eligible(self):
+        one_photo = {
+            "stockId": "ONE",
+            "status": "Available",
+            "brand": "Toyota",
+            "model": "Corolla",
+            "year": 2014,
+            "slug": "toyota-corolla-2014-half-cut-one",
+            "vehicleCategory": "passenger",
+            "photos": [{"label": "Vehicle Front", "url": "/uploads/photos/a.jpg"}],
+            "updatedAt": "2026-07-24T12:00:00Z",
+        }
+        video_only = {
+            "stockId": "VID",
+            "status": "Available",
+            "brand": "Honda",
+            "model": "Civic",
+            "year": 2012,
+            "slug": "honda-civic-2012-half-cut-vid",
+            "vehicleCategory": "passenger",
+            "photos": [],
+            "video": {"sourceLocalPath": "/uploads/videos/v.mp4"},
+            "updatedAt": "2026-07-24T11:00:00Z",
+        }
+        posted = {
+            "stockId": "POSTED",
+            "status": "Available",
+            "brand": "Nissan",
+            "slug": "nissan-posted",
+            "photos": [{"url": "/uploads/photos/p.jpg"}],
+        }
+        cands = self.m.eligible_candidates([one_photo, video_only, posted], {"POSTED"})
+        ids = [c["stockId"] for c in cands]
+        self.assertEqual(ids, ["ONE", "VID"])  # newest first, posted excluded
 
     def test_select_skips_posted_and_diversifies_brand(self):
         items = [
@@ -63,24 +136,9 @@ class FacebookScheduledPostTests(unittest.TestCase):
                 "brand": "Toyota",
                 "slug": "a1",
                 "vehicleCategory": "passenger",
+                "updatedAt": "2026-07-20T00:00:00Z",
                 "photos": [
                     {"label": "Vehicle Front", "url": "/a1f.jpg"},
-                    {"label": "Engine", "url": "/a1e.jpg"},
-                    {"label": "Interior", "url": "/a1i.jpg"},
-                    {"label": "VIN Plate", "url": "/a1v.jpg"},
-                ],
-            },
-            {
-                "stockId": "A2",
-                "status": "Available",
-                "brand": "Toyota",
-                "slug": "a2",
-                "vehicleCategory": "passenger",
-                "photos": [
-                    {"label": "Photo 01", "url": "/a2-1.jpg"},
-                    {"label": "Photo 02", "url": "/a2-2.jpg"},
-                    {"label": "Photo 03", "url": "/a2-3.jpg"},
-                    {"label": "Photo 04", "url": "/a2-4.jpg"},
                 ],
             },
             {
@@ -89,11 +147,9 @@ class FacebookScheduledPostTests(unittest.TestCase):
                 "brand": "Honda",
                 "slug": "b1",
                 "vehicleCategory": "passenger",
+                "updatedAt": "2026-07-21T00:00:00Z",
                 "photos": [
                     {"label": "Vehicle Front", "url": "/b1f.jpg"},
-                    {"label": "Engine", "url": "/b1e.jpg"},
-                    {"label": "Interior", "url": "/b1i.jpg"},
-                    {"label": "VIN Plate", "url": "/b1v.jpg"},
                 ],
             },
             {
@@ -101,18 +157,12 @@ class FacebookScheduledPostTests(unittest.TestCase):
                 "status": "Available",
                 "brand": "Nissan",
                 "slug": "p",
-                "photos": [
-                    {"label": "Vehicle Front", "url": "/p1.jpg"},
-                    {"label": "Engine", "url": "/p2.jpg"},
-                    {"label": "Interior", "url": "/p3.jpg"},
-                    {"label": "VIN Plate", "url": "/p4.jpg"},
-                ],
+                "photos": [{"label": "Vehicle Front", "url": "/p1.jpg"}],
             },
         ]
         cands = self.m.eligible_candidates(items, {"POSTED"})
         ids = {c["stockId"] for c in cands}
         self.assertNotIn("POSTED", ids)
-        self.assertIn("A1", ids)
         picked = self.m.select_diverse(cands, 2)
         brands = {p["brand"] for p in picked}
         self.assertEqual(len(picked), 2)
