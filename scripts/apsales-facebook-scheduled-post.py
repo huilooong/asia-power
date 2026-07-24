@@ -675,17 +675,27 @@ def main() -> int:
     log(f"already posted: {len(posted_ids)}")
 
     candidates = eligible_candidates(items, posted_ids)
-    if args.stock:
-        want = {s.strip().upper() for s in args.stock if s.strip()}
+    want = {s.strip().upper() for s in (args.stock or []) if s.strip()}
+    if want:
         forced = [c for c in candidates if str(c.get("stockId") or "").upper() in want]
+        missing = want - {str(c.get("stockId") or "").upper() for c in forced}
+        if missing:
+            log(f"warn: --stock not eligible / already posted: {sorted(missing)}")
         others = [c for c in candidates if str(c.get("stockId") or "").upper() not in want]
-        candidates = forced + others
+        # Honor forced stockIds first (bypass brand diversity for explicit ops)
+        fill_n = max(0, max(1, args.limit) - len(forced))
+        selected = forced[: max(1, args.limit)] + select_diverse(others, fill_n)
+        selected = selected[: max(1, args.limit)]
+    else:
+        if not candidates:
+            log("本轮无新库存可发 (no unused Available listings with ≥1 photo or video)")
+            return 0
+        selected = select_diverse(candidates, max(1, args.limit))
 
-    if not candidates:
+    if not selected:
         log("本轮无新库存可发 (no unused Available listings with ≥1 photo or video)")
         return 0
 
-    selected = select_diverse(candidates, max(1, args.limit))
     log(f"selected {len(selected)} / pool {len(candidates)}: {[x.get('stockId') for x in selected]}")
 
     ok_count = 0
