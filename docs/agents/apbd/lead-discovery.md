@@ -46,6 +46,16 @@ python main.py "/apbd leads fixture-load"
 python scripts/apbd_leads_ca_batch.py --limit-per-city 15 --max-cities 8
 ```
 
+### 生产细水长流（推荐）
+
+服务器 cron（`deploy/cron/apbd-ca-leads-trickle.cron`）：**每 4 小时**跑 1 个城市、最多约 6 家新增；负载 >1.8 自动跳过；`flock` 防重叠；`nice`/`ionice` 降优先级。有进展/撞配额/到里程碑时 Telegram 汇报。
+
+```bash
+# 手动试跑（生产）
+cd /root/.openclaw/workspace/AsiaPower
+nice -n 15 .venv/bin/python3 scripts/apbd_leads_ca_trickle.py --limit 6 --max-cities 1
+```
+
 ## Places Key
 
 - 环境变量：`GOOGLE_PLACES_API_KEY` 或 `GOOGLE_MAPS_API_KEY`

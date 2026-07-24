@@ -624,11 +624,28 @@ function deployApsales() {
   run('rsync', ['-av',
     `${ROOT}/config/apbd_lead_markets.yaml`,
     `${ROOT}/config/apsales_maps_prospect.yaml`,
+    `${ROOT}/config/apbd_leads_markets.yaml`,
+    `${ROOT}/config/apbd_lead_keywords.yaml`,
+    `${ROOT}/config/apbd_lead_scoring.yaml`,
     `${AP}/config/`,
   ]);
   run('rsync', ['-av', '--exclude', '__pycache__',
     `${ROOT}/agents/apbd/`,
     `${AP}/agents/apbd/`,
+  ]);
+  // Canada durable leads: batch + server-safe trickle
+  run('rsync', ['-av',
+    `${ROOT}/scripts/apbd_leads_ca_batch.py`,
+    `${ROOT}/scripts/apbd_leads_ca_trickle.py`,
+    `${AP}/scripts/`,
+  ]);
+  run('rsync', ['-av',
+    `${ROOT}/docs/agents/apbd/lead-discovery.md`,
+    `${AP}/docs/agents/apbd/lead-discovery.md`,
+  ]);
+  run('rsync', ['-av',
+    `${ROOT}/docs/ops/apbd-ca-leads-quality-report.md`,
+    `${AP}/docs/ops/apbd-ca-leads-quality-report.md`,
   ]);
   run('rsync', ['-av', '--exclude', '__pycache__',
     `${ROOT}/sales_coach/`,
@@ -663,6 +680,10 @@ function deployApsales() {
     `${ROOT}/deploy/cron/apsales-facebook-scheduled-post.cron`,
     `${REMOTE}:/tmp/apsales-facebook-scheduled-post.cron`,
   ]);
+  run('rsync', ['-av',
+    `${ROOT}/deploy/cron/apbd-ca-leads-trickle.cron`,
+    `${REMOTE}:/tmp/apbd-ca-leads-trickle.cron`,
+  ]);
   ssh(`
 set -euo pipefail
 install -m 644 /tmp/apsales-sales-coach.cron /etc/cron.d/apsales-sales-coach
@@ -677,6 +698,14 @@ chmod 644 /var/log/apsales-facebook-scheduled-post.log || true
 test -f /etc/cron.d/apsales-facebook-scheduled-post
 grep -q apsales-facebook-scheduled-post.py /etc/cron.d/apsales-facebook-scheduled-post
 echo "[deploy:apsales] facebook hourly post cron installed"
+install -m 644 /tmp/apbd-ca-leads-trickle.cron /etc/cron.d/apbd-ca-leads-trickle
+touch /var/log/apbd-ca-leads-trickle.log
+chmod 644 /var/log/apbd-ca-leads-trickle.log || true
+test -f /etc/cron.d/apbd-ca-leads-trickle
+grep -q apbd_leads_ca_trickle.py /etc/cron.d/apbd-ca-leads-trickle
+mkdir -p /root/.openclaw/workspace/AsiaPower/runtime/apbd/leads/db
+mkdir -p /root/.openclaw/workspace/AsiaPower/docs/agents/apbd /root/.openclaw/workspace/AsiaPower/docs/ops
+echo "[deploy:apsales] APBD CA leads trickle cron installed (every 4h, load-gated)"
 `);
 }
 
