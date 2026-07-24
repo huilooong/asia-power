@@ -50,9 +50,9 @@ python scripts/apbd_leads_ca_batch.py --limit-per-city 15 --max-cities 8
 
 意思是：**负载不高就一直小步采**；网站/WhatsApp 忙时自动停手，不退出服务。
 
-- systemd：`apbd-ca-leads-trickle.service`（`--loop`）
-- 每批：1 城 / 约 5 家；空闲间隔约 120s；负载 >1.8 则等 90s 再看
-- Places 429：休眠约 1 小时再试
+- systemd：`apbd-ca-leads-trickle.service`（`--loop`）— **不等 4 小时轮作**
+- 每批：1 城 / 约 8 家；空闲间隔约 **20s**；负载 >1.8 则等 60s
+- **一直采到免费 Places 额度用完**（429 后休眠约 1 小时再试）
 - 到 500：慢巡检（约 6 小时看一次）
 - 资源帽：CPUQuota 35%、MemoryMax 256M、Nice 15
 - Telegram：有进展 / 配额 / 里程碑才报（启动时会报一次）

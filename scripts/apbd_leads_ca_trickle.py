@@ -38,13 +38,13 @@ STATE_PATH = ROOT / "runtime" / "apbd" / "leads" / "trickle_state.json"
 REPORT_DIR = ROOT / "runtime" / "apbd" / "leads" / "reports"
 
 # Conservative defaults for 2-vCPU droplet
-DEFAULT_LIMIT = 5
+DEFAULT_LIMIT = 8
 DEFAULT_MAX_CITIES = 1
 DEFAULT_LOAD_MAX = 1.8
-DEFAULT_NICE_SLEEP = 2.0
-DEFAULT_IDLE_SLEEP = 120          # seconds between batches when healthy
-DEFAULT_BUSY_SLEEP = 90           # wait when load too high
-DEFAULT_QUOTA_SLEEP = 3600        # wait after Places 429
+DEFAULT_NICE_SLEEP = 1.5
+DEFAULT_IDLE_SLEEP = 20           # seconds between batches when healthy (use free quota)
+DEFAULT_BUSY_SLEEP = 60           # wait when load too high
+DEFAULT_QUOTA_SLEEP = 3600        # wait after Places 429 (free daily reset)
 DEFAULT_TARGET_SLEEP = 21600      # 6h after hitting 500
 
 
@@ -312,10 +312,10 @@ def run_loop(args: argparse.Namespace) -> int:
     quota_sleep = int(args.quota_sleep)
     target_sleep = int(args.target_sleep)
     started_msg = (
-        "🇨🇦 APBD 加拿大汽修潜客 · 持续细水长流已启动\n"
+        "🇨🇦 APBD 加拿大汽修潜客 · 持续采集已启动\n"
         f"负载门限 {args.load_max} · 每批 {args.limit} 家 / 1 城\n"
-        f"空闲间隔 {idle}s · 忙时等待 {busy}s · 配额休眠 {quota_sleep}s\n"
-        "负载不高就继续采；忙时自动停手，不拖累网站/WhatsApp。"
+        f"空闲间隔 {idle}s · 忙时等待 {busy}s · 配额用完休眠 {quota_sleep}s\n"
+        "不等 4 小时轮作：负载不高就一直采，直到免费 Places 额度用完。"
     )
     if not args.no_telegram:
         _notify(started_msg)

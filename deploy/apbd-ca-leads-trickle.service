@@ -8,7 +8,8 @@ Type=simple
 WorkingDirectory=/root/.openclaw/workspace/AsiaPower
 EnvironmentFile=-/root/.openclaw/workspace/AsiaPower/.env
 Environment=PYTHONUNBUFFERED=1
-ExecStart=/root/.openclaw/workspace/AsiaPower/.venv/bin/python3 scripts/apbd_leads_ca_trickle.py --loop --limit 5 --max-cities 1 --load-max 1.8 --idle-sleep 120 --busy-sleep 90
+# Keep collecting while load is OK until free Places quota is exhausted (no 4h cron).
+ExecStart=/root/.openclaw/workspace/AsiaPower/.venv/bin/python3 scripts/apbd_leads_ca_trickle.py --loop --limit 8 --max-cities 1 --load-max 1.8 --idle-sleep 20 --busy-sleep 60 --quota-sleep 3600
 StandardOutput=journal
 StandardError=journal
 Restart=always
