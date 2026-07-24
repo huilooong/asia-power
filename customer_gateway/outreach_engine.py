@@ -322,6 +322,15 @@ def scan_outreach_candidates(limit: int = 30) -> list[dict[str, Any]]:
     except Exception:
         pass
 
+    # APBD durable leads — only human-approved (no auto-send)
+    try:
+        from agents.apbd.leads.query import approved_for_outreach, to_outreach_candidate
+
+        for company in approved_for_outreach(country="CA", limit=max(10, limit)):
+            candidates.append(to_outreach_candidate(company))
+    except Exception:
+        pass
+
     candidates.sort(key=lambda c: (0 if c["priority"] == "high" else 1, c["source"]))
     return candidates[:limit]
 

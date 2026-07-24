@@ -1,171 +1,79 @@
-# APBD Lead Discovery
+# APBD Durable Lead Discovery（加拿大汽修首发）
 
-## Purpose
+挂在现有增长 Agent **APBD（郭嘉）** 内，不新建 Agent / 不新建 CRM / 不用 SQL。
 
-APBD must deliver 100 new qualified public companies every day.
+## 配置
 
-These are not customers yet.
-They are business-development opportunities for human-approved follow-up.
+| 文件 | 作用 |
+|------|------|
+| `config/apbd_leads_markets.yaml` | 加拿大城市配额与目标 500 |
+| `config/apbd_lead_keywords.yaml` | 汽修 / 动力总成 / 中文服务关键词包 |
+| `config/apbd_lead_scoring.yaml` | 评分权重版本（`ca-auto-repair-v1`） |
 
-APBD does not contact them.
-APBD only discovers and qualifies them.
+## 数据落盘
 
-## Target Lead Categories
+`runtime/apbd/leads/db/`
 
-APBD should focus on companies likely to buy from AsiaPower:
+- `companies.json` — 公司主库
+- `search_tasks.json` — 搜索任务日志
+- `change_history.jsonl` — 字段变更
+- `raw_places/` — Places 原始行
+- `review_queue.json` — 人工审核队列
 
-- engine importers
-- auto parts importers
-- repair chains
-- dismantlers
-- fleet maintenance companies
-- auto dealers
-- wholesalers
-- truck parts distributors
-- machinery service companies
-- commercial vehicle workshops
+导出：`runtime/apbd/leads/exports/`
+报告：`runtime/apbd/leads/reports/`
 
-## Allowed Sources
+## CLI
 
-APBD may use public sources such as:
-
-- public company websites
-- public business directories
-- public marketplace business profiles
-- public Google Maps listings
-- public LinkedIn company pages
-- public Facebook business pages
-- public industry association listings
-- public trade directories
-
-## Forbidden Sources
-
-APBD must not use:
-
-- private chats
-- private WhatsApp groups
-- closed Facebook groups
-- scraped personal accounts
-- hidden emails
-- non-public phone numbers
-- supplier private notes
-- leaked databases
-- login-only data unless explicitly approved and business-safe
-
-## Required Fields
-
-Each company record must include:
-
-```text
-Company
-Country
-City
-Website
-Public Email
-Public Phone / WhatsApp
-Business Type
-Why this company is valuable
-Priority
-Source URL
+```bash
+python main.py "/apbd leads discover --country CA --city Richmond --limit 20"
+python main.py "/apbd leads discover --country CA --city Richmond --dry-run"
+python main.py "/apbd leads enrich --country CA --limit 50"
+python main.py "/apbd leads score --country CA"
+python main.py "/apbd leads review --country CA"
+python main.py "/apbd leads approve --id lead-xxx"
+python main.py "/apbd leads export --country CA --format csv"
+python main.py "/apbd leads query --status approved_for_outreach --limit 20"
+python main.py "/apbd leads coverage --country CA"
+python main.py "/apbd leads refresh --country CA --limit 40"
+python main.py "/apbd leads batch --country CA --limit 40"
+python main.py "/apbd leads fixture-load"
 ```
 
-If a public email or phone is not available, write:
+分批冲 500（配额友好）：
 
-```text
-Not published
+```bash
+python scripts/apbd_leads_ca_batch.py --limit-per-city 15 --max-cities 8
 ```
 
-Do not guess.
+## Places Key
 
-## Priority Scoring
+- 环境变量：`GOOGLE_PLACES_API_KEY` 或 `GOOGLE_MAPS_API_KEY`
+- **缺 Key → 明确失败**（`missing_places_api_key`），禁止改抓 Google Maps 网页
+- CEO 定稿：继续免费 Demo Key；撞 429 只汇报，不自动升级付费
 
-### S Priority
+## 中文服务规则
 
-Company appears highly relevant and commercially valuable.
+只能根据公开证据标注（官网写「中文服务 / Mandarin / Cantonese」等）。
+**禁止**仅凭华人姓名、长相、华人区地址推断。
 
-Examples:
+## 销售侧（子敬）
 
-- engine importer
-- auto parts wholesaler
-- fleet maintenance company
-- large repair chain
-- commercial vehicle parts distributor
+`/outreach scan` 会读取 `status=approved_for_outreach` 的潜客，`source=apbd_leads`。
+外发仍须 CEO / 审批门禁，禁止自动群发。
 
-### A Priority
+## 状态机
 
-Company is relevant but may need qualification.
+`discovered → enriched → needs_review → verified → approved_for_outreach`
+旁路：`rejected` / `stale`
 
-Examples:
+## 重验节奏（建议）
 
-- repair workshop
-- auto dealer
-- spare parts retailer
-- used parts seller
+| 优先级 | 天数 |
+|--------|------|
+| A | 30 |
+| B | 60 |
+| C | 120 |
+| D | 180 |
 
-### B Priority
-
-Company may be relevant but has weaker evidence.
-
-Examples:
-
-- general auto business
-- small garage
-- unclear product focus
-- limited public information
-
-## Qualification Notes
-
-The "Why this company is valuable" field must be specific.
-
-Good:
-
-```text
-Imports used engines and transmissions for Toyota and Nissan vehicles in Ghana; likely buyer for container or recurring engine supply.
-```
-
-Bad:
-
-```text
-Auto company. Could be useful.
-```
-
-## Daily Lead Output Format
-
-Daily lead files should use:
-
-```text
-docs/agents/apbd/daily-leads-YYYY-MM-DD.md
-```
-
-Recommended table columns:
-
-```text
-| Company | Country | City | Website | Public Email | Public Phone / WhatsApp | Business Type | Why Valuable | Priority | Source |
-```
-
-## Handoff to APSales
-
-APBD may recommend leads for APSales review.
-
-APSales decides whether and how to contact.
-
-APBD should include:
-
-- company summary
-- likely need
-- suggested first message angle
-- relevant AsiaPower product category
-- risk notes
-
-APBD must not send the first message.
-
-## Compliance Rules
-
-APBD must:
-
-- collect public business data only
-- preserve privacy
-- avoid personal data unless clearly business-published
-- avoid private groups
-- avoid automated outreach
-- stop after producing lead list
+命令：`/apbd leads refresh` + `/apbd leads coverage`

@@ -285,6 +285,11 @@ def dispatch_apbd_cli(message: str) -> str:
             f"Approval queue: {result.get('draft_assets_path', '')}"
         )
 
+    if action == "leads":
+        from agents.apbd.leads.cli import run_leads_cli
+
+        return run_leads_cli(text)
+
     if action == "leadfinder":
         from agents.apbd.lead_finder import run_lead_finder
 
@@ -386,6 +391,7 @@ def dispatch_apbd_cli(message: str) -> str:
         "  /apbd run           — continuous loop (default every 6 hours)\n"
         "  /apbd once          — single discovery cycle\n"
         "  /apbd start         — run today's task list\n"
+        "  /apbd leads …      — Canada/industry durable lead DB (discover/enrich/score/export)\n"
         "  /apbd leadfinder    — discover public business leads (Phase 1 markets)\n"
         "  /apbd keywordfinder   — discover SEO keyword opportunities (local catalog)\n"
         "  /apbd competitorfinder — competitor gap intelligence (public HTTP only)\n"

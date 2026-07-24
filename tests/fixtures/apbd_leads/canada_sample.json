@@ -1,0 +1,182 @@
+{
+  "version": 1,
+  "note": "Fixture companies for offline APBD leads tests — not live Places data",
+  "companies": [
+    {
+      "id": "lead-fixture-cn001",
+      "legal_name": "Richmond Pacific Auto Care",
+      "display_name": "Richmond Pacific Auto Care",
+      "normalized_name": "richmond pacific",
+      "description": "Independent garage specializing in Toyota Honda engine replacement",
+      "business_type": "independent_repair_shop",
+      "independent_status": "independent",
+      "franchise_name": "",
+      "chain_status": "independent",
+      "business_status": "OPERATIONAL",
+      "country_code": "CA",
+      "location": {
+        "country_code": "CA",
+        "city": "Richmond",
+        "address": "1230 No. 3 Rd, Richmond, BC",
+        "google_place_id": "fixture-place-cn001"
+      },
+      "contact_channels": [
+        {"type": "phone", "value": "+1-604-555-0101", "source": "fixture"},
+        {"type": "website", "value": "https://example-pacific-auto.invalid", "source": "fixture"},
+        {"type": "email", "value": "service@example-pacific-auto.invalid", "source": "fixture"}
+      ],
+      "contact_persons": [],
+      "services": [],
+      "brands": [],
+      "external_profiles": [
+        {
+          "source": "google_places",
+          "external_id": "fixture-place-cn001",
+          "url": "https://maps.google.com/?q=fixture-place-cn001",
+          "meta": {"rating": 4.6, "user_rating_count": 88}
+        }
+      ],
+      "chinese_relevance": {
+        "status": "unknown",
+        "evidence_type": "",
+        "evidence_text": "",
+        "evidence_url": "",
+        "confidence": 0.0,
+        "reviewed_by": "",
+        "reviewed_at": ""
+      },
+      "score": null,
+      "score_breakdown": {},
+      "score_version": "",
+      "priority": "",
+      "status": "discovered",
+      "crm_status": "research",
+      "do_not_contact": false,
+      "source_urls": [],
+      "notes": "",
+      "human_locked_fields": [],
+      "created_at": "2026-07-24T00:00:00Z",
+      "updated_at": "2026-07-24T00:00:00Z",
+      "last_verified_at": "",
+      "outreach_activities": [],
+      "fixture_website_text": "We offer Mandarin and Cantonese Chinese speaking service. Toyota and Honda engine replacement and used engine installation. Transmission repair available.",
+      "fixture_url": "https://example-pacific-auto.invalid/services"
+    },
+    {
+      "id": "lead-fixture-nameonly",
+      "legal_name": "Chen Auto Service",
+      "display_name": "Chen Auto Service",
+      "normalized_name": "chen",
+      "description": "Family auto repair shop",
+      "business_type": "independent_repair_shop",
+      "independent_status": "independent",
+      "franchise_name": "",
+      "chain_status": "independent",
+      "business_status": "OPERATIONAL",
+      "country_code": "CA",
+      "location": {
+        "country_code": "CA",
+        "city": "Markham",
+        "address": "88 Main St, Markham, ON",
+        "google_place_id": "fixture-place-nameonly"
+      },
+      "contact_channels": [
+        {"type": "phone", "value": "+1-905-555-0199", "source": "fixture"}
+      ],
+      "contact_persons": [{"name": "Wei Chen", "role": "owner"}],
+      "services": [],
+      "brands": [],
+      "external_profiles": [
+        {
+          "source": "google_places",
+          "external_id": "fixture-place-nameonly",
+          "meta": {"rating": 4.2, "user_rating_count": 20}
+        }
+      ],
+      "chinese_relevance": {
+        "status": "unknown",
+        "evidence_type": "",
+        "evidence_text": "",
+        "evidence_url": "",
+        "confidence": 0.0,
+        "reviewed_by": "",
+        "reviewed_at": ""
+      },
+      "score": null,
+      "score_breakdown": {},
+      "score_version": "",
+      "priority": "",
+      "status": "discovered",
+      "crm_status": "research",
+      "do_not_contact": false,
+      "source_urls": [],
+      "notes": "Name looks Chinese — must NOT auto-confirm chinese service",
+      "human_locked_fields": [],
+      "created_at": "2026-07-24T00:00:00Z",
+      "updated_at": "2026-07-24T00:00:00Z",
+      "last_verified_at": "",
+      "outreach_activities": [],
+      "fixture_website_text": "Full service auto repair. Brakes, suspension, and general repair for Japanese and Korean cars including Toyota and Honda.",
+      "fixture_url": "https://example-chen-auto.invalid",
+      "fixture_force_chinese_unknown": true
+    },
+    {
+      "id": "lead-fixture-oilonly",
+      "legal_name": "Quick Lube Express Richmond",
+      "display_name": "Quick Lube Express Richmond",
+      "normalized_name": "quick lube express richmond",
+      "description": "Oil change and detailing",
+      "business_type": "independent_repair_shop",
+      "independent_status": "independent",
+      "franchise_name": "",
+      "chain_status": "national",
+      "business_status": "OPERATIONAL",
+      "country_code": "CA",
+      "location": {
+        "country_code": "CA",
+        "city": "Richmond",
+        "address": "10 Steveston Hwy, Richmond, BC",
+        "google_place_id": "fixture-place-oilonly"
+      },
+      "contact_channels": [
+        {"type": "phone", "value": "+1-604-555-0110", "source": "fixture"},
+        {"type": "website", "value": "https://example-quicklube.invalid", "source": "fixture"}
+      ],
+      "contact_persons": [],
+      "services": [],
+      "brands": [],
+      "external_profiles": [
+        {
+          "source": "google_places",
+          "external_id": "fixture-place-oilonly",
+          "meta": {"rating": 3.9, "user_rating_count": 12}
+        }
+      ],
+      "chinese_relevance": {
+        "status": "unknown",
+        "evidence_type": "",
+        "evidence_text": "",
+        "evidence_url": "",
+        "confidence": 0.0,
+        "reviewed_by": "",
+        "reviewed_at": ""
+      },
+      "score": null,
+      "score_breakdown": {},
+      "score_version": "",
+      "priority": "",
+      "status": "discovered",
+      "crm_status": "research",
+      "do_not_contact": false,
+      "source_urls": [],
+      "notes": "",
+      "human_locked_fields": [],
+      "created_at": "2026-07-24T00:00:00Z",
+      "updated_at": "2026-07-24T00:00:00Z",
+      "last_verified_at": "",
+      "outreach_activities": [],
+      "fixture_website_text": "Drive-through oil change and car detailing. Express lube only. No engine repair.",
+      "fixture_url": "https://example-quicklube.invalid"
+    }
+  ]
+}

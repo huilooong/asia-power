@@ -65,6 +65,16 @@
 - 429 = 提交/upload-token 限流（非 VIN decode）；VIN 失败查生产 `knowledge-base.js`
 - 状态文件在 `reports/`（如 `qxb-needs-vin-rows.json`、`qxb-batch-progress.json`）
 
+## APBD 加拿大汽修潜客库（CEO 2026-07-24）
+
+- **位置：** `agents/apbd/leads/`（挂 APBD，不新建 Agent/CRM）
+- **配置：** `config/apbd_leads_markets.yaml`（目标 500）+ keywords/scoring YAML
+- **CLI：** `/apbd leads discover|enrich|score|review|export|coverage|refresh|batch`
+- **分批冲量：** `python scripts/apbd_leads_ca_batch.py --limit-per-city 15 --max-cities 8`
+- **销售：** `/outreach scan` 仅读 `approved_for_outreach`（`source=apbd_leads`）；禁止自动群发
+- **硬规则：** 免费 Places Key；缺 Key/429 明确失败；不抓 Maps HTML；中文服务仅公开证据
+- **文档：** `docs/agents/apbd/lead-discovery.md`；质量报告 `docs/ops/apbd-ca-leads-quality-report.md`
+
 ## Facebook 库存轮发（CEO 2026-07-24）
 
 - **规则：** ≥1 张图或可发视频即可；优先视频帖；标题准确（含零件类型 + stockId）；**发过的不重发**；新/更新 Available 自动入池，cron 每小时 2 条（最新优先）。

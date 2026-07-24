@@ -1,0 +1,100 @@
+# APBD lead scoring · versioned weights (Canada auto-repair ICP)
+# Re-score anytime with --score-version bump.
+
+version: "ca-auto-repair-v1"
+updated: "2026-07-24"
+max_score: 100
+
+groups:
+  powertrain:
+    max: 30
+    points:
+      engine_replacement: 12
+      used_engine_installation: 12
+      transmission_replacement: 12
+      transmission_repair: 8
+      engine_rebuilding: 6
+      engine_diagnostics: 2
+  asian_match:
+    max: 20
+    points:
+      asian_vehicle_specialist: 12
+      multiple_target_brands: 8
+      single_target_brand: 5
+      general_import_repair: 4
+  independence:
+    max: 15
+    points:
+      independent_shop: 10
+      used_parts_dealer: 12
+      auto_recycler: 12
+      small_regional_chain: 6
+      national_chain: 1
+      dealership: 0
+  reachability:
+    max: 10
+    points:
+      public_email: 4
+      public_phone: 2
+      contact_form: 1
+      named_manager_or_owner: 3
+      whatsapp: 2
+  activity:
+    max: 10
+    # computed from rating/reviews/website/hours in code
+  chinese:
+    max: 10
+    points:
+      confirmed_chinese_business: 10
+      confirmed_chinese_service: 8
+      probable_chinese_service: 4
+      unknown: 0
+      disproved: 0
+  regional_pain:
+    max: 5
+    # remote / thinner used-powertrain supply — city flags in markets config
+
+penalties:
+  permanently_closed: -100
+  duplicate: -100
+  detailing_only: -30
+  car_wash_only: -30
+  body_shop_only: -20
+  oil_change_only: -15
+  tire_only_without_mechanical_service: -10
+  national_chain: -10
+  no_public_contact: -5
+  stale_or_unverified: -10
+
+priority_bands:
+  A: { min: 75, max: 100, meaning: "High value — prioritize human verify + personalized outreach" }
+  B: { min: 55, max: 74, meaning: "Promising — enrich then develop" }
+  C: { min: 35, max: 54, meaning: "Low priority / nurture" }
+  D: { min: 0, max: 34, meaning: "Do not develop yet" }
+
+refresh_days:
+  A: 30
+  B: 60
+  C: 120
+  D: 180
+  Rejected: 0
+
+chinese_evidence_accept:
+  - website_chinese_service
+  - website_mandarin_cantonese
+  - google_description_chinese_service
+  - website_chinese_locale
+  - social_business_chinese
+  - hiring_requires_chinese
+  - self_declared_chinese_owned
+  - company_about_chinese_founder
+  - phone_menu_chinese
+
+chinese_evidence_reject_alone:
+  - chinese_looking_name
+  - chinese_looking_person_name
+  - asian_faces_in_photos
+  - located_in_chinese_area
+  - occasional_chinese_review
+  - ai_inference
+  - unverified_third_party_guess

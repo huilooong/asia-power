@@ -1,0 +1,131 @@
+# APBD durable lead discovery markets (industry leads module)
+# First market: Canada auto repair — targets configurable, not hardcoded in code.
+
+version: 1
+updated: "2026-07-24"
+keyword_pack: auto_repair
+
+search_defaults:
+  max_results_per_query: 8
+  max_queries_per_run: 15
+  # Soft cap per discover run (Places free key)
+  max_new_leads_per_run: 40
+  default_radius_m: 12000
+  sleep_seconds_between_queries: 1.5
+
+countries:
+  - code: CA
+    name: Canada
+    industry: auto_repair
+    target_total: 500
+    regions:
+      - id: gta
+        name: Greater Toronto Area
+        target: 170
+        cities:
+          - Toronto
+          - Scarborough
+          - North York
+          - Markham
+          - Richmond Hill
+          - Mississauga
+          - Brampton
+          - Vaughan
+        districts:
+          - "Pacific Mall Markham"
+          - "Downtown Toronto"
+          - "North York Centre"
+        regional_pain: 0
+      - id: metro_vancouver
+        name: Metro Vancouver
+        target: 120
+        cities:
+          - Vancouver
+          - Richmond
+          - Burnaby
+          - Surrey
+          - Coquitlam
+          - Langley
+          - Abbotsford
+        districts:
+          - "Richmond Aberdeen"
+          - "Burnaby Metrotown"
+        regional_pain: 0
+      - id: calgary_edmonton
+        name: Calgary–Edmonton
+        target: 75
+        cities:
+          - Calgary
+          - Edmonton
+        districts: []
+        regional_pain: 2
+      - id: montreal
+        name: Montréal area
+        target: 50
+        cities:
+          - Montréal
+          - Laval
+          - Brossard
+        districts: []
+        regional_pain: 0
+      - id: ottawa_gatineau
+        name: Ottawa–Gatineau
+        target: 25
+        cities:
+          - Ottawa
+          - Gatineau
+        districts: []
+        regional_pain: 1
+      - id: winnipeg
+        name: Winnipeg
+        target: 20
+        cities:
+          - Winnipeg
+        districts: []
+        regional_pain: 3
+      - id: atlantic
+        name: Atlantic Canada
+        target: 20
+        cities:
+          - Halifax
+          - Moncton
+          - "St. John's"
+        districts: []
+        regional_pain: 4
+      - id: other
+        name: Other key cities
+        target: 20
+        cities:
+          - Prince George
+          - Victoria
+          - Kelowna
+          - Saskatoon
+          - Regina
+          - Sudbury
+          - Thunder Bay
+        districts: []
+        regional_pain: 3
+
+# Priority query groups per city run (subset of keyword pack to save quota)
+query_groups_priority:
+  - chinese_service
+  - powertrain
+  - asian_vehicle
+  - brand_specialist
+  - parts
+  - general
+
+# National chains to down-rank (name contains, case-insensitive)
+national_chain_hints:
+  - "Mr. Lube"
+  - "Mr Lube"
+  - "Jiffy Lube"
+  - "Midas"
+  - "Speedy"
+  - "Kal Tire"
+  - "Canadian Tire Auto"
+  - "Fountain Tire"
+  - "Goodyear Auto"
+  - "Firestone"
+  - "Meineke"
+  - "Pep Boys"

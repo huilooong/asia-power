@@ -1,0 +1,115 @@
+# APBD lead discovery · industry keyword packs (config-driven; first pack = auto repair)
+# Not hardcoded in business logic — swap packs for other industries later.
+
+version: 1
+updated: "2026-07-24"
+default_pack: auto_repair
+
+packs:
+  auto_repair:
+    label: Auto repair / powertrain / used parts
+    general:
+      - auto repair
+      - auto repair shop
+      - independent auto repair
+      - automotive repair
+      - mechanic
+      - car repair
+      - automotive service
+      - full service auto repair
+    asian_vehicle:
+      - Asian auto repair
+      - Japanese auto repair
+      - Korean auto repair
+      - import auto repair
+      - JDM repair
+      - Japanese car specialist
+    brand_specialist:
+      - Toyota repair
+      - Lexus repair
+      - Honda repair
+      - Acura repair
+      - Nissan repair
+      - Infiniti repair
+      - Hyundai repair
+      - Kia repair
+      - Subaru repair
+      - Mazda repair
+      - Mitsubishi repair
+      - Suzuki repair
+    powertrain:
+      - engine replacement
+      - used engine installation
+      - engine swap
+      - engine repair
+      - engine rebuilding
+      - transmission repair
+      - transmission replacement
+      - used transmission
+      - transmission shop
+    parts:
+      - used auto parts
+      - Japanese used auto parts
+      - used engines
+      - used transmissions
+      - auto dismantler
+      - auto recycler
+      - salvage auto parts
+    additional:
+      - fleet repair
+      - commercial vehicle repair
+      - diesel repair
+      - hybrid repair
+      - tire and auto service
+    chinese_service:
+      - Chinese speaking auto repair
+      - Mandarin auto repair
+      - Cantonese auto repair
+      - Chinese mechanic
+      - 中文汽车维修
+      - 华语汽车维修
+      - 粤语汽车维修
+      - 普通话汽车维修
+      - 华人修车
+
+brands:
+  - Toyota
+  - Lexus
+  - Honda
+  - Acura
+  - Nissan
+  - Infiniti
+  - Hyundai
+  - Kia
+  - Subaru
+  - Mazda
+  - Mitsubishi
+  - Suzuki
+  - Isuzu
+  - Hino
+  - Scion
+  - Genesis
+
+service_codes:
+  - general_repair
+  - engine_diagnostics
+  - engine_repair
+  - engine_rebuilding
+  - engine_replacement
+  - engine_swap
+  - transmission_repair
+  - transmission_replacement
+  - used_engine_installation
+  - used_transmission_installation
+  - hybrid_repair
+  - ev_repair
+  - diesel_repair
+  - tire_service
+  - wheel_alignment
+  - brake_service
+  - suspension
+  - oil_change
+  - fleet_service
+  - commercial_vehicle
+  - auto_parts_sales
+  - used_parts_sales
