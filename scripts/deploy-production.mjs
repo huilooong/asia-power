@@ -639,6 +639,7 @@ function deployApsales() {
     `${ROOT}/scripts/apbd_leads_ca_trickle.py`,
     `${AP}/scripts/`,
   ]);
+  ssh('mkdir -p /root/.openclaw/workspace/AsiaPower/docs/agents/apbd /root/.openclaw/workspace/AsiaPower/docs/ops /root/.openclaw/workspace/AsiaPower/runtime/apbd/leads/db');
   run('rsync', ['-av',
     `${ROOT}/docs/agents/apbd/lead-discovery.md`,
     `${AP}/docs/agents/apbd/lead-discovery.md`,
