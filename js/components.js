@@ -968,13 +968,13 @@
     if (!document.querySelector('link[data-ap-app-shell-css]')) {
       const link = document.createElement('link');
       link.rel = 'stylesheet';
-      link.href = href(`css/pwa-app-shell.css?v=pwa-app-v6b`);
+      link.href = href(`css/pwa-app-shell.css?v=pwa-app-v6c`);
       link.setAttribute('data-ap-app-shell-css', '1');
       document.head.appendChild(link);
     }
     if (!document.querySelector('script[data-ap-app-shell-js]') && !window.AsiaPowerAppShell) {
       const script = document.createElement('script');
-      script.src = href(`js/pwa-app-shell.js?v=pwa-app-v6b`);
+      script.src = href(`js/pwa-app-shell.js?v=pwa-app-v6c`);
       script.defer = true;
       script.setAttribute('data-ap-app-shell-js', '1');
       document.head.appendChild(script);

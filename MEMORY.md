@@ -70,10 +70,16 @@
 - **位置：** `agents/apbd/leads/`（挂 APBD，不新建 Agent/CRM）
 - **配置：** `config/apbd_leads_markets.yaml`（目标 500）+ keywords/scoring YAML
 - **CLI：** `/apbd leads discover|enrich|score|review|export|coverage|refresh|batch`
-- **分批冲量：** `python scripts/apbd_leads_ca_batch.py --limit-per-city 15 --max-cities 8`
+- **细水长流（定稿）：** systemd `apbd-ca-leads-trickle.service` **持续跑到免费 Places 额度用完**（不等 4h）；负载 ≤1.8 就采，忙了就停手；约每 20s 一批 / 8 家；429 后休眠约 1h；CPUQuota 35%、MemoryMax 256M
 - **销售：** `/outreach scan` 仅读 `approved_for_outreach`（`source=apbd_leads`）；禁止自动群发
 - **硬规则：** 免费 Places Key；缺 Key/429 明确失败；不抓 Maps HTML；中文服务仅公开证据
 - **文档：** `docs/agents/apbd/lead-discovery.md`；质量报告 `docs/ops/apbd-ca-leads-quality-report.md`
+
+## 详情页 `?id=` 空白（CEO 2026-07-25）
+
+- **症状：** 只有页头页尾，中间无商品。
+- **根因：** 服务端原先只预渲染 `?slug=`；`?id=HC25xxxx` 是空壳，等前端拉完整目录才渲染。
+- **规则：** `id`/`stockId` 必须 301 到规范 `slug` 并预渲染；详情页 JS 先拉单条，不阻塞整库。
 
 ## Facebook 库存轮发（CEO 2026-07-24）
 

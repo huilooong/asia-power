@@ -1,6 +1,14 @@
-const CACHE_VERSION = 'pwa-app-v6b';
+const CACHE_VERSION = 'pwa-app-v6c';
 const STATIC_CACHE = `${CACHE_VERSION}-static`;
 const OFFLINE_URL = '/offline.html';
+
+/** Detail HTML is server-prerendered per slug — never keep a stale empty shell in SW cache. */
+function isCatalogDetailNavigation(url) {
+  const path = String(url?.pathname || '');
+  return path.endsWith('/half-cuts/detail.html')
+    || path.endsWith('/trucks/detail.html')
+    || path.endsWith('/machinery/detail.html');
+}
 
 /**
  * Keys that must be deleted when a new SW activates.
@@ -20,15 +28,15 @@ const STATIC_ASSETS = [
   '/app.html',
   '/css/styles.css',
   '/css/home-v4-hybrid.css?v=home-scroll-v5',
-  '/css/pwa-install.css?v=pwa-app-v6b',
-  '/css/pwa-app-shell.css?v=pwa-app-v6b',
+  '/css/pwa-install.css?v=pwa-app-v6c',
+  '/css/pwa-app-shell.css?v=pwa-app-v6c',
   '/js/path-utils.js',
   // Never precache bare /js/config.js — CF may hold immutable +233 poison for months
   '/js/config.js?v=apcontact-002',
   '/js/components.js?v=auth-nav-once-v2',
   '/js/home-v4-hybrid.js?v=vehicle-engine-001c',
-  '/js/pwa-install.js?v=pwa-app-v6b',
-  '/js/pwa-app-shell.js?v=pwa-app-v6b',
+  '/js/pwa-install.js?v=pwa-app-v6c',
+  '/js/pwa-app-shell.js?v=pwa-app-v6c',
   '/assets/favicon.png',
   '/assets/icons/icon-192.png',
   '/assets/icons/icon-512.png',
@@ -78,13 +86,20 @@ function staleWhileRevalidate(request) {
 }
 
 function networkFirstNavigation(request) {
+  const url = new URL(request.url);
+  const skipCache = isCatalogDetailNavigation(url);
   return fetch(request)
     .then(response => {
-      const copy = response.clone();
-      caches.open(STATIC_CACHE).then(cache => cache.put(request, copy));
+      if (!skipCache && response && response.status === 200 && response.type === 'basic') {
+        const copy = response.clone();
+        caches.open(STATIC_CACHE).then(cache => cache.put(request, copy));
+      }
       return response;
     })
-    .catch(() => caches.match(request).then(cached => cached || caches.match(OFFLINE_URL)));
+    .catch(() => {
+      if (skipCache) return caches.match(OFFLINE_URL);
+      return caches.match(request).then(cached => cached || caches.match(OFFLINE_URL));
+    });
 }
 
 self.addEventListener('install', event => {

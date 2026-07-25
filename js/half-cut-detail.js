@@ -164,14 +164,22 @@
     ]);
   }
 
+  function hasUsableDetailHtml(root) {
+    if (!root) return false;
+    const html = String(root.innerHTML || '').trim();
+    if (!html) return false;
+    // Server prerender or a prior successful client render — never wipe these on transient failures.
+    if (root.dataset.prerenderSlug) return true;
+    if (root.querySelector?.('.hc-item-detail')) return true;
+    return html.length > 200;
+  }
+
   function renderHalfCutDetail(slug) {
     currentSlug = slug || '';
     const item = resolveHalfCutItem(slug);
     const root = document.getElementById('half-cut-detail-root');
     if (!item || !root) {
-      if (root && root.dataset.prerenderSlug === slug && root.innerHTML.trim()) {
-        return;
-      }
+      if (hasUsableDetailHtml(root)) return;
       if (root) {
         root.innerHTML = `
           <section class="section">
@@ -184,13 +192,17 @@
       return;
     }
 
+    const snapshot = hasUsableDetailHtml(root) ? root.innerHTML : '';
     try {
       renderHalfCutDetailContent(item, root);
     } catch (err) {
       console.error('[HalfCutDetail] render failed', err);
-      if (root.dataset.prerenderSlug === slug && root.innerHTML.trim()) {
+      // Restore prerender/last-good HTML — do not leave header+footer-only blank pages.
+      if (snapshot) {
+        root.innerHTML = snapshot;
         return;
       }
+      if (hasUsableDetailHtml(root)) return;
       root.innerHTML = `
         <section class="section">
           <div class="container">
