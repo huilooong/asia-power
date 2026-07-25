@@ -401,6 +401,46 @@
       </nav>`;
   }
 
+  function detailHrefForItem(item) {
+    const slug = String(item?.slug || '').trim();
+    if (!slug) return '';
+    const u = window.HalfCutUtils;
+    if (u?.isTruckItem?.(item)) return href(`trucks/detail.html?slug=${encodeURIComponent(slug)}`);
+    if (u?.isMachineryItem?.(item)) return href(`machinery/detail.html?slug=${encodeURIComponent(slug)}`);
+    return href(`half-cuts/detail.html?slug=${encodeURIComponent(slug)}`);
+  }
+
+  function routeStockIdSearch(q) {
+    const u = window.HalfCutUtils;
+    const hits = (u?.findInventoryByStockIdQuery?.(q) || []).filter((item) => !u?.isSold?.(item));
+    const norm = u?.normalizeStockIdQuery?.(q) || String(q).trim().toUpperCase();
+    const exact = hits.filter((item) => {
+      const sid = String(item?.stockId || '').trim().toUpperCase();
+      const digits = u?.stockIdDigits?.(sid) || '';
+      return sid === norm || digits === norm.replace(/^(HC|UV)/i, '');
+    });
+    const target = exact.length === 1 ? exact[0] : (hits.length === 1 ? hits[0] : null);
+    if (target) {
+      const detail = detailHrefForItem(target);
+      if (detail) {
+        window.location.href = detail;
+        return true;
+      }
+    }
+    // Async fallback when HALF_CUT_LIST is not ready yet (homepage cold load).
+    fetch(`${window.location.origin}/api/half-cuts/public/item?slug=${encodeURIComponent(q)}`)
+      .then((res) => res.json().catch(() => ({})))
+      .then((data) => {
+        const item = data?.item;
+        const detail = item ? detailHrefForItem(item) : '';
+        window.location.href = detail || href(`half-cuts/?q=${encodeURIComponent(q)}`);
+      })
+      .catch(() => {
+        window.location.href = href(`half-cuts/?q=${encodeURIComponent(q)}`);
+      });
+    return true;
+  }
+
   function routeSearch(raw) {
     const q = String(raw || '').trim();
     if (!q) return;
@@ -409,11 +449,13 @@
       return;
     }
     window.AsiaPowerSearchTrends?.recordSearch?.(q);
-    const upper = q.toUpperCase();
-    if (/^(HC|UV)\d/i.test(upper)) {
-      window.location.href = href(`half-cuts/?q=${encodeURIComponent(q)}`);
+    const u = window.HalfCutUtils;
+    // Digits / HC / UV stock IDs → full-site lookup (not half-cuts-only).
+    if (u?.isStockIdQuery?.(q) || /^(HC|UV)\d/i.test(q) || /^\d{4,}$/.test(q)) {
+      routeStockIdSearch(q);
       return;
     }
+    const upper = q.toUpperCase();
     if (/^(ENG|GB|CH)-/i.test(upper) || /\b[0-9][A-Z]{1,3}-[A-Z0-9]{2,}/i.test(q)) {
       window.location.href = href(`engines/?q=${encodeURIComponent(q)}`);
       return;

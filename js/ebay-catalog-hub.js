@@ -590,9 +590,32 @@
   }
 
   function getInventory(category, query) {
-    return window.inventoryForCatalogCategory
+    const base = window.inventoryForCatalogCategory
       ? window.inventoryForCatalogCategory(category)
       : [];
+    const q = String(query || '').trim();
+    const u = window.HalfCutUtils;
+    if (!q || !u) return base;
+
+    // Full-site search: stock ID / catalog text must find items outside the
+    // current category pool (e.g. HC250241 is export used-car, not half-cut).
+    const all = (window.HALF_CUT_LIST || [])
+      .map((item) => u.toPublicItem?.(item) ?? item)
+      .filter((item) => !u.isSold?.(item));
+    const seen = new Set(
+      base.map((item) => String(item?.stockId || '').toUpperCase()).filter(Boolean)
+    );
+    const extras = [];
+    all.forEach((item) => {
+      const key = String(item?.stockId || '').toUpperCase();
+      if (!key || seen.has(key)) return;
+      const hit = (u.isStockIdQuery?.(q) && u.matchesStockId?.(item, q))
+        || u.matchesCatalogSearch?.(item, q);
+      if (!hit) return;
+      seen.add(key);
+      extras.push(item);
+    });
+    return extras.length ? base.concat(extras) : base;
   }
 
   function readHalfCutState(category, route) {
