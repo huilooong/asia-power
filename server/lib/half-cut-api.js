@@ -1137,7 +1137,10 @@ function createHalfCutApi(rootDir, options = {}) {
 
     if (req.method === 'GET' && pathname === '/api/half-cuts/public/item') {
       const url = new URL(req.url, `http://${req.headers.host || 'localhost'}`);
-      const slug = url.searchParams.get('slug') || url.searchParams.get('stockId') || '';
+      const slug = url.searchParams.get('slug')
+        || url.searchParams.get('stockId')
+        || url.searchParams.get('id')
+        || '';
       const item = await getPublicItemBySlug(slug);
       if (!item) {
         json(res, 404, { error: 'Listing not found' });

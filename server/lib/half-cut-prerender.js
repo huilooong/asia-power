@@ -15,11 +15,22 @@ const {
 function findApprovedItem(catalog, slug) {
   if (!slug) return null;
   const approved = catalog?.approved || [];
-  const direct = approved.find((entry) => entry?.slug === slug);
-  if (direct) return { item: direct, requestedSlug: slug, redirectSlug: null };
-  const viaAlias = approved.find((entry) => Array.isArray(entry?.slugAliases) && entry.slugAliases.includes(slug));
-  if (!viaAlias) return null;
-  return { item: viaAlias, requestedSlug: slug, redirectSlug: viaAlias.slug || null };
+  const needle = String(slug).trim();
+  const direct = approved.find((entry) => entry?.slug === needle);
+  if (direct) return { item: direct, requestedSlug: needle, redirectSlug: null };
+  const viaAlias = approved.find((entry) => Array.isArray(entry?.slugAliases) && entry.slugAliases.includes(needle));
+  if (viaAlias) {
+    return { item: viaAlias, requestedSlug: needle, redirectSlug: viaAlias.slug || null };
+  }
+  const stockMatch = needle.match(/^(hc\d+)$/i);
+  if (stockMatch) {
+    const stockId = stockMatch[1].toUpperCase();
+    const viaStock = approved.find((entry) => String(entry?.stockId || '').toUpperCase() === stockId);
+    if (viaStock) {
+      return { item: viaStock, requestedSlug: needle, redirectSlug: viaStock.slug || null };
+    }
+  }
+  return null;
 }
 
 function injectHalfCutPrerender(html, item, siteUrl, detailPath = '/half-cuts/detail.html') {

@@ -98,14 +98,21 @@
     return photoCount(b) > photoCount(a) ? b : a;
   }
 
+  function prerenderMatchesLookup(prerender, lookup) {
+    if (!prerender || !lookup) return false;
+    const needle = String(lookup).trim();
+    if (!needle) return false;
+    if (prerender.slug === needle) return true;
+    if ((prerender.slugAliases || []).includes(needle)) return true;
+    const stock = String(prerender.stockId || '').toUpperCase();
+    return !!stock && stock === needle.toUpperCase();
+  }
+
   function resolveHalfCutItem(slug) {
     if (!slug) return null;
 
     const prerender = readPrerenderItem();
-    const prerenderHit = prerender
-      && (prerender.slug === slug || (prerender.slugAliases || []).includes(slug))
-      ? prerender
-      : null;
+    const prerenderHit = prerenderMatchesLookup(prerender, slug) ? prerender : null;
 
     let item = window.getHalfCutBySlug?.(slug) || null;
     item = preferRicherItem(prerenderHit, item);
@@ -128,6 +135,33 @@
     } catch {
       return null;
     }
+  }
+
+  function showDetailLoading(root) {
+    if (!root || root.innerHTML.trim()) return;
+    root.innerHTML = `
+      <section class="section">
+        <div class="container">
+          <p>${t('hc.loadingDetail', 'Loading listing…')}</p>
+        </div>
+      </section>`;
+  }
+
+  function withTimeout(promise, ms) {
+    let timer;
+    const timeout = new Promise((resolve) => {
+      timer = setTimeout(() => resolve('timeout'), ms);
+    });
+    return Promise.race([
+      Promise.resolve(promise).then((value) => {
+        clearTimeout(timer);
+        return value;
+      }).catch(() => {
+        clearTimeout(timer);
+        return null;
+      }),
+      timeout,
+    ]);
   }
 
   function renderHalfCutDetail(slug) {
@@ -703,25 +737,27 @@
     const slug = slugFromUrl();
     if (!slug) return;
 
+    const root = document.getElementById('half-cut-detail-root');
     const prerender = readPrerenderItem();
-    if (prerender?.slug) {
+    if (prerenderMatchesLookup(prerender, slug)) {
       renderHalfCutDetail(slug);
+    } else {
+      showDetailLoading(root);
     }
 
+    // Fetch the single listing immediately. Do NOT block on the full public catalog —
+    // that payload is large and used to leave ?id=HC25xxxx pages as header+footer only.
+    const fetchedPromise = fetchPublicItemBySlug(slug);
     const Store = window.HalfCutInventoryStore;
     if (Store?.whenReady) {
-      try {
-        await Store.whenReady();
-      } catch {
-        // still attempt render from prerender / public fetch
-      }
+      await withTimeout(Store.whenReady(), 2500);
     }
 
-    if (prerender?.slug) mergeCatalogItem(prerender);
+    if (prerenderMatchesLookup(prerender, slug)) mergeCatalogItem(prerender);
 
     // Always fetch the full public item. List/catalog payloads truncate photos for
     // performance; detail must show every uploaded photo (compress ≠ drop).
-    const fetched = await fetchPublicItemBySlug(slug);
+    const fetched = await fetchedPromise;
     if (fetched) {
       mergeCatalogItem(fetched);
       if (photoCount(fetched) > photoCount(prerender || {})) {
@@ -731,9 +767,22 @@
           photos: fetched.photos,
         };
       }
+      // Canonicalize share/ops links that used ?id= / stockId as the lookup key.
+      if (fetched.slug && fetched.slug !== slug) {
+        try {
+          const next = new URL(window.location.href);
+          next.searchParams.delete('id');
+          next.searchParams.delete('stockId');
+          next.searchParams.set('slug', fetched.slug);
+          window.history.replaceState({}, '', next.toString());
+          currentSlug = fetched.slug;
+        } catch {
+          // ignore history failures
+        }
+      }
     }
 
-    renderHalfCutDetail(slug);
+    renderHalfCutDetail(fetched?.slug || slug);
   }
 
   function needsDetailRetry(root) {
@@ -759,8 +808,7 @@
     const slug = slugFromUrl();
     if (!slug) return;
     const prerender = readPrerenderItem();
-    if (!prerender?.slug) return;
-    if (prerender.slug !== slug && !(prerender.slugAliases || []).includes(slug)) return;
+    if (!prerenderMatchesLookup(prerender, slug)) return;
     renderHalfCutDetail(slug);
   })();
 

@@ -1979,25 +1979,33 @@ const server = http.createServer(async (req, res) => {
   ]);
 
   if ((req.method === 'GET' || req.method === 'HEAD') && catalogDetailPaths.has(p)) {
-    const slug = url.searchParams.get('slug');
-    if (slug) {
+    // Accept slug= / id= / stockId= — CEO / ops / old shares often use ?id=HC25xxxx.
+    // Without server prerender, clients only get header+footer until JS loads the full catalog.
+    const slugParam = String(url.searchParams.get('slug') || '').trim();
+    const idParam = String(url.searchParams.get('id') || url.searchParams.get('stockId') || '').trim();
+    const lookup = slugParam || idParam;
+    if (lookup) {
       try {
         // Detail pages must use the FULL public item (all photos).
         // getPublicCatalog() intentionally truncates photos for list payload size —
         // never feed that truncated catalog into detail prerender (photo-loss bug).
-        const fullItem = await halfCut.getPublicItemBySlug(slug);
+        const fullItem = await halfCut.getPublicItemBySlug(lookup);
         const catalog = fullItem
           ? { approved: [fullItem] }
           : await halfCut.getPublicCatalog();
-        const canonicalItem = fullItem || (catalog.approved || []).find((item) => item?.slug === slug);
+        const canonicalItem = fullItem
+          || (catalog.approved || []).find((item) => item?.slug === lookup)
+          || (catalog.approved || []).find((item) => String(item?.stockId || '').toUpperCase() === lookup.toUpperCase());
         const canonicalDetailPath = canonicalItem ? resolveDetailPath(canonicalItem) : p;
-        if (canonicalItem && canonicalDetailPath !== p) {
-          return redirect(res, `${canonicalDetailPath}?slug=${encodeURIComponent(canonicalItem.slug || slug)}`, 301);
+        const canonicalSlug = String(canonicalItem?.slug || '').trim();
+        // Always land on ?slug=<canonical> so HTML is prerendered and share links stay stable.
+        if (canonicalItem && canonicalSlug && (canonicalDetailPath !== p || slugParam !== canonicalSlug)) {
+          return redirect(res, `${canonicalDetailPath}?slug=${encodeURIComponent(canonicalSlug)}`, 301);
         }
         const siteUrl = process.env.SITE_URL || 'https://asia-power.com';
         const rendered = renderHalfCutDetailPage({
           publicDir: PUBLIC_DIR,
-          slug,
+          slug: canonicalSlug || lookup,
           catalog,
           siteUrl,
           detailPath: p,
@@ -2009,7 +2017,7 @@ const server = http.createServer(async (req, res) => {
           });
         }
         // Sold / removed / unknown slug: do not fall through to bare detail shell (200, no canonical).
-        const goneHtml = renderMissingCatalogDetailPage({ siteUrl, detailPath: p, slug });
+        const goneHtml = renderMissingCatalogDetailPage({ siteUrl, detailPath: p, slug: lookup });
         siteAnalytics.recordPageView(req, `${p}${url.search || ''}`);
         return sendMissingDetailHtml(res, goneHtml, { head: req.method === 'HEAD' });
       } catch (err) {
