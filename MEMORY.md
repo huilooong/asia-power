@@ -213,7 +213,7 @@
 
 ## Engineering gotchas
 - **CSS cache-bust**：改 `ebay-layout.css` 必须同步 bump `js/components.js` 的 `SITE_EBAY_LAYOUT_VER`，否则 CDN 旧 `?v=` 会盖掉新样式（parts 真图曾因此卡在 66px）。
-- **库存号搜索跨分类（P0 2026-07-10）**：顶栏搜数字/`HC…` 默认进半切页；若车在 used-cars/卡车等分类会被踢空。规则：`isStockIdQuery` + `mergeStockIdHitsIntoInventory`；现网 cache key 已升到 `stock-id-search-v2`（v1 逻辑曾在 origin 但 CF 仍喂 `parts-parallel-v1` 旧 JS → CEO 测仍空）。回归 `node scripts/verify-stock-id-search.mjs` + 现网截图。报告：`docs/ops/ops-p0-stock-id-search-live-retest-2026-07-10.md`。
+- **库存号搜索跨分类（P0 2026-07-10）**：顶栏搜数字/`HC…` 默认进半切页；若车在 used-cars/卡车等分类会被踢空。规则：`isStockIdQuery` + `mergeStockIdHitsIntoInventory`；现网 cache key 已升到 `stock-id-search-v2`；2026-07-25 再升 `sitewide-stock-search-v2`（v1 键曾被 CF 污染锁定旧 hub.js；纯数字 API 同步支持）（v1 逻辑曾在 origin 但 CF 仍喂 `parts-parallel-v1` 旧 JS → CEO 测仍空）。回归 `node scripts/verify-stock-id-search.mjs` + 现网截图。报告：`docs/ops/ops-p0-stock-id-search-live-retest-2026-07-10.md`。
 - **先 GitHub 再生产（CEO 2026-07-10 质问确认违规）**：生产部署前必须 `git push` 到 GitHub，且 `HEAD` 对齐 `origin/main`（或 CEO 批准的 release SHA）。禁止 `--allow-dirty` 常态直 rsync 本地未提交/未推送文件。今日 93 次 Release 均违规。补救用普通 push/PR，禁止 force push。依据 OPS-003 §7.2。
 - **专用零件目录价必须全价（CEO 定稿 2026-07-10）**：单独上传的发动机/变速箱/底盘/前切等，**列表与详情一律显示库内原价**，**禁止再乘 0.35**（及同类 `PART_PRICE_RATIOS`）。`0.35` 等系数**仅**用于「规则带出、无单独实价」的半切估算件。事故例：HC250546 库价 230 → 列表曾错显 81。现网逻辑：`catalogPartPriceAmount` + `isDedicatedPartListing`（cache key 含 `dedicated-price-v1`，后续 `stock-id-search-v2` 仍含此修复）。Runbook：`data/knowledge-base/dedicated-part-price-runbook.md`；取证：`docs/ops/ops-p0-gearbox-230-to-81.md`
 

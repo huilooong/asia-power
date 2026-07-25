@@ -498,7 +498,13 @@
     const title = u.seoTitle(item);
     const description = u.seoDescription(item);
 
-    const canonical = absoluteUrl(`${b}half-cuts/detail.html?slug=${encodeURIComponent(item.slug)}`);
+    const isTruck = item.vehicleCategory === 'truck';
+    const isMachinery = item.vehicleCategory === 'machinery';
+    const isUsedCar = !!(u.isExportableUsedCarItem?.(item));
+    const detailPath = isMachinery
+      ? 'machinery/detail.html'
+      : (isTruck ? 'trucks/detail.html' : (isUsedCar ? 'used-cars/detail.html' : 'half-cuts/detail.html'));
+    const canonical = absoluteUrl(u.detailUrl?.(b, item.slug, item) || `${b}${detailPath}?slug=${encodeURIComponent(item.slug)}`);
     // OG images must never block buy-box CTAs (WhatsApp / Facebook / inquiry).
     let ogImage = '';
     try {
@@ -529,15 +535,13 @@
     const canonicalLink = document.querySelector('link[rel="canonical"]');
     if (canonicalLink) canonicalLink.href = canonical;
 
-    const isTruck = item.vehicleCategory === 'truck';
-    const isMachinery = item.vehicleCategory === 'machinery';
     const passengerPart = String(item.passengerPartType || '').trim();
     let catalogLabel = isMachinery
       ? t('nav.machinery', 'Machinery')
-      : (isTruck ? t('nav.trucks', 'Trucks') : t('nav.halfcuts', 'Half-Cuts'));
+      : (isTruck ? t('nav.trucks', 'Trucks') : (isUsedCar ? t('ebay.catUsedCars', 'Export Used Cars') : t('nav.halfcuts', 'Half-Cuts')));
     let catalogHref = isMachinery
       ? `${b}machinery/`
-      : (isTruck ? `${b}trucks/` : `${b}half-cuts/`);
+      : (isTruck ? `${b}trucks/` : (isUsedCar ? `${b}half-cuts/?cat=used-cars` : `${b}half-cuts/`));
     if (passengerPart === 'engine' || passengerPart === 'transmission') {
       catalogLabel = t('nav.engines', 'Engines');
       catalogHref = `${b}engines/`;
@@ -555,12 +559,12 @@
       catalogHref = `${b}trucks/?part=axle`;
     } else if (isTruck && item.truckPartType === 'vehicle') {
       catalogHref = `${b}trucks/?part=whole`;
-    } else if (!isTruck && !isMachinery && item.vehicleListingType === 'used') {
-      catalogHref = `${b}half-cuts/?cat=used-cars`;
     }
     const cutLabel = isMachinery
       ? (item.vehicleCondition || t('machinery.equipment', 'Construction Equipment'))
-      : (isTruck ? t('trucks.halfCut', 'Truck Half Cut') : t('hc.halfCut', 'Half Cut'));
+      : (isTruck
+        ? t('trucks.halfCut', 'Truck Half Cut')
+        : (isUsedCar ? t('ebay.catUsedCars', 'Export Used Car') : t('hc.halfCut', 'Half Cut')));
 
     upsertJsonLd('schema-halfcut-breadcrumb', {
       '@context': 'https://schema.org',

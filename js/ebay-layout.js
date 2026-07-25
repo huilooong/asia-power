@@ -407,6 +407,7 @@
     const u = window.HalfCutUtils;
     if (u?.isTruckItem?.(item)) return href(`trucks/detail.html?slug=${encodeURIComponent(slug)}`);
     if (u?.isMachineryItem?.(item)) return href(`machinery/detail.html?slug=${encodeURIComponent(slug)}`);
+    if (u?.isExportableUsedCarItem?.(item)) return href(`used-cars/detail.html?slug=${encodeURIComponent(slug)}`);
     return href(`half-cuts/detail.html?slug=${encodeURIComponent(slug)}`);
   }
 

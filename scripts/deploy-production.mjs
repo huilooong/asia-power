@@ -329,7 +329,7 @@ echo "[deploy:portal] files OK on remote"
 function deployChrome() {
   console.log('[deploy:chrome] syncing listing chrome + catalog shells + static chrome pages');
   const pub = `${SITE}/public`;
-  ssh('mkdir -p /root/.openclaw/workspace/inventory-site/public/css /root/.openclaw/workspace/inventory-site/public/js /root/.openclaw/workspace/inventory-site/public/half-cuts /root/.openclaw/workspace/inventory-site/public/trucks /root/.openclaw/workspace/inventory-site/public/machinery /root/.openclaw/workspace/inventory-site/public/engines /root/.openclaw/workspace/inventory-site/public/gearboxes /root/.openclaw/workspace/inventory-site/public/front-cuts /root/.openclaw/workspace/inventory-site/public/chassis-parts /root/.openclaw/workspace/inventory-site/public/tires /root/.openclaw/workspace/inventory-site/public/guides');
+  ssh('mkdir -p /root/.openclaw/workspace/inventory-site/public/css /root/.openclaw/workspace/inventory-site/public/js /root/.openclaw/workspace/inventory-site/public/half-cuts /root/.openclaw/workspace/inventory-site/public/trucks /root/.openclaw/workspace/inventory-site/public/machinery /root/.openclaw/workspace/inventory-site/public/used-cars /root/.openclaw/workspace/inventory-site/public/engines /root/.openclaw/workspace/inventory-site/public/gearboxes /root/.openclaw/workspace/inventory-site/public/front-cuts /root/.openclaw/workspace/inventory-site/public/chassis-parts /root/.openclaw/workspace/inventory-site/public/tires /root/.openclaw/workspace/inventory-site/public/guides');
   // Shared listing assets
   rsync(`${ROOT}/js/components.js`, `${pub}/js/components.js`);
   rsync(`${ROOT}/js/config.js`, `${pub}/js/config.js`);
@@ -373,6 +373,7 @@ function deployChrome() {
   rsync(`${ROOT}/half-cuts/detail.html`, `${pub}/half-cuts/detail.html`);
   rsync(`${ROOT}/trucks/detail.html`, `${pub}/trucks/detail.html`);
   rsync(`${ROOT}/machinery/detail.html`, `${pub}/machinery/detail.html`);
+  rsync(`${ROOT}/used-cars/detail.html`, `${pub}/used-cars/detail.html`);
   // Detail page must always upgrade truncated catalog photos → full album
   rsync(`${ROOT}/js/half-cut-detail.js`, `${pub}/js/half-cut-detail.js`);
   rsync(`${ROOT}/js/half-cut-leads.js`, `${pub}/js/half-cut-leads.js`);

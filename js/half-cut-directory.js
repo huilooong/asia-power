@@ -608,8 +608,19 @@
       .sort((a, b) => a.name.localeCompare(b.name, undefined, { sensitivity: 'base' }));
   }
 
-  function detailUrl(base, slug) {
-    return `${base}half-cuts/detail.html?slug=${encodeURIComponent(slug)}`;
+  function detailPathForItem(item) {
+    if (isTruckItem(item)) return 'trucks/detail.html';
+    if (isMachineryItem(item)) return 'machinery/detail.html';
+    if (isExportableUsedCarItem(item)) return 'used-cars/detail.html';
+    return 'half-cuts/detail.html';
+  }
+
+  function detailUrl(base, slug, item) {
+    const resolved = item || (Array.isArray(HALF_CUT_LIST)
+      ? HALF_CUT_LIST.find((entry) => String(entry?.slug || '') === String(slug || ''))
+      : null);
+    const path = detailPathForItem(resolved);
+    return `${base}${path}?slug=${encodeURIComponent(slug)}`;
   }
 
   function enginePageUrl(base, item) {
@@ -2078,6 +2089,7 @@
     isMachineryLike,
     filterInventoryBySegment,
     listingTypeLabel,
+    detailPathForItem,
     detailUrl,
     whatsappUrl,
     whatsappMessage,

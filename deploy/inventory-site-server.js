@@ -1976,6 +1976,7 @@ const server = http.createServer(async (req, res) => {
     '/half-cuts/detail.html',
     '/trucks/detail.html',
     '/machinery/detail.html',
+    '/used-cars/detail.html',
   ]);
 
   if ((req.method === 'GET' || req.method === 'HEAD') && catalogDetailPaths.has(p)) {

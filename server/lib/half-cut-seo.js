@@ -77,9 +77,17 @@ function canonicalUrl(siteUrl, slug, detailPath = '/half-cuts/detail.html') {
   return `${base}${pathPart}?slug=${encodeURIComponent(slug)}`;
 }
 
+function isExportUsedCarPathItem(item) {
+  if (!item) return false;
+  if (item.vehicleCategory === 'truck' || item.vehicleCategory === 'machinery') return false;
+  if (item.isExportUsedCar === true) return true;
+  return String(item.vehicleCondition || '').trim().toLowerCase() === 'running vehicle';
+}
+
 function resolveDetailPath(item) {
   if (item?.vehicleCategory === 'truck') return '/trucks/detail.html';
   if (item?.vehicleCategory === 'machinery') return '/machinery/detail.html';
+  if (isExportUsedCarPathItem(item)) return '/used-cars/detail.html';
   return '/half-cuts/detail.html';
 }
 
