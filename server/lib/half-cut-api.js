@@ -413,10 +413,19 @@ function createHalfCutApi(rootDir, options = {}) {
     let item = raw.find((entry) => entry?.slug === needle
       || (Array.isArray(entry?.slugAliases) && entry.slugAliases.includes(needle)));
     if (!item) {
-      const stockMatch = needle.match(/(hc\d+)/i);
+      const stockMatch = needle.match(/(?:hc|uv)?(\d{4,})/i);
       if (stockMatch) {
-        const stockId = stockMatch[0].toUpperCase();
-        item = raw.find((entry) => String(entry.stockId || '').toUpperCase() === stockId) || null;
+        const digits = stockMatch[1];
+        const prefixed = needle.match(/^(hc|uv)\d+/i)
+          ? [needle.toUpperCase()]
+          : [`HC${digits}`, `UV${digits}`];
+        item = raw.find((entry) => {
+          const sid = String(entry.stockId || '').toUpperCase();
+          if (!sid) return false;
+          if (prefixed.includes(sid)) return true;
+          const m = sid.match(/^(?:HC|UV)?(\d+)$/);
+          return m ? m[1] === digits : false;
+        }) || null;
       }
     }
     return item || null;

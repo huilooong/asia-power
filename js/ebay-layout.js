@@ -428,16 +428,32 @@
       }
     }
     // Async fallback when HALF_CUT_LIST is not ready yet (homepage cold load).
-    fetch(`${window.location.origin}/api/half-cuts/public/item?slug=${encodeURIComponent(q)}`)
-      .then((res) => res.json().catch(() => ({})))
-      .then((data) => {
-        const item = data?.item;
-        const detail = item ? detailHrefForItem(item) : '';
-        window.location.href = detail || href(`half-cuts/?q=${encodeURIComponent(q)}`);
-      })
-      .catch(() => {
+    // Try bare digits and HC/UV prefixes — API historically only matched full HC IDs.
+    const candidates = [q];
+    if (/^\d{4,}$/.test(norm)) {
+      candidates.push(`HC${norm}`, `UV${norm}`);
+    } else if (/^(HC|UV)\d+$/i.test(norm)) {
+      candidates.push(norm.replace(/^(HC|UV)/i, ''));
+    }
+    const tryNext = (i) => {
+      if (i >= candidates.length) {
         window.location.href = href(`half-cuts/?q=${encodeURIComponent(q)}`);
-      });
+        return;
+      }
+      fetch(`${window.location.origin}/api/half-cuts/public/item?slug=${encodeURIComponent(candidates[i])}`)
+        .then((res) => (res.ok ? res.json() : {}))
+        .then((data) => {
+          const item = data?.item;
+          const detail = item ? detailHrefForItem(item) : '';
+          if (detail) {
+            window.location.href = detail;
+            return;
+          }
+          tryNext(i + 1);
+        })
+        .catch(() => tryNext(i + 1));
+    };
+    tryNext(0);
     return true;
   }
 
