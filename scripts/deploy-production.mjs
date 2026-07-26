@@ -891,8 +891,13 @@ fi
 install -m 644 /tmp/apsales-whatsapp-bridge.service /etc/systemd/system/apsales-whatsapp-bridge.service
 install -m 644 /tmp/apsales-bridge-crash-logger.conf /etc/systemd/system/apsales-whatsapp-bridge.service.d/crash-logger.conf
 install -m 644 /tmp/apsales-bridge-crash-logger.mjs /root/.openclaw/scripts/apsales-bridge-crash-logger.mjs
-# OCR: google Vision free tier (CEO 2026-07-14); STT stays none until vendor key.
-# EnvironmentFile loads GOOGLE_PLACES_API_KEY / APSALES_GOOGLE_VISION_API_KEY from AsiaPower .env
+# OCR: switched google -> openai (2026-07-26). GOOGLE_CLOUD_VISION_API_KEY /
+# APSALES_GOOGLE_VISION_API_KEY were never provisioned in AsiaPower .env, so every
+# VIN/nameplate photo was silently falling back to local tesseract (see
+# apsales-media-vin-ocr.py fallback path). OPENAI_API_KEY is already live on this
+# server, so openai needs no new credential. STT is left on google (untouched;
+# same missing-key gap likely applies there too — separate decision).
+# EnvironmentFile loads GOOGLE_PLACES_API_KEY / OPENAI_API_KEY from AsiaPower .env
 cat > /etc/systemd/system/apsales-whatsapp-bridge.service.d/openclaw-sales-agent.conf <<'EOF'
 [Service]
 Environment=APSALES_REPLY_BRAIN=openclaw
@@ -902,7 +907,7 @@ Environment=APSALES_MEDIA_VIN_ENABLED=true
 Environment=APSALES_MEDIA_MAX_BYTES=8388608
 Environment=APSALES_VOICE_STT_ENABLED=true
 Environment=APSALES_AUDIO_MAX_BYTES=8388608
-Environment=APSALES_OCR_PROVIDER=google
+Environment=APSALES_OCR_PROVIDER=openai
 Environment=APSALES_STT_PROVIDER=google
 Environment=APSALES_BUYING_INTENT_NOTIFY_E164=+8618603773077
 Environment=APSALES_QUOTE_FOLLOWUP_SEND=true
