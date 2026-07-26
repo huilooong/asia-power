@@ -60,3 +60,41 @@ test("card: null when no usable fields", async () => {
   assert.equal(formatVehicleConfirmationCard({}), null);
   assert.equal(formatVehicleConfirmationCard(null), null);
 });
+
+test("card: includes transmission line when decoder returns it", async () => {
+  const { formatVehicleConfirmationCard } = await load();
+  const card = formatVehicleConfirmationCard({
+    brand: "NISSAN",
+    model: "NAVARA",
+    year: "2015",
+    engine_code: "YD25",
+    displacement: "2.5L",
+    transmission: "Manual, 6-Speed",
+  });
+  assert.match(card, /Transmission: Manual, 6-Speed/);
+});
+
+test("card: omits transmission line when empty or missing", async () => {
+  const { formatVehicleConfirmationCard } = await load();
+  const withEmpty = formatVehicleConfirmationCard({
+    brand: "TOYOTA",
+    model: "HILUX",
+    year: "2018",
+    transmission: "",
+  });
+  assert.ok(!/Transmission:/.test(withEmpty));
+
+  const withMissingKey = formatVehicleConfirmationCard({
+    brand: "MAZDA",
+    model: "BT-50",
+    year: "2016",
+  });
+  assert.ok(!/Transmission:/.test(withMissingKey));
+});
+
+test("card: transmission-only vehicle still produces a card", async () => {
+  const { formatVehicleConfirmationCard } = await load();
+  const card = formatVehicleConfirmationCard({ transmission: "Automatic, CVT" });
+  assert.ok(card);
+  assert.match(card, /Transmission: Automatic, CVT/);
+});

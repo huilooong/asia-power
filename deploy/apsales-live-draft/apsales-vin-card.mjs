@@ -35,6 +35,7 @@ export function formatVehicleConfirmationCard(vehicle) {
   const year = clean(vehicle.year);
   const engine = clean(vehicle.engine_code);
   const displacement = clean(vehicle.displacement);
+  const transmission = clean(vehicle.transmission);
   const frame = clean(vehicle.frame_no);
   const vin = clean(vehicle.vin);
 
@@ -51,9 +52,10 @@ export function formatVehicleConfirmationCard(vehicle) {
   } else if (displacement) {
     lines.push(`Displacement: ${displacement}`);
   }
+  if (transmission) lines.push(`Transmission: ${transmission}`);
 
   // OCR-only China VIN path: confirm the ID we read when nothing else decoded.
-  const hasIdentity = Boolean(brand || model || year || frame || engine || displacement);
+  const hasIdentity = Boolean(brand || model || year || frame || engine || displacement || transmission);
   if (!hasIdentity && vin && !vin.includes("*")) {
     lines.push(`VIN: ${vin}`);
   }
