@@ -1096,6 +1096,9 @@ async function serveStatic(req, res, pathname, search = '') {
     '/chassis-parts.html': '/chassis-parts/',
     '/half-cuts.html': '/half-cuts/',
   };
+  // Preserve old relative links that incorrectly resolved contact.html below
+  // /engines/. Keep the original query string so product/brand intent survives.
+  if (pathname === '/engines/contact.html') return redirect(res, `/contact.html${search || ''}`);
   if (redirectMap[pathname]) return redirect(res, redirectMap[pathname]);
   if (pathname === '/index.html') return redirect(res, '/');
   const indexMatch = pathname.match(/^(.+)\/index\.html$/);

@@ -638,7 +638,11 @@ if [ -f "$CFG" ]; then
   else
     echo "/* RELEASE_ID: ${releaseId} */" >> "$CFG"
   fi
-  echo STAMP_OK
+  if grep -qF "releaseId: '${releaseId}'" "$CFG"; then
+    echo STAMP_OK
+  else
+    echo STAMP_VERIFY_FAILED
+  fi
 fi
 `;
       const stamp = spawnSync('ssh', ['-o', 'BatchMode=yes', remote, stampCmd], { encoding: 'utf8' });

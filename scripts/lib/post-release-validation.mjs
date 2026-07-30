@@ -35,6 +35,8 @@ const DEFAULT_PAGES = [
   { id: 'engine_hyundai_kia_nigeria', url: '/engines/hyundai-kia-engines-for-nigeria-importers.html', kind: 'html' },
   { id: 'supplier_portal', url: '/supplier-portal.html', kind: 'html' },
   { id: 'config_js', url: '/js/config.js', kind: 'config' },
+  { id: 'components_js', url: '/js/components.js', kind: 'asset' },
+  { id: 'pwa_app_shell_js', url: '/js/pwa-app-shell.js', kind: 'asset' },
   { id: 'sw_js', url: '/sw.js', kind: 'sw' },
   { id: 'robots', url: '/robots.txt', kind: 'text' },
   { id: 'llms', url: '/llms.txt', kind: 'llms' },
@@ -140,6 +142,10 @@ function extractCacheVersion(swJs) {
   return m ? m[1] : '';
 }
 
+export function hasShortCachePolicy(cacheControl) {
+  return /(?:^|,)\s*max-age=60(?:,|$)/i.test(String(cacheControl || ''));
+}
+
 function hasLogo(html) {
   return /logo\.(png|webp|svg)|ASIAPOWER\.logo|class=["'][^"']*logo/i.test(html);
 }
@@ -229,11 +235,12 @@ function sameUrl(a, b) {
   }
 }
 
-function classifyInventoryLoc(loc) {
+export function classifyInventoryLoc(loc) {
   try {
     const url = new URL(loc);
     if (url.pathname === '/trucks/detail.html') return 'truck';
     if (url.pathname === '/machinery/detail.html') return 'machinery';
+    if (url.pathname === '/used-cars/detail.html') return 'used_car';
     if (url.pathname === '/half-cuts/detail.html') return 'half_cut';
   } catch {
     // ignore
@@ -280,6 +287,7 @@ async function runSeoCanonicalValidation({ baseUrl, sitemapBody, push, pageResul
     half_cut: locs.find((loc) => classifyInventoryLoc(loc) === 'half_cut') || '',
     truck: locs.find((loc) => classifyInventoryLoc(loc) === 'truck') || '',
     machinery: locs.find((loc) => classifyInventoryLoc(loc) === 'machinery') || '',
+    used_car: locs.find((loc) => classifyInventoryLoc(loc) === 'used_car') || '',
   };
 
   for (const [kind, loc] of Object.entries(samples)) {
@@ -322,7 +330,7 @@ async function runSeoCanonicalValidation({ baseUrl, sitemapBody, push, pageResul
       push(`seo_${kind}_product_jsonld_url`, 'pass', productUrl);
     }
 
-    if (kind === 'truck' || kind === 'machinery') {
+    if (kind === 'truck' || kind === 'machinery' || kind === 'used_car') {
       const u = new URL(loc);
       const legacy = `${baseUrl}/half-cuts/detail.html${u.search}`;
       let meta;
@@ -518,24 +526,34 @@ export async function runPublicPostReleaseValidation(opts = {}) {
       if (FORBIDDEN_WHATSAPP.some((f) => body.includes(f))) {
         push('config_js_forbidden', 'fail', 'forbidden legacy WhatsApp still in bare config.js');
       }
-      // Cache policy warning (not fail if WhatsApp correct)
+      // These files are deliberately short-lived because Cloudflare has
+      // previously served stale release assets after deploys.
       const cc = cache.cache_control || '';
-      if (/immutable/i.test(cc) && /max-age=31536000/i.test(cc)) {
+      if (!hasShortCachePolicy(cc)) {
         push(
           'config_js_cache_policy',
           'fail',
-          `dangerous Cache-Control on config.js: ${cc} (APCONTACT incident class)`,
+          `config.js must be short-lived (max-age=60); got: ${cc || '(none)'}`,
         );
       } else {
         push('config_js_cache_policy', 'pass', cc || '(no cache-control)');
       }
       push('config_js_cf', 'pass', `cf=${cache.cf_cache_status || 'n/a'} age=${cache.age || '0'}`);
-      if (releaseId && rid && rid !== releaseId && rid !== 'local-dev') {
-        push('config_js_release_id', 'fail', `config releaseId=${rid} != deploy ${releaseId}`);
+      if (releaseId && rid !== releaseId) {
+        push('config_js_release_id', 'fail', `config releaseId=${rid || '(missing)'} != deploy ${releaseId}`);
       } else if (rid) {
         push('config_js_release_id', 'pass', `releaseId=${rid}`);
       } else {
         push('config_js_release_id', 'skip', 'releaseId not stamped yet (OPS-003 phase-2)');
+      }
+    }
+
+    if (page.kind === 'asset') {
+      const cc = cache.cache_control || '';
+      if (!hasShortCachePolicy(cc)) {
+        push(`${page.id}_cache_policy`, 'fail', `${page.url} must be short-lived (max-age=60); got: ${cc || '(none)'}`);
+      } else {
+        push(`${page.id}_cache_policy`, 'pass', cc);
       }
     }
 
@@ -554,8 +572,8 @@ export async function runPublicPostReleaseValidation(opts = {}) {
         push('sw_precache_config', 'pass', 'no bare config.js precache (or versioned)');
       }
       const cc = cache.cache_control || '';
-      if (/immutable/i.test(cc) && /max-age=31536000/i.test(cc)) {
-        push('sw_cache_policy', 'fail', `dangerous Cache-Control on sw.js: ${cc}`);
+      if (!hasShortCachePolicy(cc)) {
+        push('sw_cache_policy', 'fail', `sw.js must be short-lived (max-age=60); got: ${cc || '(none)'}`);
       } else {
         push('sw_cache_policy', 'pass', cc || '(no cache-control)');
       }
