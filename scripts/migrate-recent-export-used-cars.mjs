@@ -6,7 +6,13 @@ import process from 'node:process';
 import { createRequire } from 'node:module';
 
 const require = createRequire(import.meta.url);
-const halfCutTitle = require('../server/lib/half-cut-title');
+let halfCutTitle;
+try {
+  halfCutTitle = require('../server/lib/half-cut-title');
+} catch {
+  // Production installs application libraries at inventory-site/lib/.
+  halfCutTitle = require('../lib/half-cut-title');
+}
 
 function valueAfter(flag, fallback = '') {
   const index = process.argv.indexOf(flag);
