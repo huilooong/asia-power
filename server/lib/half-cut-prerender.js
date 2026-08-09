@@ -98,6 +98,7 @@ function catalogHomeForDetailPath(detailPath = '/half-cuts/detail.html') {
   const p = String(detailPath || '/half-cuts/detail.html');
   if (p.startsWith('/trucks/')) return '/trucks/';
   if (p.startsWith('/machinery/')) return '/machinery/';
+  if (p.startsWith('/used-cars/')) return '/half-cuts/?cat=used-cars';
   return '/half-cuts/';
 }
 

@@ -299,6 +299,10 @@
     var src = input || {};
     var vehicle = formatHalfCutVehicleTitle(src);
     var eng = formatEngineCodeDisplacementFuel(src).replace(/\s·\s/g, ' ');
+    if (src.vehicleListingType === 'used' || src.isExportUsedCar === true || String(src.vehicleCondition || '').toLowerCase() === 'running vehicle') {
+      var usedTitle = [vehicle, eng].filter(Boolean).join(' — ');
+      return window.HalfCutTitle?.formatExportUsedCarTitle?.(usedTitle) || (usedTitle ? usedTitle + ' — Export Used Car' : 'Export Used Car');
+    }
     if (!vehicle) return eng ? eng + ' Half Cut' : 'Half Cut';
     if (!eng) return vehicle + ' Half Cut';
     return vehicle + ' Half Cut — ' + eng;
@@ -309,6 +313,14 @@
     var vehicle = formatHalfCutVehicleTitle(src);
     var parts = resolveEngineCardParts(src);
     var mid = [parts.code, parts.displacement].filter(Boolean).join(' ');
+    if (src.vehicleListingType === 'used' || src.isExportUsedCar === true || String(src.vehicleCondition || '').toLowerCase() === 'running vehicle') {
+      var usedBase = [vehicle, mid].filter(Boolean).join(' ');
+      var usedCore = window.HalfCutTitle?.formatExportUsedCarTitle?.(usedBase) || (usedBase ? usedBase + ' — Export Used Car' : 'Export Used Car');
+      var usedStatus = String(src.status || '').trim();
+      if (/^reserved$/i.test(usedStatus)) return usedCore + ' — Reserved | AsiaPower';
+      if (/^sold$/i.test(usedStatus)) return usedCore + ' — Sold | AsiaPower';
+      return usedCore + ' | AsiaPower';
+    }
     var core = [vehicle, 'Half Cut', mid].filter(Boolean).join(' ');
     var status = String(src.status || '').trim();
     if (/^reserved$/i.test(status)) return core + ' — Reserved | AsiaPower';

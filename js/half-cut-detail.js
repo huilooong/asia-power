@@ -375,9 +375,34 @@
     return (parts || []).filter((part) => !isPartBoilerplate(part));
   }
 
-  function buildDetailIntro(displayTitle) {
+  const EXPORT_USED_CAR_DISCLAIMER = 'This listing is a complete, undismantled used vehicle for whole-vehicle export. Export shipment proceeds only after registration, inspection, export licensing and destination-market requirements are verified for the order.';
+
+  function buildDetailIntro(displayTitle, item, isUsedCar) {
     const title = String(displayTitle || '').trim();
+    if (isUsedCar) {
+      return `${title}. ${t('hc.usedCarDetailLead', 'Complete, undismantled China export used vehicle with VIN. Availability, documents and destination eligibility are confirmed before contract.')}`;
+    }
     return `${title}. ${t('hc.detailExportLead', 'EXW export from China — availability, photos and CIF shipping confirmed on enquiry.')}`;
+  }
+
+  function renderExportUsedCarIdentity(item) {
+    const supplierDeclared = item.exportSupplierDeclaration === true;
+    const documentsVerified = item.exportDocumentationStatus === 'verified';
+    const supplierText = supplierDeclared
+      ? t('hc.usedCarSupplierDeclared', 'Whole-vehicle export availability declared by supplier')
+      : t('hc.usedCarSupplierNotRecorded', 'Whole-vehicle export declaration not recorded');
+    const documentText = documentsVerified
+      ? t('hc.usedCarDocsVerified', 'Export document review verified by AsiaPower')
+      : t('hc.usedCarDocsPending', 'AsiaPower document review pending — confirmed before contract and shipment');
+    return `<section class="hc-item-detail__about-vehicle" aria-label="${escapeHtml(t('hc.usedCarIdentityTitle', 'Export vehicle identity'))}">
+      <h3 class="hc-item-detail__about-subtitle">${t('hc.usedCarIdentityHeading', 'Complete vehicle & export status')}</h3>
+      <dl class="hc-item-detail__specifics hc-item-detail__specifics--about">
+        <div class="hc-item-detail__spec"><dt>${t('hc.usedCarIdentityLabel', 'Vehicle identity')}</dt><dd>${t('hc.usedCarIdentityValue', 'Complete late-model used vehicle · VIN-listed · not dismantled')}</dd></div>
+        <div class="hc-item-detail__spec"><dt>${t('hc.usedCarSupplierLabel', 'Supplier declaration')}</dt><dd>${supplierText}</dd></div>
+        <div class="hc-item-detail__spec"><dt>${t('hc.usedCarDocsLabel', 'AsiaPower document review')}</dt><dd>${documentText}</dd></div>
+        <div class="hc-item-detail__spec"><dt>${t('hc.usedCarExportConditionLabel', 'China export condition')}</dt><dd>${t('hc.usedCarExportConditionValue', 'Registration, inspection, export licence and destination compliance required before shipment')}</dd></div>
+      </dl>
+    </section>`;
   }
 
   function normalizeMatchText(value) {
@@ -437,7 +462,11 @@
   function pickSimilarProducts(current, limit = 8) {
     const u = window.HalfCutUtils;
     const segment = inventorySegmentForItem(current);
-    const pool = u?.filterInventoryBySegment?.(detailInventoryPool(), segment) || detailInventoryPool();
+    const segmentPool = u?.filterInventoryBySegment?.(detailInventoryPool(), segment) || detailInventoryPool();
+    const currentIsUsedCar = !!u?.isExportableUsedCarItem?.(current);
+    const pool = segment === 'passenger'
+      ? segmentPool.filter((entry) => !!u?.isExportableUsedCarItem?.(entry) === currentIsUsedCar)
+      : segmentPool;
 
     const ranked = pool
       .map((entry) => {
@@ -473,7 +502,9 @@
     const cards = similar
       .map((entry) => u.renderListingCard(entry, { base: b }))
       .join('');
-    const brandUrl = `${b}brands/${item.brandSlug}.html#halfcuts-inventory`;
+    const brandUrl = u?.isExportableUsedCarItem?.(item)
+      ? `${b}half-cuts/?cat=used-cars&brand=${encodeURIComponent(item.brandSlug || '')}`
+      : `${b}brands/${item.brandSlug}.html#halfcuts-inventory`;
 
     return `<section class="hc-item-detail__panel hc-item-detail__similar" aria-labelledby="hc-similar-heading">
       <div class="ebay-section__head hc-item-detail__similar-head">
@@ -578,8 +609,10 @@
 
     upsertJsonLd('schema-halfcut-product', u.productJsonLd(item, canonical));
 
-    const engineUrl = u.enginePageUrl(b, item);
-    const brandUrl = `${b}brands/${item.brandSlug}.html#halfcuts-inventory`;
+    const engineUrl = isUsedCar ? null : u.enginePageUrl(b, item);
+    const brandUrl = isUsedCar
+      ? `${b}half-cuts/?cat=used-cars&brand=${encodeURIComponent(item.brandSlug || '')}`
+      : `${b}brands/${item.brandSlug}.html#halfcuts-inventory`;
     const statusLabel = window.PublicI18n?.translateStatus?.(item.status) || item.status;
     const statusClass = u.statusSlug(item.status);
     const priceLabel = u.formatFobPrice(item);
@@ -587,7 +620,7 @@
       ? `<div class="hc-item-detail__price">${escapeHtml(priceLabel)} ${u.exwBadgeHtml?.() || '<span class="ap-exw-badge">EXW</span>'}</div>`
       : `<div class="hc-item-detail__price hc-item-detail__price--enquiry">${t('hc.priceOnEnquiry', 'Quote on enquiry')} ${u.exwBadgeHtml?.() || '<span class="ap-exw-badge">EXW</span>'}</div>`;
 
-    const intro = buildDetailIntro(displayTitle);
+    const intro = buildDetailIntro(displayTitle, item, isUsedCar);
     const conditionText = item.vehicleCondition || cutLabel;
     const gallery = renderDetailGallery(item, u);
     const videoSection = u.hasVideo(item)
@@ -600,7 +633,7 @@
       ? `<p class="hc-item-detail__verified">${t('hc.supplierVerified', 'Supplier verified listing — inventory confirmed by AsiaPower supplier network before publication.')}</p>`
       : '';
 
-    const cleanParts = sanitizeIncludedParts(item.includedParts);
+    const cleanParts = isUsedCar ? [] : sanitizeIncludedParts(item.includedParts);
     const partsHtml = cleanParts.length
       ? `<h3 class="half-cut-detail__parts-title">${t('hc.includedParts', 'Included Parts')}</h3><ul class="half-cut-detail__parts">${cleanParts.map((part) => `<li>${escapeHtml(part)}</li>`).join('')}</ul>`
       : '';
@@ -613,7 +646,9 @@
       t('hc.trustCif', 'EXW + CIF to your port'),
     ].filter(Boolean);
     const trustHtml = trustItems.slice(0, 4).map((label) => `<li>${escapeHtml(label)}</li>`).join('');
-    const inventoryNote = u.inventoryDisclaimer || u.INVENTORY_DISCLAIMER;
+    const inventoryNote = isUsedCar
+      ? t('hc.usedCarExportDisclaimer', EXPORT_USED_CAR_DISCLAIMER)
+      : (u.inventoryDisclaimer || u.INVENTORY_DISCLAIMER);
 
     root.innerHTML = `
       <section class="hc-item-detail">
@@ -632,7 +667,7 @@
             <h1 class="hc-item-detail__title">${escapeHtml(displayTitle)}</h1>
             <p class="hc-item-detail__stock">${escapeHtml(item.stockId)} · ${escapeHtml(statusLabel)}</p>
             ${window.InquiryCta?.render?.({
-              context: { product: `${item.brand} ${item.model} (${item.stockId})`, category: 'half-cut' },
+              context: { product: `${item.brand} ${item.model} (${item.stockId})`, category: isUsedCar ? 'used-car' : 'half-cut' },
               variant: 'product-head',
             }) || u.whatsappLink(item, 'inquiry-cta-banner__btn inquiry-cta-banner__btn--whatsapp', t('inquiryCta.whatsapp', 'WhatsApp Us for Price'))}
           </div>
@@ -646,7 +681,9 @@
             <aside class="hc-item-detail__buybox" aria-label="${t('hc.viewDetails', 'View Details')}">
               <p class="hc-item-detail__secure">
                 <svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true"><path d="M12 2l8 4v6c0 5-3.5 9-8 10-4.5-1-8-5-8-10V6l8-4z" fill="none" stroke="currentColor" stroke-width="1.5"/></svg>
-                ${t('hc.detailVerifiedExport', 'Verified export listing')}
+                ${isUsedCar
+                  ? t('hc.usedCarCompleteListing', 'Complete vehicle export listing')
+                  : t('hc.detailVerifiedExport', 'Verified export listing')}
               </p>
 
               ${priceHtml}
@@ -674,6 +711,7 @@
               <section class="hc-item-detail__panel hc-item-detail__panel--about">
                 <h2 class="hc-item-detail__panel-title">${t('hc.aboutThisItem', 'About this item')}</h2>
                 <p class="hc-item-detail__about">${escapeHtml(intro)}</p>
+                ${isUsedCar ? renderExportUsedCarIdentity(item) : ''}
                 ${renderVehicleInfoInAbout(item, {
                   brandUrl,
                   engineUrl,
@@ -695,13 +733,15 @@
               }) || ''}
               <h3>${t('engine.browseBrand', 'Browse')} ${escapeHtml(item.brand)}</h3>
               <ul class="engine-detail__links">
-                <li><a href="${brandUrl}">${escapeHtml(item.brand)} ${t('hc.halfCutListings', 'Half-Cut Listings')}</a></li>
+                ${isUsedCar
+                  ? `<li><a href="${brandUrl}">${escapeHtml(item.brand)} ${t('ebay.catUsedCars', 'Export Used Cars')}</a></li>`
+                  : `<li><a href="${brandUrl}">${escapeHtml(item.brand)} ${t('hc.halfCutListings', 'Half-Cut Listings')}</a></li>
                 <li><a href="${b}brands/${item.brandSlug}.html#engines">${escapeHtml(item.brand)} ${t('engine.brandEngines', 'Engines')}</a></li>
-                <li><a href="${b}brands/${item.brandSlug}.html#gearboxes">${escapeHtml(item.brand)} ${t('engine.brandGearboxes', 'Gearboxes')}</a></li>
+                <li><a href="${b}brands/${item.brandSlug}.html#gearboxes">${escapeHtml(item.brand)} ${t('engine.brandGearboxes', 'Gearboxes')}</a></li>`}
               </ul>
               <h3>${t('hc.catalog', 'Catalog')}</h3>
               <ul class="engine-detail__links">
-                <li><a href="${catalogHref}">${isMachinery ? t('machinery.allMachinery', 'All Machinery') : (isTruck ? t('trucks.allTrucks', 'All Trucks') : t('hc.allHalfCuts', 'All Half Cuts'))}</a></li>
+                <li><a href="${catalogHref}">${isMachinery ? t('machinery.allMachinery', 'All Machinery') : (isTruck ? t('trucks.allTrucks', 'All Trucks') : (isUsedCar ? t('hc.allExportUsedCars', 'All Export Used Cars') : t('hc.allHalfCuts', 'All Half Cuts')))}</a></li>
                 ${engineUrl ? `<li><a href="${engineUrl}">${escapeHtml(item.engineCode)} ${t('hc.enginePage', 'Engine Page')}</a></li>` : ''}
               </ul>
             </aside>

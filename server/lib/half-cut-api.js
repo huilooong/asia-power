@@ -505,6 +505,7 @@ function createHalfCutApi(rootDir, options = {}) {
       'status',
       'vehicleCondition',
       'vehicleCategory',
+      'vehicleListingType',
       'passengerPartType',
       'truckPartType',
       'origin',
@@ -647,6 +648,11 @@ function createHalfCutApi(rootDir, options = {}) {
 
     submission = nameNorm.normalizeSubmissionRecord(submission, rootDir);
     inventoryItem = nameNorm.normalizeInventoryRecord(inventoryItem, rootDir);
+    if (!String(inventoryItem.vehicleListingType || '').trim()
+      && String(submission.vehicleListingType || '').trim()) {
+      inventoryItem.vehicleListingType = String(submission.vehicleListingType).trim();
+      inventoryItem = nameNorm.normalizeInventoryRecord(inventoryItem, rootDir);
+    }
     // Preserve dedicated part type from submission when approve payload omitted it.
     if (!String(inventoryItem.passengerPartType || '').trim()
       && String(submission.passengerPartType || '').trim()) {

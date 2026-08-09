@@ -202,6 +202,21 @@ function toPublicItem(item) {
   // merge VIN, supplier PII, notes, and review metadata back into public JSON.
   Object.assign(copy, localizePublicNames(copy));
 
+  if (halfCutTitle.isExportUsedCarListing(copy)) {
+    copy.title = halfCutTitle.formatExportUsedCarTitle(copy.title);
+    copy.shortDescription = [
+      [copy.year, copy.brand, copy.model].filter(Boolean).join(' '),
+      'complete, undismantled used vehicle for whole-vehicle export.',
+    ].filter(Boolean).join(' ');
+    copy.includedParts = [];
+    copy.exportVehicleIdentity = 'complete_used_vehicle';
+    copy.exportSupplierDeclaration = item.exportSupplierDeclaration === true
+      || halfCutTitle.hasExportReadyRemark(item);
+    copy.exportDocumentationStatus = String(item.exportDocumentationStatus || '').trim() === 'verified'
+      ? 'verified'
+      : 'pending_verification';
+  }
+
   if (Array.isArray(copy.includedParts)) {
     copy.includedParts = filterPublicIncludedParts(copy.includedParts);
   }

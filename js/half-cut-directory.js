@@ -284,6 +284,7 @@
 
   function isUsedCarItem(item) {
     if (!item || isTruckItem(item) || isMachineryItem(item)) return false;
+    if (window.HalfCutTitle?.isExportUsedCarListing?.(item)) return true;
     if (isHalfCutLikeListing(item)) return false;
     const cond = String(item.vehicleCondition || '').trim().toLowerCase();
     if (cond === 'running vehicle') return true;
@@ -293,6 +294,7 @@
 
   function isExportableUsedCarItem(item) {
     if (!item || isTruckItem(item) || isMachineryItem(item)) return false;
+    if (window.HalfCutTitle?.isExportUsedCarListing?.(item)) return true;
     if (item.isExportUsedCar === true) return true;
     if (hasExportReadyRemark(item)) return true;
     if (isHalfCutLikeListing(item)) return false;
@@ -809,7 +811,9 @@
       `Transmission: ${item.transmissionCode}`,
       exwPriceLine(item),
       `Listing: ${listingSharePageUrl(item)}`,
-      'Please send photos for this half-cut listing.',
+      isExportableUsedCarItem(item)
+        ? 'Please send complete-vehicle photos and export document review status for this used-car listing.'
+        : 'Please send photos for this half-cut listing.',
       'Destination country: [please advise]',
     ].join('\n');
   }
@@ -884,6 +888,7 @@
     }
     if (item?.truckPartType === 'cab') return 'Driver Cab';
     if (item?.vehicleCategory === 'truck') return 'Truck Half Cut';
+    if (window.HalfCutTitle?.isExportUsedCarListing?.(item)) return 'Export Used Car';
     return 'Half Cut';
   }
 
@@ -895,7 +900,8 @@
     const displayTitle = listingVehiclePrimaryTitle(item) || listingTitle(item)
       || `${item.year} ${item.brand} ${item.model} ${listingTypeLabel(item)}`.replace(/\s+/g, ' ').trim();
     const eng = listingEngineConfirmLine(item).replace(/\s·\s/g, ' ');
-    const core = [displayTitle, 'Half Cut', eng].filter(Boolean).join(' ').replace(/\s+/g, ' ').trim();
+    const typeLabel = isExportableUsedCarItem(item) ? '' : 'Half Cut';
+    const core = [displayTitle, typeLabel, eng].filter(Boolean).join(' ').replace(/\s+/g, ' ').trim();
     if (isReserved(item)) return `${core} — Reserved | AsiaPower`;
     if (isSold(item)) return `${core} — Sold | AsiaPower`;
     return `${core} | AsiaPower`;
@@ -918,6 +924,15 @@
         return `Reserved ${vehicle} ${typeLabel}${engHint}. ${pricePart}Confirm availability or request similar units. Stock ${item.stockId}.`;
       }
       return `Sold ${vehicle} ${typeLabel} reference${engHint}. ${pricePart}Request similar available units. Stock ${item.stockId}.`;
+    }
+    if (isExportableUsedCarItem(item)) {
+      const vehicle = window.EngineCardLabel?.formatHalfCutVehicleTitle?.(item)
+        || [item.brand, item.model].filter(Boolean).join(' ');
+      const drivetrain = listingEngineConfirmLine(item);
+      const powertrain = drivetrain ? ` — ${drivetrain}` : '';
+      if (isAvailable(item)) return `${vehicle} complete, undismantled export used car${powertrain}. ${pricePart}Documents and destination eligibility are verified before shipment. Stock ID ${item.stockId}.`;
+      if (isReserved(item)) return `Reserved ${vehicle} complete export used car${powertrain}. ${pricePart}Confirm availability and document review status. Stock ID ${item.stockId}.`;
+      return `Sold ${vehicle} complete export used car reference${powertrain}. ${pricePart}Request similar available vehicles. Stock ID ${item.stockId}.`;
     }
     if (isAvailable(item)) {
       return `${vehicle} half cut${engHint}. ${pricePart}Photos and shipping on request. Stock ID ${item.stockId}.`;
@@ -1676,15 +1691,18 @@
 
     const lang = window.PublicI18n?.getLang?.() || 'en';
     const qxb = window.HalfCutTitle?.isQxbListing?.(display);
+    const sanitizeTitle = (value) => window.HalfCutTitle?.isExportUsedCarListing?.(display)
+      ? (window.HalfCutTitle?.sanitizeExportUsedCarTitle?.(value) || value)
+      : value;
     const originalName = qxb ? listingOriginalVehicleName(display) : '';
     if (originalName) {
-      if (lang === 'zh') return appendEngineToTitle(originalName, display);
+      if (lang === 'zh') return sanitizeTitle(appendEngineToTitle(originalName, display));
       const translated = window.HalfCutVehicleTitleI18n?.translateOriginalVehicleName?.(
         originalName,
         lang,
         display
       );
-      if (translated) return appendEngineToTitle(translated, display);
+      if (translated) return sanitizeTitle(appendEngineToTitle(translated, display));
     }
 
     if (String(display?.engineCode || '').trim()) {

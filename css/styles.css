@@ -1474,9 +1474,30 @@ h1, h2, h3, h4 {
 }
 
 .supplier-upload-module--truck-parts,
-.supplier-upload-module--passenger-parts {
+.supplier-upload-module--passenger-parts,
+.supplier-upload-module--export-used-cars {
   border-color: rgba(212, 160, 23, 0.55);
   background: linear-gradient(135deg, #fff 0%, #fff8e8 100%);
+}
+
+.supplier-upload-module--export-used-cars {
+  border-color: rgba(10, 22, 40, 0.34);
+  background: linear-gradient(135deg, #fff 0%, #eef5ff 100%);
+}
+
+.supplier-upload-module--export-used-cars .supplier-upload-module__icon {
+  color: var(--accent-dark, #b8860b);
+  background: rgba(212, 160, 23, 0.14);
+}
+
+.supplier-upload-fixed-type {
+  margin: 0;
+  padding: 10px 12px;
+  border-radius: 8px;
+  font-size: .82rem;
+  line-height: 1.45;
+  color: var(--navy-800);
+  background: rgba(10, 22, 40, 0.05);
 }
 
 .supplier-upload-module__head {

@@ -89,6 +89,11 @@
       'Upload whole passenger vehicles — scrap or export used car. Enter the VIN first, then confirm vehicle details and photos.',
       '上传乘用车整车（报废车或二手车）。请先输入VIN，再确认车辆信息与照片。'
     ),
+    exportUsedCarUploadTitle: bi('Submit Export Used Car Listing', '提交出口二手车库存'),
+    exportUsedCarUploadLead: bi(
+      'Upload a complete running or repairable vehicle for export. This channel is for whole vehicles only — no dismantled vehicles or half-cuts. Enter the VIN first, then confirm vehicle details and photos.',
+      '上传可启动或可修复的出口整车。本入口仅限整车，不接收拆解车或半切车。请先输入VIN，再确认车辆信息与照片。'
+    ),
     passengerPartsUploadTitle: bi('Submit Passenger Parts Listing', '提交乘用车配件'),
     passengerPartsUploadLead: bi(
       'Upload passenger front cuts, engines, transmissions, chassis parts and other components. Choose part type on step 1 — no VIN required.',

@@ -296,6 +296,7 @@ function deployPortal() {
   rsync(`${ROOT}/buyer-portal/index.html`, `${pub}/buyer-portal/index.html`);
   rsync(`${ROOT}/supplier-portal/dashboard.html`, `${pub}/supplier-portal/dashboard.html`);
   rsync(`${ROOT}/supplier-portal/passenger-parts-upload.html`, `${pub}/supplier-portal/passenger-parts-upload.html`);
+  rsync(`${ROOT}/supplier-portal/export-used-car-upload.html`, `${pub}/supplier-portal/export-used-car-upload.html`);
   rsync(`${ROOT}/supplier-portal.html`, `${pub}/supplier-portal.html`);
   ssh(`
 set -e
@@ -307,6 +308,7 @@ test -f "$PUB/css/portal-app.css"
 test -f "$PUB/buyer-portal/index.html"
 test -f "$PUB/supplier-portal/dashboard.html"
 test -f "$PUB/supplier-portal/passenger-parts-upload.html"
+test -f "$PUB/supplier-portal/export-used-car-upload.html"
 test -f "$PUB/supplier-portal.html"
 test -f "$PUB/js/supplier-half-cut-upload.js"
 test -f "$PUB/js/half-cut-upload-layer.js"
@@ -321,6 +323,8 @@ grep -q 'mode=register' "$PUB/supplier-portal.html"
 grep -q "passengerPartTire" "$PUB/js/half-cut-supplier-i18n.js"
 grep -q "value=\\\"tire\\\"" "$PUB/js/supplier-half-cut-upload.js"
 grep -q 'Used Tire' "$PUB/js/half-cut-upload-layer.js"
+grep -q 'data-upload-product="export-used-car"' "$PUB/supplier-portal/export-used-car-upload.html"
+grep -q 'value="used"' "$PUB/js/supplier-half-cut-upload.js"
 echo "[deploy:portal] files OK on remote"
 `);
 }
@@ -339,6 +343,7 @@ function deployChrome() {
   rsync(`${ROOT}/js/ebay-layout.js`, `${pub}/js/ebay-layout.js`);
   rsync(`${ROOT}/js/ebay-categories.js`, `${pub}/js/ebay-categories.js`);
   rsync(`${ROOT}/js/half-cut-directory.js`, `${pub}/js/half-cut-directory.js`);
+  rsync(`${ROOT}/js/half-cut-title.js`, `${pub}/js/half-cut-title.js`);
   rsync(`${ROOT}/js/half-cut-vin.js`, `${pub}/js/half-cut-vin.js`);
   rsync(`${ROOT}/js/half-cut-inventory-layer.js`, `${pub}/js/half-cut-inventory-layer.js`);
   rsync(`${ROOT}/js/half-cut-media-api.js`, `${pub}/js/half-cut-media-api.js`);
@@ -480,8 +485,8 @@ grep -q 'dedicated-price-v1' "$PUB/js/components.js"
 grep -q 'formatCatalogPartPrice' "$PUB/js/half-cut-directory.js"
 grep -q 'catalogPartPriceAmount' "$PUB/js/half-cut-directory.js"
 grep -q 'formatCatalogPartPrice' "$PUB/js/ebay-catalog-hub.js"
-grep -E -q 'half-cut-directory\\.js\\?v=(category-filter-v1|category-filter-v3|category-filter-v4|parts-parallel-v1|stock-id-search-v1|stock-id-search-v2|dedicated-price-v1|catalog-search-v1|catalog-search-v2|vehicle-engine-001c|youtube-embed-v1|site-consistency-v[12])' "$PUB/half-cuts/index.html"
-grep -E -q 'ebay-catalog-hub\\.js\\?v=(category-filter-v1|category-filter-v3|category-filter-v4|parts-parallel-v1|stock-id-search-v1|stock-id-search-v2|dedicated-price-v1|catalog-search-v1|catalog-search-v2|vehicle-engine-001c|youtube-embed-v1|site-consistency-v[12])' "$PUB/half-cuts/index.html"
+grep -E -q 'half-cut-directory\\.js\\?v=(category-filter-v1|category-filter-v3|category-filter-v4|parts-parallel-v1|stock-id-search-v1|stock-id-search-v2|dedicated-price-v1|catalog-search-v1|catalog-search-v2|vehicle-engine-001c|youtube-embed-v1|site-consistency-v[12]|used-car-separation-v2)' "$PUB/half-cuts/index.html"
+grep -E -q 'ebay-catalog-hub\\.js\\?v=(category-filter-v1|category-filter-v3|category-filter-v4|parts-parallel-v1|stock-id-search-v1|stock-id-search-v2|dedicated-price-v1|catalog-search-v1|catalog-search-v2|vehicle-engine-001c|youtube-embed-v1|site-consistency-v[12]|used-car-separation-v2)' "$PUB/half-cuts/index.html"
 grep -E -q 'half-cut-directory\\.js\\?v=(category-filter-v1|category-filter-v3|category-filter-v4|stock-id-search-v2|dedicated-price-v1|catalog-search-v1|catalog-search-v2|vehicle-engine-001c|youtube-embed-v1|site-consistency-v[12])' "$PUB/gearboxes/index.html"
 grep -E -q 'ebay-catalog-hub\\.js\\?v=(category-filter-v1|category-filter-v3|category-filter-v4|stock-id-search-v2|dedicated-price-v1|catalog-search-v1|catalog-search-v2|vehicle-engine-001c|youtube-embed-v1|site-consistency-v[12])' "$PUB/gearboxes/index.html"
 grep -E -q 'catalog-search-v1|catalog-search-v2|stock-id-search-v[12]|vehicle-engine-001c' "$PUB/half-cuts/index.html"
@@ -505,6 +510,9 @@ grep -q 'youtube.com/embed' "$PUB/js/half-cut-directory.js"
 grep -q "VideoObject" "$PUB/js/half-cut-directory.js"
 grep -q 'engine-card-label.js' "$PUB/half-cuts/detail.html"
 grep -q 'formatHalfCutDetailH1' "$PUB/js/half-cut-detail.js"
+grep -q 'Complete vehicle & export status' "$PUB/js/half-cut-detail.js"
+grep -q 'used-car-separation-v2' "$PUB/used-cars/detail.html"
+grep -q 'used-car-separation-v2' "$PUB/half-cuts/index.html"
 grep -q 'ebay-sidebar--v4' "$PUB/css/ebay-layout.css"
 grep -qF -- '--ebay-list-photo-w: 200px' "$PUB/css/ebay-layout.css"
 grep -q 'photo--parts-ph' "$PUB/css/ebay-layout.css"

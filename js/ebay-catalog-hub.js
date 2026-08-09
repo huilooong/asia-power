@@ -1296,7 +1296,35 @@
       subEl?.remove();
     }
     window.PublicI18n?.applyDataI18n?.(intro);
-    document.title = `${title} | AsiaPower`;
+    const usedCars = category === 'used-cars';
+    const heroTitle = usedCars
+      ? t('ebay.usedCarsHeroTitle', 'Export Used Cars from China')
+      : t('halfcuts.title', 'Half Cut Cars Supplier China');
+    const heroLead = usedCars
+      ? t('ebay.usedCarsHeroLead', 'Complete late-model vehicles · VIN-listed · document review before shipment')
+      : t('ebay.halfCutsHeroLead', 'Verified half-cuts · EXW Zhengzhou · Quote within 24 hours');
+    const heroHeading = document.querySelector('.page-hero h1');
+    if (heroHeading) {
+      heroHeading.textContent = heroTitle;
+      heroHeading.removeAttribute('data-i18n');
+    }
+    const heroLeadEl = document.querySelector('.page-hero__lead');
+    if (heroLeadEl) heroLeadEl.textContent = heroLead;
+    const breadcrumbCurrent = document.querySelector('.page-hero__breadcrumb span');
+    if (breadcrumbCurrent) breadcrumbCurrent.textContent = usedCars ? title : t('catalog.halfCuts', 'Half-Cuts');
+    document.body.classList.toggle('page-export-used-cars', usedCars);
+
+    const metaDescription = document.querySelector('meta[name="description"]');
+    if (metaDescription) {
+      metaDescription.content = usedCars
+        ? t('ebay.usedCarsMetaDescription', 'Complete export used cars from China with VIN, mileage and document-review status. Browse late-model BYD and other vehicles for compliant international shipment.')
+        : 'Half cut cars supplier China — AsiaPower front cuts, nose cuts and complete half-cuts with engine and transmission. Search by brand, model and stock ID for global export.';
+    }
+    const canonical = document.querySelector('link[rel="canonical"]');
+    if (canonical) canonical.href = usedCars
+      ? 'https://asia-power.com/half-cuts/?cat=used-cars'
+      : 'https://asia-power.com/half-cuts/';
+    document.title = usedCars ? `${heroTitle} | AsiaPower` : `${title} | AsiaPower`;
   }
 
   function bindHalfCutHub(root, category, state) {

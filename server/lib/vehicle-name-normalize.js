@@ -538,6 +538,7 @@ function catalogCutLabel(item) {
   if (item?.vehicleCategory === 'machinery') {
     return item?.vehicleCondition || require('./machinery-brand-catalog').typeLabel(item?.machineryType);
   }
+  if (halfCutTitle.isExportUsedCarListing(item)) return '';
   return item?.vehicleCondition || 'Half Cut';
 }
 
@@ -553,6 +554,7 @@ function catalogSlugCutSegment(item) {
     const type = String(item?.machineryType || 'equipment').trim() || 'equipment';
     return `machinery-${type}`;
   }
+  if (halfCutTitle.isExportUsedCarListing(item)) return 'export-used-car';
   if (item?.passengerPartType === 'front') return 'front-cut';
   if (item?.passengerPartType === 'engine') return 'passenger-engine';
   if (item?.passengerPartType === 'transmission') return 'passenger-transmission';
@@ -580,9 +582,11 @@ function rebuildInventoryDerivedFields(item) {
     if (structured) {
       next.title = structured;
     } else if (next.brand && next.model && next.engineCode) {
-      next.title = `${next.brand} ${next.model} ${next.engineCode} ${catalogCutLabel(next)}`;
+      next.title = [next.brand, next.model, next.engineCode, catalogCutLabel(next)]
+        .filter(Boolean)
+        .join(' ');
     } else if (next.brand && next.model) {
-      next.title = `${next.brand} ${next.model} ${catalogCutLabel(next)}`;
+      next.title = [next.brand, next.model, catalogCutLabel(next)].filter(Boolean).join(' ');
     }
   }
 
@@ -713,7 +717,8 @@ function normalizeInventoryRecord(item, rootDir) {
     return rebuildInventoryDerivedFields(normalized);
   }
   const catalog = loadCatalog(rootDir);
-  return applyNameCorrection(next, catalog).record;
+  const corrected = applyNameCorrection(next, catalog);
+  return rebuildInventoryDerivedFields(corrected.record);
 }
 
 function findLinkedSubmission(approvedItem, submissions) {
@@ -735,6 +740,7 @@ function syncApprovedFromSubmission(approvedItem, submissions) {
     next = {
       ...next,
       vehicleCategory: subMeta.vehicleCategory,
+      vehicleListingType: subMeta.vehicleListingType || next.vehicleListingType || '',
       truckPartType: subMeta.truckPartType || '',
       machineryType: subMeta.machineryType || next.machineryType || '',
       vehicleCondition: subMeta.vehicleCondition,

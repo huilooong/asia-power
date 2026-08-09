@@ -87,6 +87,30 @@
     return `${title} ${engine}`.replace(/\s+/g, ' ').trim();
   }
 
+  function isExportUsedCarListing(item) {
+    if (!item) return false;
+    if (item.vehicleCategory === 'truck' || item.vehicleCategory === 'machinery') return false;
+    if (String(item.vehicleListingType || '').trim().toLowerCase() === 'used') return true;
+    if (item.isExportUsedCar === true) return true;
+    return String(item.vehicleCondition || '').trim().toLowerCase() === 'running vehicle';
+  }
+
+  function sanitizeExportUsedCarTitle(title) {
+    return String(title || '')
+      .replace(/\bhalf[\s-]*cut\b/gi, ' ')
+      .replace(/\bfront[\s-]*cut\b/gi, ' ')
+      .replace(/半截车|半切车|半切|半截/gu, ' ')
+      .replace(/\s+/g, ' ')
+      .trim();
+  }
+
+  function formatExportUsedCarTitle(title) {
+    const clean = sanitizeExportUsedCarTitle(title);
+    if (!clean) return 'Export Used Car';
+    if (/\bexport\s+used\s+car\b/i.test(clean)) return clean;
+    return `${clean} — Export Used Car`;
+  }
+
   function buildStructuredTitle(item) {
     const year = Number(item?.year);
     const yearText = Number.isFinite(year) && year >= 1900 && year <= 2100 ? String(Math.round(year)) : '';
@@ -120,21 +144,28 @@
 
   function buildDisplayTitle(item, lang) {
     const activeLang = String(lang || 'en').toLowerCase();
+    const exportUsedCar = isExportUsedCarListing(item);
     if (isQxbListing(item)) {
       const originalName = extractOriginalVehicleName(listingNotesText(item));
       if (originalName) {
-        if (activeLang === 'zh') return appendEngineToTitle(originalName, item);
+        if (activeLang === 'zh') {
+          const title = appendEngineToTitle(originalName, item);
+          return exportUsedCar ? formatExportUsedCarTitle(title) : title;
+        }
         const translated = window.HalfCutVehicleTitleI18n?.translateOriginalVehicleName?.(
           originalName,
           activeLang,
           item
         );
-        if (translated) return appendEngineToTitle(translated, item);
+        if (translated) {
+          const title = appendEngineToTitle(translated, item);
+          return exportUsedCar ? formatExportUsedCarTitle(title) : title;
+        }
       }
     }
     const structured = buildStructuredTitle(item);
-    if (structured) return structured;
-    if (item?.title) return item.title;
+    if (structured) return exportUsedCar ? formatExportUsedCarTitle(structured) : structured;
+    if (item?.title) return exportUsedCar ? formatExportUsedCarTitle(item.title) : item.title;
     return '';
   }
 
@@ -150,6 +181,9 @@
   window.HalfCutTitle = {
     isRemarkBoilerplate,
     isQxbListing,
+    isExportUsedCarListing,
+    sanitizeExportUsedCarTitle,
+    formatExportUsedCarTitle,
     qxbMarkerText,
     extractOriginalVehicleName,
     listingNotesText,

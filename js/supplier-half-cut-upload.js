@@ -159,6 +159,7 @@
     }
 
     function vehicleListingDefault() {
+      if (document.body?.dataset?.uploadProduct === 'export-used-car') return 'used';
       const fromBody = document.body?.dataset?.vehicleListing;
       if (fromBody === 'scrap' || fromBody === 'used') return fromBody;
       const params = new URLSearchParams(window.location.search);
@@ -194,6 +195,7 @@
     const isTruckUpload = defaultCategory === 'truck';
     const isPartsUpload = uploadMode() === 'parts';
     const isVehicleUpload = !isPartsUpload;
+    const isExportUsedCarUpload = document.body?.dataset?.uploadProduct === 'export-used-car';
     const isTruckPartsUpload = isTruckUpload && isPartsUpload;
     const isTruckVehicleUpload = isTruckUpload && isVehicleUpload;
     const isPassengerPartsUpload = !isTruckUpload && isPartsUpload;
@@ -240,6 +242,7 @@
       if (isTruckPartsUpload) return { title: 'truckUploadTitle', lead: 'truckUploadLead', eyebrowKey: 'supplier.uploadTruckParts', eyebrowFallback: 'Commercial Parts' };
       if (isTruckVehicleUpload) return { title: 'truckVehicleUploadTitle', lead: 'truckVehicleUploadLead', eyebrowKey: 'supplier.uploadTruckVehicle', eyebrowFallback: 'Commercial Vehicles' };
       if (isPassengerPartsUpload) return { title: 'passengerPartsUploadTitle', lead: 'passengerPartsUploadLead', eyebrowKey: 'supplier.uploadPassengerParts', eyebrowFallback: 'Passenger Parts' };
+      if (isExportUsedCarUpload) return { title: 'exportUsedCarUploadTitle', lead: 'exportUsedCarUploadLead', eyebrowKey: 'supplier.uploadExportUsedCars', eyebrowFallback: 'Export Used Cars' };
       return { title: 'passengerVehicleUploadTitle', lead: 'passengerVehicleUploadLead', eyebrowKey: 'supplier.uploadPassengerVehicle', eyebrowFallback: 'Passenger Vehicles' };
     }
     const introKeys = uploadIntroKeys();
@@ -297,6 +300,15 @@
               <p class="supplier-cab-skip-hint" id="vin-parts-skip-hint">${th('vinPartsSkipHint')}</p>`;
       }
       if (isVehicleUpload) {
+        if (isExportUsedCarUpload) {
+          return `
+              <div class="form-row" id="vehicle-listing-type-row">
+                <label>${t('vehicleListingType')} <span class="req">*</span></label>
+                <input type="hidden" id="vehicleListingType" name="vehicleListingType" value="used">
+                <p class="supplier-upload-fixed-type"><strong>${I18n().labelInline('listingTypeUsed')}</strong> · ${th('listingTypeUsedHint')}</p>
+              </div>
+              <p class="form-hint supplier-vin-lead" id="vin-step-lead">${th(introKeys.lead)}</p>`;
+        }
         return `
               <div class="form-row" id="vehicle-listing-type-row">
                 <label for="vehicleListingType">${t('vehicleListingType')} <span class="req">*</span></label>
@@ -1689,7 +1701,7 @@
         els.confidenceBadge?.classList.add('hidden');
         els.vinDisplay.textContent = '—';
         els.vinStatus.textContent = '';
-        if (els.vehicleCondition) els.vehicleCondition.value = 'Half Cut';
+        if (els.vehicleCondition) els.vehicleCondition.value = isExportUsedCarUpload ? 'Running Vehicle' : 'Half Cut';
         clearVehicleFields();
         updateVinCounter();
         goToStep(1);
