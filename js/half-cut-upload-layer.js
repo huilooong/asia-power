@@ -124,7 +124,7 @@
     const brand = String(record.brand || '');
     const model = String(record.model || '');
     const blob = `${brand} ${model}`.toLowerCase();
-    const passengerOem = ['吉利', '雪佛兰', '别克', '福特', '大众', '马自达', '哈弗', '长安', '猎豹', '宝马', '奥迪', '丰田', '本田', '日产', '现代', '起亚', '荣威', '名爵', '比亚迪', '奇瑞', '长城', '传祺', '五菱', '宝骏', '路虎', '捷豹', 'toyota', 'honda', 'ford', 'chevrolet', 'buick', 'geely', 'haval', 'mazda', 'volkswagen', 'bmw', 'audi', 'lexus', 'jeep', 'porsche', 'jaguar', 'land rover', 'landrover', 'liebao', 'byd', 'mg', 'roewe'];
+    const passengerOem = ['吉利', '雪佛兰', '别克', '福特', '大众', '马自达', '哈弗', '长安', '猎豹', '宝马', '奥迪', '丰田', '本田', '日产', '现代', '起亚', '荣威', '名爵', '比亚迪', '腾势', '方程豹', '奇瑞', '长城', '传祺', '五菱', '宝骏', '路虎', '捷豹', 'toyota', 'honda', 'ford', 'chevrolet', 'buick', 'geely', 'haval', 'mazda', 'volkswagen', 'bmw', 'audi', 'lexus', 'jeep', 'porsche', 'jaguar', 'land rover', 'landrover', 'liebao', 'byd', 'denza', 'fangchengbao', 'fang cheng bao', 'mg', 'roewe'];
     const looksPassenger = passengerOem.some((b) => brand.includes(b) || blob.includes(b.toLowerCase()))
       && !/\b(truck|giga|elf|nqr|npr|howo|t7|f3000|m3000)\b/i.test(blob);
     if (looksPassenger && (condition === 'Driver Cab' || truckPartType === 'cab' || vehicleCategory === 'truck' || slug.includes('-truck-cab-'))) {

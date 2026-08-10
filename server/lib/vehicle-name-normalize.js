@@ -258,6 +258,7 @@ function looksLikePassengerBrand(record) {
   const brand = String(record?.brand || '');
   const model = String(record?.model || '');
   const blob = `${brand} ${model}`.toLowerCase();
+  if (/腾势|方程豹|\bdenza\b|\bfang\s*cheng\s*bao\b|\bfangchengbao\b/i.test(blob)) return true;
   const passengerOem = [
     '吉利', '雪佛兰', '别克', '福特', '大众', '马自达', '哈弗', '长安', '猎豹',
     '宝马', '奥迪', '丰田', '本田', '日产', '现代', '起亚', '荣威', '名爵',
@@ -282,6 +283,18 @@ function normalizeListingMeta(record) {
   let vehicleCategory = String(record.vehicleCategory || '').trim();
   let truckPartType = String(record.truckPartType || '').trim();
   const slug = String(record.slug || record.approvedSlug || '');
+  const evidenceText = [
+    record.remarks,
+    record.notes,
+    record.supplierNotes,
+    record.shortDescription,
+    record.description,
+  ].filter(Boolean).join(' ');
+  const completeExportUsedVehicle = String(record.vehicleListingType || '').trim().toLowerCase() === 'used'
+    && Boolean(String(record.vin || record.vehicleVin || '').trim())
+    && (record.isExportUsedCar === true
+      || record.exportVehicleIdentity === 'complete_used_vehicle'
+      || /可整车出口|整车出口|whole[\s-]*vehicle export|complete[\s-]*vehicle export/i.test(evidenceText));
 
   // Passenger OEMs must not be forced into truck cab by Driver Cab / cab flags
   if (
@@ -293,7 +306,18 @@ function normalizeListingMeta(record) {
       vehicleCategory: 'passenger',
       truckPartType: '',
       passengerPartType: record.passengerPartType || '',
-      vehicleCondition: (condition && condition !== 'Driver Cab') ? condition : 'Half Cut',
+      vehicleCondition: completeExportUsedVehicle
+        ? 'Running Vehicle'
+        : ((condition && condition !== 'Driver Cab') ? condition : 'Half Cut'),
+      ...(completeExportUsedVehicle ? {
+        isExportUsedCar: true,
+        exportVehicleIdentity: 'complete_used_vehicle',
+        exportSupplierDeclaration: true,
+        exportDocumentationStatus: record.exportDocumentationStatus === 'verified'
+          ? 'verified'
+          : 'pending_verification',
+        includedParts: [],
+      } : {}),
     };
   }
 

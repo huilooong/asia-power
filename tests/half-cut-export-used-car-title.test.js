@@ -9,6 +9,7 @@ const test = require('node:test');
 const serverTitle = require('../server/lib/half-cut-title');
 const serverSeo = require('../server/lib/half-cut-seo');
 const serverPublic = require('../server/lib/half-cut-public');
+const vehicleNameNormalize = require('../server/lib/vehicle-name-normalize');
 
 const exportUsedCar = {
   stockId: 'HC-EXPORT-TITLE-1',
@@ -126,4 +127,66 @@ test('recent export used-car migration and audit correct category drift without 
   });
   assert.equal(report.failed, 0);
   assert.equal(report.passed, 1);
+});
+
+test('BYD sub-brands cannot remain truck cabs when VIN and whole-vehicle export evidence are present', () => {
+  for (const brand of ['腾势', '方程豹', 'Denza', 'Fangchengbao']) {
+    const normalized = vehicleNameNormalize.normalizeListingMeta({
+      brand,
+      model: brand === '腾势' ? '腾势D9' : '豹5',
+      vin: 'LC0TEST1234567890',
+      vehicleCategory: 'truck',
+      truckPartType: 'cab',
+      vehicleCondition: 'Driver Cab',
+      vehicleListingType: 'used',
+      remarks: '可整车出口',
+      includedParts: ['Engine & gearbox assembly', 'Front clip'],
+    });
+    assert.equal(normalized.vehicleCategory, 'passenger');
+    assert.equal(normalized.truckPartType, '');
+    assert.equal(normalized.vehicleCondition, 'Running Vehicle');
+    assert.equal(normalized.isExportUsedCar, true);
+    assert.equal(normalized.exportVehicleIdentity, 'complete_used_vehicle');
+    assert.equal(normalized.exportDocumentationStatus, 'pending_verification');
+    assert.deepEqual(normalized.includedParts, []);
+  }
+});
+
+test('BYD family migration includes Denza and Fangchengbao and clears truck merchandising', async () => {
+  const { migrateRecentExportUsedCars } = await import('../scripts/migrate-recent-export-used-cars.mjs');
+  const { auditRecentExportUsedCars } = await import('../scripts/audit-recent-export-used-cars.mjs');
+  const approved = ['腾势', '方程豹'].map((brand, index) => ({
+    stockId: `HC-SUBBRAND-${index + 1}`,
+    submissionId: `SUB-SUBBRAND-${index + 1}`,
+    approvedAt: '2026-08-09T22:22:00.000Z',
+    brand,
+    model: index ? '豹5' : '腾势D9',
+    year: 2026,
+    vin: `LC0SUBBRAND00000${index}`,
+    vehicleCategory: 'truck',
+    truckPartType: 'cab',
+    vehicleCondition: 'Driver Cab',
+    vehicleListingType: 'used',
+    remarks: '可整车出口',
+    includedParts: ['Front clip'],
+    slug: `legacy-truck-cab-${index + 1}`,
+  }));
+  const submissions = approved.map((item) => ({ ...item, id: item.submissionId }));
+  const migrated = migrateRecentExportUsedCars({
+    approved,
+    submissions,
+    brand: 'BYD',
+    since: '2026-08-09T00:00:00Z',
+  });
+  assert.equal(migrated.report.matched, 2);
+  assert.deepEqual(migrated.approved.map((item) => item.vehicleCategory), ['passenger', 'passenger']);
+  assert.deepEqual(migrated.approved.map((item) => item.truckPartType), ['', '']);
+  assert.match(migrated.approved[0].slug, /^denza-/);
+  assert.match(migrated.approved[1].slug, /^fangchengbao-/);
+  const report = auditRecentExportUsedCars(migrated.approved, {
+    brand: 'BYD',
+    since: '2026-08-09T00:00:00Z',
+  });
+  assert.equal(report.matched, 2);
+  assert.equal(report.failed, 0);
 });

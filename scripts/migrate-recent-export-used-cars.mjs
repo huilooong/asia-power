@@ -29,6 +29,18 @@ function approvedTimestamp(item) {
   return Date.parse(item.approvedAt || item.listedAt || item.updatedAt || item.createdAt || 0) || 0;
 }
 
+function normalizedBrandKey(value) {
+  return String(value || '').trim().toUpperCase().replace(/[\s_-]+/g, '');
+}
+
+function brandScope(value) {
+  const key = normalizedBrandKey(value);
+  if (key === 'BYD' || key === '比亚迪') {
+    return new Set(['BYD', '比亚迪', 'DENZA', '腾势', 'FANGCHENGBAO', '方程豹'].map(normalizedBrandKey));
+  }
+  return new Set([key]);
+}
+
 function wholeVehicleDescription(item) {
   const identity = [item.year, item.brand, item.model].filter(Boolean).join(' ');
   return `${identity} complete, undismantled used vehicle for whole-vehicle export.`.trim();
@@ -42,8 +54,13 @@ function slugify(value) {
 }
 
 function exportUsedCarSlug(item) {
+  const brandSlugAliases = {
+    比亚迪: 'byd',
+    腾势: 'denza',
+    方程豹: 'fangchengbao',
+  };
   return [
-    item.brandSlug || item.brand,
+    item.brandSlug || brandSlugAliases[String(item.brand || '').trim()] || item.brand,
     item.model,
     item.year,
     item.engineCode,
@@ -54,9 +71,13 @@ function exportUsedCarSlug(item) {
 
 function updateRecord(record, supplierDeclared) {
   const next = { ...record };
+  next.vehicleCategory = 'passenger';
   next.vehicleListingType = 'used';
   next.isExportUsedCar = true;
   next.vehicleCondition = 'Running Vehicle';
+  next.truckPartType = '';
+  next.passengerPartType = '';
+  next.machineryType = '';
   next.exportVehicleIdentity = 'complete_used_vehicle';
   next.exportSupplierDeclaration = supplierDeclared;
   if (next.exportDocumentationStatus !== 'verified') {
@@ -92,9 +113,9 @@ function writeAtomicWithBackup(file, value, stamp) {
 }
 
 export function migrateRecentExportUsedCars({ approved, submissions, brand, since }) {
-  const brandUpper = String(brand || '').trim().toUpperCase();
+  const brands = brandScope(brand);
   const sinceMs = Date.parse(since);
-  if (!brandUpper) throw new Error('brand is required');
+  if (![...brands].some(Boolean)) throw new Error('brand is required');
   if (!Number.isFinite(sinceMs)) throw new Error(`invalid --since value: ${since}`);
 
   const submissionsById = new Map(
@@ -103,7 +124,7 @@ export function migrateRecentExportUsedCars({ approved, submissions, brand, sinc
   const approvedChanges = [];
   const submissionChanges = [];
   const nextApproved = approved.map((row) => {
-    if (String(row.brand || '').trim().toUpperCase() !== brandUpper) return row;
+    if (!brands.has(normalizedBrandKey(row.brand))) return row;
     if (approvedTimestamp(row) < sinceMs) return row;
 
     const linked = submissionsById.get(String(row.submissionId || ''));
@@ -135,7 +156,8 @@ export function migrateRecentExportUsedCars({ approved, submissions, brand, sinc
     approved: nextApproved,
     submissions,
     report: {
-      brand: brandUpper,
+      brand: String(brand || '').trim().toUpperCase(),
+      matchedBrands: [...brands],
       since,
       matched: approvedChanges.length,
       approvedChanges,
