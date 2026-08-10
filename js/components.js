@@ -6,8 +6,8 @@
 
   // Must bump when ebay-layout.css changes — injectEbayStylesheet rewrites all pages to this query.
   // Stale CDN entries for old ?v= keys (e.g. v4-listing-card-v1) can keep serving 66px parts thumbs.
-  const SITE_EBAY_LAYOUT_VER = 'used-car-detail-v1';
-  const SITE_COMPONENTS_VER = 'used-car-detail-v1';
+  const SITE_EBAY_LAYOUT_VER = 'used-car-separation-v3';
+  const SITE_COMPONENTS_VER = 'used-car-separation-v3';
   // Deploy markers (keep strings discoverable): auth-nav-v1 · auth-nav-once-v2 · auth-nav-sitewide-v1 · login-entry-v1 · lang-sync-v2 · contact-center-v1 · about-type-v2 · list-photo-uniform-v1 · list-photo-uniform-v2 · list-photo-uniform-v2b · parts-photo-v2 · integrity-audit-v1 · parts-placeholder-v1 · parts-parallel-v1 · stock-id-search-v1 · dedicated-price-v1 · catalog-search-v1
   // login-entry-v1 = catalog footer Sign in + clearer toolbar login pill; buyer dial codes expanded (local WIP, not deployed)
   // list-photo-uniform-v1 = half-cut list photo frames fixed 4:3 + cover
@@ -67,6 +67,14 @@
       'contact.html': 'contact',
     };
     return map[file] || '';
+  }
+
+  function isUsedCarsRoute() {
+    if (document.body?.dataset?.page !== 'halfcuts') return false;
+    const params = new URLSearchParams(window.location.search);
+    if (params.get('cat') === 'used-cars') return true;
+    const q = decodeURIComponent((params.get('q') || '').replace(/\+/g, ' ')).toLowerCase().trim();
+    return ['used car', 'usedcar', 'used-car', 'used-cars', '二手车', '出口二手车'].includes(q);
   }
 
   function iconSvg(name) {
@@ -496,6 +504,7 @@
   }
 
   function renderEbayTrustFooter() {
+    const usedCars = isUsedCarsRoute();
     const icons = {
       shipping: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3a15 15 0 0 1 0 18M12 3a15 15 0 0 0 0 18"/></svg>',
       quality: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" aria-hidden="true"><path d="M12 3l7 4v5c0 4.5-3 8.5-7 9-4-.5-7-4.5-7-9V7l7-4z"/><path d="M9 12l2 2 4-4"/></svg>',
@@ -512,10 +521,12 @@
       },
       {
         icon: icons.quality,
-        labelKey: 'ebay.trust.quality.label',
-        label: 'Verified condition',
-        subKey: 'ebay.trust.quality.sub',
-        sub: 'Pre-dismantle startup video on request',
+        labelKey: usedCars ? '' : 'ebay.trust.quality.label',
+        label: usedCars ? 'Export document review' : 'Verified condition',
+        subKey: usedCars ? '' : 'ebay.trust.quality.sub',
+        sub: usedCars
+          ? 'VIN, mileage and export requirements confirmed before contract and shipment'
+          : 'Pre-dismantle startup video on request',
       },
       {
         icon: icons.pricing,
@@ -536,8 +547,8 @@
           <article class="ebay-trust__item">
             <span class="ebay-trust__mark" aria-hidden="true">${item.icon}</span>
             <div class="ebay-trust__copy">
-              <p class="ebay-trust__label" data-i18n="${item.labelKey}">${item.label}</p>
-              <p class="ebay-trust__sub" data-i18n="${item.subKey}">${item.sub}</p>
+              <p class="ebay-trust__label"${item.labelKey ? ` data-i18n="${item.labelKey}"` : ''}>${item.label}</p>
+              <p class="ebay-trust__sub"${item.subKey ? ` data-i18n="${item.subKey}"` : ''}>${item.sub}</p>
             </div>
           </article>`).join('');
 
@@ -758,10 +769,13 @@
     if (!c) return '';
     if (document.body.dataset.page === 'home') return '';
     if (isInternalToolPage()) return '';
+    const message = isUsedCarsRoute()
+      ? 'Hello AsiaPower, I am interested in an export used car. Brand/Model: __ Year: __ Destination country: __'
+      : (c.whatsappTruckMessage || c.whatsappMessage);
     return `
       <div class="whatsapp-float">
         <span class="whatsapp-float__label">${t('whatsapp.label', 'Chat on WhatsApp')}</span>
-        <a href="https://wa.me/${c.whatsapp}?text=${encodeURIComponent(c.whatsappTruckMessage || c.whatsappMessage)}" target="_blank" rel="noopener noreferrer" class="whatsapp-float__btn" aria-label="${t('whatsapp.label', 'Chat on WhatsApp')}">
+        <a href="https://wa.me/${c.whatsapp}?text=${encodeURIComponent(message)}" target="_blank" rel="noopener noreferrer" class="whatsapp-float__btn" aria-label="${t('whatsapp.label', 'Chat on WhatsApp')}">
           ${iconSvg('whatsapp')}
         </a>
       </div>`;

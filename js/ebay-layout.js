@@ -115,9 +115,10 @@
     const id = pageId();
     if (id === 'halfcuts') {
       const cat = catalogCategoryFromUrl();
+      const fallbackTitle = cat === 'used-cars' ? 'Export Used Cars' : 'Half-Cuts';
       return {
         layout: 'category',
-        title: t(CATALOG_CATEGORY_TITLES[cat], 'Half-Cuts'),
+        title: t(CATALOG_CATEGORY_TITLES[cat], fallbackTitle),
         hub: 'Export Parts & Vehicles',
         catalogCategory: cat,
       };
@@ -580,6 +581,10 @@
     if (!main) return;
 
     const meta = metaForPage();
+    if (meta.catalogCategory === 'used-cars') {
+      document.body.classList.add('page-export-used-cars');
+      document.title = `${t('ebay.usedCarsHeroTitle', 'Export Used Cars from China')} | AsiaPower`;
+    }
     const activeId = activeCategoryId();
     syncSidebar(activeId);
     document.querySelectorAll('.ebay-sidebar').forEach((sidebar) => {

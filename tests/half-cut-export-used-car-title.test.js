@@ -190,3 +190,15 @@ test('BYD family migration includes Denza and Fangchengbao and clears truck merc
   assert.equal(report.matched, 2);
   assert.equal(report.failed, 0);
 });
+
+test('used-car catalog chrome cannot be overwritten with half-cut or truck inquiry copy', () => {
+  const layoutSource = fs.readFileSync(path.join(__dirname, '..', 'js', 'ebay-layout.js'), 'utf8');
+  const componentsSource = fs.readFileSync(path.join(__dirname, '..', 'js', 'components.js'), 'utf8');
+  const catalogHtml = fs.readFileSync(path.join(__dirname, '..', 'half-cuts', 'index.html'), 'utf8');
+  assert.match(layoutSource, /cat === 'used-cars' \? 'Export Used Cars' : 'Half-Cuts'/);
+  assert.match(layoutSource, /Export Used Cars from China/);
+  assert.match(componentsSource, /Export document review/);
+  assert.match(componentsSource, /VIN, mileage and export requirements confirmed before contract and shipment/);
+  assert.match(componentsSource, /I am interested in an export used car/);
+  assert.match(catalogHtml, /components\.js\?v=used-car-separation-v3/);
+});
