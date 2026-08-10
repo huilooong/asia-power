@@ -1061,6 +1061,7 @@
 
     'meta.home.title': { zh: 'AsiaPower | 乘用车、卡车、摩托车与工程机械配件', fr: 'AsiaPower | Pièces voitures, camions, motos et engins', ar: 'AsiaPower | قطع سيارات وشاحنات ودراجات ومعدات' },
     'meta.halfcuts.title': { zh: '乘用车目录 | AsiaPower', fr: 'Catalogue demi-coupes | AsiaPower', ar: 'كتالوج القطع النصفي | AsiaPower' },
+    'meta.usedCars.title': { en: 'Export Used Cars from China | AsiaPower', zh: '中国出口二手车 | AsiaPower', fr: 'Véhicules d’occasion exportés de Chine | AsiaPower', ar: 'سيارات مستعملة للتصدير من الصين | AsiaPower' },
   };
 
   const NAV_ID_KEYS = {
@@ -1212,6 +1213,15 @@
 
   function applyDocumentTitle() {
     if (!isSwitchablePublicPage()) return;
+    const params = new URLSearchParams(window.location.search);
+    const q = decodeURIComponent((params.get('q') || '').replace(/\+/g, ' ')).toLowerCase().trim();
+    const usedCarsRoute = document.body?.dataset?.page === 'halfcuts'
+      && (params.get('cat') === 'used-cars'
+        || ['used car', 'usedcar', 'used-car', 'used-cars', '二手车', '出口二手车'].includes(q));
+    if (usedCarsRoute) {
+      document.title = t('meta.usedCars.title', 'Export Used Cars from China | AsiaPower');
+      return;
+    }
     const titleEl = document.querySelector('title[data-i18n-title]');
     if (!titleEl) return;
     const key = titleEl.dataset.i18nTitle;
