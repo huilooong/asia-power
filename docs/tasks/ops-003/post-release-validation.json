@@ -2,9 +2,9 @@
   "report": {
     "status": "fail",
     "base_url": "https://asia-power.com",
-    "release_id": "REL-20260812050943-used-cars-430addd4a",
+    "release_id": "REL-20260812051532-used-cars-5f5b418f0",
     "expected_whatsapp": "8616638801930",
-    "checked_at": "2026-08-12T05:10:59.765Z",
+    "checked_at": "2026-08-12T05:16:56.113Z",
     "checks": [
       {
         "name": "homepage_http",
@@ -529,7 +529,7 @@
       {
         "name": "config_js_release_id",
         "status": "pass",
-        "detail": "releaseId=REL-20260812050943-used-cars-430addd4a"
+        "detail": "releaseId=REL-20260812051532-used-cars-5f5b418f0"
       },
       {
         "name": "components_js_http",
@@ -1118,10 +1118,10 @@
           "cf_cache_status": "EXPIRED",
           "etag": "",
           "age": "",
-          "last_modified": "Wed, 12 Aug 2026 05:10:56 GMT"
+          "last_modified": "Wed, 12 Aug 2026 05:16:52 GMT"
         },
         "whatsapp": "8616638801930",
-        "release_id": "REL-20260812050943-used-cars-430addd4a"
+        "release_id": "REL-20260812051532-used-cars-5f5b418f0"
       },
       "components_js": {
         "url": "https://asia-power.com/js/components.js",
@@ -1131,7 +1131,7 @@
           "cf_cache_status": "EXPIRED",
           "etag": "",
           "age": "",
-          "last_modified": "Wed, 12 Aug 2026 05:10:57 GMT"
+          "last_modified": "Wed, 12 Aug 2026 05:16:53 GMT"
         }
       },
       "pwa_app_shell_js": {
@@ -1142,7 +1142,7 @@
           "cf_cache_status": "EXPIRED",
           "etag": "",
           "age": "",
-          "last_modified": "Wed, 12 Aug 2026 05:10:57 GMT"
+          "last_modified": "Wed, 12 Aug 2026 05:16:53 GMT"
         }
       },
       "sw_js": {
@@ -1153,7 +1153,7 @@
           "cf_cache_status": "EXPIRED",
           "etag": "",
           "age": "",
-          "last_modified": "Wed, 12 Aug 2026 05:10:57 GMT"
+          "last_modified": "Wed, 12 Aug 2026 05:16:53 GMT"
         },
         "cache_version": "pwa-app-v6c"
       },

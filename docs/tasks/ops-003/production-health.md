@@ -1,8 +1,8 @@
 # OPS-003 Production Health
 
-- Checked at: 2026-08-12T05:10:59.765Z
+- Checked at: 2026-08-12T05:16:56.113Z
 - Base URL: https://asia-power.com
-- Release: REL-20260812050943-used-cars-430addd4a
+- Release: REL-20260812051532-used-cars-5f5b418f0
 - Status: **FAIL**
 - Pass: 125 / Fail: 4
 - Expected WhatsApp: 8616638801930
@@ -113,7 +113,7 @@
 - **PASS** `config_js_whatsapp`: whatsapp=8616638801930
 - **FAIL** `config_js_cache_policy`: config.js must be short-lived (max-age=60); got: public, max-age=14400, must-revalidate
 - **PASS** `config_js_cf`: cf=EXPIRED age=0
-- **PASS** `config_js_release_id`: releaseId=REL-20260812050943-used-cars-430addd4a
+- **PASS** `config_js_release_id`: releaseId=REL-20260812051532-used-cars-5f5b418f0
 - **PASS** `components_js_http`: HTTP 200
 - **FAIL** `components_js_cache_policy`: /js/components.js must be short-lived (max-age=60); got: public, max-age=14400, must-revalidate
 - **PASS** `pwa_app_shell_js_http`: HTTP 200

@@ -4,7 +4,7 @@ Parser-based public validation (not HTTP-200-only).
 
 | Field | Value |
 |---|---|
-| release_id | REL-20260812050943-used-cars-430addd4a |
+| release_id | REL-20260812051532-used-cars-5f5b418f0 |
 | status | fail |
 | base_url | https://asia-power.com |
 | expected_whatsapp | 8616638801930 |
