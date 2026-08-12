@@ -13,10 +13,23 @@ import {
 } from './post-release-validation.mjs';
 import { checkCacheBustConsistency } from './cache-bust-check.mjs';
 
-export const VALID_TARGETS = ['nginx', 'api', 'engines', 'apsales', 'apsales-openclaw', 'finalize', 'home', 'portal', 'chrome', 'categories', 'admin'];
+export const VALID_TARGETS = ['nginx', 'api', 'engines', 'apsales', 'apsales-openclaw', 'finalize', 'home', 'portal', 'chrome', 'categories', 'admin', 'used-cars'];
 
 /** @type {Record<string, string[]>} */
 export const TARGET_SOURCE_FILES = {
+  'used-cars': [
+    'used-cars/detail.html',
+    'css/detail-v4-tokens.css',
+    'js/half-cut-title.js',
+    'js/half-cut-detail.js',
+    'server/lib/half-cut-title.js',
+    'server/lib/half-cut-seo.js',
+    'scripts/deploy-production.mjs',
+    'scripts/lib/release-manager.mjs',
+    'scripts/normalize-used-car-vdp-data.mjs',
+    'tests/half-cut-export-used-car-title.test.js',
+    'tests/normalize-used-car-vdp-data.test.mjs',
+  ],
   categories: [
     'index.html',
     'half-cuts/index.html',
@@ -181,6 +194,17 @@ export const TARGET_SOURCE_FILES = {
 
 /** @type {Record<string, string[]>} */
 export const TARGET_REMOTE_PATHS = {
+  'used-cars': [
+    '/root/.openclaw/workspace/inventory-site/public/used-cars/detail.html',
+    '/root/.openclaw/workspace/inventory-site/public/css/detail-v4-tokens.css',
+    '/root/.openclaw/workspace/inventory-site/public/js/half-cut-title.js',
+    '/root/.openclaw/workspace/inventory-site/public/js/half-cut-detail.js',
+    '/root/.openclaw/workspace/inventory-site/lib/half-cut-title.js',
+    '/root/.openclaw/workspace/inventory-site/lib/half-cut-seo.js',
+    '/root/.openclaw/workspace/inventory-site/data/half-cut-approved.json',
+    '/root/.openclaw/workspace/inventory-site/data/half-cut-submissions.json',
+    '/root/.openclaw/workspace/inventory-site/public/js/config.js',
+  ],
   categories: [
     '/root/.openclaw/workspace/inventory-site/public/index.html',
     '/root/.openclaw/workspace/inventory-site/public/half-cuts/index.html',
@@ -600,7 +624,7 @@ export async function runPostDeployValidation({ root, target, remote, baseUrl, r
     checks.push({ name: 'nginx_verification', status: 'skip', detail: 'not required' });
   }
 
-  if (['nginx', 'api', 'engines', 'home'].includes(target)) {
+  if (['nginx', 'api', 'engines', 'home', 'used-cars'].includes(target)) {
     const verifyScript = path.join(root, 'scripts', 'verify-production.mjs');
     if (fs.existsSync(verifyScript)) {
       const verify = spawnSync('node', [verifyScript, baseUrl], { encoding: 'utf8', cwd: root });
@@ -628,7 +652,7 @@ export async function runPostDeployValidation({ root, target, remote, baseUrl, r
   });
 
   // OPS-003: parser-based public validation for any customer-facing target
-  const publicTargets = new Set(['nginx', 'api', 'engines', 'home', 'chrome', 'portal', 'categories', 'admin']);
+  const publicTargets = new Set(['nginx', 'api', 'engines', 'home', 'chrome', 'portal', 'categories', 'admin', 'used-cars']);
   /** @type {any} */
   let publicReport = null;
   /** @type {any} */

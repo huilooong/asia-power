@@ -111,6 +111,16 @@
     return `${clean} — Export Used Car`;
   }
 
+  function buildExportUsedCarTitle(item) {
+    const year = Number(item?.vinSpecs?.modelYear || item?.year);
+    const yearText = Number.isFinite(year) && year >= 1900 && year <= 2100 ? String(Math.round(year)) : '';
+    const brand = String(item?.brand || '').trim();
+    const model = String(item?.model || '').trim();
+    const core = [yearText, brand, model].filter(Boolean).join(' ').replace(/\s+/g, ' ').trim();
+    if (core) return formatExportUsedCarTitle(core);
+    return formatExportUsedCarTitle(item?.title || '');
+  }
+
   function buildStructuredTitle(item) {
     const year = Number(item?.year);
     const yearText = Number.isFinite(year) && year >= 1900 && year <= 2100 ? String(Math.round(year)) : '';
@@ -145,6 +155,7 @@
   function buildDisplayTitle(item, lang) {
     const activeLang = String(lang || 'en').toLowerCase();
     const exportUsedCar = isExportUsedCarListing(item);
+    if (exportUsedCar) return buildExportUsedCarTitle(item);
     if (isQxbListing(item)) {
       const originalName = extractOriginalVehicleName(listingNotesText(item));
       if (originalName) {
@@ -184,6 +195,7 @@
     isExportUsedCarListing,
     sanitizeExportUsedCarTitle,
     formatExportUsedCarTitle,
+    buildExportUsedCarTitle,
     qxbMarkerText,
     extractOriginalVehicleName,
     listingNotesText,

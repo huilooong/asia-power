@@ -519,6 +519,228 @@
     </section>`;
   }
 
+  function usedCarCoreTitle(item) {
+    const year = item?.vinSpecs?.modelYear || item?.year;
+    return [year, item?.brand, item?.model].filter(Boolean).join(' ').replace(/\s+/g, ' ').trim();
+  }
+
+  function usedCarBodyDescription(item) {
+    const specs = item?.vinSpecs || {};
+    const doors = Number(specs.doors);
+    const seats = Number(specs.seats);
+    const configuration = String(specs.bodyConfiguration || '').trim();
+    const style = /\u4e24\u53a2\u8f66/.test(configuration)
+      ? 'Hatchback'
+      : (/\u4e09\u53a2\u8f66/.test(configuration) ? 'Sedan' : String(specs.bodyStyle || item?.bodyType || '').trim());
+    return [
+      Number.isFinite(doors) && doors > 0 ? `${doors}-door` : '',
+      Number.isFinite(seats) && seats > 0 ? `${seats}-seat` : '',
+      style,
+    ].filter(Boolean).join(', ').replace(', ' + style, ` ${style}`).trim();
+  }
+
+  function usedCarTransmission(item) {
+    const specs = item?.vinSpecs || {};
+    if (specs.fuelType === 'Electric' && /\u56fa\u5b9a\u9f7f\u6bd4|\u5355\u901f/.test(`${specs.transmissionDescription || ''} ${specs.transmissionType || ''}`)) {
+      return 'Fixed-ratio single-speed';
+    }
+    return specs.transmissionDescription || specs.transmissionType || item?.transmissionCode || '';
+  }
+
+  function usedCarDimensions(item) {
+    const dimensions = item?.vinSpecs?.dimensions;
+    if (!dimensions) return '';
+    const values = [dimensions.length, dimensions.width, dimensions.height].map(Number);
+    if (values.some((value) => !Number.isFinite(value) || value <= 0)) return '';
+    return `${values.map((value) => value.toLocaleString('en-US')).join(' × ')} ${dimensions.unit || 'mm'}`;
+  }
+
+  function usedCarSpecRows(item) {
+    const specs = item?.vinSpecs || {};
+    const row = (label, value, note = '') => {
+      if (value == null || String(value).trim() === '') return '';
+      return `<div class="uc-vdp__spec"><dt>${escapeHtml(label)}</dt><dd>${escapeHtml(String(value))}${note ? `<small>${escapeHtml(note)}</small>` : ''}</dd></div>`;
+    };
+    const tire = specs.frontTire || specs.rearTire
+      ? [specs.frontTire ? `${specs.frontTire} front` : '', specs.rearTire ? `${specs.rearTire} rear` : ''].filter(Boolean).join(' · ')
+      : '';
+    return [
+      row('Model year', specs.modelYear || item.year),
+      row('Factory trim (CN)', specs.trimName || item.trimName),
+      row('Fuel type', specs.fuelType || item.fuelType),
+      row('Drivetrain', specs.drivetrainDisplay || specs.drivetrain || item.drivetrain),
+      row('Transmission', usedCarTransmission(item)),
+      row('Body configuration', usedCarBodyDescription(item) || specs.bodyConfiguration),
+      row('Dimensions', usedCarDimensions(item)),
+      row('Wheelbase', specs.wheelbaseMm ? `${Number(specs.wheelbaseMm).toLocaleString('en-US')} mm` : ''),
+      row('Curb weight', specs.curbWeightKg ? `${Number(specs.curbWeightKg).toLocaleString('en-US')} kg` : ''),
+      row('Tires', tire),
+      row('Variant range label', specs.trimRangeKm ? `${specs.trimRangeKm} km` : '', specs.trimRangeKm ? 'Model designation; not a battery-health or real-world range test.' : ''),
+      row('Catalog launch', specs.catalogLaunchMonth),
+      row('Engine', specs.engineDescription),
+      row('Displacement', specs.displacementCc ? `${Number(specs.displacementCc).toLocaleString('en-US')} cc` : ''),
+      row('Maximum power', specs.maxPowerKw ? `${Number(specs.maxPowerKw).toLocaleString('en-US')} kW` : ''),
+    ].filter(Boolean).join('');
+  }
+
+  function usedCarConditionRows() {
+    const row = (title, body, confirmed = false) => `<div class="uc-vdp__condition-row${confirmed ? ' is-confirmed' : ''}">
+      <span class="uc-vdp__condition-icon" aria-hidden="true">${confirmed ? '✓' : '○'}</span>
+      <div><strong>${escapeHtml(title)}</strong><p>${escapeHtml(body)}</p></div>
+      <span class="uc-vdp__condition-status">${confirmed ? 'Confirmed' : 'Pending'}</span>
+    </div>`;
+    return [
+      row('Identity and factory configuration', 'VIN decoder matched the vehicle series, model year and factory trim.', true),
+      row('Battery state of health', 'A diagnostic battery report has not yet been uploaded. Request it before contracting.'),
+      row('Accident, flood and fire history', 'Physical inspection and supporting history documents are still required.'),
+      row('Exterior and interior condition report', 'Inventory photos are available; a standardized inspection sheet is still pending.'),
+    ].join('');
+  }
+
+  function renderExportUsedCarDetailContent(item, root, context) {
+    const { b, u, canonical } = context;
+    const specs = item.vinSpecs || {};
+    const coreTitle = usedCarCoreTitle(item);
+    const catalogHref = `${b}half-cuts/?cat=used-cars`;
+    const brandUrl = `${catalogHref}&brand=${encodeURIComponent(item.brandSlug || '')}`;
+    const statusLabel = window.PublicI18n?.translateStatus?.(item.status) || item.status || 'Available';
+    const available = item.status === 'Available';
+    const amount = Number(u.parsePriceUsd?.(item));
+    const priceText = Number.isFinite(amount) && amount > 0 ? `US$${amount.toLocaleString('en-US', { maximumFractionDigits: 0 })}` : t('hc.priceOnEnquiry', 'Quote on enquiry');
+    const trimLine = [
+      specs.trimRangeKm ? `${specs.trimRangeKm} km variant` : '',
+      specs.drivetrainDisplay || specs.drivetrain || item.drivetrain,
+    ].filter(Boolean).join(' · ');
+    const bodyText = usedCarBodyDescription(item) || specs.bodyConfiguration || specs.bodyStyle || item.bodyType || '';
+    const gallery = renderDetailGallery(item, u);
+    const leadAction = available
+      ? u.leadLink(item, 'price', 'uc-vdp__button uc-vdp__button--primary', 'Request CIF quote')
+      : u.leadLink(item, 'similar', 'uc-vdp__button uc-vdp__button--primary', 'Request Similar Unit');
+    const whatsapp = u.whatsappLink(item, 'uc-vdp__button uc-vdp__button--whatsapp', 'WhatsApp');
+    const documentsVerified = item.exportDocumentationStatus === 'verified';
+    const publicTitle = `${coreTitle} — Export Used Car`;
+    const configText = [specs.fuelType || item.fuelType, specs.drivetrain || item.drivetrain].filter(Boolean).join(', ');
+    const publicDescription = `${item.brand} ${item.model} export used car${configText ? ` — ${configText}` : ''}. ${Number.isFinite(amount) && amount > 0 ? `EXW US$${amount.toLocaleString('en-US', { maximumFractionDigits: 0 })}. ` : ''}VIN configuration, condition evidence and destination eligibility are confirmed before shipment. Stock ${item.stockId}.`;
+
+    document.body.classList.add('page-export-used-car-detail');
+    document.title = `${publicTitle} | AsiaPower`;
+    upsertMeta('property', 'og:title', publicTitle);
+    upsertMeta('property', 'og:description', publicDescription);
+    upsertMeta('name', 'twitter:title', publicTitle);
+    upsertMeta('name', 'twitter:description', publicDescription);
+    const metaDescription = document.querySelector('meta[name="description"]');
+    if (metaDescription) metaDescription.content = publicDescription;
+    upsertJsonLd('schema-halfcut-breadcrumb', {
+      '@context': 'https://schema.org',
+      '@type': 'BreadcrumbList',
+      itemListElement: [
+        { '@type': 'ListItem', position: 1, name: 'Home', item: absoluteUrl(`${b}index.html`) },
+        { '@type': 'ListItem', position: 2, name: 'Export Used Cars', item: absoluteUrl(catalogHref) },
+        { '@type': 'ListItem', position: 3, name: coreTitle, item: canonical },
+      ],
+    });
+    const images = typeof u.productImages === 'function' ? u.productImages(item, b) : [];
+    const product = {
+      '@context': 'https://schema.org',
+      '@type': 'Product',
+      name: publicTitle,
+      description: publicDescription,
+      sku: item.stockId,
+      image: images,
+      brand: { '@type': 'Brand', name: item.brand },
+      url: canonical,
+    };
+    if (Number.isFinite(amount) && amount > 0 && item.status !== 'Sold') {
+      product.offers = {
+        '@type': 'Offer',
+        url: canonical,
+        priceCurrency: 'USD',
+        price: amount.toFixed(2),
+        availability: available ? 'https://schema.org/InStock' : 'https://schema.org/LimitedAvailability',
+        itemCondition: 'https://schema.org/UsedCondition',
+      };
+    }
+    upsertJsonLd('schema-halfcut-product', product);
+
+    root.innerHTML = `<section class="uc-vdp">
+      <div class="container">
+        <nav class="uc-vdp__crumb" aria-label="Breadcrumb">
+          <a href="${b}index.html">Home</a><span>/</span><a href="${catalogHref}">Export Used Cars</a><span>/</span><a href="${brandUrl}">${escapeHtml(item.brand)}</a><span>/</span><span>${escapeHtml(item.stockId)}</span>
+        </nav>
+
+        <div class="uc-vdp__hero">
+          <div class="uc-vdp__gallery">${gallery}</div>
+          <aside class="uc-vdp__summary" aria-label="Vehicle summary">
+            <div class="uc-vdp__eyebrow"><span>${escapeHtml([item.brand, specs.fuelType || item.fuelType, bodyText].filter(Boolean).join(' · '))}</span><span>Stock ${escapeHtml(item.stockId)}</span></div>
+            <h1>${escapeHtml(coreTitle)}</h1>
+            ${trimLine ? `<p class="uc-vdp__trim">${escapeHtml(trimLine)}</p>` : ''}
+            <div class="uc-vdp__price"><div><span>EXW vehicle price</span><strong>${escapeHtml(priceText)}</strong></div><span>CIF quote available</span></div>
+            <dl class="uc-vdp__quick-facts">
+              <div><dt>Mileage</dt><dd>${escapeHtml(item.mileage || 'Confirm on enquiry')}</dd></div>
+              <div><dt>Powertrain</dt><dd>${escapeHtml(specs.fuelType || item.fuelType || 'Confirm on enquiry')}</dd></div>
+              <div><dt>Drive</dt><dd>${escapeHtml(specs.drivetrain || item.drivetrain || '—')}</dd></div>
+              <div><dt>Transmission</dt><dd>${escapeHtml(usedCarTransmission(item) || '—')}</dd></div>
+              <div><dt>Body</dt><dd>${escapeHtml(bodyText || '—')}</dd></div>
+              <div><dt>Seats</dt><dd>${escapeHtml(String(specs.seats || '—'))}</dd></div>
+            </dl>
+            <div class="uc-vdp__actions">${leadAction}${whatsapp}</div>
+            <p class="uc-vdp__availability"><span aria-hidden="true">✓</span> ${escapeHtml(statusLabel)} · availability and final vehicle condition are reconfirmed before order.</p>
+          </aside>
+        </div>
+
+        <div class="uc-vdp__content-layout">
+          <div class="uc-vdp__content-main">
+            <section class="uc-vdp__panel" aria-labelledby="uc-overview">
+              <div class="uc-vdp__section-head"><div><span>Vehicle overview</span><h2 id="uc-overview">Factory configuration decoded from VIN</h2></div><em>✓ VIN matched</em></div>
+              <p class="uc-vdp__intro">These fields identify the original factory model and configuration. They do not replace a physical condition inspection or battery health report.</p>
+              <dl class="uc-vdp__spec-grid">${usedCarSpecRows(item)}</dl>
+            </section>
+
+            <section class="uc-vdp__panel" aria-labelledby="uc-condition">
+              <div class="uc-vdp__section-head"><div><span>Condition &amp; history</span><h2 id="uc-condition">What is verified—and what is still pending</h2></div></div>
+              <div class="uc-vdp__condition-list">${usedCarConditionRows()}</div>
+            </section>
+
+            <section class="uc-vdp__panel" aria-labelledby="uc-identity">
+              <div class="uc-vdp__section-head"><div><span>Vehicle identity</span><h2 id="uc-identity">VIN and listing reference</h2></div></div>
+              <div class="uc-vdp__identity-grid">
+                ${item.maskedVin ? `<div><span>Masked VIN</span><strong class="uc-vdp__vin">${escapeHtml(item.maskedVin)}</strong></div>` : ''}
+                <div><span>Stock ID</span><strong>${escapeHtml(item.stockId)}</strong></div>
+                <div><span>Origin</span><strong>${escapeHtml(item.origin || 'China')}</strong></div>
+                <div><span>Listing status</span><strong>${escapeHtml(statusLabel)}</strong></div>
+              </div>
+              <p class="uc-vdp__privacy">The full chassis number is withheld from public pages and can be shared with a qualified buyer during verification.</p>
+            </section>
+
+            <section class="uc-vdp__panel" aria-labelledby="uc-export">
+              <div class="uc-vdp__section-head"><div><span>Export purchase</span><h2 id="uc-export">Documents, inspection and shipment</h2></div></div>
+              <ol class="uc-vdp__steps">
+                <li><span>1</span><div><strong>Confirm the unit</strong><p>Reconfirm availability, VIN, price and buyer requirements.</p></div></li>
+                <li><span>2</span><div><strong>Inspect and document</strong><p>Obtain condition, battery and export-document evidence.</p></div></li>
+                <li><span>3</span><div><strong>Quote to your port</strong><p>AsiaPower prepares the EXW or CIF offer for the destination.</p></div></li>
+                <li><span>4</span><div><strong>Contract and ship</strong><p>Commercial terms and logistics are confirmed in writing.</p></div></li>
+              </ol>
+              <div class="uc-vdp__export-note"><strong>${documentsVerified ? 'Document review verified.' : 'Document review pending.'}</strong> ${documentsVerified ? 'Export documentation has been reviewed for this listing.' : 'Supplier has declared whole-vehicle export availability; registration, inspection, export licence and destination requirements will be verified before contract and shipment.'}</div>
+            </section>
+            ${renderSimilarProductsSection(item, u, b)}
+          </div>
+
+          <aside class="uc-vdp__lead" aria-label="Get price and shipping">
+            <span>Ask about this car</span><h2>Get price and shipping</h2>
+            <p>Choose a destination port for an indicative CIF estimate, then request the confirmed export quote.</p>
+            ${window.AsiaPowerCifCalculator?.renderDetailPanel?.({ exwUsd: u.parsePriceUsd(item), cargo: window.AsiaPowerCifCalculator?.cargoForItem?.(item), item, base: b }) || ''}
+            <div class="uc-vdp__lead-actions">${leadAction}${whatsapp}</div>
+            <ul><li>Real inventory photos</li><li>VIN-based configuration</li><li>EXW and CIF quotation</li></ul>
+          </aside>
+        </div>
+      </div>
+    </section>`;
+
+    bindGalleryLightbox(root, item, u);
+    window.AsiaPowerCifCalculator?.bindDetailPanel?.(root, { exwUsd: u.parsePriceUsd(item), cargo: window.AsiaPowerCifCalculator?.cargoForItem?.(item), item });
+    window.AsiaPowerEbayLayout?.bindCarousels?.();
+  }
+
   function renderHalfCutDetailContent(item, root) {
     const b = base();
     const u = window.HalfCutUtils;
@@ -565,6 +787,12 @@
     }
     const canonicalLink = document.querySelector('link[rel="canonical"]');
     if (canonicalLink) canonicalLink.href = canonical;
+
+    if (isUsedCar) {
+      renderExportUsedCarDetailContent(item, root, { b, u, canonical });
+      return;
+    }
+    document.body.classList.remove('page-export-used-car-detail');
 
     const passengerPart = String(item.passengerPartType || '').trim();
     let catalogLabel = isMachinery

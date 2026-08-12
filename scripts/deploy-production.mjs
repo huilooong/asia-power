@@ -276,6 +276,40 @@ echo "[deploy:categories] category filters OK on remote"
 `);
 }
 
+/** Export used-car VDP only — dedicated UI + its server presentation helpers. */
+function deployUsedCars() {
+  console.log('[deploy:used-cars] syncing dedicated VDP files only');
+  const pub = `${SITE}/public`;
+  ssh('mkdir -p /root/.openclaw/workspace/inventory-site/public/used-cars /root/.openclaw/workspace/inventory-site/public/css /root/.openclaw/workspace/inventory-site/public/js /root/.openclaw/workspace/inventory-site/lib');
+  rsync(`${ROOT}/used-cars/detail.html`, `${pub}/used-cars/detail.html`);
+  rsync(`${ROOT}/css/detail-v4-tokens.css`, `${pub}/css/detail-v4-tokens.css`);
+  rsync(`${ROOT}/js/half-cut-title.js`, `${pub}/js/half-cut-title.js`);
+  rsync(`${ROOT}/js/half-cut-detail.js`, `${pub}/js/half-cut-detail.js`);
+  rsync(`${ROOT}/server/lib/half-cut-title.js`, `${SITE}/lib/half-cut-title.js`);
+  rsync(`${ROOT}/server/lib/half-cut-seo.js`, `${SITE}/lib/half-cut-seo.js`);
+  rsync(`${ROOT}/scripts/normalize-used-car-vdp-data.mjs`, `${SITE}/scripts/normalize-used-car-vdp-data.mjs`);
+  ssh(`
+set -e
+SITE=/root/.openclaw/workspace/inventory-site
+PUB="$SITE/public"
+node --check "$SITE/lib/half-cut-title.js"
+node --check "$SITE/lib/half-cut-seo.js"
+node --check "$PUB/js/half-cut-title.js"
+node --check "$PUB/js/half-cut-detail.js"
+node --check "$SITE/scripts/normalize-used-car-vdp-data.mjs"
+grep -q 'used-car-vdp-v1' "$PUB/used-cars/detail.html"
+grep -q 'page-export-used-car-detail' "$PUB/used-cars/detail.html"
+grep -q 'Export used-car VDP' "$PUB/css/detail-v4-tokens.css"
+grep -q 'renderExportUsedCarDetailContent' "$PUB/js/half-cut-detail.js"
+grep -q 'buildExportUsedCarTitle' "$SITE/lib/half-cut-title.js"
+grep -q 'renderUsedCarDetailRootHtml' "$SITE/lib/half-cut-seo.js"
+node "$SITE/scripts/normalize-used-car-vdp-data.mjs" --apply
+systemctl restart inventory-site.service
+systemctl is-active inventory-site.service
+echo "[deploy:used-cars] dedicated VDP files OK on remote"
+`);
+}
+
 /** Login / register / buyer+supplier portals (does NOT rsync full public/) */
 function deployPortal() {
   console.log('[deploy:portal] syncing login + portal pages + supplier upload');
@@ -1080,7 +1114,7 @@ function printHelp() {
   console.log(`AsiaPower deploy (Release Manager enabled):
   node scripts/deploy-production.mjs <target> [--yes] [--allow-dirty] [user@host]
 
-  nginx | api | engines | apsales | apsales-openclaw | finalize | home | portal | chrome | categories | admin
+  nginx | api | engines | apsales | apsales-openclaw | finalize | home | portal | chrome | categories | admin | used-cars
 
   REQUIRED: commit → push GitHub → then deploy (CEO red line 2026-07-10)
   Pre-deploy:  git clean, HEAD on origin, backup, target confirmation
@@ -1104,6 +1138,7 @@ const targets = {
   chrome: deployChrome,
   categories: deployCategories,
   admin: deployAdmin,
+  'used-cars': deployUsedCars,
 };
 
 async function main() {

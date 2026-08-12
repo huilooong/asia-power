@@ -33,7 +33,7 @@ test('server export used-car titles omit dismantling terminology', () => {
   assert.equal(serverTitle.isExportUsedCarListing(exportUsedCar), true);
   assert.equal(
     serverTitle.buildDisplayTitle(exportUsedCar, 'en'),
-    '2024 Toyota Camry A25A-FKS 8AT 2WD — Export Used Car',
+    '2024 Toyota Camry — Export Used Car',
   );
   assert.equal(serverTitle.computeIsExportUsedCar(exportUsedCar), true);
   assert.equal(
@@ -59,11 +59,27 @@ test('client display and SEO titles use the export used-car channel', () => {
   const clientSeo = sandbox.window.EngineCardLabel.formatHalfCutSeoTitle(exportUsedCar);
   const clientH1 = sandbox.window.EngineCardLabel.formatHalfCutDetailH1(exportUsedCar);
 
-  assert.equal(clientTitle, '2024 Toyota Camry A25A-FKS 8AT 2WD — Export Used Car');
+  assert.equal(clientTitle, '2024 Toyota Camry — Export Used Car');
   assert.doesNotMatch(clientSeo, /half[ -]?cut|front[ -]?cut|半截|半切/i);
   assert.doesNotMatch(clientH1, /half[ -]?cut|front[ -]?cut|半截|半切/i);
   assert.match(clientSeo, /Export Used Car/);
   assert.match(clientH1, /Export Used Car/);
+});
+
+test('VIN-decoded export used-car title never collapses RWD into generic 2WD', () => {
+  const item = {
+    ...exportUsedCar,
+    year: 2026,
+    brand: 'BYD',
+    model: 'Seal 06 GT',
+    drivetrain: 'RWD',
+    engineCode: 'EV',
+    transmissionCode: '1',
+    vinSpecs: { modelYear: 2026, drivetrain: 'RWD', trimName: '2026款 520海浪Plus版' },
+  };
+  assert.equal(serverTitle.buildDisplayTitle(item, 'en'), '2026 BYD Seal 06 GT — Export Used Car');
+  assert.doesNotMatch(serverTitle.buildDisplayTitle(item, 'en'), /\b(?:EV|1|2WD)\b/);
+  assert.equal(serverPublic.toPublicItem(item).title, '2026 BYD Seal 06 GT — Export Used Car');
 });
 
 test('public export used-car payload strips dismantling content and exposes evidence-gated status', () => {
@@ -79,11 +95,45 @@ test('public export used-car payload strips dismantling content and exposes evid
 });
 
 test('server-rendered used-car detail is isolated from half-cut merchandising', () => {
-  const html = serverSeo.buildDetailRootHtml(exportUsedCar, 'https://asia-power.com');
-  assert.match(html, /Complete vehicle &amp; export status/);
-  assert.match(html, /AsiaPower document review pending/);
-  assert.match(html, /All Export Used Cars/);
+  const html = serverSeo.buildDetailRootHtml({
+    ...exportUsedCar,
+    maskedVin: 'LC0CH4CD6T****197',
+    mileage: '1,300 km',
+    vinSpecs: {
+      modelYear: 2026,
+      trimName: '2026款 520海浪Plus版',
+      fuelType: 'Electric',
+      drivetrain: 'RWD',
+      drivetrainDisplay: 'Rear-wheel drive',
+      transmissionDescription: '固定齿比变速器',
+      bodyStyle: 'Hatchback',
+      doors: 5,
+      seats: 5,
+      dimensions: { length: 4630, width: 1880, height: 1490, unit: 'mm' },
+    },
+  }, 'https://asia-power.com');
+  assert.match(html, /class="uc-vdp"/);
+  assert.match(html, /Factory configuration decoded from VIN/);
+  assert.match(html, /Battery state of health/);
+  assert.match(html, /Document review pending/);
+  assert.match(html, /Request CIF quote/);
+  assert.match(html, /LC0CH4CD6T\*\*\*\*197/);
   assert.doesNotMatch(html, /Engine &amp; gearbox assembly|Front clip|Wiring harness|Radiator pack|Included Parts|Half-Cut Listings|All Half Cuts/i);
+  assert.doesNotMatch(html, /Crating|dismantl/i);
+});
+
+test('production used-car shell and client renderer use the dedicated VDP surface', () => {
+  const detailSource = fs.readFileSync(path.join(__dirname, '..', 'js', 'half-cut-detail.js'), 'utf8');
+  const detailCss = fs.readFileSync(path.join(__dirname, '..', 'css', 'detail-v4-tokens.css'), 'utf8');
+  const detailHtml = fs.readFileSync(path.join(__dirname, '..', 'used-cars', 'detail.html'), 'utf8');
+  assert.match(detailSource, /renderExportUsedCarDetailContent/);
+  assert.match(detailSource, /Factory configuration decoded from VIN/);
+  assert.match(detailSource, /What is verified—and what is still pending/);
+  assert.match(detailSource, /if \(isUsedCar\) \{\s*renderExportUsedCarDetailContent/);
+  assert.match(detailCss, /Export used-car VDP/);
+  assert.match(detailCss, /\.uc-vdp__quick-facts/);
+  assert.match(detailHtml, /class="page-export-used-car-detail"/);
+  assert.match(detailHtml, /used-car-vdp-v1/);
 });
 
 test('recent export used-car migration and audit correct category drift without claiming verified documents', async () => {

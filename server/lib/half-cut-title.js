@@ -109,6 +109,16 @@ function formatExportUsedCarTitle(title) {
   return `${clean} — Export Used Car`;
 }
 
+function buildExportUsedCarTitle(item) {
+  const year = Number(item?.vinSpecs?.modelYear || item?.year);
+  const yearText = Number.isFinite(year) && year >= 1900 && year <= 2100 ? String(Math.round(year)) : '';
+  const brand = String(item?.brand || '').trim();
+  const model = String(item?.model || '').trim();
+  const core = [yearText, brand, model].filter(Boolean).join(' ').replace(/\s+/g, ' ').trim();
+  if (core) return formatExportUsedCarTitle(core);
+  return formatExportUsedCarTitle(item?.title || '');
+}
+
 function buildStructuredTitle(item) {
   const year = Number(item?.year);
   const yearText = Number.isFinite(year) && year >= 1900 && year <= 2100 ? String(Math.round(year)) : '';
@@ -143,6 +153,10 @@ function preferChineseTitle(lang) {
 function buildDisplayTitle(item, lang = 'en') {
   const activeLang = String(lang || 'en').toLowerCase();
   const exportUsedCar = isExportUsedCarListing(item);
+  // A whole used vehicle is merchandised by year / make / model. Do not carry
+  // the half-cut powertrain title convention (engine code, gearbox code, or a
+  // generic 2WD/4WD reduction) into vehicle ads, VDP headings, or SEO.
+  if (exportUsedCar) return buildExportUsedCarTitle(item);
   if (isQxbListing(item)) {
     const originalName = extractOriginalVehicleName(listingNotesText(item));
     if (originalName) {
@@ -259,6 +273,7 @@ module.exports = {
   isExportUsedCarListing,
   sanitizeExportUsedCarTitle,
   formatExportUsedCarTitle,
+  buildExportUsedCarTitle,
   buildStructuredTitle,
   preferChineseTitle,
   buildDisplayTitle,
