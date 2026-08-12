@@ -478,7 +478,11 @@
       window.location.href = href(`engines/?q=${encodeURIComponent(q)}`);
       return;
     }
-    window.location.href = href(`half-cuts/?q=${encodeURIComponent(q)}`);
+    const scope = document.querySelector('[data-ebay-search] input[type="search"]')?.dataset?.searchScope;
+    const target = scope === 'used-cars'
+      ? `half-cuts/?cat=used-cars&q=${encodeURIComponent(q)}`
+      : `half-cuts/?q=${encodeURIComponent(q)}`;
+    window.location.href = href(target);
   }
 
   function bindSearch() {

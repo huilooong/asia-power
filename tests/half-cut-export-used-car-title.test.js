@@ -248,10 +248,16 @@ test('used-car catalog chrome cannot be overwritten with half-cut or truck inqui
   const catalogHtml = fs.readFileSync(path.join(__dirname, '..', 'half-cuts', 'index.html'), 'utf8');
   assert.match(layoutSource, /cat === 'used-cars' \? 'Export Used Cars' : 'Half-Cuts'/);
   assert.match(layoutSource, /Export Used Cars from China/);
+  assert.match(layoutSource, /scope === 'used-cars'/);
+  assert.match(layoutSource, /half-cuts\/\?cat=used-cars&q=/);
   assert.match(componentsSource, /Export document review/);
   assert.match(componentsSource, /VIN, mileage and export requirements confirmed before contract and shipment/);
   assert.match(componentsSource, /I am interested in an export used car/);
+  assert.match(componentsSource, /path\.includes\('\/used-cars\/'\)/);
+  assert.match(componentsSource, /ebay\.usedCarsSearchPlaceholder/);
+  assert.match(componentsSource, /data-search-scope="\$\{usedCars \? 'used-cars' : 'all'\}"/);
   assert.match(i18nSource, /meta\.usedCars\.title/);
+  assert.match(i18nSource, /Search used cars, model, VIN or stock ID/);
   assert.match(i18nSource, /params\.get\('cat'\) === 'used-cars'/);
   assert.match(catalogHtml, /path-utils\.js\?v=used-car-separation-v3/);
   assert.match(catalogHtml, /components\.js\?v=used-car-separation-v3/);

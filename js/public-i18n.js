@@ -155,6 +155,7 @@
     'ebay.catMachinery': { zh: '工程机械', fr: 'Engins de chantier', ar: 'معدات ثقيلة' },
     'ebay.catParts': { zh: '发动机与零部件', fr: 'Moteurs et pièces', ar: 'محركات وقطع غيار' },
     'ebay.searchPlaceholder': { en: 'Search half-cuts, engines, HC250160, 2AZ-FE…', zh: '搜索半切车、发动机、HC250160、2AZ-FE…', fr: 'Rechercher demi-coupes, moteurs, HC250160, 2AZ-FE…', ar: 'ابحث عن نصف مقطوعة ومحركات وHC250160 و2AZ-FE…' },
+    'ebay.usedCarsSearchPlaceholder': { en: 'Search used cars, model, VIN or stock ID…', zh: '搜索二手车、车型、VIN 或库存号…', fr: 'Rechercher voiture, modèle, VIN ou stock…', ar: 'ابحث عن سيارة مستعملة أو موديل أو VIN أو رقم مخزون…' },
     'ebay.searchPlaceholderShort': { en: 'HC250160, 2AZ-FE, Camry…', zh: 'HC250160、2AZ-FE、Camry…', fr: 'HC250160, 2AZ-FE, Camry…', ar: 'HC250160، 2AZ-FE، Camry…' },
     'ebay.searchBtn': { zh: '搜索', fr: 'Rechercher', ar: 'بحث' },
     'ebay.promoBar': {

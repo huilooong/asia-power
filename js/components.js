@@ -6,8 +6,8 @@
 
   // Must bump when ebay-layout.css changes — injectEbayStylesheet rewrites all pages to this query.
   // Stale CDN entries for old ?v= keys (e.g. v4-listing-card-v1) can keep serving 66px parts thumbs.
-  const SITE_EBAY_LAYOUT_VER = 'used-car-separation-v3';
-  const SITE_COMPONENTS_VER = 'used-car-separation-v3';
+  const SITE_EBAY_LAYOUT_VER = 'used-car-vdp-v2';
+  const SITE_COMPONENTS_VER = 'used-car-vdp-v2';
   // Deploy markers (keep strings discoverable): auth-nav-v1 · auth-nav-once-v2 · auth-nav-sitewide-v1 · login-entry-v1 · lang-sync-v2 · contact-center-v1 · about-type-v2 · list-photo-uniform-v1 · list-photo-uniform-v2 · list-photo-uniform-v2b · parts-photo-v2 · integrity-audit-v1 · parts-placeholder-v1 · parts-parallel-v1 · stock-id-search-v1 · dedicated-price-v1 · catalog-search-v1
   // login-entry-v1 = catalog footer Sign in + clearer toolbar login pill; buyer dial codes expanded (local WIP, not deployed)
   // list-photo-uniform-v1 = half-cut list photo frames fixed 4:3 + cover
@@ -70,6 +70,10 @@
   }
 
   function isUsedCarsRoute() {
+    const path = String(window.location.pathname || '').toLowerCase();
+    if (path.includes('/used-cars/') || document.body?.classList?.contains('page-export-used-car-detail')) {
+      return true;
+    }
     if (document.body?.dataset?.page !== 'halfcuts') return false;
     const params = new URLSearchParams(window.location.search);
     if (params.get('cat') === 'used-cars') return true;
@@ -452,6 +456,11 @@
   }
 
   function renderEbayHeader() {
+    const usedCars = isUsedCarsRoute();
+    const placeholder = usedCars
+      ? 'Search used cars, model, VIN or stock ID…'
+      : 'Search half-cuts, engines, HC250160, 2AZ-FE…';
+    const placeholderKey = usedCars ? 'ebay.usedCarsSearchPlaceholder' : 'ebay.searchPlaceholder';
     return `
       <header class="ebay-header">
         ${renderEbayToolbar()}
@@ -461,16 +470,16 @@
             ${textLogo('ebay-header__logo ap-logo')}
             <div class="ebay-header__main">
               <form class="ebay-search" data-ebay-search role="search">
-                <input type="search" placeholder="Search half-cuts, engines, HC250160, 2AZ-FE…" aria-label="Search" data-i18n-placeholder="ebay.searchPlaceholder">
+                <input type="search" placeholder="${placeholder}" aria-label="Search" data-i18n-placeholder="${placeholderKey}" data-search-scope="${usedCars ? 'used-cars' : 'all'}">
                 <button type="submit" class="ebay-search__btn" data-i18n-aria="ebay.searchBtn" aria-label="Search">
                   <span class="ebay-search__btn-text" data-i18n="ebay.searchBtn">Search</span>
                   <svg class="ebay-search__btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
                 </button>
               </form>
-              <div class="ebay-trending ebay-trending--header" data-trending-root aria-label="Popular searches" hidden>
+              ${usedCars ? '' : `<div class="ebay-trending ebay-trending--header" data-trending-root aria-label="Popular searches" hidden>
                 <span class="ebay-trending__label" data-i18n="ebay.popular">Popular:</span>
                 <span class="ebay-trending__tags" data-trending-tags></span>
-              </div>
+              </div>`}
             </div>
           </div>
         </div>
@@ -810,8 +819,8 @@
     const apply = () => {
       const pub = i18n();
       if (!pub) return;
-      const short = pub.t('ebay.searchPlaceholderShort', 'HC250160, 2AZ-FE…');
-      const long = pub.t('ebay.searchPlaceholder', input.dataset.i18nPlaceholderEn || input.placeholder || '');
+      const longKey = input.dataset.i18nPlaceholder || 'ebay.searchPlaceholder';
+      const long = pub.t(longKey, input.dataset.i18nPlaceholderEn || input.placeholder || '');
       input.placeholder = mq.matches ? '' : long;
     };
     apply();

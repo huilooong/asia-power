@@ -285,6 +285,10 @@ function deployUsedCars() {
   rsync(`${ROOT}/css/detail-v4-tokens.css`, `${pub}/css/detail-v4-tokens.css`);
   rsync(`${ROOT}/js/half-cut-title.js`, `${pub}/js/half-cut-title.js`);
   rsync(`${ROOT}/js/half-cut-detail.js`, `${pub}/js/half-cut-detail.js`);
+  rsync(`${ROOT}/js/components.js`, `${pub}/js/components.js`);
+  rsync(`${ROOT}/js/public-i18n.js`, `${pub}/js/public-i18n.js`);
+  rsync(`${ROOT}/js/ebay-layout.js`, `${pub}/js/ebay-layout.js`);
+  rsync(`${ROOT}/js/path-utils.js`, `${pub}/js/path-utils.js`);
   rsync(`${ROOT}/server/lib/half-cut-title.js`, `${SITE}/lib/half-cut-title.js`);
   rsync(`${ROOT}/server/lib/half-cut-seo.js`, `${SITE}/lib/half-cut-seo.js`);
   rsync(`${ROOT}/scripts/normalize-used-car-vdp-data.mjs`, `${SITE}/scripts/normalize-used-car-vdp-data.mjs`);
@@ -296,11 +300,17 @@ node --check "$SITE/lib/half-cut-title.js"
 node --check "$SITE/lib/half-cut-seo.js"
 node --check "$PUB/js/half-cut-title.js"
 node --check "$PUB/js/half-cut-detail.js"
+node --check "$PUB/js/components.js"
+node --check "$PUB/js/public-i18n.js"
+node --check "$PUB/js/ebay-layout.js"
+node --check "$PUB/js/path-utils.js"
 node --check "$SITE/scripts/normalize-used-car-vdp-data.mjs"
 grep -q 'used-car-vdp-v1' "$PUB/used-cars/detail.html"
+grep -q 'used-car-vdp-v2' "$PUB/used-cars/detail.html"
 grep -q 'page-export-used-car-detail' "$PUB/used-cars/detail.html"
 grep -q 'Export used-car VDP' "$PUB/css/detail-v4-tokens.css"
 grep -q 'renderExportUsedCarDetailContent' "$PUB/js/half-cut-detail.js"
+grep -q 'ebay.usedCarsSearchPlaceholder' "$PUB/js/components.js"
 grep -q 'buildExportUsedCarTitle' "$SITE/lib/half-cut-title.js"
 grep -q 'renderUsedCarDetailRootHtml' "$SITE/lib/half-cut-seo.js"
 node "$SITE/scripts/normalize-used-car-vdp-data.mjs" --apply

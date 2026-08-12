@@ -1,10 +1,10 @@
 # OPS-003 Production Health
 
-- Checked at: 2026-07-19T02:09:23.964Z
+- Checked at: 2026-08-12T05:10:59.765Z
 - Base URL: https://asia-power.com
-- Release: REL-20260719020619-chrome-0bc2cc6ee
-- Status: **PASS**
-- Pass: 117 / Fail: 0
+- Release: REL-20260812050943-used-cars-430addd4a
+- Status: **FAIL**
+- Pass: 125 / Fail: 4
 - Expected WhatsApp: 8616638801930
 
 ## Checks
@@ -108,40 +108,52 @@
 - **SKIP** `supplier_portal_whatsapp_static`: no static wa.me (float may use config)
 - **SKIP** `supplier_portal_logo`: no logo signal
 - **PASS** `supplier_portal_float_mount`: #site-whatsapp present
-- **PASS** `supplier_portal_config_whatsapp`: float will use wa.me/8616638801930 via https://asia-power.com/js/config.js?v=apcontact-002
+- **PASS** `supplier_portal_config_whatsapp`: float will use wa.me/8616638801930 via https://asia-power.com/js/config.js?v=seo-guides-20260716
 - **PASS** `config_js_http`: HTTP 200
 - **PASS** `config_js_whatsapp`: whatsapp=8616638801930
-- **PASS** `config_js_cache_policy`: public, max-age=14400, must-revalidate
+- **FAIL** `config_js_cache_policy`: config.js must be short-lived (max-age=60); got: public, max-age=14400, must-revalidate
 - **PASS** `config_js_cf`: cf=EXPIRED age=0
-- **PASS** `config_js_release_id`: releaseId=REL-20260719020619-chrome-0bc2cc6ee
+- **PASS** `config_js_release_id`: releaseId=REL-20260812050943-used-cars-430addd4a
+- **PASS** `components_js_http`: HTTP 200
+- **FAIL** `components_js_cache_policy`: /js/components.js must be short-lived (max-age=60); got: public, max-age=14400, must-revalidate
+- **PASS** `pwa_app_shell_js_http`: HTTP 200
+- **FAIL** `pwa_app_shell_js_cache_policy`: /js/pwa-app-shell.js must be short-lived (max-age=60); got: public, max-age=14400, must-revalidate
 - **PASS** `sw_js_http`: HTTP 200
-- **PASS** `sw_version`: CACHE_VERSION=pwa-app-v6b
+- **PASS** `sw_version`: CACHE_VERSION=pwa-app-v6c
 - **PASS** `sw_precache_config`: no bare config.js precache (or versioned)
-- **PASS** `sw_cache_policy`: public, max-age=14400, must-revalidate
+- **FAIL** `sw_cache_policy`: sw.js must be short-lived (max-age=60); got: public, max-age=14400, must-revalidate
 - **PASS** `robots_http`: HTTP 200
-- **PASS** `robots_content`: bytes=349
+- **PASS** `robots_content`: bytes=1013
 - **PASS** `robots_content_type`: text/plain; charset=utf-8
+- **PASS** `llms_http`: HTTP 200
+- **PASS** `llms_content`: bytes=3324
+- **PASS** `llms_content_type`: text/plain; charset=utf-8
 - **PASS** `sitemap_http`: HTTP 200
-- **PASS** `sitemap_content`: bytes=152684
+- **PASS** `sitemap_content`: bytes=167360
 - **PASS** `sitemap_content_type`: application/xml; charset=utf-8
 - **PASS** `sitemap_head_http`: HEAD HTTP 200
-- **PASS** `seo_sitemap_url_count`: 717 URLs
+- **PASS** `seo_sitemap_url_count`: 781 URLs
 - **PASS** `seo_sitemap_test_like_urls`: no obvious test/demo/QA URLs in sitemap
 - **PASS** `seo_sitemap_static_growth_pages`: guide and country engine pages present
-- **PASS** `seo_half_cut_sample_present`: https://asia-power.com/half-cuts/detail.html?slug=haval-h6-2013-4g69-s4m-half-cut-hc250583
+- **PASS** `seo_half_cut_sample_present`: https://asia-power.com/half-cuts/detail.html?slug=toyota-camry-2007-1az-fe-half-cut-hc250602
 - **PASS** `seo_half_cut_detail_http`: HTTP 200
-- **PASS** `seo_half_cut_canonical`: https://asia-power.com/half-cuts/detail.html?slug=haval-h6-2013-4g69-s4m-half-cut-hc250583
-- **PASS** `seo_half_cut_product_jsonld_url`: https://asia-power.com/half-cuts/detail.html?slug=haval-h6-2013-4g69-s4m-half-cut-hc250583
-- **PASS** `seo_truck_sample_present`: https://asia-power.com/trucks/detail.html?slug=dongfeng-2024-cab-truck-cab-hc250582
+- **PASS** `seo_half_cut_canonical`: https://asia-power.com/half-cuts/detail.html?slug=toyota-camry-2007-1az-fe-half-cut-hc250602
+- **PASS** `seo_half_cut_product_jsonld_url`: https://asia-power.com/half-cuts/detail.html?slug=toyota-camry-2007-1az-fe-half-cut-hc250602
+- **PASS** `seo_truck_sample_present`: https://asia-power.com/trucks/detail.html?slug=jac-2015-15010228-truck-part-hc250621
 - **PASS** `seo_truck_detail_http`: HTTP 200
-- **PASS** `seo_truck_canonical`: https://asia-power.com/trucks/detail.html?slug=dongfeng-2024-cab-truck-cab-hc250582
-- **PASS** `seo_truck_product_jsonld_url`: https://asia-power.com/trucks/detail.html?slug=dongfeng-2024-cab-truck-cab-hc250582
-- **PASS** `seo_truck_legacy_redirect`: HTTP 301 -> /trucks/detail.html?slug=dongfeng-2024-cab-truck-cab-hc250582
+- **PASS** `seo_truck_canonical`: https://asia-power.com/trucks/detail.html?slug=jac-2015-15010228-truck-part-hc250621
+- **PASS** `seo_truck_product_jsonld_url`: https://asia-power.com/trucks/detail.html?slug=jac-2015-15010228-truck-part-hc250621
+- **PASS** `seo_truck_legacy_redirect`: HTTP 301 -> /trucks/detail.html?slug=jac-2015-15010228-truck-part-hc250621
 - **PASS** `seo_machinery_sample_present`: https://asia-power.com/machinery/detail.html?slug=dongfanghong-380-2005-machinery-tractor-hc250576
 - **PASS** `seo_machinery_detail_http`: HTTP 200
 - **PASS** `seo_machinery_canonical`: https://asia-power.com/machinery/detail.html?slug=dongfanghong-380-2005-machinery-tractor-hc250576
 - **PASS** `seo_machinery_product_jsonld_url`: https://asia-power.com/machinery/detail.html?slug=dongfanghong-380-2005-machinery-tractor-hc250576
 - **PASS** `seo_machinery_legacy_redirect`: HTTP 301 -> /machinery/detail.html?slug=dongfanghong-380-2005-machinery-tractor-hc250576
+- **PASS** `seo_used_car_sample_present`: https://asia-power.com/used-cars/detail.html?slug=fangchengbao-bao-5-2025-export-used-car-hc250647
+- **PASS** `seo_used_car_detail_http`: HTTP 200
+- **PASS** `seo_used_car_canonical`: https://asia-power.com/used-cars/detail.html?slug=fangchengbao-bao-5-2025-export-used-car-hc250647
+- **PASS** `seo_used_car_product_jsonld_url`: https://asia-power.com/used-cars/detail.html?slug=fangchengbao-bao-5-2025-export-used-car-hc250647
+- **PASS** `seo_used_car_legacy_redirect`: HTTP 301 -> /used-cars/detail.html?slug=fangchengbao-bao-5-2025-export-used-car-hc250647
 - **SKIP** `sw_register`: no register() found in pwa-install
 
 ## Cloudflare purge
