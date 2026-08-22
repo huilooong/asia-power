@@ -114,7 +114,7 @@ test('production deploy implementation is exact-manifest rsync with no delete fl
   assert.doesNotMatch(section, /--delete/);
   assert.match(section, /VISUAL_V1_MANIFEST_OK/);
   assert.match(section, /api\/half-cuts\/public/);
-  assert.match(section, /127\.0\.0\.1:8080\/api\/health/);
+  assert.match(section, /127\.0\.0\.1:8080\/api\/half-cuts\/health/);
   assert.match(section, /127\.0\.0\.1:8080\/api\/half-cuts\/public/);
   assert.doesNotMatch(section, /127\.0\.0\.1:3000/);
 });
