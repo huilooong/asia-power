@@ -4,31 +4,33 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="robots" content="noindex">
-  <title>Quote List | AsiaPower</title>
+  <title data-i18n-title="quoteList.metaTitle">Quote List | AsiaPower</title>
   <link rel="stylesheet" href="css/styles.css?v=mnav-drawer-v1">
   <link rel="stylesheet" href="css/ebay-layout.css?v=site-consistency-v1" data-ebay-layout="1">
   <link rel="stylesheet" href="css/quote-list.css?v=quote-list-v1">
   <link rel="icon" href="assets/favicon.png" type="image/png">
+  <link rel="stylesheet" href="css/visual-consistency-v1.css?v=site-visual-v1-20260822" data-visual-consistency-v1>
+  <script src="js/brand-display.js?v=site-visual-v1-20260822" defer data-brand-display-script></script>
 </head>
 <body data-page="quote-list">
   <div id="site-topbar"></div>
   <div id="site-header"></div>
   <main id="main-content" class="quote-list-page">
-    <h1>Quote list</h1>
-    <p class="lead">Add units from product pages, then send one WhatsApp inquiry for the whole list. This is not checkout — our team confirms price and shipping.</p>
+    <h1 data-i18n="quoteList.title">Quote list</h1>
+    <p class="lead" data-i18n="quoteList.lead">Add units from product pages, then send one WhatsApp inquiry for the whole list. This is not checkout — our team confirms price and shipping.</p>
     <div id="quote-list-root"></div>
     <div class="quote-list-actions" id="quote-list-actions" hidden>
-      <a class="btn btn-wa" id="quote-wa" href="#" target="_blank" rel="noopener">WhatsApp this list</a>
-      <button type="button" class="btn btn-clear" id="quote-clear">Clear list</button>
+      <a class="btn btn-wa" id="quote-wa" href="#" target="_blank" rel="noopener" data-i18n="quoteList.whatsapp">WhatsApp this list</a>
+      <button type="button" class="btn btn-clear" id="quote-clear" data-i18n="quoteList.clear">Clear list</button>
     </div>
   </main>
   <div id="site-footer"></div>
   <div id="site-whatsapp"></div>
-  <script src="js/path-utils.js?v=site-i18n-cache-fix-v1"></script>
+  <script src="js/path-utils.js?v=site-visual-v1-20260822"></script>
   <script src="js/config.js?v=seo-guides-20260716"></script>
   <script src="js/whatsapp-crm.js?v=quote-list-v1"></script>
-  <script src="js/quote-list.js?v=quote-list-v1"></script>
-  <script src="js/components.js?v=mnav-drawer-v3" defer></script>
+  <script src="js/quote-list.js?v=site-visual-v1-20260822"></script>
+  <script src="js/components.js?v=site-visual-v1-20260822" defer></script>
   <script src="js/main.js?v=wa-lead-v1" defer></script>
   <script>
     (function () {
@@ -36,6 +38,7 @@
       const actions = document.getElementById('quote-list-actions');
       const wa = document.getElementById('quote-wa');
       const clearBtn = document.getElementById('quote-clear');
+      const t = (key, fallback) => window.PublicI18n?.t?.(key, fallback) || fallback;
 
       function money(n) {
         if (n == null || !Number.isFinite(Number(n))) return '—';
@@ -46,14 +49,14 @@
         const items = window.QuoteList.read();
         window.QuoteList.refreshBadges();
         if (!items.length) {
-          root.innerHTML = '<div class="quote-list-empty">Your quote list is empty. Open a product page and tap <strong>Add to quote list</strong>.</div>';
+          root.innerHTML = `<div class="quote-list-empty">${t('quoteList.empty', 'Your quote list is empty. Open a product page and add a unit to request a quote.')}</div>`;
           actions.hidden = true;
           return;
         }
         actions.hidden = false;
         wa.href = window.QuoteList.bulkWhatsAppUrl(items);
         root.innerHTML = `<table class="quote-list-table">
-          <thead><tr><th>#</th><th>Unit</th><th>Qty</th><th>EXW</th><th></th></tr></thead>
+          <thead><tr><th>#</th><th>${t('quoteList.unit', 'Unit')}</th><th>${t('quoteList.qty', 'Qty')}</th><th>EXW</th><th></th></tr></thead>
           <tbody>
             ${items.map((it, i) => `<tr>
               <td>${i + 1}</td>
@@ -62,11 +65,11 @@
                 ${it.partLabel || it.partType ? ` · ${it.partLabel || it.partType}` : ''}<br>
                 ${[it.year, it.brand, it.model].filter(Boolean).join(' ')}
                 ${it.engineCode ? ` · ${it.engineCode}` : ''}
-                ${it.pageUrl ? `<br><a href="${it.pageUrl}">View listing</a>` : ''}
+                ${it.pageUrl ? `<br><a href="${it.pageUrl}">${t('quoteList.view', 'View listing')}</a>` : ''}
               </td>
               <td>${it.qty || 1}</td>
               <td>${money(it.priceUsd)}${it.priceNote ? `<span class="quote-list-price-note">${it.priceNote}</span>` : ''}</td>
-              <td><button type="button" data-remove-stock="${it.stockId}" data-remove-part="${it.partType || ''}">Remove</button></td>
+              <td><button type="button" data-remove-stock="${it.stockId}" data-remove-part="${it.partType || ''}">${t('quoteList.remove', 'Remove')}</button></td>
             </tr>`).join('')}
           </tbody>
         </table>`;

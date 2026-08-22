@@ -356,8 +356,8 @@
             <div class="sc-price">${esc(money(item.priceUsd))} <span class="sc-exw">EXW</span></div>
             <div class="sc-note">${esc(t('home.v4.liveNote', 'Live inventory · asia-power.com'))}</div>
             <div class="sc-ctas">
-              <a class="sc-wa" href="${esc(waUrl(item))}" target="_blank" rel="noopener">WhatsApp</a>
               <a class="sc-view" href="${esc(detailUrl(item))}">${esc(t('home.v4.viewDetails', 'View Details →'))}</a>
+              <a class="sc-wa" href="${esc(waUrl(item))}" target="_blank" rel="noopener">WhatsApp</a>
             </div>
           </div>
         </div>
@@ -444,8 +444,8 @@
     if (stats) {
       stats.innerHTML = `
         <div class="stat"><div class="stat-n">${esc(c.total)}<em>+</em></div><div class="stat-l">${esc(t('home.v4.stat.items', 'Items in stock'))}</div></div>
-        <div class="stat"><div class="stat-n">110<em>+</em></div><div class="stat-l">${esc(t('home.v4.stat.destinations', 'Export destinations'))}</div></div>
-        <div class="stat"><div class="stat-n">24<em>h</em></div><div class="stat-l">${esc(t('home.v4.stat.quote', 'Quote turnaround'))}</div></div>
+        <div class="stat"><div class="stat-n">${esc(c.half)}<em>+</em></div><div class="stat-l">${esc(t('home.v4.stat.halfCuts', 'Half-cuts'))}</div></div>
+        <div class="stat"><div class="stat-n">${esc(c.engineCandidates)}<em>+</em></div><div class="stat-l">${esc(t('home.v4.stat.engines', 'Engine listings'))}</div></div>
         <div class="stat"><div class="stat-n">${esc(c.brands)}<em>+</em></div><div class="stat-l">${esc(t('home.v4.stat.brands', 'Vehicle brands'))}</div></div>`;
     }
 

@@ -287,13 +287,11 @@
 
   function renderBuyBoxActions(item, u) {
     const primary = item.status === 'Available'
-      ? u.leadLink(item, 'price', 'hc-item-detail__btn hc-item-detail__btn--primary', t('hc.contactTeam', 'Contact Sourcing Team'))
+      ? u.leadLink(item, 'price', 'hc-item-detail__btn hc-item-detail__btn--primary', t('hc.contactTeam', 'Request quote'))
       : u.leadLink(item, 'similar', 'hc-item-detail__btn hc-item-detail__btn--primary', t('hc.requestSimilar', 'Request Similar Unit'));
 
     const secondary = [];
     if (item.status === 'Available') {
-      secondary.push(u.facebookShareLink(item, 'hc-item-detail__btn hc-item-detail__btn--secondary hc-item-detail__btn--facebook', t('hc.shareFacebook', 'Share on Facebook')));
-      secondary.push(u.whatsappLink(item, 'hc-item-detail__btn hc-item-detail__btn--secondary hc-item-detail__btn--whatsapp', 'WhatsApp'));
       const price = Number(item.priceUsd);
       secondary.push(
         `<button type="button" class="hc-item-detail__btn hc-item-detail__btn--secondary hc-item-detail__btn--quote" data-quote-add`
@@ -308,6 +306,8 @@
         + ` data-page-url="${escapeHtml(u.listingSharePageUrl?.(item) || u.detailUrl?.(item) || '')}"`
         + `>${t('hc.addToQuoteList', 'Add to quote list')}</button>`,
       );
+      secondary.push(u.whatsappLink(item, 'hc-item-detail__btn hc-item-detail__btn--secondary hc-item-detail__btn--whatsapp', 'WhatsApp'));
+      secondary.push(u.facebookShareLink(item, 'hc-item-detail__btn hc-item-detail__btn--secondary hc-item-detail__btn--facebook', t('hc.shareFacebook', 'Share on Facebook')));
     } else if (item.status === 'Reserved' || item.status === 'In Transit') {
       secondary.push(u.leadLink(item, 'availability', 'hc-item-detail__btn hc-item-detail__btn--secondary', t('hc.checkAvailability', 'Check Availability')));
     }
@@ -522,10 +522,11 @@
   function renderHalfCutDetailContent(item, root) {
     const b = base();
     const u = window.HalfCutUtils;
-    const displayTitle = window.EngineCardLabel?.formatHalfCutDetailH1?.(item)
+    const rawDisplayTitle = window.EngineCardLabel?.formatHalfCutDetailH1?.(item)
       || u.listingVehiclePrimaryTitle?.(item)
       || u.listingTitle(item)
       || item.title;
+    const displayTitle = String(rawDisplayTitle || '').replace(/\bHalf Cut\b/gi, t('hc.halfCut', 'Half Cut'));
     const title = u.seoTitle(item);
     const description = u.seoDescription(item);
 
@@ -640,9 +641,9 @@
 
     const trustItems = [
       item.video?.url ? t('hc.trustVideo', 'Real inventory video') : null,
-      t('hc.trustPhotos', 'Real inventory photos'),
+      Array.isArray(item.photos) && item.photos.length ? t('hc.trustPhotos', 'Real inventory photos') : null,
       item.maskedVin ? t('hc.trustVin', 'VIN / chassis verifiable') : null,
-      t('hc.trustPrice', 'Transparent EXW price'),
+      priceLabel ? t('hc.trustPrice', 'Transparent EXW price') : null,
       t('hc.trustCif', 'EXW + CIF to your port'),
     ].filter(Boolean);
     const trustHtml = trustItems.slice(0, 4).map((label) => `<li>${escapeHtml(label)}</li>`).join('');
@@ -683,7 +684,9 @@
                 <svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true"><path d="M12 2l8 4v6c0 5-3.5 9-8 10-4.5-1-8-5-8-10V6l8-4z" fill="none" stroke="currentColor" stroke-width="1.5"/></svg>
                 ${isUsedCar
                   ? t('hc.usedCarCompleteListing', 'Complete vehicle export listing')
-                  : t('hc.detailVerifiedExport', 'Verified export listing')}
+                  : (item.supplierVerified
+                    ? t('hc.detailVerifiedSupplier', 'Verified supplier listing')
+                    : t('hc.detailExportListing', 'Export listing'))}
               </p>
 
               ${priceHtml}

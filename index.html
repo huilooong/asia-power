@@ -41,6 +41,8 @@
   <meta property="og:image:height" content="630">
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:image" content="https://asia-power.com/assets/asia-power-og.svg">
+  <link rel="stylesheet" href="css/visual-consistency-v1.css?v=site-visual-v1-20260822" data-visual-consistency-v1>
+  <script src="js/brand-display.js?v=site-visual-v1-20260822" defer data-brand-display-script></script>
 </head>
 <!-- nav-list-direct-v1 -->
 <body data-page="home" class="page-home page-home-v4 page-home-v4-hybrid">
@@ -49,41 +51,13 @@
   <div id="site-header"></div>
 
   <main id="main-content">
-    <nav class="ap-nav" aria-label="Primary">
-      <div class="nav-w">
-        <button type="button" class="mnav-toggle" data-mnav-toggle aria-label="Open menu" aria-expanded="false" aria-controls="ap-nav-drawer"><span></span><span></span><span></span></button>
-        <a class="ap-logo" href="/">Asia<span>Power</span></a>
-        <div class="mnav-drawer" id="ap-nav-drawer" data-mnav-drawer>
-          <div class="nav-links">
-            <a href="/half-cuts/" data-i18n="home.v4.nav.halfCuts">Half-Cuts</a>
-            <a href="/engines/" data-i18n="home.v4.nav.engines">Engines</a>
-            <a href="/trucks/" data-i18n="home.v4.nav.trucks">Trucks</a>
-            <a href="/machinery/" data-i18n="home.v4.nav.construction">Construction</a>
-            <a href="/half-cuts/?cat=used-cars" data-i18n="home.v4.nav.usedCars">Used Cars</a>
-            <a href="/guides/">Guides</a>
-          </div>
-          <div class="nav-right">
-            <div id="nav-lang" class="nav-lang" aria-label="Language"></div>
-            <span class="ap-auth-slot" data-ap-auth-slot data-variant="home"><a href="/login/" class="nav-signin" data-i18n="nav.signIn">Sign in</a></span>
-          </div>
-        </div>
-        <a id="nav-wa" href="https://wa.me/8616638801930" class="nav-wa" target="_blank" rel="noopener">WhatsApp</a>
-      </div>
-    </nav>
-
     <div class="hero">
-      <div class="hero-badge"><span class="dot"></span> <span data-i18n="home.v4.hero.badge">Video-verified · Ships to 110+ countries</span></div>
+      <div class="hero-badge"><span class="dot"></span> <span data-i18n="home.v4.hero.badge">Supplier evidence shown on verified listings</span></div>
       <h1 data-i18n="home.v4.hero.title" data-i18n-html="true">The global marketplace for<br><em>used powertrains.</em></h1>
-      <p class="hero-sub" data-i18n="home.v4.hero.sub">Half-cuts, engines and truck parts — sourced in China, delivered worldwide. Automotive powertrains only (not electrical power equipment). EXW pricing, 24-hour quotes.</p>
-      <div class="hero-search-wrap">
-        <form class="hero-search" action="/half-cuts/" method="get">
-          <input type="text" name="q" placeholder="Search by make, model, engine code or HC number…" aria-label="Search inventory" data-i18n-placeholder="home.v4.search.placeholder" />
-          <button class="hero-search-btn" type="submit" data-i18n="home.v4.search.btn">Search</button>
-        </form>
-      </div>
-      <div class="popular-wrap">
-        <div class="popular-label" data-i18n="home.v4.popular">Popular searches</div>
-        <div class="popular-tags" id="popular-tags"></div>
+      <p class="hero-sub" data-i18n="home.v4.hero.sub">Half-cuts, engines and truck parts — sourced in China for international buyers. Automotive powertrains only (not electrical power equipment). Request current availability and an EXW quote.</p>
+      <div class="hero-actions">
+        <a class="ap-btn ap-btn--primary" href="/quote-list.html" data-i18n="nav.requestQuote">Request quote</a>
+        <a class="ap-btn ap-btn--whatsapp" href="https://wa.me/8616638801930" target="_blank" rel="noopener noreferrer">WhatsApp</a>
       </div>
       <p class="hero-sub" id="snap-meta" style="margin-top:18px;font-size:13px;opacity:.75" data-i18n="home.v4.loading">Loading live inventory…</p>
     </div>
@@ -171,56 +145,15 @@
     </div>
   </main>
 
-  <footer class="ap-footer">
-    <div class="footer-w">
-      <div class="footer-g">
-        <div class="footer-brand">
-          <div class="ap-logo">Asia<span>Power</span></div>
-          <p data-i18n="home.v4.footer.blurb">Global powertrain marketplace — half-cuts, engines, trucks and machinery for export.</p>
-        </div>
-        <div class="footer-col">
-          <h4 data-i18n="home.v4.footer.products">Products</h4>
-          <ul>
-            <li><a href="/half-cuts/" data-i18n="home.v4.nav.halfCuts">Half-Cuts</a></li>
-            <li><a href="/engines/" data-i18n="home.v4.nav.engines">Engines</a></li>
-            <li><a href="/trucks/" data-i18n="home.v4.nav.trucks">Trucks</a></li>
-            <li><a href="/half-cuts/?cat=used-cars" data-i18n="home.v4.nav.usedCars">Used Cars</a></li>
-            <li><a href="/guides/">Guides</a></li>
-          </ul>
-        </div>
-        <div class="footer-col">
-          <h4 data-i18n="home.v4.footer.company">Company</h4>
-          <ul>
-            <li><a href="/about.html" data-i18n="nav.about">About</a></li>
-            <li><a href="/supplier-portal.html" data-i18n="nav.supplier">Supplier Portal</a></li>
-            <li><a href="/login/" data-i18n="nav.signIn">Sign in</a></li>
-            <li><a href="/contact.html" data-i18n="nav.contact">Contact</a></li>
-          </ul>
-        </div>
-        <div>
-          <div class="footer-cta-box">
-            <h4 data-i18n="home.v4.footer.getQuote">Get a Quote</h4>
-            <p data-i18n="home.v4.footer.reply">Reply within 24 hours · EXW &amp; CIF</p>
-            <a class="btn-wa-f" href="https://wa.me/8616638801930" target="_blank" rel="noopener" data-i18n="home.v4.footer.wa">WhatsApp Now</a>
-          </div>
-        </div>
-      </div>
-      <div class="footer-btm">
-        <span>© 2026 AsiaPower</span>
-        <span data-i18n="home.v4.footer.ships">EXW Zhengzhou · Ships worldwide</span>
-      </div>
-    </div>
-  </footer>
-
   <div id="site-footer"></div>
   <div id="site-whatsapp"></div>
 
-  <script src="js/path-utils.js?v=site-i18n-cache-fix-v1"></script>
-  <script src="js/public-i18n.js?v=featured-orient-v4"></script>
+  <script src="js/path-utils.js?v=site-visual-v1-20260822"></script>
+  <script src="js/public-i18n.js?v=site-visual-v1-20260822"></script>
   <script src="js/config.js?v=seo-guides-20260716"></script>
   <script src="js/whatsapp-crm.js?v=1"></script>
   <script src="js/seo.js?v=p3-seo-v1"></script>
-  <script src="js/components.js?v=mnav-drawer-v3" defer></script>
+  <script src="js/components.js?v=site-visual-v1-20260822" defer></script>
   <script src="js/engine-directory.js?v=vehicle-engine-001c"></script>
   <script src="js/engine-card-label.js?v=vehicle-engine-001c"></script>
 <script src="js/home-v4-hybrid.js?v=featured-orient-v4" defer></script>

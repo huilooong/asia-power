@@ -13,10 +13,23 @@ import {
 } from './post-release-validation.mjs';
 import { checkCacheBustConsistency } from './cache-bust-check.mjs';
 
-export const VALID_TARGETS = ['nginx', 'api', 'engines', 'apsales', 'apsales-openclaw', 'finalize', 'home', 'portal', 'chrome', 'categories', 'admin'];
+export const VALID_TARGETS = ['nginx', 'api', 'engines', 'apsales', 'apsales-openclaw', 'finalize', 'home', 'portal', 'chrome', 'visual-v1', 'categories', 'admin'];
+
+export const VISUAL_V1_VERSION = 'site-visual-v1-20260822';
+export const VISUAL_V1_SHARED_FILES = [
+  'css/visual-consistency-v1.css',
+  'js/brand-display.js',
+  'js/components.js',
+  'js/half-cut-detail.js',
+  'js/home-v4-hybrid.js',
+  'js/path-utils.js',
+  'js/public-i18n.js',
+  'js/quote-list.js',
+];
 
 /** @type {Record<string, string[]>} */
 export const TARGET_SOURCE_FILES = {
+  'visual-v1': VISUAL_V1_SHARED_FILES,
   categories: [
     'index.html',
     'half-cuts/index.html',
@@ -181,6 +194,7 @@ export const TARGET_SOURCE_FILES = {
 
 /** @type {Record<string, string[]>} */
 export const TARGET_REMOTE_PATHS = {
+  'visual-v1': VISUAL_V1_SHARED_FILES.map((rel) => `/root/.openclaw/workspace/inventory-site/public/${rel}`),
   categories: [
     '/root/.openclaw/workspace/inventory-site/public/index.html',
     '/root/.openclaw/workspace/inventory-site/public/half-cuts/index.html',
@@ -329,6 +343,22 @@ export function gitOutput(args, cwd) {
   return (r.stdout || '').trim();
 }
 
+export function gitRawOutput(args, cwd) {
+  const r = spawnSync('git', args, { cwd, encoding: 'utf8' });
+  if (r.status !== 0) return '';
+  return String(r.stdout || '').replace(/\r?\n$/, '');
+}
+
+export function parsePorcelainPath(line) {
+  const value = String(line || '');
+  if (!value) return '';
+  const raw = value.length >= 3 && value[2] === ' '
+    ? value.slice(3)
+    : value.replace(/^[ MADRCU?!]{1,2}\s+/, '');
+  const renamed = raw.includes(' -> ') ? raw.slice(raw.indexOf(' -> ') + 4) : raw;
+  return renamed.replace(/^"|"$/g, '').trim();
+}
+
 export function generateReleaseId(target, gitShort, date = new Date()) {
   const stamp = date.toISOString().slice(0, 19).replace(/[-:T]/g, '');
   return `REL-${stamp}-${target}-${gitShort}`;
@@ -347,8 +377,51 @@ function walk(dir) {
   return out;
 }
 
+const VISUAL_V1_SKIP_DIRS = new Set([
+  '.git', 'node_modules', 'docs', 'reports', 'output', 'outputs', 'work', 'tmp',
+  'releases', 'backups', 'coverage', 'audit', 'data', 'AsiaPower-Brain',
+]);
+
+export function listVisualV1HtmlFiles(root) {
+  const files = [];
+  function visit(absDir, relDir = '') {
+    for (const entry of fs.readdirSync(absDir, { withFileTypes: true })) {
+      if (entry.name.startsWith('.') || VISUAL_V1_SKIP_DIRS.has(entry.name)) continue;
+      const rel = relDir ? `${relDir}/${entry.name}` : entry.name;
+      const abs = path.join(absDir, entry.name);
+      if (entry.isDirectory()) {
+        visit(abs, rel);
+        continue;
+      }
+      if (!entry.name.endsWith('.html')) continue;
+      const html = fs.readFileSync(abs, 'utf8');
+      if (html.includes('data-visual-consistency-v1')
+        || html.includes(`js/components.js?v=${VISUAL_V1_VERSION}`)
+        || html.includes(`js/path-utils.js?v=${VISUAL_V1_VERSION}`)) {
+        files.push(rel);
+      }
+    }
+  }
+  visit(root);
+  return files.sort();
+}
+
+export function listVisualV1SourceFiles(root) {
+  return [...new Set([...VISUAL_V1_SHARED_FILES, ...listVisualV1HtmlFiles(root)])].sort();
+}
+
+export function resolveTargetRemotePaths(root, target) {
+  if (target === 'visual-v1') {
+    return listVisualV1SourceFiles(root)
+      .map((rel) => `/root/.openclaw/workspace/inventory-site/public/${rel}`);
+  }
+  return TARGET_REMOTE_PATHS[target] || [];
+}
+
 export function listChangedFiles(root, target) {
-  const patterns = TARGET_SOURCE_FILES[target] || [];
+  const patterns = target === 'visual-v1'
+    ? listVisualV1SourceFiles(root)
+    : (TARGET_SOURCE_FILES[target] || []);
   const files = new Set();
   for (const p of patterns) {
     const abs = path.join(root, p);
@@ -359,10 +432,11 @@ export function listChangedFiles(root, target) {
       files.add(p);
     }
   }
-  const dirty = gitOutput(['status', '--porcelain', '--', ...patterns], root);
+  const dirty = gitRawOutput(['status', '--porcelain', '--', ...patterns], root);
   const dirtySet = new Set();
   for (const line of dirty.split('\n').filter(Boolean)) {
-    dirtySet.add(line.slice(3).trim());
+    const parsed = parsePorcelainPath(line);
+    if (parsed) dirtySet.add(parsed);
   }
   return { planned: [...files].sort(), dirty: [...dirtySet].sort() };
 }
@@ -370,12 +444,10 @@ export function listChangedFiles(root, target) {
 /** Paths changed in working tree + unpushed commits (for cache-bust etc.). */
 export function listGitChangedPaths(root) {
   const out = new Set();
-  const porcelain = gitOutput(['status', '--porcelain'], root);
+  const porcelain = gitRawOutput(['status', '--porcelain'], root);
   for (const line of porcelain.split('\n').filter(Boolean)) {
-    const raw = line.slice(3).trim();
-    // rename: "old -> new"
-    const arrow = raw.indexOf(' -> ');
-    out.add(arrow >= 0 ? raw.slice(arrow + 4) : raw);
+    const parsed = parsePorcelainPath(line);
+    if (parsed) out.add(parsed);
   }
   const upstream = gitOutput(['rev-parse', '--abbrev-ref', '@{u}'], root);
   const range = upstream ? `${upstream}...HEAD` : 'HEAD~1...HEAD';
@@ -600,7 +672,7 @@ export async function runPostDeployValidation({ root, target, remote, baseUrl, r
     checks.push({ name: 'nginx_verification', status: 'skip', detail: 'not required' });
   }
 
-  if (['nginx', 'api', 'engines', 'home'].includes(target)) {
+  if (['nginx', 'api', 'engines', 'home', 'visual-v1'].includes(target)) {
     const verifyScript = path.join(root, 'scripts', 'verify-production.mjs');
     if (fs.existsSync(verifyScript)) {
       const verify = spawnSync('node', [verifyScript, baseUrl], { encoding: 'utf8', cwd: root });
@@ -628,7 +700,7 @@ export async function runPostDeployValidation({ root, target, remote, baseUrl, r
   });
 
   // OPS-003: parser-based public validation for any customer-facing target
-  const publicTargets = new Set(['nginx', 'api', 'engines', 'home', 'chrome', 'portal', 'categories', 'admin']);
+  const publicTargets = new Set(['nginx', 'api', 'engines', 'home', 'chrome', 'visual-v1', 'portal', 'categories', 'admin']);
   /** @type {any} */
   let publicReport = null;
   /** @type {any} */

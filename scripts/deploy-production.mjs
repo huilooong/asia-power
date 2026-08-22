@@ -16,7 +16,7 @@ import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import {
-  TARGET_REMOTE_PATHS,
+  VISUAL_V1_SHARED_FILES,
   buildReleaseRecord,
   generateReleaseId,
   printDeploymentSummary,
@@ -26,6 +26,9 @@ import {
   writeReleaseJson,
   pruneReleaseDirsSafe,
   pruneRemoteReleaseDirsSafe,
+  listVisualV1HtmlFiles,
+  listVisualV1SourceFiles,
+  resolveTargetRemotePaths,
 } from './lib/release-manager.mjs';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
@@ -950,6 +953,72 @@ echo "[deploy:apsales-openclaw] backup=$BACKUP"
 `);
 }
 
+/**
+ * Site-wide public display stack. Exact manifest only; never rsyncs or deletes
+ * the full public directory. Internal tools receive cache-key updates only and
+ * are explicitly excluded from the visual CSS/brand presentation layer.
+ */
+function deployVisualV1() {
+  const htmlFiles = listVisualV1HtmlFiles(ROOT);
+  const files = listVisualV1SourceFiles(ROOT);
+  const missing = files.filter((rel) => !fs.existsSync(path.join(ROOT, rel)));
+  if (missing.length) {
+    throw new Error(`[deploy:visual-v1] missing manifest files: ${missing.join(', ')}`);
+  }
+
+  console.log(`[deploy:visual-v1] syncing exact display manifest (${htmlFiles.length} HTML + ${VISUAL_V1_SHARED_FILES.length} assets)`);
+  const pub = `${SITE}/public`;
+  ssh('mkdir -p /root/.openclaw/workspace/inventory-site/public/css /root/.openclaw/workspace/inventory-site/public/js');
+  run('rsync', ['-avR', ...files.map((rel) => `./${rel}`), `${pub}/`], { cwd: ROOT });
+
+  const expectedHtml = JSON.stringify(htmlFiles);
+  ssh(`
+set -e
+PUB=/root/.openclaw/workspace/inventory-site/public
+test -f "$PUB/css/visual-consistency-v1.css"
+test -f "$PUB/js/brand-display.js"
+test -f "$PUB/js/components.js"
+test -f "$PUB/js/public-i18n.js"
+test -f "$PUB/js/path-utils.js"
+test -f "$PUB/js/quote-list.js"
+grep -q 'AsiaPower Visual Consistency V1' "$PUB/css/visual-consistency-v1.css"
+grep -q 'AsiaPowerBrandDisplay' "$PUB/js/brand-display.js"
+grep -q "SITE_VISUAL_V1_VER = 'site-visual-v1-20260822'" "$PUB/js/components.js"
+grep -q "SITE_I18N_VER = 'site-visual-v1-20260822'" "$PUB/js/path-utils.js"
+node - <<'NODE'
+const fs = require('node:fs');
+const path = require('node:path');
+const pub = '/root/.openclaw/workspace/inventory-site/public';
+const expected = ${expectedHtml};
+let visualPages = 0;
+for (const rel of expected) {
+  const abs = path.join(pub, rel);
+  if (!fs.existsSync(abs)) throw new Error('missing deployed HTML: ' + rel);
+  const html = fs.readFileSync(abs, 'utf8');
+  if (html.includes('data-visual-consistency-v1')) {
+    visualPages += 1;
+    if (!html.includes('visual-consistency-v1.css?v=site-visual-v1-20260822')) throw new Error('missing V1 CSS ref: ' + rel);
+    if (!html.includes('brand-display.js?v=site-visual-v1-20260822')) throw new Error('missing brand display ref: ' + rel);
+  }
+  if (html.includes('js/components.js?v=') && !html.includes('js/components.js?v=site-visual-v1-20260822')) {
+    throw new Error('stale components cache key: ' + rel);
+  }
+  if (html.includes('js/path-utils.js?v=') && !html.includes('js/path-utils.js?v=site-visual-v1-20260822')) {
+    throw new Error('stale path-utils cache key: ' + rel);
+  }
+}
+if (visualPages < 188) throw new Error('visual coverage below expected minimum: ' + visualPages);
+const home = fs.readFileSync(path.join(pub, 'index.html'), 'utf8');
+if (home.includes('<nav class="ap-nav"')) throw new Error('legacy homepage navigation still present');
+if (!home.includes('<div id="site-footer"></div>')) throw new Error('shared homepage footer mount missing');
+process.stdout.write('VISUAL_V1_MANIFEST_OK html=' + expected.length + ' public=' + visualPages + '\\n');
+NODE
+curl -fsS http://127.0.0.1:3000/api/health >/dev/null
+curl -fsS http://127.0.0.1:3000/api/half-cuts/public >/dev/null
+echo "[deploy:visual-v1] exact manifest and API health OK"
+`);
+}
+
 function deployFinalize() {
   rsync(`${ROOT}/deploy/inventory-site-scripts/backup-inventory-site.sh`, `${SITE}/scripts/`);
   const finalizeScripts = [
@@ -1080,7 +1149,7 @@ function printHelp() {
   console.log(`AsiaPower deploy (Release Manager enabled):
   node scripts/deploy-production.mjs <target> [--yes] [--allow-dirty] [user@host]
 
-  nginx | api | engines | apsales | apsales-openclaw | finalize | home | portal | chrome | categories | admin
+  nginx | api | engines | apsales | apsales-openclaw | finalize | home | portal | chrome | visual-v1 | categories | admin
 
   REQUIRED: commit → push GitHub → then deploy (CEO red line 2026-07-10)
   Pre-deploy:  git clean, HEAD on origin, backup, target confirmation
@@ -1102,6 +1171,7 @@ const targets = {
   home: deployHome,
   portal: deployPortal,
   chrome: deployChrome,
+  'visual-v1': deployVisualV1,
   categories: deployCategories,
   admin: deployAdmin,
 };
@@ -1139,7 +1209,7 @@ async function main() {
   const snapOk = snapshotRemotePaths({
     remote: REMOTE,
     releaseId,
-    paths: TARGET_REMOTE_PATHS[targetArg] || [],
+    paths: resolveTargetRemotePaths(ROOT, targetArg),
   });
   console.log(`[release] snapshot ${snapOk ? 'OK' : 'WARN'} → releases/${releaseId}/snapshots/`);
 

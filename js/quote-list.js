@@ -8,6 +8,10 @@
   const STORAGE_KEY = 'asiapower-quote-list-v1';
   const CHANGE_EVENT = 'asiapower:quote-list-change';
 
+  function t(key, fallback) {
+    return window.PublicI18n?.t?.(key, fallback) || fallback;
+  }
+
   function href(path) {
     if (window.SitePaths?.href) return window.SitePaths.href(path);
     return path;
@@ -130,8 +134,8 @@
   function badgeHtml(extraClass) {
     const n = count();
     const cls = ['ap-quote-badge', extraClass].filter(Boolean).join(' ');
-    return `<a class="${cls}" href="${href('quote-list.html')}" data-quote-list-badge aria-label="Quote list">
-      <span class="ap-quote-badge__label">List</span>
+    return `<a class="${cls}" href="${href('quote-list.html')}" data-quote-list-badge aria-label="${t('nav.requestQuote', 'Request quote')}">
+      <span class="ap-quote-badge__label" data-i18n="nav.requestQuote">${t('nav.requestQuote', 'Request quote')}</span>
       <span class="ap-quote-badge__count" data-quote-count>${n}</span>
     </a>`;
   }

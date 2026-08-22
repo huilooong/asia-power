@@ -6,8 +6,9 @@
 
   // Must bump when ebay-layout.css changes — injectEbayStylesheet rewrites all pages to this query.
   // Stale CDN entries for old ?v= keys (e.g. v4-listing-card-v1) can keep serving 66px parts thumbs.
-  const SITE_EBAY_LAYOUT_VER = 'used-car-separation-v3';
-  const SITE_COMPONENTS_VER = 'used-car-separation-v3';
+  const SITE_EBAY_LAYOUT_VER = 'site-visual-v1-20260822';
+  const SITE_COMPONENTS_VER = 'site-visual-v1-20260822';
+  const SITE_VISUAL_V1_VER = 'site-visual-v1-20260822';
   // Deploy markers (keep strings discoverable): auth-nav-v1 · auth-nav-once-v2 · auth-nav-sitewide-v1 · login-entry-v1 · lang-sync-v2 · contact-center-v1 · about-type-v2 · list-photo-uniform-v1 · list-photo-uniform-v2 · list-photo-uniform-v2b · parts-photo-v2 · integrity-audit-v1 · parts-placeholder-v1 · parts-parallel-v1 · stock-id-search-v1 · dedicated-price-v1 · catalog-search-v1
   // login-entry-v1 = catalog footer Sign in + clearer toolbar login pill; buyer dial codes expanded (local WIP, not deployed)
   // list-photo-uniform-v1 = half-cut list photo frames fixed 4:3 + cover
@@ -175,11 +176,6 @@
 
   function useEbayLayout() {
     if (isInternalToolPage()) return false;
-    // v4 hybrid homepage owns its own nav/footer — do not inject eBay chrome
-    if (document.body.classList.contains('page-home-v4-hybrid')
-      || document.body.classList.contains('page-home-v4')) {
-      return false;
-    }
     const page = document.body.dataset.page || '';
     if (page === 'app') return false;
     const path = window.location.pathname || '';
@@ -202,6 +198,21 @@
     link.rel = 'stylesheet';
     link.href = cssHref;
     link.setAttribute('data-ebay-layout', '1');
+    document.head.appendChild(link);
+  }
+
+  /** Keep the V1 layer last so it wins over legacy page-specific styles. */
+  function injectVisualV1Stylesheet() {
+    const cssHref = href(`css/visual-consistency-v1.css?v=${SITE_VISUAL_V1_VER}`);
+    let link = document.querySelector('link[data-visual-consistency-v1], link[href*="visual-consistency-v1.css"]');
+    if (!link) {
+      link = document.createElement('link');
+      link.rel = 'stylesheet';
+      link.href = cssHref;
+      link.setAttribute('data-visual-consistency-v1', '1');
+    } else if (!link.href.includes(`v=${SITE_VISUAL_V1_VER}`)) {
+      link.href = cssHref;
+    }
     document.head.appendChild(link);
   }
 
@@ -431,15 +442,32 @@
     maskPhone,
   };
 
+  function renderSharedCategoryLinks(extraClass) {
+    const links = [
+      { href: 'half-cuts/', key: 'home.v4.nav.halfCuts', label: 'Half-Cuts' },
+      { href: 'engines/', key: 'home.v4.nav.engines', label: 'Engines' },
+      { href: 'trucks/', key: 'home.v4.nav.trucks', label: 'Trucks' },
+      { href: 'machinery/', key: 'home.v4.nav.construction', label: 'Construction machinery' },
+      { href: 'half-cuts/?cat=used-cars', key: 'site.nav.usedCars', label: 'Export used cars' },
+      { href: 'brands.html', key: 'site.nav.brands', label: 'Brands' },
+      { href: 'about.html', key: 'nav.about', label: 'About' },
+    ];
+    const classes = ['ap-category-nav', extraClass].filter(Boolean).join(' ');
+    return `<nav class="${classes}" aria-label="${t('site.nav.productsAria', 'Product categories')}">
+      ${links.map((item) => `<a href="${href(item.href)}" data-i18n="${item.key}">${t(item.key, item.label)}</a>`).join('')}
+    </nav>`;
+  }
+
   function renderEbayToolbar() {
     const pub = i18n();
     const switcher = pub ? pub.renderLangSwitcher() : '';
     return `
       <div class="ebay-toolbar" id="ebay-nav-drawer" data-mnav-drawer>
         <div class="ebay-toolbar__inner">
-          <p class="ebay-toolbar__promo" data-i18n="ebay.promoBar">Every Used Asset Has Value</p>
+          <p class="ebay-toolbar__promo" data-i18n="site.toolbar.promise">Verified evidence where available · EXW pricing clearly marked</p>
+          ${renderSharedCategoryLinks('ap-category-nav--mobile')}
           <div class="ebay-toolbar__right">
-            ${typeof window.QuoteList !== 'undefined' ? window.QuoteList.badgeHtml('ap-quote-badge--ebay') : `<a class="ap-quote-badge ap-quote-badge--ebay" href="${href('quote-list.html')}" data-quote-list-badge aria-label="Quote list"><span class="ap-quote-badge__label">List</span><span class="ap-quote-badge__count" data-quote-count hidden>0</span></a>`}
+            ${typeof window.QuoteList !== 'undefined' ? window.QuoteList.badgeHtml('ap-quote-badge--ebay') : `<a class="ap-quote-badge ap-quote-badge--ebay" href="${href('quote-list.html')}" data-quote-list-badge aria-label="${t('nav.requestQuote', 'Request quote')}"><span class="ap-quote-badge__label" data-i18n="nav.requestQuote">${t('nav.requestQuote', 'Request quote')}</span><span class="ap-quote-badge__count" data-quote-count hidden>0</span></a>`}
             ${switcher ? `<div class="ebay-toolbar__lang">${switcher}</div>` : ''}
             ${renderLoginEntry({ compact: true })}
           </div>
@@ -473,6 +501,7 @@
               </div>
             </div>
           </div>
+          ${renderSharedCategoryLinks('ap-category-nav--desktop')}
         </div>
       </header>`;
   }
@@ -504,6 +533,7 @@
   }
 
   function renderEbayTrustFooter() {
+    const c = getConfig();
     const usedCars = isUsedCarsRoute();
     const icons = {
       shipping: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3a15 15 0 0 1 0 18M12 3a15 15 0 0 0 0 18"/></svg>',
@@ -514,33 +544,33 @@
     const items = [
       {
         icon: icons.shipping,
-        labelKey: 'ebay.trust.shipping.label',
-        label: 'Global export',
-        subKey: 'ebay.trust.shipping.sub',
-        sub: '110+ destinations · EXW & CIF quotes',
+        labelKey: 'site.trust.live.label',
+        label: 'Live inventory status',
+        subKey: 'site.trust.live.sub',
+        sub: 'Availability is shown from the current listing record',
       },
       {
         icon: icons.quality,
-        labelKey: usedCars ? '' : 'ebay.trust.quality.label',
-        label: usedCars ? 'Export document review' : 'Verified condition',
-        subKey: usedCars ? '' : 'ebay.trust.quality.sub',
+        labelKey: usedCars ? 'site.trust.exportReview.label' : 'site.trust.verified.label',
+        label: usedCars ? 'Export document review' : 'Supplier verification',
+        subKey: usedCars ? 'site.trust.exportReview.sub' : 'site.trust.verified.sub',
         sub: usedCars
           ? 'VIN, mileage and export requirements confirmed before contract and shipment'
-          : 'Pre-dismantle startup video on request',
+          : 'Displayed only when supplier evidence has been reviewed',
       },
       {
         icon: icons.pricing,
-        labelKey: 'ebay.trust.pricing.label',
-        label: 'Transparent EXW pricing',
-        subKey: 'ebay.trust.pricing.sub',
-        sub: 'Quoted direct from live inventory',
+        labelKey: 'site.trust.price.label',
+        label: 'Clear EXW pricing',
+        subKey: 'site.trust.price.sub',
+        sub: 'Public listing prices identify the EXW basis',
       },
       {
         icon: icons.suppliers,
-        labelKey: 'ebay.trust.suppliers.label',
-        label: '200+ supplier network',
-        subKey: 'ebay.trust.suppliers.sub',
-        sub: 'Zhengzhou hub · passenger · truck · machinery',
+        labelKey: 'site.trust.evidence.label',
+        label: 'Original listing evidence',
+        subKey: 'site.trust.evidence.sub',
+        sub: 'Original photos are retained; further evidence is available on request',
       },
     ];
     const cards = items.map((item) => `
@@ -554,6 +584,34 @@
 
     return `
       <footer class="ebay-trust" aria-label="${t('ebay.trust.aria', 'AsiaPower export assurance')}">
+        <div class="ap-shared-footer">
+          <div class="ap-shared-footer__brand">
+            ${textLogo('ap-logo ap-shared-footer__logo')}
+            <p data-i18n="site.footer.blurb">A professional vehicle and parts sourcing platform connecting documented inventory with international buyers.</p>
+          </div>
+          <nav class="ap-shared-footer__nav" aria-label="${t('site.footer.productsAria', 'Product links')}">
+            <strong data-i18n="footer.products">Products</strong>
+            <a href="${href('half-cuts/')}" data-i18n="home.v4.nav.halfCuts">Half-Cuts</a>
+            <a href="${href('engines/')}" data-i18n="home.v4.nav.engines">Engines</a>
+            <a href="${href('trucks/')}" data-i18n="home.v4.nav.trucks">Trucks</a>
+            <a href="${href('machinery/')}" data-i18n="home.v4.nav.construction">Construction machinery</a>
+            <a href="${href('half-cuts/?cat=used-cars')}" data-i18n="site.nav.usedCars">Export used cars</a>
+          </nav>
+          <nav class="ap-shared-footer__nav" aria-label="${t('site.footer.companyAria', 'Company links')}">
+            <strong data-i18n="footer.company">Company</strong>
+            <a href="${href('about.html')}" data-i18n="footer.aboutLink">About Us</a>
+            <a href="${href('contact.html')}" data-i18n="footer.contactUs">Contact Us</a>
+            <a href="${href('guides/')}">Guides</a>
+            <a href="${href('supplier-portal.html')}" data-i18n="footer.supplierPortal">Supplier Portal</a>
+            <a href="${href('login/')}" data-i18n="nav.signIn">Sign in</a>
+          </nav>
+          <div class="ap-shared-footer__contact">
+            <strong data-i18n="nav.requestQuote">Request quote</strong>
+            <p data-i18n="site.footer.contactNote">Send the stock ID, destination and required quantity. Availability is confirmed before contract.</p>
+            <a class="ap-btn ap-btn--primary" href="${href('quote-list.html')}" data-i18n="nav.requestQuote">Request quote</a>
+            ${c?.whatsapp ? `<a class="ap-btn ap-btn--whatsapp" href="https://wa.me/${c.whatsapp}" target="_blank" rel="noopener noreferrer">WhatsApp</a>` : ''}
+          </div>
+        </div>
         <div class="ebay-trust__inner">
           ${cards}
         </div>
@@ -913,16 +971,9 @@
     if (!document.querySelector('.skip-link')) {
       document.body.insertAdjacentHTML('afterbegin', renderSkipLink());
     }
-    const isHybridHome = document.body.classList.contains('page-home-v4-hybrid');
-    if (header) header.innerHTML = isHybridHome ? '' : renderHeader(activeId);
-    if (footer) footer.innerHTML = isHybridHome ? '' : renderFooter();
-    if (wa) wa.innerHTML = isHybridHome ? '' : renderWhatsApp();
-
-    const navLang = document.getElementById('nav-lang');
-    if (isHybridHome && navLang) {
-      const pubLang = i18n();
-      navLang.innerHTML = pubLang ? pubLang.renderLangSwitcher() : '';
-    }
+    if (header) header.innerHTML = renderHeader(activeId);
+    if (footer) footer.innerHTML = renderFooter();
+    if (wa) wa.innerHTML = renderWhatsApp();
 
     if (!document.querySelector('link[data-login-css]')) {
       const link = document.createElement('link');
@@ -936,7 +987,7 @@
       || document.body.classList.contains('ap-app-shell')
       || (window.matchMedia && window.matchMedia('(display-mode: standalone)').matches)
       || window.navigator.standalone === true;
-    if (!standaloneApp && !isHybridHome && !isInternalToolPage() && !useEbayLayout()) {
+    if (!standaloneApp && !isInternalToolPage() && !useEbayLayout()) {
       document.body.insertAdjacentHTML('beforeend', renderAppBottomNav(activeId));
     }
     ensurePwaAppShellAssets();
@@ -944,10 +995,11 @@
 
     const pub = i18n();
     if (pub) {
-      pub.bindLangSwitcher(isHybridHome ? document : header);
+      pub.bindLangSwitcher(header || document);
       pub.applyDataI18n(document.body);
     }
     if (useEbayLayout()) syncEbaySearchPlaceholder();
+    if (!isInternalToolPage()) injectVisualV1Stylesheet();
 
     hydrateAuthSlots(document);
     bindMobileNavDrawer();
@@ -964,7 +1016,7 @@
     }
     if (!document.querySelector('script[data-quote-list-js]')) {
       const script = document.createElement('script');
-      script.src = href('js/quote-list.js?v=quote-list-v1');
+      script.src = href(`js/quote-list.js?v=${SITE_VISUAL_V1_VER}`);
       script.setAttribute('data-quote-list-js', '1');
       script.onload = () => {
         if (window.QuoteList) {

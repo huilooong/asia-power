@@ -203,6 +203,6 @@ test('used-car catalog chrome cannot be overwritten with half-cut or truck inqui
   assert.match(componentsSource, /I am interested in an export used car/);
   assert.match(i18nSource, /meta\.usedCars\.title/);
   assert.match(i18nSource, /params\.get\('cat'\) === 'used-cars'/);
-  assert.match(catalogHtml, /path-utils\.js\?v=used-car-separation-v3/);
-  assert.match(catalogHtml, /components\.js\?v=used-car-separation-v3/);
+  assert.match(catalogHtml, /path-utils\.js\?v=site-visual-v1-20260822/);
+  assert.match(catalogHtml, /components\.js\?v=site-visual-v1-20260822/);
 });
