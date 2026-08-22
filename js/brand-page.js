@@ -407,6 +407,7 @@
       const feedOpts = { base: base() };
       window.HalfCutUtils?.bindCatalogLoadMore?.(halfcutSection, halfcutItems, feedOpts);
       window.HalfCutGalleryLightbox?.bindListingPhotoCarousels?.(halfcutSection);
+      window.HalfCutUtils?.bindListingCoverVideos?.(halfcutSection);
     }
   }
 

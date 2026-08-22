@@ -744,6 +744,78 @@
       </div>`;
   }
 
+  function videoCoverThumbUrl(item) {
+    const id = youtubeVideoId(videoSource(item));
+    return id ? `https://i.ytimg.com/vi/${id}/hqdefault.jpg` : '';
+  }
+
+  function videoCoverLabel(item) {
+    const title = listingVehiclePrimaryTitle(item) || listingTitle(item) || item?.title || item?.stockId || '';
+    return `${title} — ${t('hc.video', 'Video')}`.trim();
+  }
+
+  function renderListingVideoCover(item, className) {
+    if (!hasVideo(item)) return '';
+    const src = videoSource(item);
+    const youtubeThumb = videoCoverThumbUrl(item);
+    const poster = firstPhotoThumbUrl(item) || firstPhotoUrl(item);
+    const stockBadge = renderPhotoStockBadge(item);
+    const label = escapeHtml(videoCoverLabel(item));
+    const videoLabel = escapeHtml(t('hc.video', 'Video'));
+    const safeClass = className || 'ap-listing-media';
+    const play = `<span class="ap-media-cover__play" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M9 7.5v9l7-4.5z" fill="currentColor"/></svg></span>`;
+    const badge = `<span class="ap-media-cover__label"><span aria-hidden="true">▶</span> ${videoLabel}</span>`;
+
+    if (youtubeThumb) {
+      return `<div class="ap-media-canvas ap-media-canvas--video ${safeClass}" data-ap-video-cover="youtube">
+        ${stockBadge}<img class="ap-media-cover__visual" src="${escapeHtml(youtubeThumb)}" alt="${label}" loading="lazy" decoding="async">${play}${badge}
+      </div>`;
+    }
+
+    const mime = videoMimeType(item);
+    const playable = mime === 'video/mp4' || mime === 'video/webm';
+    if (playable) {
+      const posterAttr = poster ? ` poster="${escapeHtml(poster)}"` : '';
+      return `<div class="ap-media-canvas ap-media-canvas--video ${safeClass}" data-ap-video-cover="hosted">
+        ${stockBadge}<video class="ap-media-cover__visual ap-media-cover__video" muted loop playsinline preload="metadata" data-ap-cover-video aria-label="${label}"${posterAttr}><source src="${escapeHtml(src)}" type="${escapeHtml(mime)}"></video>${play}${badge}
+      </div>`;
+    }
+
+    const fallbackImage = poster
+      ? `<img class="ap-media-cover__visual ap-media-cover__visual--contain" src="${escapeHtml(poster)}" alt="${label}" loading="lazy" decoding="async">`
+      : `<span class="ap-media-cover__empty" aria-label="${label}">▶</span>`;
+    return `<div class="ap-media-canvas ap-media-canvas--video ${safeClass}" data-ap-video-cover="fallback">
+      ${stockBadge}${fallbackImage}${play}${badge}
+    </div>`;
+  }
+
+  let coverVideoObserver = null;
+
+  function bindListingCoverVideos(root) {
+    const scope = root?.querySelectorAll ? root : document;
+    const videos = [...scope.querySelectorAll('video[data-ap-cover-video]:not([data-ap-cover-video-bound])')];
+    if (!videos.length) return;
+
+    const reducedMotion = window.matchMedia?.('(prefers-reduced-motion: reduce)')?.matches;
+    const saveData = navigator.connection?.saveData === true;
+    videos.forEach((video) => { video.dataset.apCoverVideoBound = 'true'; });
+    if (reducedMotion || saveData || !('IntersectionObserver' in window)) return;
+
+    if (!coverVideoObserver) {
+      coverVideoObserver = new IntersectionObserver((entries) => {
+        entries.forEach((entry) => {
+          const video = entry.target;
+          if (entry.isIntersecting && entry.intersectionRatio >= 0.35) {
+            video.play().catch(() => {});
+          } else {
+            video.pause();
+          }
+        });
+      }, { threshold: [0, 0.35, 0.75] });
+    }
+    videos.forEach((video) => coverVideoObserver.observe(video));
+  }
+
   const TRUST_COPY = 'Whole-vehicle startup video available before dismantling. Parts can be dismantled according to buyer requirements after confirmation.';
   const INVENTORY_DISCLAIMER = `${TRUST_COPY} Inventory is subject to final confirmation. Photos, price and shipping cost are confirmed on request before export.`;
 
@@ -1407,6 +1479,8 @@
   }
 
   function renderPartListingPhoto(display, partType) {
+    const videoCover = renderListingVideoCover(display, 'ebay-listing-row__photo ebay-listing-row__photo--part');
+    if (videoCover) return videoCover;
     const photo = pickPartListingPhoto(display, partType);
     // Parts always use contain so dedicated uploads are not cropped in the frame.
     const fitClass = ' ap-listing-photo--fit-contain';
@@ -1451,9 +1525,6 @@
     if (trans) tags.push(`<span class="ebay-listing-row__tag">${escapeHtml(trans)}</span>`);
     const drive = listingDrivetrainLabel(display);
     if (drive) tags.push(`<span class="ebay-listing-row__tag">${escapeHtml(drive)}</span>`);
-    if (hasVideo(display)) {
-      tags.push(`<span class="ebay-listing-row__tag ebay-listing-row__tag--video">${escapeHtml(t('hc.video', 'Video'))}</span>`);
-    }
     if (!tags.length) return '';
     return `<div class="ebay-listing-row__tags">${tags.join('')}</div>`;
   }
@@ -1763,12 +1834,7 @@
   }
 
   function listingPhotoUseContain(display) {
-    if (!display) return false;
-    if (display.truckPartType === 'cab') return true;
-    if (display.vehicleCategory === 'truck') return true;
-    if (display.vehicleCategory === 'machinery') return true;
-    if (window.HalfCutUploadLayer?.isTruckCab?.(display)) return true;
-    return false;
+    return !!display;
   }
 
   function listingVinMasked(display) {
@@ -1806,6 +1872,8 @@
   }
 
   function renderListingPhoto(display, detail) {
+    const videoCover = renderListingVideoCover(display, 'ebay-listing-row__photo');
+    if (videoCover) return videoCover;
     const thumbs = listingThumbUrls(display);
     if (thumbs.length && hasPhotos(display)) {
       return renderInlineListingPhoto(display, 'ebay-listing-row__photo');
@@ -1818,6 +1886,8 @@
   }
 
   function listingCardPhoto(display, basePath) {
+    const videoCover = renderListingVideoCover(display, 'ebay-card__photo');
+    if (videoCover) return videoCover;
     const thumbs = listingThumbUrls(display);
     if (thumbs.length && hasPhotos(display)) {
       return renderInlineListingPhoto(display, 'ebay-card__photo');
@@ -1846,7 +1916,7 @@
     const priceHtml = priceWithExwLabel(priceLabel, 'Quote');
     const noteHtml = customDismantleNoteHtml(item, 'card');
     const photo = listingCardPhoto(display, basePath);
-    const photoHtml = photo.includes('data-ap-listing-photo')
+    const photoHtml = photo.includes('ebay-card__photo')
       ? photo
       : `<div class="ebay-card__photo">${photo}</div>`;
     const engineHtml = engineLine ? `<div class="ebay-card__engine">${engineLine}</div>` : '';
@@ -1976,6 +2046,7 @@
       }
 
       window.HalfCutGalleryLightbox?.bindListingPhotoCarousels?.(feed);
+      bindListingCoverVideos(feed);
     });
   }
 
@@ -2137,6 +2208,8 @@
     isYouTubeVideoUrl,
     videoMimeType,
     renderVideoPlayer,
+    renderListingVideoCover,
+    bindListingCoverVideos,
     maskVin: (vin) => window.HalfCutVin?.maskVin(vin) || '',
     toPublicItem: (item) => {
       if (item?.vin && window.HalfCutInventoryLayer?.toPublicItem) {
@@ -2189,6 +2262,7 @@
     listingPhotoBadge,
     renderPhotoStockBadge,
     renderInlineListingPhoto,
+    listingPhotoUseContain,
     listingDrivetrainLabel,
     listingDrivetrainCode,
     listingVinMasked,

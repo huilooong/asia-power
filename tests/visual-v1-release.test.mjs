@@ -100,7 +100,7 @@ test('all shared detail shells use the localized-detail cache key', () => {
     'used-cars/detail.html',
   ]) {
     const html = fs.readFileSync(path.join(ROOT, rel), 'utf8');
-    assert.match(html, /js\/half-cut-detail\.js\?v=site-visual-v1-20260822-1/, rel);
+    assert.match(html, /js\/half-cut-detail\.js\?v=site-media-presentation-v1-20260822/, rel);
   }
 });
 

@@ -88,6 +88,80 @@
     return !!(item?.videoUrl || item?.video?.url);
   }
 
+  function videoSource(item) {
+    return String(item?.videoUrl || item?.video?.url || '').trim();
+  }
+
+  function youtubeVideoId(raw) {
+    try {
+      const url = new URL(String(raw || ''), location.origin);
+      if (url.hostname === 'youtu.be') return url.pathname.split('/').filter(Boolean)[0] || '';
+      if (url.hostname.endsWith('youtube.com')) {
+        if (url.pathname === '/watch') return url.searchParams.get('v') || '';
+        const parts = url.pathname.split('/').filter(Boolean);
+        if (['embed', 'shorts', 'live'].includes(parts[0])) return parts[1] || '';
+      }
+    } catch {
+      return '';
+    }
+    return '';
+  }
+
+  function playableVideoMime(item) {
+    const src = videoSource(item).split('?')[0].toLowerCase();
+    if (src.endsWith('.mp4')) return 'video/mp4';
+    if (src.endsWith('.webm')) return 'video/webm';
+    return '';
+  }
+
+  function mediaPlayOverlay() {
+    return `<span class="ap-media-cover__play" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M9 7.5v9l7-4.5z" fill="currentColor"/></svg></span>
+      <span class="ap-media-cover__label"><span aria-hidden="true">▶</span> ${esc(t('home.video', 'Video'))}</span>`;
+  }
+
+  function coverMedia(item, className, eager, options = {}) {
+    const img = photoUrl(item);
+    const src = videoSource(item);
+    const youtubeId = youtubeVideoId(src);
+    const mime = playableVideoMime(item);
+    const loading = eager ? 'eager' : 'lazy';
+    const common = `ap-media-canvas ${hasVideo(item) ? 'ap-media-canvas--video ' : ''}${className}`;
+    const stockClass = options.stockClass || 'pc-hc';
+    const stock = `<span class="${stockClass}">${esc(item?.stockId || '')}</span>`;
+    const extras = options.extras || '';
+    const alt = esc([item?.brand, item?.model, item?.stockId].filter(Boolean).join(' '));
+
+    if (youtubeId) {
+      return `<div class="${common} real" data-ap-video-cover="youtube">${stock}<img class="ap-media-cover__visual" src="https://i.ytimg.com/vi/${esc(youtubeId)}/hqdefault.jpg" alt="${alt}" loading="${loading}" decoding="async">${mediaPlayOverlay()}${extras}</div>`;
+    }
+    if (mime) {
+      const poster = img ? ` poster="${esc(img)}"` : '';
+      return `<div class="${common} real" data-ap-video-cover="hosted">${stock}<video class="ap-media-cover__visual ap-media-cover__video" muted loop playsinline preload="metadata" data-ap-cover-video aria-label="${alt}"${poster}><source src="${esc(src)}" type="${mime}"></video>${mediaPlayOverlay()}${extras}</div>`;
+    }
+    if (img) {
+      const overlay = hasVideo(item) ? mediaPlayOverlay() : '';
+      return `<div class="${common} real"${hasVideo(item) ? ' data-ap-video-cover="fallback"' : ''}>${stock}<img class="ap-media-cover__visual ap-media-cover__visual--contain" src="${esc(img)}" alt="${alt}" loading="${loading}" decoding="async">${overlay}${extras}</div>`;
+    }
+    return `<div class="${common}">${stock}<div class="pc-ph">${ICONS.photo}<span>${esc(t('home.v4.photo', 'Photo'))}</span></div>${hasVideo(item) ? mediaPlayOverlay() : ''}${extras}</div>`;
+  }
+
+  function bindCoverVideos(root) {
+    const scope = root?.querySelectorAll ? root : document;
+    const videos = [...scope.querySelectorAll('video[data-ap-cover-video]:not([data-ap-cover-video-bound])')];
+    if (!videos.length) return;
+    videos.forEach((video) => { video.dataset.apCoverVideoBound = 'true'; });
+    if (window.matchMedia?.('(prefers-reduced-motion: reduce)')?.matches
+      || navigator.connection?.saveData === true
+      || !('IntersectionObserver' in window)) return;
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting && entry.intersectionRatio >= 0.35) entry.target.play().catch(() => {});
+        else entry.target.pause();
+      });
+    }, { threshold: [0, 0.35, 0.75] });
+    videos.forEach((video) => observer.observe(video));
+  }
+
   function isAvailable(item) {
     const status = String(item?.status || '').trim();
     return !status || status === 'Available';
@@ -217,8 +291,6 @@
   }
 
   function card(item, variant) {
-    const img = photoUrl(item);
-    const video = hasVideo(item);
     const price = variant === 'engine' ? engineMoney(item.priceUsd) : money(item.priceUsd);
     const tags = variant === 'engine'
       ? [
@@ -230,11 +302,8 @@
         item.year,
         item.status,
       ].filter(Boolean);
-    const tagHtml = tags.map((tg) => `<span class="ptg">${esc(tg)}</span>`).join('')
-      + (video ? `<span class="ptg v">${esc(t('home.video', 'Video'))}</span>` : '');
-    const imgHtml = img
-      ? `<div class="pc-img real"><span class="pc-hc">${esc(item.stockId)}</span>${video ? `<span class="pc-video">${esc(t('home.video', 'Video'))}</span>` : ''}<img src="${esc(img)}" alt="" loading="lazy"></div>`
-      : `<div class="pc-img"><span class="pc-hc">${esc(item.stockId || '')}</span><div class="pc-ph">${ICONS.photo}<span>${esc(t('home.v4.photo', 'Photo'))}</span></div></div>`;
+    const tagHtml = tags.map((tg) => `<span class="ptg">${esc(tg)}</span>`).join('');
+    const imgHtml = coverMedia(item, 'pc-img', false);
     const note = variant === 'engine'
       ? `<div class="engine-price-note">${esc(t('home.v4.engineNote', 'Engine EXW reference'))}</div>`
       : '';
@@ -320,14 +389,13 @@
 
   function renderShowcase(item) {
     if (!item) return '';
-    const img = photoUrl(item);
-    const video = hasVideo(item);
-    const badges = video
-      ? `<span class="sc-badge vf">${esc(t('home.v4.videoVerifiedBadge', '✓ Video Verified'))}</span><span class="sc-badge vid">${esc(t('home.v4.watchVideo', 'Watch Video'))}</span>`
-      : `<span class="sc-badge vf">${esc(t('home.v4.inStock', '✓ In Stock'))}</span>`;
-    const imgBlock = img
-      ? `<div class="sc-img real"><img src="${esc(img)}" alt="" loading="eager" decoding="async"><div class="sc-badges">${badges}</div><span class="sc-hc-tag">${esc(item.stockId)}</span></div>`
-      : `<div class="sc-img"><div class="sc-img-ph">${ICONS.photo}<span>${esc(t('home.v4.productPhoto', 'Product photo'))}</span></div><span class="sc-hc-tag">${esc(item.stockId)}</span></div>`;
+    const badges = item.supplierVerified
+      ? `<span class="sc-badge vf">${esc(t('hc.verified', '✓ Verified'))}</span>`
+      : (isAvailable(item) ? `<span class="sc-badge vf">${esc(t('home.v4.inStock', '✓ In Stock'))}</span>` : '');
+    const imgBlock = coverMedia(item, 'sc-img', true, {
+      stockClass: 'sc-hc-tag',
+      extras: `<div class="sc-badges">${badges}</div>`,
+    });
 
     return `
       <div class="showcase-head" style="margin-bottom:12px">
@@ -362,22 +430,6 @@
           </div>
         </div>
       </div>`;
-  }
-
-  /** Match featured frame to photo orientation (mixed 4:3 / 3:4 inventory). */
-  function bindShowcasePhotoOrient(root) {
-    const wrap = root || document.getElementById('showcase-wrap');
-    if (!wrap) return;
-    wrap.querySelectorAll('.sc-img.real img').forEach((el) => {
-      const apply = () => {
-        if (!el.naturalWidth || !el.naturalHeight) return;
-        const box = el.closest('.sc-img');
-        if (!box) return;
-        box.dataset.orient = el.naturalHeight > el.naturalWidth ? 'portrait' : 'landscape';
-      };
-      if (el.complete) apply();
-      else el.addEventListener('load', apply, { once: true });
-    });
   }
 
   function fillRail(id, items, variant) {
@@ -477,7 +529,6 @@
     const showcase = document.getElementById('showcase-wrap');
     if (showcase) {
       showcase.innerHTML = renderShowcase(data.featured);
-      bindShowcasePhotoOrient(showcase);
     }
 
     const seeHalf = document.getElementById('see-half');
@@ -491,6 +542,7 @@
     fillRail('rail-trucks', shelves.trucks, 'truck');
     fillRail('rail-machinery', shelves.machinery, 'mach');
     fillRail('rail-used', shelves.usedCars, 'used');
+    bindCoverVideos(document);
 
     const trust = document.getElementById('trust-w');
     if (trust) {

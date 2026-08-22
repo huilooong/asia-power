@@ -1173,6 +1173,7 @@
       u.bindCatalogLoadMore?.(root, filtered, feedOpts);
       bindPartsWatchlist(root);
       window.HalfCutGalleryLightbox?.bindListingPhotoCarousels?.(root);
+      u.bindListingCoverVideos?.(root);
       window.AsiaPowerEbayLayout?.syncSidebar?.('parts');
     };
 
@@ -1421,6 +1422,7 @@
     syncSidebarBrands(category, state, allItems);
     syncTruckSidebarSubmodules(route || { category, brand: state.brand, searchQuery: state.q });
     window.HalfCutGalleryLightbox?.bindListingPhotoCarousels?.(root);
+    window.HalfCutUtils?.bindListingCoverVideos?.(root);
   }
 
   /* ── Parts catalog (二手零部件) ── */

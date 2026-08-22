@@ -646,7 +646,7 @@
       : '';
 
     const trustItems = [
-      item.video?.url ? t('hc.trustVideo', 'Real inventory video') : null,
+      u.hasVideo(item) ? t('hc.trustVideo', 'Real inventory video') : null,
       Array.isArray(item.photos) && item.photos.length ? t('hc.trustPhotos', 'Real inventory photos') : null,
       item.maskedVin ? t('hc.trustVin', 'VIN / chassis verifiable') : null,
       priceLabel ? t('hc.trustPrice', 'Transparent EXW price') : null,
@@ -681,8 +681,8 @@
 
           <div class="hc-item-detail__layout">
             <div class="hc-item-detail__media-col">
-              ${gallery}
               ${videoSection}
+              ${gallery}
             </div>
 
             <aside class="hc-item-detail__buybox" aria-label="${t('hc.viewDetails', 'View Details')}">
@@ -779,6 +779,7 @@
       item,
     });
     window.AsiaPowerEbayLayout?.bindCarousels?.();
+    u.bindListingCoverVideos?.(root);
     window.QuoteList?.wireAddButtons?.(root);
   }
 

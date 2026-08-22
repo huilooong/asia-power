@@ -15,12 +15,15 @@ import { checkCacheBustConsistency } from './cache-bust-check.mjs';
 
 export const VALID_TARGETS = ['nginx', 'api', 'engines', 'apsales', 'apsales-openclaw', 'finalize', 'home', 'portal', 'chrome', 'visual-v1', 'categories', 'admin'];
 
-export const VISUAL_V1_VERSION = 'site-visual-v1-20260822';
+export const VISUAL_V1_VERSION = 'site-media-presentation-v1-20260822';
 export const VISUAL_V1_SHARED_FILES = [
   'css/visual-consistency-v1.css',
   'js/brand-display.js',
+  'js/brand-page.js',
   'js/components.js',
+  'js/ebay-catalog-hub.js',
   'js/half-cut-detail.js',
+  'js/half-cut-directory.js',
   'js/home-v4-hybrid.js',
   'js/path-utils.js',
   'js/public-i18n.js',

@@ -258,22 +258,22 @@ catalog_pages = [
 ]
 for page in catalog_pages:
     text = page.read_text()
-    text = re.sub(r'half-cut-directory\\.js\\?v=[^"\\']+', 'half-cut-directory.js?v=category-filter-v4', text)
-    text = re.sub(r'ebay-catalog-hub\\.js\\?v=[^"\\']+', 'ebay-catalog-hub.js?v=category-filter-v4', text)
+    text = re.sub(r'half-cut-directory\\.js\\?v=[^"\\']+', 'half-cut-directory.js?v=${VISUAL_V1_VERSION}', text)
+    text = re.sub(r'ebay-catalog-hub\\.js\\?v=[^"\\']+', 'ebay-catalog-hub.js?v=${VISUAL_V1_VERSION}', text)
     page.write_text(text)
 
 home = pub / 'index.html'
 text = home.read_text()
-text = re.sub(r'home-v4-hybrid\\.js\\?v=[^"\\']+', 'home-v4-hybrid.js?v=category-filter-v4', text)
+text = re.sub(r'home-v4-hybrid\\.js\\?v=[^"\\']+', 'home-v4-hybrid.js?v=${VISUAL_V1_VERSION}', text)
 home.write_text(text)
 PY
 grep -q 'matchesInventoryCategory' /root/.openclaw/workspace/inventory-site/public/js/half-cut-directory.js
 grep -q 'hasChassisCatalogEvidence' /root/.openclaw/workspace/inventory-site/public/js/half-cut-directory.js
 grep -q 'Search may widen fields, never categories' /root/.openclaw/workspace/inventory-site/public/js/ebay-catalog-hub.js
-grep -q 'category-filter-v4' /root/.openclaw/workspace/inventory-site/public/index.html
+grep -q 'home-v4-hybrid.js?v=${VISUAL_V1_VERSION}' /root/.openclaw/workspace/inventory-site/public/index.html
 for page in half-cuts engines gearboxes front-cuts chassis-parts; do
-  grep -q 'half-cut-directory.js?v=category-filter-v4' "/root/.openclaw/workspace/inventory-site/public/$page/index.html"
-  grep -q 'ebay-catalog-hub.js?v=category-filter-v4' "/root/.openclaw/workspace/inventory-site/public/$page/index.html"
+  grep -q 'half-cut-directory.js?v=${VISUAL_V1_VERSION}' "/root/.openclaw/workspace/inventory-site/public/$page/index.html"
+  grep -q 'ebay-catalog-hub.js?v=${VISUAL_V1_VERSION}' "/root/.openclaw/workspace/inventory-site/public/$page/index.html"
 done
 echo "[deploy:categories] category filters OK on remote"
 `);
@@ -488,11 +488,10 @@ grep -q 'dedicated-price-v1' "$PUB/js/components.js"
 grep -q 'formatCatalogPartPrice' "$PUB/js/half-cut-directory.js"
 grep -q 'catalogPartPriceAmount' "$PUB/js/half-cut-directory.js"
 grep -q 'formatCatalogPartPrice' "$PUB/js/ebay-catalog-hub.js"
-grep -E -q 'half-cut-directory\\.js\\?v=(category-filter-v1|category-filter-v3|category-filter-v4|parts-parallel-v1|stock-id-search-v1|stock-id-search-v2|dedicated-price-v1|catalog-search-v1|catalog-search-v2|vehicle-engine-001c|youtube-embed-v1|site-consistency-v[12]|used-car-separation-v2)' "$PUB/half-cuts/index.html"
-grep -E -q 'ebay-catalog-hub\\.js\\?v=(category-filter-v1|category-filter-v3|category-filter-v4|parts-parallel-v1|stock-id-search-v1|stock-id-search-v2|dedicated-price-v1|catalog-search-v1|catalog-search-v2|vehicle-engine-001c|youtube-embed-v1|site-consistency-v[12]|used-car-separation-v2)' "$PUB/half-cuts/index.html"
-grep -E -q 'half-cut-directory\\.js\\?v=(category-filter-v1|category-filter-v3|category-filter-v4|stock-id-search-v2|dedicated-price-v1|catalog-search-v1|catalog-search-v2|vehicle-engine-001c|youtube-embed-v1|site-consistency-v[12])' "$PUB/gearboxes/index.html"
-grep -E -q 'ebay-catalog-hub\\.js\\?v=(category-filter-v1|category-filter-v3|category-filter-v4|stock-id-search-v2|dedicated-price-v1|catalog-search-v1|catalog-search-v2|vehicle-engine-001c|youtube-embed-v1|site-consistency-v[12]|used-car-detail-v1)' "$PUB/gearboxes/index.html"
-grep -E -q 'catalog-search-v1|catalog-search-v2|stock-id-search-v[12]|vehicle-engine-001c' "$PUB/half-cuts/index.html"
+grep -q 'half-cut-directory.js?v=${VISUAL_V1_VERSION}' "$PUB/half-cuts/index.html"
+grep -q 'ebay-catalog-hub.js?v=${VISUAL_V1_VERSION}' "$PUB/half-cuts/index.html"
+grep -q 'half-cut-directory.js?v=${VISUAL_V1_VERSION}' "$PUB/gearboxes/index.html"
+grep -q 'ebay-catalog-hub.js?v=${VISUAL_V1_VERSION}' "$PUB/gearboxes/index.html"
 grep -q 'catalog-search-aliases.js' "$PUB/half-cuts/index.html"
 grep -q 'engine-card-label.js' "$PUB/half-cuts/index.html"
 grep -q 'listingVehiclePrimaryTitle' "$PUB/js/half-cut-directory.js"
@@ -506,16 +505,16 @@ grep -q 'exwBadgeHtml' "$PUB/js/half-cut-directory.js"
 grep -q 'productImages,' "$PUB/js/half-cut-directory.js"
 grep -q 'fetchPublicItemBySlug' "$PUB/js/half-cut-detail.js"
 grep -q "params.get('id')" "$PUB/js/half-cut-detail.js"
-grep -E -q 'vehicle-engine-001c|parts-parallel-v1|stock-id-search-v2|catalog-search-v2|youtube-embed-v1|youtube-embed-v2|used-car-detail-v1' "$PUB/half-cuts/detail.html"
-grep -E -q 'youtube-embed-v[12]|used-car-detail-v1' "$PUB/half-cuts/detail.html"
+grep -q 'half-cut-directory.js?v=${VISUAL_V1_VERSION}' "$PUB/half-cuts/detail.html"
+grep -q 'half-cut-detail.js?v=${VISUAL_V1_VERSION}' "$PUB/half-cuts/detail.html"
 grep -q 'youtubeVideoId' "$PUB/js/half-cut-directory.js"
 grep -q 'youtube.com/embed' "$PUB/js/half-cut-directory.js"
 grep -q "VideoObject" "$PUB/js/half-cut-directory.js"
 grep -q 'engine-card-label.js' "$PUB/half-cuts/detail.html"
 grep -q 'formatHalfCutDetailH1' "$PUB/js/half-cut-detail.js"
 grep -q 'Complete vehicle & export status' "$PUB/js/half-cut-detail.js"
-grep -q 'used-car-separation-v2' "$PUB/used-cars/detail.html"
-grep -q 'used-car-separation-v2' "$PUB/half-cuts/index.html"
+grep -q 'half-cut-detail.js?v=${VISUAL_V1_VERSION}' "$PUB/used-cars/detail.html"
+grep -q 'half-cut-directory.js?v=${VISUAL_V1_VERSION}' "$PUB/half-cuts/index.html"
 grep -q 'ebay-sidebar--v4' "$PUB/css/ebay-layout.css"
 grep -qF -- '--ebay-list-photo-w: 200px' "$PUB/css/ebay-layout.css"
 grep -q 'photo--parts-ph' "$PUB/css/ebay-layout.css"
@@ -978,13 +977,20 @@ PUB=/root/.openclaw/workspace/inventory-site/public
 test -f "$PUB/css/visual-consistency-v1.css"
 test -f "$PUB/js/brand-display.js"
 test -f "$PUB/js/components.js"
+test -f "$PUB/js/brand-page.js"
+test -f "$PUB/js/ebay-catalog-hub.js"
+test -f "$PUB/js/half-cut-directory.js"
+test -f "$PUB/js/half-cut-detail.js"
+test -f "$PUB/js/home-v4-hybrid.js"
 test -f "$PUB/js/public-i18n.js"
 test -f "$PUB/js/path-utils.js"
 test -f "$PUB/js/quote-list.js"
 grep -q 'AsiaPower Visual Consistency V1' "$PUB/css/visual-consistency-v1.css"
 grep -q 'AsiaPowerBrandDisplay' "$PUB/js/brand-display.js"
-grep -q "SITE_VISUAL_V1_VER = 'site-visual-v1-20260822'" "$PUB/js/components.js"
-grep -q "SITE_I18N_VER = 'site-visual-v1-20260822'" "$PUB/js/path-utils.js"
+grep -q "SITE_VISUAL_V1_VER = '${VISUAL_V1_VERSION}'" "$PUB/js/components.js"
+grep -q "SITE_I18N_VER = '${VISUAL_V1_VERSION}'" "$PUB/js/path-utils.js"
+grep -q 'data-ap-video-cover="youtube"' "$PUB/js/half-cut-directory.js"
+grep -q 'data-ap-cover-video' "$PUB/js/home-v4-hybrid.js"
 node - <<'NODE'
 const fs = require('node:fs');
 const path = require('node:path');
@@ -997,14 +1003,19 @@ for (const rel of expected) {
   const html = fs.readFileSync(abs, 'utf8');
   if (html.includes('data-visual-consistency-v1')) {
     visualPages += 1;
-    if (!html.includes('visual-consistency-v1.css?v=site-visual-v1-20260822')) throw new Error('missing V1 CSS ref: ' + rel);
-    if (!html.includes('brand-display.js?v=site-visual-v1-20260822')) throw new Error('missing brand display ref: ' + rel);
+    if (!html.includes('visual-consistency-v1.css?v=${VISUAL_V1_VERSION}')) throw new Error('missing V1 CSS ref: ' + rel);
+    if (!html.includes('brand-display.js?v=${VISUAL_V1_VERSION}')) throw new Error('missing brand display ref: ' + rel);
   }
-  if (html.includes('js/components.js?v=') && !html.includes('js/components.js?v=site-visual-v1-20260822')) {
+  if (html.includes('js/components.js?v=') && !html.includes('js/components.js?v=${VISUAL_V1_VERSION}')) {
     throw new Error('stale components cache key: ' + rel);
   }
-  if (html.includes('js/path-utils.js?v=') && !html.includes('js/path-utils.js?v=site-visual-v1-20260822')) {
+  if (html.includes('js/path-utils.js?v=') && !html.includes('js/path-utils.js?v=${VISUAL_V1_VERSION}')) {
     throw new Error('stale path-utils cache key: ' + rel);
+  }
+  for (const script of ['brand-page', 'ebay-catalog-hub', 'half-cut-detail', 'half-cut-directory', 'home-v4-hybrid']) {
+    if (html.includes('js/' + script + '.js?v=') && !html.includes('js/' + script + '.js?v=${VISUAL_V1_VERSION}')) {
+      throw new Error('stale ' + script + ' cache key: ' + rel);
+    }
   }
 }
 if (visualPages < 188) throw new Error('visual coverage below expected minimum: ' + visualPages);
