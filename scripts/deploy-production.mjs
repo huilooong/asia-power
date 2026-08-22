@@ -166,6 +166,12 @@ process.stdout.write('BRAND_REGISTRY_SEED_OK\\n');
 NODE
 systemctl restart inventory-site.service
 systemctl is-active --quiet inventory-site.service
+for attempt in $(seq 1 20); do
+  if curl -fsS http://127.0.0.1:8080/api/half-cuts/health >/dev/null 2>&1; then
+    break
+  fi
+  sleep 1
+done
 curl -fsS http://127.0.0.1:8080/api/half-cuts/health >/dev/null
 curl -fsS http://127.0.0.1:8080/api/half-cuts/public >/dev/null
 echo "[deploy:brand-registry-api] exact seed and API health OK"

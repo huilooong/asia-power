@@ -143,6 +143,8 @@ test('brand registry API release target is an exact one-file deployment', () => 
   assert.match(section, /server\/lib\/vin\/zh-en-seed\.js/);
   assert.match(section, /BRAND_REGISTRY_SEED_OK/);
   assert.match(section, /systemctl restart inventory-site\.service/);
+  assert.match(section, /for attempt in \$\(seq 1 20\)/);
+  assert.match(section, /curl -fsS http:\/\/127\.0\.0\.1:8080\/api\/half-cuts\/health/);
   assert.doesNotMatch(section, /rsync\(\s*`\$\{ROOT\}\/server\/lib\/`/);
   assert.doesNotMatch(section, /--delete/);
 
