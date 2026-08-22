@@ -46,11 +46,11 @@ test('site-wide visual shell preserves title text, description, canonical and JS
   }
 });
 
-test('candidate diff touches no business data and only the allowlisted API brand seed', () => {
+test('candidate diff touches no business data and only the allowlisted API brand/security files', () => {
   const status = spawnSync('git', ['status', '--porcelain'], { cwd: ROOT, encoding: 'utf8' });
   assert.equal(status.status, 0);
   const changed = status.stdout.split('\n').filter(Boolean).map(parsePorcelainPath).filter(Boolean);
   const denied = changed.filter((rel) => /^(server|data|uploads|deploy\/inventory-site-server|assets\/home-v4-inventory-snapshot\.json)/.test(rel)
-    && rel !== 'server/lib/vin/zh-en-seed.js');
+    && !['server/lib/vin/zh-en-seed.js', 'server/lib/security-paths.js'].includes(rel));
   assert.deepEqual(denied, [], `business/data boundary violated: ${denied.join(', ')}`);
 });

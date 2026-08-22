@@ -44,7 +44,7 @@ assert(!/button\.disabled\s*=\s*true[\s\S]{0,80}添加到桌面/.test(js), 'fall
 assert(js.includes('beforeinstallprompt') && js.includes('prompt()'), 'native install prompt path present');
 assert(js.includes('Add to Home Screen') || js.includes('添加到主屏幕'), 'iOS steps present');
 assert(css.includes('.ap-pwa-fab') && css.includes('.ap-pwa-sheet__panel'), 'CSS for FAB + sheet');
-assert(indexHtml.includes('pwa-app-v3') && indexHtml.includes('pwa-app-shell'), 'homepage wires app shell v2');
+assert(indexHtml.includes('pwa-app-v6c') && indexHtml.includes('pwa-app-shell'), 'homepage wires current guarded app shell');
 assert(js.includes('添加到桌面后') || js.includes('open from the icon'), 'install copy explains reopen from icon');
 
 // App shell module checks
@@ -57,7 +57,7 @@ assert(!/overscroll-behavior-y:\s*none/.test(shellCss), 'does not lock vertical 
 assert(shellCss.includes('touch-action: pan-x pan-y'), 'shelf rails allow vertical + horizontal pan');
 assert(shellJs.includes("remove('ap-pwa-sheet-open')"), 'app shell clears install sheet scroll lock');
 
-assert(manifest.display === 'standalone', 'manifest standalone');
+assert(manifest.display === 'browser' && manifest.display_override?.[0] === 'browser', 'manifest keeps browser mode while app shell kill switch is active');
 assert(manifest.theme_color === '#0a1628', 'manifest theme_color app navy');
 assert(Array.isArray(manifest.icons) && manifest.icons.length >= 2, 'manifest icons present');
 
@@ -177,7 +177,8 @@ function createDomEnv(userAgent) {
     navigator: {
       userAgent,
       serviceWorker: {
-        register() { return Promise.resolve({ scope: '/' }); },
+        register() { return Promise.resolve({ scope: '/', addEventListener() {} }); },
+        addEventListener() {},
       },
       standalone: false,
     },
@@ -201,6 +202,8 @@ function createDomEnv(userAgent) {
       return true;
     },
     setTimeout: global.setTimeout,
+    setInterval() { return 1; },
+    clearInterval() {},
     SitePaths: { href: (p) => '/' + p.replace(/^\//, '') },
   };
   return { window: windowObj, document, listeners, bodyChildren };
@@ -244,7 +247,7 @@ async function runDomTests() {
   api2._test.runInstall();
   assert(prompted === true, 'runInstall calls native prompt when available');
 
-  // App shell forced preview (?app=1)
+  // App shell kill switch: even ?app=1 must remain website mode until CEO re-enables it.
   const env3 = createDomEnv('Mozilla/5.0 (iPhone; CPU iPhone OS 17_0 like Mac OS X) AppleWebKit/605.1.15');
   env3.window.location = { pathname: '/', search: '?app=1', href: 'https://asia-power.com/?app=1' };
   // Patch URLSearchParams usage via location.search already on env - shell reads window.location.search
@@ -262,9 +265,9 @@ async function runDomTests() {
   const shellSrc = fs.readFileSync(path.join(ROOT, 'js/pwa-app-shell.js'), 'utf8');
   const shellFn = new Function('window', 'document', 'navigator', 'localStorage', 'URLSearchParams', `${shellSrc}\nreturn window.AsiaPowerAppShell;`);
   const shellApi = shellFn(env3.window, env3.document, env3.window.navigator, env3.window.localStorage, URLSearchParams);
-  assert(!!shellApi && shellApi.isStandalone() === true, 'app shell treats ?app=1 as standalone preview');
-  assert(shellApi.applyShell() === true, 'applyShell succeeds in preview mode');
-  assert(env3.document.body.classList.contains('ap-app-shell'), 'body gets ap-app-shell');
+  assert(!!shellApi && shellApi.isStandalone() === false, 'app shell kill switch overrides ?app=1');
+  assert(shellApi.applyShell() === false, 'applyShell stays disabled while kill switch is active');
+  assert(!env3.document.body.classList.contains('ap-app-shell'), 'body remains in website mode');
   assert(!!env3.document.getElementById || true, 'dom helpers available');
   const tabbar = env3.bodyChildren.find((el) => el.id === 'ap-app-tabbar' || el.className === 'ap-app-tabbar');
   const topbar = env3.bodyChildren.find((el) => el.id === 'ap-app-topbar' || (el.className && String(el.className).includes('ap-app-topbar')));
@@ -312,7 +315,7 @@ await new Promise((resolve) => {
         assert(res.status === 200, `local HTTP 200 ${p}`);
       }
       const html = await (await fetch(base + '/index.html')).text();
-      assert(html.includes('pwa-app-v3'), 'index served with pwa-app-v3');
+      assert(html.includes('pwa-app-v6c'), 'index served with current PWA cache key');
       assert(html.includes('pwa-app-shell'), 'index references app shell');
     } catch (err) {
       fail('local HTTP smoke', err.message);

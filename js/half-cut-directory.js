@@ -767,8 +767,11 @@
     const badge = `<span class="ap-media-cover__label"><span aria-hidden="true">▶</span> ${videoLabel}</span>`;
 
     if (youtubeThumb) {
-      return `<div class="ap-media-canvas ap-media-canvas--video ${safeClass}" data-ap-video-cover="youtube">
-        ${stockBadge}<img class="ap-media-cover__visual" src="${escapeHtml(youtubeThumb)}" alt="${label}" loading="lazy" decoding="async">${play}${badge}
+      const fallback = poster
+        ? `<img class="ap-media-cover__visual ap-media-cover__fallback" src="${escapeHtml(poster)}" alt="${label}" loading="lazy" decoding="async">`
+        : `<span class="ap-media-cover__empty" aria-hidden="true">▶</span>`;
+      return `<div class="ap-media-canvas ap-media-canvas--video ${safeClass}" data-ap-video-cover="youtube" role="img" aria-label="${label}">
+        ${stockBadge}${fallback}<img class="ap-media-cover__visual ap-media-cover__video-thumb" data-ap-youtube-thumb src="${escapeHtml(youtubeThumb)}" alt="" aria-hidden="true" loading="lazy" decoding="async">${play}${badge}
       </div>`;
     }
 
@@ -793,6 +796,15 @@
 
   function bindListingCoverVideos(root) {
     const scope = root?.querySelectorAll ? root : document;
+    const thumbs = [...scope.querySelectorAll('img[data-ap-youtube-thumb]:not([data-ap-youtube-thumb-bound])')];
+    thumbs.forEach((thumb) => {
+      thumb.dataset.apYoutubeThumbBound = 'true';
+      const sync = () => thumb.classList.toggle('is-ready', thumb.complete && thumb.naturalWidth > 0);
+      thumb.addEventListener('load', sync, { once: true });
+      thumb.addEventListener('error', sync, { once: true });
+      sync();
+    });
+
     const videos = [...scope.querySelectorAll('video[data-ap-cover-video]:not([data-ap-cover-video-bound])')];
     if (!videos.length) return;
 

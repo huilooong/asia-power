@@ -119,6 +119,13 @@
       <span class="ap-media-cover__label"><span aria-hidden="true">▶</span> ${esc(t('home.video', 'Video'))}</span>`;
   }
 
+  function youtubeCoverLayers(thumbnail, fallback, alt, loading) {
+    const baseLayer = fallback
+      ? `<img class="ap-media-cover__visual ap-media-cover__fallback" src="${esc(fallback)}" alt="${alt}" loading="${loading}" decoding="async">`
+      : `<span class="ap-media-cover__empty" aria-hidden="true">▶</span>`;
+    return `${baseLayer}<img class="ap-media-cover__visual ap-media-cover__video-thumb" data-ap-youtube-thumb src="${esc(thumbnail)}" alt="" aria-hidden="true" loading="${loading}" decoding="async">`;
+  }
+
   function coverMedia(item, className, eager, options = {}) {
     const img = photoUrl(item);
     const src = videoSource(item);
@@ -132,7 +139,8 @@
     const alt = esc([item?.brand, item?.model, item?.stockId].filter(Boolean).join(' '));
 
     if (youtubeId) {
-      return `<div class="${common} real" data-ap-video-cover="youtube">${stock}<img class="ap-media-cover__visual" src="https://i.ytimg.com/vi/${esc(youtubeId)}/hqdefault.jpg" alt="${alt}" loading="${loading}" decoding="async">${mediaPlayOverlay()}${extras}</div>`;
+      const thumbnail = `https://i.ytimg.com/vi/${youtubeId}/hqdefault.jpg`;
+      return `<div class="${common} real" data-ap-video-cover="youtube" role="img" aria-label="${alt}">${stock}${youtubeCoverLayers(thumbnail, img, alt, loading)}${mediaPlayOverlay()}${extras}</div>`;
     }
     if (mime) {
       const poster = img ? ` poster="${esc(img)}"` : '';
@@ -147,6 +155,15 @@
 
   function bindCoverVideos(root) {
     const scope = root?.querySelectorAll ? root : document;
+    const thumbs = [...scope.querySelectorAll('img[data-ap-youtube-thumb]:not([data-ap-youtube-thumb-bound])')];
+    thumbs.forEach((thumb) => {
+      thumb.dataset.apYoutubeThumbBound = 'true';
+      const sync = () => thumb.classList.toggle('is-ready', thumb.complete && thumb.naturalWidth > 0);
+      thumb.addEventListener('load', sync, { once: true });
+      thumb.addEventListener('error', sync, { once: true });
+      sync();
+    });
+
     const videos = [...scope.querySelectorAll('video[data-ap-cover-video]:not([data-ap-cover-video-bound])')];
     if (!videos.length) return;
     videos.forEach((video) => { video.dataset.apCoverVideoBound = 'true'; });

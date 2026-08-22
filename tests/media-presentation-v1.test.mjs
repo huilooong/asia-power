@@ -17,6 +17,8 @@ const homeSource = fs.readFileSync(path.join(ROOT, 'js/home-v4-hybrid.js'), 'utf
 const detailSource = fs.readFileSync(path.join(ROOT, 'js/half-cut-detail.js'), 'utf8');
 const cssSource = fs.readFileSync(path.join(ROOT, 'css/visual-consistency-v1.css'), 'utf8');
 const i18nSource = fs.readFileSync(path.join(ROOT, 'js/public-i18n.js'), 'utf8');
+const nginxSecuritySource = fs.readFileSync(path.join(ROOT, 'deploy/nginx-security.conf'), 'utf8');
+const apiSecuritySource = fs.readFileSync(path.join(ROOT, 'server/lib/security-paths.js'), 'utf8');
 
 function loadHalfCutUtils() {
   const window = {
@@ -37,7 +39,7 @@ function loadHalfCutUtils() {
   return window.HalfCutUtils;
 }
 
-test('YouTube inventory uses the video thumbnail as the listing cover', () => {
+test('YouTube inventory uses a guarded video thumbnail above the customer-photo fallback', () => {
   const utils = loadHalfCutUtils();
   const item = {
     stockId: 'HC-VIDEO-YT',
@@ -48,10 +50,21 @@ test('YouTube inventory uses the video thumbnail as the listing cover', () => {
   };
   const html = utils.renderListingVideoCover(item, 'ebay-card__photo');
   assert.match(html, /data-ap-video-cover="youtube"/);
+  assert.match(html, /ap-media-cover__fallback[^>]+original-evidence\.jpg/);
+  assert.match(html, /data-ap-youtube-thumb/);
   assert.match(html, /i\.ytimg\.com\/vi\/abcdefghijk\/hqdefault\.jpg/);
+  assert.ok(html.indexOf('ap-media-cover__fallback') < html.indexOf('data-ap-youtube-thumb'));
   assert.match(html, /ap-media-cover__play/);
   assert.doesNotMatch(html, /<iframe/);
   assert.deepEqual(item.photos, [{ url: '/uploads/photos/original-evidence.jpg' }]);
+});
+
+test('failed YouTube thumbnails stay hidden while the same-origin evidence photo remains visible', () => {
+  assert.match(cssSource, /\.ap-media-cover__video-thumb\s*\{[\s\S]*?opacity:\s*0/);
+  assert.match(cssSource, /\.ap-media-cover__video-thumb\.is-ready\s*\{\s*opacity:\s*1/);
+  assert.match(directorySource, /naturalWidth\s*>\s*0/);
+  assert.match(homeSource, /naturalWidth\s*>\s*0/);
+  assert.match(cssSource, /data-ap-video-cover="youtube"[\s\S]*?object-fit:\s*contain\s*!important/);
 });
 
 test('hosted MP4 cover is muted, lazy-bound and keeps the first photo as poster', () => {
@@ -94,6 +107,14 @@ test('media labels are explicit in English, Chinese, French and Arabic', () => {
   assert.match(i18nSource, /'hc\.vehicleVideo': \{ en: 'Vehicle video', zh: '车辆视频', fr: 'Vidéo du véhicule', ar: 'فيديو المركبة'\}/);
 });
 
+test('nginx and API CSP both allow only the required YouTube image and frame origins', () => {
+  for (const source of [nginxSecuritySource, apiSecuritySource]) {
+    assert.match(source, /img-src[^\n]+https:\/\/i\.ytimg\.com/);
+    assert.match(source, /frame-src[^\n]+https:\/\/www\.youtube\.com[^\n]+https:\/\/www\.youtube-nocookie\.com/);
+    assert.doesNotMatch(source, /frame-src 'none'/);
+  }
+});
+
 test('site-wide release manifest and cache keys include every changed media renderer', () => {
   for (const file of [
     'js/brand-page.js',
@@ -115,13 +136,13 @@ test('site-wide release manifest and cache keys include every changed media rend
   }
 });
 
-test('media presentation diff does not touch inventory, uploads or API runtime outside the brand seed', () => {
+test('media presentation diff does not touch inventory, uploads or API runtime outside the two reviewed lookup/security files', () => {
   const changed = execFileSync('git', ['diff', '--name-only'], { cwd: ROOT, encoding: 'utf8' })
     .trim()
     .split('\n')
     .filter(Boolean);
   const protectedChanges = changed.filter((file) => /^(data|server|uploads)\//.test(file)
-    && file !== 'server/lib/vin/zh-en-seed.js');
+    && !['server/lib/vin/zh-en-seed.js', 'server/lib/security-paths.js'].includes(file));
   assert.deepEqual(protectedChanges, [], changed.join(', '));
   for (const source of [directorySource, homeSource, detailSource]) {
     assert.doesNotMatch(source, /photos\.(?:splice|shift|unshift|sort)\(/);

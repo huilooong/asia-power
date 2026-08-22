@@ -13,9 +13,9 @@ import {
 } from './post-release-validation.mjs';
 import { checkCacheBustConsistency } from './cache-bust-check.mjs';
 
-export const VALID_TARGETS = ['nginx', 'api', 'brand-registry-api', 'engines', 'apsales', 'apsales-openclaw', 'finalize', 'home', 'portal', 'chrome', 'visual-v1', 'categories', 'admin'];
+export const VALID_TARGETS = ['nginx', 'api', 'brand-registry-api', 'media-security', 'engines', 'apsales', 'apsales-openclaw', 'finalize', 'home', 'portal', 'chrome', 'visual-v1', 'categories', 'admin'];
 
-export const VISUAL_V1_VERSION = 'site-media-brand-identity-v2-20260822';
+export const VISUAL_V1_VERSION = 'site-media-resilience-v3-20260822';
 export const VISUAL_V1_SHARED_FILES = [
   'css/visual-consistency-v1.css',
   'js/brand-display.js',
@@ -137,6 +137,10 @@ export const TARGET_SOURCE_FILES = {
   ],
   'brand-registry-api': [
     'server/lib/vin/zh-en-seed.js',
+  ],
+  'media-security': [
+    'deploy/nginx-security.conf',
+    'server/lib/security-paths.js',
   ],
   engines: ['engines'],
   apsales: [
@@ -305,6 +309,10 @@ export const TARGET_REMOTE_PATHS = {
   ],
   'brand-registry-api': [
     '/root/.openclaw/workspace/inventory-site/lib/vin/zh-en-seed.js',
+  ],
+  'media-security': [
+    '/etc/nginx/conf.d/asiapower-security.conf',
+    '/root/.openclaw/workspace/inventory-site/lib/security-paths.js',
   ],
   engines: ['/root/.openclaw/workspace/inventory-site/public/engines'],
   apsales: [
@@ -607,7 +615,7 @@ export function runPreDeployValidation({ root, target, remote, allowDirty, yes, 
     });
   }
 
-  const backupMode = ['brand-registry-api', 'engines', 'apsales', 'finalize'].includes(target) ? 'data-only' : 'full';
+  const backupMode = ['brand-registry-api', 'media-security', 'engines', 'apsales', 'finalize'].includes(target) ? 'data-only' : 'full';
   const backupCmd = backupMode === 'data-only'
     ? 'bash /root/.openclaw/workspace/inventory-site/scripts/backup-inventory-site.sh --data-only'
     : 'bash /root/.openclaw/workspace/inventory-site/scripts/backup-inventory-site.sh';
@@ -669,7 +677,7 @@ export async function runPostDeployValidation({ root, target, remote, baseUrl, r
   /** @type {{name: string, status: 'pass'|'fail'|'skip'|'warn', detail: string}[]} */
   const checks = [];
 
-  if (target === 'nginx' || target === 'api') {
+  if (target === 'nginx' || target === 'api' || target === 'media-security') {
     const ngx = spawnSync('ssh', ['-o', 'BatchMode=yes', remote, 'nginx -t 2>&1'], { encoding: 'utf8' });
     const out = `${ngx.stdout || ''}${ngx.stderr || ''}`.trim();
     checks.push({
@@ -681,7 +689,7 @@ export async function runPostDeployValidation({ root, target, remote, baseUrl, r
     checks.push({ name: 'nginx_verification', status: 'skip', detail: 'not required' });
   }
 
-  if (['nginx', 'api', 'brand-registry-api', 'engines', 'home', 'visual-v1'].includes(target)) {
+  if (['nginx', 'api', 'brand-registry-api', 'media-security', 'engines', 'home', 'visual-v1'].includes(target)) {
     const verifyScript = path.join(root, 'scripts', 'verify-production.mjs');
     if (fs.existsSync(verifyScript)) {
       const verify = spawnSync('node', [verifyScript, baseUrl], { encoding: 'utf8', cwd: root });
@@ -709,7 +717,7 @@ export async function runPostDeployValidation({ root, target, remote, baseUrl, r
   });
 
   // OPS-003: parser-based public validation for any customer-facing target
-  const publicTargets = new Set(['nginx', 'api', 'engines', 'home', 'chrome', 'visual-v1', 'portal', 'categories', 'admin']);
+  const publicTargets = new Set(['nginx', 'api', 'media-security', 'engines', 'home', 'chrome', 'visual-v1', 'portal', 'categories', 'admin']);
   /** @type {any} */
   let publicReport = null;
   /** @type {any} */

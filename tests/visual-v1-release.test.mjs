@@ -101,7 +101,7 @@ test('all shared detail shells use the localized-detail cache key', () => {
     'used-cars/detail.html',
   ]) {
     const html = fs.readFileSync(path.join(ROOT, rel), 'utf8');
-    assert.match(html, /js\/half-cut-detail\.js\?v=site-media-brand-identity-v2-20260822/, rel);
+    assert.match(html, /js\/half-cut-detail\.js\?v=site-media-resilience-v3-20260822/, rel);
   }
 });
 
@@ -141,7 +141,7 @@ test('brand registry API release target is an exact one-file deployment', () => 
   assert.deepEqual(remotes, ['/root/.openclaw/workspace/inventory-site/lib/vin/zh-en-seed.js']);
 
   const source = fs.readFileSync(path.join(ROOT, 'scripts/deploy-production.mjs'), 'utf8');
-  const section = source.slice(source.indexOf('function deployBrandRegistryApi()'), source.indexOf('function deployEngines()'));
+  const section = source.slice(source.indexOf('function deployBrandRegistryApi()'), source.indexOf('function deployMediaSecurity()'));
   assert.match(section, /server\/lib\/vin\/zh-en-seed\.js/);
   assert.match(section, /BRAND_REGISTRY_SEED_OK/);
   assert.match(section, /systemctl restart inventory-site\.service/);
@@ -151,5 +151,27 @@ test('brand registry API release target is an exact one-file deployment', () => 
   assert.doesNotMatch(section, /--delete/);
 
   const manager = fs.readFileSync(path.join(ROOT, 'scripts/lib/release-manager.mjs'), 'utf8');
-  assert.match(manager, /\['brand-registry-api', 'engines', 'apsales', 'finalize'\]\.includes\(target\) \? 'data-only' : 'full'/);
+  assert.match(manager, /\['brand-registry-api', 'media-security', 'engines', 'apsales', 'finalize'\]\.includes\(target\) \? 'data-only' : 'full'/);
+});
+
+test('media security release target updates only the matching nginx and API CSP files', () => {
+  assert.ok(VALID_TARGETS.includes('media-security'));
+  const sources = listChangedFiles(ROOT, 'media-security').planned;
+  const remotes = resolveTargetRemotePaths(ROOT, 'media-security');
+  assert.deepEqual(sources, ['deploy/nginx-security.conf', 'server/lib/security-paths.js']);
+  assert.deepEqual(remotes, [
+    '/etc/nginx/conf.d/asiapower-security.conf',
+    '/root/.openclaw/workspace/inventory-site/lib/security-paths.js',
+  ]);
+
+  const source = fs.readFileSync(path.join(ROOT, 'scripts/deploy-production.mjs'), 'utf8');
+  const section = source.slice(source.indexOf('function deployMediaSecurity()'), source.indexOf('function deployEngines()'));
+  assert.match(section, /deploy\/nginx-security\.conf/);
+  assert.match(section, /server\/lib\/security-paths\.js/);
+  assert.match(section, /nginx -t/);
+  assert.match(section, /systemctl reload nginx/);
+  assert.match(section, /systemctl restart inventory-site\.service/);
+  assert.match(section, /curl -fsSI https:\/\/asia-power\.com\//);
+  assert.doesNotMatch(section, /rsync\(\s*`\$\{ROOT\}\/server\/lib\/`/);
+  assert.doesNotMatch(section, /--delete/);
 });

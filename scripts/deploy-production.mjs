@@ -9,7 +9,7 @@
  * Default rejects dirty tree and unpushed HEAD.
  * Emergency only: DEPLOY_ALLOW_DIRTY=1 + --allow-dirty; DEPLOY_ALLOW_UNPUSHED=1 (both logged).
  *
- * Targets: nginx | api | engines | apsales | apsales-openclaw | finalize
+ * Targets: nginx | api | brand-registry-api | media-security | engines | apsales | apsales-openclaw | finalize
  */
 import { spawnSync } from 'child_process';
 import fs from 'fs';
@@ -176,6 +176,43 @@ done
 curl -fsS http://127.0.0.1:8080/api/half-cuts/health >/dev/null
 curl -fsS http://127.0.0.1:8080/api/half-cuts/public >/dev/null
 echo "[deploy:brand-registry-api] exact seed and API health OK"
+`);
+}
+
+/** Exact CSP update for customer video thumbnails and players; no wider lib/nginx resync. */
+function deployMediaSecurity() {
+  console.log('[deploy:media-security] syncing exact nginx + API CSP files only');
+  rsync(
+    `${ROOT}/deploy/nginx-security.conf`,
+    `${REMOTE}:/etc/nginx/conf.d/asiapower-security.conf`,
+  );
+  rsync(
+    `${ROOT}/server/lib/security-paths.js`,
+    `${SITE}/lib/security-paths.js`,
+  );
+  ssh(`
+set -e
+SITE=/root/.openclaw/workspace/inventory-site
+node --check "$SITE/lib/security-paths.js"
+grep -q 'https://i.ytimg.com' /etc/nginx/conf.d/asiapower-security.conf
+grep -q 'https://www.youtube.com' /etc/nginx/conf.d/asiapower-security.conf
+grep -q 'https://i.ytimg.com' "$SITE/lib/security-paths.js"
+grep -q 'https://www.youtube.com' "$SITE/lib/security-paths.js"
+nginx -t
+systemctl reload nginx
+systemctl restart inventory-site.service
+systemctl is-active --quiet nginx
+systemctl is-active --quiet inventory-site.service
+for attempt in $(seq 1 20); do
+  if curl -fsS http://127.0.0.1:8080/api/half-cuts/health >/dev/null 2>&1; then
+    break
+  fi
+  sleep 1
+done
+curl -fsS http://127.0.0.1:8080/api/half-cuts/health >/dev/null
+curl -fsSI https://asia-power.com/ | tr -d '\r' | grep -qi 'content-security-policy:.*https://i.ytimg.com'
+curl -fsSI https://asia-power.com/ | tr -d '\r' | grep -qi 'content-security-policy:.*https://www.youtube.com'
+echo "[deploy:media-security] exact CSP files and services OK"
 `);
 }
 
@@ -1197,7 +1234,7 @@ function printHelp() {
   console.log(`AsiaPower deploy (Release Manager enabled):
   node scripts/deploy-production.mjs <target> [--yes] [--allow-dirty] [user@host]
 
-  nginx | api | brand-registry-api | engines | apsales | apsales-openclaw | finalize | home | portal | chrome | visual-v1 | categories | admin
+  nginx | api | brand-registry-api | media-security | engines | apsales | apsales-openclaw | finalize | home | portal | chrome | visual-v1 | categories | admin
 
   REQUIRED: commit → push GitHub → then deploy (CEO red line 2026-07-10)
   Pre-deploy:  git clean, HEAD on origin, backup, target confirmation
@@ -1213,6 +1250,7 @@ const targets = {
   nginx: deployNginx,
   api: deployApi,
   'brand-registry-api': deployBrandRegistryApi,
+  'media-security': deployMediaSecurity,
   engines: deployEngines,
   apsales: deployApsales,
   'apsales-openclaw': deployApsalesOpenClaw,
