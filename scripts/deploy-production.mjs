@@ -1013,8 +1013,8 @@ if (home.includes('<nav class="ap-nav"')) throw new Error('legacy homepage navig
 if (!home.includes('<div id="site-footer"></div>')) throw new Error('shared homepage footer mount missing');
 process.stdout.write('VISUAL_V1_MANIFEST_OK html=' + expected.length + ' public=' + visualPages + '\\n');
 NODE
-curl -fsS http://127.0.0.1:3000/api/health >/dev/null
-curl -fsS http://127.0.0.1:3000/api/half-cuts/public >/dev/null
+curl -fsS http://127.0.0.1:8080/api/health >/dev/null
+curl -fsS http://127.0.0.1:8080/api/half-cuts/public >/dev/null
 echo "[deploy:visual-v1] exact manifest and API health OK"
 `);
 }
