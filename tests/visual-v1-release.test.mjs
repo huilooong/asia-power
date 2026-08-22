@@ -92,6 +92,18 @@ test('quote-list shell is multilingual and uses the V1 quote-list cache key', ()
   }
 });
 
+test('all shared detail shells use the localized-detail cache key', () => {
+  for (const rel of [
+    'half-cuts/detail.html',
+    'trucks/detail.html',
+    'machinery/detail.html',
+    'used-cars/detail.html',
+  ]) {
+    const html = fs.readFileSync(path.join(ROOT, rel), 'utf8');
+    assert.match(html, /js\/half-cut-detail\.js\?v=site-visual-v1-20260822-1/, rel);
+  }
+});
+
 test('release target has exact source/remote parity and a safe porcelain parser', () => {
   assert.ok(VALID_TARGETS.includes('visual-v1'));
   const sources = listVisualV1SourceFiles(ROOT);

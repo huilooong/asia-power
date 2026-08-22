@@ -146,8 +146,10 @@ export function hasShortCachePolicy(cacheControl) {
   return /(?:^|,)\s*max-age=60(?:,|$)/i.test(String(cacheControl || ''));
 }
 
-function hasLogo(html) {
-  return /logo\.(png|webp|svg)|ASIAPOWER\.logo|class=["'][^"']*logo/i.test(html);
+export function hasLogo(html) {
+  const source = String(html || '');
+  return /logo\.(png|webp|svg)|ASIAPOWER\.logo|class=["'][^"']*logo|["']logo["']\s*:/i.test(source)
+    || (/id=["']site-header["']/i.test(source) && /components\.js/i.test(source));
 }
 
 function hasJsonLd(html) {

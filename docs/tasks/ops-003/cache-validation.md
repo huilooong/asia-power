@@ -111,24 +111,45 @@
 - ETag: —
 - Age: —
 - Last-Modified: —
-- Resolved config: https://asia-power.com/js/config.js?v=apcontact-002 (whatsapp=8616638801930)
+- Resolved config: https://asia-power.com/js/config.js?v=seo-guides-20260716 (whatsapp=8616638801930)
 ## config_js
 - URL: https://asia-power.com/js/config.js
-- CF-Cache-Status: EXPIRED
+- CF-Cache-Status: HIT
+- Cache-Control: public, max-age=14400, must-revalidate
+- ETag: —
+- Age: 7
+- Last-Modified: Sat, 22 Aug 2026 05:50:57 GMT
+## components_js
+- URL: https://asia-power.com/js/components.js
+- CF-Cache-Status: MISS
 - Cache-Control: public, max-age=14400, must-revalidate
 - ETag: —
 - Age: —
-- Last-Modified: Sun, 19 Jul 2026 02:09:20 GMT
+- Last-Modified: Sat, 22 Aug 2026 05:51:05 GMT
+## pwa_app_shell_js
+- URL: https://asia-power.com/js/pwa-app-shell.js
+- CF-Cache-Status: MISS
+- Cache-Control: public, max-age=14400, must-revalidate
+- ETag: —
+- Age: —
+- Last-Modified: Sat, 22 Aug 2026 05:51:05 GMT
 ## sw_js
 - URL: https://asia-power.com/sw.js
-- CF-Cache-Status: EXPIRED
+- CF-Cache-Status: MISS
 - Cache-Control: public, max-age=14400, must-revalidate
 - ETag: —
 - Age: —
-- Last-Modified: Sun, 19 Jul 2026 02:09:20 GMT
+- Last-Modified: Sat, 22 Aug 2026 05:51:06 GMT
 ## robots
 - URL: https://asia-power.com/robots.txt
 - CF-Cache-Status: BYPASS
+- Cache-Control: no-cache, no-store, must-revalidate
+- ETag: —
+- Age: —
+- Last-Modified: —
+## llms
+- URL: https://asia-power.com/llms.txt
+- CF-Cache-Status: DYNAMIC
 - Cache-Control: no-cache, no-store, must-revalidate
 - ETag: —
 - Age: —

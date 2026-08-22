@@ -18,3 +18,9 @@ test('critical release assets require the short cache policy', () => {
   assert.equal(source.hasShortCachePolicy('public, max-age=14400, must-revalidate'), false);
   assert.equal(source.hasShortCachePolicy('public, max-age=31536000, immutable'), false);
 });
+
+test('shared client-rendered header and JSON-LD logo count as homepage logo signals', () => {
+  assert.equal(source.hasLogo('<div id="site-header"></div><script src="js/components.js"></script>'), true);
+  assert.equal(source.hasLogo('<script type="application/ld+json">{"logo":{"url":"/assets/asia-power-og.svg"}}</script>'), true);
+  assert.equal(source.hasLogo('<main>AsiaPower</main>'), false);
+});

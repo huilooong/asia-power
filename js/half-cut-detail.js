@@ -522,17 +522,23 @@
   function renderHalfCutDetailContent(item, root) {
     const b = base();
     const u = window.HalfCutUtils;
+    const isTruck = item.vehicleCategory === 'truck';
+    const isMachinery = item.vehicleCategory === 'machinery';
+    const isUsedCar = !!(u.isExportableUsedCarItem?.(item));
     const rawDisplayTitle = window.EngineCardLabel?.formatHalfCutDetailH1?.(item)
       || u.listingVehiclePrimaryTitle?.(item)
       || u.listingTitle(item)
       || item.title;
-    const displayTitle = String(rawDisplayTitle || '').replace(/\bHalf Cut\b/gi, t('hc.halfCut', 'Half Cut'));
+    let displayTitle = String(rawDisplayTitle || '').replace(/\bHalf Cut\b/gi, t('hc.halfCut', 'Half Cut'));
+    if (isUsedCar) {
+      displayTitle = displayTitle.replace(
+        /\bExport Used Car\b/gi,
+        t('hc.usedCarCompleteListing', 'Complete vehicle export listing'),
+      );
+    }
     const title = u.seoTitle(item);
     const description = u.seoDescription(item);
 
-    const isTruck = item.vehicleCategory === 'truck';
-    const isMachinery = item.vehicleCategory === 'machinery';
-    const isUsedCar = !!(u.isExportableUsedCarItem?.(item));
     const detailPath = isMachinery
       ? 'machinery/detail.html'
       : (isTruck ? 'trucks/detail.html' : (isUsedCar ? 'used-cars/detail.html' : 'half-cuts/detail.html'));
@@ -596,7 +602,7 @@
       ? (item.vehicleCondition || t('machinery.equipment', 'Construction Equipment'))
       : (isTruck
         ? t('trucks.halfCut', 'Truck Half Cut')
-        : (isUsedCar ? t('ebay.catUsedCars', 'Export Used Car') : t('hc.halfCut', 'Half Cut')));
+        : (isUsedCar ? t('hc.usedCarCompleteListing', 'Complete vehicle export listing') : t('hc.halfCut', 'Half Cut')));
 
     upsertJsonLd('schema-halfcut-breadcrumb', {
       '@context': 'https://schema.org',

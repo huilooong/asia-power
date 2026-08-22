@@ -194,6 +194,7 @@ test('BYD family migration includes Denza and Fangchengbao and clears truck merc
 test('used-car catalog chrome cannot be overwritten with half-cut or truck inquiry copy', () => {
   const layoutSource = fs.readFileSync(path.join(__dirname, '..', 'js', 'ebay-layout.js'), 'utf8');
   const componentsSource = fs.readFileSync(path.join(__dirname, '..', 'js', 'components.js'), 'utf8');
+  const detailSource = fs.readFileSync(path.join(__dirname, '..', 'js', 'half-cut-detail.js'), 'utf8');
   const i18nSource = fs.readFileSync(path.join(__dirname, '..', 'js', 'public-i18n.js'), 'utf8');
   const catalogHtml = fs.readFileSync(path.join(__dirname, '..', 'half-cuts', 'index.html'), 'utf8');
   assert.match(layoutSource, /cat === 'used-cars' \? 'Export Used Cars' : 'Half-Cuts'/);
@@ -201,6 +202,8 @@ test('used-car catalog chrome cannot be overwritten with half-cut or truck inqui
   assert.match(componentsSource, /Export document review/);
   assert.match(componentsSource, /VIN, mileage and export requirements confirmed before contract and shipment/);
   assert.match(componentsSource, /I am interested in an export used car/);
+  assert.match(detailSource, /Export Used Car\\b\/gi/);
+  assert.match(detailSource, /hc\.usedCarCompleteListing/);
   assert.match(i18nSource, /meta\.usedCars\.title/);
   assert.match(i18nSource, /params\.get\('cat'\) === 'used-cars'/);
   assert.match(catalogHtml, /path-utils\.js\?v=site-visual-v1-20260822/);
