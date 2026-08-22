@@ -43,6 +43,7 @@ test('every public V1 marker resolves to both presentation assets', () => {
     const html = fs.readFileSync(path.join(ROOT, rel), 'utf8');
     if (!html.includes('data-visual-consistency-v1')) continue;
     publicCount += 1;
+    assert.match(html, /<meta name="google" content="notranslate">/, rel);
     assert.match(html, new RegExp(`visual-consistency-v1\\.css\\?v=${VISUAL_V1_VERSION}`), rel);
     assert.match(html, new RegExp(`brand-display\\.js\\?v=${VISUAL_V1_VERSION}`), rel);
   }
@@ -100,7 +101,7 @@ test('all shared detail shells use the localized-detail cache key', () => {
     'used-cars/detail.html',
   ]) {
     const html = fs.readFileSync(path.join(ROOT, rel), 'utf8');
-    assert.match(html, /js\/half-cut-detail\.js\?v=site-media-brand-identity-v1-20260822/, rel);
+    assert.match(html, /js\/half-cut-detail\.js\?v=site-media-brand-identity-v2-20260822/, rel);
   }
 });
 

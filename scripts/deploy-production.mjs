@@ -1022,6 +1022,7 @@ test -f "$PUB/js/path-utils.js"
 test -f "$PUB/js/quote-list.js"
 grep -q 'AsiaPower Visual Consistency V1' "$PUB/css/visual-consistency-v1.css"
 grep -q 'AsiaPowerBrandDisplay' "$PUB/js/brand-display.js"
+grep -q 'notranslate' "$PUB/js/brand-display.js"
 grep -q "SITE_VISUAL_V1_VER = '${VISUAL_V1_VERSION}'" "$PUB/js/components.js"
 grep -q "SITE_I18N_VER = '${VISUAL_V1_VERSION}'" "$PUB/js/path-utils.js"
 grep -q 'data-ap-video-cover="youtube"' "$PUB/js/half-cut-directory.js"
@@ -1038,6 +1039,7 @@ for (const rel of expected) {
   const html = fs.readFileSync(abs, 'utf8');
   if (html.includes('data-visual-consistency-v1')) {
     visualPages += 1;
+    if (!html.includes('<meta name="google" content="notranslate">')) throw new Error('missing browser translation guard: ' + rel);
     if (!html.includes('visual-consistency-v1.css?v=${VISUAL_V1_VERSION}')) throw new Error('missing V1 CSS ref: ' + rel);
     if (!html.includes('brand-display.js?v=${VISUAL_V1_VERSION}')) throw new Error('missing brand display ref: ' + rel);
   }

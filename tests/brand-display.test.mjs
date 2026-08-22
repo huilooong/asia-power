@@ -118,6 +118,27 @@ test('Chinese localization is limited to make/product contexts, not ordinary pro
   assert.doesNotMatch(proseNode.nodeValue, /曼恩|西雅特|坦克|名爵/);
 });
 
+test('make and model identity text is protected from browser machine translation', () => {
+  const api = loadBrandDisplay('en');
+  const attributes = {};
+  const classes = new Set();
+  const textNode = {
+    nodeType: 3,
+    nodeValue: 'Fangchengbao BAO 5',
+    parentElement: {
+      closest(selector) { return selector.includes('[data-brand]') ? {} : null; },
+      querySelectorAll() { return []; },
+      setAttribute(name, value) { attributes[name] = value; },
+      classList: { add(value) { classes.add(value); } },
+    },
+  };
+  api.processRoot(textNode);
+  assert.equal(attributes.translate, 'no');
+  assert.ok(classes.has('notranslate'));
+  assert.equal(textNode.nodeValue, 'FANGCHENGBAO BAO 5');
+  assert.match(SOURCE, /setAttribute\?\.\('translate', 'no'\)/);
+});
+
 test('every make observed in the production inventory snapshot has four controlled names', () => {
   const api = loadBrandDisplay();
   const liveMakes = [

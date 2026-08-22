@@ -52,7 +52,8 @@ Restore the Release Manager snapshots for the `brand-registry-api` and `visual-v
 
 - Controlled make-name matrix covers all 60 makes in the 599-record production snapshot.
 - `FANGCHENGBAO` is fixed as `方程豹` in Chinese and remains the official uppercase trademark in EN/FR/AR; `方城堡` is blocked by regression coverage.
-- 54 focused Node regression tests passed
+- Public pages opt out of browser machine translation, and make/model identity nodes receive `translate="no"` plus `notranslate`; the site-owned EN/ZH/FR/AR switch remains active.
+- 55 focused Node regression tests passed
 - 5 public-inventory Python tests passed
 - JavaScript syntax and `git diff --check` passed
 - Desktop preview passed for homepage, catalog, YouTube detail, and hosted-video detail

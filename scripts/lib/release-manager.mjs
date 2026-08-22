@@ -15,7 +15,7 @@ import { checkCacheBustConsistency } from './cache-bust-check.mjs';
 
 export const VALID_TARGETS = ['nginx', 'api', 'brand-registry-api', 'engines', 'apsales', 'apsales-openclaw', 'finalize', 'home', 'portal', 'chrome', 'visual-v1', 'categories', 'admin'];
 
-export const VISUAL_V1_VERSION = 'site-media-brand-identity-v1-20260822';
+export const VISUAL_V1_VERSION = 'site-media-brand-identity-v2-20260822';
 export const VISUAL_V1_SHARED_FILES = [
   'css/visual-consistency-v1.css',
   'js/brand-display.js',

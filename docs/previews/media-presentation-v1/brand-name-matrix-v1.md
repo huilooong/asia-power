@@ -10,6 +10,7 @@ Verified production snapshot: 599 public inventory records and 60 distinct make 
 - Chinese uses the reviewed manufacturer name below.
 - An unknown make falls back to the original source spelling in uppercase. It is never guessed.
 - This layer changes visible page text only. Inventory records, API identifiers, slugs, URLs, form values, SEO metadata and JSON-LD are not rewritten.
+- Public shells reject browser auto-translation and identity nodes are marked non-translatable so a browser cannot overwrite reviewed make names after render.
 - `Fangchengbao`, `Fang Cheng Bao` and `方程豹` are aliases of one controlled record: EN/FR/AR `FANGCHENGBAO`; ZH `方程豹`. `方城堡` is prohibited by regression test.
 
 ## Live-inventory matrix

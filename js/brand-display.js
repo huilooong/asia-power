@@ -260,6 +260,17 @@
       : text;
   }
 
+  function containsBrandToken(value) {
+    const text = String(value ?? '');
+    if (!text) return false;
+    if (!brandPattern) rebuildPattern();
+    if (!brandPattern) return false;
+    brandPattern.lastIndex = 0;
+    const found = brandPattern.test(text);
+    brandPattern.lastIndex = 0;
+    return found;
+  }
+
   function uppercaseBrandTokens(value) {
     return localizeBrandTokens(value, 'en');
   }
@@ -271,6 +282,14 @@
 
   function isBrandContext(node) {
     return Boolean(node?.parentElement?.closest?.(BRAND_CONTEXT_SELECTOR));
+  }
+
+  function protectIdentityText(node, source) {
+    if (!isBrandContext(node) || !containsBrandToken(source)) return false;
+    const element = node?.parentElement;
+    element?.setAttribute?.('translate', 'no');
+    element?.classList?.add?.('notranslate');
+    return true;
   }
 
   function processTextNode(node) {
@@ -287,6 +306,7 @@
     // from being mistaken for automotive makes in editorial copy.
     const displayLang = lang === 'zh' && !isBrandContext(node) ? 'en' : lang;
     const next = localizeBrandTokens(source, displayLang);
+    protectIdentityText(node, source);
     nodeState.set(node, { source, rendered: next });
     if (next === node.nodeValue) return false;
     node.nodeValue = next;
@@ -337,6 +357,7 @@
     OFFICIAL_BRAND_NAMES: Object.freeze(Object.fromEntries(registry)),
     officialBrandName,
     localizeBrandTokens,
+    containsBrandToken,
     uppercaseBrandTokens,
     registerBrand,
     processRoot,
