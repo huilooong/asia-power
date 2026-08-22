@@ -129,6 +129,7 @@ ensure_env() {
     echo "[deploy] set default \$KEY=\$VAL"
   fi
 }
+
 ensure_env YOUTUBE_PYTHON "$SITE/.venv-youtube/bin/python3"
 ensure_env YOUTUBE_SYNC_ENABLED 1
 ensure_env YOUTUBE_UPLOAD_QUEUE_POLL_MS 120000
@@ -141,6 +142,33 @@ fi
 systemctl restart inventory-site.service
 systemctl is-active inventory-site.service
 echo "[deploy:api] inventory-site restarted OK"
+`);
+}
+
+/** Exact one-file API lookup update; does not sync the wider server/lib tree. */
+function deployBrandRegistryApi() {
+  console.log('[deploy:brand-registry-api] syncing exact reviewed make-name seed only');
+  ssh('mkdir -p /root/.openclaw/workspace/inventory-site/lib/vin');
+  rsync(
+    `${ROOT}/server/lib/vin/zh-en-seed.js`,
+    `${SITE}/lib/vin/zh-en-seed.js`,
+  );
+  ssh(`
+set -e
+SITE=/root/.openclaw/workspace/inventory-site
+SEED="$SITE/lib/vin/zh-en-seed.js"
+node --check "$SEED"
+node - <<'NODE'
+const seed = require('/root/.openclaw/workspace/inventory-site/lib/vin/zh-en-seed.js');
+if (seed.BRAND_ZH_TO_EN?.['方程豹'] !== 'Fangchengbao') throw new Error('方程豹 mapping mismatch');
+if (seed.BRAND_ZH_TO_EN?.['腾势'] !== 'Denza') throw new Error('腾势 mapping mismatch');
+process.stdout.write('BRAND_REGISTRY_SEED_OK\\n');
+NODE
+systemctl restart inventory-site.service
+systemctl is-active --quiet inventory-site.service
+curl -fsS http://127.0.0.1:8080/api/half-cuts/health >/dev/null
+curl -fsS http://127.0.0.1:8080/api/half-cuts/public >/dev/null
+echo "[deploy:brand-registry-api] exact seed and API health OK"
 `);
 }
 
@@ -1160,7 +1188,7 @@ function printHelp() {
   console.log(`AsiaPower deploy (Release Manager enabled):
   node scripts/deploy-production.mjs <target> [--yes] [--allow-dirty] [user@host]
 
-  nginx | api | engines | apsales | apsales-openclaw | finalize | home | portal | chrome | visual-v1 | categories | admin
+  nginx | api | brand-registry-api | engines | apsales | apsales-openclaw | finalize | home | portal | chrome | visual-v1 | categories | admin
 
   REQUIRED: commit → push GitHub → then deploy (CEO red line 2026-07-10)
   Pre-deploy:  git clean, HEAD on origin, backup, target confirmation
@@ -1175,6 +1203,7 @@ function printHelp() {
 const targets = {
   nginx: deployNginx,
   api: deployApi,
+  'brand-registry-api': deployBrandRegistryApi,
   engines: deployEngines,
   apsales: deployApsales,
   'apsales-openclaw': deployApsalesOpenClaw,

@@ -13,7 +13,7 @@ import {
 } from './post-release-validation.mjs';
 import { checkCacheBustConsistency } from './cache-bust-check.mjs';
 
-export const VALID_TARGETS = ['nginx', 'api', 'engines', 'apsales', 'apsales-openclaw', 'finalize', 'home', 'portal', 'chrome', 'visual-v1', 'categories', 'admin'];
+export const VALID_TARGETS = ['nginx', 'api', 'brand-registry-api', 'engines', 'apsales', 'apsales-openclaw', 'finalize', 'home', 'portal', 'chrome', 'visual-v1', 'categories', 'admin'];
 
 export const VISUAL_V1_VERSION = 'site-media-brand-identity-v1-20260822';
 export const VISUAL_V1_SHARED_FILES = [
@@ -134,6 +134,9 @@ export const TARGET_SOURCE_FILES = {
     'package.json',
     'package-lock.json',
     'server/lib',
+  ],
+  'brand-registry-api': [
+    'server/lib/vin/zh-en-seed.js',
   ],
   engines: ['engines'],
   apsales: [
@@ -299,6 +302,9 @@ export const TARGET_REMOTE_PATHS = {
     '/usr/local/bin/asiapower-health-watch.sh',
     '/root/.openclaw/workspace/inventory-site/package.json',
     '/root/.openclaw/workspace/inventory-site/package-lock.json',
+  ],
+  'brand-registry-api': [
+    '/root/.openclaw/workspace/inventory-site/lib/vin/zh-en-seed.js',
   ],
   engines: ['/root/.openclaw/workspace/inventory-site/public/engines'],
   apsales: [
@@ -675,7 +681,7 @@ export async function runPostDeployValidation({ root, target, remote, baseUrl, r
     checks.push({ name: 'nginx_verification', status: 'skip', detail: 'not required' });
   }
 
-  if (['nginx', 'api', 'engines', 'home', 'visual-v1'].includes(target)) {
+  if (['nginx', 'api', 'brand-registry-api', 'engines', 'home', 'visual-v1'].includes(target)) {
     const verifyScript = path.join(root, 'scripts', 'verify-production.mjs');
     if (fs.existsSync(verifyScript)) {
       const verify = spawnSync('node', [verifyScript, baseUrl], { encoding: 'utf8', cwd: root });

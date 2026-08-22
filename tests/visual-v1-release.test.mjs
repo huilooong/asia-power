@@ -130,3 +130,19 @@ test('production deploy implementation is exact-manifest rsync with no delete fl
   assert.match(section, /127\.0\.0\.1:8080\/api\/half-cuts\/public/);
   assert.doesNotMatch(section, /127\.0\.0\.1:3000/);
 });
+
+test('brand registry API release target is an exact one-file deployment', () => {
+  assert.ok(VALID_TARGETS.includes('brand-registry-api'));
+  const sources = listChangedFiles(ROOT, 'brand-registry-api').planned;
+  const remotes = resolveTargetRemotePaths(ROOT, 'brand-registry-api');
+  assert.deepEqual(sources, ['server/lib/vin/zh-en-seed.js']);
+  assert.deepEqual(remotes, ['/root/.openclaw/workspace/inventory-site/lib/vin/zh-en-seed.js']);
+
+  const source = fs.readFileSync(path.join(ROOT, 'scripts/deploy-production.mjs'), 'utf8');
+  const section = source.slice(source.indexOf('function deployBrandRegistryApi()'), source.indexOf('function deployEngines()'));
+  assert.match(section, /server\/lib\/vin\/zh-en-seed\.js/);
+  assert.match(section, /BRAND_REGISTRY_SEED_OK/);
+  assert.match(section, /systemctl restart inventory-site\.service/);
+  assert.doesNotMatch(section, /rsync\(\s*`\$\{ROOT\}\/server\/lib\/`/);
+  assert.doesNotMatch(section, /--delete/);
+});
