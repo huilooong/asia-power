@@ -607,7 +607,7 @@ export function runPreDeployValidation({ root, target, remote, allowDirty, yes, 
     });
   }
 
-  const backupMode = ['engines', 'apsales', 'finalize'].includes(target) ? 'data-only' : 'full';
+  const backupMode = ['brand-registry-api', 'engines', 'apsales', 'finalize'].includes(target) ? 'data-only' : 'full';
   const backupCmd = backupMode === 'data-only'
     ? 'bash /root/.openclaw/workspace/inventory-site/scripts/backup-inventory-site.sh --data-only'
     : 'bash /root/.openclaw/workspace/inventory-site/scripts/backup-inventory-site.sh';

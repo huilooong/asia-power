@@ -145,4 +145,7 @@ test('brand registry API release target is an exact one-file deployment', () => 
   assert.match(section, /systemctl restart inventory-site\.service/);
   assert.doesNotMatch(section, /rsync\(\s*`\$\{ROOT\}\/server\/lib\/`/);
   assert.doesNotMatch(section, /--delete/);
+
+  const manager = fs.readFileSync(path.join(ROOT, 'scripts/lib/release-manager.mjs'), 'utf8');
+  assert.match(manager, /\['brand-registry-api', 'engines', 'apsales', 'finalize'\]\.includes\(target\) \? 'data-only' : 'full'/);
 });

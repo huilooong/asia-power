@@ -38,6 +38,7 @@ The shared renderers cover the homepage, half-cuts, engines, trucks, machinery, 
 ## Deployment Impact
 
 - Candidate release targets: exact one-file `brand-registry-api` for the two reviewed Chinese-to-international make aliases, then `visual-v1` for the site-wide presentation layer
+- The one-file API target uses the Release Manager data-only backup mode; it does not resync the wider `server/lib` tree or package the public directory
 - Exact manifest: 199 HTML cache-key shells plus 11 shared assets (210 paths total)
 - Server change is limited to `腾势 → Denza` and `方程豹 → Fangchengbao` in the existing public-name seed; it does not write stored records or change the API schema
 - No `data/`, `uploads/`, database, URL, canonical, structured-data, inventory, price, status, supplier, or inquiry-logic changes
