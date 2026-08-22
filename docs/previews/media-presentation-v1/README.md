@@ -37,18 +37,21 @@ The shared renderers cover the homepage, half-cuts, engines, trucks, machinery, 
 
 ## Deployment Impact
 
-- Candidate release target: `visual-v1`
+- Candidate release targets: `api` for the two reviewed Chinese-to-international make aliases, then `visual-v1` for the site-wide presentation layer
 - Exact manifest: 199 HTML cache-key shells plus 11 shared assets (210 paths total)
-- No `data/`, `server/`, `uploads/`, database, API contract, URL, canonical, structured-data, inventory, price, status, supplier, or inquiry-logic changes
+- Server change is limited to `腾势 → Denza` and `方程豹 → Fangchengbao` in the existing public-name seed; it does not write stored records or change the API schema
+- No `data/`, `uploads/`, database, URL, canonical, structured-data, inventory, price, status, supplier, or inquiry-logic changes
 - No production deployment has been performed for this candidate
 
 ## Rollback
 
-Restore the 210-path Release Manager snapshot for the release ID, or redeploy the prior Git commit through the same `visual-v1` target. Original customer media and inventory records do not require restoration because they are not changed.
+Restore the Release Manager snapshots for the `api` and `visual-v1` release IDs, or redeploy the prior Git commit through the same targets. Original customer media and inventory records do not require restoration because they are not changed.
 
 ## Validation
 
-- 55 focused Node regression tests passed
+- Controlled make-name matrix covers all 60 makes in the 599-record production snapshot.
+- `FANGCHENGBAO` is fixed as `方程豹` in Chinese and remains the official uppercase trademark in EN/FR/AR; `方城堡` is blocked by regression coverage.
+- 53 focused Node regression tests passed
 - 5 public-inventory Python tests passed
 - JavaScript syntax and `git diff --check` passed
 - Desktop preview passed for homepage, catalog, YouTube detail, and hosted-video detail

@@ -1,7 +1,7 @@
 'use strict';
 
 const assert = require('node:assert/strict');
-const { toPublicItem } = require('../server/lib/half-cut-public');
+const { toPublicItem, translateBrand } = require('../server/lib/half-cut-public');
 
 const raw = {
   stockId: 'HC-PRIVACY-TEST',
@@ -34,5 +34,16 @@ for (const field of [
 
 assert.equal(publicItem.stockId, raw.stockId);
 assert.equal(publicItem.maskedVin, 'LFMAP22C0A****456');
+
+assert.equal(translateBrand('方程豹'), 'Fangchengbao');
+assert.equal(translateBrand('腾势'), 'Denza');
+assert.equal(translateBrand('Fangchengbao'), 'Fangchengbao');
+assert.notEqual(translateBrand('方程豹'), '方城堡');
+
+const sourceBrandRecord = { brand: '方程豹', model: '豹5', title: '方程豹 豹5' };
+const sourceBrandSnapshot = structuredClone(sourceBrandRecord);
+const publicBrandRecord = toPublicItem(sourceBrandRecord);
+assert.equal(publicBrandRecord.brand, 'Fangchengbao');
+assert.deepEqual(sourceBrandRecord, sourceBrandSnapshot, 'public localization must not mutate source inventory');
 
 console.log('HALF_CUT_PUBLIC_PRIVACY_PASS');

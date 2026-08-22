@@ -66,6 +66,10 @@ const BRAND_ZH_TO_EN = {
   '双龙': 'Ssangyong',
   '五十铃': 'Isuzu',
   '比亚迪': 'BYD',
+  // BYD-controlled brands. These are identity fields, not free-form
+  // translations: keep the manufacturer's official international names.
+  '腾势': 'Denza',
+  '方程豹': 'Fangchengbao',
   '华泰': 'Hawtai', // verified: hawtaimotor.com official site, en.wikipedia.org/wiki/Hawtai
   '华泰汽车': 'Hawtai',
   '五菱汽车': 'Wuling', // verified: en.wikipedia.org/wiki/Wuling_Motors

@@ -308,7 +308,7 @@
       ? `<div class="engine-price-note">${esc(t('home.v4.engineNote', 'Engine EXW reference'))}</div>`
       : '';
 
-    return `<a class="pcard" href="${esc(detailUrl(item))}">
+    return `<a class="pcard" href="${esc(detailUrl(item))}" data-brand="${esc(item.brand || '')}">
       ${imgHtml}
       <div class="pc-body">
         <div class="pc-make">${esc(item.brand || '')}</div>
@@ -403,7 +403,7 @@
         <div class="sec-h" style="margin-bottom:0">${esc(t('home.v4.handpicked', 'Handpicked this week'))}</div>
         <div class="sc-note" style="margin:6px 0 0">${esc(t('home.v4.featuredRotate', 'Auto-updates every Sunday'))}</div>
       </div>
-      <div class="showcase-card">
+      <div class="showcase-card" data-brand="${esc(item.brand || '')}">
         ${imgBlock}
         <div class="sc-body">
           <div>

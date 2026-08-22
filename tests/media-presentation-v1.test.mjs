@@ -115,12 +115,14 @@ test('site-wide release manifest and cache keys include every changed media rend
   }
 });
 
-test('media presentation diff does not touch inventory, upload or server data paths', () => {
+test('media presentation diff does not touch inventory, uploads or API runtime outside the brand seed', () => {
   const changed = execFileSync('git', ['diff', '--name-only'], { cwd: ROOT, encoding: 'utf8' })
     .trim()
     .split('\n')
     .filter(Boolean);
-  assert.ok(!changed.some((file) => /^(data|server|uploads)\//.test(file)), changed.join(', '));
+  const protectedChanges = changed.filter((file) => /^(data|server|uploads)\//.test(file)
+    && file !== 'server/lib/vin/zh-en-seed.js');
+  assert.deepEqual(protectedChanges, [], changed.join(', '));
   for (const source of [directorySource, homeSource, detailSource]) {
     assert.doesNotMatch(source, /photos\.(?:splice|shift|unshift|sort)\(/);
   }

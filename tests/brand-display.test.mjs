@@ -8,13 +8,18 @@ import { fileURLToPath } from 'node:url';
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const SOURCE = fs.readFileSync(path.join(ROOT, 'js/brand-display.js'), 'utf8');
 
-function loadBrandDisplay() {
+function loadBrandDisplay(initialLang = 'en') {
+  let lang = initialLang;
   const document = {
     body: null,
     readyState: 'loading',
+    documentElement: { lang: 'en' },
     addEventListener() {},
   };
-  const window = { location: { pathname: '/' } };
+  const window = {
+    location: { pathname: '/' },
+    PublicI18n: { getLang: () => lang },
+  };
   const sandbox = {
     window,
     document,
@@ -23,6 +28,7 @@ function loadBrandDisplay() {
     console,
   };
   vm.runInNewContext(SOURCE, sandbox, { filename: 'brand-display.js' });
+  window.AsiaPowerBrandDisplay.setTestLang = (next) => { lang = next; };
   return window.AsiaPowerBrandDisplay;
 }
 
@@ -40,7 +46,7 @@ test('brand display processing changes visible text nodes only', () => {
     nodeType: 3,
     nodeValue: inventory.title,
     parentElement: {
-      closest() { return null; },
+      closest(selector) { return selector.includes('[data-brand]') ? {} : null; },
       querySelectorAll() { return []; },
     },
   };
@@ -64,3 +70,73 @@ test('unknown live inventory makes can be registered without touching source dat
   assert.equal(item.brand, 'Example Motors');
 });
 
+test('FANGCHENGBAO is deterministic in all four languages and never becomes 方城堡', () => {
+  const api = loadBrandDisplay();
+  assert.equal(api.officialBrandName('Fangchengbao', 'en'), 'FANGCHENGBAO');
+  assert.equal(api.officialBrandName('Fang Cheng Bao', 'fr'), 'FANGCHENGBAO');
+  assert.equal(api.officialBrandName('FANGCHENGBAO', 'ar'), 'FANGCHENGBAO');
+  assert.equal(api.officialBrandName('方程豹', 'zh'), '方程豹');
+  assert.equal(api.localizeBrandTokens('2025 Fangchengbao BAO 5', 'zh'), '2025 方程豹 BAO 5');
+  assert.doesNotMatch(SOURCE, /方城堡/);
+});
+
+test('language switching is lossless and never re-translates a rendered brand', () => {
+  const api = loadBrandDisplay('en');
+  const textNode = {
+    nodeType: 3,
+    nodeValue: '2025 Fangchengbao BAO 5',
+    parentElement: {
+      closest(selector) { return selector.includes('[data-brand]') ? {} : null; },
+      querySelectorAll() { return []; },
+    },
+  };
+  api.processRoot(textNode);
+  assert.equal(textNode.nodeValue, '2025 FANGCHENGBAO BAO 5');
+  api.setTestLang('zh');
+  api.processRoot(textNode);
+  assert.equal(textNode.nodeValue, '2025 方程豹 BAO 5');
+  api.setTestLang('fr');
+  api.processRoot(textNode);
+  assert.equal(textNode.nodeValue, '2025 FANGCHENGBAO BAO 5');
+  api.setTestLang('ar');
+  api.processRoot(textNode);
+  assert.equal(textNode.nodeValue, '2025 FANGCHENGBAO BAO 5');
+});
+
+test('Chinese localization is limited to make/product contexts, not ordinary prose', () => {
+  const api = loadBrandDisplay('zh');
+  const proseNode = {
+    nodeType: 3,
+    nodeValue: 'A man checks the seat and tank; dosage is 5 mg.',
+    parentElement: {
+      closest() { return null; },
+      querySelectorAll() { return []; },
+    },
+  };
+  api.processRoot(proseNode);
+  assert.equal(proseNode.nodeValue, 'A MAN checks the SEAT and TANK; dosage is 5 MG.');
+  assert.doesNotMatch(proseNode.nodeValue, /曼恩|西雅特|坦克|名爵/);
+});
+
+test('every make observed in the production inventory snapshot has four controlled names', () => {
+  const api = loadBrandDisplay();
+  const liveMakes = [
+    'Audi', 'Beiben', 'BMW', 'Buick', 'BYD', 'Cadillac', 'CAMC', 'Changan',
+    'Changan Kuayue', 'Chery', 'Chevrolet', 'Chrysler', 'Citroën', 'Denza',
+    'Dodge', 'Dongfanghong', 'Dongfeng', 'Fangchengbao', 'FAW', 'Ford', 'Geely',
+    'GMC', 'Great Wall', 'Haval', 'Hino', 'Honda', 'Hongyan', 'HOWO', 'Hyundai',
+    'Hyundai Trucks', 'Isuzu', 'JAC', 'Jeep', 'Jinbei', 'JMC', 'Kia', 'Land Rover',
+    'Lexus', 'Liebao', 'Lonking', 'Lovol', 'MAN', 'Maxus', 'Mazda', 'Mercedes-Benz',
+    'MG', 'Mitsubishi', 'Nissan', 'Peugeot', 'Roewe', 'Sany', 'Shaanxi Auto',
+    'Shacman', 'Sinotruk', 'Suzuki', 'Tank', 'Toyota', 'Volkswagen', 'Volvo', 'Wuling',
+  ];
+  for (const make of liveMakes) {
+    const en = api.officialBrandName(make, 'en');
+    assert.ok(api.OFFICIAL_BRAND_NAMES[en], `uncontrolled live make: ${make}`);
+    for (const lang of ['en', 'zh', 'fr', 'ar']) {
+      assert.ok(api.officialBrandName(make, lang), `${make}:${lang}`);
+    }
+    assert.equal(api.officialBrandName(make, 'fr'), en, `${make}:fr trademark`);
+    assert.equal(api.officialBrandName(make, 'ar'), en, `${make}:ar trademark`);
+  }
+});
