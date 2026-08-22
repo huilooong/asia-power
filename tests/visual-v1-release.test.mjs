@@ -120,6 +120,7 @@ test('release target has exact source/remote parity and a safe porcelain parser'
 
 test('production deploy implementation is exact-manifest rsync with no delete flag', () => {
   const source = fs.readFileSync(path.join(ROOT, 'scripts/deploy-production.mjs'), 'utf8');
+  assert.match(source, /VISUAL_V1_SHARED_FILES,\s*VISUAL_V1_VERSION,/);
   const section = source.slice(source.indexOf('function deployVisualV1()'), source.indexOf('function deployFinalize()'));
   assert.match(section, /listVisualV1SourceFiles\(ROOT\)/);
   assert.match(section, /\['-avR'/);

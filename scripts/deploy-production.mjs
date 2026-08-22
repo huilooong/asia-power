@@ -17,6 +17,7 @@ import path from 'path';
 import { fileURLToPath } from 'url';
 import {
   VISUAL_V1_SHARED_FILES,
+  VISUAL_V1_VERSION,
   buildReleaseRecord,
   generateReleaseId,
   printDeploymentSummary,
