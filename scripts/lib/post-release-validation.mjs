@@ -148,8 +148,26 @@ export function hasShortCachePolicy(cacheControl) {
 
 export function hasLogo(html) {
   const source = String(html || '');
-  return /logo\.(png|webp|svg)|ASIAPOWER\.logo|class=["'][^"']*logo|["']logo["']\s*:/i.test(source)
-    || (/id=["']site-header["']/i.test(source) && /components\.js/i.test(source));
+  return /logo\.(png|webp|svg)|ASIAPOWER\.logo|class=["'][^"']*logo/i.test(source);
+}
+
+function extractSharedComponentsScriptSrc(html) {
+  const scripts = String(html || '').match(/<script\b[^>]*>/gi) || [];
+  for (const script of scripts) {
+    const src = script.match(/\bsrc=["']([^"']*components\.js(?:[?#][^"']*)?)["']/i);
+    if (src) return src[1];
+  }
+  return '';
+}
+
+function hasSharedHeaderMount(html) {
+  return /\bid=["']site-header["']/i.test(String(html || ''));
+}
+
+export function hasSharedHeaderLogoSignal(html, componentsJs) {
+  return hasSharedHeaderMount(html)
+    && Boolean(extractSharedComponentsScriptSrc(html))
+    && hasLogo(String(componentsJs || ''));
 }
 
 function hasJsonLd(html) {
@@ -407,13 +425,41 @@ export async function runPublicPostReleaseValidation(opts = {}) {
       const canonical = extractCanonical(body);
       const wa = extractWaMe(body);
       const configSrc = extractConfigScriptSrc(body);
+      let logoSignal = hasLogo(body);
+      let logoDetail = logoSignal ? 'logo present in HTML' : 'logo signal not found';
+      let sharedComponentsUrl = '';
+
+      // The shared navigation is injected by components.js, so its logo is not
+      // present in the initial HTML. Verify the mount, script reference, fetched
+      // component, and logo markup together instead of accepting the mount alone.
+      if (!logoSignal && page.id === 'homepage') {
+        const sharedComponentsSrc = extractSharedComponentsScriptSrc(body);
+        if (hasSharedHeaderMount(body) && sharedComponentsSrc) {
+          try {
+            sharedComponentsUrl = new URL(sharedComponentsSrc, url).href;
+            const sharedComponents = await fetchText(sharedComponentsUrl);
+            if (sharedComponents.status >= 400) {
+              logoDetail = `shared header component HTTP ${sharedComponents.status}: ${sharedComponentsUrl}`;
+            } else if (hasSharedHeaderLogoSignal(body, sharedComponents.body)) {
+              logoSignal = true;
+              logoDetail = `shared header logo present via ${sharedComponentsUrl}`;
+            } else {
+              logoDetail = `shared header component has no logo signal: ${sharedComponentsUrl}`;
+            }
+          } catch (err) {
+            logoDetail = `shared header component fetch failed: ${err && err.message ? err.message : err}`;
+          }
+        }
+      }
+
       pageResults[page.id] = {
         ...pageResults[page.id],
         title,
         canonical,
         wa_me: wa,
         config_script_src: configSrc,
-        has_logo: hasLogo(body),
+        has_logo: logoSignal,
+        shared_components_url: sharedComponentsUrl,
         has_json_ld: hasJsonLd(body),
         has_site_whatsapp: hasSiteWhatsappMount(body),
       };
@@ -451,10 +497,10 @@ export async function runPublicPostReleaseValidation(opts = {}) {
         push(`${page.id}_whatsapp_static`, 'skip', 'no static wa.me (float may use config)');
       }
 
-      if (!hasLogo(body) && page.id === 'homepage') {
-        push(`${page.id}_logo`, 'fail', 'logo signal not found');
+      if (!logoSignal && page.id === 'homepage') {
+        push(`${page.id}_logo`, 'fail', logoDetail);
       } else {
-        push(`${page.id}_logo`, hasLogo(body) ? 'pass' : 'skip', hasLogo(body) ? 'logo present' : 'no logo signal');
+        push(`${page.id}_logo`, logoSignal ? 'pass' : 'skip', logoSignal ? logoDetail : 'no logo signal');
       }
 
       if (page.id === 'homepage' || page.id === 'contact') {
