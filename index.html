@@ -1,9 +1,10 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" translate="no">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="theme-color" content="#ffffff">
+  <meta name="google" content="notranslate">
   <meta name="mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-title" content="AsiaPower">
@@ -14,8 +15,7 @@
   <link rel="preload" href="/api/half-cuts/public" as="fetch" crossorigin>
   <link rel="stylesheet" href="css/fonts.css?v=self-hosted-fonts-v1">
   <link rel="stylesheet" href="css/styles.css?v=mnav-drawer-v1">
-  <link rel="stylesheet" href="css/home-v4-hybrid.css?v=featured-orient-v4">
-  <link rel="stylesheet" href="css/pwa-install.css?v=pwa-app-v6c">
+  <link rel="stylesheet" href="css/home-v4-hybrid.css?v=circular-ledger-v4-20260823-004">
   <link rel="icon" href="assets/favicon.png" type="image/png">
   <link rel="manifest" href="/manifest.json">
   <link rel="apple-touch-icon" href="/assets/icons/apple-touch-icon.png">
@@ -49,60 +49,116 @@
   <div id="site-header"></div>
 
   <main id="main-content">
-    <nav class="ap-nav" aria-label="Primary">
+    <nav class="ap-nav" aria-label="Primary navigation">
       <div class="nav-w">
         <button type="button" class="mnav-toggle" data-mnav-toggle aria-label="Open menu" aria-expanded="false" aria-controls="ap-nav-drawer"><span></span><span></span><span></span></button>
-        <a class="ap-logo" href="/">Asia<span>Power</span></a>
+        <a class="ap-logo" href="/" aria-label="AsiaPower home"><img src="/assets/logo.svg" width="220" height="44" alt="AsiaPower"></a>
         <div class="mnav-drawer" id="ap-nav-drawer" data-mnav-drawer>
           <div class="nav-links">
-            <a href="/half-cuts/" data-i18n="home.v4.nav.halfCuts">Half-Cuts</a>
-            <a href="/engines/" data-i18n="home.v4.nav.engines">Engines</a>
-            <a href="/trucks/" data-i18n="home.v4.nav.trucks">Trucks</a>
-            <a href="/machinery/" data-i18n="home.v4.nav.construction">Construction</a>
-            <a href="/half-cuts/?cat=used-cars" data-i18n="home.v4.nav.usedCars">Used Cars</a>
-            <a href="/guides/">Guides</a>
+            <a href="/half-cuts/" data-i18n="home.circular.nav.inventory">All inventory</a>
+            <a href="/half-cuts/?cat=used-cars" data-i18n="home.circular.nav.vehicles">Complete vehicles</a>
+            <a href="/engines/" data-i18n="home.circular.nav.powertrain">Powertrains</a>
+            <a href="/trucks/" data-i18n="home.circular.nav.commercial">Commercial vehicles</a>
+            <a href="/machinery/" data-i18n="home.circular.nav.machinery">Construction machinery</a>
+            <a href="/half-cuts/" data-i18n="home.circular.nav.parts">Body &amp; chassis</a>
+            <a href="/guides/" data-i18n="home.circular.guides">Guides</a>
           </div>
           <div class="nav-right">
             <div id="nav-lang" class="nav-lang" aria-label="Language"></div>
             <span class="ap-auth-slot" data-ap-auth-slot data-variant="home"><a href="/login/" class="nav-signin" data-i18n="nav.signIn">Sign in</a></span>
           </div>
         </div>
+        <a class="nav-supplier" href="/supplier-portal.html" data-i18n="home.circular.supplierShort">Supplier entry</a>
         <a id="nav-wa" href="https://wa.me/8616638801930" class="nav-wa" target="_blank" rel="noopener">WhatsApp</a>
       </div>
     </nav>
 
-    <div class="hero">
-      <div class="hero-badge"><span class="dot"></span> <span data-i18n="home.v4.hero.badge">Video-verified · Ships to 110+ countries</span></div>
-      <h1 data-i18n="home.v4.hero.title" data-i18n-html="true">The global marketplace for<br><em>used powertrains.</em></h1>
-      <p class="hero-sub" data-i18n="home.v4.hero.sub">Half-cuts, engines and truck parts — sourced in China, delivered worldwide. Automotive powertrains only (not electrical power equipment). EXW pricing, 24-hour quotes.</p>
-      <div class="hero-search-wrap">
-        <form class="hero-search" action="/half-cuts/" method="get">
-          <input type="text" name="q" placeholder="Search by make, model, engine code or HC number…" aria-label="Search inventory" data-i18n-placeholder="home.v4.search.placeholder" />
-          <button class="hero-search-btn" type="submit" data-i18n="home.v4.search.btn">Search</button>
-        </form>
-      </div>
-      <div class="popular-wrap">
-        <div class="popular-label" data-i18n="home.v4.popular">Popular searches</div>
-        <div class="popular-tags" id="popular-tags"></div>
-      </div>
-      <p class="hero-sub" id="snap-meta" style="margin-top:18px;font-size:13px;opacity:.75" data-i18n="home.v4.loading">Loading live inventory…</p>
+    <div class="global-search-band">
+      <form class="procurement-search" action="/half-cuts/" method="get" role="search">
+        <label class="search-label" for="home-inventory-search">
+          <span class="search-glyph" aria-hidden="true"></span>
+          <span><small data-i18n="home.circular.searchKicker">Global sourcing search</small><b data-i18n="home.circular.searchLabel">I am looking for</b></span>
+        </label>
+        <input id="home-inventory-search" type="search" name="q" placeholder="Search make, model, engine code, stock ID or OEM number" aria-label="Search inventory" data-i18n-placeholder="home.circular.searchPlaceholder">
+        <button class="search-submit" type="submit" data-i18n="home.circular.searchButton">Search inventory</button>
+        <a class="supplier-entry" href="/supplier-portal.html"><span data-i18n="home.circular.supplierEntry">Suppliers: publish and manage inventory</span><span aria-hidden="true">↗</span></a>
+      </form>
     </div>
 
-    <div style="max-width:var(--max);margin:0 auto;padding:0 24px;transform:translateY(-24px)">
-      <div class="stats-row" id="stats-row"></div>
-    </div>
-
-    <div class="section" style="padding-top:32px;padding-bottom:40px">
-      <div class="sec-head">
-        <div>
-          <div class="sec-kicker" data-i18n="home.v4.browse">Browse</div>
-          <div class="sec-h" data-i18n="home.v4.lookingFor">What are you looking for?</div>
+    <section class="hero platform-hero" aria-labelledby="hero-title" data-release-i18n-contract="home.v4.hero.title">
+      <div class="hero-grid">
+        <div class="hero-copy">
+          <p class="hero-badge"><span class="dot" aria-hidden="true"></span><span data-i18n="home.circular.heroEyebrow">Global circular automotive supply chain</span></p>
+          <h1 id="hero-title" data-i18n="home.circular.heroTitle" data-i18n-html="true">Not about making more.<br>About keeping automotive assets<br><em>in useful circulation.</em></h1>
+          <p class="hero-sub" data-i18n="home.circular.heroLead">AsiaPower connects vehicles, powertrains, commercial assets, machinery and parts that still have useful life with their next real use—through live inventory and original evidence.</p>
+          <div class="hero-actions">
+            <a class="btn-main" href="/contact.html?source=homepage" data-i18n="nav.requestQuote">Request quote</a>
+            <a class="btn-outline" href="/half-cuts/"><span data-i18n="home.circular.browseInventory">Browse circular inventory</span><span aria-hidden="true">↗</span></a>
+          </div>
+          <dl class="hero-facts">
+            <div><dt data-i18n="home.circular.factScope">Asset scope</dt><dd data-i18n="home.circular.factScopeValue">Vehicles · powertrains · machinery · parts</dd></div>
+            <div><dt data-i18n="home.circular.factBasis">Transaction basis</dt><dd data-i18n="home.circular.factBasisValue">Stock ID · specifications · original media</dd></div>
+          </dl>
         </div>
-      </div>
-      <div class="cat-grid" id="cat-grid"></div>
-    </div>
 
-    <div class="showcase-wrap" style="padding-top:0;padding-bottom:28px" id="showcase-wrap"></div>
+        <section class="inventory-ledger" aria-labelledby="ledger-title">
+          <header class="ledger-header">
+            <div><p class="ledger-kicker" data-i18n="home.circular.ledgerKicker">Circular inventory ledger</p><h2 id="ledger-title" data-i18n="home.circular.ledgerTitle">Live circular inventory</h2></div>
+            <p class="live-state"><span aria-hidden="true"></span><b id="snap-meta" data-i18n="home.v4.loading">Loading live inventory…</b></p>
+          </header>
+          <div class="ledger-columns" aria-hidden="true"><span data-i18n="home.circular.columnAsset">Asset</span><span data-i18n="home.circular.columnEvidence">Evidence</span><span>EXW</span></div>
+          <div class="ledger-list" id="circular-ledger" aria-live="polite"></div>
+          <footer class="ledger-footer">
+            <span data-i18n="home.circular.ledgerFootnote">Original customer media is retained and normalized inside a consistent viewing window.</span>
+            <a href="/half-cuts/"><span data-i18n="home.circular.viewAll">View all inventory</span><span aria-hidden="true">→</span></a>
+          </footer>
+        </section>
+      </div>
+    </section>
+
+    <section class="cycle-line" aria-labelledby="cycle-title">
+      <div class="cycle-line-inner">
+        <div class="cycle-intro"><p class="section-number">01</p><div><p class="sec-kicker" data-i18n="home.circular.cycleKicker">How the platform creates circulation</p><h2 id="cycle-title" data-i18n="home.circular.cycleTitle">From a real asset to its next useful life.</h2></div></div>
+        <ol class="cycle-steps">
+          <li><span>01</span><b data-i18n="home.circular.stepAsset">Real asset</b></li>
+          <li><span>02</span><b data-i18n="home.circular.stepEvidence">Standardized evidence</b></li>
+          <li><span>03</span><b data-i18n="home.circular.stepMatch">Global matching</b></li>
+          <li><span>04</span><b data-i18n="home.circular.stepUse">Next use</b></li>
+        </ol>
+      </div>
+    </section>
+
+    <section class="section routes-section" aria-labelledby="routes-title">
+      <div class="sec-head route-heading">
+        <div><p class="section-number">02</p><div><p class="sec-kicker" data-i18n="home.circular.routesKicker">Browse by next-use route</p><h2 class="sec-h" id="routes-title" data-i18n="home.circular.routesTitle" data-i18n-html="true">Inventory organized by<br>what it can do next.</h2></div></div>
+        <p data-i18n="home.circular.routesLead">One inventory, evidence and quotation standard across vehicles, engines, gearboxes, trucks, machinery and body parts.</p>
+      </div>
+      <div class="cat-grid route-grid" id="cat-grid"></div>
+    </section>
+
+    <section class="evidence-section" aria-labelledby="evidence-title">
+      <div class="evidence-grid">
+        <header class="evidence-heading">
+          <p class="section-number">03</p>
+          <p class="sec-kicker" data-i18n="home.circular.evidenceKicker">Circular value needs evidence</p>
+          <h2 id="evidence-title" data-i18n="home.circular.evidenceTitle" data-i18n-html="true">No invented environmental claims.<br>Only asset facts that can be checked.</h2>
+          <p data-i18n="home.circular.evidenceLead">Media dimensions can vary. Stock IDs, specifications, original media and verification boundaries cannot.</p>
+        </header>
+        <ol class="evidence-list">
+          <li><span>01</span><div><b data-i18n="home.circular.proofInventory">Real inventory</b><p data-i18n="home.circular.proofInventoryText">Every asset has a stock ID and current availability state.</p></div></li>
+          <li><span>02</span><div><b data-i18n="home.circular.proofMedia">Original media</b><p data-i18n="home.circular.proofMediaText">Video appears first when present while original evidence photos remain available.</p></div></li>
+          <li><span>03</span><div><b data-i18n="home.circular.proofSpecs">Standardized specifications</b><p data-i18n="home.circular.proofSpecsText">Make, model, year, mileage and price follow one information order.</p></div></li>
+          <li><span>04</span><div><b data-i18n="home.circular.proofVerified">Clear verification boundary</b><p data-i18n="home.circular.proofVerifiedText">Verified status appears only for inventory whose supplier completed the relevant checks.</p></div></li>
+        </ol>
+      </div>
+    </section>
+
+    <section class="live-stock-intro section" aria-labelledby="live-stock-title">
+      <div class="sec-head">
+        <div><p class="section-number">04</p><div><p class="sec-kicker" data-i18n="home.v4.shelf.liveStock">Live stock</p><h2 class="sec-h" id="live-stock-title" data-i18n="home.circular.liveStockTitle">Explore current assets</h2></div></div>
+        <a class="see-all" href="/half-cuts/" data-i18n="home.circular.viewAll">View all inventory</a>
+      </div>
+    </section>
 
     <div class="shelf-wrap">
       <div class="shelf-block" id="shelf-half">
@@ -166,48 +222,44 @@
       </div>
     </div>
 
-    <div class="trust">
-      <div class="trust-w" id="trust-w"></div>
-    </div>
   </main>
 
   <footer class="ap-footer">
     <div class="footer-w">
       <div class="footer-g">
         <div class="footer-brand">
-          <div class="ap-logo">Asia<span>Power</span></div>
-          <p data-i18n="home.v4.footer.blurb">Global powertrain marketplace — half-cuts, engines, trucks and machinery for export.</p>
+          <a class="ap-logo" href="/" aria-label="AsiaPower home"><img src="/assets/logo.svg" width="190" height="38" alt="AsiaPower"></a>
+          <p data-i18n="home.circular.footerText">Connecting real automotive assets with real demand for their next useful life.</p>
         </div>
         <div class="footer-col">
-          <h4 data-i18n="home.v4.footer.products">Products</h4>
+          <h4 data-i18n="home.circular.footerInventory">Inventory</h4>
           <ul>
-            <li><a href="/half-cuts/" data-i18n="home.v4.nav.halfCuts">Half-Cuts</a></li>
-            <li><a href="/engines/" data-i18n="home.v4.nav.engines">Engines</a></li>
-            <li><a href="/trucks/" data-i18n="home.v4.nav.trucks">Trucks</a></li>
-            <li><a href="/half-cuts/?cat=used-cars" data-i18n="home.v4.nav.usedCars">Used Cars</a></li>
-            <li><a href="/guides/">Guides</a></li>
+            <li><a href="/half-cuts/" data-i18n="home.circular.nav.inventory">All inventory</a></li>
+            <li><a href="/engines/" data-i18n="home.circular.nav.powertrain">Powertrains</a></li>
+            <li><a href="/trucks/" data-i18n="home.circular.nav.commercial">Commercial vehicles</a></li>
+            <li><a href="/machinery/" data-i18n="home.circular.nav.machinery">Construction machinery</a></li>
+            <li><a href="/guides/" data-i18n="home.circular.guides">Guides</a></li>
           </ul>
         </div>
         <div class="footer-col">
           <h4 data-i18n="home.v4.footer.company">Company</h4>
           <ul>
             <li><a href="/about.html" data-i18n="nav.about">About</a></li>
-            <li><a href="/supplier-portal.html" data-i18n="nav.supplier">Supplier Portal</a></li>
+            <li><a href="/supplier-portal.html" data-i18n="home.circular.supplierManage">Supplier publish &amp; manage</a></li>
             <li><a href="/login/" data-i18n="nav.signIn">Sign in</a></li>
             <li><a href="/contact.html" data-i18n="nav.contact">Contact</a></li>
           </ul>
         </div>
-        <div>
-          <div class="footer-cta-box">
-            <h4 data-i18n="home.v4.footer.getQuote">Get a Quote</h4>
-            <p data-i18n="home.v4.footer.reply">Reply within 24 hours · EXW &amp; CIF</p>
-            <a class="btn-wa-f" href="https://wa.me/8616638801930" target="_blank" rel="noopener" data-i18n="home.v4.footer.wa">WhatsApp Now</a>
-          </div>
+        <div class="footer-action">
+          <h4 data-i18n="home.circular.footerNeed">Have a sourcing requirement?</h4>
+          <p data-i18n="home.circular.footerNeedText">Send the make, model, year, engine code and destination. The quotation team will confirm the right inventory.</p>
+          <a class="footer-quote" href="/contact.html?source=homepage-footer" data-i18n="nav.requestQuote">Request quote</a>
+          <a class="footer-whatsapp" href="https://wa.me/8616638801930" target="_blank" rel="noopener">WhatsApp</a>
         </div>
       </div>
       <div class="footer-btm">
         <span>© 2026 AsiaPower</span>
-        <span data-i18n="home.v4.footer.ships">EXW Zhengzhou · Ships worldwide</span>
+        <a href="/privacy.html" data-i18n="home.circular.privacy">Privacy policy</a>
       </div>
     </div>
   </footer>
@@ -216,15 +268,14 @@
   <div id="site-whatsapp"></div>
 
   <script src="js/path-utils.js?v=site-i18n-cache-fix-v1"></script>
-  <script src="js/public-i18n.js?v=featured-orient-v4"></script>
+  <script src="js/public-i18n.js?v=circular-ledger-v4-20260823-003"></script>
   <script src="js/config.js?v=seo-guides-20260716"></script>
   <script src="js/whatsapp-crm.js?v=1"></script>
   <script src="js/seo.js?v=p3-seo-v1"></script>
   <script src="js/components.js?v=mnav-drawer-v3" defer></script>
   <script src="js/engine-directory.js?v=vehicle-engine-001c"></script>
   <script src="js/engine-card-label.js?v=vehicle-engine-001c"></script>
-<script src="js/home-v4-hybrid.js?v=featured-orient-v4" defer></script>
-  <script src="js/pwa-install.js?v=pwa-app-v6c" defer></script>
+  <script src="js/home-v4-hybrid.js?v=circular-ledger-v4-20260823-003" defer></script>
   <script src="js/pwa-app-shell.js?v=pwa-app-v6c" defer></script>
   <script type="application/ld+json">
   {

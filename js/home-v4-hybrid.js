@@ -5,10 +5,26 @@
   'use strict';
 
   const WA = '8616638801930';
-  // Internal estimate only — never render this ratio on public UI.
-  const ENGINE_RATIO = 0.65;
   const SHELF_LIMIT = 12;
-  const POPULAR = ['Lexus LX570', 'Toyota Prado', 'Isuzu 4JB1', '2AZ-FE', 'HC250127', 'Hilux'];
+  const POPULAR = ['LEXUS LX570', 'TOYOTA Prado', 'ISUZU 4JB1', '2AZ-FE', 'HC250127', 'Hilux'];
+  // Official Chinese market names. EN / FR / AR keep the registered international
+  // name in uppercase instead of machine-translating a legally sensitive field.
+  const BRAND_ZH = {
+    AUDI: '奥迪', BEIBEN: '北奔', BMW: '宝马', BUICK: '别克', BYD: '比亚迪',
+    CADILLAC: '凯迪拉克', CAMC: 'CAMC', CHANGAN: '长安', 'CHANGAN KUAYUE': '长安跨越',
+    CHERY: '奇瑞', CHEVROLET: '雪佛兰', CHRYSLER: '克莱斯勒', CITROËN: '雪铁龙',
+    DENZA: '腾势', DODGE: '道奇', DONGFANGHONG: '东方红', DONGFENG: '东风',
+    FANGCHENGBAO: '方程豹', FAW: '一汽', FORD: '福特', GEELY: '吉利', GMC: 'GMC',
+    'GREAT WALL': '长城', HAVAL: '哈弗', HINO: '日野', HONDA: '本田', HONGYAN: '红岩',
+    HOWO: '豪沃', HYUNDAI: '现代', 'HYUNDAI TRUCKS': '现代商用车', ISUZU: '五十铃',
+    JAC: '江淮', JEEP: 'JEEP', JINBEI: '金杯', JMC: '江铃', KIA: '起亚',
+    'LAND ROVER': '路虎', LEXUS: '雷克萨斯', LIEBAO: '猎豹汽车', LONKING: '龙工',
+    LOVOL: '雷沃', MAN: '曼恩', MAXUS: '上汽大通MAXUS', MAZDA: '马自达',
+    'MERCEDES-BENZ': '梅赛德斯-奔驰', MG: 'MG', MITSUBISHI: '三菱汽车', NISSAN: '日产',
+    PEUGEOT: '标致', ROEWE: '荣威', SANY: '三一', 'SHAANXI AUTO': '陕汽',
+    SHACMAN: '陕汽重卡', SINOTRUK: '中国重汽', SUZUKI: '铃木', TANK: '坦克',
+    TOYOTA: '丰田', VOLKSWAGEN: '大众汽车', VOLVO: '沃尔沃', WULING: '五菱',
+  };
 
   const ICONS = {
     half: '<svg viewBox="0 0 24 24"><rect x="1" y="3" width="15" height="13"/><polygon points="16 8 20 8 23 11 23 16 16 16 16 8"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg>',
@@ -47,6 +63,23 @@
       .replace(/"/g, '&quot;');
   }
 
+  function canonicalBrand(item) {
+    return String(item?.brand || '').trim().toLocaleUpperCase('en-US');
+  }
+
+  function brandName(item) {
+    const canonical = canonicalBrand(item);
+    return window.PublicI18n?.getLang?.() === 'zh' ? (BRAND_ZH[canonical] || canonical) : canonical;
+  }
+
+  function upperBrandInTitle(value, item) {
+    const title = String(value || '').trim();
+    const rawBrand = String(item?.brand || '').trim();
+    if (!title || !rawBrand) return title;
+    const escapedBrand = rawBrand.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+    return title.replace(new RegExp(escapedBrand, 'i'), brandName(item));
+  }
+
   function firstPhoto(item) {
     const photos = item?.photos;
     if (Array.isArray(photos) && photos.length) {
@@ -78,19 +111,114 @@
     return '$' + Math.round(v).toLocaleString('en-US');
   }
 
-  function engineMoney(n) {
-    const v = Number(n);
-    if (!Number.isFinite(v) || v <= 0) return t('home.v4.quoteOnly', 'Quote');
-    return money(v * ENGINE_RATIO);
+  function engineMoney(item) {
+    if (passengerPartType(item) !== 'engine') return t('home.v4.quoteOnly', 'Quote');
+    return money(item?.priceUsd);
   }
 
   function hasVideo(item) {
     return !!(item?.videoUrl || item?.video?.url);
   }
 
+  function videoSource(item) {
+    return String(item?.videoUrl || item?.video?.url || '').trim();
+  }
+
+  function youtubeVideoId(raw) {
+    try {
+      const url = new URL(String(raw || ''), location.origin);
+      if (url.hostname === 'youtu.be') return url.pathname.split('/').filter(Boolean)[0] || '';
+      if (url.hostname.endsWith('youtube.com')) {
+        if (url.pathname === '/watch') return url.searchParams.get('v') || '';
+        const parts = url.pathname.split('/').filter(Boolean);
+        if (['embed', 'shorts', 'live'].includes(parts[0])) return parts[1] || '';
+      }
+    } catch {
+      return '';
+    }
+    return '';
+  }
+
+  function playableVideoMime(item) {
+    const src = videoSource(item).split('?')[0].toLowerCase();
+    if (src.endsWith('.mp4')) return 'video/mp4';
+    if (src.endsWith('.webm')) return 'video/webm';
+    return '';
+  }
+
+  function mediaPlayOverlay() {
+    return `<span class="ap-media-cover__play" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M9 7.5v9l7-4.5z" fill="currentColor"/></svg></span>
+      <span class="ap-media-cover__label"><span aria-hidden="true">▶</span> ${esc(t('home.video', 'Video'))}</span>`;
+  }
+
+  function youtubeCoverLayers(thumbnail, fallback, alt, loading) {
+    const baseLayer = fallback
+      ? `<img class="ap-media-cover__visual ap-media-cover__fallback" src="${esc(fallback)}" alt="${alt}" loading="${loading}" decoding="async">`
+      : `<span class="ap-media-cover__empty" aria-hidden="true">▶</span>`;
+    return `${baseLayer}<img class="ap-media-cover__visual ap-media-cover__video-thumb" data-ap-youtube-thumb src="${esc(thumbnail)}" alt="" aria-hidden="true" loading="${loading}" decoding="async">`;
+  }
+
+  function coverMedia(item, className, eager, options = {}) {
+    const img = photoUrl(item);
+    const src = videoSource(item);
+    const youtubeId = youtubeVideoId(src);
+    const mime = playableVideoMime(item);
+    const loading = eager ? 'eager' : 'lazy';
+    const common = `ap-media-canvas ${hasVideo(item) ? 'ap-media-canvas--video ' : ''}${className}`;
+    const stockClass = options.stockClass || 'pc-hc';
+    const stock = `<span class="${stockClass}">${esc(item?.stockId || '')}</span>`;
+    const extras = options.extras || '';
+    const alt = esc([item?.brand, item?.model, item?.stockId].filter(Boolean).join(' '));
+
+    if (youtubeId) {
+      const thumbnail = `https://i.ytimg.com/vi/${youtubeId}/hqdefault.jpg`;
+      return `<div class="${common} real" data-ap-video-cover="youtube" role="img" aria-label="${alt}">${stock}${youtubeCoverLayers(thumbnail, img, alt, loading)}${mediaPlayOverlay()}${extras}</div>`;
+    }
+    if (mime) {
+      const poster = img ? ` poster="${esc(img)}"` : '';
+      return `<div class="${common} real" data-ap-video-cover="hosted">${stock}<video class="ap-media-cover__visual ap-media-cover__video" muted loop playsinline preload="metadata" data-ap-cover-video aria-label="${alt}"${poster}><source src="${esc(src)}" type="${mime}"></video>${mediaPlayOverlay()}${extras}</div>`;
+    }
+    if (img) {
+      const overlay = hasVideo(item) ? mediaPlayOverlay() : '';
+      return `<div class="${common} real"${hasVideo(item) ? ' data-ap-video-cover="fallback"' : ''}>${stock}<img class="ap-media-cover__visual ap-media-cover__visual--contain" src="${esc(img)}" alt="${alt}" loading="${loading}" decoding="async">${overlay}${extras}</div>`;
+    }
+    return `<div class="${common}">${stock}<div class="pc-ph">${ICONS.photo}<span>${esc(t('home.v4.photo', 'Photo'))}</span></div>${hasVideo(item) ? mediaPlayOverlay() : ''}${extras}</div>`;
+  }
+
+  function bindCoverVideos(root) {
+    const scope = root?.querySelectorAll ? root : document;
+    const thumbs = [...scope.querySelectorAll('img[data-ap-youtube-thumb]:not([data-ap-youtube-thumb-bound])')];
+    thumbs.forEach((thumb) => {
+      thumb.dataset.apYoutubeThumbBound = 'true';
+      const sync = () => thumb.classList.toggle('is-ready', thumb.complete && thumb.naturalWidth > 0);
+      thumb.addEventListener('load', sync, { once: true });
+      thumb.addEventListener('error', sync, { once: true });
+      sync();
+    });
+
+    const videos = [...scope.querySelectorAll('video[data-ap-cover-video]:not([data-ap-cover-video-bound])')];
+    if (!videos.length) return;
+    videos.forEach((video) => { video.dataset.apCoverVideoBound = 'true'; });
+    if (window.matchMedia?.('(prefers-reduced-motion: reduce)')?.matches
+      || navigator.connection?.saveData === true
+      || !('IntersectionObserver' in window)) return;
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting && entry.intersectionRatio >= 0.35) entry.target.play().catch(() => {});
+        else entry.target.pause();
+      });
+    }, { threshold: [0, 0.35, 0.75] });
+    videos.forEach((video) => observer.observe(video));
+  }
+
   function isAvailable(item) {
     const status = String(item?.status || '').trim();
     return !status || status === 'Available';
+  }
+
+  function inventoryStatusLabel(status) {
+    const value = String(status || '').trim();
+    return window.PublicI18n?.translateStatus?.(value) || value;
   }
 
   function isTruckCab(item) {
@@ -181,12 +309,16 @@
   function titleOf(item, variant) {
     const label = window.EngineCardLabel;
     if (variant === 'engine') {
-      return label?.formatEngineCodeDisplacementFuel?.(item)
-        || [item?.brand, item?.engineCode, t('home.v4.engineSuffix', 'Engine')].filter(Boolean).join(' ');
+      const engineTitle = label?.formatEngineCodeDisplacementFuel?.(item)
+        || [brandName(item), item?.engineCode, t('home.v4.engineSuffix', 'Engine')].filter(Boolean).join(' ');
+      return upperBrandInTitle(engineTitle, item);
     }
     // Vehicle-first for half-cuts / trucks / used
-    const vehicle = label?.formatHalfCutVehicleTitle?.(item)
-      || [item?.brand, item?.model].filter(Boolean).join(' ');
+    const vehicle = upperBrandInTitle(
+      label?.formatHalfCutVehicleTitle?.(item)
+        || [brandName(item), item?.model].filter(Boolean).join(' '),
+      item,
+    );
     if (vehicle) {
       if (variant === 'truck') return vehicle + ' ' + t('home.v4.cabSuffix', 'Cab');
       if (variant === 'used') return vehicle;
@@ -194,8 +326,8 @@
     }
     const apiTitle = String(item?.title || '').trim();
     const hasCjk = /[\u4e00-\u9fff]/.test(apiTitle);
-    if (apiTitle && !hasCjk) return apiTitle;
-    return item?.title || item?.stockId || 'Listing';
+    if (apiTitle && !hasCjk) return upperBrandInTitle(apiTitle, item);
+    return upperBrandInTitle(item?.title, item) || item?.stockId || 'Listing';
   }
 
   function waUrl(item) {
@@ -217,9 +349,7 @@
   }
 
   function card(item, variant) {
-    const img = photoUrl(item);
-    const video = hasVideo(item);
-    const price = variant === 'engine' ? engineMoney(item.priceUsd) : money(item.priceUsd);
+    const price = variant === 'engine' ? engineMoney(item) : money(item.priceUsd);
     const tags = variant === 'engine'
       ? [
         window.EngineCardLabel?.formatEngineCodeDisplacementFuel?.(item) || item.engineCode,
@@ -228,22 +358,19 @@
       : [
         window.EngineCardLabel?.formatEngineCodeDisplacementFuel?.(item) || item.engineCode,
         item.year,
-        item.status,
+        inventoryStatusLabel(item.status),
       ].filter(Boolean);
-    const tagHtml = tags.map((tg) => `<span class="ptg">${esc(tg)}</span>`).join('')
-      + (video ? `<span class="ptg v">${esc(t('home.video', 'Video'))}</span>` : '');
-    const imgHtml = img
-      ? `<div class="pc-img real"><span class="pc-hc">${esc(item.stockId)}</span>${video ? `<span class="pc-video">${esc(t('home.video', 'Video'))}</span>` : ''}<img src="${esc(img)}" alt="" loading="lazy"></div>`
-      : `<div class="pc-img"><span class="pc-hc">${esc(item.stockId || '')}</span><div class="pc-ph">${ICONS.photo}<span>${esc(t('home.v4.photo', 'Photo'))}</span></div></div>`;
+    const tagHtml = tags.map((tg) => `<span class="ptg">${esc(tg)}</span>`).join('');
+    const imgHtml = coverMedia(item, 'pc-img', false);
     const note = variant === 'engine'
       ? `<div class="engine-price-note">${esc(t('home.v4.engineNote', 'Engine EXW reference'))}</div>`
       : '';
 
-    return `<a class="pcard" href="${esc(detailUrl(item))}">
+    return `<a class="pcard" href="${esc(detailUrl(item))}" data-brand="${esc(canonicalBrand(item))}">
       ${imgHtml}
       <div class="pc-body">
-        <div class="pc-make">${esc(item.brand || '')}</div>
-        <div class="pc-name">${esc(titleOf(item, variant))}</div>
+        <div class="pc-make notranslate" translate="no">${esc(brandName(item))}</div>
+        <div class="pc-name notranslate" translate="no">${esc(titleOf(item, variant))}</div>
         <div class="pc-tags">${tagHtml}</div>
         ${note}
         <div class="pc-foot">
@@ -318,16 +445,106 @@
     return use[((week % use.length) + use.length) % use.length];
   }
 
+  function evidenceCount(item) {
+    const photos = Array.isArray(item?.photos) ? item.photos.filter(Boolean).length : (firstPhoto(item) ? 1 : 0);
+    return photos + (hasVideo(item) ? 1 : 0);
+  }
+
+  function ledgerKind(item) {
+    if (isUsedCar(item)) return 'vehicle';
+    if (isMachinery(item)) return 'machinery';
+    if (isTruckListing(item)) return 'commercial';
+    if (passengerPartType(item) === 'engine') return 'powertrain';
+    return 'parts';
+  }
+
+  function ledgerVariant(item) {
+    const kind = ledgerKind(item);
+    if (kind === 'vehicle') return 'used';
+    if (kind === 'commercial') return 'truck';
+    if (kind === 'powertrain') return 'engine';
+    if (kind === 'machinery') return 'mach';
+    return 'half';
+  }
+
+  function ledgerRoute(item, forcedKind) {
+    const routes = {
+      vehicle: ['home.circular.routeVehicle', 'Vehicle reuse'],
+      powertrain: ['home.circular.routePowertrain', 'Powertrain reuse'],
+      commercial: ['home.circular.routeCommercial', 'Commercial asset reuse'],
+      machinery: ['home.circular.routeMachinery', 'Machinery reuse'],
+      parts: ['home.circular.routeParts', 'Core parts reuse'],
+    };
+    const route = routes[forcedKind || ledgerKind(item)] || routes.parts;
+    return t(route[0], route[1]);
+  }
+
+  function ledgerSpec(item) {
+    return [item?.year, item?.engineCode || item?.transmissionCode || item?.machineryType, item?.mileage]
+      .filter(Boolean)
+      .slice(0, 3)
+      .join(' · ');
+  }
+
+  function selectLedgerItems(groups, live) {
+    const selected = [];
+    const seen = new Set();
+    const seenKinds = new Set();
+    const add = (item, kind, allowRepeatedKind = false) => {
+      const resolvedKind = kind || ledgerKind(item);
+      if (!item || seen.has(item.stockId) || (!allowRepeatedKind && seenKinds.has(resolvedKind))) return;
+      seen.add(item.stockId);
+      seenKinds.add(resolvedKind);
+      selected.push({ item, kind: resolvedKind });
+    };
+    const all = take((live || []).filter((item) => firstPhoto(item) || hasVideo(item)), Math.max((live || []).length, 1));
+    add(all.find(hasVideo), null, true);
+    [
+      [groups.used, 'vehicle'],
+      [groups.engines, 'powertrain'],
+      [groups.trucks, 'commercial'],
+      [groups.machinery, 'machinery'],
+      [groups.half, 'parts'],
+    ].forEach(([group, kind]) => add(take(group || [], 1)[0], kind));
+    all.forEach((item) => { if (selected.length < 4) add(item, ledgerKind(item), true); });
+    return selected.slice(0, 4);
+  }
+
+  function renderLedger(items) {
+    const rows = (items || []).map((entry, index) => {
+      const item = entry?.item || entry;
+      const kind = entry?.item ? entry.kind : ledgerKind(item);
+      const variant = kind === 'vehicle' ? 'used' : kind === 'commercial' ? 'truck' : kind === 'powertrain' ? 'engine' : kind === 'machinery' ? 'mach' : 'half';
+      const amount = Number(item?.priceUsd);
+      const price = Number.isFinite(amount) && amount > 0
+        ? `<small>USD</small><b>${esc(Math.round(amount).toLocaleString('en-US'))}</b>`
+        : `<b>${esc(t('home.v4.quoteOnly', 'Quote'))}</b>`;
+      const evidence = tf('home.circular.evidenceCount', '{n} original evidence items', { n: evidenceCount(item) });
+      return `<article class="ledger-row${hasVideo(item) ? ' ledger-row--video' : ''}" data-brand="${esc(canonicalBrand(item))}">
+        <a class="ledger-media-link" href="${esc(detailUrl(item))}" aria-label="${esc(titleOf(item, variant))}">
+          ${coverMedia(item, 'ledger-media', index === 0)}
+        </a>
+        <a class="ledger-identity" href="${esc(detailUrl(item))}" translate="no">
+          <small translate="yes">${esc(ledgerRoute(item, kind))}</small>
+          <b class="notranslate">${esc(titleOf(item, variant))}</b>
+          <span class="notranslate">${esc(ledgerSpec(item) || item?.stockId || '')}</span>
+        </a>
+        <div class="ledger-evidence"><b class="notranslate" translate="no">${esc(item?.stockId || '')}</b><span><i aria-hidden="true"></i>${esc(evidence)}</span></div>
+        <p class="ledger-price">${price}</p>
+      </article>`;
+    }).join('');
+    return rows || `<p class="ledger-empty">${esc(t('home.v4.unavailable', 'Inventory temporarily unavailable'))}</p>`;
+  }
+
   function renderShowcase(item) {
     if (!item) return '';
-    const img = photoUrl(item);
-    const video = hasVideo(item);
-    const badges = video
-      ? `<span class="sc-badge vf">${esc(t('home.v4.videoVerifiedBadge', '✓ Video Verified'))}</span><span class="sc-badge vid">${esc(t('home.v4.watchVideo', 'Watch Video'))}</span>`
-      : `<span class="sc-badge vf">${esc(t('home.v4.inStock', '✓ In Stock'))}</span>`;
-    const imgBlock = img
-      ? `<div class="sc-img real"><img src="${esc(img)}" alt="" loading="eager" decoding="async"><div class="sc-badges">${badges}</div><span class="sc-hc-tag">${esc(item.stockId)}</span></div>`
-      : `<div class="sc-img"><div class="sc-img-ph">${ICONS.photo}<span>${esc(t('home.v4.productPhoto', 'Product photo'))}</span></div><span class="sc-hc-tag">${esc(item.stockId)}</span></div>`;
+    const badges = item.supplierVerified
+      ? `<span class="sc-badge vf">${esc(t('hc.verified', '✓ Verified'))}</span>`
+      : (isAvailable(item) ? `<span class="sc-badge vf">${esc(t('home.v4.inStock', '✓ In Stock'))}</span>` : '');
+    const imgBlock = coverMedia(item, 'sc-img', true, {
+      stockClass: 'sc-hc-tag',
+      extras: `<div class="sc-badges">${badges}</div>`,
+    });
 
     return `
       <div class="showcase-head" style="margin-bottom:12px">
@@ -335,11 +552,11 @@
         <div class="sec-h" style="margin-bottom:0">${esc(t('home.v4.handpicked', 'Handpicked this week'))}</div>
         <div class="sc-note" style="margin:6px 0 0">${esc(t('home.v4.featuredRotate', 'Auto-updates every Sunday'))}</div>
       </div>
-      <div class="showcase-card">
+      <div class="showcase-card" data-brand="${esc(canonicalBrand(item))}">
         ${imgBlock}
         <div class="sc-body">
           <div>
-            <div class="sc-kicker">${esc(item.brand || '')} · ${esc(item.year || '')}</div>
+            <div class="sc-kicker notranslate" translate="no">${esc(brandName(item))} · ${esc(item.year || '')}</div>
             <div class="sc-name">${esc(item.model || '')}<br>${esc(
               isTruckCab(item)
                 ? (item.engineCode ? `${item.engineCode} ` : '') + t('home.v4.cabSuffix', 'Truck Cab')
@@ -356,28 +573,12 @@
             <div class="sc-price">${esc(money(item.priceUsd))} <span class="sc-exw">EXW</span></div>
             <div class="sc-note">${esc(t('home.v4.liveNote', 'Live inventory · asia-power.com'))}</div>
             <div class="sc-ctas">
-              <a class="sc-wa" href="${esc(waUrl(item))}" target="_blank" rel="noopener">WhatsApp</a>
               <a class="sc-view" href="${esc(detailUrl(item))}">${esc(t('home.v4.viewDetails', 'View Details →'))}</a>
+              <a class="sc-wa" href="${esc(waUrl(item))}" target="_blank" rel="noopener">WhatsApp</a>
             </div>
           </div>
         </div>
       </div>`;
-  }
-
-  /** Match featured frame to photo orientation (mixed 4:3 / 3:4 inventory). */
-  function bindShowcasePhotoOrient(root) {
-    const wrap = root || document.getElementById('showcase-wrap');
-    if (!wrap) return;
-    wrap.querySelectorAll('.sc-img.real img').forEach((el) => {
-      const apply = () => {
-        if (!el.naturalWidth || !el.naturalHeight) return;
-        const box = el.closest('.sc-img');
-        if (!box) return;
-        box.dataset.orient = el.naturalHeight > el.naturalWidth ? 'portrait' : 'landscape';
-      };
-      if (el.complete) apply();
-      else el.addEventListener('load', apply, { once: true });
-    });
   }
 
   function fillRail(id, items, variant) {
@@ -414,6 +615,7 @@
         brands: brands.size,
       },
       featured,
+      ledger: selectLedgerItems({ half, trucks, machinery, used, engines }, live),
       shelves: {
         halfCuts: take(half, SHELF_LIMIT),
         engines: take(engines, SHELF_LIMIT),
@@ -430,6 +632,12 @@
     const c = data.counts || {};
     const shelves = data.shelves || {};
 
+    const ledger = document.getElementById('circular-ledger');
+    if (ledger) {
+      const fallbackLedger = data.ledger || [shelves.usedCars?.[0], shelves.engines?.[0], shelves.trucks?.[0], shelves.machinery?.[0], shelves.halfCuts?.[0]].filter(Boolean).slice(0, 4);
+      ledger.innerHTML = renderLedger(fallbackLedger);
+    }
+
     const meta = document.getElementById('snap-meta');
     if (meta) {
       meta.removeAttribute('data-i18n');
@@ -444,8 +652,8 @@
     if (stats) {
       stats.innerHTML = `
         <div class="stat"><div class="stat-n">${esc(c.total)}<em>+</em></div><div class="stat-l">${esc(t('home.v4.stat.items', 'Items in stock'))}</div></div>
-        <div class="stat"><div class="stat-n">110<em>+</em></div><div class="stat-l">${esc(t('home.v4.stat.destinations', 'Export destinations'))}</div></div>
-        <div class="stat"><div class="stat-n">24<em>h</em></div><div class="stat-l">${esc(t('home.v4.stat.quote', 'Quote turnaround'))}</div></div>
+        <div class="stat"><div class="stat-n">${esc(c.half)}<em>+</em></div><div class="stat-l">${esc(t('home.v4.stat.halfCuts', 'Half-cuts'))}</div></div>
+        <div class="stat"><div class="stat-n">${esc(c.engineCandidates)}<em>+</em></div><div class="stat-l">${esc(t('home.v4.stat.engines', 'Engine listings'))}</div></div>
         <div class="stat"><div class="stat-n">${esc(c.brands)}<em>+</em></div><div class="stat-l">${esc(t('home.v4.stat.brands', 'Vehicle brands'))}</div></div>`;
     }
 
@@ -458,26 +666,26 @@
 
     // Category cards → list pages (same targets as top nav; marker: nav-list-direct-v1)
     const cats = [
-      { name: t('home.v4.nav.halfCuts', 'Half-Cuts'), count: c.half, href: '/half-cuts/', icon: ICONS.half, on: true },
-      { name: t('home.v4.cat.engines', 'Engines'), count: c.engineCandidates, href: '/engines/', icon: ICONS.engine },
-      { name: t('home.v4.nav.trucks', 'Trucks'), count: c.truck, href: '/trucks/', icon: ICONS.truck },
-      { name: t('home.v4.cat.construction', 'Construction'), count: c.mach, href: '/machinery/', icon: ICONS.mach },
-      { name: t('home.v4.nav.usedCars', 'Used Cars'), count: c.used, href: '/half-cuts/?cat=used-cars', icon: ICONS.used },
+      { name: t('home.circular.routeVehicleTitle', 'Complete vehicle reuse'), desc: t('home.circular.routeVehicleText', 'Match complete vehicles with their next cross-border user.'), count: c.used, href: '/half-cuts/?cat=used-cars', icon: ICONS.used },
+      { name: t('home.circular.routePowertrainTitle', 'Powertrain reuse'), desc: t('home.circular.routePowertrainText', 'Engines and gearboxes for repair, replacement and rebuild.'), count: c.engineCandidates, href: '/engines/', icon: ICONS.engine },
+      { name: t('home.circular.routeCommercialTitle', 'Commercial asset reuse'), desc: t('home.circular.routeCommercialText', 'Keep trucks and cabs serving transport and production.'), count: c.truck, href: '/trucks/', icon: ICONS.truck },
+      { name: t('home.circular.routeMachineryTitle', 'Machinery reuse'), desc: t('home.circular.routeMachineryText', 'Move equipment into its next project or production setting.'), count: c.mach, href: '/machinery/', icon: ICONS.mach },
+      { name: t('home.circular.routePartsTitle', 'Core parts reuse'), desc: t('home.circular.routePartsText', 'Recover usable assemblies and body parts from existing assets.'), count: c.half, href: '/half-cuts/', icon: ICONS.half },
     ];
     const catGrid = document.getElementById('cat-grid');
     if (catGrid) {
-      catGrid.innerHTML = cats.map((cat) => `
-        <a class="cat-card${cat.on ? ' on' : ''}" href="${esc(cat.href)}">
-          <div class="cat-ic">${cat.icon}</div>
-          <div class="cat-n">${esc(cat.name)}</div>
-          <div class="cat-c">${esc(cat.count)} ${esc(t('home.v4.listings', 'listings'))}</div>
+      catGrid.innerHTML = cats.map((cat, index) => `
+        <a class="cat-card route-card${index === 0 || index === 3 ? ' route-card--wide' : ''}" href="${esc(cat.href)}">
+          <span class="route-index">${String.fromCharCode(65 + index)} / ${String(index + 1).padStart(2, '0')}</span>
+          <span class="cat-ic route-icon">${cat.icon}</span>
+          <span class="route-copy"><small>${esc(cat.count)} ${esc(t('home.v4.listings', 'listings'))}</small><b class="cat-n">${esc(cat.name)}</b><em>${esc(cat.desc)}</em></span>
+          <span class="route-arrow" aria-hidden="true">↗</span>
         </a>`).join('');
     }
 
     const showcase = document.getElementById('showcase-wrap');
     if (showcase) {
       showcase.innerHTML = renderShowcase(data.featured);
-      bindShowcasePhotoOrient(showcase);
     }
 
     const seeHalf = document.getElementById('see-half');
@@ -491,15 +699,7 @@
     fillRail('rail-trucks', shelves.trucks, 'truck');
     fillRail('rail-machinery', shelves.machinery, 'mach');
     fillRail('rail-used', shelves.usedCars, 'used');
-
-    const trust = document.getElementById('trust-w');
-    if (trust) {
-      trust.innerHTML = `
-        <div class="ti"><div class="ti-ic">${ICONS.half}</div><div class="ti-n">${esc(c.total)}<em>+</em></div><div class="ti-l">${esc(t('home.v4.stat.items', 'Items in stock'))}</div></div>
-        <div class="ti"><div class="ti-ic">${ICONS.engine}</div><div class="ti-n">110<em>+</em></div><div class="ti-l">${esc(t('home.v4.stat.destinations', 'Export destinations'))}</div></div>
-        <div class="ti"><div class="ti-ic">${ICONS.truck}</div><div class="ti-n">${esc(c.brands)}<em>+</em></div><div class="ti-l">${esc(t('home.v4.stat.brands', 'Vehicle brands'))}</div></div>
-        <div class="ti"><div class="ti-ic">${ICONS.mach}</div><div class="ti-n">24<em>h</em></div><div class="ti-l">${esc(t('home.v4.stat.quote', 'Quote turnaround'))}</div></div>`;
-    }
+    bindCoverVideos(document);
 
     const navWa = document.getElementById('nav-wa');
     if (navWa) navWa.href = waUrl(null);
