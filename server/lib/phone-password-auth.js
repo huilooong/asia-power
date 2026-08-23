@@ -69,6 +69,7 @@ function createPhonePasswordAuth({
   buyerStore,
   limitLogin,
   limitRegister,
+  authUser,
 }) {
   const json = jsonFn;
   const requireSmsOtp = String(process.env.AUTH_REQUIRE_SMS_OTP || '').trim() === '1';
@@ -191,8 +192,9 @@ function createPhonePasswordAuth({
         maskedPhone: maskPhone(phoneNorm),
         uploadCount,
         canSetPassword: role === 'supplier'
-          ? Boolean(user || uploadCount > 0)
-          : Boolean(user) || true, // buyers can register fresh
+          ? Boolean(requireSmsOtp && (user || uploadCount > 0))
+          : Boolean(requireSmsOtp && user),
+        passwordRecoveryMode: requireSmsOtp ? 'sms-otp' : 'authenticated-or-manual',
         matchField: 'phoneNormalized ↔ supplierPhoneNormalized|supplierPhone',
       });
       return true;
@@ -334,9 +336,8 @@ function createPhonePasswordAuth({
       return true;
     }
 
-    // Set / change password — buyer or supplier
-    // Default: no SMS (phone must match existing account or supplier uploads).
-    // AUTH_REQUIRE_SMS_OTP=1 re-enables OTP check.
+    // Set / change password — buyer or supplier. Without SMS this route requires
+    // an existing authenticated session and the current password when one exists.
     if (req.method === 'POST' && pathname === '/api/auth/phone/password/set') {
       if (limitRegister && !limitRegister(req)) {
         json(res, 429, { error: 'Too many attempts' });
@@ -367,7 +368,27 @@ function createPhonePasswordAuth({
 
       let user;
       let uploadCount = 0;
-      if (role === 'supplier') {
+      if (!requireSmsOtp) {
+        const signedIn = typeof authUser === 'function' ? authUser(req) : null;
+        const signedInPhone = normalizePhone(signedIn?.phoneNormalized || signedIn?.phone, signedIn?.countryCode || '');
+        if (!signedIn || signedIn.role !== role || !phonesMatch(signedInPhone, phoneNorm)) {
+          json(res, 403, {
+            error: '当前未启用短信验证。修改密码必须先登录；无法登录请联系 AsiaPower 人工核验。',
+            needsManualRecovery: true,
+          });
+          return true;
+        }
+        user = findUserByPhone(phoneNorm, role);
+        if (!user || user.id !== signedIn.id) {
+          json(res, 403, { error: '登录账户与手机号不匹配' });
+          return true;
+        }
+        if (hasRealPassword(user) && !verifyUserPassword(user, body.currentPassword)) {
+          json(res, 401, { error: '当前密码错误' });
+          return true;
+        }
+        uploadCount = role === 'supplier' ? countUploadsForPhone(phoneNorm) : 0;
+      } else if (role === 'supplier') {
         const linked = findOrLinkSupplier(phoneNorm, countryCode);
         user = linked.user;
         uploadCount = linked.uploadCount;

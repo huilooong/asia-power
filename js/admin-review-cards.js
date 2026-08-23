@@ -263,6 +263,22 @@
     return edits;
   }
 
+  function renderRevisionNotice(submission) {
+    if (submission.submissionKind !== 'inventory-revision') return '';
+    const changes = Array.isArray(submission.revisionChanges) ? submission.revisionChanges : [];
+    const rows = changes.map((change) => {
+      const before = typeof change.before === 'object' ? JSON.stringify(change.before) : String(change.before ?? '—');
+      const after = typeof change.after === 'object' ? JSON.stringify(change.after) : String(change.after ?? '—');
+      return `<li><strong>${escapeHtml(change.field)}</strong><span>${escapeHtml(before)}</span><b>→</b><span>${escapeHtml(after)}</span></li>`;
+    }).join('');
+    return `
+      <section class="admin-review-revision-notice">
+        <strong>已上线库存修订 / Published inventory revision</strong>
+        <p>库存 ${escapeHtml(submission.revisionOfStockId || submission.approvedStockId || '—')} 当前线上版本在审核完成前保持不变。价格、库存状态和上下架状态不由本次审核覆盖。</p>
+        ${rows ? `<ul>${rows}</ul>` : '<p>未记录字段差异，请谨慎核对。</p>'}
+      </section>`;
+  }
+
   function renderSubmissionCard(submission, options = {}) {
     const { showActions = false } = options;
     const actions = showActions ? `
@@ -292,6 +308,7 @@
           </div>
           <time datetime="${escapeHtml(submission.createdAt)}">${formatDate(submission.createdAt)}</time>
         </header>
+        ${renderRevisionNotice(submission)}
         <p class="admin-review-vin"><strong>${t('fullVin')}:</strong> <code>${escapeHtml(submission.vin || '—')}</code></p>
         ${showActions ? renderEditForm(submission) : ''}
         <div class="admin-review-grid">

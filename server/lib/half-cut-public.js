@@ -40,6 +40,14 @@ const SUPPLIER_FIELDS = [
   'categoryCorrection',
   'nameCorrections',
   'updatedBySupplierId',
+  'listingVisibility',
+  'submissionKind',
+  'revisionOfStockId',
+  'revisionChanges',
+  'previousRevisionId',
+  'baseUpdatedAt',
+  'withdrawnAt',
+  'withdrawnBySupplierId',
 ];
 
 const EXTRA_BRAND_ZH_TO_EN = {
@@ -251,11 +259,17 @@ function toPublicCatalogItem(item, maxPhotos = 4) {
 }
 
 function toPublicCatalogList(items, maxPhotos = 4) {
-  return (items || []).map((item) => toPublicCatalogItem(item, maxPhotos)).filter(Boolean);
+  return (items || [])
+    .filter((item) => String(item?.listingVisibility || 'public').toLowerCase() !== 'delisted')
+    .map((item) => toPublicCatalogItem(item, maxPhotos))
+    .filter(Boolean);
 }
 
 function toPublicList(items) {
-  return (items || []).map(toPublicItem).filter(Boolean);
+  return (items || [])
+    .filter((item) => String(item?.listingVisibility || 'public').toLowerCase() !== 'delisted')
+    .map(toPublicItem)
+    .filter(Boolean);
 }
 
 function stripSubmissionForStorage(submission) {

@@ -52,9 +52,7 @@
   const modeParam = params.get('mode') || '';
   // OTP modes redirected to password (SMS UI hidden)
   const initialBuyerMode = modeParam === 'register' ? 'register' : 'password';
-  const initialSupplierMode = modeParam === 'register' ? 'register'
-    : modeParam === 'set-password' || modeParam === 'set' ? 'set-password'
-      : 'password';
+  const initialSupplierMode = modeParam === 'register' ? 'register' : 'password';
   if (params.get('error')) toast(params.get('error'));
 
   let oauthDemo = true;
@@ -101,14 +99,13 @@
   }
 
   function setSupplierMode(mode) {
-    const allowed = new Set(['password', 'set-password', 'register']);
+    const allowed = new Set(['password', 'register']);
     const safe = allowed.has(mode) ? mode : 'password';
     document.querySelectorAll('#supplier-pane .mini-tab[data-mode]').forEach((b) => {
       b.classList.toggle('on', b.dataset.mode === safe);
     });
     const map = {
       password: 'supplier-password-box',
-      'set-password': 'supplier-set-password-box',
       login: 'supplier-login-box',
       register: 'supplier-register-box',
     };
@@ -279,54 +276,10 @@
       body: JSON.stringify(body),
     }).then((r) => r.json()).catch(() => ({ error: 'Network error' }));
     if (res.needsPasswordSetup) {
-      toast(res.error || '请先设密');
-      setSupplierMode('set-password');
-      document.getElementById('sup-set-phone').value = body.phone;
-      document.getElementById('sup-set-cc').value = body.countryCode;
-      const hint = document.getElementById('sup-set-hint');
-      if (hint && res.uploadCount) {
-        hint.innerHTML = `检测到该手机号有 <strong>${res.uploadCount}</strong> 条历史上传，设密后可登录查看（无需短信）。`;
-      }
+      toast('该账号尚未安全设密，请联系 AsiaPower 运营人工核验，不能仅凭手机号重置密码。');
       return;
     }
     if (res.error) return toast(res.error);
-    location.href = res.needsProfile
-      ? '/supplier-portal/dashboard.html?complete=1'
-      : (params.get('next') || '/supplier-portal/dashboard.html');
-  });
-
-  // —— Supplier set password (no SMS; phone must match account or uploads) ——
-  document.getElementById('sup-set-submit').addEventListener('click', async () => {
-    const body = {
-      phone: document.getElementById('sup-set-phone').value.trim(),
-      countryCode: document.getElementById('sup-set-cc').value,
-      password: document.getElementById('sup-set-password').value,
-      passwordConfirm: document.getElementById('sup-set-password2').value,
-      role: 'supplier',
-    };
-    if (!requireFields([
-      ['手机号', body.phone],
-      ['密码', body.password],
-      ['确认密码', body.passwordConfirm],
-    ])) return;
-    if (body.password !== body.passwordConfirm) return toast('两次密码不一致');
-    if (body.password.length < 8) return toast('密码至少 8 位');
-    const btn = document.getElementById('sup-set-submit');
-    btn.disabled = true;
-    const res = await fetch('/api/auth/phone/password/set', {
-      method: 'POST',
-      credentials: 'include',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(body),
-    }).then((r) => r.json()).catch(() => ({ error: 'Network error' }));
-    btn.disabled = false;
-    if (res.needsRegistration) {
-      toast(res.error || '请先注册');
-      setSupplierMode('register');
-      return;
-    }
-    if (res.error) return toast(res.error);
-    toast('密码已设置，进入工作台');
     location.href = res.needsProfile
       ? '/supplier-portal/dashboard.html?complete=1'
       : (params.get('next') || '/supplier-portal/dashboard.html');
@@ -358,6 +311,7 @@
     const body = {
       phone: document.getElementById('reg-phone').value.trim(),
       countryCode: document.getElementById('reg-cc').value,
+      inviteCode: document.getElementById('reg-invite').value.trim(),
       password,
       passwordConfirm,
       supplierName: document.getElementById('reg-company').value.trim(),
@@ -372,6 +326,7 @@
     };
     const missingPairs = [
       ['手机号', body.phone],
+      ['邀请代码', body.inviteCode],
       ['密码', body.password],
       ['确认密码', body.passwordConfirm],
       ['公司名称', body.supplierName],

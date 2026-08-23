@@ -30,6 +30,8 @@ function createPhoneOtpAuth({
   id,
   limitSend,
   limitVerify,
+  validateSupplierInvite,
+  consumeSupplierInvite,
 }) {
   const json = jsonFn;
   const buyerStore = createBuyerStore(dataDir);
@@ -407,6 +409,7 @@ function createPhoneOtpAuth({
       const code = String(body.code || body.otp || '').trim();
       const password = String(body.password || '');
       const passwordConfirm = body.passwordConfirm != null ? String(body.passwordConfirm) : password;
+      const inviteCode = String(body.inviteCode || '').trim();
       if (!phoneNorm) {
         json(res, 400, { error: 'phone required' });
         return true;
@@ -436,6 +439,17 @@ function createPhoneOtpAuth({
           return true;
         }
         const profile = assertRequiredProfile(body);
+        if (!requireSmsOtp) {
+          if (!inviteCode) {
+            json(res, 403, { error: '供应商注册需要 AsiaPower 邀请代码' });
+            return true;
+          }
+          if (typeof validateSupplierInvite !== 'function' || typeof consumeSupplierInvite !== 'function') {
+            json(res, 503, { error: '供应商邀请服务暂不可用' });
+            return true;
+          }
+          validateSupplierInvite({ code: inviteCode, phone: body.phone, countryCode });
+        }
         let user = ensureSupplierUser({
           phoneNorm,
           countryCode,
@@ -459,6 +473,14 @@ function createPhoneOtpAuth({
           saveUsers();
           user = next;
           console.log(`[auth] supplier register+password phone=${phoneNorm.slice(0, 3)}****${phoneNorm.slice(-4)}`);
+        }
+        if (!requireSmsOtp) {
+          consumeSupplierInvite({
+            code: inviteCode,
+            phone: body.phone,
+            countryCode,
+            supplierId: user.id,
+          });
         }
         issueSession(res, user);
       } catch (err) {

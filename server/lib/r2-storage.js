@@ -7,10 +7,11 @@ let S3Client;
 let PutObjectCommand;
 let CopyObjectCommand;
 let GetObjectCommand;
+let DeleteObjectCommand;
 
 function loadS3() {
   if (S3Client) return;
-  ({ S3Client, PutObjectCommand, CopyObjectCommand, GetObjectCommand } = require('@aws-sdk/client-s3'));
+  ({ S3Client, PutObjectCommand, CopyObjectCommand, GetObjectCommand, DeleteObjectCommand } = require('@aws-sdk/client-s3'));
 }
 
 function env(name) {
@@ -125,6 +126,11 @@ async function getObjectBuffer(key) {
   }
 }
 
+async function deleteObject(key) {
+  loadS3();
+  await s3().send(new DeleteObjectCommand({ Bucket: bucket(), Key: key }));
+}
+
 function createPresignedPutUrl() {
   return null;
 }
@@ -147,6 +153,7 @@ module.exports = {
   putObjectFromFile,
   getObjectBuffer,
   copyObject,
+  deleteObject,
   pendingPhotoKey,
   pendingVideoKey,
   publicPhotoKey,

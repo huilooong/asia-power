@@ -382,12 +382,17 @@ const { createPhonePasswordAuth } = require(
   [path.join(__dirname, 'lib', 'phone-password-auth.js'), path.join(__dirname, '..', 'server', 'lib', 'phone-password-auth.js')]
     .find((candidate) => fs.existsSync(candidate)) || path.join(__dirname, '..', 'server', 'lib', 'phone-password-auth.js')
 );
+const { createSupplierInviteStore } = require(
+  [path.join(__dirname, 'lib', 'supplier-invites.js'), path.join(__dirname, '..', 'server', 'lib', 'supplier-invites.js')]
+    .find((candidate) => fs.existsSync(candidate)) || path.join(__dirname, '..', 'server', 'lib', 'supplier-invites.js')
+);
 
 const orderStore = createOrderStore(DATA_DIR);
 const limitOtpSend = createRateLimiter({ windowMs: 60 * 60 * 1000, max: 12 });
 const limitOtpVerify = createRateLimiter({ windowMs: 15 * 60 * 1000, max: 30 });
 const limitPasswordAuth = createRateLimiter({ windowMs: 15 * 60 * 1000, max: 25 });
 const limitPasswordRegister = createRateLimiter({ windowMs: 60 * 60 * 1000, max: 12 });
+const supplierInvites = createSupplierInviteStore(DATA_DIR);
 
 const phoneOtp = createPhoneOtpAuth({
   dataDir: DATA_DIR,
@@ -400,6 +405,8 @@ const phoneOtp = createPhoneOtpAuth({
   id,
   limitSend: (req) => limitOtpSend(req),
   limitVerify: (req) => limitOtpVerify(req),
+  validateSupplierInvite: (payload) => supplierInvites.validate(payload),
+  consumeSupplierInvite: (payload) => supplierInvites.consume(payload),
 });
 
 const phonePassword = createPhonePasswordAuth({
@@ -419,6 +426,7 @@ const phonePassword = createPhonePasswordAuth({
   buyerStore: phoneOtp.buyerStore,
   limitLogin: (req) => limitPasswordAuth(req),
   limitRegister: (req) => limitPasswordRegister(req),
+  authUser: (req) => authUser(req),
 });
 
 const stripeDeposit = createStripeDeposit({
@@ -1646,26 +1654,9 @@ const server = http.createServer(async (req, res) => {
       }
 
       if (req.method === 'POST' && p === '/api/register') {
-        if (!REGISTRATION_ENABLED) return json(res, 403, { error: 'Registration disabled' });
-        if (!limitRegister(req)) return json(res, 429, { error: 'Too many requests' });
-        const body = await readBody(req);
-        const { username, password, supplierName, countryCode, phone } = body;
-        if (!username || !password || !countryCode || !phone) return json(res, 400, { error: 'username/password/countryCode/phone required' });
-        if (users.some(u => u.username === username)) return json(res, 409, { error: 'username exists' });
-        const { salt, hash } = hashPassword(password);
-        const user = {
-          id: id('sup'),
-          username,
-          role: 'supplier',
-          supplierName: supplierName || username,
-          countryCode: String(countryCode).trim(),
-          phone: String(phone).trim(),
-          salt,
-          hash
-        };
-        users.push(user);
-        saveJson(USERS_FILE, users);
-        return json(res, 201, { ok: true });
+        return json(res, 410, {
+          error: 'Legacy registration is closed. Use /api/supplier/register with a phone-bound AsiaPower invitation.',
+        });
       }
 
       if (req.method === 'POST' && p === '/api/login') {
@@ -1722,6 +1713,28 @@ const server = http.createServer(async (req, res) => {
       if (await phoneOtp.handleOtpRoutes(req, res, p, (r) => readBody(r, MAX_AUTH_BODY))) return;
       if (await phonePassword.handlePasswordRoutes(req, res, p, (r) => readBody(r, MAX_AUTH_BODY))) return;
       if (await oauthAuth.handleOAuthRoutes(req, res, p, url, (r) => readBody(r, MAX_AUTH_BODY))) return;
+
+      if (req.method === 'GET' && p === '/api/admin/supplier-invites') {
+        if (!requireAdmin(req, res)) return;
+        return json(res, 200, { invites: supplierInvites.list() });
+      }
+
+      if (req.method === 'POST' && p === '/api/admin/supplier-invites') {
+        const admin = authUser(req);
+        if (!requireAdmin(req, res)) return;
+        try {
+          const body = await readBody(req, MAX_AUTH_BODY);
+          const invite = supplierInvites.create({
+            phone: body.phone,
+            countryCode: body.countryCode || '+86',
+            expiresInHours: body.expiresInHours,
+            createdBy: admin?.id || admin?.username || 'admin',
+          });
+          return json(res, 201, { ok: true, invite });
+        } catch (err) {
+          return json(res, err.statusCode || 400, { error: err.message || 'Invite creation failed' });
+        }
+      }
 
       if (req.method === 'GET' && p === '/api/admin/buyers') {
         if (!requireAdmin(req, res)) return;

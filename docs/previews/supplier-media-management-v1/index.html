@@ -1,0 +1,205 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="dark light">
+  <title>供应商库存编辑 · AsiaPower 预览</title>
+  <link rel="icon" href="/assets/favicon.png" type="image/png">
+  <link rel="stylesheet" href="./styles.css?v=supplier-media-v1-20260823b">
+</head>
+<body>
+  <header class="topbar">
+    <a class="brand" href="#" aria-label="AsiaPower">
+      <img src="/assets/logo.svg" alt="AsiaPower">
+    </a>
+    <div class="preview-flag"><span></span> 交互预览 · 不保存数据</div>
+    <div class="account-chip">
+      <div class="avatar">盛</div>
+      <div><strong>盛元集团</strong><span>供应商账户</span></div>
+      <button type="button" aria-label="账户菜单">⌄</button>
+    </div>
+  </header>
+
+  <div class="shell">
+    <aside class="sidebar" aria-label="供应商中心导航">
+      <div class="sidebar-label">供应商中心</div>
+      <nav>
+        <a href="#"><span>⌂</span> 工作台概览</a>
+        <a href="#"><span>＋</span> 发布新库存</a>
+        <a class="active" href="#"><span>▦</span> 我的库存 <b>24</b></a>
+        <a href="#"><span>◌</span> 审核与反馈 <b>3</b></a>
+        <a href="#"><span>↗</span> 询价与报价</a>
+        <a href="#"><span>◇</span> 公司与认证</a>
+      </nav>
+      <div class="sidebar-bottom">
+        <a href="#"><span>⚙</span> 账户与安全</a>
+        <p>需要协助？</p>
+        <button type="button" id="support-btn">联系平台运营</button>
+      </div>
+    </aside>
+
+    <main>
+      <div class="mobile-nav">
+        <button type="button" id="mobile-menu" aria-expanded="false">☰ 供应商中心</button>
+        <span>我的库存</span>
+      </div>
+
+      <section class="page-heading">
+        <div>
+          <a class="back-link" href="#">← 返回我的库存</a>
+          <p class="eyebrow">INVENTORY WORKBENCH / 库存工作台</p>
+          <h1>编辑已上线库存</h1>
+          <p>管理公开参数、照片顺序与视频。重要变更提交后进入审核，当前公开版本保持在线。</p>
+        </div>
+        <div class="heading-actions">
+          <button class="button button-quiet" type="button" data-demo="public">查看公开页面 ↗</button>
+          <button class="button button-primary" type="button" id="submit-review">提交审核</button>
+        </div>
+      </section>
+
+      <div id="loading" class="loading-card">
+        <div class="loading-line wide"></div><div class="loading-line"></div>
+        <p>正在读取 AsiaPower 真实公开库存…</p>
+      </div>
+
+      <div id="workspace" class="workspace" hidden>
+        <section class="record-strip">
+          <div class="record-thumb"><img id="record-thumb" alt="库存缩略图"></div>
+          <div class="record-identity">
+            <div><span class="status-dot"></span> 已上线</div>
+            <h2 id="record-title">—</h2>
+            <p><span id="record-id">—</span><i></i><span id="record-meta">—</span></p>
+          </div>
+          <dl>
+            <div><dt>当前 EXW 价格</dt><dd id="record-price">—</dd></div>
+            <div><dt>最后更新</dt><dd>2026-08-23</dd></div>
+          </dl>
+        </section>
+
+        <div class="revision-banner">
+          <div class="revision-icon">↻</div>
+          <div>
+            <strong>这次修改将创建待审版本</strong>
+            <p>照片、视频、品牌、型号、年份、VIN、里程与核心规格不会直接覆盖公开商品；审核通过前，客户继续看到当前版本。</p>
+          </div>
+          <span>安全发布</span>
+        </div>
+
+        <div class="editor-grid">
+          <div class="editor-column">
+            <section class="card media-card">
+              <header class="card-head">
+                <div>
+                  <p class="section-index">01 / 商品媒体</p>
+                  <h3>照片与视频</h3>
+                  <p>拖动调整顺序。视频存在时优先作为公开封面；照片仍作为加载失败时的备用封面。</p>
+                </div>
+                <div class="media-count"><strong id="photo-count">0</strong><span>/ 15 张照片</span></div>
+              </header>
+
+              <div id="video-row" class="video-row" hidden>
+                <div class="video-poster" id="video-poster"><span class="play">▶</span><em>视频封面</em></div>
+                <div class="video-copy">
+                  <span class="media-type">VIDEO / 视频</span>
+                  <strong id="video-name">库存实拍视频</strong>
+                  <p>公开商品将优先显示视频；首张照片作为静态后备封面。</p>
+                </div>
+                <button class="icon-button danger" type="button" id="remove-video" aria-label="移除视频">移除</button>
+              </div>
+
+              <div id="gallery" class="gallery" aria-live="polite"></div>
+
+              <div class="upload-row">
+                <label class="upload-zone" for="photo-input">
+                  <span class="upload-plus">＋</span>
+                  <strong>添加实拍照片</strong>
+                  <small>JPG / PNG / WEBP · 每张最大 12MB · 最多 15 张</small>
+                  <input id="photo-input" type="file" accept="image/jpeg,image/png,image/webp" multiple>
+                </label>
+                <label class="upload-zone compact" for="video-input">
+                  <span class="upload-plus">▶</span>
+                  <strong>上传或替换视频</strong>
+                  <small>MP4 / MOV · 最大 180MB</small>
+                  <input id="video-input" type="file" accept="video/mp4,video/quicktime">
+                </label>
+              </div>
+            </section>
+
+            <section class="card archive-card">
+              <button class="archive-head" type="button" id="archive-toggle" aria-expanded="false">
+                <span><b>02</b><strong>私有证据归档</strong><em id="archive-count">0</em></span>
+                <span class="chevron">⌄</span>
+              </button>
+              <div id="archive-body" class="archive-body" hidden>
+                <p>从公开商品移除的原始媒体不会物理删除，会保留上传人、时间和变更记录，仅平台审核人员可见。</p>
+                <div id="archive-list" class="archive-list"></div>
+              </div>
+            </section>
+
+            <section class="card specs-card">
+              <header class="card-head">
+                <div><p class="section-index">03 / 公开参数</p><h3>关键商品信息</h3></div>
+                <span class="audit-chip">变更留痕</span>
+              </header>
+              <div class="form-grid">
+                <label><span>品牌</span><input id="brand" autocomplete="off"></label>
+                <label><span>型号</span><input id="model" autocomplete="off"></label>
+                <label><span>年份</span><input id="year" inputmode="numeric"></label>
+                <label><span>里程</span><input id="mileage" autocomplete="off"></label>
+                <label><span>EXW 价格（USD）<i class="instant">即时生效</i></span><input id="price" inputmode="decimal"></label>
+                <label><span>库存状态<i class="instant">即时生效</i></span><select id="status"><option>现货</option><option>已预订</option><option>运输中</option><option>已售</option><option>暂停展示</option></select></label>
+              </div>
+            </section>
+          </div>
+
+          <aside class="preview-column">
+            <section class="preview-card">
+              <div class="preview-head">
+                <div><p class="section-index">LIVE PREVIEW</p><h3>客户所见预览</h3></div>
+                <span>未保存</span>
+              </div>
+              <div class="preview-tabs" role="tablist">
+                <button class="active" type="button" data-view="card">目录卡片</button>
+                <button type="button" data-view="mobile">移动端</button>
+                <button type="button" data-view="detail">详情页</button>
+              </div>
+              <div id="customer-preview" class="customer-preview view-card">
+                <div class="preview-device">
+                  <div class="preview-media" id="preview-media"><span class="preview-play">▶</span><span class="preview-video-label">视频</span></div>
+                  <div class="preview-content">
+                    <div class="preview-status"><span></span> 现货</div>
+                    <h4 id="preview-title">—</h4>
+                    <p id="preview-meta">—</p>
+                    <div class="preview-price"><span>EXW 价格</span><strong id="preview-price">—</strong></div>
+                    <div class="preview-evidence"><span>实拍证据</span><b id="preview-evidence">0 张照片</b></div>
+                    <button type="button">获取报价</button>
+                  </div>
+                </div>
+              </div>
+              <p class="preview-note">预览只使用真实公开库存与本地待上传媒体，不会向服务器写入任何内容。</p>
+            </section>
+
+            <section class="save-card">
+              <div><span class="save-dot"></span><strong id="change-state">尚无待提交变更</strong></div>
+              <p>价格与库存状态将单独即时生效并留痕；其他变更进入审核。</p>
+              <button class="button button-primary" type="button" id="save-draft">保存为草稿</button>
+            </section>
+          </aside>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <div id="toast" class="toast" role="status" aria-live="polite"></div>
+  <div id="dialog" class="dialog-backdrop" hidden>
+    <div class="dialog" role="dialog" aria-modal="true" aria-labelledby="dialog-title">
+      <span class="dialog-mark">PREVIEW ONLY</span>
+      <h2 id="dialog-title">预览不会提交或保存</h2>
+      <p id="dialog-copy">生产实现需要在您确认此交互后，接入供应商权限、媒体上传、私有证据归档和版本审核接口。</p>
+      <button class="button button-primary" type="button" id="dialog-close">明白</button>
+    </div>
+  </div>
+  <script src="./app.js?v=supplier-media-v1-20260823" defer></script>
+</body>
+</html>

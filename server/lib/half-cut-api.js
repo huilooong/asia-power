@@ -33,6 +33,9 @@ const { loadJson, saveJsonAtomic } = require('./json-store');
 const { createDataIntakeLog } = require('./data-intake-log');
 const { normalizePhone, phonesMatch } = require('./phone-normalize');
 const { createYoutubeUploadQueue } = require('./youtube-upload-queue');
+const inventoryRevisions = require('./inventory-revisions');
+const { createInventoryAuditLog } = require('./inventory-audit-log');
+const { createMediaEvidenceArchive } = require('./media-evidence-archive');
 
 const MAX_PHOTO_BYTES = 8 * 1024 * 1024;
 const MAX_PHOTOS_PER_SUBMISSION = 15;
@@ -201,6 +204,8 @@ function createHalfCutApi(rootDir, options = {}) {
   const modelMemory = createVehicleModelMemory(DATA_DIR, rootDir);
   const powertrainMemory = createPowertrainCatalogMemory(DATA_DIR, rootDir);
   const youtubeQueue = createYoutubeUploadQueue(rootDir);
+  const auditLog = createInventoryAuditLog(DATA_DIR);
+  const evidenceArchive = createMediaEvidenceArchive(rootDir);
 
   function bootstrapCatalogMemory() {
     try {
@@ -428,6 +433,7 @@ function createHalfCutApi(rootDir, options = {}) {
         }) || null;
       }
     }
+    if (String(item?.listingVisibility || 'public').toLowerCase() === 'delisted') return null;
     return item || null;
   }
 
@@ -511,6 +517,7 @@ function createHalfCutApi(rootDir, options = {}) {
       'origin',
       'shortDescription',
       'notes',
+      'listingVisibility',
     ]);
 
     const edits = {};
@@ -549,6 +556,7 @@ function createHalfCutApi(rootDir, options = {}) {
     approved[index] = item;
 
     const submissions = previous.submissions.map((submission) => {
+      if (submission.submissionKind === 'inventory-revision') return submission;
       const linked = submission.approvedStockId === item.stockId
         || submission.submissionId === item.submissionId;
       if (!linked) return submission;
@@ -629,6 +637,89 @@ function createHalfCutApi(rootDir, options = {}) {
     if (index === -1) throw new Error('Submission not found');
 
     const was = previous.submissions[index];
+    if (was.submissionKind === 'inventory-revision') {
+      if (was.reviewStatus === 'approved') {
+        const existing = previous.approved.find((item) => item.stockId === was.revisionOfStockId);
+        if (existing) return { ok: true, submission: was, inventoryItem: existing, promoteQueued: false, revision: true };
+      }
+      if (was.reviewStatus !== 'pending') throw new Error('Submission is not pending');
+
+      const approvedIndex = previous.approved.findIndex((item) => item.stockId === was.revisionOfStockId);
+      if (approvedIndex === -1) throw new Error('Published inventory for revision not found');
+      const current = previous.approved[approvedIndex];
+      const adminEdits = {
+        ...inventoryRevisions.selectFields(body?.submission, inventoryRevisions.REVIEW_FIELDS),
+        ...inventoryRevisions.selectFields(body?.inventoryItem, inventoryRevisions.REVIEW_FIELDS),
+      };
+      const reviewedFields = {
+        ...inventoryRevisions.selectFields(was, inventoryRevisions.REVIEW_FIELDS),
+        ...adminEdits,
+      };
+      let inventoryItem = nameNorm.normalizeInventoryRecord({
+        ...current,
+        ...reviewedFields,
+        stockId: current.stockId,
+        slug: current.slug,
+        submissionId: current.submissionId,
+        supplierId: current.supplierId,
+        supplierName: current.supplierName,
+        supplierPhone: current.supplierPhone,
+        supplierPhoneNormalized: current.supplierPhoneNormalized,
+        priceUsd: current.priceUsd,
+        status: current.status || current.inventoryStatus || 'Available',
+        listingVisibility: current.listingVisibility || 'public',
+        updatedAt: new Date().toISOString(),
+      }, rootDir);
+      inventoryItem = nameNorm.rebuildInventoryDerivedFields(inventoryItem);
+      if (current.slug && inventoryItem.slug !== current.slug) {
+        inventoryItem.slugAliases = [...new Set([
+          ...(Array.isArray(current.slugAliases) ? current.slugAliases : []),
+          current.slug,
+        ].filter(Boolean))];
+      }
+      inventoryItem = await media.promoteRecordMediaAsync(rootDir, inventoryItem);
+      const removed = evidenceArchive.removedMedia(current, inventoryItem);
+      const evidenceEntries = await evidenceArchive.prepare({
+        stockId: current.stockId,
+        removed,
+        actor: { id: 'admin', username: 'AsiaPower reviewer' },
+        approved: previous.approved,
+      });
+
+      const now = new Date().toISOString();
+      const submissions = previous.submissions.slice();
+      const submission = {
+        ...was,
+        reviewStatus: 'approved',
+        rejectReason: '',
+        reviewedAt: now,
+        updatedAt: now,
+        approvedSlug: inventoryItem.slug,
+      };
+      submissions[index] = submission;
+      const approved = previous.approved.slice();
+      approved[approvedIndex] = inventoryItem;
+      saveJson(SUBMISSIONS_FILE, submissions);
+      saveJson(APPROVED_FILE, approved);
+      await evidenceArchive.finalize(evidenceEntries);
+
+      modelMemory.rememberVehicle(inventoryItem);
+      powertrainMemory.rebuildFromApproved(approved);
+      youtubeQueue.enqueueIfNeeded(inventoryItem);
+      auditLog.append({
+        type: 'inventory_revision_approved',
+        stockId: current.stockId,
+        revisionId: submission.submissionId,
+        fields: (submission.revisionChanges || []).map((change) => change.field),
+        archivedEvidenceIds: evidenceEntries.map((entry) => entry.id),
+        actorId: 'admin',
+        actorRole: 'admin',
+        actorName: 'AsiaPower reviewer',
+      });
+      notifyHalfCutEvents(diffHalfCutState(previous, { submissions, approved }));
+      return { ok: true, submission, inventoryItem, promoteQueued: false, revision: true };
+    }
+
     if (was.reviewStatus === 'approved') {
       const existing = previous.approved.find((item) => item.submissionId === submissionId);
       if (existing) {
@@ -710,6 +801,17 @@ function createHalfCutApi(rootDir, options = {}) {
     };
 
     saveJson(SUBMISSIONS_FILE, submissions);
+    if (was.submissionKind === 'inventory-revision') {
+      auditLog.append({
+        type: 'inventory_revision_rejected',
+        stockId: was.revisionOfStockId || was.approvedStockId || '',
+        revisionId: was.submissionId,
+        reason,
+        actorId: 'admin',
+        actorRole: 'admin',
+        actorName: 'AsiaPower reviewer',
+      });
+    }
     const next = { submissions, approved: previous.approved };
     const events = diffHalfCutState(previous, next);
     notifyHalfCutEvents(events);
@@ -782,9 +884,37 @@ function createHalfCutApi(rootDir, options = {}) {
     return Boolean(userPhone && recordPhone && phonesMatch(userPhone, recordPhone));
   }
 
-  function summarizeUpload(record, source) {
+  function refreshPendingUrl(url) {
+    const clean = media.stripAccessQuery(String(url || ''));
+    return media.isPendingUploadPath(clean) ? media.withAccessQuery(clean) : String(url || '');
+  }
+
+  function supplierPhotos(record) {
+    return (Array.isArray(record?.photos) ? record.photos : []).map((photo) => {
+      if (typeof photo === 'string') return { url: refreshPendingUrl(photo) };
+      if (!photo || typeof photo !== 'object') return null;
+      return {
+        ...photo,
+        url: refreshPendingUrl(photo.url),
+        thumbUrl: photo.thumbUrl ? refreshPendingUrl(photo.thumbUrl) : '',
+      };
+    }).filter((photo) => photo?.url);
+  }
+
+  function supplierVideo(record) {
+    const video = record?.video && typeof record.video === 'object'
+      ? { ...record.video, url: refreshPendingUrl(record.video.url) }
+      : null;
+    if (video?.url) return video;
+    if (record?.videoUrl) return { url: refreshPendingUrl(record.videoUrl), fileName: 'video' };
+    return null;
+  }
+
+  function summarizeUpload(record, source, extras = {}) {
+    const photos = supplierPhotos(record);
+    const status = record.status || record.inventoryStatus || 'Available';
     return {
-      id: record.stockId || record.approvedStockId || record.submissionId,
+      id: extras.id || record.stockId || record.approvedStockId || record.submissionId,
       submissionId: record.submissionId || '',
       stockId: record.stockId || record.approvedStockId || '',
       slug: record.slug || record.approvedSlug || '',
@@ -799,7 +929,16 @@ function createHalfCutApi(rootDir, options = {}) {
       priceUsd: record.priceUsd,
       shortDescription: record.shortDescription || '',
       notes: record.notes || '',
-      inventoryStatus: record.inventoryStatus || 'Available',
+      vin: record.vin || '',
+      vehicleCategory: record.vehicleCategory || '',
+      truckPartType: record.truckPartType || '',
+      passengerPartType: record.passengerPartType || '',
+      vehicleListingType: record.vehicleListingType || '',
+      vehicleCondition: record.vehicleCondition || '',
+      origin: record.origin || record.originCountry || '',
+      inventoryStatus: status,
+      status,
+      listingVisibility: record.listingVisibility || 'public',
       reviewStatus: record.reviewStatus || (source === 'approved' ? 'approved' : 'pending'),
       source,
       editable: true,
@@ -808,9 +947,11 @@ function createHalfCutApi(rootDir, options = {}) {
       supplierPhone: record.supplierPhone || '',
       createdAt: record.createdAt || record.approvedAt || null,
       updatedAt: record.updatedAt || null,
-      photo: Array.isArray(record.photos) && record.photos[0]
-        ? (typeof record.photos[0] === 'string' ? record.photos[0] : record.photos[0].url)
-        : '',
+      photos,
+      video: supplierVideo(record),
+      photo: photos[0]?.thumbUrl || photos[0]?.url || '',
+      activeRevision: extras.activeRevision || null,
+      evidenceCount: Number(extras.evidenceCount || 0),
     };
   }
 
@@ -826,6 +967,11 @@ function createHalfCutApi(rootDir, options = {}) {
     'shortDescription',
     'notes',
     'inventoryStatus',
+    'vin',
+    'photos',
+    'video',
+    'videoUrl',
+    'listingVisibility',
   ]);
 
   function findOwnedRecord(user, id) {
@@ -850,11 +996,186 @@ function createHalfCutApi(rootDir, options = {}) {
     if (!found) {
       throw Object.assign(new Error('Listing not found or not owned by you'), { statusCode: 404 });
     }
+    const state = getState();
+    const stockId = found.record.stockId || found.record.approvedStockId || '';
+    const activeRevision = found.kind === 'approved'
+      ? inventoryRevisions.latestForStock(state.submissions, stockId)
+      : null;
+    const editableRecord = activeRevision
+      && ['draft', 'pending', 'rejected'].includes(activeRevision.reviewStatus)
+      ? activeRevision
+      : found.record;
+    const evidence = stockId ? evidenceArchive.listForStock(stockId) : [];
     return {
       ok: true,
-      item: summarizeUpload(found.record, found.kind === 'approved' ? 'approved' : 'submission'),
+      item: summarizeUpload(
+        editableRecord,
+        activeRevision ? 'revision' : (found.kind === 'approved' ? 'approved' : 'submission'),
+        {
+          id: stockId || editableRecord.submissionId,
+          activeRevision: inventoryRevisions.publicRevisionSummary(activeRevision),
+          evidenceCount: evidence.length,
+        },
+      ),
+      publishedItem: found.kind === 'approved' ? summarizeUpload(found.record, 'approved', {
+        activeRevision: inventoryRevisions.publicRevisionSummary(activeRevision),
+        evidenceCount: evidence.length,
+      }) : null,
+      evidence: evidence.map((entry) => ({
+        ...entry,
+        previewUrl: `/api/half-cuts/my-uploads/${encodeURIComponent(stockId)}/evidence/${encodeURIComponent(entry.id)}`,
+      })),
+      audit: stockId ? auditLog.listForStock(stockId, 30) : [],
       kind: found.kind,
     };
+  }
+
+  function validateSupplierMedia(candidate) {
+    if (candidate.photos !== undefined) {
+      if (!Array.isArray(candidate.photos)) throw new Error('photos must be an array');
+      if (candidate.photos.length < 1) throw new Error('At least 1 public photo is required');
+      if (candidate.photos.length > MAX_PHOTOS_PER_SUBMISSION) {
+        throw new Error(`At most ${MAX_PHOTOS_PER_SUBMISSION} photos allowed`);
+      }
+    }
+    assertSubmissionMediaUrls({
+      photos: candidate.photos || [],
+      video: candidate.video || null,
+      videoUrl: candidate.videoUrl || '',
+    });
+  }
+
+  function normalizeReviewEdits(base, raw) {
+    const edits = inventoryRevisions.selectFields(raw, inventoryRevisions.REVIEW_FIELDS);
+    for (const key of ['brand', 'model', 'engineCode', 'transmissionCode', 'drivetrain', 'mileage', 'shortDescription', 'notes', 'origin', 'originCountry', 'vehicleCondition']) {
+      if (edits[key] !== undefined) edits[key] = String(edits[key] || '').trim();
+    }
+    if (edits.year !== undefined && edits.year !== '') {
+      const year = Number(edits.year);
+      if (!Number.isInteger(year) || year < 1900 || year > 2100) throw new Error('Invalid year');
+      edits.year = year;
+    }
+    if (edits.vin !== undefined) {
+      edits.vin = String(edits.vin || '').trim().toUpperCase();
+      if (edits.vin && edits.vin.length !== 17) throw new Error('VIN must be 17 characters');
+    }
+    if (edits.photos !== undefined) {
+      edits.photos = edits.photos.map((photo) => {
+        if (typeof photo === 'string') return { url: media.stripAccessQuery(photo) };
+        if (!photo || typeof photo !== 'object') return null;
+        return {
+          ...photo,
+          url: media.stripAccessQuery(photo.url),
+          thumbUrl: photo.thumbUrl ? media.stripAccessQuery(photo.thumbUrl) : '',
+        };
+      }).filter((photo) => photo?.url);
+    }
+    if (edits.video && typeof edits.video === 'object') {
+      edits.video = { ...edits.video, url: media.stripAccessQuery(edits.video.url) };
+    }
+    const candidate = { ...base, ...edits };
+    validateSupplierMedia(candidate);
+    return edits;
+  }
+
+  function actorForAudit(user) {
+    return {
+      actorId: user?.id || '',
+      actorRole: user?.role || '',
+      actorName: user?.supplierName || user?.username || '',
+    };
+  }
+
+  function applyImmediateSupplierEdits(user, current, raw) {
+    const patch = {};
+    if (raw.priceUsd !== undefined && raw.priceUsd !== '') {
+      const price = Number(raw.priceUsd);
+      if (!Number.isFinite(price) || price <= 0) throw new Error('Valid EXW price required');
+      patch.priceUsd = Number(price.toFixed(2));
+    }
+    const status = raw.inventoryStatus !== undefined ? raw.inventoryStatus : raw.status;
+    if (status !== undefined && status !== '') {
+      const allowed = new Set(['Available', 'Reserved', 'In Transit', 'Sold']);
+      if (!allowed.has(String(status))) throw new Error('Invalid inventoryStatus');
+      patch.status = String(status);
+    }
+    if (raw.listingVisibility !== undefined) {
+      const visibility = String(raw.listingVisibility || 'public').toLowerCase();
+      if (!['public', 'delisted'].includes(visibility)) throw new Error('Invalid listingVisibility');
+      patch.listingVisibility = visibility;
+    }
+    if (!Object.keys(patch).length) return { item: current, changed: [] };
+    const before = { ...current };
+    const item = updateApprovedInventory(current.stockId, patch);
+    const changed = [];
+    for (const [field, after] of Object.entries(patch)) {
+      const previousField = field === 'status' ? (before.status || before.inventoryStatus || 'Available') : before[field];
+      if (JSON.stringify(previousField) === JSON.stringify(after)) continue;
+      const event = auditLog.append({
+        type: field === 'listingVisibility' ? 'listing_visibility_changed' : 'supplier_immediate_field_changed',
+        stockId: current.stockId,
+        field,
+        before: previousField,
+        after,
+        ...actorForAudit(user),
+      });
+      changed.push(event);
+    }
+    return { item, changed };
+  }
+
+  function saveApprovedRevision(user, current, proposedRaw, action) {
+    const previous = getState();
+    const latest = inventoryRevisions.latestForStock(previous.submissions, current.stockId);
+
+    if (action === 'withdraw') {
+      if (!latest || !['draft', 'pending'].includes(latest.reviewStatus)) {
+        throw new Error('No draft or pending revision to withdraw');
+      }
+      const submissions = previous.submissions.map((entry) => entry.submissionId === latest.submissionId
+        ? { ...entry, reviewStatus: 'withdrawn', withdrawnAt: new Date().toISOString(), withdrawnBySupplierId: user.id }
+        : entry);
+      saveJson(SUBMISSIONS_FILE, submissions);
+      auditLog.append({ type: 'supplier_revision_withdrawn', stockId: current.stockId, revisionId: latest.submissionId, ...actorForAudit(user) });
+      return null;
+    }
+
+    const carry = latest && ['draft', 'pending', 'rejected'].includes(latest.reviewStatus)
+      ? inventoryRevisions.selectFields(latest, inventoryRevisions.REVIEW_FIELDS)
+      : {};
+    const reviewEdits = normalizeReviewEdits(current, { ...carry, ...proposedRaw });
+    let revision = inventoryRevisions.buildRevision({
+      base: current,
+      proposedEdits: reviewEdits,
+      actor: user,
+      action,
+      previousRevision: latest,
+    });
+
+    if (!revision && latest && latest.reviewStatus === 'draft' && action === 'submit-review') {
+      revision = { ...latest, reviewStatus: 'pending', updatedAt: new Date().toISOString() };
+    }
+    if (!revision) return null;
+
+    const canReplace = latest && ['draft', 'pending', 'rejected'].includes(latest.reviewStatus);
+    if (canReplace) {
+      revision.submissionId = latest.submissionId;
+      revision.createdAt = latest.createdAt;
+      revision.previousRevisionId = latest.previousRevisionId || '';
+    }
+    const submissions = canReplace
+      ? previous.submissions.map((entry) => entry.submissionId === latest.submissionId ? revision : entry)
+      : [revision, ...previous.submissions];
+    saveJson(SUBMISSIONS_FILE, submissions);
+    notifyHalfCutEvents(diffHalfCutState(previous, { submissions, approved: previous.approved }));
+    auditLog.append({
+      type: revision.reviewStatus === 'pending' ? 'supplier_revision_submitted' : 'supplier_revision_saved',
+      stockId: current.stockId,
+      revisionId: revision.submissionId,
+      fields: revision.revisionChanges.map((change) => change.field),
+      ...actorForAudit(user),
+    });
+    return revision;
   }
 
   function updateOwnUpload(user, id, rawEdits) {
@@ -866,43 +1187,76 @@ function createHalfCutApi(rootDir, options = {}) {
       throw Object.assign(new Error('Listing not found or not owned by you'), { statusCode: 404 });
     }
 
-    const edits = {};
-    Object.entries(rawEdits || {}).forEach(([key, value]) => {
-      if (!SUPPLIER_EDITABLE_FIELDS.has(key)) return;
-      if (value === undefined || value === null) return;
-      edits[key] = value;
-    });
-    if (!Object.keys(edits).length) throw new Error('No editable fields provided');
-
-    if (edits.inventoryStatus) {
-      const allowedStatus = new Set(['Available', 'Reserved', 'In Transit', 'Sold']);
-      if (!allowedStatus.has(String(edits.inventoryStatus))) {
-        throw new Error('Invalid inventoryStatus');
-      }
-    }
+    const action = ['save-draft', 'submit-review', 'withdraw'].includes(rawEdits?.action)
+      ? rawEdits.action
+      : 'submit-review';
+    const immediateRaw = rawEdits?.immediate && typeof rawEdits.immediate === 'object'
+      ? rawEdits.immediate
+      : rawEdits;
+    const proposedRaw = rawEdits?.proposed && typeof rawEdits.proposed === 'object'
+      ? rawEdits.proposed
+      : rawEdits;
 
     if (found.kind === 'approved') {
-      // Reuse admin inventory patch, but only after ownership check above.
-      const item = updateApprovedInventory(found.record.stockId, edits);
-      return { ok: true, item: summarizeUpload(item, 'approved'), kind: 'approved' };
+      const immediate = action === 'withdraw'
+        ? { item: found.record, changed: [] }
+        : applyImmediateSupplierEdits(user, found.record, immediateRaw || {});
+      const revision = saveApprovedRevision(user, immediate.item, proposedRaw || {}, action);
+      return {
+        ok: true,
+        item: summarizeUpload(revision || immediate.item, revision ? 'revision' : 'approved', {
+          id: immediate.item.stockId,
+          activeRevision: inventoryRevisions.publicRevisionSummary(revision),
+          evidenceCount: evidenceArchive.listForStock(immediate.item.stockId).length,
+        }),
+        publishedItem: summarizeUpload(immediate.item, 'approved'),
+        kind: 'approved',
+        immediateChanges: immediate.changed,
+        revision: inventoryRevisions.publicRevisionSummary(revision),
+      };
     }
 
     const previous = getState();
     const index = previous.submissions.findIndex((item) => item.submissionId === found.record.submissionId);
     if (index < 0) throw new Error('Submission not found');
-    let submission = { ...previous.submissions[index], ...edits };
-    if (edits.year !== undefined && edits.year !== '') submission.year = Number(edits.year);
-    if (edits.priceUsd !== undefined && edits.priceUsd !== '') {
-      submission.priceUsd = Number(Number(edits.priceUsd).toFixed(2));
+    if (action === 'withdraw') {
+      const submissions = previous.submissions.slice();
+      submissions[index] = { ...previous.submissions[index], reviewStatus: 'withdrawn', withdrawnAt: new Date().toISOString(), withdrawnBySupplierId: user.id };
+      saveJson(SUBMISSIONS_FILE, submissions);
+      return { ok: true, item: summarizeUpload(submissions[index], 'submission'), kind: 'submission' };
     }
-    if (edits.brand || edits.model) {
+    const selected = {};
+    Object.entries({ ...(immediateRaw || {}), ...(proposedRaw || {}) }).forEach(([key, value]) => {
+      if (!SUPPLIER_EDITABLE_FIELDS.has(key) || value === undefined || value === null) return;
+      selected[key] = value;
+    });
+    if (!Object.keys(selected).length) throw new Error('No editable fields provided');
+    if (selected.inventoryStatus) {
+      const allowed = new Set(['Available', 'Reserved', 'In Transit', 'Sold']);
+      if (!allowed.has(String(selected.inventoryStatus))) throw new Error('Invalid inventoryStatus');
+    }
+    let submission = { ...previous.submissions[index], ...selected };
+    const normalized = normalizeReviewEdits(previous.submissions[index], selected);
+    submission = { ...submission, ...normalized };
+    if (selected.priceUsd !== undefined && selected.priceUsd !== '') {
+      const price = Number(selected.priceUsd);
+      if (!Number.isFinite(price) || price <= 0) throw new Error('Valid EXW price required');
+      submission.priceUsd = Number(price.toFixed(2));
+    }
+    if (selected.brand || selected.model) {
       submission = nameNorm.normalizeSubmissionRecord(submission, rootDir);
+    }
+    submission.reviewStatus = action === 'save-draft' ? 'draft' : 'pending';
+    if (submission.reviewStatus === 'pending') {
+      submission.rejectReason = '';
+      submission.reviewedAt = null;
     }
     submission.updatedAt = new Date().toISOString();
     submission.updatedBySupplierId = user.id;
     const submissions = previous.submissions.slice();
     submissions[index] = submission;
     saveJson(SUBMISSIONS_FILE, submissions);
+    auditLog.append({ type: action === 'save-draft' ? 'supplier_submission_saved' : 'supplier_submission_resubmitted', stockId: submission.approvedStockId || '', submissionId: submission.submissionId, ...actorForAudit(user) });
     return { ok: true, item: summarizeUpload(submission, 'submission'), kind: 'submission' };
   }
 
@@ -912,11 +1266,18 @@ function createHalfCutApi(rootDir, options = {}) {
     }
     const state = getState();
     const submissions = state.submissions
-      .filter((item) => supplierOwnsRecord(user, item))
+      .filter((item) => item.submissionKind !== 'inventory-revision' && supplierOwnsRecord(user, item))
       .map((item) => summarizeUpload(item, 'submission'));
     const approved = state.approved
       .filter((item) => supplierOwnsRecord(user, item))
-      .map((item) => summarizeUpload(item, 'approved'));
+      .map((item) => {
+        const revision = inventoryRevisions.latestForStock(state.submissions, item.stockId);
+        const evidenceCount = evidenceArchive.listForStock(item.stockId).length;
+        return summarizeUpload(item, 'approved', {
+          activeRevision: inventoryRevisions.publicRevisionSummary(revision),
+          evidenceCount,
+        });
+      });
 
     // Prefer approved row when the same submission was promoted
     const approvedSubmissionIds = new Set(
@@ -935,9 +1296,11 @@ function createHalfCutApi(rootDir, options = {}) {
         phoneNormalized: normalizePhone(user.phoneNormalized || user.phone, user.countryCode),
       },
       counts: {
-        pending: items.filter((i) => i.reviewStatus === 'pending').length,
+        pending: items.filter((i) => i.reviewStatus === 'pending' || i.activeRevision?.reviewStatus === 'pending').length,
+        draft: items.filter((i) => i.reviewStatus === 'draft' || i.activeRevision?.reviewStatus === 'draft').length,
         approved: items.filter((i) => i.reviewStatus === 'approved' || i.source === 'approved').length,
-        rejected: items.filter((i) => i.reviewStatus === 'rejected').length,
+        rejected: items.filter((i) => i.reviewStatus === 'rejected' || i.activeRevision?.reviewStatus === 'rejected').length,
+        delisted: items.filter((i) => i.listingVisibility === 'delisted').length,
         total: items.length,
       },
       items,
@@ -968,6 +1331,7 @@ function createHalfCutApi(rootDir, options = {}) {
     );
     if (index < 0) throw new Error(`Approved stock not found: ${id}`);
     const item = { ...previous.approved[index] };
+    item.status = 'Reserved';
     item.inventoryStatus = 'Reserved';
     item.reservedAt = new Date().toISOString();
     if (orderId) item.reservedOrderId = orderId;
@@ -1279,6 +1643,37 @@ function createHalfCutApi(rootDir, options = {}) {
       return true;
     }
 
+    const evidenceMatch = pathname.match(/^\/api\/half-cuts\/my-uploads\/([^/]+)\/evidence\/([^/]+)$/);
+    if (evidenceMatch && req.method === 'GET') {
+      const user = authUser(req);
+      if (!user || (user.role !== 'supplier' && user.role !== 'admin')) {
+        json(res, 401, { error: 'Supplier authentication required' });
+        return true;
+      }
+      try {
+        const stockId = decodeURIComponent(evidenceMatch[1]);
+        const found = findOwnedRecord(user, stockId);
+        if (!found) {
+          json(res, 404, { error: 'Listing not found or not owned by you' });
+          return true;
+        }
+        const evidence = await evidenceArchive.readEvidence(stockId, decodeURIComponent(evidenceMatch[2]));
+        if (!evidence) {
+          json(res, 404, { error: 'Evidence not found' });
+          return true;
+        }
+        res.statusCode = 200;
+        res.setHeader('Content-Type', evidence.mime);
+        res.setHeader('Content-Length', evidence.buffer.length);
+        res.setHeader('Cache-Control', 'private, no-store');
+        res.setHeader('Content-Disposition', 'inline');
+        res.end(evidence.buffer);
+      } catch (err) {
+        json(res, err.statusCode || 400, { error: err.message || 'Request failed' });
+      }
+      return true;
+    }
+
     const myUploadMatch = pathname.match(/^\/api\/half-cuts\/my-uploads\/([^/]+)$/);
     if (myUploadMatch && req.method === 'GET') {
       const user = authUser(req);
@@ -1520,6 +1915,10 @@ function createHalfCutApi(rootDir, options = {}) {
     listUploadsForSupplier,
     getUploadDetailForSupplier,
     updateOwnUpload,
+    approveSubmissionById,
+    rejectSubmissionById,
+    auditLog,
+    evidenceArchive,
     modelMemory,
     powertrainMemory,
     youtubeQueue,

@@ -40,8 +40,9 @@ function isTrustedBatchUploader(req) {
 function isAuthorizedSupplierRequest(req, allowUpload) {
   if (typeof allowUpload === 'function' && allowUpload(req)) return true;
   if (!isProduction()) return true;
-  if (!supplierUploadKey()) return false;
-  return hasValidSupplierKey(req);
+  // Production supplier sessions are the normal upload path. A raw upload key
+  // is only accepted for the explicitly IP-bound batch workstation.
+  return isTrustedBatchUploader(req);
 }
 
 const PENDING_URL_RE = /^\/uploads\/pending\/(photos|videos)\/[a-zA-Z0-9._-]+(\?access=[a-f0-9]+&exp=\d+)?$/;

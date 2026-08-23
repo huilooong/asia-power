@@ -317,8 +317,12 @@ grep -E -q 'AsiaPowerAuthNav|data-ap-account' "$PUB/js/v4-portal-shell.js"
 grep -q 'supplier-register-box' "$PUB/login/index.html"
 grep -q 'buyer-password-box' "$PUB/login/index.html"
 grep -q 'supplier-password-box' "$PUB/login/index.html"
+grep -q 'reg-invite' "$PUB/login/index.html"
+! grep -q 'data-mode="set-password"' "$PUB/login/index.html"
 grep -q '/api/auth/phone/password/login' "$PUB/js/login.js"
 grep -q '/api/supplier/register' "$PUB/js/login.js"
+grep -q 'supplier-inventory-v1' "$PUB/supplier-portal/dashboard.html"
+grep -q 'private-media-evidence' "$PUB/js/supplier-dashboard.js" || grep -q '私有证据归档' "$PUB/supplier-portal/dashboard.html"
 grep -q 'mode=register' "$PUB/supplier-portal.html"
 grep -q "passengerPartTire" "$PUB/js/half-cut-supplier-i18n.js"
 grep -q "value=\\\"tire\\\"" "$PUB/js/supplier-half-cut-upload.js"
@@ -564,6 +568,7 @@ function deployAdmin() {
   rsync(`${ROOT}/css/admin-v4.css`, `${pub}/css/admin-v4.css`);
   rsync(`${ROOT}/js/components.js`, `${pub}/js/components.js`);
   rsync(`${ROOT}/js/admin-common.js`, `${pub}/js/admin-common.js`);
+  rsync(`${ROOT}/js/admin-supplier-invites.js`, `${pub}/js/admin-supplier-invites.js`);
   rsync(`${ROOT}/js/admin-inventory.js`, `${pub}/js/admin-inventory.js`);
   rsync(`${ROOT}/js/admin-inventory-hub.js`, `${pub}/js/admin-inventory-hub.js`);
   rsync(`${ROOT}/js/admin-analytics.js`, `${pub}/js/admin-analytics.js`);
@@ -581,6 +586,8 @@ set -e
 PUB=/root/.openclaw/workspace/inventory-site/public
 test -f "$PUB/css/admin-v4.css"
 test -f "$PUB/js/admin-common.js"
+test -f "$PUB/js/admin-review-cards.js"
+test -f "$PUB/js/admin-supplier-invites.js"
 test -f "$PUB/js/admin-analytics.js"
 test -f "$PUB/js/admin-inventory-hub.js"
 test -f "$PUB/js/admin-emails.js"
@@ -590,13 +597,14 @@ test -f "$PUB/admin/leads.html"
 test -f "$PUB/admin/apsales-progress.html"
 test -f "$PUB/admin/emails.html"
 # IA markers
-grep -q 'admin-ia-reorg-v1' "$PUB/admin/inventory.html"
+grep -q 'supplier-inventory-v1' "$PUB/admin/inventory.html"
 grep -q 'admin-ia-reorg-v1' "$PUB/admin/analytics.html"
 grep -q 'data-admin-ia="analytics-only-v1"' "$PUB/js/admin-analytics.js" || grep -q 'analytics-only-v1' "$PUB/js/admin-analytics.js"
 grep -q '访问统计' "$PUB/js/components.js"
 grep -q 'apsales-progress.html' "$PUB/js/components.js"
 grep -q 'admin/emails.html' "$PUB/js/components.js"
 grep -q 'data-admin-google-login' "$PUB/js/admin-common.js"
+grep -q 'admin-supplier-invites.js?v=supplier-invites-v1' "$PUB/admin/inventory.html"
 # Must NOT have embedded inventory review tabs on analytics page scripts list
 ! grep -q 'admin-inventory-hub' "$PUB/admin/analytics.html"
 # Homepage must remain untouched by this target (sanity: index still exists, we did not rsync it)

@@ -59,6 +59,7 @@ halfCut.ensureDirs();
 
 const { createPhoneOtpAuth } = require('./lib/phone-otp-auth');
 const { createPhonePasswordAuth } = require('./lib/phone-password-auth');
+const { createSupplierInviteStore } = require('./lib/supplier-invites');
 const { createOrderStore } = require('./lib/buyer-orders');
 const { createStripeDeposit } = require('./lib/stripe-deposit');
 const { createOAuthAuth } = require('./lib/oauth-auth');
@@ -70,6 +71,7 @@ const limitOtpSend = createRateLimiter({ windowMs: 60 * 60 * 1000, max: 20 });
 const limitOtpVerify = createRateLimiter({ windowMs: 15 * 60 * 1000, max: 40 });
 const limitPasswordAuth = createRateLimiter({ windowMs: 15 * 60 * 1000, max: 30 });
 const limitPasswordRegister = createRateLimiter({ windowMs: 60 * 60 * 1000, max: 15 });
+const supplierInvites = createSupplierInviteStore(DATA_DIR);
 
 function localId(prefix) {
   return `${prefix}-${crypto.randomBytes(6).toString('hex')}`;
@@ -86,6 +88,8 @@ const phoneOtp = createPhoneOtpAuth({
   id: localId,
   limitSend: (req) => limitOtpSend(req),
   limitVerify: (req) => limitOtpVerify(req),
+  validateSupplierInvite: (payload) => supplierInvites.validate(payload),
+  consumeSupplierInvite: (payload) => supplierInvites.consume(payload),
 });
 
 const phonePassword = createPhonePasswordAuth({
@@ -105,6 +109,7 @@ const phonePassword = createPhonePasswordAuth({
   buyerStore: phoneOtp.buyerStore,
   limitLogin: (req) => limitPasswordAuth(req),
   limitRegister: (req) => limitPasswordRegister(req),
+  authUser: (req) => auth.authUser(req),
 });
 
 const stripeDeposit = createStripeDeposit({
@@ -302,6 +307,28 @@ const server = http.createServer(async (req, res) => {
       if (await phoneOtp.handleOtpRoutes(req, res, p, readBody)) return;
       if (await phonePassword.handlePasswordRoutes(req, res, p, readBody)) return;
       if (await oauthAuth.handleOAuthRoutes(req, res, p, url, readBody)) return;
+
+      if (req.method === 'GET' && p === '/api/admin/supplier-invites') {
+        if (!auth.requireAdmin(req, res)) return;
+        return json(res, 200, { invites: supplierInvites.list() });
+      }
+
+      if (req.method === 'POST' && p === '/api/admin/supplier-invites') {
+        const admin = auth.authUser(req);
+        if (!auth.requireAdmin(req, res)) return;
+        try {
+          const body = await readBody(req);
+          const invite = supplierInvites.create({
+            phone: body.phone,
+            countryCode: body.countryCode || '+86',
+            expiresInHours: body.expiresInHours,
+            createdBy: admin?.id || admin?.username || 'admin',
+          });
+          return json(res, 201, { ok: true, invite });
+        } catch (err) {
+          return json(res, err.statusCode || 400, { error: err.message || 'Invite creation failed' });
+        }
+      }
 
       if (req.method === 'GET' && p === '/api/admin/buyers') {
         if (!auth.requireAdmin(req, res)) return;

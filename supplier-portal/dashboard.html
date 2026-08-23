@@ -1,173 +1,180 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="zh-CN">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>供应商工作台 · AsiaPower</title>
-  <link rel="stylesheet" href="/css/portal-app.css">
-  <style>body { background: var(--bg2) }</style>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex, nofollow">
+  <title>供应商库存工作台 · AsiaPower</title>
+  <link rel="icon" href="/assets/favicon.png" type="image/png">
+  <link rel="stylesheet" href="/css/portal-app.css?v=supplier-inventory-v1">
 </head>
 <body data-page="supplier-dashboard" data-portal-shell="v4">
-  <div class="wrap">
-    <div class="hero-mini">
-      <div class="kicker">Supplier Dashboard · v4</div>
-      <h1>我的上传</h1>
-      <p>请先在统一登录页登录。新供应商须注册填资料；老供应商资料不全须先补全。</p>
-      <div class="actions" style="margin-top:12px">
-        <a class="btn btn-primary" href="/login/?role=supplier&next=/supplier-portal/dashboard.html">去登录 / 注册</a>
+  <div class="supplier-shell">
+    <aside class="supplier-sidebar" aria-label="供应商中心导航">
+      <div class="supplier-sidebar__label">供应商中心</div>
+      <nav>
+        <button class="supplier-nav-item active" type="button" data-go-list><span>▦</span> 我的库存 <b id="sidebar-total">0</b></button>
+        <a class="supplier-nav-item" href="/supplier-portal/half-cut-upload.html"><span>＋</span> 发布新库存</a>
+        <button class="supplier-nav-item" type="button" id="edit-company-btn"><span>◇</span> 公司资料</button>
+      </nav>
+      <div class="supplier-sidebar__bottom">
+        <p>账户恢复与国内供应商支持</p>
+        <button type="button" id="support-btn">联系平台运营</button>
+        <button type="button" id="logout-btn">退出账户</button>
       </div>
-    </div>
+    </aside>
 
-    <div id="auth-grid" hidden></div>
-    <div id="login-panel" hidden></div>
-    <div id="register-panel" hidden></div>
-    <div id="help-panel" hidden></div>
-    <!-- legacy form fields kept as hidden stubs so profile completion still works -->
-    <section class="panel" style="margin-top:20px" id="profile-panel" hidden>
-      <h2>请补全供应商资料</h2>
-      <p class="sub" id="profile-sub">老账号资料不完整，补全后即可使用工作台</p>
-      <div class="field">
-        <label>公司名称 *</label>
-        <input id="prof-company" />
+    <main class="supplier-main">
+      <div class="supplier-mobile-nav">
+        <button type="button" id="mobile-menu" aria-expanded="false">☰ 供应商中心</button>
+        <span>库存工作台</span>
       </div>
-      <div class="row">
-        <div class="field">
-          <label>业务类型 *</label>
-          <select id="prof-business">
-            <option value="">请选择</option>
-            <option value="dismantling-yard">拆车厂</option>
-            <option value="auto-recycler">汽车回收</option>
-            <option value="reconditioner">翻新/再制造</option>
-            <option value="export-dealer">出口贸易商</option>
-            <option value="other">其他</option>
-          </select>
-        </div>
-        <div class="field">
-          <label>联系人 *</label>
-          <input id="prof-contact" />
-        </div>
-      </div>
-      <div class="row">
-        <div class="field">
-          <label>国家/地区 *</label>
-          <select id="prof-country">
-            <option value="">请选择</option>
-            <option value="china">中国</option>
-            <option value="japan">日本</option>
-            <option value="korea">韩国</option>
-            <option value="other">其他</option>
-          </select>
-        </div>
-        <div class="field">
-          <label>邮箱 *</label>
-          <input id="prof-email" type="email" />
-        </div>
-      </div>
-      <div class="field">
-        <label>经营地址 *</label>
-        <input id="prof-address" />
-      </div>
-      <div class="row">
-        <div class="field">
-          <label>主营品类 *</label>
-          <select id="prof-spec">
-            <option value="">请选择</option>
-            <option value="engines">发动机</option>
-            <option value="gearboxes">变速箱</option>
-            <option value="both">发动机+变速箱</option>
-            <option value="half-cuts">半切/整车拆解</option>
-            <option value="full-vehicle">整车拆解</option>
-            <option value="trucks">商用车</option>
-            <option value="other">其他</option>
-          </select>
-        </div>
-        <div class="field">
-          <label>经营品牌</label>
-          <input id="prof-brands" />
-        </div>
-      </div>
-      <div class="row">
-        <div class="field">
-          <label>微信</label>
-          <input id="prof-wechat" />
-        </div>
-        <div class="field">
-          <label>城市</label>
-          <input id="prof-city" />
-        </div>
-      </div>
-      <button class="btn btn-primary btn-block" type="button" id="save-profile">保存并进入工作台</button>
-      <button class="btn btn-ghost btn-block" type="button" id="profile-logout" style="margin-top:10px">退出</button>
-    </section>
 
-    <section class="panel" style="margin-top:20px" id="dash" hidden>
-      <div style="display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:8px">
-        <div>
-          <h2 style="margin:0" id="sup-name">供应商</h2>
-          <p class="sub" style="margin:4px 0 0" id="sup-meta"></p>
-        </div>
-        <div class="actions">
-          <button class="btn btn-ghost" type="button" id="edit-company-btn">编辑公司资料</button>
-          <a class="btn btn-gold" href="/supplier-portal/half-cut-upload.html">继续上传</a>
-          <button class="btn btn-ghost" type="button" id="logout-btn">退出</button>
-        </div>
-      </div>
-      <div class="steps" style="margin-bottom:16px">
-        <div class="step on"><div class="n">Pending</div><div class="t" id="c-pending">0</div><div class="d">待审</div></div>
-        <div class="step on"><div class="n">Live</div><div class="t" id="c-live">0</div><div class="d">已上线</div></div>
-        <div class="step"><div class="n">Rejected</div><div class="t" id="c-rej">0</div><div class="d">已拒</div></div>
-      </div>
-      <table class="table">
-        <thead>
-          <tr><th>Stock / 提交</th><th>车型</th><th>价格</th><th>状态</th><th>时间</th><th></th></tr>
-        </thead>
-        <tbody id="upload-rows"></tbody>
-      </table>
-    </section>
+      <section class="supplier-login-prompt" id="login-prompt" hidden>
+        <p class="supplier-eyebrow">SUPPLIER WORKSPACE</p>
+        <h1>请先登录供应商账户</h1>
+        <p>库存只能由已绑定的供应商账户管理。国内供应商可使用手机号与密码，不依赖 Google 或 WhatsApp。</p>
+        <a class="supplier-button supplier-button--primary" href="/login/?role=supplier&next=/supplier-portal/dashboard.html">登录 / 使用邀请码注册</a>
+      </section>
 
-    <section class="panel" style="margin-top:20px" id="edit-panel" hidden>
-      <div style="display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:8px">
-        <div>
-          <h2 style="margin:0">编辑商品详情</h2>
-          <p class="sub" style="margin:4px 0 0" id="edit-sub">只能编辑自己名下的库存</p>
+      <section class="supplier-profile-card" id="profile-panel" hidden>
+        <div class="supplier-section-head">
+          <div><p class="supplier-eyebrow">COMPANY PROFILE</p><h1>供应商资料</h1><p id="profile-sub">请补全资料后进入工作台。</p></div>
         </div>
-        <button class="btn btn-ghost" type="button" id="edit-cancel">返回列表</button>
-      </div>
-      <input type="hidden" id="edit-id" />
-      <div class="row">
-        <div class="field"><label>品牌</label><input id="edit-brand" /></div>
-        <div class="field"><label>型号</label><input id="edit-model" /></div>
-      </div>
-      <div class="row">
-        <div class="field"><label>年份</label><input id="edit-year" type="number" /></div>
-        <div class="field"><label>价格 USD</label><input id="edit-price" type="number" step="0.01" /></div>
-      </div>
-      <div class="row">
-        <div class="field"><label>发动机号</label><input id="edit-engine" /></div>
-        <div class="field"><label>变速箱号</label><input id="edit-trans" /></div>
-      </div>
-      <div class="row">
-        <div class="field"><label>驱动</label><input id="edit-drive" placeholder="2WD / 4WD" /></div>
-        <div class="field"><label>里程</label><input id="edit-mileage" /></div>
-      </div>
-      <div class="field">
-        <label>库存状态</label>
-        <select id="edit-status">
-          <option value="Available">Available</option>
-          <option value="Reserved">Reserved</option>
-          <option value="In Transit">In Transit</option>
-          <option value="Sold">Sold</option>
-        </select>
-      </div>
-      <div class="field"><label>短描述</label><input id="edit-desc" /></div>
-      <div class="field"><label>备注</label><input id="edit-notes" /></div>
-      <button class="btn btn-primary btn-block" type="button" id="edit-save">保存详情</button>
-    </section>
+        <div class="supplier-form-grid">
+          <label><span>公司名称 *</span><input id="prof-company"></label>
+          <label><span>业务类型 *</span><select id="prof-business"><option value="">请选择</option><option value="dismantling-yard">拆车厂</option><option value="auto-recycler">汽车回收</option><option value="reconditioner">翻新 / 再制造</option><option value="export-dealer">出口贸易商</option><option value="other">其他</option></select></label>
+          <label><span>联系人 *</span><input id="prof-contact"></label>
+          <label><span>国家 / 地区 *</span><select id="prof-country"><option value="">请选择</option><option value="china">中国</option><option value="japan">日本</option><option value="korea">韩国</option><option value="other">其他</option></select></label>
+          <label><span>邮箱 *</span><input id="prof-email" type="email"></label>
+          <label><span>经营地址 *</span><input id="prof-address"></label>
+          <label><span>主营品类 *</span><select id="prof-spec"><option value="">请选择</option><option value="engines">发动机</option><option value="gearboxes">变速箱</option><option value="both">发动机 + 变速箱</option><option value="half-cuts">半切 / 整车拆解</option><option value="full-vehicle">完整车辆</option><option value="trucks">商用车</option><option value="other">其他</option></select></label>
+          <label><span>经营品牌</span><input id="prof-brands"></label>
+          <label><span>微信</span><input id="prof-wechat"></label>
+          <label><span>城市</span><input id="prof-city"></label>
+        </div>
+        <div class="supplier-actions">
+          <button class="supplier-button supplier-button--primary" type="button" id="save-profile">保存公司资料</button>
+          <button class="supplier-button supplier-button--quiet" type="button" data-go-list>返回库存</button>
+        </div>
+        <details class="supplier-security" id="security-panel">
+          <summary>账户与安全 · 修改密码</summary>
+          <p>必须先登录并验证当前密码。忘记密码时请联系平台运营人工核验，不能仅凭手机号重置。</p>
+          <div class="supplier-form-grid">
+            <label><span>当前密码 *</span><input id="security-current" type="password" autocomplete="current-password"></label>
+            <span></span>
+            <label><span>新密码 *</span><input id="security-new" type="password" autocomplete="new-password"></label>
+            <label><span>确认新密码 *</span><input id="security-confirm" type="password" autocomplete="new-password"></label>
+          </div>
+          <button class="supplier-button supplier-button--quiet" type="button" id="security-save">安全修改密码</button>
+        </details>
+      </section>
+
+      <section id="inventory-view" hidden>
+        <header class="supplier-page-heading">
+          <div><p class="supplier-eyebrow">INVENTORY CONTROL / 库存管理</p><h1>我的库存</h1><p>价格和库存状态可即时更新；关键参数与媒体生成待审版本，不会覆盖当前公开页面。</p></div>
+          <a class="supplier-button supplier-button--primary" href="/supplier-portal/half-cut-upload.html">＋ 发布新库存</a>
+        </header>
+
+        <div class="supplier-metrics">
+          <button type="button" data-filter="all" class="active"><span>全部库存</span><strong id="c-total">0</strong></button>
+          <button type="button" data-filter="approved"><span>已上线</span><strong id="c-live">0</strong></button>
+          <button type="button" data-filter="pending"><span>待审变更</span><strong id="c-pending">0</strong></button>
+          <button type="button" data-filter="rejected"><span>需处理</span><strong id="c-rejected">0</strong></button>
+          <button type="button" data-filter="delisted"><span>已下架</span><strong id="c-delisted">0</strong></button>
+        </div>
+
+        <div class="supplier-list-toolbar">
+          <label><span class="sr-only">搜索库存</span><input id="inventory-search" type="search" placeholder="搜索 Stock ID、品牌或型号"></label>
+          <span id="supplier-identity">—</span>
+        </div>
+        <div class="supplier-inventory-list" id="upload-rows" aria-live="polite"></div>
+      </section>
+
+      <section id="editor-view" hidden>
+        <header class="supplier-page-heading supplier-page-heading--editor">
+          <div>
+            <button class="supplier-back" type="button" data-go-list>← 返回我的库存</button>
+            <p class="supplier-eyebrow">INVENTORY WORKBENCH / 库存工作台</p>
+            <h1>编辑库存</h1>
+            <p>管理价格、状态、参数、照片顺序与视频。重要变更审核完成前，客户继续看到当前公开版本。</p>
+          </div>
+          <div class="supplier-actions">
+            <a class="supplier-button supplier-button--quiet" id="public-link" href="#" target="_blank" rel="noopener">查看公开页面 ↗</a>
+            <button class="supplier-button supplier-button--primary" type="button" id="submit-review">提交审核</button>
+          </div>
+        </header>
+
+        <div id="editor-loading" class="supplier-loading">正在安全读取库存与修订记录…</div>
+        <div id="editor-workspace" hidden>
+          <section class="supplier-record-strip">
+            <div class="supplier-record-thumb"><img id="record-thumb" alt="库存缩略图"></div>
+            <div class="supplier-record-identity"><div id="record-state"><span></span> 已上线</div><h2 id="record-title">—</h2><p><span id="record-id">—</span><i></i><span id="record-meta">—</span></p></div>
+            <dl><div><dt>当前公开 EXW</dt><dd id="record-price">—</dd></div><div><dt>修订状态</dt><dd id="record-revision">无待审变更</dd></div></dl>
+          </section>
+
+          <div class="supplier-revision-banner" id="revision-banner"><div>↻</div><p><strong>关键修改将创建待审版本</strong><span>照片、视频、品牌、型号、年份、VIN、里程与核心规格不会直接覆盖线上商品。</span></p><b>安全发布</b></div>
+
+          <div class="supplier-editor-grid">
+            <div class="supplier-editor-column">
+              <section class="supplier-card">
+                <header class="supplier-card-head"><div><p class="supplier-eyebrow">01 / 商品媒体</p><h2>照片与视频</h2><p>拖动或使用按钮调整顺序。有视频时优先作为公开封面，首张照片作为静态备用封面。</p></div><div class="supplier-media-count"><strong id="photo-count">0</strong><span>/ 15 张</span></div></header>
+                <div id="video-row" class="supplier-video-row" hidden><div class="supplier-video-poster" id="video-poster"><span>▶</span><em>视频封面</em></div><div><small>VIDEO / 视频</small><strong id="video-name">库存实拍视频</strong><p>视频将在审核通过后替换当前公开视频。</p></div><button type="button" id="remove-video">移除</button></div>
+                <div id="gallery" class="supplier-gallery"></div>
+                <div class="supplier-upload-row">
+                  <label class="supplier-upload-zone"><span>＋</span><strong>添加实拍照片</strong><small>JPG / PNG / WEBP · 每张最大 8MB · 最多 15 张</small><input id="photo-input" type="file" accept="image/jpeg,image/png,image/webp" multiple></label>
+                  <label class="supplier-upload-zone"><span>▶</span><strong>上传或替换视频</strong><small>MP4 / MOV / WEBM · 最大 50MB</small><input id="video-input" type="file" accept="video/mp4,video/quicktime,video/webm"></label>
+                </div>
+                <div class="supplier-upload-progress" id="upload-progress" hidden></div>
+              </section>
+
+              <section class="supplier-card supplier-archive-card">
+                <button class="supplier-archive-head" type="button" id="archive-toggle" aria-expanded="false"><span><b>02</b><strong>私有证据归档</strong><em id="archive-count">0</em></span><span>⌄</span></button>
+                <div id="archive-body" class="supplier-archive-body" hidden><p>审核通过后，从公开商品移除的原始媒体会转入私有归档。这里只对当前供应商账户和平台审核人员开放。</p><div id="archive-list"></div></div>
+              </section>
+
+              <section class="supplier-card">
+                <header class="supplier-card-head"><div><p class="supplier-eyebrow">03 / 公开参数</p><h2>关键商品信息</h2></div><span class="supplier-audit-chip">变更留痕</span></header>
+                <div class="supplier-form-grid">
+                  <label><span>品牌</span><input id="edit-brand" autocomplete="off"></label>
+                  <label><span>型号</span><input id="edit-model" autocomplete="off"></label>
+                  <label><span>年份</span><input id="edit-year" type="number" min="1900" max="2100"></label>
+                  <label><span>VIN</span><input id="edit-vin" maxlength="17" autocomplete="off"></label>
+                  <label><span>里程</span><input id="edit-mileage"></label>
+                  <label><span>发动机型号</span><input id="edit-engine"></label>
+                  <label><span>变速箱型号</span><input id="edit-trans"></label>
+                  <label><span>驱动形式</span><input id="edit-drive" placeholder="2WD / 4WD"></label>
+                  <label><span>EXW 价格（USD）<i>即时生效</i></span><input id="edit-price" type="number" min="0" step="0.01"></label>
+                  <label><span>库存状态<i>即时生效</i></span><select id="edit-status"><option value="Available">现货 / Available</option><option value="Reserved">已预订 / Reserved</option><option value="In Transit">运输中 / In Transit</option><option value="Sold">已售 / Sold</option></select></label>
+                  <label class="supplier-field-wide"><span>短描述</span><input id="edit-desc"></label>
+                  <label class="supplier-field-wide"><span>内部备注</span><textarea id="edit-notes" rows="3"></textarea></label>
+                </div>
+              </section>
+
+              <section class="supplier-card">
+                <header class="supplier-card-head"><div><p class="supplier-eyebrow">04 / 变更记录</p><h2>最近操作</h2></div></header>
+                <div id="audit-list" class="supplier-audit-list"></div>
+              </section>
+            </div>
+
+            <aside class="supplier-preview-column">
+              <section class="supplier-preview-card">
+                <header><div><p class="supplier-eyebrow">CUSTOMER PREVIEW</p><h2>客户所见预览</h2></div><span>待保存</span></header>
+                <div class="supplier-customer-preview"><div class="supplier-preview-media" id="preview-media"><span id="preview-play">▶</span><em id="preview-video-label">视频</em></div><div class="supplier-preview-content"><div id="preview-status"><span></span> 现货</div><h3 id="preview-title">—</h3><p id="preview-meta">—</p><dl><div><dt>EXW 价格</dt><dd id="preview-price">—</dd></div><div><dt>实拍证据</dt><dd id="preview-evidence">—</dd></div></dl><button type="button" disabled>获取报价</button></div></div>
+                <p class="supplier-preview-note">这是待提交版本的本地预览。公开页面只有在审核通过后才显示关键资料变更。</p>
+              </section>
+              <section class="supplier-save-card" id="save-card"><div><span></span><strong id="change-state">尚无待提交变更</strong></div><p>价格与状态即时生效并留痕；其他变更进入审核。</p><button class="supplier-button supplier-button--primary" type="button" id="save-draft">保存草稿</button><button class="supplier-button supplier-button--danger" type="button" id="visibility-button">下架该库存</button></section>
+            </aside>
+          </div>
+        </div>
+      </section>
+    </main>
   </div>
 
-  <div class="toast" id="toast"></div>
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+  <div class="supplier-dialog-backdrop" id="dialog" hidden><div class="supplier-dialog" role="dialog" aria-modal="true" aria-labelledby="dialog-title"><p class="supplier-eyebrow">ASIA POWER</p><h2 id="dialog-title">请确认操作</h2><p id="dialog-copy"></p><div class="supplier-actions"><button class="supplier-button supplier-button--quiet" type="button" id="dialog-cancel">取消</button><button class="supplier-button supplier-button--primary" type="button" id="dialog-confirm">确认</button></div></div></div>
   <script src="/js/v4-portal-shell.js?v=auth-nav-once-v2"></script>
-  <script src="/js/supplier-dashboard.js"></script>
+  <script src="/js/supplier-dashboard.js?v=supplier-inventory-v1" defer></script>
   <script>window.AsiaPowerV4PortalShell?.mount('supplier');</script>
 </body>
 </html>

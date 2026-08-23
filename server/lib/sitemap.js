@@ -85,6 +85,7 @@ function inventoryLastmod(item, fallback) {
 
 function halfCutEntries(approved, lastmod) {
   return (approved || [])
+    .filter((item) => String(item?.listingVisibility || 'public').toLowerCase() !== 'delisted')
     .filter(isSitemapInventoryEligible)
     .map(item => ({
       loc: `${resolveDetailPath(item)}?slug=${encodeURIComponent(item.slug)}`,
