@@ -682,14 +682,16 @@ mkdir -p /root/.openclaw/workspace/AsiaPower/docs/agents/apbd
     `${AP}/agents/apbd/leads/adapters/places.py`,
   );
   run('rsync', ['-av',
+    `${ROOT}/agents/apbd/leads/normalize.py`,
     `${ROOT}/agents/apbd/leads/pipeline.py`,
     `${ROOT}/agents/apbd/leads/cli.py`,
     `${AP}/agents/apbd/leads/`,
   ]);
-  rsync(
+  run('rsync', ['-av',
     `${ROOT}/scripts/apbd_leads_ca_enrich.py`,
-    `${AP}/scripts/apbd_leads_ca_enrich.py`,
-  );
+    `${ROOT}/scripts/apbd_leads_email_audit.py`,
+    `${AP}/scripts/`,
+  ]);
   rsync(
     `${ROOT}/docs/agents/apbd/lead-discovery.md`,
     `${AP}/docs/agents/apbd/lead-discovery.md`,
@@ -700,12 +702,16 @@ AP=/root/.openclaw/workspace/AsiaPower
 "$AP/.venv/bin/python3" -m py_compile \
   "$AP/agents/apbd/leads/adapters/website.py" \
   "$AP/agents/apbd/leads/adapters/places.py" \
+  "$AP/agents/apbd/leads/normalize.py" \
   "$AP/agents/apbd/leads/pipeline.py" \
   "$AP/agents/apbd/leads/cli.py" \
-  "$AP/scripts/apbd_leads_ca_enrich.py"
+  "$AP/scripts/apbd_leads_ca_enrich.py" \
+  "$AP/scripts/apbd_leads_email_audit.py"
 "$AP/.venv/bin/python3" "$AP/scripts/apbd_leads_ca_enrich.py" --dry-run --limit 1 >/tmp/apbd-enrich-dry-run.json
 grep -q '"dry_run": true' /tmp/apbd-enrich-dry-run.json
-echo "[deploy:apbd] enrichment modules compiled and dry-run passed"
+"$AP/.venv/bin/python3" "$AP/scripts/apbd_leads_email_audit.py" >/tmp/apbd-email-audit-dry-run.json
+grep -q '"dry_run": true' /tmp/apbd-email-audit-dry-run.json
+echo "[deploy:apbd] enrichment modules compiled and dry-runs passed"
 `);
 }
 
@@ -1184,7 +1190,7 @@ function printHelp() {
   console.log(`AsiaPower deploy (Release Manager enabled):
   node scripts/deploy-production.mjs <target> [--yes] [--allow-dirty] [user@host]
 
-  nginx | api | engines | apsales | apsales-openclaw | finalize | home | portal | chrome | categories | admin
+  nginx | api | engines | apbd | apsales | apsales-openclaw | finalize | home | portal | chrome | categories | admin
 
   REQUIRED: commit → push GitHub → then deploy (CEO red line 2026-07-10)
   Pre-deploy:  git clean, HEAD on origin, backup, target confirmation
