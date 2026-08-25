@@ -128,7 +128,9 @@ def run_enrich(
             continue
         prior = company.get("website_enrichment") or {}
         prior_status = str(prior.get("status") or "")
-        if prior_status == "complete" or (prior_status == "failed" and not retry_failed):
+        if prior_status in ("complete", "unsupported_website") or (
+            prior_status == "failed" and not retry_failed
+        ):
             skipped_attempted += 1
             continue
         rows.append(company)
@@ -143,6 +145,7 @@ def run_enrich(
         "attempted": 0,
         "complete": 0,
         "failed": 0,
+        "unsupported": 0,
         "new_email_records": 0,
         "email_companies": 0,
         "linkedin_links_found": 0,
@@ -201,7 +204,13 @@ def run_enrich(
         }
         metadata = updated.get("website_enrichment") or {}
         result["attempted"] += 1
-        result["complete" if metadata.get("status") == "complete" else "failed"] += 1
+        state = str(metadata.get("status") or "failed")
+        if state == "complete":
+            result["complete"] += 1
+        elif state == "unsupported_website":
+            result["unsupported"] += 1
+        else:
+            result["failed"] += 1
         result["new_email_records"] += len(after_emails - before_emails)
         result["email_companies"] += int(bool(after_emails))
         result["linkedin_links_found"] += int(metadata.get("linkedin_links_found") or 0)

@@ -48,6 +48,15 @@ _DECISION_ROLE_RE = re.compile(
     r"operations manager|parts manager|purchasing manager|procurement manager|service manager)\b",
     re.I,
 )
+
+
+class _RedirectHandler(urllib.request.HTTPRedirectHandler):
+    """Add explicit HTTP 308 support for older urllib behavior."""
+
+    def http_error_308(self, req: Any, fp: Any, code: int, msg: str, headers: Any) -> Any:
+        return self.http_error_302(req, fp, code, msg, headers)
+
+
 def _now() -> str:
     return datetime.now(timezone.utc).replace(microsecond=0).isoformat().replace("+00:00", "Z")
 
@@ -105,9 +114,17 @@ def fetch_url(url: str, *, timeout: int = 8) -> dict[str, Any]:
         url = "https://" + url
     if not _allowed_by_robots(url):
         return {"ok": False, "error": "robots_disallow", "url": url, "text": "", "html": ""}
-    req = urllib.request.Request(url, headers={"User-Agent": _UA})
+    req = urllib.request.Request(
+        url,
+        headers={
+            "User-Agent": _UA,
+            "Accept": "text/html,application/xhtml+xml;q=0.9,*/*;q=0.7",
+            "Accept-Language": "en-CA,en;q=0.8",
+        },
+    )
     try:
-        with urllib.request.urlopen(req, timeout=max(2, int(timeout))) as resp:
+        opener = urllib.request.build_opener(_RedirectHandler())
+        with opener.open(req, timeout=max(2, int(timeout))) as resp:
             raw = resp.read(750_000)
             final = resp.geturl()
             ctype = resp.headers.get("Content-Type", "")
@@ -266,9 +283,20 @@ def enrich_company_from_website(
         }
         return company
 
-    parsed = urlparse(base if "://" in base else "https://" + base)
+    base_url = base if "://" in base else "https://" + base
+    parsed = urlparse(base_url)
     origin = f"{parsed.scheme}://{parsed.netloc}"
     domain = normalize_domain(base)
+    if not domain:
+        company["website_enrichment"] = {
+            "status": "unsupported_website",
+            "attempted_at": attempted_at,
+            "pages_attempted": 0,
+            "pages_fetched": 0,
+            "errors": [{"url": base, "error": "social_or_aggregator_not_official_website"}],
+            "retryable": False,
+        }
+        return company
     pages_attempted = 0
     pages_fetched = 0
     consecutive_failures = 0
@@ -282,10 +310,15 @@ def enrich_company_from_website(
         if channel.get("type") == "email"
     }
 
-    for path in _CONTACT_PATHS:
+    page_urls = [base_url]
+    page_urls.extend(
+        urljoin(origin.rstrip("/") + "/", path.lstrip("/"))
+        for path in _CONTACT_PATHS
+        if path != "/"
+    )
+    for url in dict.fromkeys(page_urls):
         if pages_attempted >= max(1, int(max_pages)):
             break
-        url = urljoin(origin.rstrip("/") + "/", path.lstrip("/"))
         pages_attempted += 1
         result = fetch_url(url, timeout=timeout)
         if not result.get("ok"):
