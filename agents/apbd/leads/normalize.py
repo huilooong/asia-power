@@ -2,8 +2,9 @@
 
 from __future__ import annotations
 
+import html as html_lib
 import re
-from urllib.parse import urlparse
+from urllib.parse import unquote, urlparse
 
 _SUFFIX_RE = re.compile(
     r"\b(ltd|limited|llc|inc|plc|co\.?|company|enterprises|group|corp|corporation|auto|garage|shop)\b\.?",
@@ -12,6 +13,36 @@ _SUFFIX_RE = re.compile(
 _NON_ALNUM = re.compile(r"[^a-z0-9]+")
 _PHONE_DIGITS = re.compile(r"\D+")
 _EMAIL_RE = re.compile(r"[a-zA-Z0-9._%+\-]+@[a-zA-Z0-9.\-]+\.[a-zA-Z]{2,}")
+_PLACEHOLDER_EMAIL_LOCAL_PARTS = {
+    "email",
+    "example",
+    "filler",
+    "name",
+    "sample",
+    "test",
+    "user",
+    "you",
+    "yourname",
+}
+_PLACEHOLDER_EMAIL_DOMAINS = {
+    "domain.com",
+    "example.com",
+    "example.org",
+    "godaddy.com",
+    "indiantypefoundry.com",
+}
+_BAD_EMAIL_PARTS = (
+    ".png",
+    ".jpg",
+    ".jpeg",
+    ".gif",
+    ".webp",
+    ".svg",
+    "sentry.io",
+    "wixpress",
+    "cloudflare",
+)
+_BAD_EMAIL_PREFIXES = ("noreply@", "no-reply@", "donotreply@", "do-not-reply@")
 
 
 def normalize_name(name: str) -> str:
@@ -70,6 +101,28 @@ def extract_emails(text: str) -> list[str]:
         seen.add(el)
         out.append(el)
     return out
+
+
+def clean_public_email(value: str) -> str:
+    """Return a conservative normalized public email, or empty for obvious artifacts."""
+    raw = html_lib.unescape(html_lib.unescape(unquote(str(value or "")))).strip().lower()
+    if raw.startswith("mailto:"):
+        raw = raw[7:]
+    raw = raw.split("?", 1)[0]
+    match = _EMAIL_RE.search(raw)
+    if not match:
+        return ""
+    email = match.group(0).lower()
+    if email.startswith(_BAD_EMAIL_PREFIXES) or any(part in email for part in _BAD_EMAIL_PARTS):
+        return ""
+    local, domain = email.rsplit("@", 1)
+    if len(local) < 2 or local in _PLACEHOLDER_EMAIL_LOCAL_PARTS:
+        return ""
+    if domain in _PLACEHOLDER_EMAIL_DOMAINS:
+        return ""
+    if domain.startswith(".") or ".." in domain:
+        return ""
+    return email
 
 
 def normalize_address(addr: str) -> str:

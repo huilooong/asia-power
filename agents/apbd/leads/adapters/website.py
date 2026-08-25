@@ -21,7 +21,7 @@ from agents.apbd.leads.classify_services import (
     merge_brands,
     merge_services,
 )
-from agents.apbd.leads.normalize import extract_emails, normalize_domain
+from agents.apbd.leads.normalize import clean_public_email, extract_emails, normalize_domain
 
 _UA = "AsiaPower-APBD-LeadEnrich/1.1 (+https://asia-power.com; public-business-research)"
 _CONTACT_PATHS = (
@@ -48,21 +48,6 @@ _DECISION_ROLE_RE = re.compile(
     r"operations manager|parts manager|purchasing manager|procurement manager|service manager)\b",
     re.I,
 )
-_BAD_EMAIL_PARTS = (
-    ".png",
-    ".jpg",
-    ".jpeg",
-    ".gif",
-    ".webp",
-    ".svg",
-    "example.com",
-    "sentry.io",
-    "wixpress",
-    "cloudflare",
-)
-_BAD_EMAIL_PREFIXES = ("noreply@", "no-reply@", "donotreply@", "do-not-reply@")
-
-
 def _now() -> str:
     return datetime.now(timezone.utc).replace(microsecond=0).isoformat().replace("+00:00", "Z")
 
@@ -149,15 +134,7 @@ def website_of(company: dict[str, Any]) -> str:
 
 
 def _clean_email(value: str) -> str:
-    email = (value or "").strip().lower()
-    if email.startswith("mailto:"):
-        email = email[7:]
-    email = email.split("?", 1)[0].strip()
-    if not email or email.startswith(_BAD_EMAIL_PREFIXES):
-        return ""
-    if any(part in email for part in _BAD_EMAIL_PARTS):
-        return ""
-    return email
+    return clean_public_email(value)
 
 
 def _emails_from_page(raw_html: str, text: str) -> list[str]:

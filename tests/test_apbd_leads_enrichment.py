@@ -32,6 +32,23 @@ def _company() -> dict:
 
 
 class WebsiteEvidenceTests(unittest.TestCase):
+    def test_rejects_placeholder_vendor_and_malformed_email_artifacts(self) -> None:
+        from agents.apbd.leads.adapters.website import _emails_from_page
+
+        page = """
+        <a href="mailto:service@real-auto.ca">Contact</a>
+        <input placeholder="you@email.com">
+        <script>const theme = 'filler@godaddy.com';</script>
+        <style>/* info@indiantypefoundry.com */</style>
+        <a href="mailto:shop@gmail.com\\&quot;">Email</a>
+        5@nit.qsf example@mail.com user@domain.com
+        """
+
+        self.assertEqual(
+            _emails_from_page(page, "service@real-auto.ca"),
+            ["service@real-auto.ca", "shop@gmail.com"],
+        )
+
     def test_extracts_public_email_linkedin_and_structured_decision_maker(self) -> None:
         from agents.apbd.leads.adapters.website import enrich_company_from_website
 
@@ -113,6 +130,33 @@ class PlacesFallbackTests(unittest.TestCase):
         self.assertFalse(any(c.get("type") == "email" for c in channels))
         self.assertFalse(result["places_contact_refresh"]["email_field_available"])
         self.assertTrue(result["places_contact_refresh"]["website_added"])
+
+
+class EmailAuditTests(unittest.TestCase):
+    def test_removes_artifacts_deduplicates_and_labels_manual_review(self) -> None:
+        from scripts.apbd_leads_email_audit import audit
+
+        company = _company()
+        company["contact_channels"].extend(
+            [
+                {"type": "email", "value": "service@example-auto.test"},
+                {"type": "email", "value": "YOU@EMAIL.COM"},
+                {"type": "email", "value": "shop@gmail.com\\&quot;"},
+                {"type": "email", "value": "shop@gmail.com"},
+            ]
+        )
+
+        result = audit([company])
+
+        emails = [
+            channel for channel in company["contact_channels"] if channel.get("type") == "email"
+        ]
+        self.assertEqual([item["value"] for item in emails], ["service@example-auto.test", "shop@gmail.com"])
+        self.assertEqual(emails[0]["quality_tier"], "official_domain_public")
+        self.assertEqual(emails[1]["quality_tier"], "public_free_mailbox")
+        self.assertEqual(emails[1]["verification_status"], "manual_review_required")
+        self.assertEqual(result["removed_count"], 1)
+        self.assertEqual(result["deduplicated_count"], 1)
 
 
 class EnrichmentCheckpointTests(unittest.TestCase):
