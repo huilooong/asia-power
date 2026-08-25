@@ -365,6 +365,14 @@ def enrich_company_from_website(
         if channel.get("type") == "email" and channel.get("value")
     }
     unique_linkedin = list(dict.fromkeys(found_linkedin))
+    unique_people = {
+        (
+            str(person.get("name") or "").strip().lower(),
+            str(person.get("title") or "").strip().lower(),
+        )
+        for person in found_people
+        if person.get("name") and person.get("title")
+    }
     state = "complete" if pages_fetched else "failed"
     company["website_enrichment"] = {
         "status": state,
@@ -374,7 +382,7 @@ def enrich_company_from_website(
         "evidence_urls": list(dict.fromkeys(evidence_urls)),
         "new_email_count": len(emails_after - emails_before),
         "linkedin_links_found": len(unique_linkedin),
-        "decision_makers_found": len(found_people),
+        "decision_makers_found": len(unique_people),
         "errors": errors[:10],
         "retryable": not pages_fetched,
     }

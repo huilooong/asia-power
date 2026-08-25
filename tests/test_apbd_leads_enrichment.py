@@ -107,6 +107,29 @@ class WebsiteEvidenceTests(unittest.TestCase):
         self.assertTrue(result["website_enrichment"]["retryable"])
         self.assertEqual(result["website_enrichment"]["pages_attempted"], 2)
 
+    def test_decision_maker_count_is_unique_across_multiple_pages(self) -> None:
+        from agents.apbd.leads.adapters.website import enrich_company_from_website
+
+        page = """
+        <script type="application/ld+json">
+        {"@type":"Person","name":"Jamie Owner","jobTitle":"Owner"}
+        </script>
+        """
+        response = {
+            "ok": True,
+            "url": "https://example-auto.test/about",
+            "html": page,
+            "text": "Jamie Owner",
+            "error": "",
+        }
+        with mock.patch(
+            "agents.apbd.leads.adapters.website.fetch_url", return_value=response
+        ):
+            result = enrich_company_from_website(_company(), max_pages=3, timeout=3)
+
+        self.assertEqual(len(result["contact_persons"]), 1)
+        self.assertEqual(result["website_enrichment"]["decision_makers_found"], 1)
+
 
 class PlacesFallbackTests(unittest.TestCase):
     def test_places_refresh_adds_missing_website_but_never_email(self) -> None:
