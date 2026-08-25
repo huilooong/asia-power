@@ -65,6 +65,18 @@ class WebsiteEvidenceTests(unittest.TestCase):
 
         self.assertEqual(_visible_people(page, "https://example-auto.test/team"), [])
 
+    def test_rejects_real_world_heading_article_and_pronoun_false_positives(self) -> None:
+        from agents.apbd.leads.adapters.website import _visible_people
+
+        page = """
+        <h2>WHAT OUR CLIENTS SAY</h2>
+        <p>Coming here for 15 years. Honest owner with best pricing.</p>
+        <p>An established auto shop serving Kelowna for over 20 years.</p>
+        <p>We started here because we saw what professional automotive care could be.</p>
+        """
+
+        self.assertEqual(_visible_people(page, "https://example-auto.test/about"), [])
+
     def test_visible_evidence_merges_with_existing_jsonld_person_by_name(self) -> None:
         from agents.apbd.leads.adapters.website import _merge_contact_people
 
@@ -271,6 +283,45 @@ class EmailAuditTests(unittest.TestCase):
         self.assertEqual(emails[1]["verification_status"], "manual_review_required")
         self.assertEqual(result["removed_count"], 1)
         self.assertEqual(result["deduplicated_count"], 1)
+
+
+class PeopleAuditTests(unittest.TestCase):
+    def test_removes_invalid_visible_people_but_preserves_jsonld_and_valid_people(self) -> None:
+        from scripts.apbd_leads_people_audit import audit
+
+        company = _company()
+        company["contact_persons"] = [
+            {
+                "name": "WHAT OUR CLIENTS SAY",
+                "title": "Owner",
+                "source": "official_website_visible_text",
+                "evidence_url": "https://example-auto.test/",
+                "evidence_text": "WHAT OUR CLIENTS SAY — Honest owner",
+                "confidence": 0.92,
+            },
+            {
+                "name": "Joey Li",
+                "title": "Founder",
+                "source": "official_website_visible_text",
+                "evidence_url": "https://example-auto.test/about",
+                "evidence_text": "Founder — Joey Li",
+                "confidence": 0.92,
+            },
+            {
+                "name": "Alex Owner",
+                "title": "Owner",
+                "source": "official_website_jsonld",
+                "evidence_url": "https://example-auto.test/",
+            },
+        ]
+
+        result = audit([company])
+
+        self.assertEqual(
+            {person["name"] for person in company["contact_persons"]},
+            {"Joey Li", "Alex Owner"},
+        )
+        self.assertEqual(result["removed_count"], 1)
 
 
 class EnrichmentCheckpointTests(unittest.TestCase):
