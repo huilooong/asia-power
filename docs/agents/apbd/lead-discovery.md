@@ -89,11 +89,16 @@ cd /root/.openclaw/workspace/AsiaPower
 .venv/bin/python3 scripts/apbd_leads_ca_enrich.py --dry-run --limit 10
 .venv/bin/python3 scripts/apbd_leads_ca_enrich.py --limit 50 --max-pages 4 --timeout 6 --workers 6
 .venv/bin/python3 scripts/apbd_leads_ca_enrich.py --limit 10 --places-fallback-limit 5
+.venv/bin/python3 scripts/apbd_leads_ca_enrich.py --limit 250 --workers 6 --people-backfill
 ```
 
 独立补充脚本默认使用 6 个受控并发 worker，不会并发写数据库：官网读取并行，完成后一次性落盘。
 同一批仍先做数据库备份，并通过 `trickle.lock` 阻止发现服务同时写入。通用 APBD CLI 和慢巡检
 默认保持单 worker，避免后台服务突然增加负载。
+
+`--people-backfill` 只重新检查已成功读取且尚未运行当前人物提取版本的官网。人物必须在官网
+可见文字中形成明确的“姓名＋Owner/Founder/President/Manager等职位”关系，并保留证据原文；
+只有姓名、只有职位、客户评论或推测关系都不入库。同一姓名在JSON-LD和可见文字中只保留一人。
 
 ## 中文服务规则
 

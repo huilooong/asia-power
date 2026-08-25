@@ -34,6 +34,68 @@ def _company() -> dict:
 
 
 class WebsiteEvidenceTests(unittest.TestCase):
+    def test_extracts_explicit_visible_owner_and_manager_relationships(self) -> None:
+        from agents.apbd.leads.adapters.website import _visible_people
+
+        page = """
+        <h2>Meet Jared Ranson — Lead Technician &amp; Owner</h2>
+        <h3>Maria Chen</h3><p>Parts Manager</p>
+        <h2>Meet Jag. Your trusted mechanic.</h2>
+        <p>Independent, owner-operated, Red Seal certified.</p>
+        <p>Our owner believes honest service matters.</p>
+        """
+
+        people = _visible_people(page, "https://example-auto.test/about")
+        by_name = {person["name"]: person for person in people}
+
+        self.assertEqual(set(by_name), {"Jared Ranson", "Maria Chen", "Jag"})
+        self.assertEqual(by_name["Jared Ranson"]["title"], "Lead Technician & Owner")
+        self.assertEqual(by_name["Maria Chen"]["title"], "Parts Manager")
+        self.assertEqual(by_name["Jag"]["title"], "Owner")
+        self.assertTrue(all(person.get("evidence_text") for person in people))
+
+    def test_does_not_extract_role_without_named_relationship(self) -> None:
+        from agents.apbd.leads.adapters.website import _visible_people
+
+        page = """
+        <h2>Meet Our Team</h2>
+        <p>Our owner and service manager bring decades of experience.</p>
+        <p>A customer said the owner was very helpful.</p>
+        """
+
+        self.assertEqual(_visible_people(page, "https://example-auto.test/team"), [])
+
+    def test_visible_evidence_merges_with_existing_jsonld_person_by_name(self) -> None:
+        from agents.apbd.leads.adapters.website import _merge_contact_people
+
+        company = _company()
+        company["contact_persons"] = [
+            {
+                "name": "Alex Owner",
+                "title": "Owner",
+                "source": "official_website_jsonld",
+                "evidence_url": "https://example-auto.test/",
+            }
+        ]
+        _merge_contact_people(
+            company,
+            [
+                {
+                    "name": "Alex Owner",
+                    "title": "Founder & Owner",
+                    "source": "official_website_visible_text",
+                    "evidence_url": "https://example-auto.test/about",
+                    "evidence_text": "Alex Owner — Founder & Owner",
+                    "confidence": 0.97,
+                }
+            ],
+        )
+
+        self.assertEqual(len(company["contact_persons"]), 1)
+        person = company["contact_persons"][0]
+        self.assertEqual(person["title"], "Founder & Owner")
+        self.assertEqual(len(person["visible_role_evidence"]), 1)
+
     def test_uses_exact_listed_url_before_generic_paths(self) -> None:
         from agents.apbd.leads.adapters.website import enrich_company_from_website
 
@@ -311,6 +373,63 @@ class EnrichmentCheckpointTests(unittest.TestCase):
 
         saved = load_companies()[0]
         self.assertEqual(saved["priority"], "CEO")
+
+    def test_people_backfill_is_versioned_and_not_repeated(self) -> None:
+        from agents.apbd.leads.adapters.website import PEOPLE_EXTRACTION_VERSION
+        from agents.apbd.leads.pipeline import run_enrich
+        from agents.apbd.leads.repository import upsert_company
+
+        company = _company()
+        company["status"] = "enriched"
+        company["website_enrichment"] = {"status": "complete"}
+        upsert_company(company, source="test")
+
+        def fake_enrich(item: dict, **_: object) -> dict:
+            item["website_enrichment"] = {
+                "status": "complete",
+                "people_extraction_version": PEOPLE_EXTRACTION_VERSION,
+                "linkedin_links_found": 0,
+                "decision_makers_found": 0,
+            }
+            return item
+
+        with mock.patch(
+            "agents.apbd.leads.pipeline.enrich_company_from_website", side_effect=fake_enrich
+        ):
+            first = run_enrich(country="CA", limit=10, people_backfill=True)
+            second = run_enrich(country="CA", limit=10, people_backfill=True)
+
+        self.assertEqual(first["attempted"], 1)
+        self.assertTrue(first["people_backfill"])
+        self.assertEqual(second["selected"], 0)
+
+    def test_failed_people_backfill_does_not_downgrade_prior_complete_status(self) -> None:
+        from agents.apbd.leads.pipeline import run_enrich
+        from agents.apbd.leads.repository import load_companies, upsert_company
+
+        company = _company()
+        company["status"] = "enriched"
+        company["website_enrichment"] = {"status": "complete", "pages_fetched": 2}
+        upsert_company(company, source="test")
+
+        def fake_failure(item: dict, **_: object) -> dict:
+            item["website_enrichment"] = {
+                "status": "failed",
+                "attempted_at": "2026-08-25T00:00:00Z",
+                "errors": [{"url": "https://example-auto.test", "error": "timeout"}],
+            }
+            return item
+
+        with mock.patch(
+            "agents.apbd.leads.pipeline.enrich_company_from_website", side_effect=fake_failure
+        ):
+            result = run_enrich(country="CA", limit=10, people_backfill=True)
+
+        saved = load_companies()[0]["website_enrichment"]
+        self.assertEqual(saved["status"], "complete")
+        self.assertEqual(saved["pages_fetched"], 2)
+        self.assertEqual(saved["people_backfill_status"], "failed")
+        self.assertEqual(result["people_backfill_failed"], 1)
 
 
 if __name__ == "__main__":

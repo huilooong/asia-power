@@ -70,7 +70,8 @@ def _backup_db() -> str:
     return str(target)
 
 
-def _preview(limit: int, retry_failed: bool) -> dict[str, Any]:
+def _preview(limit: int, retry_failed: bool, people_backfill: bool) -> dict[str, Any]:
+    from agents.apbd.leads.adapters.website import PEOPLE_EXTRACTION_VERSION
     from agents.apbd.leads.repository import list_companies
 
     rows = []
@@ -81,11 +82,18 @@ def _preview(limit: int, retry_failed: bool) -> dict[str, Any]:
         )
         prior = company.get("website_enrichment") or {}
         status = str(prior.get("status") or "")
-        eligible = (
-            has_website
-            and status not in ("complete", "unsupported_website")
-            and (status != "failed" or retry_failed)
-        )
+        if people_backfill:
+            eligible = (
+                has_website
+                and status == "complete"
+                and prior.get("people_extraction_version") != PEOPLE_EXTRACTION_VERSION
+            )
+        else:
+            eligible = (
+                has_website
+                and status not in ("complete", "unsupported_website")
+                and (status != "failed" or retry_failed)
+            )
         if eligible:
             rows.append(
                 {
@@ -96,7 +104,13 @@ def _preview(limit: int, retry_failed: bool) -> dict[str, Any]:
             )
         if len(rows) >= limit:
             break
-    return {"ok": True, "dry_run": True, "selected": len(rows), "targets": rows}
+    return {
+        "ok": True,
+        "dry_run": True,
+        "people_backfill": people_backfill,
+        "selected": len(rows),
+        "targets": rows,
+    }
 
 
 def main() -> int:
@@ -117,6 +131,11 @@ def main() -> int:
         help="Recheck exact Places details for businesses that still have no website",
     )
     parser.add_argument("--retry-failed", action="store_true")
+    parser.add_argument(
+        "--people-backfill",
+        action="store_true",
+        help="Recheck previously accessible sites with the latest visible role extractor",
+    )
     parser.add_argument("--dry-run", action="store_true")
     args = parser.parse_args()
 
@@ -127,7 +146,13 @@ def main() -> int:
     _load_env()
 
     if args.dry_run:
-        print(json.dumps(_preview(limit, bool(args.retry_failed)), ensure_ascii=False, indent=2))
+        print(
+            json.dumps(
+                _preview(limit, bool(args.retry_failed), bool(args.people_backfill)),
+                ensure_ascii=False,
+                indent=2,
+            )
+        )
         return 0
 
     lock_handle = _acquire_writer_lock()
@@ -155,6 +180,7 @@ def main() -> int:
             timeout=timeout,
             retry_failed=bool(args.retry_failed),
             workers=workers,
+            people_backfill=bool(args.people_backfill),
         )
         if int(args.places_fallback_limit) > 0:
             result["places_fallback"] = run_places_contact_refresh(

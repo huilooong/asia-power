@@ -13,7 +13,7 @@ from agents.apbd.leads.adapters.places import (
     refresh_company_contact_fields,
     require_places_key,
 )
-from agents.apbd.leads.adapters.website import enrich_company_from_website
+from agents.apbd.leads.adapters.website import PEOPLE_EXTRACTION_VERSION, enrich_company_from_website
 from agents.apbd.leads.market_config import load_markets
 from agents.apbd.leads.repository import (
     list_companies,
@@ -108,6 +108,7 @@ def run_enrich(
     timeout: int = 8,
     retry_failed: bool = False,
     workers: int = 1,
+    people_backfill: bool = False,
 ) -> dict[str, Any]:
     """Website-first enrichment with checkpoints and evidence-backed result counts."""
     started = time.monotonic()
@@ -128,6 +129,17 @@ def run_enrich(
             continue
         prior = company.get("website_enrichment") or {}
         prior_status = str(prior.get("status") or "")
+        if people_backfill:
+            if (
+                prior_status != "complete"
+                or prior.get("people_extraction_version") == PEOPLE_EXTRACTION_VERSION
+            ):
+                skipped_attempted += 1
+                continue
+            rows.append(company)
+            if len(rows) >= max(1, int(limit)):
+                break
+            continue
         if prior_status in ("complete", "unsupported_website") or (
             prior_status == "failed" and not retry_failed
         ):
@@ -150,38 +162,79 @@ def run_enrich(
         "email_companies": 0,
         "linkedin_links_found": 0,
         "decision_makers_found": 0,
+        "new_decision_makers": 0,
+        "people_backfill_failed": 0,
         "skipped_no_website": skipped_no_website,
         "skipped_attempted": skipped_attempted,
         "max_pages": max_pages,
         "timeout": timeout,
         "workers": min(worker_count, len(rows)) if rows else 0,
+        "people_backfill": bool(people_backfill),
+        "people_extraction_version": PEOPLE_EXTRACTION_VERSION,
         "worker_errors": [],
         "persistence_writes": 0,
     }
 
-    def enrich_one(company: dict[str, Any]) -> tuple[dict[str, Any], set[str], str]:
+    def enrich_one(
+        company: dict[str, Any],
+    ) -> tuple[dict[str, Any], set[str], set[str], str]:
+        prior_metadata = dict(company.get("website_enrichment") or {})
         before_emails = {
             str(channel.get("value") or "").lower()
             for channel in (company.get("contact_channels") or [])
             if channel.get("type") == "email" and channel.get("value")
         }
+        before_people = {
+            str(person.get("name") or "").strip().lower()
+            for person in (company.get("contact_persons") or [])
+            if person.get("name")
+        }
         try:
             updated = enrich_company_from_website(company, max_pages=max_pages, timeout=timeout)
+            if people_backfill:
+                metadata = updated.get("website_enrichment") or {}
+                if metadata.get("status") == "complete":
+                    metadata["people_backfill_status"] = "complete"
+                else:
+                    failed_metadata = dict(metadata)
+                    metadata = dict(prior_metadata)
+                    metadata.update(
+                        {
+                            "people_extraction_version": PEOPLE_EXTRACTION_VERSION,
+                            "people_backfill_status": "failed",
+                            "people_backfill_attempted_at": failed_metadata.get("attempted_at"),
+                            "people_backfill_errors": failed_metadata.get("errors") or [],
+                        }
+                    )
+                    updated["website_enrichment"] = metadata
             apply_score(updated)
             maybe_auto_status(updated)
-            return updated, before_emails, ""
+            return updated, before_emails, before_people, ""
         except Exception as exc:
-            company["website_enrichment"] = {
-                "status": "failed",
-                "attempted_at": company.get("updated_at") or "",
-                "pages_attempted": 0,
-                "pages_fetched": 0,
-                "errors": [{"url": "", "error": f"worker_error:{str(exc)[:180]}"}],
-                "retryable": True,
-            }
-            return company, before_emails, str(exc)[:200]
+            if people_backfill:
+                prior_metadata.update(
+                    {
+                        "people_extraction_version": PEOPLE_EXTRACTION_VERSION,
+                        "people_backfill_status": "failed",
+                        "people_backfill_attempted_at": company.get("updated_at") or "",
+                        "people_backfill_errors": [
+                            {"url": "", "error": f"worker_error:{str(exc)[:180]}"}
+                        ],
+                    }
+                )
+                company["website_enrichment"] = prior_metadata
+            else:
+                company["website_enrichment"] = {
+                    "status": "failed",
+                    "attempted_at": company.get("updated_at") or "",
+                    "pages_attempted": 0,
+                    "pages_fetched": 0,
+                    "errors": [{"url": "", "error": f"worker_error:{str(exc)[:180]}"}],
+                    "retryable": True,
+                }
+            return company, before_emails, before_people, str(exc)[:200]
 
-    completed_rows: list[tuple[dict[str, Any], set[str], str]] = []
+    completed_rows: list[tuple[dict[str, Any], set[str], set[str], str]] = []
     if worker_count == 1 or len(rows) <= 1:
         completed_rows = [enrich_one(company) for company in rows]
     else:
@@ -192,17 +245,22 @@ def run_enrich(
 
     if completed_rows:
         upsert_companies_batch(
-            [updated for updated, _, _ in completed_rows], source="website_enrich"
+            [updated for updated, _, _, _ in completed_rows], source="website_enrich"
         )
         result["persistence_writes"] = 1
 
-    for updated, before_emails, worker_error in completed_rows:
+    for updated, before_emails, before_people, worker_error in completed_rows:
         after_emails = {
             str(channel.get("value") or "").lower()
             for channel in (updated.get("contact_channels") or [])
             if channel.get("type") == "email" and channel.get("value")
         }
         metadata = updated.get("website_enrichment") or {}
+        after_people = {
+            str(person.get("name") or "").strip().lower()
+            for person in (updated.get("contact_persons") or [])
+            if person.get("name")
+        }
         result["attempted"] += 1
         state = str(metadata.get("status") or "failed")
         if state == "complete":
@@ -214,7 +272,14 @@ def run_enrich(
         result["new_email_records"] += len(after_emails - before_emails)
         result["email_companies"] += int(bool(after_emails))
         result["linkedin_links_found"] += int(metadata.get("linkedin_links_found") or 0)
-        result["decision_makers_found"] += int(metadata.get("decision_makers_found") or 0)
+        if metadata.get("people_backfill_status") != "failed":
+            result["decision_makers_found"] += int(
+                metadata.get("decision_makers_found") or 0
+            )
+        result["new_decision_makers"] += len(after_people - before_people)
+        result["people_backfill_failed"] += int(
+            metadata.get("people_backfill_status") == "failed"
+        )
         if worker_error:
             result["worker_errors"].append(
                 {"company_id": updated.get("id"), "error": worker_error}
