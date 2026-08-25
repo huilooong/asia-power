@@ -677,6 +677,10 @@ mkdir -p /root/.openclaw/workspace/AsiaPower/docs/agents/apbd
     `${ROOT}/agents/apbd/leads/adapters/website.py`,
     `${AP}/agents/apbd/leads/adapters/website.py`,
   );
+  rsync(
+    `${ROOT}/agents/apbd/leads/adapters/places.py`,
+    `${AP}/agents/apbd/leads/adapters/places.py`,
+  );
   run('rsync', ['-av',
     `${ROOT}/agents/apbd/leads/pipeline.py`,
     `${ROOT}/agents/apbd/leads/cli.py`,
@@ -695,6 +699,7 @@ set -e
 AP=/root/.openclaw/workspace/AsiaPower
 "$AP/.venv/bin/python3" -m py_compile \
   "$AP/agents/apbd/leads/adapters/website.py" \
+  "$AP/agents/apbd/leads/adapters/places.py" \
   "$AP/agents/apbd/leads/pipeline.py" \
   "$AP/agents/apbd/leads/cli.py" \
   "$AP/scripts/apbd_leads_ca_enrich.py"

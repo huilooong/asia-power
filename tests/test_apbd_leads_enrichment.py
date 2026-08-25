@@ -89,6 +89,32 @@ class WebsiteEvidenceTests(unittest.TestCase):
         self.assertEqual(result["website_enrichment"]["pages_attempted"], 2)
 
 
+class PlacesFallbackTests(unittest.TestCase):
+    def test_places_refresh_adds_missing_website_but_never_email(self) -> None:
+        from agents.apbd.leads.adapters.places import refresh_company_contact_fields
+
+        company = _company()
+        company["contact_channels"] = [{"type": "phone", "value": "555-0100"}]
+        company["location"]["google_place_id"] = "place-123"
+        details = {
+            "id": "place-123",
+            "websiteUri": "https://example-auto.test",
+            "nationalPhoneNumber": "555-0100",
+            "googleMapsUri": "https://maps.google.com/?q=place-123",
+        }
+        with (
+            mock.patch("agents.apbd.leads.adapters.places.require_places_key", return_value="key"),
+            mock.patch("customer_gateway.maps_prospect._place_details_api", return_value=details),
+        ):
+            result = refresh_company_contact_fields(company)
+
+        channels = result["contact_channels"]
+        self.assertTrue(any(c.get("type") == "website" for c in channels))
+        self.assertFalse(any(c.get("type") == "email" for c in channels))
+        self.assertFalse(result["places_contact_refresh"]["email_field_available"])
+        self.assertTrue(result["places_contact_refresh"]["website_added"])
+
+
 class EnrichmentCheckpointTests(unittest.TestCase):
     def setUp(self) -> None:
         self.tmp = tempfile.TemporaryDirectory()

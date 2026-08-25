@@ -88,6 +88,7 @@ cd /root/.openclaw/workspace/AsiaPower
 ```bash
 .venv/bin/python3 scripts/apbd_leads_ca_enrich.py --dry-run --limit 10
 .venv/bin/python3 scripts/apbd_leads_ca_enrich.py --limit 10 --max-pages 5 --timeout 8
+.venv/bin/python3 scripts/apbd_leads_ca_enrich.py --limit 10 --places-fallback-limit 5
 ```
 
 ## 中文服务规则

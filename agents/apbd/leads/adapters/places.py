@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import time
 import uuid
+from datetime import datetime, timezone
 from typing import Any
 
 from agents.apbd.leads.normalize import normalize_name
@@ -23,6 +24,10 @@ class PlacesConfigError(RuntimeError):
 
 class PlacesQuotaError(RuntimeError):
     """Raised when Places daily quota is exhausted."""
+
+
+def _now() -> str:
+    return datetime.now(timezone.utc).replace(microsecond=0).isoformat().replace("+00:00", "Z")
 
 
 def require_places_key() -> str:
@@ -64,6 +69,83 @@ def search_text(
         if "429" in msg or "Quota exceeded" in msg:
             raise PlacesQuotaError(msg) from exc
         raise
+
+
+def refresh_company_contact_fields(company: dict[str, Any]) -> dict[str, Any]:
+    """Recheck exact Place Details and fill only missing website/phone fields.
+
+    Places has no email field. This function records that boundary explicitly and
+    never treats a Maps response as email evidence.
+    """
+    key = require_places_key()
+    location = company.get("location") or {}
+    place_id = str(location.get("google_place_id") or "").strip()
+    checked_at = _now()
+    if not place_id:
+        company["places_contact_refresh"] = {
+            "status": "no_place_id",
+            "checked_at": checked_at,
+            "email_field_available": False,
+        }
+        return company
+
+    from customer_gateway.maps_prospect import _place_details_api
+
+    detail = _place_details_api(place_id, key)
+    if not detail:
+        company["places_contact_refresh"] = {
+            "status": "failed",
+            "checked_at": checked_at,
+            "place_id": place_id,
+            "email_field_available": False,
+            "retryable": True,
+        }
+        return company
+
+    channels = list(company.get("contact_channels") or [])
+    has_website = any(c.get("type") == "website" and c.get("value") for c in channels)
+    has_phone = any(c.get("type") == "phone" and c.get("value") for c in channels)
+    website = str(detail.get("websiteUri") or detail.get("website") or "").strip()
+    phone = str(
+        detail.get("nationalPhoneNumber")
+        or detail.get("internationalPhoneNumber")
+        or detail.get("formatted_phone_number")
+        or ""
+    ).strip()
+    website_added = bool(website and not has_website)
+    phone_added = bool(phone and not has_phone)
+    if website_added:
+        channels.append(
+            {
+                "type": "website",
+                "value": website,
+                "source": "google_places_detail_refresh",
+                "observed_at": checked_at,
+            }
+        )
+    if phone_added:
+        channels.append(
+            {
+                "type": "phone",
+                "value": phone,
+                "source": "google_places_detail_refresh",
+                "observed_at": checked_at,
+            }
+        )
+    company["contact_channels"] = channels
+    maps_url = str(detail.get("googleMapsUri") or "").strip()
+    if maps_url and not location.get("google_maps_url"):
+        location["google_maps_url"] = maps_url
+        company["location"] = location
+    company["places_contact_refresh"] = {
+        "status": "complete",
+        "checked_at": checked_at,
+        "place_id": place_id,
+        "website_added": website_added,
+        "phone_added": phone_added,
+        "email_field_available": False,
+    }
+    return company
 
 
 def place_row_to_company(row: dict[str, Any], *, country_code: str = "CA") -> dict[str, Any]:

@@ -100,6 +100,12 @@ def main() -> int:
     parser.add_argument("--limit", type=int, default=25)
     parser.add_argument("--max-pages", type=int, default=5)
     parser.add_argument("--timeout", type=int, default=8)
+    parser.add_argument(
+        "--places-fallback-limit",
+        type=int,
+        default=0,
+        help="Recheck exact Places details for businesses that still have no website",
+    )
     parser.add_argument("--retry-failed", action="store_true")
     parser.add_argument("--dry-run", action="store_true")
     args = parser.parse_args()
@@ -128,7 +134,7 @@ def main() -> int:
         return 2
 
     try:
-        from agents.apbd.leads.pipeline import run_enrich
+        from agents.apbd.leads.pipeline import run_enrich, run_places_contact_refresh
 
         backup = _backup_db()
         result = run_enrich(
@@ -138,6 +144,12 @@ def main() -> int:
             timeout=timeout,
             retry_failed=bool(args.retry_failed),
         )
+        if int(args.places_fallback_limit) > 0:
+            result["places_fallback"] = run_places_contact_refresh(
+                country="CA",
+                limit=min(int(args.places_fallback_limit), 50),
+                retry_failed=bool(args.retry_failed),
+            )
         result.update(
             {
                 "started_by": "scripts/apbd_leads_ca_enrich.py",
