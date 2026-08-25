@@ -101,6 +101,12 @@ def main() -> int:
     parser.add_argument("--max-pages", type=int, default=5)
     parser.add_argument("--timeout", type=int, default=8)
     parser.add_argument(
+        "--workers",
+        type=int,
+        default=6,
+        help="Concurrent websites to inspect (1-12; discovery service still remains single-writer)",
+    )
+    parser.add_argument(
         "--places-fallback-limit",
         type=int,
         default=0,
@@ -113,6 +119,7 @@ def main() -> int:
     limit = max(1, min(int(args.limit), 100))
     max_pages = max(1, min(int(args.max_pages), 9))
     timeout = max(2, min(int(args.timeout), 20))
+    workers = max(1, min(int(args.workers), 12))
     _load_env()
 
     if args.dry_run:
@@ -143,6 +150,7 @@ def main() -> int:
             max_pages=max_pages,
             timeout=timeout,
             retry_failed=bool(args.retry_failed),
+            workers=workers,
         )
         if int(args.places_fallback_limit) > 0:
             result["places_fallback"] = run_places_contact_refresh(

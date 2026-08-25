@@ -77,6 +77,7 @@ def run_leads_cli(message: str) -> str:
                     max_pages=int(flags.get("max_pages") or 5),
                     timeout=int(flags.get("timeout") or 8),
                     retry_failed=flags.get("retry_failed") == "1",
+                    workers=int(flags.get("workers") or 1),
                 )
             )
 

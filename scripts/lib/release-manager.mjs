@@ -20,8 +20,10 @@ export const TARGET_SOURCE_FILES = {
   apbd: [
     'agents/apbd/leads/adapters/website.py',
     'agents/apbd/leads/adapters/places.py',
+    'agents/apbd/leads/market_config.py',
     'agents/apbd/leads/normalize.py',
     'agents/apbd/leads/pipeline.py',
+    'agents/apbd/leads/repository.py',
     'agents/apbd/leads/cli.py',
     'scripts/apbd_leads_ca_enrich.py',
     'scripts/apbd_leads_email_audit.py',
@@ -197,8 +199,10 @@ export const TARGET_REMOTE_PATHS = {
   apbd: [
     '/root/.openclaw/workspace/AsiaPower/agents/apbd/leads/adapters/website.py',
     '/root/.openclaw/workspace/AsiaPower/agents/apbd/leads/adapters/places.py',
+    '/root/.openclaw/workspace/AsiaPower/agents/apbd/leads/market_config.py',
     '/root/.openclaw/workspace/AsiaPower/agents/apbd/leads/normalize.py',
     '/root/.openclaw/workspace/AsiaPower/agents/apbd/leads/pipeline.py',
+    '/root/.openclaw/workspace/AsiaPower/agents/apbd/leads/repository.py',
     '/root/.openclaw/workspace/AsiaPower/agents/apbd/leads/cli.py',
     '/root/.openclaw/workspace/AsiaPower/scripts/apbd_leads_ca_enrich.py',
     '/root/.openclaw/workspace/AsiaPower/scripts/apbd_leads_email_audit.py',
