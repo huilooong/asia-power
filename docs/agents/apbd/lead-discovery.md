@@ -82,7 +82,7 @@ cd /root/.openclaw/workspace/AsiaPower
 4. 恢复发现服务。
 
 补充器只读取公开官网：邮箱必须保留来源页；LinkedIn资料只接受官网直接链接的公开URL；
-决策人只接受官网结构化数据明确给出的姓名和职位。无法确认时写入人工LinkedIn核验提示，
+决策人接受官网结构化数据，也接受官网可见文字中明确的“姓名＋职位”关系。无法确认时写入人工LinkedIn核验提示，
 不猜测姓名或邮箱。Google Places只用于复核官网、电话和营业状态，不提供邮箱。
 
 ```bash
@@ -92,6 +92,7 @@ cd /root/.openclaw/workspace/AsiaPower
 .venv/bin/python3 scripts/apbd_leads_ca_enrich.py --limit 250 --workers 6 --people-backfill
 .venv/bin/python3 scripts/apbd_leads_people_audit.py
 .venv/bin/python3 scripts/apbd_leads_people_audit.py --apply
+.venv/bin/python3 scripts/apbd_leads_people_audit.py --apply --reset-visible
 ```
 
 独立补充脚本默认使用 6 个受控并发 worker，不会并发写数据库：官网读取并行，完成后一次性落盘。
@@ -101,6 +102,9 @@ cd /root/.openclaw/workspace/AsiaPower
 `--people-backfill` 只重新检查已成功读取且尚未运行当前人物提取版本的官网。人物必须在官网
 可见文字中形成明确的“姓名＋Owner/Founder/President/Manager等职位”关系，并保留证据原文；
 只有姓名、只有职位、客户评论或推测关系都不入库。同一姓名在JSON-LD和可见文字中只保留一人。
+`--reset-visible` 用于规则版本升级时先清除旧版可见文字结果，之后再用 `--people-backfill`
+全量重建；不删除独立的JSON-LD人物。门店专属URL不得直接吸收母公司团队页人物，除非证据页
+属于该门店路径，或页面可见文字明确提到该潜客公司全名。
 
 ## 中文服务规则
 
