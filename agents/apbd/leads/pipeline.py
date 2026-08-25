@@ -2,6 +2,8 @@
 
 from __future__ import annotations
 
+import time
+from concurrent.futures import ThreadPoolExecutor, as_completed
 from typing import Any
 
 from agents.apbd.leads.adapters.places import (
@@ -13,7 +15,12 @@ from agents.apbd.leads.adapters.places import (
 )
 from agents.apbd.leads.adapters.website import enrich_company_from_website
 from agents.apbd.leads.market_config import load_markets
-from agents.apbd.leads.repository import list_companies, load_companies, upsert_company
+from agents.apbd.leads.repository import (
+    list_companies,
+    load_companies,
+    upsert_companies_batch,
+    upsert_company,
+)
 from agents.apbd.leads.review_queue import enqueue_needs_review, maybe_auto_status
 from agents.apbd.leads.scoring import apply_score
 from agents.apbd.leads.search_planner import plan_queries
@@ -100,8 +107,11 @@ def run_enrich(
     max_pages: int = 5,
     timeout: int = 8,
     retry_failed: bool = False,
+    workers: int = 1,
 ) -> dict[str, Any]:
     """Website-first enrichment with checkpoints and evidence-backed result counts."""
+    started = time.monotonic()
+    worker_count = max(1, min(int(workers), 12))
     candidates = list_companies(country=country, city=city)
     rows: list[dict[str, Any]] = []
     skipped_no_website = 0
@@ -141,17 +151,49 @@ def run_enrich(
         "skipped_attempted": skipped_attempted,
         "max_pages": max_pages,
         "timeout": timeout,
+        "workers": min(worker_count, len(rows)) if rows else 0,
+        "worker_errors": [],
+        "persistence_writes": 0,
     }
-    for company in rows:
+
+    def enrich_one(company: dict[str, Any]) -> tuple[dict[str, Any], set[str], str]:
         before_emails = {
             str(channel.get("value") or "").lower()
             for channel in (company.get("contact_channels") or [])
             if channel.get("type") == "email" and channel.get("value")
         }
-        updated = enrich_company_from_website(company, max_pages=max_pages, timeout=timeout)
-        apply_score(updated)
-        maybe_auto_status(updated)
-        upsert_company(updated, source="website_enrich")
+        try:
+            updated = enrich_company_from_website(company, max_pages=max_pages, timeout=timeout)
+            apply_score(updated)
+            maybe_auto_status(updated)
+            return updated, before_emails, ""
+        except Exception as exc:
+            company["website_enrichment"] = {
+                "status": "failed",
+                "attempted_at": company.get("updated_at") or "",
+                "pages_attempted": 0,
+                "pages_fetched": 0,
+                "errors": [{"url": "", "error": f"worker_error:{str(exc)[:180]}"}],
+                "retryable": True,
+            }
+            return company, before_emails, str(exc)[:200]
+
+    completed_rows: list[tuple[dict[str, Any], set[str], str]] = []
+    if worker_count == 1 or len(rows) <= 1:
+        completed_rows = [enrich_one(company) for company in rows]
+    else:
+        with ThreadPoolExecutor(max_workers=min(worker_count, len(rows))) as executor:
+            futures = {executor.submit(enrich_one, company): company for company in rows}
+            for future in as_completed(futures):
+                completed_rows.append(future.result())
+
+    if completed_rows:
+        upsert_companies_batch(
+            [updated for updated, _, _ in completed_rows], source="website_enrich"
+        )
+        result["persistence_writes"] = 1
+
+    for updated, before_emails, worker_error in completed_rows:
         after_emails = {
             str(channel.get("value") or "").lower()
             for channel in (updated.get("contact_channels") or [])
@@ -164,6 +206,14 @@ def run_enrich(
         result["email_companies"] += int(bool(after_emails))
         result["linkedin_links_found"] += int(metadata.get("linkedin_links_found") or 0)
         result["decision_makers_found"] += int(metadata.get("decision_makers_found") or 0)
+        if worker_error:
+            result["worker_errors"].append(
+                {"company_id": updated.get("id"), "error": worker_error}
+            )
+    elapsed = max(0.001, time.monotonic() - started)
+    result["elapsed_seconds"] = round(elapsed, 3)
+    result["companies_per_minute"] = round((result["attempted"] * 60.0) / elapsed, 1)
+    result["worker_errors"] = result["worker_errors"][:10]
     return result
 
 

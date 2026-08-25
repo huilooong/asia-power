@@ -194,6 +194,48 @@ def upsert_company(company: dict[str, Any], *, source: str = "system") -> dict[s
     return company
 
 
+def upsert_companies_batch(
+    incoming: list[dict[str, Any]], *, source: str = "system"
+) -> list[dict[str, Any]]:
+    """Merge many records and persist once while preserving human-locked fields."""
+    if not incoming:
+        return []
+    companies = load_companies()
+    index = {str(company.get("id") or ""): idx for idx, company in enumerate(companies)}
+    saved: list[dict[str, Any]] = []
+    changes: list[tuple[str, str, Any, Any]] = []
+    now = _now()
+
+    for item in incoming:
+        company = dict(item)
+        cid = str(company.get("id") or "")
+        company["updated_at"] = now
+        idx = index.get(cid)
+        if idx is None:
+            index[cid] = len(companies)
+            companies.append(company)
+            changes.append((cid, "*", None, "created"))
+            saved.append(company)
+            continue
+
+        old = companies[idx]
+        for key in ("status", "score", "priority", "chinese_relevance", "business_type"):
+            if old.get(key) != company.get(key):
+                changes.append((cid, key, old.get(key), company.get(key)))
+        locked = set(old.get("human_locked_fields") or [])
+        merged = {**old, **company}
+        for field in locked:
+            if field in old:
+                merged[field] = old[field]
+        companies[idx] = merged
+        saved.append(merged)
+
+    save_companies(companies)
+    for cid, field, old, new in changes:
+        append_change(cid, field, old, new, source=source)
+    return saved
+
+
 def list_companies(
     *,
     country: str = "",

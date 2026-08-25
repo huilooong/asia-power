@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+from functools import lru_cache
 from pathlib import Path
 from typing import Any
 
@@ -11,6 +12,7 @@ KEYWORDS_FILE = ROOT / "config" / "apbd_lead_keywords.yaml"
 SCORING_FILE = ROOT / "config" / "apbd_lead_scoring.yaml"
 
 
+@lru_cache(maxsize=8)
 def _load_yaml(path: Path) -> dict[str, Any]:
     if not path.is_file():
         raise FileNotFoundError(f"Missing config: {path}")

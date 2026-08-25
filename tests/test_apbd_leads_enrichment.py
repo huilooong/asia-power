@@ -3,6 +3,8 @@
 from __future__ import annotations
 
 import tempfile
+import threading
+import time
 import unittest
 from pathlib import Path
 from unittest import mock
@@ -201,6 +203,64 @@ class EnrichmentCheckpointTests(unittest.TestCase):
         self.assertEqual(first["complete"], 1)
         self.assertEqual(second["selected"], 0)
         self.assertEqual(second["skipped_attempted"], 1)
+
+    def test_concurrent_enrichment_uses_multiple_workers_and_one_persist(self) -> None:
+        from agents.apbd.leads.pipeline import run_enrich
+        from agents.apbd.leads.repository import upsert_company
+
+        for idx in range(4):
+            company = _company()
+            company["id"] = f"lead-concurrent-{idx}"
+            company["display_name"] = f"Concurrent Auto {idx}"
+            company["contact_channels"][0]["value"] = f"https://auto-{idx}.test"
+            upsert_company(company, source="test")
+
+        state = {"active": 0, "max_active": 0}
+        state_lock = threading.Lock()
+
+        def fake_enrich(company: dict, **_: object) -> dict:
+            with state_lock:
+                state["active"] += 1
+                state["max_active"] = max(state["max_active"], state["active"])
+            time.sleep(0.03)
+            with state_lock:
+                state["active"] -= 1
+            company["status"] = "enriched"
+            company["website_enrichment"] = {
+                "status": "complete",
+                "linkedin_links_found": 0,
+                "decision_makers_found": 0,
+            }
+            return company
+
+        with mock.patch(
+            "agents.apbd.leads.pipeline.enrich_company_from_website", side_effect=fake_enrich
+        ):
+            result = run_enrich(country="CA", limit=4, workers=4)
+
+        self.assertGreater(state["max_active"], 1)
+        self.assertEqual(result["workers"], 4)
+        self.assertEqual(result["persistence_writes"], 1)
+        self.assertEqual(result["complete"], 4)
+
+    def test_batch_persist_preserves_human_locked_fields(self) -> None:
+        from agents.apbd.leads.repository import (
+            load_companies,
+            upsert_companies_batch,
+            upsert_company,
+        )
+
+        company = _company()
+        company["priority"] = "CEO"
+        company["human_locked_fields"] = ["priority"]
+        upsert_company(company, source="test")
+        incoming = dict(company)
+        incoming["priority"] = "A"
+
+        upsert_companies_batch([incoming], source="test_batch")
+
+        saved = load_companies()[0]
+        self.assertEqual(saved["priority"], "CEO")
 
 
 if __name__ == "__main__":
