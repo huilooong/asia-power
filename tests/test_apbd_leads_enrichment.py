@@ -542,6 +542,38 @@ class EnrichmentCheckpointTests(unittest.TestCase):
         self.assertEqual(saved["people_backfill_status"], "failed")
         self.assertEqual(result["people_backfill_failed"], 1)
 
+    def test_failed_current_version_people_backfill_can_be_retried(self) -> None:
+        from agents.apbd.leads.adapters.website import PEOPLE_EXTRACTION_VERSION
+        from agents.apbd.leads.pipeline import run_enrich
+        from agents.apbd.leads.repository import upsert_company
+
+        company = _company()
+        company["status"] = "enriched"
+        company["website_enrichment"] = {
+            "status": "complete",
+            "people_extraction_version": PEOPLE_EXTRACTION_VERSION,
+            "people_backfill_status": "failed",
+            "people_backfill_errors": [{"url": "", "error": "timeout"}],
+        }
+        upsert_company(company, source="test")
+
+        def fake_success(item: dict, **_: object) -> dict:
+            item["website_enrichment"] = {
+                "status": "complete",
+                "people_extraction_version": PEOPLE_EXTRACTION_VERSION,
+                "linkedin_links_found": 0,
+                "decision_makers_found": 0,
+            }
+            return item
+
+        with mock.patch(
+            "agents.apbd.leads.pipeline.enrich_company_from_website", side_effect=fake_success
+        ):
+            result = run_enrich(country="CA", limit=10, people_backfill=True)
+
+        self.assertEqual(result["selected"], 1)
+        self.assertEqual(result["people_backfill_failed"], 0)
+
 
 if __name__ == "__main__":
     unittest.main()

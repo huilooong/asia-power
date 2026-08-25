@@ -132,7 +132,10 @@ def run_enrich(
         if people_backfill:
             if (
                 prior_status != "complete"
-                or prior.get("people_extraction_version") == PEOPLE_EXTRACTION_VERSION
+                or (
+                    prior.get("people_extraction_version") == PEOPLE_EXTRACTION_VERSION
+                    and prior.get("people_backfill_status") != "failed"
+                )
             ):
                 skipped_attempted += 1
                 continue

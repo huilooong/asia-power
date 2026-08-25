@@ -99,7 +99,8 @@ cd /root/.openclaw/workspace/AsiaPower
 同一批仍先做数据库备份，并通过 `trickle.lock` 阻止发现服务同时写入。通用 APBD CLI 和慢巡检
 默认保持单 worker，避免后台服务突然增加负载。
 
-`--people-backfill` 只重新检查已成功读取且尚未运行当前人物提取版本的官网。人物必须在官网
+`--people-backfill` 只重新检查已成功读取且尚未运行当前人物提取版本的官网；当前版本
+上次因超时或限流失败的官网允许显式重试，已成功的不重复读取。人物必须在官网
 可见文字中形成明确的“姓名＋Owner/Founder/President/Manager等职位”关系，并保留证据原文；
 只有姓名、只有职位、客户评论或推测关系都不入库。同一姓名在JSON-LD和可见文字中只保留一人。
 `--reset-visible` 用于规则版本升级时先清除旧版可见文字结果，之后再用 `--people-backfill`
