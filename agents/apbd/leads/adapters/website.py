@@ -51,10 +51,14 @@ _DECISION_ROLE_RE = re.compile(
 )
 _NAME_TOKEN_RE = re.compile(r"^[A-ZÀ-ÖØ-Þ][A-Za-zÀ-ÖØ-öø-ÿ'’\-]{1,30}\.?$")
 _NAME_STOP_WORDS = {
+    "a",
+    "an",
     "about",
     "auto",
     "automotive",
     "centre",
+    "client",
+    "clients",
     "company",
     "customer",
     "garage",
@@ -63,12 +67,20 @@ _NAME_STOP_WORDS = {
     "mechanic",
     "motors",
     "owner",
+    "our",
     "president",
     "repair",
+    "say",
+    "says",
     "service",
     "services",
     "shop",
     "team",
+    "testimonials",
+    "the",
+    "this",
+    "we",
+    "what",
 }
 _ROLE_TITLES = {
     "owner": "Owner",
@@ -454,6 +466,17 @@ def _visible_people(raw_html: str, evidence_url: str) -> list[dict[str, Any]]:
     return list(found.values())
 
 
+def valid_visible_person_record(person: dict[str, Any]) -> bool:
+    """Validate a stored visible-text person against the current conservative rules."""
+    confidence = float(person.get("confidence") or 0)
+    return bool(
+        _clean_person_name(str(person.get("name") or ""), allow_single=confidence >= 0.95)
+        and _visible_role_title(str(person.get("title") or ""))
+        and person.get("evidence_url")
+        and person.get("evidence_text")
+    )
+
+
 def _merge_external_profiles(company: dict[str, Any], urls: list[str], evidence_url: str) -> None:
     profiles = list(company.get("external_profiles") or [])
     existing = {str(item.get("url") or "").rstrip("/").lower() for item in profiles}
@@ -682,3 +705,8 @@ def enrich_company_from_website(
         "updated_at": attempted_at,
     }
     return company
+    "client",
+    "clients",
+    "our",
+    "say",
+    "says",

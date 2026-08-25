@@ -27,6 +27,7 @@ export const TARGET_SOURCE_FILES = {
     'agents/apbd/leads/cli.py',
     'scripts/apbd_leads_ca_enrich.py',
     'scripts/apbd_leads_email_audit.py',
+    'scripts/apbd_leads_people_audit.py',
     'tests/test_apbd_leads_enrichment.py',
     'docs/agents/apbd/lead-discovery.md',
   ],
@@ -206,6 +207,7 @@ export const TARGET_REMOTE_PATHS = {
     '/root/.openclaw/workspace/AsiaPower/agents/apbd/leads/cli.py',
     '/root/.openclaw/workspace/AsiaPower/scripts/apbd_leads_ca_enrich.py',
     '/root/.openclaw/workspace/AsiaPower/scripts/apbd_leads_email_audit.py',
+    '/root/.openclaw/workspace/AsiaPower/scripts/apbd_leads_people_audit.py',
     '/root/.openclaw/workspace/AsiaPower/docs/agents/apbd/lead-discovery.md',
   ],
   categories: [

@@ -641,6 +641,7 @@ mkdir -p /root/.openclaw/workspace/AsiaPower/docs/agents/apbd
   run('rsync', ['-av',
     `${ROOT}/scripts/apbd_leads_ca_enrich.py`,
     `${ROOT}/scripts/apbd_leads_email_audit.py`,
+    `${ROOT}/scripts/apbd_leads_people_audit.py`,
     `${AP}/scripts/`,
   ]);
   rsync(
@@ -659,11 +660,14 @@ AP=/root/.openclaw/workspace/AsiaPower
   "$AP/agents/apbd/leads/repository.py" \
   "$AP/agents/apbd/leads/cli.py" \
   "$AP/scripts/apbd_leads_ca_enrich.py" \
-  "$AP/scripts/apbd_leads_email_audit.py"
+  "$AP/scripts/apbd_leads_email_audit.py" \
+  "$AP/scripts/apbd_leads_people_audit.py"
 "$AP/.venv/bin/python3" "$AP/scripts/apbd_leads_ca_enrich.py" --dry-run --limit 1 >/tmp/apbd-enrich-dry-run.json
 grep -q '"dry_run": true' /tmp/apbd-enrich-dry-run.json
 "$AP/.venv/bin/python3" "$AP/scripts/apbd_leads_email_audit.py" >/tmp/apbd-email-audit-dry-run.json
 grep -q '"dry_run": true' /tmp/apbd-email-audit-dry-run.json
+"$AP/.venv/bin/python3" "$AP/scripts/apbd_leads_people_audit.py" >/tmp/apbd-people-audit-dry-run.json
+grep -q '"dry_run": true' /tmp/apbd-people-audit-dry-run.json
 echo "[deploy:apbd] enrichment modules compiled and dry-runs passed"
 `);
 }
