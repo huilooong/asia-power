@@ -69,7 +69,16 @@ def run_leads_cli(message: str) -> str:
         if action == "enrich":
             from agents.apbd.leads.pipeline import run_enrich
 
-            return _fmt(run_enrich(country=country, city=city, limit=limit))
+            return _fmt(
+                run_enrich(
+                    country=country,
+                    city=city,
+                    limit=limit,
+                    max_pages=int(flags.get("max_pages") or 5),
+                    timeout=int(flags.get("timeout") or 8),
+                    retry_failed=flags.get("retry_failed") == "1",
+                )
+            )
 
         if action == "score":
             from agents.apbd.leads.pipeline import run_score
@@ -210,7 +219,7 @@ def _help() -> str:
         "APBD leads commands:\n"
         "  /apbd leads discover --country CA --city Richmond --limit 20\n"
         "  /apbd leads discover --country CA --city Richmond --dry-run\n"
-        "  /apbd leads enrich --country CA --limit 50\n"
+        "  /apbd leads enrich --country CA --limit 25 --max-pages 5 --timeout 8\n"
         "  /apbd leads score --country CA\n"
         "  /apbd leads review --country CA\n"
         "  /apbd leads approve --id lead-xxx\n"

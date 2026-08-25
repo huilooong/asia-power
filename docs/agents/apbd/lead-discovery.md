@@ -72,6 +72,24 @@ cd /root/.openclaw/workspace/AsiaPower
 - **缺 Key → 明确失败**（`missing_places_api_key`），禁止改抓 Google Maps 网页
 - CEO 定稿：继续免费 Demo Key；撞 429 只汇报，不自动升级付费
 
+## 加拿大官网补充（邮箱 / LinkedIn证据 / 决策人）
+
+发现服务和补充任务都会写同一份 `companies.json`，禁止同时运行。生产批次必须：
+
+1. 暂停 `apbd-ca-leads-trickle.service`；
+2. 运行小批官网补充；脚本自动备份数据库并生成机器报告；
+3. 核对 `complete`、`failed`、`new_email_records` 和证据链接；
+4. 恢复发现服务。
+
+补充器只读取公开官网：邮箱必须保留来源页；LinkedIn资料只接受官网直接链接的公开URL；
+决策人只接受官网结构化数据明确给出的姓名和职位。无法确认时写入人工LinkedIn核验提示，
+不猜测姓名或邮箱。Google Places只用于复核官网、电话和营业状态，不提供邮箱。
+
+```bash
+.venv/bin/python3 scripts/apbd_leads_ca_enrich.py --dry-run --limit 10
+.venv/bin/python3 scripts/apbd_leads_ca_enrich.py --limit 10 --max-pages 5 --timeout 8
+```
+
 ## 中文服务规则
 
 只能根据公开证据标注（官网写「中文服务 / Mandarin / Cantonese」等）。

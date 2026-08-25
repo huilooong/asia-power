@@ -91,32 +91,79 @@ def run_discover(
     }
 
 
-def run_enrich(*, country: str = "CA", city: str = "", limit: int = 50) -> dict[str, Any]:
-    rows = list_companies(country=country, city=city, status="discovered", limit=limit)
-    # Also re-enrich recently discovered without website pass
-    if len(rows) < limit:
-        more = [
-            c
-            for c in list_companies(country=country, city=city, limit=limit * 2)
-            if c.get("status") in ("discovered", "enriched") and not any(
-                ch.get("type") == "email" for ch in (c.get("contact_channels") or [])
-            )
-        ]
-        seen = {c["id"] for c in rows}
-        for c in more:
-            if c["id"] not in seen:
-                rows.append(c)
-            if len(rows) >= limit:
-                break
+def run_enrich(
+    *,
+    country: str = "CA",
+    city: str = "",
+    limit: int = 50,
+    max_pages: int = 5,
+    timeout: int = 8,
+    retry_failed: bool = False,
+) -> dict[str, Any]:
+    """Website-first enrichment with checkpoints and evidence-backed result counts."""
+    candidates = list_companies(country=country, city=city)
+    rows: list[dict[str, Any]] = []
+    skipped_no_website = 0
+    skipped_attempted = 0
+    for company in candidates:
+        if company.get("status") not in ("discovered", "enriched", "needs_review"):
+            continue
+        has_website = any(
+            channel.get("type") == "website" and channel.get("value")
+            for channel in (company.get("contact_channels") or [])
+        )
+        if not has_website:
+            skipped_no_website += 1
+            continue
+        prior = company.get("website_enrichment") or {}
+        prior_status = str(prior.get("status") or "")
+        if prior_status == "complete" or (prior_status == "failed" and not retry_failed):
+            skipped_attempted += 1
+            continue
+        rows.append(company)
+        if len(rows) >= max(1, int(limit)):
+            break
 
-    enriched = 0
-    for company in rows[:limit]:
-        updated = enrich_company_from_website(company)
+    result = {
+        "ok": True,
+        "country": country,
+        "city": city,
+        "selected": len(rows),
+        "attempted": 0,
+        "complete": 0,
+        "failed": 0,
+        "new_email_records": 0,
+        "email_companies": 0,
+        "linkedin_links_found": 0,
+        "decision_makers_found": 0,
+        "skipped_no_website": skipped_no_website,
+        "skipped_attempted": skipped_attempted,
+        "max_pages": max_pages,
+        "timeout": timeout,
+    }
+    for company in rows:
+        before_emails = {
+            str(channel.get("value") or "").lower()
+            for channel in (company.get("contact_channels") or [])
+            if channel.get("type") == "email" and channel.get("value")
+        }
+        updated = enrich_company_from_website(company, max_pages=max_pages, timeout=timeout)
         apply_score(updated)
         maybe_auto_status(updated)
         upsert_company(updated, source="website_enrich")
-        enriched += 1
-    return {"ok": True, "enriched": enriched, "country": country, "city": city}
+        after_emails = {
+            str(channel.get("value") or "").lower()
+            for channel in (updated.get("contact_channels") or [])
+            if channel.get("type") == "email" and channel.get("value")
+        }
+        metadata = updated.get("website_enrichment") or {}
+        result["attempted"] += 1
+        result["complete" if metadata.get("status") == "complete" else "failed"] += 1
+        result["new_email_records"] += len(after_emails - before_emails)
+        result["email_companies"] += int(bool(after_emails))
+        result["linkedin_links_found"] += int(metadata.get("linkedin_links_found") or 0)
+        result["decision_makers_found"] += int(metadata.get("decision_makers_found") or 0)
+    return result
 
 
 def run_score(*, country: str = "CA", limit: int = 0) -> dict[str, Any]:
