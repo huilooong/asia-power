@@ -81,7 +81,11 @@ def _preview(limit: int, retry_failed: bool) -> dict[str, Any]:
         )
         prior = company.get("website_enrichment") or {}
         status = str(prior.get("status") or "")
-        eligible = has_website and status != "complete" and (status != "failed" or retry_failed)
+        eligible = (
+            has_website
+            and status not in ("complete", "unsupported_website")
+            and (status != "failed" or retry_failed)
+        )
         if eligible:
             rows.append(
                 {

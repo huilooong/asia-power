@@ -34,6 +34,33 @@ def _company() -> dict:
 
 
 class WebsiteEvidenceTests(unittest.TestCase):
+    def test_uses_exact_listed_url_before_generic_paths(self) -> None:
+        from agents.apbd.leads.adapters.website import enrich_company_from_website
+
+        company = _company()
+        company["contact_channels"][0]["value"] = (
+            "https://hosted-site.test/business/profile"
+        )
+        response = {"ok": False, "url": "", "html": "", "text": "", "error": "404"}
+        with mock.patch(
+            "agents.apbd.leads.adapters.website.fetch_url", return_value=response
+        ) as fetch:
+            enrich_company_from_website(company, max_pages=1, timeout=3)
+
+        self.assertEqual(fetch.call_args.args[0], "https://hosted-site.test/business/profile")
+
+    def test_social_profile_is_not_treated_as_official_website(self) -> None:
+        from agents.apbd.leads.adapters.website import enrich_company_from_website
+
+        company = _company()
+        company["contact_channels"][0]["value"] = "https://www.facebook.com/exampleauto"
+        with mock.patch("agents.apbd.leads.adapters.website.fetch_url") as fetch:
+            result = enrich_company_from_website(company, max_pages=3, timeout=3)
+
+        fetch.assert_not_called()
+        self.assertEqual(result["website_enrichment"]["status"], "unsupported_website")
+        self.assertFalse(result["website_enrichment"]["retryable"])
+
     def test_rejects_placeholder_vendor_and_malformed_email_artifacts(self) -> None:
         from agents.apbd.leads.adapters.website import _emails_from_page
 
