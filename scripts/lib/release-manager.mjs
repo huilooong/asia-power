@@ -19,6 +19,7 @@ export const VALID_TARGETS = ['nginx', 'api', 'engines', 'apbd', 'apsales', 'aps
 export const TARGET_SOURCE_FILES = {
   apbd: [
     'agents/apbd/leads/adapters/website.py',
+    'agents/apbd/leads/adapters/places.py',
     'agents/apbd/leads/pipeline.py',
     'agents/apbd/leads/cli.py',
     'scripts/apbd_leads_ca_enrich.py',
@@ -193,6 +194,7 @@ export const TARGET_SOURCE_FILES = {
 export const TARGET_REMOTE_PATHS = {
   apbd: [
     '/root/.openclaw/workspace/AsiaPower/agents/apbd/leads/adapters/website.py',
+    '/root/.openclaw/workspace/AsiaPower/agents/apbd/leads/adapters/places.py',
     '/root/.openclaw/workspace/AsiaPower/agents/apbd/leads/pipeline.py',
     '/root/.openclaw/workspace/AsiaPower/agents/apbd/leads/cli.py',
     '/root/.openclaw/workspace/AsiaPower/scripts/apbd_leads_ca_enrich.py',

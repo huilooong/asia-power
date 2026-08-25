@@ -8,6 +8,7 @@ from agents.apbd.leads.adapters.places import (
     PlacesConfigError,
     PlacesQuotaError,
     discover_query,
+    refresh_company_contact_fields,
     require_places_key,
 )
 from agents.apbd.leads.adapters.website import enrich_company_from_website
@@ -175,6 +176,53 @@ def run_score(*, country: str = "CA", limit: int = 0) -> dict[str, Any]:
         upsert_company(company, source="rescore")
         n += 1
     return {"ok": True, "scored": n}
+
+
+def run_places_contact_refresh(
+    *, country: str = "CA", limit: int = 10, retry_failed: bool = False
+) -> dict[str, Any]:
+    """Use exact Place Details only for businesses still missing an official website."""
+    require_places_key()
+    selected: list[dict[str, Any]] = []
+    skipped_attempted = 0
+    for company in list_companies(country=country):
+        if company.get("status") == "rejected":
+            continue
+        if any(
+            channel.get("type") == "website" and channel.get("value")
+            for channel in (company.get("contact_channels") or [])
+        ):
+            continue
+        prior = company.get("places_contact_refresh") or {}
+        prior_status = str(prior.get("status") or "")
+        if prior_status == "complete" or (prior_status == "failed" and not retry_failed):
+            skipped_attempted += 1
+            continue
+        selected.append(company)
+        if len(selected) >= max(1, int(limit)):
+            break
+
+    result = {
+        "ok": True,
+        "country": country,
+        "selected": len(selected),
+        "attempted": 0,
+        "complete": 0,
+        "failed": 0,
+        "websites_added": 0,
+        "phones_added": 0,
+        "skipped_attempted": skipped_attempted,
+        "email_field_available": False,
+    }
+    for company in selected:
+        updated = refresh_company_contact_fields(company)
+        metadata = updated.get("places_contact_refresh") or {}
+        upsert_company(updated, source="google_places_detail_refresh")
+        result["attempted"] += 1
+        result["complete" if metadata.get("status") == "complete" else "failed"] += 1
+        result["websites_added"] += int(bool(metadata.get("website_added")))
+        result["phones_added"] += int(bool(metadata.get("phone_added")))
+    return result
 
 
 def run_review_enqueue(*, country: str = "CA", min_score: float = 55.0, limit: int = 50) -> dict[str, Any]:
