@@ -24,6 +24,7 @@ from agents.apbd.leads.classify_services import (
 from agents.apbd.leads.normalize import clean_public_email, extract_emails, normalize_domain
 
 _UA = "AsiaPower-APBD-LeadEnrich/1.1 (+https://asia-power.com; public-business-research)"
+PEOPLE_EXTRACTION_VERSION = "visible-role-v1"
 _CONTACT_PATHS = (
     "/",
     "/contact",
@@ -48,6 +49,43 @@ _DECISION_ROLE_RE = re.compile(
     r"operations manager|parts manager|purchasing manager|procurement manager|service manager)\b",
     re.I,
 )
+_NAME_TOKEN_RE = re.compile(r"^[A-ZÀ-ÖØ-Þ][A-Za-zÀ-ÖØ-öø-ÿ'’\-]{1,30}\.?$")
+_NAME_STOP_WORDS = {
+    "about",
+    "auto",
+    "automotive",
+    "centre",
+    "company",
+    "customer",
+    "garage",
+    "group",
+    "manager",
+    "mechanic",
+    "motors",
+    "owner",
+    "president",
+    "repair",
+    "service",
+    "services",
+    "shop",
+    "team",
+}
+_ROLE_TITLES = {
+    "owner": "Owner",
+    "co-owner": "Co-Owner",
+    "co owner": "Co-Owner",
+    "founder": "Founder",
+    "president": "President",
+    "chief executive": "Chief Executive",
+    "ceo": "CEO",
+    "director": "Director",
+    "general manager": "General Manager",
+    "operations manager": "Operations Manager",
+    "parts manager": "Parts Manager",
+    "purchasing manager": "Purchasing Manager",
+    "procurement manager": "Procurement Manager",
+    "service manager": "Service Manager",
+}
 
 
 class _RedirectHandler(urllib.request.HTTPRedirectHandler):
@@ -81,6 +119,49 @@ class _TextExtractor(HTMLParser):
 
     def text(self) -> str:
         return " ".join(self._chunks)
+
+
+class _VisibleBlockExtractor(HTMLParser):
+    """Collect visible headings and short text blocks without scripts or styles."""
+
+    _BLOCK_TAGS = {"h1", "h2", "h3", "h4", "h5", "h6", "p", "li"}
+
+    def __init__(self) -> None:
+        super().__init__()
+        self._skip_depth = 0
+        self._active_tag = ""
+        self._chunks: list[str] = []
+        self._blocks: list[tuple[str, str]] = []
+
+    def _flush(self) -> None:
+        text = re.sub(r"\s+", " ", " ".join(self._chunks)).strip()
+        if self._active_tag and text:
+            self._blocks.append((self._active_tag, text[:500]))
+        self._active_tag = ""
+        self._chunks = []
+
+    def handle_starttag(self, tag: str, attrs: list[tuple[str, str | None]]) -> None:
+        if tag in ("script", "style", "noscript"):
+            self._skip_depth += 1
+            return
+        if not self._skip_depth and tag in self._BLOCK_TAGS:
+            self._flush()
+            self._active_tag = tag
+
+    def handle_endtag(self, tag: str) -> None:
+        if tag in ("script", "style", "noscript") and self._skip_depth:
+            self._skip_depth -= 1
+            return
+        if not self._skip_depth and tag == self._active_tag:
+            self._flush()
+
+    def handle_data(self, data: str) -> None:
+        if not self._skip_depth and self._active_tag and data and data.strip():
+            self._chunks.append(data.strip())
+
+    def blocks(self) -> list[tuple[str, str]]:
+        self._flush()
+        return self._blocks
 
 
 @lru_cache(maxsize=1024)
@@ -232,6 +313,147 @@ def _jsonld_people(raw_html: str, evidence_url: str) -> list[dict[str, Any]]:
     return people
 
 
+def _clean_person_name(value: str, *, allow_single: bool = False) -> str:
+    raw = html_lib.unescape(str(value or "")).strip(" \t\r\n,.:;|—–-()[]")
+    raw = re.sub(r"^(?:meet|mr\.?|mrs\.?|ms\.?|dr\.?)\s+", "", raw, flags=re.I)
+    raw = re.sub(r"\s+", " ", raw).strip()
+    tokens = raw.split()
+    if not tokens or len(tokens) > 4 or (len(tokens) == 1 and not allow_single):
+        return ""
+    if any(token.lower().strip(".'’-") in _NAME_STOP_WORDS for token in tokens):
+        return ""
+    if not all(_NAME_TOKEN_RE.fullmatch(token) for token in tokens):
+        return ""
+    return " ".join(tokens)
+
+
+def _visible_role_title(value: str) -> str:
+    text = re.sub(r"\s+", " ", html_lib.unescape(str(value or ""))).strip(" ,.:;|—–-")
+    match = _DECISION_ROLE_RE.search(text)
+    if not match:
+        return ""
+    if "owner-operated" in text.lower() or "owned and operated" in text.lower():
+        return "Owner"
+    if len(text) <= 80 and not re.search(r"[.!?]", text):
+        return text
+    return _ROLE_TITLES.get(match.group(0).lower(), match.group(0).title())
+
+
+def _visible_people(raw_html: str, evidence_url: str) -> list[dict[str, Any]]:
+    """Extract explicit visible name-role relationships from official page blocks."""
+    parser = _VisibleBlockExtractor()
+    try:
+        parser.feed(raw_html or "")
+        blocks = parser.blocks()
+    except Exception:
+        blocks = []
+
+    found: dict[str, dict[str, Any]] = {}
+
+    def add(name: str, title: str, evidence_text: str, confidence: float) -> None:
+        clean_name = _clean_person_name(name, allow_single=confidence >= 0.95)
+        clean_title = _visible_role_title(title)
+        if not clean_name or not clean_title:
+            return
+        key = clean_name.lower()
+        record = {
+            "name": clean_name,
+            "title": clean_title,
+            "email": "",
+            "linkedin_url": "",
+            "source": "official_website_visible_text",
+            "evidence_url": evidence_url,
+            "evidence_text": re.sub(r"\s+", " ", evidence_text).strip()[:300],
+            "verification_status": "official_site_visible_role",
+            "confidence": confidence,
+            "observed_at": _now(),
+        }
+        existing = found.get(key)
+        if not existing or len(clean_title) > len(str(existing.get("title") or "")):
+            found[key] = record
+
+    # Strong heading/card formats: "Jane Smith — Owner" or "Owner | Jane Smith".
+    for tag, block in blocks:
+        if len(block) > 180:
+            continue
+        parts = re.split(r"\s*(?:—|–|\||:)\s*", block, maxsplit=1)
+        if len(parts) == 2:
+            left, right = parts
+            if _DECISION_ROLE_RE.search(right):
+                add(left, right, block, 0.97)
+            if _DECISION_ROLE_RE.search(left):
+                add(right, left, block, 0.97)
+
+        # "Meet Jag. ... owner-operated" and similar explicit introduction blocks.
+        meet = re.match(r"^meet\s+([^.!?—–|:]{2,60})[.!?—–|:]", block, flags=re.I)
+        if meet and len(parts) != 2 and _DECISION_ROLE_RE.search(block):
+            add(meet.group(1), block, block, 0.95)
+
+        name_is_role = re.search(
+            r"^(.{2,70}?)\s+(?:is|serves as)\s+(?:the|our)\s+(.{0,80})$",
+            block,
+            flags=re.I,
+        )
+        if name_is_role and _DECISION_ROLE_RE.search(name_is_role.group(2)):
+            add(name_is_role.group(1), name_is_role.group(2), block, 0.96)
+
+        by_name = re.search(
+            r"\b(owned and operated|founded|established|started)\s+by\s+"
+            r"([A-ZÀ-ÖØ-Þ][A-Za-zÀ-ÖØ-öø-ÿ'’\-]{1,30}(?:\s+"
+            r"[A-ZÀ-ÖØ-Þ][A-Za-zÀ-ÖØ-öø-ÿ'’\-]{1,30}){0,3})\b",
+            block,
+        )
+        if by_name:
+            title = "Owner" if by_name.group(1).lower().startswith("owned") else "Founder"
+            add(by_name.group(2), title, block, 0.96)
+
+        name_verb = re.search(
+            r"^([A-ZÀ-ÖØ-Þ][A-Za-zÀ-ÖØ-öø-ÿ'’\-]{1,30}(?:\s+"
+            r"[A-ZÀ-ÖØ-Þ][A-Za-zÀ-ÖØ-öø-ÿ'’\-]{1,30}){0,3})\s+"
+            r"(founded|established|started|owns and operates)\b",
+            block,
+        )
+        if name_verb:
+            title = "Owner" if name_verb.group(2).lower().startswith("owns") else "Founder"
+            add(name_verb.group(1), title, block, 0.96)
+
+    # Team cards commonly use adjacent blocks: <h3>Jane Smith</h3><p>Parts Manager</p>.
+    for index in range(len(blocks) - 1):
+        tag_a, text_a = blocks[index]
+        tag_b, text_b = blocks[index + 1]
+        if not (tag_a.startswith("h") or tag_b.startswith("h")):
+            continue
+        name_a = _clean_person_name(text_a)
+        name_b = _clean_person_name(text_b)
+        meet_a = re.match(r"^meet\s+([^.!?—–|:]{2,60})[.!?—–|:]", text_a, flags=re.I)
+        if (
+            meet_a
+            and tag_a.startswith("h")
+            and tag_b in ("p", "li")
+            and len(text_b) <= 180
+            and _DECISION_ROLE_RE.search(text_b)
+        ):
+            add(meet_a.group(1), text_b, f"{text_a} {text_b}", 0.95)
+        if (
+            name_a
+            and tag_a.startswith("h")
+            and tag_b in ("p", "li")
+            and len(text_b) <= 100
+            and _DECISION_ROLE_RE.search(text_b)
+        ):
+            add(name_a, text_b, f"{text_a} — {text_b}", 0.92)
+        if (
+            name_b
+            and tag_b.startswith("h")
+            and tag_a in ("p", "li")
+            and len(text_a) <= 100
+            and _DECISION_ROLE_RE.search(text_a)
+        ):
+            add(name_b, text_a, f"{text_a} — {text_b}", 0.92)
+
+    return list(found.values())
+
+
 def _merge_external_profiles(company: dict[str, Any], urls: list[str], evidence_url: str) -> None:
     profiles = list(company.get("external_profiles") or [])
     existing = {str(item.get("url") or "").rstrip("/").lower() for item in profiles}
@@ -255,15 +477,44 @@ def _merge_external_profiles(company: dict[str, Any], urls: list[str], evidence_
 
 def _merge_contact_people(company: dict[str, Any], people: list[dict[str, Any]]) -> None:
     contacts = list(company.get("contact_persons") or [])
-    existing = {
-        (str(item.get("name") or "").lower(), str(item.get("title") or item.get("role") or "").lower())
-        for item in contacts
+    existing_by_name = {
+        str(item.get("name") or "").strip().lower(): index
+        for index, item in enumerate(contacts)
+        if item.get("name")
     }
     for person in people:
-        key = (str(person.get("name") or "").lower(), str(person.get("title") or "").lower())
-        if key not in existing:
+        key = str(person.get("name") or "").strip().lower()
+        if not key:
+            continue
+        if key not in existing_by_name:
+            existing_by_name[key] = len(contacts)
             contacts.append(person)
-            existing.add(key)
+            continue
+        current = contacts[existing_by_name[key]]
+        evidence_urls = list(current.get("evidence_urls") or [])
+        for evidence in (current.get("evidence_url"), person.get("evidence_url")):
+            if evidence and evidence not in evidence_urls:
+                evidence_urls.append(evidence)
+        if evidence_urls:
+            current["evidence_urls"] = evidence_urls
+        if person.get("source") == "official_website_visible_text":
+            visible_evidence = list(current.get("visible_role_evidence") or [])
+            evidence_row = {
+                "title": person.get("title"),
+                "evidence_url": person.get("evidence_url"),
+                "evidence_text": person.get("evidence_text"),
+                "confidence": person.get("confidence"),
+            }
+            if evidence_row not in visible_evidence:
+                visible_evidence.append(evidence_row)
+            current["visible_role_evidence"] = visible_evidence
+        for field in ("email", "linkedin_url"):
+            if not current.get(field) and person.get(field):
+                current[field] = person[field]
+        current_title = str(current.get("title") or current.get("role") or "")
+        new_title = str(person.get("title") or "")
+        if new_title and len(new_title) > len(current_title):
+            current["title"] = new_title
     company["contact_persons"] = contacts
 
 
@@ -279,6 +530,7 @@ def enrich_company_from_website(
             "attempted_at": attempted_at,
             "pages_attempted": 0,
             "pages_fetched": 0,
+            "people_extraction_version": PEOPLE_EXTRACTION_VERSION,
             "errors": [],
         }
         return company
@@ -293,6 +545,7 @@ def enrich_company_from_website(
             "attempted_at": attempted_at,
             "pages_attempted": 0,
             "pages_fetched": 0,
+            "people_extraction_version": PEOPLE_EXTRACTION_VERSION,
             "errors": [{"url": base, "error": "social_or_aggregator_not_official_website"}],
             "retryable": False,
         }
@@ -370,6 +623,7 @@ def enrich_company_from_website(
         found_linkedin.extend(page_linkedin)
         _merge_external_profiles(company, page_linkedin, evidence_url)
         people = _jsonld_people(raw_html, evidence_url)
+        people.extend(_visible_people(raw_html, evidence_url))
         found_people.extend(people)
         _merge_contact_people(company, people)
 
@@ -399,10 +653,7 @@ def enrich_company_from_website(
     }
     unique_linkedin = list(dict.fromkeys(found_linkedin))
     unique_people = {
-        (
-            str(person.get("name") or "").strip().lower(),
-            str(person.get("title") or "").strip().lower(),
-        )
+        str(person.get("name") or "").strip().lower()
         for person in found_people
         if person.get("name") and person.get("title")
     }
@@ -412,6 +663,7 @@ def enrich_company_from_website(
         "attempted_at": attempted_at,
         "pages_attempted": pages_attempted,
         "pages_fetched": pages_fetched,
+        "people_extraction_version": PEOPLE_EXTRACTION_VERSION,
         "evidence_urls": list(dict.fromkeys(evidence_urls)),
         "new_email_count": len(emails_after - emails_before),
         "linkedin_links_found": len(unique_linkedin),

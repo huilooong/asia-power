@@ -78,6 +78,7 @@ def run_leads_cli(message: str) -> str:
                     timeout=int(flags.get("timeout") or 8),
                     retry_failed=flags.get("retry_failed") == "1",
                     workers=int(flags.get("workers") or 1),
+                    people_backfill=flags.get("people_backfill") == "1",
                 )
             )
 
