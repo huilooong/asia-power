@@ -13,10 +13,18 @@ import {
 } from './post-release-validation.mjs';
 import { checkCacheBustConsistency } from './cache-bust-check.mjs';
 
-export const VALID_TARGETS = ['nginx', 'api', 'engines', 'apsales', 'apsales-openclaw', 'finalize', 'home', 'portal', 'chrome', 'categories', 'admin'];
+export const VALID_TARGETS = ['nginx', 'api', 'engines', 'apbd', 'apsales', 'apsales-openclaw', 'finalize', 'home', 'portal', 'chrome', 'categories', 'admin'];
 
 /** @type {Record<string, string[]>} */
 export const TARGET_SOURCE_FILES = {
+  apbd: [
+    'agents/apbd/leads/adapters/website.py',
+    'agents/apbd/leads/pipeline.py',
+    'agents/apbd/leads/cli.py',
+    'scripts/apbd_leads_ca_enrich.py',
+    'tests/test_apbd_leads_enrichment.py',
+    'docs/agents/apbd/lead-discovery.md',
+  ],
   categories: [
     'index.html',
     'half-cuts/index.html',
@@ -183,6 +191,13 @@ export const TARGET_SOURCE_FILES = {
 
 /** @type {Record<string, string[]>} */
 export const TARGET_REMOTE_PATHS = {
+  apbd: [
+    '/root/.openclaw/workspace/AsiaPower/agents/apbd/leads/adapters/website.py',
+    '/root/.openclaw/workspace/AsiaPower/agents/apbd/leads/pipeline.py',
+    '/root/.openclaw/workspace/AsiaPower/agents/apbd/leads/cli.py',
+    '/root/.openclaw/workspace/AsiaPower/scripts/apbd_leads_ca_enrich.py',
+    '/root/.openclaw/workspace/AsiaPower/docs/agents/apbd/lead-discovery.md',
+  ],
   categories: [
     '/root/.openclaw/workspace/inventory-site/public/index.html',
     '/root/.openclaw/workspace/inventory-site/public/half-cuts/index.html',
@@ -530,7 +545,7 @@ export function runPreDeployValidation({ root, target, remote, allowDirty, yes, 
     });
   }
 
-  const backupMode = ['engines', 'apsales', 'finalize'].includes(target) ? 'data-only' : 'full';
+  const backupMode = ['engines', 'apbd', 'apsales', 'finalize'].includes(target) ? 'data-only' : 'full';
   const backupCmd = backupMode === 'data-only'
     ? 'bash /root/.openclaw/workspace/inventory-site/scripts/backup-inventory-site.sh --data-only'
     : 'bash /root/.openclaw/workspace/inventory-site/scripts/backup-inventory-site.sh';

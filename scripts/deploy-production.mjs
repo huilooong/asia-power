@@ -9,7 +9,7 @@
  * Default rejects dirty tree and unpushed HEAD.
  * Emergency only: DEPLOY_ALLOW_DIRTY=1 + --allow-dirty; DEPLOY_ALLOW_UNPUSHED=1 (both logged).
  *
- * Targets: nginx | api | engines | apsales | apsales-openclaw | finalize
+ * Targets: nginx | api | engines | apbd | apsales | apsales-openclaw | finalize
  */
 import { spawnSync } from 'child_process';
 import fs from 'fs';
@@ -613,6 +613,46 @@ echo "[deploy:admin] files OK on remote (homepage not in this rsync set)"
 `);
 }
 
+/** APBD durable lead enrichment only — no customer messaging and no service restart. */
+function deployApbd() {
+  console.log('[deploy:apbd] syncing bounded website enrichment modules');
+  ssh(`
+set -e
+mkdir -p /root/.openclaw/workspace/AsiaPower/agents/apbd/leads/adapters
+mkdir -p /root/.openclaw/workspace/AsiaPower/scripts
+mkdir -p /root/.openclaw/workspace/AsiaPower/docs/agents/apbd
+`);
+  rsync(
+    `${ROOT}/agents/apbd/leads/adapters/website.py`,
+    `${AP}/agents/apbd/leads/adapters/website.py`,
+  );
+  run('rsync', ['-av',
+    `${ROOT}/agents/apbd/leads/pipeline.py`,
+    `${ROOT}/agents/apbd/leads/cli.py`,
+    `${AP}/agents/apbd/leads/`,
+  ]);
+  rsync(
+    `${ROOT}/scripts/apbd_leads_ca_enrich.py`,
+    `${AP}/scripts/apbd_leads_ca_enrich.py`,
+  );
+  rsync(
+    `${ROOT}/docs/agents/apbd/lead-discovery.md`,
+    `${AP}/docs/agents/apbd/lead-discovery.md`,
+  );
+  ssh(`
+set -e
+AP=/root/.openclaw/workspace/AsiaPower
+"$AP/.venv/bin/python3" -m py_compile \
+  "$AP/agents/apbd/leads/adapters/website.py" \
+  "$AP/agents/apbd/leads/pipeline.py" \
+  "$AP/agents/apbd/leads/cli.py" \
+  "$AP/scripts/apbd_leads_ca_enrich.py"
+"$AP/.venv/bin/python3" "$AP/scripts/apbd_leads_ca_enrich.py" --dry-run --limit 1 >/tmp/apbd-enrich-dry-run.json
+grep -q '"dry_run": true' /tmp/apbd-enrich-dry-run.json
+echo "[deploy:apbd] enrichment modules compiled and dry-run passed"
+`);
+}
+
 function deployApsales() {
   console.log('[deploy:apsales] syncing growth autopilot scripts');
   run('rsync', ['-av',
@@ -1104,6 +1144,7 @@ const targets = {
   nginx: deployNginx,
   api: deployApi,
   engines: deployEngines,
+  apbd: deployApbd,
   apsales: deployApsales,
   'apsales-openclaw': deployApsalesOpenClaw,
   finalize: deployFinalize,
