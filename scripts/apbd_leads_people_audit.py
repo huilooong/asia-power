@@ -26,7 +26,9 @@ def _stamp() -> str:
     return datetime.now(timezone.utc).strftime("%Y%m%dT%H%M%SZ")
 
 
-def audit(companies: list[dict[str, Any]]) -> dict[str, Any]:
+def audit(
+    companies: list[dict[str, Any]], *, reset_visible: bool = False
+) -> dict[str, Any]:
     from agents.apbd.leads.adapters.website import valid_visible_person_record
 
     removed: list[dict[str, str]] = []
@@ -38,6 +40,18 @@ def audit(companies: list[dict[str, Any]]) -> dict[str, Any]:
         for original in company.get("contact_persons") or []:
             person = dict(original)
             if person.get("source") == "official_website_visible_text":
+                if reset_visible:
+                    removed.append(
+                        {
+                            "company_id": str(company.get("id") or ""),
+                            "company": str(company.get("display_name") or ""),
+                            "name": str(person.get("name") or ""),
+                            "title": str(person.get("title") or ""),
+                            "evidence_url": str(person.get("evidence_url") or ""),
+                            "reason": "visible_people_version_reset",
+                        }
+                    )
+                    continue
                 if not valid_visible_person_record(person):
                     removed.append(
                         {
@@ -51,6 +65,8 @@ def audit(companies: list[dict[str, Any]]) -> dict[str, Any]:
                     )
                     continue
                 visible_kept += 1
+            if reset_visible:
+                person.pop("visible_role_evidence", None)
             contacts.append(person)
             total_kept += 1
             companies_with_people.add(str(company.get("id") or ""))
@@ -62,6 +78,7 @@ def audit(companies: list[dict[str, Any]]) -> dict[str, Any]:
         "companies_with_decision_makers": len(companies_with_people),
         "removed_count": len(removed),
         "removed": removed,
+        "reset_visible": reset_visible,
         "outreach_sent": False,
     }
 
@@ -69,12 +86,17 @@ def audit(companies: list[dict[str, Any]]) -> dict[str, Any]:
 def main() -> int:
     parser = argparse.ArgumentParser(description="Audit APBD visible-text decision makers")
     parser.add_argument("--apply", action="store_true", help="Persist the audited result")
+    parser.add_argument(
+        "--reset-visible",
+        action="store_true",
+        help="Remove visible-text people before a versioned full re-extraction",
+    )
     args = parser.parse_args()
 
     if not args.apply:
         from agents.apbd.leads.repository import load_companies
 
-        result = audit(load_companies())
+        result = audit(load_companies(), reset_visible=bool(args.reset_visible))
         result["dry_run"] = True
         print(json.dumps(result, ensure_ascii=False, indent=2))
         return 0
@@ -89,7 +111,7 @@ def main() -> int:
         from agents.apbd.leads.repository import load_companies, save_companies
 
         companies = load_companies()
-        result = audit(companies)
+        result = audit(companies, reset_visible=bool(args.reset_visible))
         result["dry_run"] = False
         BACKUP_DIR.mkdir(parents=True, exist_ok=True)
         backup = BACKUP_DIR / f"companies-before-people-audit-{_stamp()}.json"

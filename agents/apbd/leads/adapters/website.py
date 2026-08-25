@@ -24,7 +24,7 @@ from agents.apbd.leads.classify_services import (
 from agents.apbd.leads.normalize import clean_public_email, extract_emails, normalize_domain
 
 _UA = "AsiaPower-APBD-LeadEnrich/1.1 (+https://asia-power.com; public-business-research)"
-PEOPLE_EXTRACTION_VERSION = "visible-role-v1"
+PEOPLE_EXTRACTION_VERSION = "visible-role-v2"
 _CONTACT_PATHS = (
     "/",
     "/contact",
@@ -45,7 +45,7 @@ _JSONLD_RE = re.compile(
     re.I | re.S,
 )
 _DECISION_ROLE_RE = re.compile(
-    r"\b(owner|co[- ]?owner|founder|president|chief executive|ceo|director|general manager|"
+    r"\b(co[- ]?owner(?!['’]s)|owner(?!['’]s)|founder|president|chief executive|ceo|director|general manager|"
     r"operations manager|parts manager|purchasing manager|procurement manager|service manager)\b",
     re.I,
 )
@@ -68,6 +68,7 @@ _NAME_STOP_WORDS = {
     "motors",
     "owner",
     "our",
+    "originally",
     "president",
     "repair",
     "say",
@@ -79,6 +80,8 @@ _NAME_STOP_WORDS = {
     "testimonials",
     "the",
     "this",
+    "tips",
+    "vehicle",
     "we",
     "what",
 }
@@ -241,6 +244,23 @@ def website_of(company: dict[str, Any]) -> str:
         if channel.get("type") == "website" and channel.get("value"):
             return str(channel["value"]).strip()
     return ""
+
+
+def _person_page_in_company_scope(
+    company: dict[str, Any], base_url: str, evidence_url: str, text: str
+) -> bool:
+    """Avoid attaching a parent-company team page to one location-specific lead."""
+    base_path = urlparse(base_url).path.rstrip("/")
+    if not base_path:
+        return True
+    evidence_path = urlparse(evidence_url).path.rstrip("/")
+    if evidence_path == base_path or evidence_path.startswith(base_path + "/"):
+        return True
+    company_name = re.sub(
+        r"[^a-z0-9]+", " ", str(company.get("display_name") or "").lower()
+    ).strip()
+    page_text = re.sub(r"[^a-z0-9]+", " ", str(text or "").lower())
+    return bool(company_name and company_name in page_text)
 
 
 def _clean_email(value: str) -> str:
@@ -409,20 +429,42 @@ def _visible_people(raw_html: str, evidence_url: str) -> list[dict[str, Any]]:
         if name_is_role and _DECISION_ROLE_RE.search(name_is_role.group(2)):
             add(name_is_role.group(1), name_is_role.group(2), block, 0.96)
 
+        shared_owners = re.search(
+            r"\bowned and operated\s+by\s+"
+            r"([A-ZÀ-ÖØ-Þ][A-Za-zÀ-ÖØ-öø-ÿ'’\-]{1,30})\s*(?:&|and)\s*"
+            r"([A-ZÀ-ÖØ-Þ][A-Za-zÀ-ÖØ-öø-ÿ'’\-]{1,30})\s+"
+            r"([A-ZÀ-ÖØ-Þ][A-Za-zÀ-ÖØ-öø-ÿ'’\-]{1,30})\b",
+            block,
+            flags=re.I,
+        )
+        if shared_owners:
+            add(
+                f"{shared_owners.group(1)} {shared_owners.group(3)}",
+                "Owner",
+                block,
+                0.97,
+            )
+            add(
+                f"{shared_owners.group(2)} {shared_owners.group(3)}",
+                "Owner",
+                block,
+                0.97,
+            )
+
         by_name = re.search(
             r"\b(owned and operated|founded|established|started)\s+by\s+"
             r"([A-ZÀ-ÖØ-Þ][A-Za-zÀ-ÖØ-öø-ÿ'’\-]{1,30}(?:\s+"
             r"[A-ZÀ-ÖØ-Þ][A-Za-zÀ-ÖØ-öø-ÿ'’\-]{1,30}){0,3})\b",
             block,
         )
-        if by_name:
+        if by_name and not shared_owners:
             title = "Owner" if by_name.group(1).lower().startswith("owned") else "Founder"
             add(by_name.group(2), title, block, 0.96)
 
         name_verb = re.search(
             r"^([A-ZÀ-ÖØ-Þ][A-Za-zÀ-ÖØ-öø-ÿ'’\-]{1,30}(?:\s+"
             r"[A-ZÀ-ÖØ-Þ][A-Za-zÀ-ÖØ-öø-ÿ'’\-]{1,30}){0,3})\s+"
-            r"(founded|established|started|owns and operates)\b",
+            r"(founded|established|owns and operates)\b",
             block,
         )
         if name_verb:
@@ -454,14 +496,6 @@ def _visible_people(raw_html: str, evidence_url: str) -> list[dict[str, Any]]:
             and _DECISION_ROLE_RE.search(text_b)
         ):
             add(name_a, text_b, f"{text_a} — {text_b}", 0.92)
-        if (
-            name_b
-            and tag_b.startswith("h")
-            and tag_a in ("p", "li")
-            and len(text_a) <= 100
-            and _DECISION_ROLE_RE.search(text_a)
-        ):
-            add(name_b, text_a, f"{text_a} — {text_b}", 0.92)
 
     return list(found.values())
 
@@ -580,6 +614,7 @@ def enrich_company_from_website(
     evidence_urls: list[str] = []
     found_linkedin: list[str] = []
     found_people: list[dict[str, Any]] = []
+    people_pages_skipped_scope = 0
     emails_before = {
         str(channel.get("value") or "").lower()
         for channel in (company.get("contact_channels") or [])
@@ -645,8 +680,12 @@ def enrich_company_from_website(
         page_linkedin = _linkedin_urls(raw_html)
         found_linkedin.extend(page_linkedin)
         _merge_external_profiles(company, page_linkedin, evidence_url)
-        people = _jsonld_people(raw_html, evidence_url)
-        people.extend(_visible_people(raw_html, evidence_url))
+        people: list[dict[str, Any]] = []
+        if _person_page_in_company_scope(company, base_url, evidence_url, text):
+            people.extend(_jsonld_people(raw_html, evidence_url))
+            people.extend(_visible_people(raw_html, evidence_url))
+        else:
+            people_pages_skipped_scope += 1
         found_people.extend(people)
         _merge_contact_people(company, people)
 
@@ -691,6 +730,7 @@ def enrich_company_from_website(
         "new_email_count": len(emails_after - emails_before),
         "linkedin_links_found": len(unique_linkedin),
         "decision_makers_found": len(unique_people),
+        "people_pages_skipped_scope": people_pages_skipped_scope,
         "errors": errors[:10],
         "retryable": not pages_fetched,
     }

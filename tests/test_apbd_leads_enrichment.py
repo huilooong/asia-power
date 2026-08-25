@@ -42,13 +42,17 @@ class WebsiteEvidenceTests(unittest.TestCase):
         <h3>Maria Chen</h3><p>Parts Manager</p>
         <h2>Meet Jag. Your trusted mechanic.</h2>
         <p>Independent, owner-operated, Red Seal certified.</p>
+        <p>Our shop is owned and operated by Paul &amp; Nancy McLeod.</p>
         <p>Our owner believes honest service matters.</p>
         """
 
         people = _visible_people(page, "https://example-auto.test/about")
         by_name = {person["name"]: person for person in people}
 
-        self.assertEqual(set(by_name), {"Jared Ranson", "Maria Chen", "Jag"})
+        self.assertEqual(
+            set(by_name),
+            {"Jared Ranson", "Maria Chen", "Jag", "Paul McLeod", "Nancy McLeod"},
+        )
         self.assertEqual(by_name["Jared Ranson"]["title"], "Lead Technician & Owner")
         self.assertEqual(by_name["Maria Chen"]["title"], "Parts Manager")
         self.assertEqual(by_name["Jag"]["title"], "Owner")
@@ -73,9 +77,37 @@ class WebsiteEvidenceTests(unittest.TestCase):
         <p>Coming here for 15 years. Honest owner with best pricing.</p>
         <p>An established auto shop serving Kelowna for over 20 years.</p>
         <p>We started here because we saw what professional automotive care could be.</p>
+        <p>Originally established in 1982, this shop serves Toronto.</p>
+        <p>Jake Siemens started serving our customers in 1954.</p>
+        <h3>Vehicle Tips</h3><p>Check your owner's manual for the right fuel.</p>
+        <p>Chief Executive Officer</p><h3>Brad Clowes</h3>
         """
 
         self.assertEqual(_visible_people(page, "https://example-auto.test/about"), [])
+
+    def test_location_lead_does_not_absorb_unrelated_parent_company_team_page(self) -> None:
+        from agents.apbd.leads.adapters.website import _person_page_in_company_scope
+
+        company = _company()
+        company["display_name"] = "Shirley's Service"
+        base = "https://group.test/locations/shirleys-service"
+
+        self.assertTrue(
+            _person_page_in_company_scope(
+                company,
+                base,
+                "https://group.test/locations/shirleys-service",
+                "Shirley's Service Saskatoon",
+            )
+        )
+        self.assertFalse(
+            _person_page_in_company_scope(
+                company,
+                base,
+                "https://group.test/about/our-team",
+                "Group executive leadership and operations managers",
+            )
+        )
 
     def test_visible_evidence_merges_with_existing_jsonld_person_by_name(self) -> None:
         from agents.apbd.leads.adapters.website import _merge_contact_people
@@ -321,6 +353,34 @@ class PeopleAuditTests(unittest.TestCase):
             {person["name"] for person in company["contact_persons"]},
             {"Joey Li", "Alex Owner"},
         )
+        self.assertEqual(result["removed_count"], 1)
+
+    def test_reset_visible_removes_v1_people_and_preserves_jsonld(self) -> None:
+        from scripts.apbd_leads_people_audit import audit
+
+        company = _company()
+        company["contact_persons"] = [
+            {
+                "name": "Joey Li",
+                "title": "Founder",
+                "source": "official_website_visible_text",
+                "evidence_url": "https://example-auto.test/about",
+                "evidence_text": "Founder — Joey Li",
+                "confidence": 0.92,
+            },
+            {
+                "name": "Alex Owner",
+                "title": "Owner",
+                "source": "official_website_jsonld",
+                "evidence_url": "https://example-auto.test/",
+                "visible_role_evidence": [{"evidence_text": "Alex Owner — Owner"}],
+            },
+        ]
+
+        result = audit([company], reset_visible=True)
+
+        self.assertEqual([person["name"] for person in company["contact_persons"]], ["Alex Owner"])
+        self.assertNotIn("visible_role_evidence", company["contact_persons"][0])
         self.assertEqual(result["removed_count"], 1)
 
 
