@@ -120,7 +120,7 @@ def main() -> int:
     parser.add_argument("--dry-run", action="store_true")
     args = parser.parse_args()
 
-    limit = max(1, min(int(args.limit), 100))
+    limit = max(1, min(int(args.limit), 250))
     max_pages = max(1, min(int(args.max_pages), 9))
     timeout = max(2, min(int(args.timeout), 20))
     workers = max(1, min(int(args.workers), 12))
