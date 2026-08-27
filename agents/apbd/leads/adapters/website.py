@@ -36,6 +36,17 @@ _CONTACT_PATHS = (
     "/staff",
     "/management",
 )
+_SPANISH_CONTACT_PATHS = (
+    "/",
+    "/contacto",
+    "/nosotros",
+    "/quienes-somos",
+    "/empresa",
+    "/equipo",
+    "/servicios",
+    "/contact",
+    "/about",
+)
 _LINKEDIN_RE = re.compile(
     r"https?://(?:[a-z]{2,3}\.)?linkedin\.com/(?:company|in)/[^\s\"'<>?#]+",
     re.I,
@@ -119,21 +130,42 @@ class _TextExtractor(HTMLParser):
         super().__init__()
         self._chunks: list[str] = []
         self._skip_depth = 0
+        self._in_title = False
+        self._title_chunks: list[str] = []
+        self._meta_description = ""
 
     def handle_starttag(self, tag: str, attrs: list[tuple[str, str | None]]) -> None:
         if tag in ("script", "style", "noscript"):
             self._skip_depth += 1
+            return
+        if tag == "title":
+            self._in_title = True
+        if tag == "meta":
+            values = {str(key or "").lower(): str(value or "") for key, value in attrs}
+            name = values.get("name", "").lower()
+            prop = values.get("property", "").lower()
+            if name == "description" or prop == "og:description":
+                self._meta_description = values.get("content", "").strip()
 
     def handle_endtag(self, tag: str) -> None:
         if tag in ("script", "style", "noscript") and self._skip_depth:
             self._skip_depth -= 1
+            return
+        if tag == "title":
+            self._in_title = False
 
     def handle_data(self, data: str) -> None:
         if not self._skip_depth and data and data.strip():
             self._chunks.append(data.strip())
+            if self._in_title:
+                self._title_chunks.append(data.strip())
 
     def text(self) -> str:
         return " ".join(self._chunks)
+
+    def page_description(self) -> str:
+        value = self._meta_description or " ".join(self._title_chunks)
+        return re.sub(r"\s+", " ", value).strip()
 
 
 class _VisibleBlockExtractor(HTMLParser):
@@ -236,7 +268,14 @@ def fetch_url(url: str, *, timeout: int = 8) -> dict[str, Any]:
     except Exception:
         text = re.sub(r"<[^>]+>", " ", html)
     text = re.sub(r"\s+", " ", text).strip()
-    return {"ok": True, "url": final, "text": text[:100_000], "html": html, "error": ""}
+    return {
+        "ok": True,
+        "url": final,
+        "text": text[:100_000],
+        "html": html,
+        "page_description": parser.page_description()[:500],
+        "error": "",
+    }
 
 
 def website_of(company: dict[str, Any]) -> str:
@@ -621,10 +660,12 @@ def enrich_company_from_website(
         if channel.get("type") == "email"
     }
 
+    country_code = str(company.get("country_code") or "").strip().upper()
+    contact_paths = _SPANISH_CONTACT_PATHS if country_code == "VE" else _CONTACT_PATHS
     page_urls = [base_url]
     page_urls.extend(
         urljoin(origin.rstrip("/") + "/", path.lstrip("/"))
-        for path in _CONTACT_PATHS
+        for path in contact_paths
         if path != "/"
     )
     for url in dict.fromkeys(page_urls):
@@ -645,6 +686,13 @@ def enrich_company_from_website(
         evidence_urls.append(evidence_url)
         raw_html = str(result.get("html") or "")
         text = str(result.get("text") or "")
+        if url == base_url and not str(company.get("description") or "").strip():
+            page_description = re.sub(
+                r"\s+", " ", str(result.get("page_description") or "")
+            ).strip()
+            if page_description:
+                company["description"] = page_description
+                company["description_evidence_url"] = evidence_url
 
         channels = list(company.get("contact_channels") or [])
         existing = {str(channel.get("value") or "").lower() for channel in channels}

@@ -34,6 +34,46 @@ def _company() -> dict:
 
 
 class WebsiteEvidenceTests(unittest.TestCase):
+    def test_page_description_prefers_meta_then_title(self) -> None:
+        from agents.apbd.leads.adapters.website import _TextExtractor
+
+        parser = _TextExtractor()
+        parser.feed(
+            '<html><head><title>Fallback title</title>'
+            '<meta name="description" content="  Importador de repuestos usados  "></head></html>'
+        )
+        self.assertEqual(parser.page_description(), "Importador de repuestos usados")
+
+        title_only = _TextExtractor()
+        title_only.feed("<html><head><title>Repuestos Valencia</title></head></html>")
+        self.assertEqual(title_only.page_description(), "Repuestos Valencia")
+
+    def test_venezuela_uses_spanish_paths_and_keeps_home_meta_evidence(self) -> None:
+        from agents.apbd.leads.adapters.website import enrich_company_from_website
+
+        company = _company()
+        company["country_code"] = "VE"
+        company["location"]["city"] = "Valencia"
+        responses = [
+            {
+                "ok": True,
+                "url": "https://example-auto.test",
+                "html": "<html><body>Repuestos para vehículos</body></html>",
+                "text": "Repuestos para vehículos",
+                "page_description": "Importador de repuestos en Venezuela",
+                "error": "",
+            },
+            {"ok": False, "url": "", "html": "", "text": "", "error": "404"},
+        ]
+        with mock.patch(
+            "agents.apbd.leads.adapters.website.fetch_url", side_effect=responses
+        ) as fetch:
+            result = enrich_company_from_website(company, max_pages=2, timeout=3)
+
+        self.assertEqual(fetch.call_args_list[1].args[0], "https://example-auto.test/contacto")
+        self.assertEqual(result["description"], "Importador de repuestos en Venezuela")
+        self.assertEqual(result["description_evidence_url"], "https://example-auto.test")
+
     def test_extracts_explicit_visible_owner_and_manager_relationships(self) -> None:
         from agents.apbd.leads.adapters.website import _visible_people
 
