@@ -49,6 +49,18 @@
       .replace(/"/g, '&quot;');
   }
 
+  function renderDisplayTitle(displayTitle) {
+    const title = String(displayTitle || '').trim();
+    const lang = String(document.documentElement.lang || '').toLowerCase();
+    if (lang.startsWith('ar') && title.includes(' — ')) {
+      const divider = title.lastIndexOf(' — ');
+      const product = title.slice(0, divider).trim();
+      const suffix = title.slice(divider + 3).trim();
+      return `<bdi dir="ltr">${escapeHtml(product)}</bdi><span aria-hidden="true"> — </span><bdi dir="rtl">${escapeHtml(suffix)}</bdi>`;
+    }
+    return `<bdi dir="auto">${escapeHtml(title)}</bdi>`;
+  }
+
   function photoLabel(photo, index) {
     return window.HalfCutGalleryLightbox?.photoLabel?.(photo, index)
       ?? (typeof photo === 'object' && photo.label ? photo.label : `Photo ${index + 1}`);
@@ -287,12 +299,11 @@
 
   function renderBuyBoxActions(item, u) {
     const primary = item.status === 'Available'
-      ? u.leadLink(item, 'price', 'hc-item-detail__btn hc-item-detail__btn--primary', t('hc.contactTeam', 'Contact Sourcing Team'))
+      ? u.leadLink(item, 'price', 'hc-item-detail__btn hc-item-detail__btn--primary', t('nav.requestQuote', 'Get Quote'))
       : u.leadLink(item, 'similar', 'hc-item-detail__btn hc-item-detail__btn--primary', t('hc.requestSimilar', 'Request Similar Unit'));
 
     const secondary = [];
     if (item.status === 'Available') {
-      secondary.push(u.facebookShareLink(item, 'hc-item-detail__btn hc-item-detail__btn--secondary hc-item-detail__btn--facebook', t('hc.shareFacebook', 'Share on Facebook')));
       secondary.push(u.whatsappLink(item, 'hc-item-detail__btn hc-item-detail__btn--secondary hc-item-detail__btn--whatsapp', 'WhatsApp'));
       const price = Number(item.priceUsd);
       secondary.push(
@@ -664,7 +675,7 @@
           </nav>
 
           <div class="hc-item-detail__product-head">
-            <h1 class="hc-item-detail__title">${escapeHtml(displayTitle)}</h1>
+            <h1 class="hc-item-detail__title">${renderDisplayTitle(displayTitle)}</h1>
             <p class="hc-item-detail__stock">${escapeHtml(item.stockId)} · ${escapeHtml(statusLabel)}</p>
             ${window.InquiryCta?.render?.({
               context: { product: `${item.brand} ${item.model} (${item.stockId})`, category: isUsedCar ? 'used-car' : 'half-cut' },

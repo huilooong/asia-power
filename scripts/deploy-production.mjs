@@ -335,9 +335,9 @@ echo "[deploy:portal] files OK on remote"
 
 /** Public chrome + catalog listing shells (v4 listing cards / sidebar). Includes about/contact/brands for shared topbar chrome. */
 function deployChrome() {
-  console.log('[deploy:chrome] syncing listing chrome + catalog shells + static chrome pages');
+  console.log('[deploy:chrome] syncing sitewide secondary design + all public 2–3 level pages');
   const pub = `${SITE}/public`;
-  ssh('mkdir -p /root/.openclaw/workspace/inventory-site/public/css /root/.openclaw/workspace/inventory-site/public/js /root/.openclaw/workspace/inventory-site/public/half-cuts /root/.openclaw/workspace/inventory-site/public/trucks /root/.openclaw/workspace/inventory-site/public/machinery /root/.openclaw/workspace/inventory-site/public/used-cars /root/.openclaw/workspace/inventory-site/public/engines /root/.openclaw/workspace/inventory-site/public/gearboxes /root/.openclaw/workspace/inventory-site/public/front-cuts /root/.openclaw/workspace/inventory-site/public/chassis-parts /root/.openclaw/workspace/inventory-site/public/tires /root/.openclaw/workspace/inventory-site/public/guides');
+  ssh('mkdir -p /root/.openclaw/workspace/inventory-site/public/css /root/.openclaw/workspace/inventory-site/public/js /root/.openclaw/workspace/inventory-site/public/half-cuts /root/.openclaw/workspace/inventory-site/public/trucks /root/.openclaw/workspace/inventory-site/public/machinery /root/.openclaw/workspace/inventory-site/public/used-cars /root/.openclaw/workspace/inventory-site/public/engines /root/.openclaw/workspace/inventory-site/public/gearboxes /root/.openclaw/workspace/inventory-site/public/front-cuts /root/.openclaw/workspace/inventory-site/public/chassis-parts /root/.openclaw/workspace/inventory-site/public/truck-heads /root/.openclaw/workspace/inventory-site/public/tires /root/.openclaw/workspace/inventory-site/public/guides /root/.openclaw/workspace/inventory-site/public/supplier-portal /root/.openclaw/workspace/inventory-site/public/admin /root/.openclaw/workspace/inventory-site/public/campaigns/truck-export');
   // Shared listing assets
   rsync(`${ROOT}/js/components.js`, `${pub}/js/components.js`);
   rsync(`${ROOT}/js/config.js`, `${pub}/js/config.js`);
@@ -348,6 +348,8 @@ function deployChrome() {
   rsync(`${ROOT}/js/ebay-categories.js`, `${pub}/js/ebay-categories.js`);
   rsync(`${ROOT}/js/half-cut-directory.js`, `${pub}/js/half-cut-directory.js`);
   rsync(`${ROOT}/js/half-cut-title.js`, `${pub}/js/half-cut-title.js`);
+  rsync(`${ROOT}/js/half-cut-vehicle-title-i18n.js`, `${pub}/js/half-cut-vehicle-title-i18n.js`);
+  rsync(`${ROOT}/js/powertrain-image-catalog.js`, `${pub}/js/powertrain-image-catalog.js`);
   rsync(`${ROOT}/js/half-cut-vin.js`, `${pub}/js/half-cut-vin.js`);
   rsync(`${ROOT}/js/half-cut-inventory-layer.js`, `${pub}/js/half-cut-inventory-layer.js`);
   rsync(`${ROOT}/js/half-cut-media-api.js`, `${pub}/js/half-cut-media-api.js`);
@@ -367,9 +369,13 @@ function deployChrome() {
   rsync(`${ROOT}/css/styles.css`, `${pub}/css/styles.css`);
   rsync(`${ROOT}/css/login.css`, `${pub}/css/login.css`);
   rsync(`${ROOT}/css/quote-list.css`, `${pub}/css/quote-list.css`);
+  rsync(`${ROOT}/css/sitewide-secondary-v1.css`, `${pub}/css/sitewide-secondary-v1.css`);
   // Parts catalog placeholders (category marketing + brand SVG) — display only
   ssh('mkdir -p /root/.openclaw/workspace/inventory-site/public/assets/images');
   rsync(`${ROOT}/assets/images/parts-placeholder.svg`, `${pub}/assets/images/parts-placeholder.svg`);
+  rsync(`${ROOT}/assets/images/powertrain-photo-placeholder.svg`, `${pub}/assets/images/powertrain-photo-placeholder.svg`);
+  ssh('mkdir -p /root/.openclaw/workspace/inventory-site/public/assets/images/powertrain-models');
+  run('rsync', ['-av', `${ROOT}/assets/images/powertrain-models/`, `${pub}/assets/images/powertrain-models/`]);
   rsync(
     `${ROOT}/assets/images/ford-asiapower-powertrain-placeholder.svg`,
     `${pub}/assets/images/ford-asiapower-powertrain-placeholder.svg`
@@ -387,7 +393,8 @@ function deployChrome() {
   rsync(`${ROOT}/js/half-cut-detail.js`, `${pub}/js/half-cut-detail.js`);
   rsync(`${ROOT}/js/half-cut-leads.js`, `${pub}/js/half-cut-leads.js`);
 
-  // Catalog indexes + static chrome (about/contact/countries/brands). engines/*.html SEO → deploy engines.
+  // Homepage cache keys + catalog indexes + static public pages.
+  rsync(`${ROOT}/index.html`, `${pub}/index.html`);
   for (const rel of [
     'half-cuts/index.html',
     'trucks/index.html',
@@ -400,6 +407,7 @@ function deployChrome() {
     'gearboxes/index.html',
     'front-cuts/index.html',
     'chassis-parts/index.html',
+    'truck-heads/index.html',
     'tires/index.html',
     'about.html',
     'contact.html',
@@ -416,23 +424,49 @@ function deployChrome() {
   ]) {
     rsync(`${ROOT}/${rel}`, `${pub}/${rel}`);
   }
+  // Shared component cache key only on authenticated/campaign shells. These
+  // pages keep their existing UI and business logic; no directory is deleted.
+  for (const rel of [
+    'supplier-portal.html',
+    'supplier-portal/export-used-car-upload.html',
+    'supplier-portal/half-cut-upload.html',
+    'supplier-portal/passenger-parts-upload.html',
+    'supplier-portal/truck-upload.html',
+    'supplier-portal/truck-vehicle-upload.html',
+    'admin/analytics.html',
+    'admin/apsales-progress.html',
+    'admin/emails.html',
+    'admin/inventory.html',
+    'admin/leads.html',
+    'campaigns/truck-export/index.html',
+  ]) {
+    rsync(`${ROOT}/${rel}`, `${pub}/${rel}`);
+  }
   // GEO (APGEO-001): AI-crawler policy + LLM-readable site summary. Additive, no ranking-signal change.
   rsync(`${ROOT}/robots.txt`, `${pub}/robots.txt`);
   rsync(`${ROOT}/llms.txt`, `${pub}/llms.txt`);
   ssh('mkdir -p /root/.openclaw/workspace/inventory-site/public/brands');
   run('rsync', ['-av', '--include=*.html', '--exclude=*', `${ROOT}/brands/`, `${pub}/brands/`]);
+  // Sitewide release: every engine content page receives the same shared shell
+  // and cache keys. Merge only HTML; never delete production-only files.
+  run('rsync', ['-av', '--include=*.html', '--exclude=*', `${ROOT}/engines/`, `${pub}/engines/`]);
   ssh(`
 set -e
 PUB=/root/.openclaw/workspace/inventory-site/public
+test -f "$PUB/index.html"
+test -f "$PUB/css/sitewide-secondary-v1.css"
 test -f "$PUB/js/components.js"
 test -f "$PUB/js/config.js"
 test -f "$PUB/js/main.js"
 test -f "$PUB/js/public-i18n.js"
 test -f "$PUB/js/ebay-layout.js"
 test -f "$PUB/js/half-cut-directory.js"
+test -f "$PUB/js/half-cut-vehicle-title-i18n.js"
+test -f "$PUB/js/powertrain-image-catalog.js"
 test -f "$PUB/js/ebay-catalog-hub.js"
 test -f "$PUB/js/half-cut-detail.js"
 test -f "$PUB/js/quote-list.js"
+test -f "$PUB/js/brand-page.js"
 test -f "$PUB/css/quote-list.css"
 test -f "$PUB/quote-list.html"
 test -f "$PUB/css/ebay-layout.css"
@@ -443,6 +477,18 @@ test -f "$PUB/ghana.html"
 test -f "$PUB/nigeria.html"
 test -f "$PUB/kenya.html"
 test -f "$PUB/brands.html"
+test -f "$PUB/brands/toyota.html"
+test -f "$PUB/engines/1nz-fe.html"
+test -f "$PUB/privacy.html"
+test -f "$PUB/quote-list.html"
+grep -q 'sitewide-secondary-v1.css' "$PUB/half-cuts/index.html"
+grep -q 'sitewide-secondary-v1.css' "$PUB/used-cars/detail.html"
+grep -q 'sitewide-secondary-v1.css' "$PUB/engines/1nz-fe.html"
+grep -q 'sitewide-secondary-v1.css' "$PUB/brands/toyota.html"
+grep -q "fangchengbao: { zh: '方程豹', global: 'FANGCHENGBAO' }" "$PUB/js/public-i18n.js"
+grep -q 'components.js?v=sitewide-secondary-v1' "$PUB/app.html"
+grep -q 'components.js?v=sitewide-secondary-v1' "$PUB/supplier-portal.html"
+grep -q 'components.js?v=sitewide-secondary-v1' "$PUB/admin/inventory.html"
 test -f "$PUB/brands/toyota.html"
 test -f "$PUB/app.html"
 test -f "$PUB/engines/ghana-used-engines-from-china.html"
@@ -549,9 +595,14 @@ grep -q 'mnav-drawer' "$PUB/guides/buying-used-engines-from-china.html"
 grep -q 'mnav-drawer' "$PUB/guides/fob-vs-cif-shipping-guide.html"
 grep -E -q 'catalog-search-v1|catalog-search-v2|stock-id-search-v[12]|dedicated-price-v1' "$PUB/engines/index.html"
 test -f "$PUB/assets/images/parts-placeholder.svg"
+test -f "$PUB/assets/images/powertrain-photo-placeholder.svg"
+test -f "$PUB/assets/images/powertrain-models/1zr-fe.jpg"
+test -f "$PUB/assets/images/powertrain-models/jf011e.jpg"
 test -f "$PUB/assets/images/ford-asiapower-powertrain-placeholder.svg"
 test -f "$PUB/assets/images/ford-asiapower-powertrain-placeholder.png"
 test -f "$PUB/tires/index.html"
+test -f "$PUB/truck-heads/index.html"
+grep -q 'sitewide-secondary-v1.css' "$PUB/truck-heads/index.html"
 grep -q 'data-page="tires"' "$PUB/tires/index.html"
 grep -q 'tire-catalog-root' "$PUB/tires/index.html"
 grep -q "passengerPartType === 'tire'" "$PUB/js/half-cut-directory.js" || grep -q "category === 'tires'" "$PUB/js/half-cut-directory.js"

@@ -106,9 +106,10 @@
 
   function formatExportUsedCarTitle(title) {
     const clean = sanitizeExportUsedCarTitle(title);
-    if (!clean) return 'Export Used Car';
-    if (/\bexport\s+used\s+car\b/i.test(clean)) return clean;
-    return `${clean} — Export Used Car`;
+    const suffix = window.PublicI18n?.t?.('hc.exportUsedCarTitleSuffix', 'Export Used Car') || 'Export Used Car';
+    if (!clean) return suffix;
+    if (/\bexport\s+used\s+car\b/i.test(clean) || clean.includes(suffix)) return clean.replace(/\bexport\s+used\s+car\b/i, suffix);
+    return `${clean} — ${suffix}`;
   }
 
   function buildStructuredTitle(item) {

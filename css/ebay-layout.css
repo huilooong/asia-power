@@ -2751,6 +2751,32 @@ body[data-page="frontcuts"] .ebay-parts-main .ebay-listing-list {
   object-position: center center;
   background: #eef1f4;
 }
+.ap-model-image-credit {
+  position: absolute;
+  z-index: 4;
+  right: 6px;
+  bottom: 6px;
+  left: 6px;
+  display: block;
+  padding: 5px 7px;
+  border-radius: 5px;
+  color: #fff;
+  background: rgba(10, 22, 40, 0.84);
+  font-size: 9px;
+  font-weight: 600;
+  line-height: 1.3;
+  text-align: left;
+}
+.ap-model-image-credit a {
+  color: #fff;
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 2px;
+}
+.ap-model-image-credit a:hover,
+.ap-model-image-credit a:focus-visible {
+  color: #ffd46a;
+}
 /* Half-cut / vehicle list: fill the frame so row heights stay even (contain + auto aspect made portrait cards taller). */
 .ebay-listing-row--halfcut .ap-listing-photo__img,
 .ebay-listing-row--halfcut .ap-listing-photo img {

@@ -8,6 +8,12 @@
     return window.PublicI18n?.t(key, fallback) ?? fallback;
   }
 
+  function officialBrandName(value) {
+    const raw = typeof value === 'string' ? value : value?.name;
+    if (!raw) return '';
+    return window.PublicI18n?.officialBrandName?.(raw) || String(raw).toUpperCase();
+  }
+
   function base() {
     return window.SitePaths?.base?.() || (window.location.pathname.includes('/brands/') ? '../' : '');
   }
@@ -311,9 +317,9 @@
 
   function renderBrandPage(slug) {
     const catalog = window.BRAND_CATALOG;
-    const brand = catalog?.[slug];
+    const sourceBrand = catalog?.[slug];
     const root = document.getElementById('brand-page-root');
-    if (!brand || !root) {
+    if (!sourceBrand || !root) {
       if (root) {
         root.innerHTML = `
           <section class="section">
@@ -325,6 +331,10 @@
       }
       return;
     }
+
+    // Keep the catalog data canonical, but render the trademark in the
+    // language-aware official form everywhere on the public brand page.
+    const brand = { ...sourceBrand, name: officialBrandName(sourceBrand.name) };
 
     document.title = `${brand.name} — Engines, Gearboxes & Half-Cuts | AsiaPower`;
     const meta = document.querySelector('meta[name="description"]');

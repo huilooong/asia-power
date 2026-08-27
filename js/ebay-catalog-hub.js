@@ -15,6 +15,12 @@
     return window.PublicI18n?.t(key, fallback) ?? fallback;
   }
 
+  function officialBrandName(value) {
+    const raw = typeof value === 'string' ? value : value?.name;
+    if (!raw) return '';
+    return window.PublicI18n?.officialBrandName?.(raw) || String(raw).toUpperCase();
+  }
+
   function base() {
     return window.SitePaths?.base?.() || '../';
   }
@@ -223,7 +229,7 @@
       const brandSegment = window.HalfCutUtils?.brandSegmentForCategory?.(category) || meta.brandSegment;
       const brands = window.getHalfCutBrands?.(brandSegment) || [];
       const brandInfo = brands.find((b) => b.slug === brand);
-      const brandName = brandInfo?.name || brand;
+      const brandName = officialBrandName(brandInfo?.name || brand);
       const models = modelsFromInventory(allItems, brand);
 
       if (!models.length) {
@@ -270,7 +276,7 @@
       listEl.innerHTML = top.map((b) => {
         const url = halfCutHubUrl(category, { ...params, brand: b.slug, model: '' });
         const active = state.brand === b.slug ? ' is-active' : '';
-        return `<li><a href="${url}" class="ebay-sidebar__fo${active}"><span class="ebay-sidebar__fo-box" aria-hidden="true"></span><span class="ebay-sidebar__fo-n">${escapeHtml(b.name)}</span><span class="ebay-sidebar__fo-c">${b.count}</span></a></li>`;
+        return `<li><a href="${url}" class="ebay-sidebar__fo${active}"><span class="ebay-sidebar__fo-box" aria-hidden="true"></span><span class="ebay-sidebar__fo-n">${escapeHtml(officialBrandName(b.name))}</span><span class="ebay-sidebar__fo-c">${b.count}</span></a></li>`;
       }).join('');
     });
   }
@@ -512,7 +518,7 @@
       { id: '', labelKey: 'filter.make', label: 'Make' },
       ...ordered.map((b) => ({
         id: b.slug,
-        label: `${b.name} (${counts[b.slug]})`,
+        label: `${officialBrandName(b.name)} (${counts[b.slug]})`,
       })),
     ];
   }
@@ -862,7 +868,12 @@
       ? (window.EngineCardLabel?.formatEngineCodeDisplacementFuel?.(display)
         || u.formatEngineCatalogPrimaryTitle?.(display)
         || u.formatPartsCatalogPrimaryTitle?.(display))
-      : (u.formatPartsCatalogPrimaryTitle?.(display)
+      : page === 'gearboxes'
+        ? (u.formatTransmissionCatalogPrimaryTitle?.(display)
+          || u.formatPartsCatalogPrimaryTitle?.(display)
+          || String(display.stockId || '').trim()
+          || display.slug)
+        : (u.formatPartsCatalogPrimaryTitle?.(display)
         || String(display.stockId || '').trim()
         || display.slug);
     const priceLabel = u.formatCatalogPartPrice?.(display, partType)
@@ -909,9 +920,8 @@
       : '';
     const photoHtml = u.renderPartListingPhoto?.(display, partType)
       || renderListingPhoto(display, '#');
-    const watchHtml = partsWatchButtonHtml(display, partType);
     const addHtml = partsAddButtonHtml(display, partType);
-    const brand = String(display?.brand || '').trim();
+    const brand = officialBrandName(display?.brand);
     const tagsHtml = u.listingSpecTagsHtml?.(display) || '';
 
     return `
@@ -927,7 +937,7 @@
           </div>
           <div class="ebay-listing-row__bot">
             ${vinHtml || '<span class="ebay-listing-row__vin"></span>'}
-            <div class="ebay-listing-row__ctas ebay-parts-row__actions">${watchHtml}${addHtml}</div>
+            <div class="ebay-listing-row__ctas ebay-parts-row__actions">${addHtml}</div>
           </div>
         </div>
       </article>`;
@@ -992,17 +1002,12 @@
 
   function partsAddButtonHtml(display, partType) {
     const u = window.HalfCutUtils;
-    const label = t('parts.add', 'Add');
+    const label = t('hc.getQuote', 'Get Quote');
     const link = u?.leadLink?.(display, 'price', 'ebay-parts-row__add', label, partType);
-    if (link) {
-      return link.replace(
-        `>${label}</a>`,
-        `>${partsRowIcon('plus')}<span>${label}</span></a>`,
-      );
-    }
+    if (link) return link;
     const slug = escapeHtml(String(display?.slug || ''));
     const safePart = escapeHtml(String(partType || ''));
-    return `<a href="#" class="ebay-parts-row__add" data-half-cut-lead data-slug="${slug}" data-intent="price" data-part-type="${safePart}">${partsRowIcon('plus')}<span>${label}</span></a>`;
+    return `<a href="#" class="ebay-parts-row__add" data-half-cut-lead data-slug="${slug}" data-intent="price" data-part-type="${safePart}"><span>${label}</span></a>`;
   }
 
   function bindPartsWatchlist(root) {
@@ -1510,7 +1515,7 @@
     const brandOptions = useInventoryMake ? '' : [
       `<option value=""${!state.brand ? ' selected' : ''}>${t('filter.make', 'Make')}</option>`,
       ...brands.map((b) =>
-        `<option value="${b.slug}"${state.brand === b.slug ? ' selected' : ''}>${b.name}</option>`
+        `<option value="${b.slug}"${state.brand === b.slug ? ' selected' : ''}>${officialBrandName(b.name)}</option>`
       ),
     ].join('');
 

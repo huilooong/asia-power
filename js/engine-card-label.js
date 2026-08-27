@@ -165,15 +165,27 @@
     return { code: r.code, displacement: r.displacement, fuel: r.fuel };
   }
 
+  function localizedFuel(value) {
+    var fuel = String(value || '').trim();
+    var key = fuel.toLowerCase().replace(/[\s_-]+/g, '');
+    var keys = {
+      petrol: 'fuel.petrol', gasoline: 'fuel.petrol', diesel: 'fuel.diesel',
+      hybrid: 'fuel.hybrid', pluginhybrid: 'fuel.plugInHybrid', phev: 'fuel.plugInHybrid',
+      electric: 'fuel.electric', ev: 'fuel.electric',
+    };
+    var i18nKey = keys[key];
+    return i18nKey ? (window.PublicI18n?.t?.(i18nKey, fuel) || fuel) : fuel;
+  }
+
   function formatDisplacementFuel(input) {
     var parts = resolveEngineCardParts(input);
-    return [parts.displacement, parts.fuel].filter(Boolean).join(' ');
+    return [parts.displacement, localizedFuel(parts.fuel)].filter(Boolean).join(' ');
   }
 
   function formatEngineCodeDisplacementFuel(input) {
     var parts = resolveEngineCardParts(input);
     if (!parts.code) return formatDisplacementFuel(input);
-    var tail = [parts.displacement, parts.fuel].filter(Boolean).join(' ');
+    var tail = [parts.displacement, localizedFuel(parts.fuel)].filter(Boolean).join(' ');
     return tail ? parts.code + ' · ' + tail : parts.code;
   }
 
@@ -275,24 +287,27 @@
 
   function formatEngineDetailH1(input) {
     var src = input || {};
-    var brand = String(src.brand || src.brandName || '').trim();
+    var rawBrand = String(src.brand || src.brandName || '').trim();
+    var brand = window.PublicI18n?.officialBrandName?.(rawBrand) || rawBrand.toUpperCase();
     var parts = resolveEngineCardParts(src);
-    var bits = [brand, parts.code, parts.displacement, parts.fuel, 'Engine'].filter(Boolean);
+    var engineLabel = window.PublicI18n?.t?.('parts.partType.engine', 'Engine') || 'Engine';
+    var bits = [brand, parts.code, parts.displacement, localizedFuel(parts.fuel), engineLabel].filter(Boolean);
     return bits.join(' ');
   }
 
   function formatHalfCutVehicleTitle(input) {
     var src = input || {};
     var brand = String(src.brand || '').trim();
+    var displayBrand = window.PublicI18n?.officialBrandName?.(brand) || brand.toUpperCase();
     var model = String(src.model || '').trim();
     if (brand && model && brand.toLowerCase() === model.toLowerCase()) {
-      return brand;
+      return displayBrand;
     }
     // Avoid "Brand Brand Model" when model already starts with brand
     if (brand && model && new RegExp('^' + brand.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + '\\b', 'i').test(model)) {
-      return model;
+      return model.replace(new RegExp('^' + brand.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'i'), displayBrand);
     }
-    return [brand, model].filter(Boolean).join(' ');
+    return [displayBrand, model].filter(Boolean).join(' ');
   }
 
   function formatHalfCutDetailH1(input) {

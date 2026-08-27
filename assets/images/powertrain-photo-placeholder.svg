@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="800" height="600" viewBox="0 0 800 600" role="img" aria-label="Powertrain model photo pending">
+  <rect width="800" height="600" fill="#e9edf1"/>
+  <path d="M0 480L800 160" stroke="#dfe5ea" stroke-width="2"/>
+  <path d="M0 540L800 220" stroke="#dfe5ea" stroke-width="2"/>
+  <rect x="132" y="96" width="536" height="408" rx="24" fill="#f7f8f9" stroke="#cdd5dc" stroke-width="2"/>
+  <rect x="132" y="96" width="536" height="8" rx="4" fill="#18273a"/>
+  <g transform="translate(400 258)" fill="none" stroke="#526171" stroke-width="5" stroke-linecap="round" stroke-linejoin="round">
+    <circle r="62"/>
+    <circle r="25"/>
+    <path d="M0-62V-88M0 62V88M-62 0H-88M62 0H88M-44-44L-62-62M44-44L62-62M-44 44L-62 62M44 44L62 62"/>
+    <path d="M-18-55C-42-47-55-26-55 0s13 47 37 55M18-55C42-47 55-26 55 0S42 47 18 55"/>
+  </g>
+  <text x="400" y="390" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="27" font-weight="700" fill="#18273a" letter-spacing="1.5">MODEL PHOTO PENDING</text>
+  <text x="400" y="425" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="15" font-weight="600" fill="#697786" letter-spacing="1">RIGHTS-CLEARED IMAGE NOT AVAILABLE</text>
+</svg>

@@ -58,7 +58,7 @@ test('reject displacement-like engine code', () => {
 });
 
 test('half-cut vehicle title', () => {
-  assert.equal(L.formatHalfCutVehicleTitle({ brand: 'Toyota', model: 'Camry' }), 'Toyota Camry');
+  assert.equal(L.formatHalfCutVehicleTitle({ brand: 'Toyota', model: 'Camry' }), 'TOYOTA Camry');
 });
 
 test('compatible summary truncation', () => {

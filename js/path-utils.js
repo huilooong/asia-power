@@ -93,7 +93,7 @@
     loadSyncScript(`${feedbackBase}js/site-feedback.js?v=list-lead-modal-v1`);
   }
 
-  const SITE_I18N_VER = 'used-car-separation-v3';
+  const SITE_I18N_VER = 'sitewide-secondary-v1';
 
   if (!window.PublicI18n || !Array.isArray(window.PublicI18n.SUPPORTED_LANGS) || window.PublicI18n.SUPPORTED_LANGS.length < 4) {
     const src = `${base()}js/public-i18n.js?v=${SITE_I18N_VER}`;

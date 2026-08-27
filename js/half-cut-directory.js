@@ -1172,20 +1172,25 @@
   }
 
   /**
-   * Parts catalog photo picker — parallel with listing rules:
-   * - Dedicated uploads: labeled part photo, else first real photo
-   * - Rule-based half-cuts: original rule (engine needs Engine label; others label or photos[0])
-   * - Placeholder only when this returns null (truly no usable photo)
+   * Inventory albums are never used as engine/gearbox catalog imagery. Those
+   * categories require a rights-cleared, exact-model record from
+   * PowertrainImageCatalog; otherwise the catalog renderer shows a placeholder.
+   * Other parts categories retain their existing dedicated-upload behaviour.
    */
   function pickPartListingPhoto(display, partType) {
+    if (partType === 'engine' || partType === 'transmission') return null;
     const photos = display?.photos || [];
     if (!photos.length) return null;
     const match = photos.find((photo) => photoLabelMatchesPart(photo, partType));
     if (isDedicatedPartListing(display, partType)) {
       return match || photos[0] || null;
     }
-    if (partType === 'engine') return match || null;
     return match || photos[0] || null;
+  }
+
+  function resolvePowertrainModelImage(display, partType) {
+    if (partType !== 'engine' && partType !== 'transmission') return null;
+    return window.PowertrainImageCatalog?.resolve?.(display, partType) || null;
   }
 
   function normEngineCatalogCode(value) {
@@ -1361,6 +1366,16 @@
     return [engine, year, brand, model].filter(Boolean).join(' ');
   }
 
+  function formatTransmissionCatalogPrimaryTitle(display) {
+    const match = window.PowertrainImageCatalog?.resolveTransmissionModel?.(display);
+    if (!match?.modelCode) return formatPartsCatalogPrimaryTitle(display);
+    const year = listingYear(display);
+    const brand = String(display?.brand || '').trim();
+    const model = String(display?.model || '').trim();
+    const application = [year, brand, model].filter(Boolean).join(' ');
+    return [String(match.modelCode).trim().toUpperCase(), application].filter(Boolean).join(' · ');
+  }
+
   function formatEngineCatalogPrimaryTitle(display) {
     // Engine-first for inventory engine parts listing
     const label = window.EngineCardLabel;
@@ -1397,8 +1412,8 @@
   function partsCatalogPlaceholderSrc(partType) {
     const base = window.SitePaths?.base?.() || '../';
     const files = {
-      engine: 'assets/images/supply-engines.webp',
-      transmission: 'assets/images/supply-gearbox.webp',
+      engine: 'assets/images/powertrain-photo-placeholder.svg',
+      transmission: 'assets/images/powertrain-photo-placeholder.svg',
       chassis: 'assets/images/supply-chassis.webp',
       front: 'assets/images/parts-placeholder.svg',
     };
@@ -1406,7 +1421,26 @@
     return `${base}${file}?v=parts-ph-v1`;
   }
 
+  function renderPowertrainImageSource(image) {
+    const source = image?.source;
+    if (!source?.pageUrl || !source?.license) return '';
+    const credit = [source.creator, source.publisher].filter(Boolean).join(' / ');
+    const license = source.licenseUrl
+      ? `<a href="${escapeHtml(source.licenseUrl)}" target="_blank" rel="noopener noreferrer external">${escapeHtml(source.license)}</a>`
+      : escapeHtml(source.license);
+    return `<span class="ap-model-image-credit">Source / 来源: <a href="${escapeHtml(source.pageUrl)}" target="_blank" rel="noopener noreferrer external">${escapeHtml(credit || source.publisher || 'Source')}</a> · ${license}</span>`;
+  }
+
   function renderPartListingPhoto(display, partType) {
+    const modelImage = resolvePowertrainModelImage(display, partType);
+    if (modelImage && thumbPhotoUrl(modelImage)) {
+      const thumbUrl = thumbPhotoUrl(modelImage);
+      return `<div class="ebay-listing-row__photo ebay-listing-row__photo--part ap-listing-photo ap-listing-photo--fit-contain ap-listing-photo--licensed-model" data-image-policy="rights-cleared-model-photo">
+        <img class="ap-listing-photo__img" src="${escapeHtml(thumbUrl)}" alt="${escapeHtml(modelImage.alt || '')}" loading="lazy" decoding="async">
+        ${renderPowertrainImageSource(modelImage)}
+      </div>`;
+    }
+
     const photo = pickPartListingPhoto(display, partType);
     // Parts always use contain so dedicated uploads are not cropped in the frame.
     const fitClass = ' ap-listing-photo--fit-contain';
@@ -1480,7 +1514,7 @@
     const quote = isAvailable(item)
       ? leadLink(item, 'price', 'ebay-listing-row__quote', t('nav.requestQuote', 'Get Quote'))
       : leadLink(item, 'similar', 'ebay-listing-row__quote', t('nav.requestQuote', 'Get Quote'));
-    return `<div class="ebay-listing-row__ctas">${wa}${quote}</div>`;
+    return `<div class="ebay-listing-row__ctas">${quote}${wa}</div>`;
   }
 
   function resolveOfferPrice(item) {
@@ -2019,9 +2053,7 @@
     const detail = detailUrl(base, item.slug);
     if (isAvailable(item)) {
       return `
-        <a href="${detail}" class="btn btn-navy btn-sm">${t('hc.viewDetails', 'View Details')}</a>
-        ${leadLink(item, 'price', 'btn btn-outline-navy btn-sm', t('hc.requestPrice', 'Request Price'))}
-        ${leadLink(item, 'photos', 'btn btn-outline-navy btn-sm', t('hc.requestPhotos', 'Request Photos'))}
+        ${leadLink(item, 'price', 'btn btn-accent btn-sm', t('nav.requestQuote', 'Get Quote'))}
         ${whatsappLink(item, 'btn btn-whatsapp btn-sm', 'WhatsApp')}`;
     }
     if (isReserved(item)) {
@@ -2044,8 +2076,7 @@
   function renderDetailActions(item, base) {
     if (isAvailable(item)) {
       return `
-        ${leadLink(item, 'price', 'btn btn-accent', t('hc.requestPrice', 'Request Price'))}
-        ${leadLink(item, 'photos', 'btn btn-outline-navy', t('hc.requestPhotos', 'Request Photos'))}
+        ${leadLink(item, 'price', 'btn btn-accent', t('nav.requestQuote', 'Get Quote'))}
         ${whatsappLink(item, 'btn btn-whatsapp', 'WhatsApp')}`;
     }
     if (isReserved(item)) {
@@ -2165,6 +2196,7 @@
     catalogPartPriceAmount,
     formatCatalogPartPrice,
     formatPartsCatalogPrimaryTitle,
+    formatTransmissionCatalogPrimaryTitle,
     formatEngineCatalogPrimaryTitle,
     formatDisplacementLiters,
     resolveEngineFuelType,
@@ -2176,6 +2208,7 @@
     formatPartsCatalogMetaParts,
     isDedicatedPartListing,
     pickPartListingPhoto,
+    resolvePowertrainModelImage,
     partsCatalogPlaceholderSrc,
     renderPartListingPhoto,
     CATALOG_PAGE_SIZE,

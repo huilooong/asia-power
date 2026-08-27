@@ -79,6 +79,22 @@
     'footer.popularBrands': { zh: '热门品牌' , fr: 'Marques populaires', ar: 'العلامات التجارية الشائعة' },
     'footer.productCatalog': { zh: '产品目录' , fr: 'Catalogue produits', ar: 'كتالوج المنتجات' },
     'footer.rights': { zh: '版权所有。' , fr: 'Tous droits réservés.', ar: 'جميع الحقوق محفوظة.' },
+    'footer.circularSummary': {
+      en: 'Real inventory, traceable evidence and export coordination for reusable vehicles, powertrains, commercial assets and parts.',
+      zh: '以真实库存、可追溯证据和出口协同，让整车、动力总成、商用资产与零部件持续发挥价值。',
+      fr: 'Stocks réels, preuves traçables et coordination export pour véhicules, groupes motopropulseurs, actifs commerciaux et pièces réutilisables.',
+      ar: 'مخزون حقيقي وأدلة قابلة للتتبع وتنسيق للتصدير للمركبات ومجموعات نقل الحركة والأصول التجارية والقطع القابلة لإعادة الاستخدام.',
+    },
+    'quoteList.title': { en: 'Quote list', zh: '询价单', fr: 'Liste de devis', ar: 'قائمة طلبات السعر' },
+    'quoteList.lead': { zh: '从商品页加入设备，再通过一条 WhatsApp 消息发送整份询价单。这不是结账页面，价格与运输方案将由团队确认。', fr: 'Ajoutez des unités depuis les fiches produit, puis envoyez toute la liste dans une seule demande WhatsApp. Il ne s’agit pas d’un paiement : notre équipe confirme le prix et l’expédition.', ar: 'أضف الوحدات من صفحات المنتجات ثم أرسل القائمة كاملة في طلب واحد عبر واتساب. هذه ليست صفحة دفع؛ يؤكد فريقنا السعر والشحن.' },
+    'quoteList.emptyHtml': { zh: '询价单还是空的。打开商品页并点击<strong>加入询价单</strong>。', fr: 'Votre liste est vide. Ouvrez une fiche produit et appuyez sur <strong>Ajouter à la liste</strong>.', ar: 'قائمة طلب السعر فارغة. افتح صفحة منتج واضغط على <strong>إضافة إلى القائمة</strong>.' },
+    'quoteList.whatsapp': { zh: '通过 WhatsApp 发送', fr: 'Envoyer par WhatsApp', ar: 'إرسال عبر واتساب' },
+    'quoteList.clear': { zh: '清空询价单', fr: 'Vider la liste', ar: 'مسح القائمة' },
+    'quoteList.unit': { zh: '商品', fr: 'Unité', ar: 'الوحدة' },
+    'quoteList.qty': { zh: '数量', fr: 'Qté', ar: 'الكمية' },
+    'quoteList.viewListing': { zh: '查看商品', fr: 'Voir la fiche', ar: 'عرض المنتج' },
+    'quoteList.remove': { zh: '移除', fr: 'Retirer', ar: 'إزالة' },
+    'home.circular.searchShort': { zh: '搜索', fr: 'Chercher', ar: 'بحث' },
     'footer.supplierReg': { zh: '供应商注册' , fr: 'Inscription fournisseur', ar: 'تسجيل المورد' },
     'whatsapp.label': { zh: 'WhatsApp 咨询' , fr: 'Discuter sur WhatsApp', ar: 'تحدث عبر واتساب' },
     'catalog.home': { zh: '首页', fr: 'Accueil', ar: 'الرئيسية'},
@@ -605,6 +621,7 @@
     'catalog.browseLeadEngines': { zh: '从品牌目录开始，浏览发动机、变速箱、底盘件及乘用车。', fr: 'Commencez à partir de notre répertoire de marques pour les moteurs, les boîtes de vitesses, les pièces de châssis et les demi-coupes.', ar: 'ابدأ من دليل علامتنا التجارية للمحركات وعلب التروس وقطع الشاسيه وأنصاف القطع.'},
     'catalog.browseLeadGearboxes': { zh: '从品牌目录开始，按车辆品牌查看变速箱列表。', fr: 'Commencez à partir de notre répertoire de marques pour obtenir des listes complètes de boîtes de vitesses par marque de véhicule.', ar: 'ابدأ من دليل علامتنا التجارية للحصول على قوائم علبة التروس الكاملة حسب الشركة المصنعة للمركبة.'},
     'contact.title': { zh: '联系我们', fr: 'Nous joindre&#10;', ar: 'تواصل معنا'},
+    'contact.eyebrow': { zh: '全球采购服务台', fr: 'Service d’approvisionnement international', ar: 'مكتب التوريد الدولي' },
     'contact.leadShort': {
       zh: 'WhatsApp、邮件或下方表单 — B2B 询价 24 小时内回复。',
       fr: 'WhatsApp, e-mail ou formulaire ci-dessous — devis B2B sous 24 h.',
@@ -1064,6 +1081,13 @@
     'hc.status': { zh: '状态', fr: 'Statut', ar: 'الحالة'},
     'hc.catalog': { zh: '目录', fr: 'Catalogue', ar: 'الفهرس'},
     'hc.contactTeam': { zh: '联系采购团队', fr: 'Contacter l\'équipe sourcing', ar: 'اتصل بفريق التوريد'},
+    'hc.addToQuoteList': { en: 'Add to quote list', zh: '加入询价单', fr: 'Ajouter à la liste de devis', ar: 'أضف إلى قائمة طلبات السعر' },
+    'hc.exportUsedCarTitleSuffix': { en: 'Export Used Car', zh: '出口二手车', fr: 'Véhicule d’occasion à l’export', ar: 'سيارة مستعملة للتصدير' },
+    'fuel.petrol': { en: 'Petrol', zh: '汽油', fr: 'Essence', ar: 'بنزين' },
+    'fuel.diesel': { en: 'Diesel', zh: '柴油', fr: 'Diesel', ar: 'ديزل' },
+    'fuel.hybrid': { en: 'Hybrid', zh: '混合动力', fr: 'Hybride', ar: 'هجين' },
+    'fuel.plugInHybrid': { en: 'Plug-in Hybrid', zh: '插电式混合动力', fr: 'Hybride rechargeable', ar: 'هجين قابل للشحن' },
+    'fuel.electric': { en: 'Electric', zh: '纯电动', fr: 'Électrique', ar: 'كهربائي' },
     'hc.ctaSold': { zh: '类似乘用车', fr: 'Similaire', ar: 'مماثل'},
     'hc.ctaExport': { zh: '出口乘用车', fr: 'Exporter', ar: 'تصدير'},
     'hc.ctaSoldIntro': { zh: '库存编号', fr: 'N° stock', ar: 'رقم المخزون'},
@@ -1121,6 +1145,7 @@
     'hc.detailSellerName': { en: 'AsiaPower Sourcing', zh: 'AsiaPower 采购团队', fr: 'Sourcing AsiaPower', ar: 'توريد AsiaPower' },
     'hc.detailSellerMeta': { en: 'China export network · B2B only', zh: '中国出口网络 · 仅 B2B', fr: 'Réseau export Chine · B2B uniquement', ar: 'شبكة تصدير الصين · B2B فقط' },
     'hc.messageSeller': { en: 'Message', zh: '联系', fr: 'Message', ar: 'رسالة' },
+    'hc.sellerInfo': { en: 'Seller', zh: '供应方', fr: 'Vendeur', ar: 'البائع' },
     'hc.readMore': { en: 'Read more', zh: '展开', fr: 'Lire la suite', ar: 'اقرأ المزيد' },
     'hc.whyBuy': { en: 'Why buy from AsiaPower', zh: '为何选择 AsiaPower', fr: 'Pourquoi AsiaPower', ar: 'لماذا AsiaPower' },
     'hc.trustPhotos': { en: 'Real inventory photos', zh: '真实库存照片', fr: 'Photos réelles du stock', ar: 'صور مخزون حقيقية' },
@@ -1192,6 +1217,50 @@
 
   function isRtl(lang) {
     return RTL_LANGS.includes(lang || getLang());
+  }
+
+  /*
+   * Brand names are legal/trademark identity fields, not free translation.
+   * Keep official Latin wordmarks in uppercase and use the official Chinese
+   * market name only in Chinese. French and Arabic retain the trademark.
+   */
+  const OFFICIAL_BRANDS = {
+    toyota: { zh: '丰田', global: 'TOYOTA' }, '丰田': { zh: '丰田', global: 'TOYOTA' },
+    lexus: { zh: '雷克萨斯', global: 'LEXUS' }, '雷克萨斯': { zh: '雷克萨斯', global: 'LEXUS' },
+    honda: { zh: '本田', global: 'HONDA' }, '本田': { zh: '本田', global: 'HONDA' },
+    nissan: { zh: '日产', global: 'NISSAN' }, '日产': { zh: '日产', global: 'NISSAN' },
+    isuzu: { zh: '五十铃', global: 'ISUZU' }, '五十铃': { zh: '五十铃', global: 'ISUZU' },
+    mitsubishi: { zh: '三菱', global: 'MITSUBISHI' }, '三菱': { zh: '三菱', global: 'MITSUBISHI' },
+    mazda: { zh: '马自达', global: 'MAZDA' }, '马自达': { zh: '马自达', global: 'MAZDA' },
+    suzuki: { zh: '铃木', global: 'SUZUKI' }, '铃木': { zh: '铃木', global: 'SUZUKI' },
+    hyundai: { zh: '现代', global: 'HYUNDAI' }, '现代': { zh: '现代', global: 'HYUNDAI' },
+    kia: { zh: '起亚', global: 'KIA' }, '起亚': { zh: '起亚', global: 'KIA' },
+    byd: { zh: '比亚迪', global: 'BYD' }, '比亚迪': { zh: '比亚迪', global: 'BYD' },
+    denza: { zh: '腾势', global: 'DENZA' }, '腾势': { zh: '腾势', global: 'DENZA' },
+    fangchengbao: { zh: '方程豹', global: 'FANGCHENGBAO' },
+    'fangchengbao汽车': { zh: '方程豹', global: 'FANGCHENGBAO' },
+    '方程豹': { zh: '方程豹', global: 'FANGCHENGBAO' },
+    geely: { zh: '吉利', global: 'GEELY' }, '吉利': { zh: '吉利', global: 'GEELY' },
+    chery: { zh: '奇瑞', global: 'CHERY' }, '奇瑞': { zh: '奇瑞', global: 'CHERY' },
+    changan: { zh: '长安', global: 'CHANGAN' }, '长安': { zh: '长安', global: 'CHANGAN' },
+    dongfeng: { zh: '东风', global: 'DONGFENG' }, '东风': { zh: '东风', global: 'DONGFENG' },
+    gac: { zh: '广汽', global: 'GAC' }, '广汽': { zh: '广汽', global: 'GAC' },
+    haval: { zh: '哈弗', global: 'HAVAL' }, '哈弗': { zh: '哈弗', global: 'HAVAL' },
+    bmw: { zh: '宝马', global: 'BMW' }, '宝马': { zh: '宝马', global: 'BMW' },
+    audi: { zh: '奥迪', global: 'AUDI' }, '奥迪': { zh: '奥迪', global: 'AUDI' },
+    volkswagen: { zh: '大众', global: 'VOLKSWAGEN' }, '大众': { zh: '大众', global: 'VOLKSWAGEN' },
+    'mercedesbenz': { zh: '梅赛德斯-奔驰', global: 'MERCEDES-BENZ' },
+    '奔驰': { zh: '梅赛德斯-奔驰', global: 'MERCEDES-BENZ' },
+  };
+
+  function officialBrandName(value, lang) {
+    const raw = String(value || '').trim();
+    if (!raw) return '';
+    const key = raw.toLowerCase().replace(/[\s._-]+/g, '');
+    const entry = OFFICIAL_BRANDS[raw] || OFFICIAL_BRANDS[key];
+    const active = normalizeLang(lang || getLang());
+    if (entry) return active === 'zh' ? entry.zh : entry.global;
+    return /[a-z]/i.test(raw) ? raw.toUpperCase() : raw;
   }
 
   /** Export market stat display — EN/FR/AR use B/M; ZH uses 亿. */
@@ -1461,6 +1530,7 @@
     isSwitchablePublicPage,
     isInternalPage,
     isRtl,
+    officialBrandName,
     SUPPORTED_LANGS,
   };
 })();

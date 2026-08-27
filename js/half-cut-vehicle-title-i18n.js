@@ -102,7 +102,8 @@
     }
 
     const brandHit = lookupBrandCn(rest, lexicon);
-    const brandEn = item?.brand || brandHit.en;
+    const rawBrand = item?.brand || brandHit.en;
+    const brandEn = window.PublicI18n?.officialBrandName?.(rawBrand, activeLang) || rawBrand;
     if (brandEn) parts.push(brandEn);
     rest = brandHit.rest || rest;
 

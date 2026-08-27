@@ -580,6 +580,22 @@
     const main = document.getElementById('main-content');
     if (!main) return;
 
+    // Engine explainers and buying guides own a full-width editorial layout.
+    // Keep shared navigation/footer/search, but never wrap them in the catalog
+    // sidebar shell (which would duplicate their title and CTA hierarchy).
+    const publicPage = pageId();
+    if (document.body.classList.contains('engine-page')
+      || document.body.classList.contains('article-page')
+      || document.body.classList.contains('guide-page')
+      || ['about', 'contact', 'brands', 'privacy', 'quote-list'].includes(publicPage)
+      || publicPage.startsWith('brand-')
+      || publicPage.startsWith('market-')) {
+      main.dataset.ebayShell = 'editorial-full';
+      bindSearch();
+      bindCarousels();
+      return;
+    }
+
     const meta = metaForPage();
     if (meta.catalogCategory === 'used-cars') {
       document.body.classList.add('page-export-used-cars');

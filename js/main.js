@@ -14,6 +14,12 @@
     return window.PublicI18n?.t(key, fallback) ?? fallback;
   }
 
+  function officialBrandName(value) {
+    const raw = typeof value === 'string' ? value : value?.name;
+    if (!raw) return '';
+    return window.PublicI18n?.officialBrandName?.(raw) || String(raw).toUpperCase();
+  }
+
   function initMobileNav() {
     const toggle = document.querySelector('.menu-toggle');
     const nav = document.querySelector('.nav');
@@ -950,12 +956,13 @@
 
     grid.innerHTML = brands.map(brand => {
       const url = brandProductUrl(brand);
-      const initial = brand.name.charAt(0);
+      const displayName = officialBrandName(brand.name);
+      const initial = displayName.charAt(0);
       const active = brand.landingPage ? ' platform-brand--active' : '';
       return `
         <a href="${url}" class="platform-brand${active}">
           <span class="platform-brand__initial">${initial}</span>
-          <span class="platform-brand__name">${brand.name}</span>
+          <span class="platform-brand__name">${displayName}</span>
         </a>`;
     }).join('');
   }
@@ -1123,7 +1130,8 @@
   }
 
   function renderFeaturedBrandCard(brand) {
-    const initial = brand.name.charAt(0);
+    const displayName = officialBrandName(brand.name);
+    const initial = displayName.charAt(0);
     const url = brandProductUrl(brand);
     const cta = brand.landingPage ? t('brands.viewDirectory', 'View Brand Directory') : t('brand.requestQuote', 'Request Quote');
 
@@ -1132,7 +1140,7 @@
         <div class="brand-card__inner">
           <span class="brand-card__badge">${t('brands.featured', 'Featured')}</span>
           <div class="brand-card__header">
-            <h2 class="brand-card__name">${brand.name}</h2>
+            <h2 class="brand-card__name">${displayName}</h2>
             <span class="brand-card__initial" aria-hidden="true">${initial}</span>
           </div>
           <p class="brand-search-match hidden" aria-live="polite"></p>
@@ -1143,7 +1151,8 @@
   }
 
   function renderBrandTile(brand) {
-    const initial = brand.name.charAt(0);
+    const displayName = officialBrandName(brand.name);
+    const initial = displayName.charAt(0);
     const url = brandProductUrl(brand);
     const active = brand.landingPage ? ' brand-tile--active' : '';
 
@@ -1151,7 +1160,7 @@
       <a href="${url}" class="brand-tile${active}" data-brand-slug="${brand.slug}" id="brand-${brand.slug}">
         <span class="brand-tile__initial" aria-hidden="true">${initial}</span>
         <span class="brand-tile__content">
-          <span class="brand-tile__name">${brand.name}</span>
+          <span class="brand-tile__name">${displayName}</span>
           <span class="brand-search-match hidden" aria-live="polite"></span>
         </span>
       </a>`;
@@ -1171,18 +1180,19 @@
     const products = config.brandProducts.map(p =>
       `<li><span class="brand-card__check" aria-hidden="true">✓</span> ${translateBrandProduct(p)}</li>`
     ).join('');
-    const initial = brand.name.charAt(0);
+    const displayName = officialBrandName(brand.name);
+    const initial = displayName.charAt(0);
     const featuredClass = brand.featured ? ' brand-card--featured' : '';
     const badge = brand.featured ? `<span class="brand-card__badge">${t('brands.priority', 'Priority')}</span>` : '';
     const url = brandProductUrl(brand);
-    const searchName = brand.name.toLowerCase();
+    const searchName = `${brand.name} ${displayName}`.toLowerCase();
 
     return `
       <article class="brand-card${featuredClass}" data-brand-name="${searchName}" data-brand-slug="${brand.slug}" id="brand-${brand.slug}">
         ${badge}
         <div class="brand-card__inner">
           <div class="brand-card__header">
-            <h2 class="brand-card__name">${brand.name}</h2>
+            <h2 class="brand-card__name">${displayName}</h2>
             <span class="brand-card__initial" aria-hidden="true">${initial}</span>
           </div>
           <div class="brand-card__products-label">${t('brands.availableProducts', 'Available Products')}</div>
