@@ -38,6 +38,7 @@
     uploadToken: '',
     uploadTokenExpiresAt: 0,
     busy: false,
+    referral: null,
   };
 
   function escapeHtml(value) {
@@ -88,10 +89,20 @@
   }
 
   function hideAllViews() {
-    ['#login-prompt', '#profile-panel', '#inventory-view', '#editor-view'].forEach((selector) => {
+    ['#login-prompt', '#profile-panel', '#referral-panel', '#inventory-view', '#editor-view'].forEach((selector) => {
       const element = $(selector);
       if (element) element.hidden = true;
     });
+  }
+
+  function setActiveNav(target) {
+    $$('.supplier-nav-item').forEach((item) => item.classList.remove('active'));
+    const active = target === 'inventory'
+      ? $('.supplier-nav-item[data-go-list]')
+      : (target === 'referral' ? $('#show-referral-btn') : $('#edit-company-btn'));
+    if (active) active.classList.add('active');
+    $('.supplier-sidebar')?.classList.remove('open');
+    $('#mobile-menu')?.setAttribute('aria-expanded', 'false');
   }
 
   function showLoginPrompt() {
@@ -111,6 +122,7 @@
 
   function showProfile(user, completing = false) {
     hideAllViews();
+    setActiveNav('profile');
     fillProfileForm(user || {});
     $('#profile-sub').textContent = completing
       ? `还需补全：${(user?.missingFields || []).map((field) => field.label).join('、') || '公司资料'}`
@@ -189,9 +201,75 @@
 
   async function showInventory() {
     hideAllViews();
+    setActiveNav('inventory');
     $('#inventory-view').hidden = false;
     history.replaceState({}, '', '/supplier-portal/dashboard.html');
     await loadInventory();
+  }
+
+  function formatReferralTime(value) {
+    if (!value) return '尚未使用';
+    const date = new Date(value);
+    if (Number.isNaN(date.getTime())) return '尚未使用';
+    return new Intl.DateTimeFormat('zh-CN', {
+      year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit',
+    }).format(date);
+  }
+
+  function renderReferral(referral) {
+    state.referral = referral;
+    $('#referral-code').textContent = referral.code || '—';
+    $('#referral-use-count').textContent = Number(referral.useCount || 0).toLocaleString('zh-CN');
+    $('#referral-last-used').textContent = formatReferralTime(referral.lastUsedAt);
+    $('#referral-loading').hidden = true;
+    $('#referral-error').hidden = true;
+    $('#referral-content').hidden = false;
+  }
+
+  async function showReferral() {
+    hideAllViews();
+    setActiveNav('referral');
+    $('#referral-panel').hidden = false;
+    $('#referral-loading').hidden = false;
+    $('#referral-content').hidden = true;
+    $('#referral-error').hidden = true;
+    $('#referral-copy-status').textContent = '可重复使用，不与被推荐人的手机号绑定。';
+    try {
+      const payload = await request('/api/supplier/referral-code');
+      if (!payload.referralCode?.code) throw new Error('账户暂未分配推荐码');
+      renderReferral(payload.referralCode);
+    } catch (error) {
+      $('#referral-loading').hidden = true;
+      $('#referral-error').hidden = false;
+      $('#referral-error-copy').textContent = error.message || '请稍后重试，或联系平台运营。';
+    }
+  }
+
+  async function copyReferralCode() {
+    const code = state.referral?.code || '';
+    if (!code) return;
+    const button = $('#copy-referral-code');
+    try {
+      if (navigator.clipboard?.writeText) {
+        await navigator.clipboard.writeText(code);
+      } else {
+        const field = document.createElement('textarea');
+        field.value = code;
+        field.setAttribute('readonly', '');
+        field.style.position = 'fixed';
+        field.style.opacity = '0';
+        document.body.appendChild(field);
+        field.select();
+        const copied = document.execCommand('copy');
+        field.remove();
+        if (!copied) throw new Error('copy failed');
+      }
+      $('#referral-copy-status').textContent = '已复制，可以直接发给要加入网站的供应商。';
+      button.textContent = '已复制';
+      setTimeout(() => { button.textContent = '复制推荐码'; }, 1800);
+    } catch {
+      $('#referral-copy-status').textContent = `无法自动复制，请手动复制：${code}`;
+    }
   }
 
   function markDirty(field, message) {
@@ -590,6 +668,9 @@
   }));
   $('#inventory-search').addEventListener('input', (event) => { state.search = event.target.value.trim(); renderInventoryList(); });
   $$('[data-go-list]').forEach((button) => button.addEventListener('click', () => showInventory().catch((error) => toast(error.message))));
+  $('#show-referral-btn').addEventListener('click', () => showReferral());
+  $('#retry-referral').addEventListener('click', () => showReferral());
+  $('#copy-referral-code').addEventListener('click', copyReferralCode);
   $('#edit-company-btn').addEventListener('click', () => showProfile(state.user, false));
   $('#save-profile').addEventListener('click', saveProfile);
   $('#security-save').addEventListener('click', changePassword);

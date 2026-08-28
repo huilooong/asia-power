@@ -6,7 +6,10 @@ import { fileURLToPath } from 'node:url';
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..', '..');
 const port = Number(process.env.PORT || 8793);
-let approved = JSON.parse(fs.readFileSync(path.join(root, 'data', 'half-cut-approved.json'), 'utf8'));
+const approvedFixture = path.join(root, 'data', 'half-cut-approved.json');
+let approved = fs.existsSync(approvedFixture)
+  ? JSON.parse(fs.readFileSync(approvedFixture, 'utf8'))
+  : [];
 if (!approved.length) {
   const response = await fetch('https://asia-power.com/api/half-cuts/public');
   if (!response.ok) throw new Error(`Public inventory unavailable (${response.status})`);
@@ -42,6 +45,7 @@ const supplier = {
   supplierName: selected.supplierName || '供应商预览账户', profileComplete: true,
   phone: '', phoneNormalized: '', missingFields: [],
 };
+const admin = { id: 'preview-admin', role: 'admin', username: '管理预览账户' };
 
 function sendJson(res, status, body) {
   res.writeHead(status, { 'Content-Type': 'application/json; charset=utf-8', 'Cache-Control': 'no-store' });
@@ -54,7 +58,22 @@ function mime(file) {
 
 http.createServer((req, res) => {
   const url = new URL(req.url, `http://${req.headers.host}`);
-  if (url.pathname === '/api/me') return sendJson(res, 200, { user: supplier, needsProfile: false });
+  const adminPreview = String(req.headers.referer || '').includes('/admin/');
+  if (url.pathname === '/api/me') return sendJson(res, 200, { user: adminPreview ? admin : supplier, needsProfile: false });
+  if (url.pathname === '/api/supplier/referral-code') return sendJson(res, 200, {
+    referralCode: { code: 'AP-DEMO-CODE', useCount: 3, lastUsedAt: '2026-08-28T09:30:00.000Z' },
+    created: false,
+  });
+  if (url.pathname === '/api/admin/supplier-invites') return sendJson(res, 200, { invites: [] });
+  if (url.pathname === '/api/admin/supplier-referrals') return sendJson(res, 200, {
+    codes: [
+      { code: 'AP-DEMO-CODE', ownerUserId: 'preview-supplier', ownerRole: 'supplier', ownerName: '广州示例供应商', ownerPhone: '138****2026', useCount: 1, lastUsedAt: '2026-08-28T09:30:00.000Z' },
+      { code: 'AP-ADMIN-DEMO', ownerUserId: 'preview-admin', ownerRole: 'admin', ownerName: 'AsiaPower 管理账户', ownerPhone: '', useCount: 0, lastUsedAt: null },
+    ],
+    events: [
+      { id: 'preview-event', source: 'supplier-referral', inviterUserId: 'preview-supplier', inviterName: '广州示例供应商', inviteeSupplierId: 'preview-new-supplier', inviteeName: '佛山示例拆车厂', inviteePhone: '139****2026', registeredAt: '2026-08-28T09:30:00.000Z' },
+    ],
+  });
   if (url.pathname === '/api/half-cuts/my-uploads') return sendJson(res, 200, {
     ok: true, supplier, counts: { total: 1, approved: 1, pending: 0, rejected: 0, delisted: 0 }, items: [item],
   });

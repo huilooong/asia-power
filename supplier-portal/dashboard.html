@@ -6,7 +6,7 @@
   <meta name="robots" content="noindex, nofollow">
   <title>供应商库存工作台 · AsiaPower</title>
   <link rel="icon" href="/assets/favicon.png" type="image/png">
-  <link rel="stylesheet" href="/css/portal-app.css?v=supplier-inventory-v1">
+  <link rel="stylesheet" href="/css/portal-app.css?v=supplier-referral-v1">
 </head>
 <body data-page="supplier-dashboard" data-portal-shell="v4">
   <div class="supplier-shell">
@@ -15,6 +15,7 @@
       <nav>
         <button class="supplier-nav-item active" type="button" data-go-list><span>▦</span> 我的库存 <b id="sidebar-total">0</b></button>
         <a class="supplier-nav-item" href="/supplier-portal/half-cut-upload.html"><span>＋</span> 发布新库存</a>
+        <button class="supplier-nav-item" type="button" id="show-referral-btn"><span>↗</span> 推荐供应商</button>
         <button class="supplier-nav-item" type="button" id="edit-company-btn"><span>◇</span> 公司资料</button>
       </nav>
       <div class="supplier-sidebar__bottom">
@@ -68,6 +69,47 @@
           </div>
           <button class="supplier-button supplier-button--quiet" type="button" id="security-save">安全修改密码</button>
         </details>
+      </section>
+
+      <section class="supplier-referral-card" id="referral-panel" hidden aria-labelledby="referral-heading">
+        <header class="supplier-referral-card__head">
+          <div>
+            <p class="supplier-eyebrow">SUPPLIER REFERRAL / 供应商推荐</p>
+            <h1 id="referral-heading">我的推荐码</h1>
+            <p>把这个推荐码单独发给你认识的供应商。对方注册后，AsiaPower 会记录由你推荐。</p>
+          </div>
+          <button class="supplier-button supplier-button--quiet" type="button" data-go-list>返回库存</button>
+        </header>
+
+        <div class="supplier-referral-loading" id="referral-loading" role="status">正在安全读取你的推荐码…</div>
+        <div id="referral-content" hidden>
+          <div class="supplier-referral-code-block">
+            <span>你的长期推荐码</span>
+            <div>
+              <code id="referral-code">—</code>
+              <button class="supplier-button supplier-button--primary" type="button" id="copy-referral-code">复制推荐码</button>
+            </div>
+            <p id="referral-copy-status" role="status" aria-live="polite">可重复使用，不与被推荐人的手机号绑定。</p>
+          </div>
+          <dl class="supplier-referral-stats">
+            <div><dt>已成功推荐</dt><dd id="referral-use-count">0</dd><small>完成注册的供应商</small></div>
+            <div><dt>最近使用</dt><dd id="referral-last-used">尚未使用</dd><small>这里只统计启用推荐功能后的新注册</small></div>
+          </dl>
+          <aside class="supplier-referral-guide">
+            <span>如何使用</span>
+            <ol>
+              <li>复制推荐码，直接发给要加入 AsiaPower 的供应商。</li>
+              <li>对方在供应商注册页填写该推荐码，并完成公司资料。</li>
+              <li>注册成功后，后台会记录推荐人与新供应商的归属关系。</li>
+            </ol>
+            <a href="/login/?role=supplier&amp;mode=register" target="_blank" rel="noopener">打开供应商注册页 ↗</a>
+          </aside>
+        </div>
+        <div class="supplier-referral-error" id="referral-error" hidden role="alert">
+          <strong>暂时无法读取推荐码</strong>
+          <p id="referral-error-copy">请稍后重试，或联系平台运营。</p>
+          <button class="supplier-button supplier-button--quiet" type="button" id="retry-referral">重新读取</button>
+        </div>
       </section>
 
       <section id="inventory-view" hidden>
@@ -174,7 +216,7 @@
   <div class="toast" id="toast" role="status" aria-live="polite"></div>
   <div class="supplier-dialog-backdrop" id="dialog" hidden><div class="supplier-dialog" role="dialog" aria-modal="true" aria-labelledby="dialog-title"><p class="supplier-eyebrow">ASIA POWER</p><h2 id="dialog-title">请确认操作</h2><p id="dialog-copy"></p><div class="supplier-actions"><button class="supplier-button supplier-button--quiet" type="button" id="dialog-cancel">取消</button><button class="supplier-button supplier-button--primary" type="button" id="dialog-confirm">确认</button></div></div></div>
   <script src="/js/v4-portal-shell.js?v=auth-nav-once-v2"></script>
-  <script src="/js/supplier-dashboard.js?v=supplier-inventory-v1" defer></script>
+  <script src="/js/supplier-dashboard.js?v=supplier-referral-v1" defer></script>
   <script>window.AsiaPowerV4PortalShell?.mount('supplier');</script>
 </body>
 </html>

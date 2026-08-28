@@ -326,7 +326,7 @@
     };
     const missingPairs = [
       ['手机号', body.phone],
-      ['邀请代码', body.inviteCode],
+      ['推荐人邀请码 / AsiaPower 准入码', body.inviteCode],
       ['密码', body.password],
       ['确认密码', body.passwordConfirm],
       ['公司名称', body.supplierName],

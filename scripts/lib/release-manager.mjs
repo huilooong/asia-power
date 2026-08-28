@@ -126,10 +126,12 @@ export const TARGET_SOURCE_FILES = {
     'js/admin-analytics.js',
     'js/admin-leads.js',
     'js/admin-apsales-progress.js',
+    'js/admin-emails.js',
     'admin/inventory.html',
     'admin/analytics.html',
     'admin/leads.html',
     'admin/apsales-progress.html',
+    'admin/emails.html',
   ],
   nginx: [
     'deploy/nginx-rate-limit.conf',
@@ -316,10 +318,12 @@ export const TARGET_REMOTE_PATHS = {
     '/root/.openclaw/workspace/inventory-site/public/js/admin-analytics.js',
     '/root/.openclaw/workspace/inventory-site/public/js/admin-leads.js',
     '/root/.openclaw/workspace/inventory-site/public/js/admin-apsales-progress.js',
+    '/root/.openclaw/workspace/inventory-site/public/js/admin-emails.js',
     '/root/.openclaw/workspace/inventory-site/public/admin/inventory.html',
     '/root/.openclaw/workspace/inventory-site/public/admin/analytics.html',
     '/root/.openclaw/workspace/inventory-site/public/admin/leads.html',
     '/root/.openclaw/workspace/inventory-site/public/admin/apsales-progress.html',
+    '/root/.openclaw/workspace/inventory-site/public/admin/emails.html',
   ],
   nginx: [
     '/etc/nginx/conf.d/asiapower-rate-limit.conf',
@@ -735,6 +739,31 @@ fi
       baseUrl,
       releaseId,
     });
+
+    // Cloudflare can keep the previously stamped config.js for its documented
+    // 60-second TTL when API purge credentials are unavailable. Keep the
+    // release-id gate intact, but allow that one stale-cache failure to expire
+    // and then rerun the complete public validation suite.
+    const onlyReleaseIdStale = (report) => {
+      const failures = (report?.checks || []).filter((check) => check.status === 'fail');
+      return failures.length > 0 && failures.every((check) => check.name === 'config_js_release_id');
+    };
+    if (releaseId && purgeReport.status !== 'pass' && onlyReleaseIdStale(publicReport)) {
+      let retryCount = 0;
+      while (retryCount < 6 && onlyReleaseIdStale(publicReport)) {
+        retryCount += 1;
+        await new Promise((resolve) => setTimeout(resolve, 10000));
+        publicReport = await runPublicPostReleaseValidation({ baseUrl, releaseId });
+      }
+      const retryFailures = (publicReport?.checks || []).filter((check) => check.status === 'fail');
+      checks.push({
+        name: 'config_cache_expiry_retry',
+        status: retryFailures.length ? 'warn' : 'pass',
+        detail: retryFailures.length
+          ? `public validation still has ${retryFailures.length} failure(s) after ${retryCount * 10}s; gates remain enforced`
+          : `public validation passed after waiting ${retryCount * 10}s for config.js cache expiry`,
+      });
+    }
 
     for (const c of publicReport.checks) {
       checks.push({

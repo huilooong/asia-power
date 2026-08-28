@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Sign in / Register · AsiaPower</title>
   <meta name="description" content="Sign in or register as an AsiaPower buyer or supplier. Buyers: Google or phone+password. Suppliers: phone+password or register. SMS OTP temporarily hidden.">
-  <link rel="stylesheet" href="/css/portal-app.css?v=portal-auth-v3">
+  <link rel="stylesheet" href="/css/portal-app.css?v=supplier-referral-v1">
   <link rel="stylesheet" href="/css/login.css?v=reg-feedback-v1">
   <link rel="icon" href="/assets/favicon.png" type="image/png">
 </head>
@@ -195,7 +195,7 @@
         </div>
 
         <div id="supplier-register-box" hidden>
-          <p class="reg-intro">New supplier: use the phone-bound invitation code issued by AsiaPower, then complete your company profile and password.</p>
+          <p class="reg-intro">New supplier: enter a personal referral code from a registered supplier, or a phone-bound AsiaPower admission code, then complete your company profile and password.</p>
           <div class="row">
             <div class="field" style="max-width:110px">
               <label>Code *</label>
@@ -212,8 +212,8 @@
             </div>
           </div>
           <div class="field">
-            <label>AsiaPower invitation code *</label>
-            <input id="reg-invite" autocomplete="one-time-code" autocapitalize="characters" placeholder="Issued by AsiaPower operations" />
+            <label>Referral code / AsiaPower admission code *</label>
+            <input id="reg-invite" autocomplete="one-time-code" autocapitalize="characters" placeholder="AP-XXXX-XXXX or AsiaPower admission code" />
           </div>
           <div class="field">
             <label>Set password *</label>
@@ -282,7 +282,7 @@
             I confirm the information is accurate and agree to AsiaPower supplier standards.
           </label>
           <button class="btn btn-gold btn-block" type="button" id="reg-submit">Create supplier account</button>
-          <div class="hint" id="reg-hint" role="status" aria-live="polite">Invitation codes are bound to one phone number and can be used once. Password must contain at least 8 characters.</div>
+          <div class="hint" id="reg-hint" role="status" aria-live="polite">A supplier referral code is reusable and records who invited you. An AsiaPower admission code is phone-bound and can be used once. Password must contain at least 8 characters.</div>
         </div>
       </div>
 
@@ -300,7 +300,7 @@
   <script src="/js/path-utils.js?v=site-i18n-cache-fix-v1"></script>
   <script src="/js/public-i18n.js?v=site-lang-fix-v1"></script>
   <script src="/js/v4-portal-shell.js?v=auth-nav-once-v2"></script>
-  <script src="/js/login.js?v=supplier-invite-v1"></script>
+  <script src="/js/login.js?v=supplier-referral-v1"></script>
   <script>window.AsiaPowerV4PortalShell?.mount('login');</script>
 </body>
 </html>
