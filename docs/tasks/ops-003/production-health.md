@@ -1,10 +1,10 @@
 # OPS-003 Production Health
 
-- Checked at: 2026-08-28T11:46:43.402Z
+- Checked at: 2026-08-28T11:50:13.391Z
 - Base URL: https://asia-power.com
-- Release: REL-20260828114518-api-93e314b21
-- Status: **FAIL**
-- Pass: 128 / Fail: 1
+- Release: REL-20260828114843-api-5e2be1a9d
+- Status: **PASS**
+- Pass: 129 / Fail: 0
 - Expected WhatsApp: 8616638801930
 
 ## Checks
@@ -112,8 +112,8 @@
 - **PASS** `config_js_http`: HTTP 200
 - **PASS** `config_js_whatsapp`: whatsapp=8616638801930
 - **PASS** `config_js_cache_policy`: public, max-age=60, must-revalidate
-- **PASS** `config_js_cf`: cf=HIT age=10
-- **FAIL** `config_js_release_id`: config releaseId=REL-20260823053656-admin-8a6870c != deploy REL-20260828114518-api-93e314b21
+- **PASS** `config_js_cf`: cf=EXPIRED age=0
+- **PASS** `config_js_release_id`: releaseId=REL-20260828114843-api-5e2be1a9d
 - **PASS** `components_js_http`: HTTP 200
 - **PASS** `components_js_cache_policy`: public, max-age=60, must-revalidate
 - **PASS** `pwa_app_shell_js_http`: HTTP 200
@@ -159,4 +159,4 @@
 ## Cloudflare purge
 
 - Status: **manual_action_required**
-- CLOUDFLARE_ZONE_ID / CLOUDFLARE_API_TOKEN missing — Manual Action Required: purge config.js, sw.js, components.js in Cloudflare dashboard
+- Cloudflare purge failed (Authentication error) — Manual Action Required: purge config.js / sw.js / components.js in dashboard

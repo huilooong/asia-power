@@ -114,32 +114,32 @@
 - Resolved config: https://asia-power.com/js/config.js?v=seo-guides-20260716 (whatsapp=8616638801930)
 ## config_js
 - URL: https://asia-power.com/js/config.js
+- CF-Cache-Status: EXPIRED
+- Cache-Control: public, max-age=60, must-revalidate
+- ETag: —
+- Age: —
+- Last-Modified: Fri, 28 Aug 2026 11:50:08 GMT
+## components_js
+- URL: https://asia-power.com/js/components.js
 - CF-Cache-Status: HIT
 - Cache-Control: public, max-age=60, must-revalidate
 - ETag: —
-- Age: 10
-- Last-Modified: Fri, 28 Aug 2026 11:46:28 GMT
-## components_js
-- URL: https://asia-power.com/js/components.js
-- CF-Cache-Status: EXPIRED
-- Cache-Control: public, max-age=60, must-revalidate
-- ETag: —
-- Age: —
-- Last-Modified: Fri, 28 Aug 2026 11:46:38 GMT
+- Age: 53
+- Last-Modified: Fri, 28 Aug 2026 11:49:15 GMT
 ## pwa_app_shell_js
 - URL: https://asia-power.com/js/pwa-app-shell.js
-- CF-Cache-Status: MISS
+- CF-Cache-Status: HIT
 - Cache-Control: public, max-age=60, must-revalidate
 - ETag: —
-- Age: —
-- Last-Modified: Fri, 28 Aug 2026 11:46:39 GMT
+- Age: 53
+- Last-Modified: Fri, 28 Aug 2026 11:49:15 GMT
 ## sw_js
 - URL: https://asia-power.com/sw.js
-- CF-Cache-Status: EXPIRED
+- CF-Cache-Status: HIT
 - Cache-Control: public, max-age=60, must-revalidate
 - ETag: —
-- Age: —
-- Last-Modified: Fri, 28 Aug 2026 11:46:39 GMT
+- Age: 53
+- Last-Modified: Fri, 28 Aug 2026 11:49:15 GMT
 ## robots
 - URL: https://asia-power.com/robots.txt
 - CF-Cache-Status: BYPASS
@@ -171,4 +171,4 @@
 
 ## Purge attempt
 
-- manual_action_required: CLOUDFLARE_ZONE_ID / CLOUDFLARE_API_TOKEN missing — Manual Action Required: purge config.js, sw.js, components.js in Cloudflare dashboard
+- manual_action_required: Cloudflare purge failed (Authentication error) — Manual Action Required: purge config.js / sw.js / components.js in dashboard
