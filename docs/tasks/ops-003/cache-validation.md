@@ -118,28 +118,28 @@
 - Cache-Control: public, max-age=60, must-revalidate
 - ETag: —
 - Age: —
-- Last-Modified: Fri, 28 Aug 2026 12:03:59 GMT
+- Last-Modified: Fri, 28 Aug 2026 12:06:11 GMT
 ## components_js
 - URL: https://asia-power.com/js/components.js
 - CF-Cache-Status: EXPIRED
 - Cache-Control: public, max-age=60, must-revalidate
 - ETag: —
 - Age: —
-- Last-Modified: Fri, 28 Aug 2026 12:03:59 GMT
+- Last-Modified: Fri, 28 Aug 2026 12:06:11 GMT
 ## pwa_app_shell_js
 - URL: https://asia-power.com/js/pwa-app-shell.js
 - CF-Cache-Status: EXPIRED
 - Cache-Control: public, max-age=60, must-revalidate
 - ETag: —
 - Age: —
-- Last-Modified: Fri, 28 Aug 2026 12:03:59 GMT
+- Last-Modified: Fri, 28 Aug 2026 12:06:11 GMT
 ## sw_js
 - URL: https://asia-power.com/sw.js
 - CF-Cache-Status: EXPIRED
 - Cache-Control: public, max-age=60, must-revalidate
 - ETag: —
 - Age: —
-- Last-Modified: Fri, 28 Aug 2026 12:04:00 GMT
+- Last-Modified: Fri, 28 Aug 2026 12:06:12 GMT
 ## robots
 - URL: https://asia-power.com/robots.txt
 - CF-Cache-Status: BYPASS
