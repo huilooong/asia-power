@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>供应商推荐码预览 · AsiaPower</title>
+  <style>
+    :root{--ink:#17211b;--muted:#667169;--line:#dfe5df;--paper:#f5f6f2;--card:#fff;--green:#173d2c;--gold:#d4880a;--soft:#edf3ee}*{box-sizing:border-box}body{margin:0;background:var(--paper);color:var(--ink);font:15px/1.55 -apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}.shell{max-width:1180px;margin:auto;padding:48px 24px 72px}.eyebrow{margin:0 0 8px;color:var(--gold);font-size:12px;font-weight:800;letter-spacing:.14em}.hero{display:flex;justify-content:space-between;gap:32px;align-items:end;margin-bottom:30px}.hero h1{font-size:38px;line-height:1.12;margin:0}.hero p{max-width:590px;margin:0;color:var(--muted)}.grid{display:grid;grid-template-columns:1fr 1fr;gap:22px}.card{min-width:0;background:var(--card);border:1px solid var(--line);border-radius:18px;padding:26px;box-shadow:0 12px 32px rgba(23,33,27,.05)}.card.wide{grid-column:1/-1}.card h2{font-size:21px;margin:0 0 5px}.lead{color:var(--muted);margin:0 0 22px}.code-box{display:flex;align-items:center;justify-content:space-between;gap:16px;padding:20px;border-radius:14px;background:var(--green);color:white}.code-box code{font:800 26px/1 ui-monospace,SFMono-Regular,Menlo,monospace;letter-spacing:.08em}.button{border:0;border-radius:10px;padding:11px 16px;font-weight:800;background:var(--gold);color:white}.meta{display:flex;gap:24px;margin-top:16px;color:var(--muted);font-size:13px}.field{display:grid;gap:7px;margin-top:20px}.field label{font-weight:800}.field input{border:1px solid #bfc9c1;border-radius:10px;padding:13px 14px;font-size:16px}.hint{padding:12px 14px;border-radius:10px;background:var(--soft);color:#315440;margin-top:12px}.required{color:#b23a2d}table{border-collapse:collapse;width:100%;margin-top:18px}th,td{text-align:left;padding:13px 12px;border-bottom:1px solid var(--line)}th{font-size:12px;color:var(--muted);letter-spacing:.06em}.tag{display:inline-block;padding:4px 8px;border-radius:999px;background:var(--soft);color:#315440;font-size:12px;font-weight:800}.note{margin-top:24px;color:var(--muted);font-size:13px}@media(max-width:760px){.hero{display:block}.hero p{margin-top:14px}.grid{grid-template-columns:1fr}.card.wide{grid-column:auto}.code-box{align-items:flex-start;flex-direction:column}.hero h1{font-size:31px}table{font-size:13px;min-width:640px}.table-wrap{width:100%;max-width:100%;overflow-x:auto}}
+  </style>
+</head>
+<body>
+  <main class="shell">
+    <header class="hero">
+      <div><p class="eyebrow">SUPPLIER REFERRALS / UI PREVIEW</p><h1>供应商个人推荐码</h1></div>
+      <p>此文件仅用于 CEO 审核界面与文案，不是生产页面。后端会保留旧的一次性准入码，同时支持每个供应商可重复使用的个人推荐码。</p>
+    </header>
+
+    <div class="grid">
+      <section class="card">
+        <p class="eyebrow">SUPPLIER WORKSPACE</p>
+        <h2>我的推荐码</h2>
+        <p class="lead">把推荐码发给希望加入 AsiaPower 的供应商。对方注册成功后，系统会记录邀请关系。</p>
+        <div class="code-box"><code>AP-7K3M-9Q2R</code><button class="button" type="button">复制推荐码</button></div>
+        <div class="meta"><span>已成功邀请 <strong>3</strong> 家</span><span>推荐码长期有效</span></div>
+      </section>
+
+      <section class="card">
+        <p class="eyebrow">NEW SUPPLIER REGISTRATION</p>
+        <h2>注册字段</h2>
+        <p class="lead">新供应商可以填写推荐人提供的个人码，也可以填写 AsiaPower 运营签发的一次性准入码。</p>
+        <div class="field">
+          <label for="invite">推荐人邀请码 / AsiaPower 准入码 <span class="required">*</span></label>
+          <input id="invite" value="AP-7K3M-9Q2R" aria-describedby="invite-help">
+        </div>
+        <p class="hint" id="invite-help">邀请码由已注册供应商或 AsiaPower 运营提供。</p>
+      </section>
+
+      <section class="card wide">
+        <p class="eyebrow">ADMIN ATTRIBUTION</p>
+        <h2>邀请归因记录</h2>
+        <p class="lead">管理员可查清每一家新供应商由谁邀请、使用哪种邀请方式以及注册时间。</p>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>新供应商</th><th>邀请人</th><th>邀请来源</th><th>注册时间</th></tr></thead>
+            <tbody>
+              <tr><td>广州示例动力有限公司</td><td>惠龙 · AP-7K3M-9Q2R</td><td><span class="tag">个人推荐码</span></td><td>2026-08-28 14:26</td></tr>
+              <tr><td>华南示例拆解厂</td><td>河南省盛元比亚迪集团</td><td><span class="tag">个人推荐码</span></td><td>2026-08-28 10:08</td></tr>
+              <tr><td>东部示例汽配商行</td><td>AsiaPower 运营</td><td><span class="tag">一次性准入码</span></td><td>2026-08-27 16:41</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+    </div>
+    <p class="note">预览数据均为示例。生产记录不会在公开页面显示，只有本人可查自己的推荐码，管理员可查完整归因。</p>
+  </main>
+</body>
+</html>

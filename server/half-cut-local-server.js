@@ -60,6 +60,7 @@ halfCut.ensureDirs();
 const { createPhoneOtpAuth } = require('./lib/phone-otp-auth');
 const { createPhonePasswordAuth } = require('./lib/phone-password-auth');
 const { createSupplierInviteStore } = require('./lib/supplier-invites');
+const { createSupplierReferralStore } = require('./lib/supplier-referrals');
 const { createOrderStore } = require('./lib/buyer-orders');
 const { createStripeDeposit } = require('./lib/stripe-deposit');
 const { createOAuthAuth } = require('./lib/oauth-auth');
@@ -72,6 +73,11 @@ const limitOtpVerify = createRateLimiter({ windowMs: 15 * 60 * 1000, max: 40 });
 const limitPasswordAuth = createRateLimiter({ windowMs: 15 * 60 * 1000, max: 30 });
 const limitPasswordRegister = createRateLimiter({ windowMs: 60 * 60 * 1000, max: 15 });
 const supplierInvites = createSupplierInviteStore(DATA_DIR);
+const supplierReferrals = createSupplierReferralStore(DATA_DIR);
+const supplierReferralBackfill = supplierReferrals.backfillUsers(auth.getUsers(), { createdBy: 'server-startup-backfill' });
+if (supplierReferralBackfill.created > 0) {
+  console.log(`[supplier-referrals] created ${supplierReferralBackfill.created} missing referral codes`);
+}
 
 function localId(prefix) {
   return `${prefix}-${crypto.randomBytes(6).toString('hex')}`;
@@ -90,6 +96,10 @@ const phoneOtp = createPhoneOtpAuth({
   limitVerify: (req) => limitOtpVerify(req),
   validateSupplierInvite: (payload) => supplierInvites.validate(payload),
   consumeSupplierInvite: (payload) => supplierInvites.consume(payload),
+  isSupplierReferralCode: (code) => supplierReferrals.isReferralCode(code),
+  validateSupplierReferral: (code) => supplierReferrals.validate(code),
+  recordSupplierReferral: (payload) => supplierReferrals.recordRegistration(payload),
+  ensureSupplierReferral: (user, options) => supplierReferrals.ensureForUser(user, options),
 });
 
 const phonePassword = createPhonePasswordAuth({
@@ -328,6 +338,18 @@ const server = http.createServer(async (req, res) => {
         } catch (err) {
           return json(res, err.statusCode || 400, { error: err.message || 'Invite creation failed' });
         }
+      }
+
+      if (req.method === 'GET' && p === '/api/supplier/referral-code') {
+        const u = auth.requireAuth(req, res); if (!u) return;
+        if (u.role !== 'supplier' && u.role !== 'admin') return json(res, 403, { error: 'Supplier or admin only' });
+        const ensured = supplierReferrals.ensureForUser(u, { createdBy: 'self-service' });
+        return json(res, 200, { referralCode: supplierReferrals.publicForOwner(u), created: ensured.created });
+      }
+
+      if (req.method === 'GET' && p === '/api/admin/supplier-referrals') {
+        if (!auth.requireAdmin(req, res)) return;
+        return json(res, 200, supplierReferrals.adminSummary(auth.getUsers()));
       }
 
       if (req.method === 'GET' && p === '/api/admin/buyers') {

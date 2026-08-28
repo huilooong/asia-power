@@ -98,7 +98,7 @@ function deployApi() {
   ssh(`
 set -e
 SITE=/root/.openclaw/workspace/inventory-site
-for f in machinery-brand-catalog.js powertrain-catalog-memory.js powertrain-labels.js static-powertrain-catalog.js youtube-upload-queue.js; do
+for f in machinery-brand-catalog.js powertrain-catalog-memory.js powertrain-labels.js static-powertrain-catalog.js supplier-referrals.js youtube-upload-queue.js; do
   test -f "$SITE/lib/$f" || { echo "missing lib/$f"; exit 1; }
 done
 test -f "$SITE/scripts/youtube_inventory_upload.py" || { echo "missing youtube upload script"; exit 1; }
@@ -108,6 +108,7 @@ if [ ! -f "$SITE/reports/youtube-upload-queue.json" ]; then
   printf '%s\\n' '{ "version": 1, "items": [] }' > "$SITE/reports/youtube-upload-queue.json"
 fi
 node --check "$SITE/server.js"
+node --check "$SITE/lib/supplier-referrals.js"
 node --check "$SITE/lib/youtube-upload-queue.js"
 grep -q "pwa-install.js" "$SITE/server.js"
 grep -q "pwa-app-shell.js" "$SITE/server.js"
@@ -137,6 +138,17 @@ if [ -f "$SITE/package.json" ]; then
 fi
 systemctl restart inventory-site.service
 systemctl is-active inventory-site.service
+node - <<'NODE'
+const fs = require('fs');
+const path = '/root/.openclaw/workspace/inventory-site/data';
+const users = JSON.parse(fs.readFileSync(path + '/users.json', 'utf8'));
+const codes = JSON.parse(fs.readFileSync(path + '/supplier-referral-codes.json', 'utf8'));
+const eligible = users.filter((user) => user && user.id && ['supplier', 'admin'].includes(user.role));
+const activeOwners = new Set(codes.filter((row) => row.active !== false).map((row) => row.ownerUserId));
+const missing = eligible.filter((user) => !activeOwners.has(user.id));
+if (missing.length) throw new Error('Missing supplier referral codes: ' + missing.map((user) => user.id).join(','));
+console.log('[deploy:api] supplier referral backfill OK (' + eligible.length + '/' + eligible.length + ')');
+NODE
 echo "[deploy:api] inventory-site restarted OK"
 `);
 }

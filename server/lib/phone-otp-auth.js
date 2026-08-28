@@ -32,6 +32,10 @@ function createPhoneOtpAuth({
   limitVerify,
   validateSupplierInvite,
   consumeSupplierInvite,
+  isSupplierReferralCode,
+  validateSupplierReferral,
+  recordSupplierReferral,
+  ensureSupplierReferral,
 }) {
   const json = jsonFn;
   const buyerStore = createBuyerStore(dataDir);
@@ -419,7 +423,6 @@ function createPhoneOtpAuth({
         return true;
       }
       try {
-        if (requireSmsOtp) consumeOtpChallenge(phoneNorm, code, 'supplier');
         if (findUserByPhone(phoneNorm, 'supplier')) {
           json(res, 409, { error: '该手机号已注册，请直接登录后补全资料' });
           return true;
@@ -439,48 +442,102 @@ function createPhoneOtpAuth({
           return true;
         }
         const profile = assertRequiredProfile(body);
-        if (!requireSmsOtp) {
-          if (!inviteCode) {
-            json(res, 403, { error: '供应商注册需要 AsiaPower 邀请代码' });
+        if (!inviteCode) {
+          json(res, 403, { error: '供应商注册需要推荐人邀请码或 AsiaPower 准入码' });
+          return true;
+        }
+
+        let invitation;
+        const referralCode = typeof isSupplierReferralCode === 'function'
+          && isSupplierReferralCode(inviteCode);
+        if (referralCode) {
+          if (typeof validateSupplierReferral !== 'function') {
+            json(res, 503, { error: '供应商推荐服务暂不可用' });
             return true;
           }
+          const record = validateSupplierReferral(inviteCode);
+          invitation = {
+            source: 'supplier-referral',
+            invitationId: record.id,
+            inviterUserId: record.ownerUserId,
+            codeHint: `${record.code.slice(0, 3)}…${record.code.slice(-4)}`,
+          };
+        } else {
           if (typeof validateSupplierInvite !== 'function' || typeof consumeSupplierInvite !== 'function') {
             json(res, 503, { error: '供应商邀请服务暂不可用' });
             return true;
           }
-          validateSupplierInvite({ code: inviteCode, phone: body.phone, countryCode });
+          const validated = validateSupplierInvite({ code: inviteCode, phone: body.phone, countryCode });
+          const record = validated && validated.record ? validated.record : validated;
+          invitation = {
+            source: 'phone-bound-invite',
+            invitationId: record && record.id ? record.id : '',
+            inviterUserId: record && record.createdBy ? record.createdBy : 'admin',
+            codeHint: record && record.codeHint ? record.codeHint : '',
+          };
         }
+        if (requireSmsOtp) consumeOtpChallenge(phoneNorm, code, 'supplier');
         let user = ensureSupplierUser({
           phoneNorm,
           countryCode,
           profile,
           requireComplete: true,
         });
+        const users = getUsers().slice();
+        const idx = users.findIndex((u) => u.id === user.id);
+        const referredAt = new Date().toISOString();
+        let next = {
+          ...user,
+          invitationSource: invitation.source,
+          invitationId: invitation.invitationId,
+          referredByUserId: invitation.inviterUserId,
+          referredAt,
+        };
         if (password) {
           const { salt, hash } = hashPassword(password);
-          const users = getUsers().slice();
-          const idx = users.findIndex((u) => u.id === user.id);
-          const next = {
-            ...user,
+          next = {
+            ...next,
             salt,
             hash,
             passwordSet: true,
-            passwordUpdatedAt: new Date().toISOString(),
+            passwordUpdatedAt: referredAt,
             authMethod: 'phone-password',
           };
-          users[idx] = next;
-          setUsers(users);
-          saveUsers();
-          user = next;
+        }
+        users[idx] = next;
+        setUsers(users);
+        saveUsers();
+        user = next;
+        if (password) {
           console.log(`[auth] supplier register+password phone=${phoneNorm.slice(0, 3)}****${phoneNorm.slice(-4)}`);
         }
-        if (!requireSmsOtp) {
+        if (invitation.source === 'phone-bound-invite') {
           consumeSupplierInvite({
             code: inviteCode,
             phone: body.phone,
             countryCode,
             supplierId: user.id,
           });
+        }
+        if (typeof recordSupplierReferral === 'function') {
+          try {
+            recordSupplierReferral({
+              ...invitation,
+              inviteeSupplierId: user.id,
+            });
+          } catch (err) {
+            // The user row already contains the durable attribution fields. Keep
+            // registration available and let adminSummary reconstruct the event.
+            console.error('[supplier-referrals] failed to append registration event:', err.message);
+          }
+        }
+        if (typeof ensureSupplierReferral === 'function') {
+          try {
+            ensureSupplierReferral(user, { createdBy: 'registration' });
+          } catch (err) {
+            // Startup backfill retries missing owner codes on the next restart.
+            console.error('[supplier-referrals] failed to allocate new owner code:', err.message);
+          }
         }
         issueSession(res, user);
       } catch (err) {
