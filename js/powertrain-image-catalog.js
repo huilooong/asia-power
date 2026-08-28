@@ -1,7 +1,7 @@
 (() => {
   'use strict';
 
-  const VERSION = 'powertrain-model-images-v1';
+  const VERSION = 'powertrain-model-images-v2';
 
   /*
    * Production image order:

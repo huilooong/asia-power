@@ -713,7 +713,8 @@ export async function runPostDeployValidation({ root, target, remote, baseUrl, r
 
   if (publicTargets.has(target)) {
     // Stamp releaseId on remote config.js (no HTML/SEO rewrite)
-    if (releaseId) {
+    const stampsGlobalReleaseId = target !== 'powertrain-images';
+    if (releaseId && stampsGlobalReleaseId) {
       const stampCmd = `
 CFG=/root/.openclaw/workspace/inventory-site/public/js/config.js
 if [ -f "$CFG" ]; then
@@ -742,6 +743,12 @@ fi
           ? `stamped ${releaseId} into remote js/config.js`
           : `stamp skipped/failed: ${(stamp.stderr || stamp.stdout || '').slice(0, 160)}`,
       });
+    } else if (releaseId) {
+      checks.push({
+        name: 'release_id_stamp',
+        status: 'skip',
+        detail: 'narrow asset target does not replace the global config release marker',
+      });
     }
 
     purgeReport = await attemptCloudflarePurge({ baseUrl });
@@ -758,7 +765,7 @@ fi
 
     publicReport = await runPublicPostReleaseValidation({
       baseUrl,
-      releaseId,
+      releaseId: stampsGlobalReleaseId ? releaseId : '',
     });
 
     for (const c of publicReport.checks) {

@@ -11,12 +11,21 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 
-const VERSION = 'powertrain-model-images-v1';
+const VERSION = 'powertrain-model-images-v2';
 
 const BASELINE_SHA256 = Object.freeze({
-  'engines/index.html': '274f80c986f3d4f58cc237ebb948b764941d1676e828cdf36f4aebf18e743781',
-  'gearboxes/index.html': '06ca75c0d390015159dd77d6e83dc274171e4736b378d56d6e63ebf402acc0d3',
-  'js/half-cut-directory.js': '7792f3fb97dd7c2a0a405699ca5042c63689625786866d181bb4787c494fd88b',
+  'engines/index.html': [
+    '274f80c986f3d4f58cc237ebb948b764941d1676e828cdf36f4aebf18e743781',
+    '74116f98c102c791dffc1c7e2fac272e477f677bab4ae76f8bdc046b2bd50f0c',
+  ],
+  'gearboxes/index.html': [
+    '06ca75c0d390015159dd77d6e83dc274171e4736b378d56d6e63ebf402acc0d3',
+    '48bd2f606024d1368d43b0f7de027296cfb1f733e600a0e2190b6bf1f297769d',
+  ],
+  'js/half-cut-directory.js': [
+    '7792f3fb97dd7c2a0a405699ca5042c63689625786866d181bb4787c494fd88b',
+    'e95ed6c871c7927fa294d12e070f1e685e73495b70fcd15e6058c5f1a333f1a5',
+  ],
   'js/ebay-catalog-hub.js': 'aef06066979fa9696aa229d3a7dbc3d42a8fdf68225d415827af4a5e22f8eb79',
   'css/ebay-layout.css': '25ffa20c54aa021e2fea4d364baa9959d4b4b9021288027bbf701ab39f09c6c9',
 });
@@ -84,8 +93,9 @@ function assertBaseline(relativePath, current, alreadyApplied) {
   if (alreadyApplied) return;
   const actual = sha256(current);
   const expected = BASELINE_SHA256[relativePath];
-  if (actual !== expected) {
-    throw new Error(`${relativePath}: production drift detected; expected ${expected}, found ${actual}`);
+  const allowed = Array.isArray(expected) ? expected : [expected];
+  if (!allowed.includes(actual)) {
+    throw new Error(`${relativePath}: production drift detected; expected one of ${allowed.join(', ')}, found ${actual}`);
   }
 }
 
@@ -93,12 +103,14 @@ function patchHalfCutDirectory(publicRoot, sourceRoot) {
   const relativePath = 'js/half-cut-directory.js';
   const source = read(sourceRoot, relativePath);
   let current = read(publicRoot, relativePath);
-  const alreadyApplied = current.includes('data-image-policy="rights-cleared-model-photo"')
+  const policyApplied = current.includes('data-image-policy="rights-cleared-model-photo"')
     && current.includes('function formatTransmissionCatalogPrimaryTitle')
     && current.includes("if (partType === 'engine' || partType === 'transmission') return null;");
+  const inlineCreditApplied = current.includes('data-credit-style="inline-v1"');
+  const alreadyApplied = policyApplied && inlineCreditApplied;
   assertBaseline(relativePath, current, alreadyApplied);
 
-  if (!alreadyApplied) {
+  if (!policyApplied) {
     const oldComment = `  /**
    * Parts catalog photo picker — parallel with listing rules:
    * - Dedicated uploads: labeled part photo, else first real photo
@@ -161,14 +173,23 @@ ${photoNeedle}`;
       '    pickPartListingPhoto,\n    resolvePowertrainModelImage,\n    partsCatalogPlaceholderSrc,',
       'export model image resolver',
     );
-    write(publicRoot, relativePath, current);
   }
+
+  if (!inlineCreditApplied) {
+    current = replaceFunction(
+      current,
+      'renderPowertrainImageSource',
+      extractFunction(source, 'renderPowertrainImageSource'),
+    );
+  }
+  if (!alreadyApplied) write(publicRoot, relativePath, current);
 
   const finalText = read(publicRoot, relativePath);
   const required = [
     'function resolvePowertrainModelImage',
     'function formatTransmissionCatalogPrimaryTitle',
     'Source / 来源:',
+    'data-credit-style="inline-v1"',
     'data-image-policy="rights-cleared-model-photo"',
     "engine: 'assets/images/powertrain-photo-placeholder.svg'",
     "transmission: 'assets/images/powertrain-photo-placeholder.svg'",
@@ -249,7 +270,14 @@ function patchCatalogPage(publicRoot, relativePath) {
     const catalogTag = `  <script src="../js/powertrain-image-catalog.js?v=${VERSION}"></script>`;
     const directoryTag = current.match(/  <script src="\.\.\/js\/half-cut-directory\.js\?v=[^"]+"><\/script>/)?.[0];
     if (!directoryTag) throw new Error(`${relativePath}: half-cut directory script tag missing`);
-    current = replaceOnce(current, directoryTag, `${catalogTag}\n${directoryTag}`, `${relativePath} catalog script`);
+    if (current.includes('powertrain-image-catalog.js?v=')) {
+      current = current.replace(
+        /powertrain-image-catalog\.js\?v=[^"']+/,
+        `powertrain-image-catalog.js?v=${VERSION}`,
+      );
+    } else {
+      current = replaceOnce(current, directoryTag, `${catalogTag}\n${directoryTag}`, `${relativePath} catalog script`);
+    }
     current = current.replace(
       /ebay-layout\.css\?v=[^"']+/,
       `ebay-layout.css?v=${VERSION}`,

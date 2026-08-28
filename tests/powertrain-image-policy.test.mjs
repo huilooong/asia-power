@@ -98,13 +98,14 @@ test('catalog renderer forbids vehicle album fallback for engines and gearboxes'
   assert.match(directory, /PowertrainImageCatalog\?\.resolve/);
   assert.match(directory, /formatTransmissionCatalogPrimaryTitle/);
   assert.match(directory, /Source \/ 来源:/);
+  assert.match(directory, /data-credit-style="inline-v1"/);
   assert.match(directory, /engine: 'assets\/images\/powertrain-photo-placeholder\.svg'/);
   assert.match(directory, /transmission: 'assets\/images\/powertrain-photo-placeholder\.svg'/);
   assert.equal(fs.existsSync(path.join(ROOT, 'assets/images/powertrain-photo-placeholder.svg')), true);
   for (const html of [engines, gearboxes]) {
-    assert.match(html, /powertrain-image-catalog\.js\?v=powertrain-model-images-v1/);
-    assert.match(html, /half-cut-directory\.js\?v=sitewide-secondary-v1-powertrain-model-images-v1/);
-    assert.match(html, /ebay-catalog-hub\.js\?v=sitewide-secondary-v1-powertrain-model-images-v1/);
+    assert.match(html, /powertrain-image-catalog\.js\?v=powertrain-model-images-v2/);
+    assert.match(html, /half-cut-directory\.js\?v=sitewide-secondary-v1-powertrain-model-images-v2/);
+    assert.match(html, /ebay-catalog-hub\.js\?v=sitewide-secondary-v1-powertrain-model-images-v2/);
   }
 });
 

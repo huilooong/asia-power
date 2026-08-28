@@ -1425,10 +1425,29 @@
     const source = image?.source;
     if (!source?.pageUrl || !source?.license) return '';
     const credit = [source.creator, source.publisher].filter(Boolean).join(' / ');
+    // Inline base styles keep the legal attribution visible even when an older
+    // immutable catalog stylesheet is still held by a returning visitor.
+    const creditStyle = [
+      'position:absolute',
+      'z-index:4',
+      'right:6px',
+      'bottom:6px',
+      'left:6px',
+      'display:block',
+      'padding:5px 7px',
+      'border-radius:5px',
+      'color:#fff',
+      'background:rgba(10,22,40,.84)',
+      'font-size:9px',
+      'font-weight:600',
+      'line-height:1.3',
+      'text-align:left',
+    ].join(';');
+    const linkStyle = 'color:#fff;text-decoration:underline;text-underline-offset:2px';
     const license = source.licenseUrl
-      ? `<a href="${escapeHtml(source.licenseUrl)}" target="_blank" rel="noopener noreferrer external">${escapeHtml(source.license)}</a>`
+      ? `<a style="${linkStyle}" href="${escapeHtml(source.licenseUrl)}" target="_blank" rel="noopener noreferrer external">${escapeHtml(source.license)}</a>`
       : escapeHtml(source.license);
-    return `<span class="ap-model-image-credit">Source / 来源: <a href="${escapeHtml(source.pageUrl)}" target="_blank" rel="noopener noreferrer external">${escapeHtml(credit || source.publisher || 'Source')}</a> · ${license}</span>`;
+    return `<span class="ap-model-image-credit" data-credit-style="inline-v1" style="${creditStyle}">Source / 来源: <a style="${linkStyle}" href="${escapeHtml(source.pageUrl)}" target="_blank" rel="noopener noreferrer external">${escapeHtml(credit || source.publisher || 'Source')}</a> · ${license}</span>`;
   }
 
   function renderPartListingPhoto(display, partType) {

@@ -280,7 +280,7 @@ echo "[deploy:categories] category filters OK on remote"
 function deployPowertrainImages() {
   console.log('[deploy:powertrain-images] syncing rights-cleared model assets and staging narrow patch');
   const pub = `${SITE}/public`;
-  const stage = '/tmp/asiapower-powertrain-model-images-v1';
+  const stage = '/tmp/asiapower-powertrain-model-images-v2';
   ssh(`
 set -e
 mkdir -p /root/.openclaw/workspace/inventory-site/public/js
@@ -324,8 +324,8 @@ grep -q 'data-image-policy="rights-cleared-model-photo"' "$PUB/js/half-cut-direc
 grep -q 'Source / 来源:' "$PUB/js/half-cut-directory.js"
 grep -q 'formatTransmissionCatalogPrimaryTitle' "$PUB/js/ebay-catalog-hub.js"
 grep -q '.ap-model-image-credit' "$PUB/css/ebay-layout.css"
-grep -q 'powertrain-image-catalog.js?v=powertrain-model-images-v1' "$PUB/engines/index.html"
-grep -q 'powertrain-image-catalog.js?v=powertrain-model-images-v1' "$PUB/gearboxes/index.html"
+grep -q 'powertrain-image-catalog.js?v=powertrain-model-images-v2' "$PUB/engines/index.html"
+grep -q 'powertrain-image-catalog.js?v=powertrain-model-images-v2' "$PUB/gearboxes/index.html"
 echo '[deploy:powertrain-images] exact-model image policy active on remote'
 `);
 }
