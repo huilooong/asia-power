@@ -1,10 +1,10 @@
 {
   "report": {
-    "status": "pass",
+    "status": "fail",
     "base_url": "https://asia-power.com",
-    "release_id": "REL-20260719020619-chrome-0bc2cc6ee",
+    "release_id": "REL-20260828114518-api-93e314b21",
     "expected_whatsapp": "8616638801930",
-    "checked_at": "2026-07-19T02:09:23.964Z",
+    "checked_at": "2026-08-28T11:46:43.402Z",
     "checks": [
       {
         "name": "homepage_http",
@@ -504,7 +504,7 @@
       {
         "name": "supplier_portal_config_whatsapp",
         "status": "pass",
-        "detail": "float will use wa.me/8616638801930 via https://asia-power.com/js/config.js?v=apcontact-002"
+        "detail": "float will use wa.me/8616638801930 via https://asia-power.com/js/config.js?v=seo-guides-20260716"
       },
       {
         "name": "config_js_http",
@@ -519,17 +519,37 @@
       {
         "name": "config_js_cache_policy",
         "status": "pass",
-        "detail": "public, max-age=14400, must-revalidate"
+        "detail": "public, max-age=60, must-revalidate"
       },
       {
         "name": "config_js_cf",
         "status": "pass",
-        "detail": "cf=EXPIRED age=0"
+        "detail": "cf=HIT age=10"
       },
       {
         "name": "config_js_release_id",
+        "status": "fail",
+        "detail": "config releaseId=REL-20260823053656-admin-8a6870c != deploy REL-20260828114518-api-93e314b21"
+      },
+      {
+        "name": "components_js_http",
         "status": "pass",
-        "detail": "releaseId=REL-20260719020619-chrome-0bc2cc6ee"
+        "detail": "HTTP 200"
+      },
+      {
+        "name": "components_js_cache_policy",
+        "status": "pass",
+        "detail": "public, max-age=60, must-revalidate"
+      },
+      {
+        "name": "pwa_app_shell_js_http",
+        "status": "pass",
+        "detail": "HTTP 200"
+      },
+      {
+        "name": "pwa_app_shell_js_cache_policy",
+        "status": "pass",
+        "detail": "public, max-age=60, must-revalidate"
       },
       {
         "name": "sw_js_http",
@@ -539,7 +559,7 @@
       {
         "name": "sw_version",
         "status": "pass",
-        "detail": "CACHE_VERSION=pwa-app-v6b"
+        "detail": "CACHE_VERSION=pwa-app-v6c"
       },
       {
         "name": "sw_precache_config",
@@ -549,7 +569,7 @@
       {
         "name": "sw_cache_policy",
         "status": "pass",
-        "detail": "public, max-age=14400, must-revalidate"
+        "detail": "public, max-age=60, must-revalidate"
       },
       {
         "name": "robots_http",
@@ -559,10 +579,25 @@
       {
         "name": "robots_content",
         "status": "pass",
-        "detail": "bytes=349"
+        "detail": "bytes=1013"
       },
       {
         "name": "robots_content_type",
+        "status": "pass",
+        "detail": "text/plain; charset=utf-8"
+      },
+      {
+        "name": "llms_http",
+        "status": "pass",
+        "detail": "HTTP 200"
+      },
+      {
+        "name": "llms_content",
+        "status": "pass",
+        "detail": "bytes=3324"
+      },
+      {
+        "name": "llms_content_type",
         "status": "pass",
         "detail": "text/plain; charset=utf-8"
       },
@@ -574,7 +609,7 @@
       {
         "name": "sitemap_content",
         "status": "pass",
-        "detail": "bytes=152684"
+        "detail": "bytes=167463"
       },
       {
         "name": "sitemap_content_type",
@@ -589,7 +624,7 @@
       {
         "name": "seo_sitemap_url_count",
         "status": "pass",
-        "detail": "717 URLs"
+        "detail": "781 URLs"
       },
       {
         "name": "seo_sitemap_test_like_urls",
@@ -604,7 +639,7 @@
       {
         "name": "seo_half_cut_sample_present",
         "status": "pass",
-        "detail": "https://asia-power.com/half-cuts/detail.html?slug=haval-h6-2013-4g69-s4m-half-cut-hc250583"
+        "detail": "https://asia-power.com/half-cuts/detail.html?slug=toyota-camry-2007-1az-fe-half-cut-hc250602"
       },
       {
         "name": "seo_half_cut_detail_http",
@@ -614,17 +649,17 @@
       {
         "name": "seo_half_cut_canonical",
         "status": "pass",
-        "detail": "https://asia-power.com/half-cuts/detail.html?slug=haval-h6-2013-4g69-s4m-half-cut-hc250583"
+        "detail": "https://asia-power.com/half-cuts/detail.html?slug=toyota-camry-2007-1az-fe-half-cut-hc250602"
       },
       {
         "name": "seo_half_cut_product_jsonld_url",
         "status": "pass",
-        "detail": "https://asia-power.com/half-cuts/detail.html?slug=haval-h6-2013-4g69-s4m-half-cut-hc250583"
+        "detail": "https://asia-power.com/half-cuts/detail.html?slug=toyota-camry-2007-1az-fe-half-cut-hc250602"
       },
       {
         "name": "seo_truck_sample_present",
         "status": "pass",
-        "detail": "https://asia-power.com/trucks/detail.html?slug=dongfeng-2024-cab-truck-cab-hc250582"
+        "detail": "https://asia-power.com/trucks/detail.html?slug=jac-2015-15010228-truck-part-hc250621"
       },
       {
         "name": "seo_truck_detail_http",
@@ -634,17 +669,17 @@
       {
         "name": "seo_truck_canonical",
         "status": "pass",
-        "detail": "https://asia-power.com/trucks/detail.html?slug=dongfeng-2024-cab-truck-cab-hc250582"
+        "detail": "https://asia-power.com/trucks/detail.html?slug=jac-2015-15010228-truck-part-hc250621"
       },
       {
         "name": "seo_truck_product_jsonld_url",
         "status": "pass",
-        "detail": "https://asia-power.com/trucks/detail.html?slug=dongfeng-2024-cab-truck-cab-hc250582"
+        "detail": "https://asia-power.com/trucks/detail.html?slug=jac-2015-15010228-truck-part-hc250621"
       },
       {
         "name": "seo_truck_legacy_redirect",
         "status": "pass",
-        "detail": "HTTP 301 -> /trucks/detail.html?slug=dongfeng-2024-cab-truck-cab-hc250582"
+        "detail": "HTTP 301 -> /trucks/detail.html?slug=jac-2015-15010228-truck-part-hc250621"
       },
       {
         "name": "seo_machinery_sample_present",
@@ -672,9 +707,34 @@
         "detail": "HTTP 301 -> /machinery/detail.html?slug=dongfanghong-380-2005-machinery-tractor-hc250576"
       },
       {
+        "name": "seo_used_car_sample_present",
+        "status": "pass",
+        "detail": "https://asia-power.com/used-cars/detail.html?slug=fangchengbao-bao-5-2025-byd476zqf-export-used-car-hc250647"
+      },
+      {
+        "name": "seo_used_car_detail_http",
+        "status": "pass",
+        "detail": "HTTP 200"
+      },
+      {
+        "name": "seo_used_car_canonical",
+        "status": "pass",
+        "detail": "https://asia-power.com/used-cars/detail.html?slug=fangchengbao-bao-5-2025-byd476zqf-export-used-car-hc250647"
+      },
+      {
+        "name": "seo_used_car_product_jsonld_url",
+        "status": "pass",
+        "detail": "https://asia-power.com/used-cars/detail.html?slug=fangchengbao-bao-5-2025-byd476zqf-export-used-car-hc250647"
+      },
+      {
+        "name": "seo_used_car_legacy_redirect",
+        "status": "pass",
+        "detail": "HTTP 301 -> /used-cars/detail.html?slug=fangchengbao-bao-5-2025-byd476zqf-export-used-car-hc250647"
+      },
+      {
         "name": "sw_register",
         "status": "skip",
-        "detail": "no register() found in pwa-install"
+        "detail": "homepage does not load pwa-install.js"
       }
     ],
     "pages": {
@@ -700,7 +760,7 @@
         "resolved_config_url": "https://asia-power.com/js/config.js?v=seo-guides-20260716",
         "resolved_config_whatsapp": "8616638801930",
         "resolved_config_cache": {
-          "cache_control": "public, max-age=14400, must-revalidate",
+          "cache_control": "public, max-age=60, must-revalidate",
           "cf_cache_status": "EXPIRED",
           "etag": ""
         }
@@ -727,7 +787,7 @@
         "resolved_config_url": "https://asia-power.com/js/config.js?v=seo-guides-20260716",
         "resolved_config_whatsapp": "8616638801930",
         "resolved_config_cache": {
-          "cache_control": "public, max-age=14400, must-revalidate",
+          "cache_control": "public, max-age=60, must-revalidate",
           "cf_cache_status": "HIT",
           "etag": ""
         }
@@ -752,7 +812,7 @@
         "resolved_config_url": "https://asia-power.com/js/config.js?v=seo-guides-20260716",
         "resolved_config_whatsapp": "8616638801930",
         "resolved_config_cache": {
-          "cache_control": "public, max-age=14400, must-revalidate",
+          "cache_control": "public, max-age=60, must-revalidate",
           "cf_cache_status": "HIT",
           "etag": ""
         }
@@ -779,7 +839,7 @@
         "resolved_config_url": "https://asia-power.com/js/config.js?v=seo-guides-20260716",
         "resolved_config_whatsapp": "8616638801930",
         "resolved_config_cache": {
-          "cache_control": "public, max-age=14400, must-revalidate",
+          "cache_control": "public, max-age=60, must-revalidate",
           "cf_cache_status": "HIT",
           "etag": ""
         }
@@ -804,7 +864,7 @@
         "resolved_config_url": "https://asia-power.com/js/config.js?v=seo-guides-20260716",
         "resolved_config_whatsapp": "8616638801930",
         "resolved_config_cache": {
-          "cache_control": "public, max-age=14400, must-revalidate",
+          "cache_control": "public, max-age=60, must-revalidate",
           "cf_cache_status": "HIT",
           "etag": ""
         }
@@ -831,7 +891,7 @@
         "resolved_config_url": "https://asia-power.com/js/config.js?v=seo-guides-20260716",
         "resolved_config_whatsapp": "8616638801930",
         "resolved_config_cache": {
-          "cache_control": "public, max-age=14400, must-revalidate",
+          "cache_control": "public, max-age=60, must-revalidate",
           "cf_cache_status": "HIT",
           "etag": ""
         }
@@ -858,7 +918,7 @@
         "resolved_config_url": "https://asia-power.com/js/config.js?v=seo-guides-20260716",
         "resolved_config_whatsapp": "8616638801930",
         "resolved_config_cache": {
-          "cache_control": "public, max-age=14400, must-revalidate",
+          "cache_control": "public, max-age=60, must-revalidate",
           "cf_cache_status": "HIT",
           "etag": ""
         }
@@ -885,7 +945,7 @@
         "resolved_config_url": "https://asia-power.com/js/config.js?v=seo-guides-20260716",
         "resolved_config_whatsapp": "8616638801930",
         "resolved_config_cache": {
-          "cache_control": "public, max-age=14400, must-revalidate",
+          "cache_control": "public, max-age=60, must-revalidate",
           "cf_cache_status": "HIT",
           "etag": ""
         }
@@ -912,7 +972,7 @@
         "resolved_config_url": "https://asia-power.com/js/config.js?v=seo-guides-20260716",
         "resolved_config_whatsapp": "8616638801930",
         "resolved_config_cache": {
-          "cache_control": "public, max-age=14400, must-revalidate",
+          "cache_control": "public, max-age=60, must-revalidate",
           "cf_cache_status": "HIT",
           "etag": ""
         }
@@ -939,7 +999,7 @@
         "resolved_config_url": "https://asia-power.com/js/config.js?v=seo-guides-20260716",
         "resolved_config_whatsapp": "8616638801930",
         "resolved_config_cache": {
-          "cache_control": "public, max-age=14400, must-revalidate",
+          "cache_control": "public, max-age=60, must-revalidate",
           "cf_cache_status": "HIT",
           "etag": ""
         }
@@ -966,7 +1026,7 @@
         "resolved_config_url": "https://asia-power.com/js/config.js?v=seo-guides-20260716",
         "resolved_config_whatsapp": "8616638801930",
         "resolved_config_cache": {
-          "cache_control": "public, max-age=14400, must-revalidate",
+          "cache_control": "public, max-age=60, must-revalidate",
           "cf_cache_status": "HIT",
           "etag": ""
         }
@@ -993,7 +1053,7 @@
         "resolved_config_url": "https://asia-power.com/js/config.js?v=seo-guides-20260716",
         "resolved_config_whatsapp": "8616638801930",
         "resolved_config_cache": {
-          "cache_control": "public, max-age=14400, must-revalidate",
+          "cache_control": "public, max-age=60, must-revalidate",
           "cf_cache_status": "HIT",
           "etag": ""
         }
@@ -1020,7 +1080,7 @@
         "resolved_config_url": "https://asia-power.com/js/config.js?v=seo-guides-20260716",
         "resolved_config_whatsapp": "8616638801930",
         "resolved_config_cache": {
-          "cache_control": "public, max-age=14400, must-revalidate",
+          "cache_control": "public, max-age=60, must-revalidate",
           "cf_cache_status": "HIT",
           "etag": ""
         }
@@ -1038,15 +1098,15 @@
         "title": "Supplier Portal | AsiaPower",
         "canonical": "https://asia-power.com/supplier-portal.html",
         "wa_me": [],
-        "config_script_src": "js/config.js?v=apcontact-002",
+        "config_script_src": "js/config.js?v=seo-guides-20260716",
         "has_logo": false,
         "has_json_ld": false,
         "has_site_whatsapp": true,
-        "resolved_config_url": "https://asia-power.com/js/config.js?v=apcontact-002",
+        "resolved_config_url": "https://asia-power.com/js/config.js?v=seo-guides-20260716",
         "resolved_config_whatsapp": "8616638801930",
         "resolved_config_cache": {
-          "cache_control": "public, max-age=14400, must-revalidate",
-          "cf_cache_status": "EXPIRED",
+          "cache_control": "public, max-age=60, must-revalidate",
+          "cf_cache_status": "HIT",
           "etag": ""
         }
       },
@@ -1054,26 +1114,48 @@
         "url": "https://asia-power.com/js/config.js",
         "http_status": 200,
         "cache": {
-          "cache_control": "public, max-age=14400, must-revalidate",
+          "cache_control": "public, max-age=60, must-revalidate",
+          "cf_cache_status": "HIT",
+          "etag": "",
+          "age": "10",
+          "last_modified": "Fri, 28 Aug 2026 11:46:28 GMT"
+        },
+        "whatsapp": "8616638801930",
+        "release_id": "REL-20260823053656-admin-8a6870c"
+      },
+      "components_js": {
+        "url": "https://asia-power.com/js/components.js",
+        "http_status": 200,
+        "cache": {
+          "cache_control": "public, max-age=60, must-revalidate",
           "cf_cache_status": "EXPIRED",
           "etag": "",
           "age": "",
-          "last_modified": "Sun, 19 Jul 2026 02:09:20 GMT"
-        },
-        "whatsapp": "8616638801930",
-        "release_id": "REL-20260719020619-chrome-0bc2cc6ee"
+          "last_modified": "Fri, 28 Aug 2026 11:46:38 GMT"
+        }
+      },
+      "pwa_app_shell_js": {
+        "url": "https://asia-power.com/js/pwa-app-shell.js",
+        "http_status": 200,
+        "cache": {
+          "cache_control": "public, max-age=60, must-revalidate",
+          "cf_cache_status": "MISS",
+          "etag": "",
+          "age": "",
+          "last_modified": "Fri, 28 Aug 2026 11:46:39 GMT"
+        }
       },
       "sw_js": {
         "url": "https://asia-power.com/sw.js",
         "http_status": 200,
         "cache": {
-          "cache_control": "public, max-age=14400, must-revalidate",
+          "cache_control": "public, max-age=60, must-revalidate",
           "cf_cache_status": "EXPIRED",
           "etag": "",
           "age": "",
-          "last_modified": "Sun, 19 Jul 2026 02:09:20 GMT"
+          "last_modified": "Fri, 28 Aug 2026 11:46:39 GMT"
         },
-        "cache_version": "pwa-app-v6b"
+        "cache_version": "pwa-app-v6c"
       },
       "robots": {
         "url": "https://asia-power.com/robots.txt",
@@ -1081,6 +1163,17 @@
         "cache": {
           "cache_control": "no-cache, no-store, must-revalidate",
           "cf_cache_status": "BYPASS",
+          "etag": "",
+          "age": "",
+          "last_modified": ""
+        }
+      },
+      "llms": {
+        "url": "https://asia-power.com/llms.txt",
+        "http_status": 200,
+        "cache": {
+          "cache_control": "no-cache, no-store, must-revalidate",
+          "cf_cache_status": "DYNAMIC",
           "etag": "",
           "age": "",
           "last_modified": ""
@@ -1098,23 +1191,23 @@
         }
       },
       "seo_canonical": {
-        "sitemap_url_count": 717,
+        "sitemap_url_count": 781,
         "samples": {
           "half_cut": {
-            "loc": "https://asia-power.com/half-cuts/detail.html?slug=haval-h6-2013-4g69-s4m-half-cut-hc250583",
+            "loc": "https://asia-power.com/half-cuts/detail.html?slug=toyota-camry-2007-1az-fe-half-cut-hc250602",
             "http_status": 200,
-            "canonical": "https://asia-power.com/half-cuts/detail.html?slug=haval-h6-2013-4g69-s4m-half-cut-hc250583",
-            "product_jsonld_url": "https://asia-power.com/half-cuts/detail.html?slug=haval-h6-2013-4g69-s4m-half-cut-hc250583"
+            "canonical": "https://asia-power.com/half-cuts/detail.html?slug=toyota-camry-2007-1az-fe-half-cut-hc250602",
+            "product_jsonld_url": "https://asia-power.com/half-cuts/detail.html?slug=toyota-camry-2007-1az-fe-half-cut-hc250602"
           },
           "truck": {
-            "loc": "https://asia-power.com/trucks/detail.html?slug=dongfeng-2024-cab-truck-cab-hc250582",
+            "loc": "https://asia-power.com/trucks/detail.html?slug=jac-2015-15010228-truck-part-hc250621",
             "http_status": 200,
-            "canonical": "https://asia-power.com/trucks/detail.html?slug=dongfeng-2024-cab-truck-cab-hc250582",
-            "product_jsonld_url": "https://asia-power.com/trucks/detail.html?slug=dongfeng-2024-cab-truck-cab-hc250582",
+            "canonical": "https://asia-power.com/trucks/detail.html?slug=jac-2015-15010228-truck-part-hc250621",
+            "product_jsonld_url": "https://asia-power.com/trucks/detail.html?slug=jac-2015-15010228-truck-part-hc250621",
             "legacy": {
-              "url": "https://asia-power.com/half-cuts/detail.html?slug=dongfeng-2024-cab-truck-cab-hc250582",
+              "url": "https://asia-power.com/half-cuts/detail.html?slug=jac-2015-15010228-truck-part-hc250621",
               "status": 301,
-              "location": "/trucks/detail.html?slug=dongfeng-2024-cab-truck-cab-hc250582"
+              "location": "/trucks/detail.html?slug=jac-2015-15010228-truck-part-hc250621"
             }
           },
           "machinery": {
@@ -1127,16 +1220,23 @@
               "status": 301,
               "location": "/machinery/detail.html?slug=dongfanghong-380-2005-machinery-tractor-hc250576"
             }
+          },
+          "used_car": {
+            "loc": "https://asia-power.com/used-cars/detail.html?slug=fangchengbao-bao-5-2025-byd476zqf-export-used-car-hc250647",
+            "http_status": 200,
+            "canonical": "https://asia-power.com/used-cars/detail.html?slug=fangchengbao-bao-5-2025-byd476zqf-export-used-car-hc250647",
+            "product_jsonld_url": "https://asia-power.com/used-cars/detail.html?slug=fangchengbao-bao-5-2025-byd476zqf-export-used-car-hc250647",
+            "legacy": {
+              "url": "https://asia-power.com/half-cuts/detail.html?slug=fangchengbao-bao-5-2025-byd476zqf-export-used-car-hc250647",
+              "status": 301,
+              "location": "/used-cars/detail.html?slug=fangchengbao-bao-5-2025-byd476zqf-export-used-car-hc250647"
+            }
           }
         }
-      },
-      "pwa_install": {
-        "src": "/js/pwa-install.js?v=pwa-app-v6b",
-        "sw_register": ""
       }
     },
-    "fail_count": 0,
-    "pass_count": 117
+    "fail_count": 1,
+    "pass_count": 128
   },
   "purge": {
     "status": "manual_action_required",
