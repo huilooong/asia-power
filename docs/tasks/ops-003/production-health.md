@@ -1,8 +1,8 @@
 # OPS-003 Production Health
 
-- Checked at: 2026-08-28T11:50:13.391Z
+- Checked at: 2026-08-28T12:04:04.448Z
 - Base URL: https://asia-power.com
-- Release: REL-20260828114843-api-5e2be1a9d
+- Release: REL-20260828120221-portal-f5cef8408
 - Status: **PASS**
 - Pass: 129 / Fail: 0
 - Expected WhatsApp: 8616638801930
@@ -113,7 +113,7 @@
 - **PASS** `config_js_whatsapp`: whatsapp=8616638801930
 - **PASS** `config_js_cache_policy`: public, max-age=60, must-revalidate
 - **PASS** `config_js_cf`: cf=EXPIRED age=0
-- **PASS** `config_js_release_id`: releaseId=REL-20260828114843-api-5e2be1a9d
+- **PASS** `config_js_release_id`: releaseId=REL-20260828120221-portal-f5cef8408
 - **PASS** `components_js_http`: HTTP 200
 - **PASS** `components_js_cache_policy`: public, max-age=60, must-revalidate
 - **PASS** `pwa_app_shell_js_http`: HTTP 200
@@ -159,4 +159,4 @@
 ## Cloudflare purge
 
 - Status: **manual_action_required**
-- Cloudflare purge failed (Authentication error) — Manual Action Required: purge config.js / sw.js / components.js in dashboard
+- CLOUDFLARE_ZONE_ID / CLOUDFLARE_API_TOKEN missing — Manual Action Required: purge config.js, sw.js, components.js in Cloudflare dashboard

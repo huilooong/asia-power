@@ -118,28 +118,28 @@
 - Cache-Control: public, max-age=60, must-revalidate
 - ETag: —
 - Age: —
-- Last-Modified: Fri, 28 Aug 2026 11:50:08 GMT
+- Last-Modified: Fri, 28 Aug 2026 12:03:59 GMT
 ## components_js
 - URL: https://asia-power.com/js/components.js
-- CF-Cache-Status: HIT
+- CF-Cache-Status: EXPIRED
 - Cache-Control: public, max-age=60, must-revalidate
 - ETag: —
-- Age: 53
-- Last-Modified: Fri, 28 Aug 2026 11:49:15 GMT
+- Age: —
+- Last-Modified: Fri, 28 Aug 2026 12:03:59 GMT
 ## pwa_app_shell_js
 - URL: https://asia-power.com/js/pwa-app-shell.js
-- CF-Cache-Status: HIT
+- CF-Cache-Status: EXPIRED
 - Cache-Control: public, max-age=60, must-revalidate
 - ETag: —
-- Age: 53
-- Last-Modified: Fri, 28 Aug 2026 11:49:15 GMT
+- Age: —
+- Last-Modified: Fri, 28 Aug 2026 12:03:59 GMT
 ## sw_js
 - URL: https://asia-power.com/sw.js
-- CF-Cache-Status: HIT
+- CF-Cache-Status: EXPIRED
 - Cache-Control: public, max-age=60, must-revalidate
 - ETag: —
-- Age: 53
-- Last-Modified: Fri, 28 Aug 2026 11:49:15 GMT
+- Age: —
+- Last-Modified: Fri, 28 Aug 2026 12:04:00 GMT
 ## robots
 - URL: https://asia-power.com/robots.txt
 - CF-Cache-Status: BYPASS
@@ -171,4 +171,4 @@
 
 ## Purge attempt
 
-- manual_action_required: Cloudflare purge failed (Authentication error) — Manual Action Required: purge config.js / sw.js / components.js in dashboard
+- manual_action_required: CLOUDFLARE_ZONE_ID / CLOUDFLARE_API_TOKEN missing — Manual Action Required: purge config.js, sw.js, components.js in Cloudflare dashboard

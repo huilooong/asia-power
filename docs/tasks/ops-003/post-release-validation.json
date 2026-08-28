@@ -2,9 +2,9 @@
   "report": {
     "status": "pass",
     "base_url": "https://asia-power.com",
-    "release_id": "REL-20260828114843-api-5e2be1a9d",
+    "release_id": "REL-20260828120221-portal-f5cef8408",
     "expected_whatsapp": "8616638801930",
-    "checked_at": "2026-08-28T11:50:13.391Z",
+    "checked_at": "2026-08-28T12:04:04.448Z",
     "checks": [
       {
         "name": "homepage_http",
@@ -529,7 +529,7 @@
       {
         "name": "config_js_release_id",
         "status": "pass",
-        "detail": "releaseId=REL-20260828114843-api-5e2be1a9d"
+        "detail": "releaseId=REL-20260828120221-portal-f5cef8408"
       },
       {
         "name": "components_js_http",
@@ -761,7 +761,7 @@
         "resolved_config_whatsapp": "8616638801930",
         "resolved_config_cache": {
           "cache_control": "public, max-age=60, must-revalidate",
-          "cf_cache_status": "HIT",
+          "cf_cache_status": "EXPIRED",
           "etag": ""
         }
       },
@@ -1118,20 +1118,20 @@
           "cf_cache_status": "EXPIRED",
           "etag": "",
           "age": "",
-          "last_modified": "Fri, 28 Aug 2026 11:50:08 GMT"
+          "last_modified": "Fri, 28 Aug 2026 12:03:59 GMT"
         },
         "whatsapp": "8616638801930",
-        "release_id": "REL-20260828114843-api-5e2be1a9d"
+        "release_id": "REL-20260828120221-portal-f5cef8408"
       },
       "components_js": {
         "url": "https://asia-power.com/js/components.js",
         "http_status": 200,
         "cache": {
           "cache_control": "public, max-age=60, must-revalidate",
-          "cf_cache_status": "HIT",
+          "cf_cache_status": "EXPIRED",
           "etag": "",
-          "age": "53",
-          "last_modified": "Fri, 28 Aug 2026 11:49:15 GMT"
+          "age": "",
+          "last_modified": "Fri, 28 Aug 2026 12:03:59 GMT"
         }
       },
       "pwa_app_shell_js": {
@@ -1139,10 +1139,10 @@
         "http_status": 200,
         "cache": {
           "cache_control": "public, max-age=60, must-revalidate",
-          "cf_cache_status": "HIT",
+          "cf_cache_status": "EXPIRED",
           "etag": "",
-          "age": "53",
-          "last_modified": "Fri, 28 Aug 2026 11:49:15 GMT"
+          "age": "",
+          "last_modified": "Fri, 28 Aug 2026 12:03:59 GMT"
         }
       },
       "sw_js": {
@@ -1150,10 +1150,10 @@
         "http_status": 200,
         "cache": {
           "cache_control": "public, max-age=60, must-revalidate",
-          "cf_cache_status": "HIT",
+          "cf_cache_status": "EXPIRED",
           "etag": "",
-          "age": "53",
-          "last_modified": "Fri, 28 Aug 2026 11:49:15 GMT"
+          "age": "",
+          "last_modified": "Fri, 28 Aug 2026 12:04:00 GMT"
         },
         "cache_version": "pwa-app-v6c"
       },
@@ -1240,7 +1240,7 @@
   },
   "purge": {
     "status": "manual_action_required",
-    "detail": "Cloudflare purge failed (Authentication error) — Manual Action Required: purge config.js / sw.js / components.js in dashboard",
+    "detail": "CLOUDFLARE_ZONE_ID / CLOUDFLARE_API_TOKEN missing — Manual Action Required: purge config.js, sw.js, components.js in Cloudflare dashboard",
     "files": [
       "https://asia-power.com/js/config.js",
       "https://asia-power.com/js/components.js",
@@ -1249,12 +1249,6 @@
       "https://asia-power.com/",
       "https://asia-power.com/index.html",
       "https://asia-power.com/contact.html"
-    ],
-    "errors": [
-      {
-        "code": 10000,
-        "message": "Authentication error"
-      }
     ]
   }
 }
