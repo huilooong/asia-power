@@ -138,6 +138,11 @@ if [ -f "$SITE/package.json" ]; then
 fi
 systemctl restart inventory-site.service
 systemctl is-active inventory-site.service
+for attempt in $(seq 1 40); do
+  [ -s "$SITE/data/supplier-referral-codes.json" ] && break
+  sleep 0.5
+done
+test -s "$SITE/data/supplier-referral-codes.json"
 node - <<'NODE'
 const fs = require('fs');
 const path = '/root/.openclaw/workspace/inventory-site/data';
