@@ -4,6 +4,11 @@ import path from 'node:path';
 import test from 'node:test';
 import vm from 'node:vm';
 import { fileURLToPath } from 'node:url';
+import {
+  TARGET_REMOTE_PATHS,
+  TARGET_SOURCE_FILES,
+  VALID_TARGETS,
+} from '../scripts/lib/release-manager.mjs';
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const read = (file) => fs.readFileSync(path.join(ROOT, file), 'utf8');
@@ -101,4 +106,30 @@ test('catalog renderer forbids vehicle album fallback for engines and gearboxes'
     assert.match(html, /half-cut-directory\.js\?v=sitewide-secondary-v1-powertrain-model-images-v1/);
     assert.match(html, /ebay-catalog-hub\.js\?v=sitewide-secondary-v1-powertrain-model-images-v1/);
   }
+});
+
+test('Release Manager exposes a narrow, recoverable powertrain image target', () => {
+  assert.equal(VALID_TARGETS.includes('powertrain-images'), true);
+  assert.deepEqual(TARGET_REMOTE_PATHS['powertrain-images'], [
+    '/root/.openclaw/workspace/inventory-site/public/engines/index.html',
+    '/root/.openclaw/workspace/inventory-site/public/gearboxes/index.html',
+    '/root/.openclaw/workspace/inventory-site/public/js/powertrain-image-catalog.js',
+    '/root/.openclaw/workspace/inventory-site/public/js/half-cut-directory.js',
+    '/root/.openclaw/workspace/inventory-site/public/js/ebay-catalog-hub.js',
+    '/root/.openclaw/workspace/inventory-site/public/js/config.js',
+    '/root/.openclaw/workspace/inventory-site/public/css/ebay-layout.css',
+    '/root/.openclaw/workspace/inventory-site/public/assets/images/powertrain-photo-placeholder.svg',
+    '/root/.openclaw/workspace/inventory-site/public/assets/images/powertrain-models',
+  ]);
+
+  const sourceFiles = TARGET_SOURCE_FILES['powertrain-images'];
+  assert.equal(sourceFiles.includes('scripts/apply-powertrain-image-release.mjs'), true);
+  assert.equal(sourceFiles.includes('assets/images/powertrain-models'), true);
+  assert.equal(sourceFiles.includes('css/styles.css'), false);
+  assert.equal(sourceFiles.includes('index.html'), false);
+
+  const deployScript = read('scripts/deploy-production.mjs');
+  assert.match(deployScript, /'powertrain-images': deployPowertrainImages/);
+  assert.match(deployScript, /apply-powertrain-image-release\.mjs/);
+  assert.match(deployScript, /exact-model image policy active on remote/);
 });

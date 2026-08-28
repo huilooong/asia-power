@@ -13,10 +13,24 @@ import {
 } from './post-release-validation.mjs';
 import { checkCacheBustConsistency } from './cache-bust-check.mjs';
 
-export const VALID_TARGETS = ['nginx', 'api', 'engines', 'apsales', 'apsales-openclaw', 'finalize', 'home', 'portal', 'chrome', 'categories', 'admin'];
+export const VALID_TARGETS = ['nginx', 'api', 'engines', 'powertrain-images', 'apsales', 'apsales-openclaw', 'finalize', 'home', 'portal', 'chrome', 'categories', 'admin'];
 
 /** @type {Record<string, string[]>} */
 export const TARGET_SOURCE_FILES = {
+  'powertrain-images': [
+    'engines/index.html',
+    'gearboxes/index.html',
+    'js/powertrain-image-catalog.js',
+    'js/half-cut-directory.js',
+    'js/ebay-catalog-hub.js',
+    'css/ebay-layout.css',
+    'assets/images/powertrain-photo-placeholder.svg',
+    'assets/images/powertrain-models',
+    'scripts/apply-powertrain-image-release.mjs',
+    'scripts/deploy-production.mjs',
+    'scripts/lib/release-manager.mjs',
+    'tests/powertrain-image-policy.test.mjs',
+  ],
   categories: [
     'index.html',
     'half-cuts/index.html',
@@ -207,6 +221,17 @@ export const TARGET_SOURCE_FILES = {
 
 /** @type {Record<string, string[]>} */
 export const TARGET_REMOTE_PATHS = {
+  'powertrain-images': [
+    '/root/.openclaw/workspace/inventory-site/public/engines/index.html',
+    '/root/.openclaw/workspace/inventory-site/public/gearboxes/index.html',
+    '/root/.openclaw/workspace/inventory-site/public/js/powertrain-image-catalog.js',
+    '/root/.openclaw/workspace/inventory-site/public/js/half-cut-directory.js',
+    '/root/.openclaw/workspace/inventory-site/public/js/ebay-catalog-hub.js',
+    '/root/.openclaw/workspace/inventory-site/public/js/config.js',
+    '/root/.openclaw/workspace/inventory-site/public/css/ebay-layout.css',
+    '/root/.openclaw/workspace/inventory-site/public/assets/images/powertrain-photo-placeholder.svg',
+    '/root/.openclaw/workspace/inventory-site/public/assets/images/powertrain-models',
+  ],
   categories: [
     '/root/.openclaw/workspace/inventory-site/public/index.html',
     '/root/.openclaw/workspace/inventory-site/public/half-cuts/index.html',
@@ -652,7 +677,7 @@ export async function runPostDeployValidation({ root, target, remote, baseUrl, r
     checks.push({ name: 'nginx_verification', status: 'skip', detail: 'not required' });
   }
 
-  if (['nginx', 'api', 'engines', 'home'].includes(target)) {
+  if (['nginx', 'api', 'engines', 'home', 'powertrain-images'].includes(target)) {
     const verifyScript = path.join(root, 'scripts', 'verify-production.mjs');
     if (fs.existsSync(verifyScript)) {
       const verify = spawnSync('node', [verifyScript, baseUrl], { encoding: 'utf8', cwd: root });
@@ -680,7 +705,7 @@ export async function runPostDeployValidation({ root, target, remote, baseUrl, r
   });
 
   // OPS-003: parser-based public validation for any customer-facing target
-  const publicTargets = new Set(['nginx', 'api', 'engines', 'home', 'chrome', 'portal', 'categories', 'admin']);
+  const publicTargets = new Set(['nginx', 'api', 'engines', 'home', 'chrome', 'portal', 'categories', 'admin', 'powertrain-images']);
   /** @type {any} */
   let publicReport = null;
   /** @type {any} */

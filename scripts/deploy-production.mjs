@@ -9,7 +9,7 @@
  * Default rejects dirty tree and unpushed HEAD.
  * Emergency only: DEPLOY_ALLOW_DIRTY=1 + --allow-dirty; DEPLOY_ALLOW_UNPUSHED=1 (both logged).
  *
- * Targets: nginx | api | engines | apsales | apsales-openclaw | finalize
+ * Targets: nginx | api | engines | powertrain-images | apsales | apsales-openclaw | finalize
  */
 import { spawnSync } from 'child_process';
 import fs from 'fs';
@@ -273,6 +273,60 @@ for page in half-cuts engines gearboxes front-cuts chassis-parts; do
   grep -q 'ebay-catalog-hub.js?v=category-filter-v4' "/root/.openclaw/workspace/inventory-site/public/$page/index.html"
 done
 echo "[deploy:categories] category filters OK on remote"
+`);
+}
+
+/** Exact-model engine/gearbox imagery — additive assets plus drift-guarded production patch. */
+function deployPowertrainImages() {
+  console.log('[deploy:powertrain-images] syncing rights-cleared model assets and staging narrow patch');
+  const pub = `${SITE}/public`;
+  const stage = '/tmp/asiapower-powertrain-model-images-v1';
+  ssh(`
+set -e
+mkdir -p /root/.openclaw/workspace/inventory-site/public/js
+mkdir -p /root/.openclaw/workspace/inventory-site/public/assets/images/powertrain-models
+mkdir -p ${stage}/js ${stage}/css
+`);
+  rsync(`${ROOT}/js/powertrain-image-catalog.js`, `${pub}/js/powertrain-image-catalog.js`);
+  rsync(
+    `${ROOT}/assets/images/powertrain-photo-placeholder.svg`,
+    `${pub}/assets/images/powertrain-photo-placeholder.svg`,
+  );
+  run('rsync', [
+    '-av',
+    `${ROOT}/assets/images/powertrain-models/`,
+    `${pub}/assets/images/powertrain-models/`,
+  ]);
+
+  rsync(
+    `${ROOT}/scripts/apply-powertrain-image-release.mjs`,
+    `${REMOTE}:${stage}/apply-powertrain-image-release.mjs`,
+  );
+  rsync(`${ROOT}/js/half-cut-directory.js`, `${REMOTE}:${stage}/js/half-cut-directory.js`);
+  rsync(`${ROOT}/js/ebay-catalog-hub.js`, `${REMOTE}:${stage}/js/ebay-catalog-hub.js`);
+  rsync(`${ROOT}/css/ebay-layout.css`, `${REMOTE}:${stage}/css/ebay-layout.css`);
+
+  ssh(`
+set -euo pipefail
+PUB=/root/.openclaw/workspace/inventory-site/public
+STAGE=${stage}
+node "$STAGE/apply-powertrain-image-release.mjs" "$PUB" "$STAGE"
+node --check "$PUB/js/powertrain-image-catalog.js"
+node --check "$PUB/js/half-cut-directory.js"
+node --check "$PUB/js/ebay-catalog-hub.js"
+test -s "$PUB/assets/images/powertrain-photo-placeholder.svg"
+for image in 1zr-fe.jpg 2az-fe.jpg 3rz-fe.jpg hr16de.jpg jf011e.jpg mr20de.jpg; do
+  test -s "$PUB/assets/images/powertrain-models/$image"
+done
+grep -q 'commercial-reuse-permitted' "$PUB/js/powertrain-image-catalog.js"
+grep -q 'none-visible-manual-review' "$PUB/js/powertrain-image-catalog.js"
+grep -q 'data-image-policy="rights-cleared-model-photo"' "$PUB/js/half-cut-directory.js"
+grep -q 'Source / 来源:' "$PUB/js/half-cut-directory.js"
+grep -q 'formatTransmissionCatalogPrimaryTitle' "$PUB/js/ebay-catalog-hub.js"
+grep -q '.ap-model-image-credit' "$PUB/css/ebay-layout.css"
+grep -q 'powertrain-image-catalog.js?v=powertrain-model-images-v1' "$PUB/engines/index.html"
+grep -q 'powertrain-image-catalog.js?v=powertrain-model-images-v1' "$PUB/gearboxes/index.html"
+echo '[deploy:powertrain-images] exact-model image policy active on remote'
 `);
 }
 
@@ -1139,7 +1193,7 @@ function printHelp() {
   console.log(`AsiaPower deploy (Release Manager enabled):
   node scripts/deploy-production.mjs <target> [--yes] [--allow-dirty] [user@host]
 
-  nginx | api | engines | apsales | apsales-openclaw | finalize | home | portal | chrome | categories | admin
+  nginx | api | engines | powertrain-images | apsales | apsales-openclaw | finalize | home | portal | chrome | categories | admin
 
   REQUIRED: commit → push GitHub → then deploy (CEO red line 2026-07-10)
   Pre-deploy:  git clean, HEAD on origin, backup, target confirmation
@@ -1162,6 +1216,7 @@ const targets = {
   portal: deployPortal,
   chrome: deployChrome,
   categories: deployCategories,
+  'powertrain-images': deployPowertrainImages,
   admin: deployAdmin,
 };
 
