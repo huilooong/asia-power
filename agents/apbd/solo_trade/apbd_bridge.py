@@ -155,6 +155,8 @@ def lead_to_apbd_company(
         company["business_type"] = lead["business_type"]
     if lead.get("description"):
         company["description"] = lead["description"]
+    if lead.get("primary_language"):
+        company["primary_language"] = str(lead["primary_language"])
     company["contact_channels"] = _contact_channels(lead, list(company.get("contact_channels") or []))
 
     source_urls = list(company.get("source_urls") or [])

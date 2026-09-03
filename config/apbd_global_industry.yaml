@@ -1,0 +1,225 @@
+version: 1
+updated: "2026-09-03"
+owner: "APBD pre-sales"
+commercial_source_of_truth: "APSales"
+
+governance:
+  worker_external_draft_enabled: false
+  worker_external_send_enabled: false
+  allowed_auto_send_country_codes: []
+  separate_send_gate_country_codes:
+    - CA
+    - VE
+  excluded_country_codes:
+    - GH
+    - RU
+    - BY
+    - IR
+    - KP
+    - SY
+    - CU
+  third_party_email_send_eligible: false
+  importer_alone_is_exporter: false
+
+runtime:
+  batch_limit: 6
+  backlog_enrichment_limit: 2
+  website_pages: 3
+  website_timeout_seconds: 7
+  retry_failed_website_after_days: 14
+  load_max: 1.8
+  idle_sleep_seconds: 900
+  busy_sleep_seconds: 120
+  quota_sleep_seconds: 3600
+  error_sleep_seconds: 600
+  notify_on_routine_progress: false
+
+industry_scopes:
+  - id: parts_wholesaler
+    label_zh: "零部件批发商"
+    target_role: "Parts / Purchasing Manager"
+    customer_type: "automotive parts wholesaler"
+    search_terms:
+      en: ["automotive parts wholesaler distributor", "engine transmission parts wholesaler"]
+      es: ["mayorista distribuidor de repuestos automotrices", "mayorista de motores y transmisiones"]
+      pt: ["atacadista distribuidor de autopecas", "atacadista de motores e transmissoes"]
+      fr: ["grossiste distributeur de pieces automobiles", "grossiste moteurs boites de vitesses"]
+      de: ["Autoteile Grosshandel Distributor", "Motor Getriebe Teile Grosshandel"]
+      it: ["grossista distributore ricambi auto", "grossista motori e cambi"]
+      nl: ["groothandel distributeur auto onderdelen", "motor versnellingsbak onderdelen groothandel"]
+      ar: ["موزع جملة قطع غيار سيارات", "تاجر جملة محركات وناقل حركة"]
+      tr: ["oto yedek parca toptancisi distributor", "motor sanziman parcalari toptancisi"]
+      zh: ["汽车配件 批发商 经销商", "发动机 变速箱 配件 批发"]
+      ja: ["自動車部品 卸売 販売店", "エンジン トランスミッション 部品 卸売"]
+      ko: ["자동차 부품 도매 유통", "엔진 변속기 부품 도매"]
+      id: ["grosir distributor suku cadang mobil", "grosir mesin transmisi mobil"]
+      ms: ["pemborong pengedar alat ganti kereta", "pemborong enjin transmisi"]
+      th: ["ผู้ค้าส่งอะไหล่รถยนต์", "ผู้ค้าส่งเครื่องยนต์เกียร์"]
+      vi: ["nha phan phoi si phu tung o to", "ban si dong co hop so"]
+
+  - id: export_dealer
+    label_zh: "出口经销商"
+    target_role: "Export / Purchasing Manager"
+    customer_type: "automotive parts export dealer"
+    search_terms:
+      en: ["automotive parts exporter export dealer", "engine transmission export distributor"]
+      es: ["exportador distribuidor de repuestos automotrices", "exportador de motores y transmisiones"]
+      pt: ["exportador distribuidor de autopecas", "exportador de motores e transmissoes"]
+      fr: ["exportateur distributeur de pieces automobiles", "exportateur moteurs boites de vitesses"]
+      de: ["Autoteile Exporteur Exporthandler", "Motor Getriebe Export Distributor"]
+      it: ["esportatore distributore ricambi auto", "esportatore motori e cambi"]
+      nl: ["exporteur distributeur auto onderdelen", "motor versnellingsbak exporteur"]
+      ar: ["مصدر موزع قطع غيار سيارات", "مصدر محركات وناقل حركة"]
+      tr: ["oto yedek parca ihracatci distributor", "motor sanziman ihracatcisi"]
+      zh: ["汽车配件 出口商 经销商", "发动机 变速箱 出口 经销"]
+      ja: ["自動車部品 輸出業者 販売店", "エンジン トランスミッション 輸出"]
+      ko: ["자동차 부품 수출 유통업체", "엔진 변속기 수출업체"]
+      id: ["eksportir distributor suku cadang mobil", "eksportir mesin transmisi mobil"]
+      ms: ["pengeksport pengedar alat ganti kereta", "pengeksport enjin transmisi"]
+      th: ["ผู้ส่งออกอะไหล่รถยนต์", "ผู้ส่งออกเครื่องยนต์เกียร์"]
+      vi: ["nha xuat khau phan phoi phu tung o to", "xuat khau dong co hop so"]
+
+  - id: repair_workshop
+    label_zh: "维修车间"
+    target_role: "Owner / Service Manager"
+    customer_type: "automotive repair workshop"
+    search_terms:
+      en: ["automotive repair workshop engine transmission", "commercial vehicle repair workshop"]
+      es: ["taller reparacion automotriz motores transmisiones", "taller vehiculos comerciales"]
+      pt: ["oficina mecanica motores transmissoes", "oficina veiculos comerciais"]
+      fr: ["atelier reparation automobile moteur transmission", "atelier vehicules utilitaires"]
+      de: ["Kfz Werkstatt Motor Getriebe Reparatur", "Nutzfahrzeug Werkstatt"]
+      it: ["officina riparazione auto motori cambi", "officina veicoli commerciali"]
+      nl: ["autogarage motor versnellingsbak reparatie", "bedrijfswagen werkplaats"]
+      ar: ["ورشة صيانة سيارات محركات ناقل حركة", "ورشة مركبات تجارية"]
+      tr: ["oto tamir servisi motor sanziman", "ticari arac servisi"]
+      zh: ["汽车维修厂 发动机 变速箱", "商用车 维修车间"]
+      ja: ["自動車整備工場 エンジン トランスミッション", "商用車 整備工場"]
+      ko: ["자동차 정비소 엔진 변속기", "상용차 정비소"]
+      id: ["bengkel mobil mesin transmisi", "bengkel kendaraan komersial"]
+      ms: ["bengkel kereta enjin transmisi", "bengkel kenderaan komersial"]
+      th: ["อู่ซ่อมรถ เครื่องยนต์ เกียร์", "อู่ซ่อมรถเพื่อการพาณิชย์"]
+      vi: ["xuong sua chua o to dong co hop so", "xuong xe thuong mai"]
+
+  - id: fleet_operator
+    label_zh: "车队运营商"
+    target_role: "Fleet / Maintenance Manager"
+    customer_type: "commercial vehicle fleet operator"
+    search_terms:
+      en: ["commercial vehicle fleet operator maintenance", "logistics fleet operator workshop"]
+      es: ["operador de flota vehiculos comerciales mantenimiento", "empresa logistica flota taller"]
+      pt: ["operador de frota veiculos comerciais manutencao", "empresa logistica frota oficina"]
+      fr: ["operateur de flotte vehicules utilitaires maintenance", "entreprise logistique flotte atelier"]
+      de: ["Nutzfahrzeug Flottenbetreiber Wartung", "Logistik Flottenbetreiber Werkstatt"]
+      it: ["operatore flotta veicoli commerciali manutenzione", "azienda logistica flotta officina"]
+      nl: ["bedrijfswagen wagenparkbeheer onderhoud", "logistiek wagenpark eigen werkplaats"]
+      ar: ["مشغل اسطول مركبات تجارية صيانة", "شركة لوجستية اسطول ورشة"]
+      tr: ["ticari arac filo operatoru bakim", "lojistik filo operatoru servis"]
+      zh: ["商用车 车队运营商 维修", "物流车队 自有维修"]
+      ja: ["商用車 フリート運営 整備", "物流 車両運行 自社整備"]
+      ko: ["상용차 차량 운영사 정비", "물류 차량 운영 자체 정비"]
+      id: ["operator armada kendaraan komersial perawatan", "perusahaan logistik armada bengkel"]
+      ms: ["pengendali armada kenderaan komersial penyelenggaraan", "syarikat logistik armada bengkel"]
+      th: ["ผู้ประกอบการกองรถเพื่อการพาณิชย์ ซ่อมบำรุง", "บริษัทโลจิสติกส์ กองรถ อู่"]
+      vi: ["don vi van hanh doi xe thuong mai bao duong", "cong ty logistics doi xe xuong"]
+
+  - id: retail_parts_store
+    label_zh: "零售零件商"
+    target_role: "Store Owner / Parts Manager"
+    customer_type: "automotive parts retail store"
+    search_terms:
+      en: ["automotive parts retail store", "engine transmission parts shop"]
+      es: ["tienda minorista de repuestos automotrices", "tienda de motores y transmisiones"]
+      pt: ["loja varejista de autopecas", "loja de motores e transmissoes"]
+      fr: ["magasin detail pieces automobiles", "magasin moteurs boites de vitesses"]
+      de: ["Autoteile Einzelhandel Geschaft", "Motor Getriebe Teile Shop"]
+      it: ["negozio ricambi auto dettaglio", "negozio motori e cambi"]
+      nl: ["winkel auto onderdelen detailhandel", "motor versnellingsbak onderdelen winkel"]
+      ar: ["متجر تجزئة قطع غيار سيارات", "متجر محركات وناقل حركة"]
+      tr: ["oto yedek parca perakende magazasi", "motor sanziman parca magazasi"]
+      zh: ["汽车配件 零售店", "发动机 变速箱 配件 门店"]
+      ja: ["自動車部品 小売店", "エンジン トランスミッション 部品店"]
+      ko: ["자동차 부품 소매점", "엔진 변속기 부품 매장"]
+      id: ["toko eceran suku cadang mobil", "toko mesin transmisi mobil"]
+      ms: ["kedai runcit alat ganti kereta", "kedai enjin transmisi"]
+      th: ["ร้านค้าปลีกอะไหล่รถยนต์", "ร้านเครื่องยนต์เกียร์"]
+      vi: ["cua hang ban le phu tung o to", "cua hang dong co hop so"]
+
+  - id: regional_dealer
+    label_zh: "区域经销商"
+    target_role: "Dealer Principal / Parts Manager"
+    customer_type: "regional automotive dealer"
+    search_terms:
+      en: ["regional automotive dealer parts department", "commercial vehicle regional dealer"]
+      es: ["concesionario regional automotriz repuestos", "concesionario regional vehiculos comerciales"]
+      pt: ["concessionaria regional automotiva pecas", "concessionaria regional veiculos comerciais"]
+      fr: ["concessionnaire automobile regional pieces", "concessionnaire regional vehicules utilitaires"]
+      de: ["regionaler Autohandler Ersatzteile", "regionaler Nutzfahrzeughandler"]
+      it: ["concessionario auto regionale ricambi", "concessionario regionale veicoli commerciali"]
+      nl: ["regionale autodealer onderdelen", "regionale bedrijfswagendealer"]
+      ar: ["وكيل سيارات اقليمي قسم قطع الغيار", "وكيل مركبات تجارية اقليمي"]
+      tr: ["bolgesel otomotiv bayisi yedek parca", "bolgesel ticari arac bayisi"]
+      zh: ["区域汽车经销商 配件部门", "商用车 区域经销商"]
+      ja: ["地域 自動車ディーラー 部品部門", "商用車 地域ディーラー"]
+      ko: ["지역 자동차 딜러 부품 부서", "상용차 지역 딜러"]
+      id: ["dealer otomotif regional bagian suku cadang", "dealer regional kendaraan komersial"]
+      ms: ["pengedar automotif wilayah bahagian alat ganti", "pengedar wilayah kenderaan komersial"]
+      th: ["ตัวแทนจำหน่ายรถยนต์ภูมิภาค แผนกอะไหล่", "ตัวแทนรถเพื่อการพาณิชย์ภูมิภาค"]
+      vi: ["dai ly o to khu vuc bo phan phu tung", "dai ly xe thuong mai khu vuc"]
+
+markets:
+  - {code: CA, country: Canada, language: en, priority: 1, weight: 12, policy_mode: casl_strict, cities: [Toronto, Montreal, Vancouver, Calgary, Edmonton, Winnipeg]}
+  - {code: VE, country: Venezuela, language: es, priority: 2, weight: 4, policy_mode: sanctions_strict, cities: [Caracas, Maracaibo, Valencia, Barquisimeto]}
+  - {code: US, country: United States, language: en, priority: 3, weight: 2, policy_mode: research_draft_only, cities: [Miami, Houston, Los Angeles, Chicago]}
+  - {code: MX, country: Mexico, language: es, priority: 3, weight: 2, policy_mode: research_draft_only, cities: [Mexico City, Monterrey, Guadalajara, Puebla]}
+  - {code: BR, country: Brazil, language: pt, priority: 4, weight: 1, policy_mode: research_draft_only, cities: [Sao Paulo, Curitiba, Belo Horizonte]}
+  - {code: AR, country: Argentina, language: es, priority: 4, weight: 1, policy_mode: research_draft_only, cities: [Buenos Aires, Cordoba, Rosario]}
+  - {code: CL, country: Chile, language: es, priority: 4, weight: 1, policy_mode: research_draft_only, cities: [Santiago, Concepcion]}
+  - {code: CO, country: Colombia, language: es, priority: 4, weight: 1, policy_mode: research_draft_only, cities: [Bogota, Medellin, Cali]}
+  - {code: PE, country: Peru, language: es, priority: 4, weight: 1, policy_mode: research_draft_only, cities: [Lima, Arequipa]}
+  - {code: EC, country: Ecuador, language: es, priority: 4, weight: 1, policy_mode: research_draft_only, cities: [Quito, Guayaquil]}
+  - {code: UY, country: Uruguay, language: es, priority: 4, weight: 1, policy_mode: research_draft_only, cities: [Montevideo]}
+  - {code: PY, country: Paraguay, language: es, priority: 4, weight: 1, policy_mode: research_draft_only, cities: [Asuncion]}
+  - {code: BO, country: Bolivia, language: es, priority: 4, weight: 1, policy_mode: research_draft_only, cities: [Santa Cruz, La Paz]}
+  - {code: CR, country: Costa Rica, language: es, priority: 4, weight: 1, policy_mode: research_draft_only, cities: [San Jose]}
+  - {code: PA, country: Panama, language: es, priority: 4, weight: 1, policy_mode: research_draft_only, cities: [Panama City]}
+  - {code: DO, country: Dominican Republic, language: es, priority: 4, weight: 1, policy_mode: research_draft_only, cities: [Santo Domingo]}
+  - {code: GB, country: United Kingdom, language: en, priority: 4, weight: 1, policy_mode: research_draft_only, cities: [Birmingham, Manchester, London]}
+  - {code: DE, country: Germany, language: de, priority: 4, weight: 1, policy_mode: research_draft_only, cities: [Hamburg, Frankfurt, Cologne]}
+  - {code: FR, country: France, language: fr, priority: 4, weight: 1, policy_mode: research_draft_only, cities: [Paris, Lyon, Marseille]}
+  - {code: ES, country: Spain, language: es, priority: 4, weight: 1, policy_mode: research_draft_only, cities: [Madrid, Barcelona, Valencia]}
+  - {code: IT, country: Italy, language: it, priority: 4, weight: 1, policy_mode: research_draft_only, cities: [Milan, Turin, Bologna]}
+  - {code: NL, country: Netherlands, language: nl, priority: 4, weight: 1, policy_mode: research_draft_only, cities: [Rotterdam, Eindhoven]}
+  - {code: BE, country: Belgium, language: fr, priority: 4, weight: 1, policy_mode: research_draft_only, cities: [Antwerp, Brussels]}
+  - {code: PL, country: Poland, language: en, priority: 4, weight: 1, policy_mode: research_draft_only, cities: [Warsaw, Poznan]}
+  - {code: CZ, country: Czechia, language: en, priority: 4, weight: 1, policy_mode: research_draft_only, cities: [Prague, Brno]}
+  - {code: RO, country: Romania, language: en, priority: 4, weight: 1, policy_mode: research_draft_only, cities: [Bucharest, Cluj-Napoca]}
+  - {code: PT, country: Portugal, language: pt, priority: 4, weight: 1, policy_mode: research_draft_only, cities: [Lisbon, Porto]}
+  - {code: TR, country: Turkiye, language: tr, priority: 4, weight: 1, policy_mode: research_draft_only, cities: [Istanbul, Ankara, Izmir]}
+  - {code: AE, country: United Arab Emirates, language: ar, priority: 4, weight: 1, policy_mode: research_draft_only, cities: [Dubai, Sharjah, Abu Dhabi]}
+  - {code: SA, country: Saudi Arabia, language: ar, priority: 4, weight: 1, policy_mode: research_draft_only, cities: [Riyadh, Jeddah, Dammam]}
+  - {code: QA, country: Qatar, language: ar, priority: 4, weight: 1, policy_mode: research_draft_only, cities: [Doha]}
+  - {code: OM, country: Oman, language: ar, priority: 4, weight: 1, policy_mode: research_draft_only, cities: [Muscat]}
+  - {code: ZA, country: South Africa, language: en, priority: 4, weight: 1, policy_mode: research_draft_only, cities: [Johannesburg, Durban, Cape Town]}
+  - {code: NG, country: Nigeria, language: en, priority: 4, weight: 1, policy_mode: research_draft_only, cities: [Lagos, Abuja]}
+  - {code: KE, country: Kenya, language: en, priority: 4, weight: 1, policy_mode: research_draft_only, cities: [Nairobi, Mombasa]}
+  - {code: TZ, country: Tanzania, language: en, priority: 4, weight: 1, policy_mode: research_draft_only, cities: [Dar es Salaam, Arusha]}
+  - {code: UG, country: Uganda, language: en, priority: 4, weight: 1, policy_mode: research_draft_only, cities: [Kampala]}
+  - {code: MA, country: Morocco, language: fr, priority: 4, weight: 1, policy_mode: research_draft_only, cities: [Casablanca, Tangier]}
+  - {code: EG, country: Egypt, language: ar, priority: 4, weight: 1, policy_mode: research_draft_only, cities: [Cairo, Alexandria]}
+  - {code: CI, country: Cote d'Ivoire, language: fr, priority: 4, weight: 1, policy_mode: research_draft_only, cities: [Abidjan]}
+  - {code: SN, country: Senegal, language: fr, priority: 4, weight: 1, policy_mode: research_draft_only, cities: [Dakar]}
+  - {code: IN, country: India, language: en, priority: 4, weight: 1, policy_mode: research_draft_only, cities: [Delhi, Mumbai, Chennai]}
+  - {code: PK, country: Pakistan, language: en, priority: 4, weight: 1, policy_mode: research_draft_only, cities: [Karachi, Lahore]}
+  - {code: BD, country: Bangladesh, language: en, priority: 4, weight: 1, policy_mode: research_draft_only, cities: [Dhaka, Chattogram]}
+  - {code: LK, country: Sri Lanka, language: en, priority: 4, weight: 1, policy_mode: research_draft_only, cities: [Colombo]}
+  - {code: ID, country: Indonesia, language: id, priority: 4, weight: 1, policy_mode: research_draft_only, cities: [Jakarta, Surabaya]}
+  - {code: MY, country: Malaysia, language: ms, priority: 4, weight: 1, policy_mode: research_draft_only, cities: [Kuala Lumpur, Johor Bahru]}
+  - {code: TH, country: Thailand, language: th, priority: 4, weight: 1, policy_mode: research_draft_only, cities: [Bangkok, Chonburi]}
+  - {code: VN, country: Vietnam, language: vi, priority: 4, weight: 1, policy_mode: research_draft_only, cities: [Ho Chi Minh City, Hanoi]}
+  - {code: PH, country: Philippines, language: en, priority: 4, weight: 1, policy_mode: research_draft_only, cities: [Manila, Cebu]}
+  - {code: SG, country: Singapore, language: en, priority: 4, weight: 1, policy_mode: research_draft_only, cities: [Singapore]}
+  - {code: JP, country: Japan, language: ja, priority: 4, weight: 1, policy_mode: research_draft_only, cities: [Tokyo, Osaka, Nagoya]}
+  - {code: KR, country: South Korea, language: ko, priority: 4, weight: 1, policy_mode: research_draft_only, cities: [Seoul, Busan]}
+  - {code: AU, country: Australia, language: en, priority: 4, weight: 1, policy_mode: research_draft_only, cities: [Sydney, Melbourne, Brisbane]}
+  - {code: NZ, country: New Zealand, language: en, priority: 4, weight: 1, policy_mode: research_draft_only, cities: [Auckland, Christchurch]}

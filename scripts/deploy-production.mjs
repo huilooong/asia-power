@@ -9,7 +9,7 @@
  * Default rejects dirty tree and unpushed HEAD.
  * Emergency only: DEPLOY_ALLOW_DIRTY=1 + --allow-dirty; DEPLOY_ALLOW_UNPUSHED=1 (both logged).
  *
- * Targets: nginx | api | engines | apbd | apsales | apsales-openclaw | finalize
+ * Targets: nginx | api | engines | apbd | apbd-global | apsales | apsales-openclaw | finalize
  */
 import { spawnSync } from 'child_process';
 import fs from 'fs';
@@ -743,6 +743,63 @@ echo "[deploy:apbd] enrichment modules compiled and dry-runs passed"
 `);
 }
 
+/** Global APBD industry research — replaces CA-only discovery, never sends. */
+function deployApbdGlobal() {
+  console.log('[deploy:apbd-global] syncing global research worker and bounded dependencies');
+  ssh(`
+set -e
+AP=/root/.openclaw/workspace/AsiaPower
+mkdir -p "$AP/config" "$AP/agents/apbd/leads/adapters" "$AP/agents/apbd/solo_trade" "$AP/scripts" "$AP/docs/ops"
+`);
+  rsync(`${ROOT}/config/apbd_global_industry.yaml`, `${AP}/config/apbd_global_industry.yaml`);
+  rsync(`${ROOT}/agents/apbd/global_industry.py`, `${AP}/agents/apbd/global_industry.py`);
+  rsync(`${ROOT}/agents/apbd/lead_finder.py`, `${AP}/agents/apbd/lead_finder.py`);
+  rsync(`${ROOT}/agents/apbd/leads/adapters/website.py`, `${AP}/agents/apbd/leads/adapters/website.py`);
+  rsync(`${ROOT}/agents/apbd/solo_trade/apbd_bridge.py`, `${AP}/agents/apbd/solo_trade/apbd_bridge.py`);
+  rsync(`${ROOT}/scripts/apbd_global_industry_runner.py`, `${AP}/scripts/apbd_global_industry_runner.py`);
+  rsync(`${ROOT}/docs/ops/apbd-global-industry-runtime.md`, `${AP}/docs/ops/apbd-global-industry-runtime.md`);
+  rsync(`${ROOT}/deploy/apbd-global-industry.service`, `${REMOTE}:/tmp/apbd-global-industry.service`);
+  ssh(`
+set -euo pipefail
+AP=/root/.openclaw/workspace/AsiaPower
+PY="$AP/.venv/bin/python3"
+"$PY" -m py_compile \
+  "$AP/agents/apbd/global_industry.py" \
+  "$AP/agents/apbd/lead_finder.py" \
+  "$AP/agents/apbd/leads/adapters/website.py" \
+  "$AP/agents/apbd/solo_trade/apbd_bridge.py" \
+  "$AP/scripts/apbd_global_industry_runner.py"
+"$PY" "$AP/scripts/apbd_global_industry_runner.py" --dry-run >/tmp/apbd-global-pre-switch.json
+grep -q '"market_schedule_size":' /tmp/apbd-global-pre-switch.json
+grep -q '"external_send_enabled": false' /tmp/apbd-global-pre-switch.json
+grep -q '"ghana_excluded": true' /tmp/apbd-global-pre-switch.json
+
+OLD_ACTIVE="$(systemctl is-active apbd-ca-leads-trickle.service 2>/dev/null || true)"
+OLD_ENABLED="$(systemctl is-enabled apbd-ca-leads-trickle.service 2>/dev/null || true)"
+rollback_scheduler() {
+  echo '[deploy:apbd-global] scheduler switch failed; restoring legacy service' >&2
+  systemctl disable --now apbd-global-industry.service >/dev/null 2>&1 || true
+  if [ "$OLD_ENABLED" = enabled ]; then systemctl enable apbd-ca-leads-trickle.service >/dev/null 2>&1 || true; fi
+  if [ "$OLD_ACTIVE" = active ]; then systemctl start apbd-ca-leads-trickle.service >/dev/null 2>&1 || true; fi
+}
+trap rollback_scheduler ERR
+
+systemctl stop apbd-ca-leads-trickle.service 2>/dev/null || true
+systemctl disable apbd-ca-leads-trickle.service 2>/dev/null || true
+install -m 644 /tmp/apbd-global-industry.service /etc/systemd/system/apbd-global-industry.service
+systemctl daemon-reload
+systemctl enable apbd-global-industry.service
+systemctl restart apbd-global-industry.service
+sleep 4
+test "$(systemctl is-active apbd-global-industry.service)" = active
+test "$(systemctl is-enabled apbd-global-industry.service)" = enabled
+test "$(systemctl is-active apbd-ca-leads-trickle.service 2>/dev/null || true)" != active
+test "$(systemctl is-enabled apbd-ca-leads-trickle.service 2>/dev/null || true)" != enabled
+trap - ERR
+echo '[deploy:apbd-global] global worker active; CA legacy worker retained but disabled'
+`);
+}
+
 function deployApsales() {
   console.log('[deploy:apsales] syncing growth autopilot scripts');
   run('rsync', ['-av',
@@ -857,12 +914,21 @@ install -m 644 /tmp/apbd-ca-leads-trickle.service /etc/systemd/system/apbd-ca-le
 mkdir -p /root/.openclaw/workspace/AsiaPower/runtime/apbd/leads/db
 mkdir -p /root/.openclaw/workspace/AsiaPower/docs/agents/apbd /root/.openclaw/workspace/AsiaPower/docs/ops
 systemctl daemon-reload
-systemctl enable apbd-ca-leads-trickle.service
-systemctl restart apbd-ca-leads-trickle.service
-sleep 2
-systemctl is-active apbd-ca-leads-trickle.service
+if [ -f /etc/systemd/system/apbd-global-industry.service ] && [ -f /root/.openclaw/workspace/AsiaPower/config/apbd_global_industry.yaml ]; then
+  systemctl disable --now apbd-ca-leads-trickle.service 2>/dev/null || true
+  systemctl enable apbd-global-industry.service
+  systemctl start apbd-global-industry.service
+  sleep 2
+  systemctl is-active apbd-global-industry.service
+  echo "[deploy:apsales] preserved APBD global industry worker; legacy CA service remains disabled"
+else
+  systemctl enable apbd-ca-leads-trickle.service
+  systemctl restart apbd-ca-leads-trickle.service
+  sleep 2
+  systemctl is-active apbd-ca-leads-trickle.service
+  echo "[deploy:apsales] APBD CA leads continuous trickle service active (load-gated)"
+fi
 test -f /etc/systemd/system/apbd-ca-leads-trickle.service
-echo "[deploy:apsales] APBD CA leads continuous trickle service active (load-gated)"
 `);
 }
 
@@ -1218,7 +1284,7 @@ function printHelp() {
   console.log(`AsiaPower deploy (Release Manager enabled):
   node scripts/deploy-production.mjs <target> [--yes] [--allow-dirty] [user@host]
 
-  nginx | api | engines | apbd | apsales | apsales-openclaw | finalize | home | portal | chrome | categories | admin
+  nginx | api | engines | apbd | apbd-global | apsales | apsales-openclaw | finalize | home | portal | chrome | categories | admin
 
   REQUIRED: commit → push GitHub → then deploy (CEO red line 2026-07-10)
   Pre-deploy:  git clean, HEAD on origin, backup, target confirmation
@@ -1235,6 +1301,7 @@ const targets = {
   api: deployApi,
   engines: deployEngines,
   apbd: deployApbd,
+  'apbd-global': deployApbdGlobal,
   apsales: deployApsales,
   'apsales-openclaw': deployApsalesOpenClaw,
   finalize: deployFinalize,

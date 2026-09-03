@@ -324,6 +324,7 @@ def _row_to_lead(row: dict[str, Any], *, query: str) -> dict[str, Any]:
         "city": enriched.get("city") or "",
         "website": website or "Not published",
         "public_email": email or "Not published",
+        "public_email_source": enriched.get("email_source") or data_source,
         "public_phone": phone or "Not published",
         "business_type": business_type,
         "main_products": main_products,

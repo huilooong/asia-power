@@ -259,6 +259,8 @@ class WebsiteEvidenceTests(unittest.TestCase):
             {"sales@example-auto.test", "alex@example-auto.test"},
         )
         self.assertTrue(all(item.get("evidence_url") for item in emails))
+        self.assertTrue(all(item.get("evidence_text") for item in emails))
+        self.assertTrue(all(item.get("send_eligible") is False for item in emails))
         linkedin = [
             item for item in result["external_profiles"] if item.get("source") == "linkedin_public_link"
         ]
@@ -267,6 +269,32 @@ class WebsiteEvidenceTests(unittest.TestCase):
         self.assertEqual(result["contact_persons"][0]["title"], "Owner")
         self.assertEqual(result["website_enrichment"]["status"], "complete")
         self.assertEqual(result["website_enrichment"]["decision_makers_found"], 1)
+
+    def test_official_page_upgrades_third_party_email_and_records_restriction(self) -> None:
+        from agents.apbd.leads.adapters.website import enrich_company_from_website
+
+        company = _company()
+        company["contact_channels"].append(
+            {"type": "email", "value": "sales@example-auto.test", "source": "google_maps"}
+        )
+        response = {
+            "ok": True,
+            "url": "https://example-auto.test/contact",
+            "html": '<a href="mailto:sales@example-auto.test">Sales</a>',
+            "text": "Sales sales@example-auto.test. No unsolicited commercial email.",
+            "error": "",
+        }
+        with mock.patch("agents.apbd.leads.adapters.website.fetch_url", return_value=response):
+            result = enrich_company_from_website(company, max_pages=1, timeout=3)
+
+        email = next(row for row in result["contact_channels"] if row.get("type") == "email")
+        self.assertEqual(email["source"], "official_website")
+        self.assertIn("sales@example-auto.test", email["evidence_text"])
+        self.assertEqual(
+            email["commercial_restriction_check"]["status"],
+            "restriction_observed",
+        )
+        self.assertFalse(email["send_eligible"])
 
     def test_failed_fetch_is_retryable_and_does_not_mark_enriched(self) -> None:
         from agents.apbd.leads.adapters.website import enrich_company_from_website

@@ -1,0 +1,27 @@
+[Unit]
+Description=APBD global industry research and CRM worker (no external send)
+After=network-online.target
+Wants=network-online.target
+Documentation=file:///root/.openclaw/workspace/AsiaPower/docs/ops/apbd-global-industry-runtime.md
+
+[Service]
+Type=simple
+WorkingDirectory=/root/.openclaw/workspace/AsiaPower
+EnvironmentFile=-/root/.openclaw/workspace/AsiaPower/.env
+Environment=PYTHONUNBUFFERED=1
+Environment=APBD_GLOBAL_EXTERNAL_SEND_ENABLED=0
+ExecStart=/root/.openclaw/workspace/AsiaPower/.venv/bin/python3 scripts/apbd_global_industry_runner.py --loop
+StandardOutput=journal
+StandardError=journal
+Restart=always
+RestartSec=60
+Nice=15
+IOSchedulingClass=best-effort
+IOSchedulingPriority=7
+MemoryMax=320M
+MemoryHigh=256M
+CPUQuota=35%
+TasksMax=40
+
+[Install]
+WantedBy=multi-user.target

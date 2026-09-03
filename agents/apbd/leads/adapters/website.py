@@ -47,6 +47,24 @@ _SPANISH_CONTACT_PATHS = (
     "/contact",
     "/about",
 )
+_LANGUAGE_CONTACT_PATHS = {
+    "es": _SPANISH_CONTACT_PATHS,
+    "pt": ("/", "/contato", "/sobre", "/empresa", "/equipe", "/servicos", "/contact", "/about"),
+    "fr": ("/", "/contact", "/a-propos", "/qui-sommes-nous", "/entreprise", "/equipe", "/services", "/about"),
+    "de": ("/", "/kontakt", "/uber-uns", "/ueber-uns", "/unternehmen", "/team", "/leistungen", "/contact"),
+    "it": ("/", "/contatti", "/chi-siamo", "/azienda", "/squadra", "/servizi", "/contact", "/about"),
+    "nl": ("/", "/contact", "/over-ons", "/bedrijf", "/team", "/diensten", "/about"),
+    "tr": ("/", "/iletisim", "/hakkimizda", "/kurumsal", "/ekibimiz", "/hizmetler", "/contact"),
+}
+_COMMERCIAL_RESTRICTION_RE = re.compile(
+    r"no unsolicited|do not send (?:us )?(?:unsolicited|commercial|marketing)|"
+    r"commercial (?:email|e-mail|message)s? (?:are )?(?:not accepted|prohibited)|"
+    r"no sales solicitation|marketing messages? prohibited|"
+    r"pas de (?:courriels|messages) commerciaux|sollicitation commerciale interdite|"
+    r"no (?:enviar|aceptamos) (?:correo|mensajes?) (?:comercial|publicitario)|"
+    r"nao (?:envie|aceitamos) (?:email|mensagens?) (?:comercial|publicitario)",
+    re.I,
+)
 _LINKEDIN_RE = re.compile(
     r"https?://(?:[a-z]{2,3}\.)?linkedin\.com/(?:company|in)/[^\s\"'<>?#]+",
     re.I,
@@ -123,6 +141,37 @@ class _RedirectHandler(urllib.request.HTTPRedirectHandler):
 
 def _now() -> str:
     return datetime.now(timezone.utc).replace(microsecond=0).isoformat().replace("+00:00", "Z")
+
+
+def _email_publication_context(raw_html: str, text: str, email: str) -> str:
+    """Retain a short literal page excerpt around an observed public email."""
+    for source in (text, raw_html):
+        index = source.casefold().find(email.casefold())
+        if index < 0:
+            continue
+        left = max(0, index - 140)
+        right = min(len(source), index + len(email) + 140)
+        return re.sub(r"\s+", " ", html_lib.unescape(source[left:right])).strip()[:400]
+    return ""
+
+
+def _commercial_restriction_check(text: str, evidence_url: str, checked_at: str) -> dict[str, str]:
+    match = _COMMERCIAL_RESTRICTION_RE.search(text or "")
+    if match:
+        start = max(0, match.start() - 120)
+        end = min(len(text), match.end() + 120)
+        return {
+            "status": "restriction_observed",
+            "checked_at": checked_at,
+            "evidence_url": evidence_url,
+            "evidence_text": re.sub(r"\s+", " ", text[start:end]).strip()[:400],
+        }
+    return {
+        "status": "none_observed_on_checked_page",
+        "checked_at": checked_at,
+        "evidence_url": evidence_url,
+        "evidence_text": "",
+    }
 
 
 class _TextExtractor(HTMLParser):
@@ -661,7 +710,11 @@ def enrich_company_from_website(
     }
 
     country_code = str(company.get("country_code") or "").strip().upper()
-    contact_paths = _SPANISH_CONTACT_PATHS if country_code == "VE" else _CONTACT_PATHS
+    language = str(company.get("primary_language") or "").strip().casefold()
+    contact_paths = _LANGUAGE_CONTACT_PATHS.get(
+        language,
+        _SPANISH_CONTACT_PATHS if country_code == "VE" else _CONTACT_PATHS,
+    )
     page_urls = [base_url]
     page_urls.extend(
         urljoin(origin.rstrip("/") + "/", path.lstrip("/"))
@@ -695,20 +748,32 @@ def enrich_company_from_website(
                 company["description_evidence_url"] = evidence_url
 
         channels = list(company.get("contact_channels") or [])
-        existing = {str(channel.get("value") or "").lower() for channel in channels}
+        existing = {
+            str(channel.get("value") or "").lower(): index
+            for index, channel in enumerate(channels)
+            if channel.get("type") == "email" and channel.get("value")
+        }
         for email in _emails_from_page(raw_html, text)[:5]:
-            if email not in existing:
-                channels.append(
-                    {
-                        "type": "email",
-                        "value": email,
-                        "source": "official_website",
-                        "evidence_url": evidence_url,
-                        "verification_status": "unverified_public",
-                        "observed_at": attempted_at,
-                    }
-                )
-                existing.add(email)
+            evidence_text = _email_publication_context(raw_html, text, email)
+            restriction = _commercial_restriction_check(text, evidence_url, attempted_at)
+            official_record = {
+                "type": "email",
+                "value": email,
+                "source": "official_website",
+                "evidence_url": evidence_url,
+                "evidence_text": evidence_text,
+                "verification_status": "unverified_public",
+                "observed_at": attempted_at,
+                "publication_entity": "recipient_company_official_website",
+                "commercial_restriction_check": restriction,
+                "send_eligible": False,
+                "send_block_reason": "country_and_message_gate_not_completed",
+            }
+            if email in existing:
+                channels[existing[email]].update(official_record)
+            else:
+                existing[email] = len(channels)
+                channels.append(official_record)
         if re.search(r"<form[^>]+>|type=[\"']email[\"']|contact.?form", raw_html, re.I):
             if evidence_url not in {
                 str(channel.get("value") or "")

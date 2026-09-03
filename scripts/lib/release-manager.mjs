@@ -13,7 +13,7 @@ import {
 } from './post-release-validation.mjs';
 import { checkCacheBustConsistency } from './cache-bust-check.mjs';
 
-export const VALID_TARGETS = ['nginx', 'api', 'engines', 'apbd', 'apsales', 'apsales-openclaw', 'finalize', 'home', 'portal', 'chrome', 'categories', 'admin'];
+export const VALID_TARGETS = ['nginx', 'api', 'engines', 'apbd', 'apbd-global', 'apsales', 'apsales-openclaw', 'finalize', 'home', 'portal', 'chrome', 'categories', 'admin'];
 
 /** @type {Record<string, string[]>} */
 export const TARGET_SOURCE_FILES = {
@@ -35,6 +35,20 @@ export const TARGET_SOURCE_FILES = {
     'tests/test_apbd_native_enrichment.py',
     'docs/previews/apbd-solo-trade-002/sample-campaign.json',
     'docs/agents/apbd/lead-discovery.md',
+  ],
+  'apbd-global': [
+    'config/apbd_global_industry.yaml',
+    'agents/apbd/global_industry.py',
+    'agents/apbd/lead_finder.py',
+    'agents/apbd/leads/adapters/website.py',
+    'agents/apbd/solo_trade/apbd_bridge.py',
+    'scripts/apbd_global_industry_runner.py',
+    'deploy/apbd-global-industry.service',
+    'docs/ops/apbd-global-industry-runtime.md',
+    'tests/test_apbd_global_industry.py',
+    'tests/test_apbd_leads_enrichment.py',
+    'scripts/deploy-production.mjs',
+    'scripts/lib/release-manager.mjs',
   ],
   categories: [
     'index.html',
@@ -243,6 +257,20 @@ export const TARGET_REMOTE_PATHS = {
     '/root/.openclaw/workspace/AsiaPower/scripts/apbd_leads_native_enrich.py',
     '/root/.openclaw/workspace/AsiaPower/docs/previews/apbd-solo-trade-002/sample-campaign.json',
     '/root/.openclaw/workspace/AsiaPower/docs/agents/apbd/lead-discovery.md',
+  ],
+  'apbd-global': [
+    '/root/.openclaw/workspace/AsiaPower/config/apbd_global_industry.yaml',
+    '/root/.openclaw/workspace/AsiaPower/agents/apbd/global_industry.py',
+    '/root/.openclaw/workspace/AsiaPower/agents/apbd/lead_finder.py',
+    '/root/.openclaw/workspace/AsiaPower/agents/apbd/leads/adapters/website.py',
+    '/root/.openclaw/workspace/AsiaPower/agents/apbd/solo_trade/apbd_bridge.py',
+    '/root/.openclaw/workspace/AsiaPower/scripts/apbd_global_industry_runner.py',
+    '/root/.openclaw/workspace/AsiaPower/docs/ops/apbd-global-industry-runtime.md',
+    '/root/.openclaw/workspace/AsiaPower/runtime/apbd/global_industry',
+    '/root/.openclaw/workspace/AsiaPower/runtime/apbd/solo_trade/campaigns',
+    '/root/.openclaw/workspace/AsiaPower/runtime/apbd/leads/db/companies.json',
+    '/etc/systemd/system/apbd-global-industry.service',
+    '/etc/systemd/system/apbd-ca-leads-trickle.service',
   ],
   categories: [
     '/root/.openclaw/workspace/inventory-site/public/index.html',
@@ -616,7 +644,7 @@ export function runPreDeployValidation({ root, target, remote, allowDirty, yes, 
     });
   }
 
-  const backupMode = ['engines', 'apbd', 'apsales', 'finalize'].includes(target) ? 'data-only' : 'full';
+  const backupMode = ['engines', 'apbd', 'apbd-global', 'apsales', 'finalize'].includes(target) ? 'data-only' : 'full';
   const backupCmd = backupMode === 'data-only'
     ? 'bash /root/.openclaw/workspace/inventory-site/scripts/backup-inventory-site.sh --data-only'
     : 'bash /root/.openclaw/workspace/inventory-site/scripts/backup-inventory-site.sh';
@@ -716,6 +744,29 @@ export async function runPostDeployValidation({ root, target, remote, baseUrl, r
     status: svcOut.split(/\s+/).every((s) => s === 'active') ? 'pass' : 'fail',
     detail: svcOut || 'service check failed',
   });
+
+  if (target === 'apbd-global') {
+    const worker = spawnSync('ssh', ['-o', 'BatchMode=yes', remote, `
+set -e
+AP=/root/.openclaw/workspace/AsiaPower
+test "$(systemctl is-active apbd-global-industry.service)" = active
+test "$(systemctl is-enabled apbd-global-industry.service)" = enabled
+test "$(systemctl is-active apbd-ca-leads-trickle.service 2>/dev/null || true)" != active
+test "$(systemctl is-enabled apbd-ca-leads-trickle.service 2>/dev/null || true)" != enabled
+"$AP/.venv/bin/python3" "$AP/scripts/apbd_global_industry_runner.py" --dry-run >/tmp/apbd-global-post-dry-run.json
+grep -q '"external_send_enabled": false' /tmp/apbd-global-post-dry-run.json
+grep -q '"ghana_excluded": true' /tmp/apbd-global-post-dry-run.json
+echo APBD_GLOBAL_OK
+`], { encoding: 'utf8' });
+    const workerOut = `${worker.stdout || ''}${worker.stderr || ''}`.trim();
+    checks.push({
+      name: 'apbd_global_worker',
+      status: worker.status === 0 && workerOut.includes('APBD_GLOBAL_OK') ? 'pass' : 'fail',
+      detail: worker.status === 0 ? 'new worker active; legacy CA worker inactive; no-send dry-run passed' : workerOut.slice(-500),
+    });
+  } else {
+    checks.push({ name: 'apbd_global_worker', status: 'skip', detail: 'not required' });
+  }
 
   // OPS-003: parser-based public validation for any customer-facing target
   const publicTargets = new Set(['nginx', 'api', 'engines', 'home', 'chrome', 'portal', 'categories', 'admin']);
