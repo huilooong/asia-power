@@ -1,0 +1,229 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light">
+  <meta name="robots" content="noindex, nofollow">
+  <meta name="description" content="AsiaPower 管理后台推广页 APBD 客户开发工作台预览">
+  <title>推广 · APBD 客户开发 | AsiaPower Admin Preview</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body data-page="admin-apsales-progress">
+  <a class="skip-link" href="#main-content">跳到主要内容</a>
+
+  <header class="admin-header">
+    <div class="admin-header__inner">
+      <span class="wordmark" aria-label="AsiaPower 管理后台">Asia<span>Power</span> <small>· 管理后台</small></span>
+      <nav class="admin-nav" aria-label="管理后台导航">
+        <span>库存</span>
+        <span>询价</span>
+        <span>邮件</span>
+        <span>访问统计</span>
+        <span class="is-active" aria-current="page">推广</span>
+      </nav>
+    </div>
+  </header>
+
+  <main id="main-content">
+    <section class="page-intro">
+      <div class="container page-intro__inner">
+        <div>
+          <p class="breadcrumb">Admin / 推广 / APBD 客户开发</p>
+          <p class="kicker">Promotion operations</p>
+          <h1>推广</h1>
+          <p class="page-intro__copy">把公开客户发现、证据评分、联系人补全和推广动作放在同一个后台入口；APBD 管理售前研究，APSales 接手真实询价。</p>
+        </div>
+        <div class="preview-flag" role="status">
+          <span></span>
+          本地整合预览 · 未部署
+        </div>
+      </div>
+    </section>
+
+    <section class="promotion-shell">
+      <div class="container">
+        <nav class="promotion-tabs" aria-label="推广模块">
+          <button class="promotion-tab is-active" type="button" data-module="apbd" aria-selected="true">
+            <span>APBD</span>
+            客户开发工作台
+            <strong id="tabLeadCount">—</strong>
+          </button>
+          <button class="promotion-tab" type="button" data-module="apsales" aria-selected="false">
+            <span>APSALES</span>
+            推广动作记录
+            <strong>审计页</strong>
+          </button>
+        </nav>
+
+        <div id="pageFeedback" class="feedback" role="status" aria-live="polite" hidden></div>
+
+        <section id="apbdModule" class="module-panel" aria-labelledby="campaignTitle">
+          <div class="provider-bar" aria-label="供应商与安全状态">
+            <div><span class="provider-light is-ready"></span><strong>Google Places</strong><small>已配置 · 本次 16 家</small></div>
+            <div><span class="provider-light is-ready"></span><strong>Hunter</strong><small id="hunterProviderText">额度读取中</small></div>
+            <div><span class="provider-light"></span><strong>Apollo</strong><small>未配置 · 本轮不需要</small></div>
+            <div><span class="provider-light is-locked"></span><strong>外部发送</strong><small>关闭 · 仍需独立审批</small></div>
+          </div>
+
+          <div class="metrics" id="metrics" aria-label="活动指标"></div>
+
+          <section class="truth-panel" aria-labelledby="truthTitle">
+            <div class="truth-panel__lead">
+              <p class="kicker">Pilot verdict</p>
+              <h2 id="truthTitle">这次测试说明了什么</h2>
+              <p>Hunter 对少数正规企业域名有增量价值，但没有找到具名采购人；Google Places 扩大了名单，却没有自动产生高质量商机。</p>
+            </div>
+            <dl class="truth-grid">
+              <div><dt>域名命中</dt><dd><strong>3 / 8</strong><small>其余 5 个无结果</small></dd></div>
+              <div><dt>邮箱增量</dt><dd><strong>+8</strong><small>全部为通用邮箱</small></dd></div>
+              <div><dt>验证结果</dt><dd><strong>8 / 2 / 1</strong><small>有效 / 无效 / 未知</small></dd></div>
+              <div><dt>可外发线索</dt><dd><strong>0</strong><small>没有 A/B 级</small></dd></div>
+            </dl>
+            <div class="truth-panel__warning">
+              <strong>测试异常已修复</strong>
+              <p>首次验证超过本地等待时间后又发生重试，形成 5 次重复验证请求。现在改为逐条落盘和断点续跑，避免同类重复消耗。</p>
+            </div>
+          </section>
+
+          <section class="workflow" aria-label="APBD 推广流程">
+            <ol>
+              <li class="is-complete"><span>01</span><strong>活动简报</strong><small>产品 / 市场 / 客群</small></li>
+              <li class="is-complete"><span>02</span><strong>Places 发现</strong><small>公开企业数据</small></li>
+              <li class="is-complete"><span>03</span><strong>官网证据</strong><small>事实与缺口</small></li>
+              <li class="is-complete"><span>04</span><strong>Hunter 补全</strong><small>按域名付费</small></li>
+              <li class="is-complete"><span>05</span><strong>五维评分</strong><small>排序而非概率</small></li>
+              <li><span>06</span><strong>草稿与审批</strong><small>当前未进入</small></li>
+              <li><span>07</span><strong>APSales 交接</strong><small>询价后接管</small></li>
+            </ol>
+          </section>
+
+          <div class="workbench-grid">
+            <aside class="campaign-card" aria-labelledby="campaignTitle">
+              <div class="section-title">
+                <div>
+                  <p class="kicker">Campaign brief</p>
+                  <h2 id="campaignTitle">委内瑞拉 · 丰田发动机</h2>
+                </div>
+                <span class="state-label">已研究</span>
+              </div>
+
+              <form id="campaignForm">
+                <label>
+                  产品关键词
+                  <input id="productInput" value="Toyota engines; motores Toyota" required>
+                </label>
+                <label>
+                  目标市场
+                  <input id="marketInput" value="Venezuela" required>
+                </label>
+                <label>
+                  客户类型
+                  <textarea id="typeInput" rows="3">发动机进口商；汽配批发商；发动机经销商；商用车维修厂</textarea>
+                </label>
+                <div class="form-row">
+                  <label>
+                    搜索深度
+                    <select id="depthInput">
+                      <option value="1">1 · 快速</option>
+                      <option value="2" selected>2 · 标准</option>
+                      <option value="3">3 · 深入</option>
+                    </select>
+                  </label>
+                  <label>
+                    单次新增上限
+                    <input id="maxInput" type="number" min="1" max="200" value="20">
+                  </label>
+                </div>
+                <fieldset>
+                  <legend>数据能力</legend>
+                  <label class="check-line"><input type="checkbox" checked> Google Places</label>
+                  <label class="check-line"><input type="checkbox" checked> 官网证据与五维评分</label>
+                  <label class="check-line"><input type="checkbox" checked> Hunter 按需补全</label>
+                </fieldset>
+                <button class="button button-primary" type="submit">更新搜索计划</button>
+                <button class="button button-secondary" id="runPreviewButton" type="button">预演下一次搜索</button>
+              </form>
+
+              <div class="plan-summary" id="planSummary">
+                <span>本次实际结果</span>
+                <strong>10 个查询 · 30 个原始结果</strong>
+                <p>去重 14 条，新增 16 家；API 无错误，未触发配额。</p>
+              </div>
+
+              <div class="send-gate">
+                <strong>外发仍然关闭</strong>
+                <p>自动评分、Hunter 邮箱和草稿都不构成发送许可。只有独立外发审批才能进入 Gmail。</p>
+              </div>
+            </aside>
+
+            <section class="lead-workspace" aria-labelledby="leadQueueTitle">
+              <div class="lead-toolbar">
+                <div>
+                  <p class="kicker">Canonical APBD queue</p>
+                  <h2 id="leadQueueTitle">客户队列</h2>
+                </div>
+                <div class="toolbar-controls">
+                  <label class="search-box">
+                    <span>搜索</span>
+                    <input id="leadSearch" type="search" placeholder="公司、城市或类型">
+                  </label>
+                  <label>
+                    <span>来源</span>
+                    <select id="sourceFilter">
+                      <option value="all">全部</option>
+                      <option value="google_maps">Google Places</option>
+                      <option value="public_web">公开网页</option>
+                    </select>
+                  </label>
+                  <label>
+                    <span>Hunter</span>
+                    <select id="hunterFilter">
+                      <option value="all">全部</option>
+                      <option value="hit">有邮箱结果</option>
+                      <option value="miss">已查无结果</option>
+                      <option value="untested">未测试</option>
+                    </select>
+                  </label>
+                </div>
+              </div>
+
+              <div class="lead-layout">
+                <div class="lead-list-panel">
+                  <div class="queue-summary" id="queueSummary">加载客户数据…</div>
+                  <div class="lead-list" id="leadList" aria-live="polite"></div>
+                  <div class="empty-state" id="emptyState" hidden>
+                    <strong>没有符合筛选条件的客户</strong>
+                    <p>清除筛选条件后查看完整名单。</p>
+                  </div>
+                </div>
+                <article class="lead-detail" id="leadDetail" aria-live="polite"></article>
+              </div>
+            </section>
+          </div>
+        </section>
+
+        <section id="apsalesModule" class="module-panel module-panel--empty" hidden>
+          <p class="kicker">APSales action log</p>
+          <h2>现有推广动作记录保留原样</h2>
+          <p>正式整合时，此标签继续加载现有 `/api/apsales/distribution-progress`，不会删除或重写原有推广记录。</p>
+          <button class="button button-secondary" type="button" data-module="apbd">返回 APBD 客户开发</button>
+        </section>
+      </div>
+    </section>
+  </main>
+
+  <footer class="admin-footer">
+    <div class="container admin-footer__inner">
+      <div><span class="wordmark">Asia<span>Power</span></span><p>管理后台 · 郑州出口仓</p></div>
+      <p>内部工具 · 公开来源不等于采购意向 · 未部署生产</p>
+    </div>
+  </footer>
+
+  <template id="metricTemplate">
+    <article class="metric-card"><span></span><strong></strong><small></small></article>
+  </template>
+
+  <script src="app.js"></script>
+</body>
+</html>

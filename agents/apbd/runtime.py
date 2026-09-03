@@ -290,6 +290,11 @@ def dispatch_apbd_cli(message: str) -> str:
 
         return run_leads_cli(text)
 
+    if action == "solo":
+        from agents.apbd.solo_trade.cli import run_solo_cli
+
+        return run_solo_cli(text)
+
     if action == "leadfinder":
         from agents.apbd.lead_finder import run_lead_finder
 
@@ -392,6 +397,7 @@ def dispatch_apbd_cli(message: str) -> str:
         "  /apbd once          — single discovery cycle\n"
         "  /apbd start         — run today's task list\n"
         "  /apbd leads …      — Canada/industry durable lead DB (discover/enrich/score/export)\n"
+        "  /apbd solo …       — evidence-scored one-person trade workbench (send disabled)\n"
         "  /apbd leadfinder    — discover public business leads (Phase 1 markets)\n"
         "  /apbd keywordfinder   — discover SEO keyword opportunities (local catalog)\n"
         "  /apbd competitorfinder — competitor gap intelligence (public HTTP only)\n"
