@@ -617,6 +617,7 @@ function deployAdmin() {
   const pub = `${SITE}/public`;
   ssh('mkdir -p /root/.openclaw/workspace/inventory-site/public/admin /root/.openclaw/workspace/inventory-site/public/css /root/.openclaw/workspace/inventory-site/public/js');
   rsync(`${ROOT}/css/admin-v4.css`, `${pub}/css/admin-v4.css`);
+  rsync(`${ROOT}/css/admin-apsales-progress.css`, `${pub}/css/admin-apsales-progress.css`);
   rsync(`${ROOT}/js/components.js`, `${pub}/js/components.js`);
   rsync(`${ROOT}/js/admin-common.js`, `${pub}/js/admin-common.js`);
   rsync(`${ROOT}/js/admin-supplier-invites.js`, `${pub}/js/admin-supplier-invites.js`);
@@ -636,6 +637,7 @@ function deployAdmin() {
 set -e
 PUB=/root/.openclaw/workspace/inventory-site/public
 test -f "$PUB/css/admin-v4.css"
+test -f "$PUB/css/admin-apsales-progress.css"
 test -f "$PUB/js/admin-common.js"
 test -f "$PUB/js/admin-review-cards.js"
 test -f "$PUB/js/admin-supplier-invites.js"
@@ -653,6 +655,8 @@ grep -q 'admin-ia-reorg-v1' "$PUB/admin/analytics.html"
 grep -q 'data-admin-ia="analytics-only-v1"' "$PUB/js/admin-analytics.js" || grep -q 'analytics-only-v1' "$PUB/js/admin-analytics.js"
 grep -q '访问统计' "$PUB/js/components.js"
 grep -q 'apsales-progress.html' "$PUB/js/components.js"
+grep -q 'apbd-native-v1' "$PUB/admin/apsales-progress.html"
+grep -q 'APBD Native' "$PUB/js/admin-apsales-progress.js"
 grep -q 'admin/emails.html' "$PUB/js/components.js"
 grep -q 'data-admin-google-login' "$PUB/js/admin-common.js"
 grep -q 'admin-supplier-invites.js?v=supplier-invites-v1' "$PUB/admin/inventory.html"
@@ -672,7 +676,12 @@ set -e
 mkdir -p /root/.openclaw/workspace/AsiaPower/agents/apbd/leads/adapters
 mkdir -p /root/.openclaw/workspace/AsiaPower/scripts
 mkdir -p /root/.openclaw/workspace/AsiaPower/docs/agents/apbd
+mkdir -p /root/.openclaw/workspace/AsiaPower/docs/previews/apbd-solo-trade-002
 `);
+  run('rsync', ['-av', '--exclude', '__pycache__',
+    `${ROOT}/agents/apbd/solo_trade/`,
+    `${AP}/agents/apbd/solo_trade/`,
+  ]);
   rsync(
     `${ROOT}/agents/apbd/leads/adapters/website.py`,
     `${AP}/agents/apbd/leads/adapters/website.py`,
@@ -687,14 +696,20 @@ mkdir -p /root/.openclaw/workspace/AsiaPower/docs/agents/apbd
     `${ROOT}/agents/apbd/leads/pipeline.py`,
     `${ROOT}/agents/apbd/leads/repository.py`,
     `${ROOT}/agents/apbd/leads/cli.py`,
+    `${ROOT}/agents/apbd/leads/native_enrichment.py`,
     `${AP}/agents/apbd/leads/`,
   ]);
   run('rsync', ['-av',
     `${ROOT}/scripts/apbd_leads_ca_enrich.py`,
     `${ROOT}/scripts/apbd_leads_email_audit.py`,
     `${ROOT}/scripts/apbd_leads_people_audit.py`,
+    `${ROOT}/scripts/apbd_leads_native_enrich.py`,
     `${AP}/scripts/`,
   ]);
+  rsync(
+    `${ROOT}/docs/previews/apbd-solo-trade-002/sample-campaign.json`,
+    `${AP}/docs/previews/apbd-solo-trade-002/sample-campaign.json`,
+  );
   rsync(
     `${ROOT}/docs/agents/apbd/lead-discovery.md`,
     `${AP}/docs/agents/apbd/lead-discovery.md`,
@@ -710,15 +725,20 @@ AP=/root/.openclaw/workspace/AsiaPower
   "$AP/agents/apbd/leads/pipeline.py" \
   "$AP/agents/apbd/leads/repository.py" \
   "$AP/agents/apbd/leads/cli.py" \
+  "$AP/agents/apbd/leads/native_enrichment.py" \
   "$AP/scripts/apbd_leads_ca_enrich.py" \
   "$AP/scripts/apbd_leads_email_audit.py" \
-  "$AP/scripts/apbd_leads_people_audit.py"
+  "$AP/scripts/apbd_leads_people_audit.py" \
+  "$AP/scripts/apbd_leads_native_enrich.py"
 "$AP/.venv/bin/python3" "$AP/scripts/apbd_leads_ca_enrich.py" --dry-run --limit 1 >/tmp/apbd-enrich-dry-run.json
 grep -q '"dry_run": true' /tmp/apbd-enrich-dry-run.json
 "$AP/.venv/bin/python3" "$AP/scripts/apbd_leads_email_audit.py" >/tmp/apbd-email-audit-dry-run.json
 grep -q '"dry_run": true' /tmp/apbd-email-audit-dry-run.json
 "$AP/.venv/bin/python3" "$AP/scripts/apbd_leads_people_audit.py" >/tmp/apbd-people-audit-dry-run.json
 grep -q '"dry_run": true' /tmp/apbd-people-audit-dry-run.json
+"$AP/.venv/bin/python3" "$AP/scripts/apbd_leads_native_enrich.py" --country VE --limit 1 --dry-run >/tmp/apbd-native-enrichment-dry-run.json
+grep -q '"dry_run": true' /tmp/apbd-native-enrichment-dry-run.json
+grep -q '"outreach_sent": false' /tmp/apbd-native-enrichment-dry-run.json
 echo "[deploy:apbd] enrichment modules compiled and dry-runs passed"
 `);
 }

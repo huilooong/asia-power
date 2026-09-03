@@ -18,6 +18,7 @@ export const VALID_TARGETS = ['nginx', 'api', 'engines', 'apbd', 'apsales', 'aps
 /** @type {Record<string, string[]>} */
 export const TARGET_SOURCE_FILES = {
   apbd: [
+    'agents/apbd/solo_trade',
     'agents/apbd/leads/adapters/website.py',
     'agents/apbd/leads/adapters/places.py',
     'agents/apbd/leads/market_config.py',
@@ -25,10 +26,14 @@ export const TARGET_SOURCE_FILES = {
     'agents/apbd/leads/pipeline.py',
     'agents/apbd/leads/repository.py',
     'agents/apbd/leads/cli.py',
+    'agents/apbd/leads/native_enrichment.py',
     'scripts/apbd_leads_ca_enrich.py',
     'scripts/apbd_leads_email_audit.py',
     'scripts/apbd_leads_people_audit.py',
+    'scripts/apbd_leads_native_enrich.py',
     'tests/test_apbd_leads_enrichment.py',
+    'tests/test_apbd_native_enrichment.py',
+    'docs/previews/apbd-solo-trade-002/sample-campaign.json',
     'docs/agents/apbd/lead-discovery.md',
   ],
   categories: [
@@ -131,6 +136,7 @@ export const TARGET_SOURCE_FILES = {
   ],
   admin: [
     'css/admin-v4.css',
+    'css/admin-apsales-progress.css',
     'js/components.js',
     'js/admin-common.js',
     'js/admin-review-cards.js',
@@ -222,6 +228,7 @@ export const TARGET_SOURCE_FILES = {
 /** @type {Record<string, string[]>} */
 export const TARGET_REMOTE_PATHS = {
   apbd: [
+    '/root/.openclaw/workspace/AsiaPower/agents/apbd/solo_trade',
     '/root/.openclaw/workspace/AsiaPower/agents/apbd/leads/adapters/website.py',
     '/root/.openclaw/workspace/AsiaPower/agents/apbd/leads/adapters/places.py',
     '/root/.openclaw/workspace/AsiaPower/agents/apbd/leads/market_config.py',
@@ -229,9 +236,12 @@ export const TARGET_REMOTE_PATHS = {
     '/root/.openclaw/workspace/AsiaPower/agents/apbd/leads/pipeline.py',
     '/root/.openclaw/workspace/AsiaPower/agents/apbd/leads/repository.py',
     '/root/.openclaw/workspace/AsiaPower/agents/apbd/leads/cli.py',
+    '/root/.openclaw/workspace/AsiaPower/agents/apbd/leads/native_enrichment.py',
     '/root/.openclaw/workspace/AsiaPower/scripts/apbd_leads_ca_enrich.py',
     '/root/.openclaw/workspace/AsiaPower/scripts/apbd_leads_email_audit.py',
     '/root/.openclaw/workspace/AsiaPower/scripts/apbd_leads_people_audit.py',
+    '/root/.openclaw/workspace/AsiaPower/scripts/apbd_leads_native_enrich.py',
+    '/root/.openclaw/workspace/AsiaPower/docs/previews/apbd-solo-trade-002/sample-campaign.json',
     '/root/.openclaw/workspace/AsiaPower/docs/agents/apbd/lead-discovery.md',
   ],
   categories: [
@@ -334,6 +344,7 @@ export const TARGET_REMOTE_PATHS = {
   ],
   admin: [
     '/root/.openclaw/workspace/inventory-site/public/css/admin-v4.css',
+    '/root/.openclaw/workspace/inventory-site/public/css/admin-apsales-progress.css',
     '/root/.openclaw/workspace/inventory-site/public/js/components.js',
     '/root/.openclaw/workspace/inventory-site/public/js/admin-common.js',
     '/root/.openclaw/workspace/inventory-site/public/js/admin-review-cards.js',

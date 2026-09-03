@@ -305,6 +305,64 @@ def run_score(*, country: str = "CA", limit: int = 0) -> dict[str, Any]:
     return {"ok": True, "scored": n}
 
 
+def run_native_enrich(
+    *,
+    country: str = "VE",
+    city: str = "",
+    limit: int = 10,
+    workers: int = 3,
+    persist: bool = True,
+) -> dict[str, Any]:
+    """Validate existing public contacts with the first-party, no-send layer."""
+    from agents.apbd.leads.native_enrichment import enrich_company_native
+
+    rows = [
+        company
+        for company in list_companies(country=country, city=city)
+        if company.get("status") != "rejected"
+    ][: max(1, min(int(limit), 100))]
+    worker_count = min(max(1, int(workers)), 8, len(rows)) if rows else 0
+    completed: list[tuple[dict[str, Any], dict[str, int]]] = []
+    if worker_count <= 1:
+        completed = [enrich_company_native(company) for company in rows]
+    else:
+        with ThreadPoolExecutor(max_workers=worker_count) as executor:
+            futures = [executor.submit(enrich_company_native, company) for company in rows]
+            for future in as_completed(futures):
+                completed.append(future.result())
+
+    if persist and completed:
+        upsert_companies_batch([company for company, _ in completed], source="native_enrichment")
+    totals = {
+        "public_emails_checked": 0,
+        "official_domain_emails": 0,
+        "free_mailboxes": 0,
+        "other_domain_emails": 0,
+        "unresolved_domains": 0,
+        "role_mailboxes": 0,
+        "named_people_with_evidence": 0,
+        "email_pattern_hypotheses": 0,
+        "send_eligible": 0,
+    }
+    for _, counters in completed:
+        for key in totals:
+            totals[key] += int(counters.get(key) or 0)
+    return {
+        "ok": True,
+        "version": "apbd-native-enrichment-v1",
+        "country": country.upper(),
+        "city": city,
+        "selected": len(rows),
+        "completed": len(completed),
+        "workers": worker_count,
+        "persisted": bool(persist and completed),
+        **totals,
+        "smtp_recipient_probe_used": False,
+        "guessed_emails_generated": False,
+        "outreach_sent": False,
+    }
+
+
 def run_places_contact_refresh(
     *, country: str = "CA", limit: int = 10, retry_failed: bool = False
 ) -> dict[str, Any]:

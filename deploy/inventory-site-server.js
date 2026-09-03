@@ -108,6 +108,12 @@ const sitemapPath = [
   path.join(__dirname, '..', 'server', 'lib', 'sitemap.js'),
 ].find((candidate) => fs.existsSync(candidate));
 const { buildSitemapXml, sendSitemap } = require(sitemapPath || path.join(__dirname, '..', 'server', 'lib', 'sitemap.js'));
+const apbdAdminPath = [
+  path.join(__dirname, 'lib', 'apbd-admin.js'),
+  path.join(__dirname, '..', 'server', 'lib', 'apbd-admin.js'),
+].find((candidate) => fs.existsSync(candidate));
+if (!apbdAdminPath) throw new Error('apbd-admin module not found');
+const { buildPromotionSnapshot, createNativeEnrichmentController } = require(apbdAdminPath);
 const halfCutPrerenderPath = [
   path.join(__dirname, 'lib', 'half-cut-prerender.js'),
   path.join(__dirname, '..', 'server', 'lib', 'half-cut-prerender.js'),
@@ -306,6 +312,7 @@ const limitRegister = createRateLimiter({ windowMs: 60 * 60 * 1000, max: 10 });
 const limitAnalytics = createRateLimiter({ windowMs: 60 * 1000, max: 30 });
 const limitContactLead = createRateLimiter({ windowMs: 60 * 60 * 1000, max: 12 });
 const limitRememberModel = createRateLimiter({ windowMs: 60 * 60 * 1000, max: 60 });
+const limitNativeEnrichment = createRateLimiter({ windowMs: 60 * 60 * 1000, max: 4 });
 const REGISTRATION_ENABLED = process.env.REGISTRATION_ENABLED === '1';
 const MAX_AUTH_BODY = 64 * 1024;
 const MAX_API_BODY = 1024 * 1024;
@@ -392,6 +399,8 @@ const limitOtpSend = createRateLimiter({ windowMs: 60 * 60 * 1000, max: 12 });
 const limitOtpVerify = createRateLimiter({ windowMs: 15 * 60 * 1000, max: 30 });
 const limitPasswordAuth = createRateLimiter({ windowMs: 15 * 60 * 1000, max: 25 });
 const limitPasswordRegister = createRateLimiter({ windowMs: 60 * 60 * 1000, max: 12 });
+const ASIAPOWER_ROOT = process.env.ASIAPOWER_ROOT || path.join(ROOT, '..', 'AsiaPower');
+const nativeEnrichment = createNativeEnrichmentController(ASIAPOWER_ROOT);
 const supplierInvites = createSupplierInviteStore(DATA_DIR);
 
 const phoneOtp = createPhoneOtpAuth({
@@ -1513,6 +1522,27 @@ const server = http.createServer(async (req, res) => {
         const view = url.searchParams.get('view') === 'external' ? 'external' : 'all';
         if (day) return json(res, 200, siteAnalytics.getSummary({ day, view }));
         return json(res, 200, siteAnalytics.getSummary({ days, view }));
+      }
+
+      if (req.method === 'GET' && p === '/api/admin/apbd/solo-trade') {
+        if (!requireAdmin(req, res)) return;
+        return json(res, 200, buildPromotionSnapshot(ASIAPOWER_ROOT));
+      }
+
+      if (req.method === 'GET' && p === '/api/admin/apbd/native-enrichment/status') {
+        if (!requireAdmin(req, res)) return;
+        return json(res, 200, nativeEnrichment.status());
+      }
+
+      if (req.method === 'POST' && p === '/api/admin/apbd/native-enrichment/run') {
+        if (!requireAdmin(req, res)) return;
+        if (!limitNativeEnrichment(req)) return json(res, 429, { error: 'Too many enrichment runs' });
+        try {
+          const body = await readBody(req, MAX_AUTH_BODY);
+          return json(res, 202, nativeEnrichment.start(body));
+        } catch (err) {
+          return json(res, err.statusCode || 400, { error: err.message || 'Unable to start enrichment' });
+        }
       }
 
       if (req.method === 'GET' && p === '/api/apsales/distribution-progress') {

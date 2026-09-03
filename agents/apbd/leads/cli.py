@@ -33,6 +33,7 @@ def run_leads_cli(message: str) -> str:
     Supported:
       /apbd leads discover --country CA --city Richmond --limit 20
       /apbd leads enrich --country CA --limit 50
+      /apbd leads native-enrich --country VE --limit 10
       /apbd leads score --country CA
       /apbd leads review --country CA
       /apbd leads approve --id lead-xxx
@@ -79,6 +80,19 @@ def run_leads_cli(message: str) -> str:
                     retry_failed=flags.get("retry_failed") == "1",
                     workers=int(flags.get("workers") or 1),
                     people_backfill=flags.get("people_backfill") == "1",
+                )
+            )
+
+        if action in ("native-enrich", "native_enrich"):
+            from agents.apbd.leads.pipeline import run_native_enrich
+
+            return _fmt(
+                run_native_enrich(
+                    country=country,
+                    city=city,
+                    limit=limit,
+                    workers=int(flags.get("workers") or 3),
+                    persist=not dry_run,
                 )
             )
 
@@ -222,6 +236,7 @@ def _help() -> str:
         "  /apbd leads discover --country CA --city Richmond --limit 20\n"
         "  /apbd leads discover --country CA --city Richmond --dry-run\n"
         "  /apbd leads enrich --country CA --limit 25 --max-pages 5 --timeout 8\n"
+        "  /apbd leads native-enrich --country VE --limit 10 --workers 3 [--dry-run]\n"
         "  /apbd leads score --country CA\n"
         "  /apbd leads review --country CA\n"
         "  /apbd leads approve --id lead-xxx\n"

@@ -1,241 +1,211 @@
-/**
- * AsiaPower — Admin APSales distribution action log dashboard
- */
+/** AsiaPower Admin — APBD customer development + APSales audit. */
 (function () {
   'use strict';
 
-  const root = document.getElementById('apsales-progress-root');
+  const apbdRoot = document.getElementById('apbd-promotion-root');
+  const apsalesRoot = document.getElementById('apsales-progress-root');
+  const feedback = document.getElementById('promotion-feedback');
+  const tabCount = document.getElementById('apbd-tab-count');
+  const state = { data: null, selectedId: '', query: '', source: 'all', native: 'all', confirmRun: false, job: null };
+  let jobTimer = null;
 
-  function escapeHtml(str) {
-    return String(str || '')
-      .replace(/&/g, '&amp;')
-      .replace(/</g, '&lt;')
-      .replace(/>/g, '&gt;')
-      .replace(/"/g, '&quot;');
+  function escapeHtml(value) {
+    return String(value ?? '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#039;');
   }
 
-  function renderLinks(links) {
-    const items = (links || []).filter((l) => l && l.url);
-    if (!items.length) return '—';
-    return `<span class="apsales-progress__links">${items.map((l) =>
-      `<a href="${escapeHtml(l.url)}" target="_blank" rel="noopener noreferrer">${escapeHtml(l.label || '链接')}</a>`
-    ).join('')}</span>`;
+  function safeUrl(value) {
+    try {
+      const url = new URL(String(value || ''));
+      return ['http:', 'https:'].includes(url.protocol) ? url.href : '';
+    } catch (_) { return ''; }
   }
 
-  function isSocialBlocked(item) {
-    const status = String(item.status || '').toLowerCase();
-    return status === 'blocked_no_account'
-      || status === 'pending_ceo_manual'
-      || item.type === 'post_blocked';
+  function showFeedback(message, type = 'info') {
+    feedback.hidden = !message;
+    feedback.className = `promotion-feedback${type === 'warning' ? ' is-warning' : ''}${type === 'error' ? ' is-error' : ''}`;
+    feedback.textContent = message;
   }
 
-  function isPendingPublish(item) {
-    return String(item.status || '').toLowerCase() === 'approved_pending_publish';
+  async function getJson(url, options) {
+    const response = await fetch(url, { credentials: 'include', cache: 'no-store', ...options });
+    const payload = await response.json().catch(() => ({}));
+    if (response.status === 401 || response.status === 403) throw new Error('请先登录 Admin 账号后刷新本页。');
+    if (!response.ok) throw new Error(payload.error || `HTTP ${response.status}`);
+    return payload;
   }
 
-  function renderChannels(channels) {
-    const entries = Object.entries(channels || {});
-    if (!entries.length) return '';
-    const cards = entries.map(([key, ch]) => {
-      const ready = ch.can_send_today === true;
-      const blocked = String(ch.status || '').includes('blocked');
-      const badgeClass = ready
-        ? 'apsales-progress__badge--ready'
-        : (blocked ? 'apsales-progress__badge--blocked' : '');
-      const sessionLabel = ch.status_label || '';
-      const badge = ch.can_send_today
-        ? (sessionLabel || '今天可发')
-        : (sessionLabel || (blocked ? '受阻' : (ch.status || '—')));
-      return `
-        <div class="apsales-progress__channel-card">
-          <h4>${escapeHtml(ch.label || key)} <span class="apsales-progress__badge ${badgeClass}">${escapeHtml(badge)}</span></h4>
-          <p>${escapeHtml(ch.detail || '')}</p>
-          <p><strong>下一步：</strong>${escapeHtml(ch.next_step || '—')}</p>
-        </div>`;
-    }).join('');
-    return `
-      <section class="apsales-progress__section">
-        <h3>可执行渠道 · 登录状态</h3>
-        <div class="apsales-progress__channels">${cards}</div>
-      </section>`;
+  function metric(label, value, note, caution = false) {
+    return `<article class="promo-metric${caution ? ' is-caution' : ''}"><span>${escapeHtml(label)}</span><strong>${escapeHtml(value)}</strong><small>${escapeHtml(note)}</small></article>`;
   }
 
-  function rowId(section, index) {
-    return `apsales-row-${section}-${index}`;
+  function provider(label, detail, status = '') {
+    return `<div class="provider-item"><span class="provider-light ${status}"></span><strong>${escapeHtml(label)}</strong><small>${escapeHtml(detail)}</small></div>`;
   }
 
-  function renderTableRow(item, section, index) {
-    const fullText = item.post_content || item.content || '';
-    const expandable = Boolean(fullText.trim());
-    const exampleBadge = item.example
-      ? ' <span class="apsales-progress__badge apsales-progress__badge--example">示例</span>'
-      : '';
-    const blocked = isSocialBlocked(item);
-    const pending = isPendingPublish(item);
-    const statusBadge = blocked
-      ? ' <span class="apsales-progress__badge apsales-progress__badge--blocked">无账号</span>'
-      : (pending
-        ? ' <span class="apsales-progress__badge apsales-progress__badge--ready">待自动发</span>'
-        : '');
-    const scheme = item.scheme_id ? ` · 方案${escapeHtml(item.scheme_id)}` : '';
-    const id = rowId(section, index);
-    const blockNote = blocked && item.block_reason
-      ? ` · ${escapeHtml(item.block_reason)}`
-      : '';
-
-    const mainRow = `
-      <tr data-expandable="${expandable ? 'true' : 'false'}" data-target="${id}" ${expandable ? 'title="点击展开全文"' : ''}>
-        <td>${escapeHtml(item.at || '—')}</td>
-        <td>${escapeHtml(item.type_label || item.type || '—')}${exampleBadge}${statusBadge}</td>
-        <td>${escapeHtml(item.platform_label || item.platform || '—')}${scheme}${blockNote}</td>
-        <td>${escapeHtml(item.language_market || item.market || '—')}</td>
-        <td class="apsales-progress__preview">${escapeHtml(item.content_preview || item.group_name || item.summary || '—')}</td>
-        <td>${renderLinks(item.links)}</td>
-      </tr>`;
-
-    const detailRow = expandable
-      ? `<tr class="apsales-progress__detail-row" id="${id}" hidden>
-          <td colspan="6"><pre>${escapeHtml(fullText)}</pre></td>
-        </tr>`
-      : '';
-
-    return mainRow + detailRow;
+  function nativeStatusText() {
+    const native = state.data?.native || {};
+    const job = state.job || {};
+    if (job.status === 'running') return `运行中 · ${job.options?.limit || 0} 家上限`;
+    if (job.status === 'complete') return `最近完成 · 已检查 ${native.companiesChecked || 0} 家`;
+    return native.companiesChecked ? `已检查 ${native.companiesChecked} 家` : '可运行 · 不消耗第三方额度';
   }
 
-  function renderSection(title, items, sectionKey) {
-    const list = items || [];
-    if (!list.length) {
-      return `
-        <section class="apsales-progress__section">
-          <h3>${escapeHtml(title)}</h3>
-          <div class="apsales-progress__empty">暂无记录</div>
-        </section>`;
-    }
-    return `
-      <section class="apsales-progress__section">
-        <h3>${escapeHtml(title)} <span class="apsales-progress__badge">${list.length}</span></h3>
-        <div class="apsales-progress__table-wrap">
-          <table class="apsales-progress__table">
-            <thead>
-              <tr>
-                <th>时间</th>
-                <th>类型</th>
-                <th>平台</th>
-                <th>市场</th>
-                <th>内容摘要</th>
-                <th>链接</th>
-              </tr>
-            </thead>
-            <tbody>
-              ${list.map((item, i) => renderTableRow(item, sectionKey, i)).join('')}
-            </tbody>
-          </table>
-        </div>
-      </section>`;
-  }
-
-  function bindExpandHandlers() {
-    root.querySelectorAll('tr[data-expandable="true"]').forEach((row) => {
-      row.addEventListener('click', (ev) => {
-        if (ev.target.closest('a')) return;
-        const targetId = row.getAttribute('data-target');
-        const detail = document.getElementById(targetId);
-        if (detail) detail.hidden = !detail.hidden;
-      });
+  function filteredLeads() {
+    const query = state.query.trim().toLowerCase();
+    return (state.data?.leads || []).filter((lead) => {
+      const text = [lead.company, lead.city, lead.type].join(' ').toLowerCase();
+      const sourceMatch = state.source === 'all' || lead.source === state.source;
+      const nativeMatch = state.native === 'all' || (state.native === 'checked' ? lead.native?.checked : !lead.native?.checked);
+      return (!query || text.includes(query)) && sourceMatch && nativeMatch;
     });
   }
 
-  function renderEngagementSummary(summary) {
-    if (!summary || !Object.keys(summary).length) return '';
-    const m = summary.metrics || {};
-    const bp = summary.by_platform || {};
-    const fb = bp.facebook || {};
-    const x = bp.x || {};
-    const igNote = summary.instagram_status === 'paused_today'
-      ? '<span class="apsales-progress__badge apsales-progress__badge--blocked">INS 今日暂停</span>'
-      : '';
-    return `
-      <section class="apsales-progress__section">
-        <h3>今日互动 · FB + X 非洲经销商 ${igNote}</h3>
-        <div class="apsales-progress__meta-row">
-          <span>计划: <strong>${summary.planned_at ? '已生成' : '待生成'}</strong></span>
-          <span>发帖: ${m.posts || 0}</span>
-          <span>评论: ${m.comments || 0}</span>
-          <span>关注: ${m.follows || 0}</span>
-          <span>回复: ${m.replies || 0}</span>
-          <span>活跃窗口: ${summary.in_active_hours ? '✅ 是' : '⏸ 非活跃时段'}</span>
-        </div>
-        <div class="apsales-progress__channels">
-          <div class="apsales-progress__channel-card">
-            <h4>Facebook <span class="apsales-progress__badge">待 ${fb.pending || 0} · 完成 ${fb.completed || 0}</span></h4>
-            <p>小组帖 + 个人页 + 评论 · 45–120 分钟间隔</p>
-          </div>
-          <div class="apsales-progress__channel-card">
-            <h4>X <span class="apsales-progress__badge">待 ${x.pending || 0} · 完成 ${x.completed || 0}</span></h4>
-            <p>搜索非洲汽配账号 · 评论 + 关注</p>
-          </div>
-        </div>
-      </section>`;
+  function sourceLabel(source) { return source === 'google_maps' ? 'Google Places' : '公开网页'; }
+
+  function renderLeadList() {
+    const list = document.getElementById('apbd-lead-list');
+    const summary = document.getElementById('apbd-queue-summary');
+    if (!list || !summary) return;
+    const leads = filteredLeads();
+    if (!leads.some((lead) => lead.id === state.selectedId)) state.selectedId = leads[0]?.id || '';
+    summary.textContent = `显示 ${leads.length} / ${state.data.leads.length} 家 · 按证据评分排序`;
+    list.innerHTML = leads.length ? leads.map((lead) => {
+      const native = lead.native?.checked ? `原生已查 ${lead.native.publicEmailsChecked || 0}` : '原生未查';
+      return `<button class="lead-row" type="button" data-lead-id="${escapeHtml(lead.id)}" aria-current="${lead.id === state.selectedId}">
+        <span class="lead-row__main"><strong>${escapeHtml(lead.company)}</strong><small>${escapeHtml(lead.city)}<br>${escapeHtml(lead.type || '业务类型待核验')}</small>
+        <span class="lead-tags"><span class="lead-tag">${escapeHtml(sourceLabel(lead.source))}</span><span class="lead-tag${lead.native?.checked ? ' is-native' : ''}">${escapeHtml(native)}</span></span></span>
+        <span class="lead-score"><strong>${Number(lead.score || 0).toFixed(1)}</strong><small>${escapeHtml(lead.grade || 'D')} · ${escapeHtml(lead.confidence || 0)}%</small></span>
+      </button>`;
+    }).join('') : '<div class="promotion-empty">没有符合筛选条件的客户。</div>';
+    list.querySelectorAll('[data-lead-id]').forEach((button) => button.addEventListener('click', () => {
+      state.selectedId = button.dataset.leadId;
+      renderLeadList();
+      renderLeadDetail();
+    }));
   }
 
-  function render(data) {
-    const metrics = data.metrics || {};
-    const hasRecords = data.has_records || (data.groups || []).length || (data.posts || []).length;
-    const staleBlock = data.is_stale
-      ? `<div class="apsales-progress__stale">⚠️ ${escapeHtml(data.stale_warning || '无进展')} — 已超过 ${escapeHtml(String(data.hours_since_last_action ?? '24'))} 小时无验证动作</div>`
-      : '';
-
-    const emptyAll = !hasRecords
-      ? `<div class="apsales-progress__empty">
-          尚无发帖或加入小组记录。子敬登记后会显示<strong>完整内容与可点击链接</strong>（帖文、小组、落地页）。<br><br>
-          <strong>社媒 FB/IG/X 需先开户</strong> — 无账号的帖文会标记「无账号」，不会假装「待手动」。
-        </div>`
-      : '';
-
-    const emailSent = metrics.emails_sent || 0;
-
-    root.innerHTML = `
-      ${staleBlock}
-      <div class="apsales-progress__header">
-        <div>
-          <h2>推广动作审计记录</h2>
-          <div class="apsales-progress__meta-row">
-            <span>最后动作: <strong>${escapeHtml(data.last_verified_action_at || '尚无')}</strong></span>
-            <span>邮件已发: ${emailSent}</span>
-            <span>回复扫描: ${metrics.replies_scanned || 0}</span>
-            <span>跟进草稿: ${metrics.followups_drafted || 0}</span>
-            <span>总完成度: ${data.overall_completion_pct || 0}%</span>
-          </div>
-        </div>
-      </div>
-      ${renderChannels(data.executable_channels)}
-      ${renderEngagementSummary(data.engagement_summary)}
-      ${emptyAll}
-      ${renderSection('今日互动动作', data.engagement, 'engagement')}
-      ${renderSection('已登记帖文（含受阻）', data.posts, 'posts')}
-      ${renderSection('已加入小组', data.groups, 'groups')}
-      ${renderSection('客户回复跟进', data.followups, 'followups')}
-      <p class="apsales-progress__footer">更新于 ${escapeHtml(data.updated_at || '—')} · 点击有全文的行可展开</p>
-    `;
-
-    bindExpandHandlers();
+  function renderLeadDetail() {
+    const root = document.getElementById('apbd-lead-detail');
+    if (!root) return;
+    const lead = state.data.leads.find((row) => row.id === state.selectedId);
+    if (!lead) { root.innerHTML = '<div class="promotion-empty">选择一个客户查看证据。</div>'; return; }
+    const sources = (lead.sources || []).map(safeUrl).filter(Boolean);
+    const notes = (lead.notes || []).map((note) => `<li>${escapeHtml(note)}</li>`).join('') || '<li>暂无进一步证据，保持未知。</li>';
+    root.innerHTML = `<header class="detail-head"><div><p class="promotion-kicker">${escapeHtml(lead.apbdId || lead.id)} · ${escapeHtml(sourceLabel(lead.source))}</p><h2>${escapeHtml(lead.company)}</h2><p>${escapeHtml(lead.type || '业务类型待核验')} · ${escapeHtml(lead.city)}</p></div><span class="grade">${escapeHtml(lead.grade || 'D')}</span></header>
+      <div class="score-band"><div><span>排序分</span><strong>${Number(lead.score || 0).toFixed(1)}</strong><small>不是成交概率</small></div><div><span>证据完整度</span><strong>${escapeHtml(lead.confidence || 0)}%</strong><small>未知项保留</small></div><div><span>工作流</span><strong>${escapeHtml(lead.status)}</strong><small>尚未授权外发</small></div></div>
+      <section class="detail-card"><h3>证据与缺口</h3><ul>${notes}</ul>${sources.map((url, i) => `<a href="${escapeHtml(url)}" target="_blank" rel="noopener noreferrer">来源 ${i + 1} · ${escapeHtml(url)}</a>`).join('')}</section>
+      <section class="detail-card"><h3>联系人补全（只显示数量，不显示邮箱）</h3><div class="detail-stats"><div><span>Hunter 找到</span><strong>${lead.hunter?.found || 0}</strong></div><div><span>Hunter 新增</span><strong>${lead.hunter?.new || 0}</strong></div><div><span>原生公开邮箱</span><strong>${lead.native?.publicEmailsChecked || 0}</strong></div><div><span>公开决策人</span><strong>${lead.native?.namedPeopleWithEvidence || 0}</strong></div></div><p>原生层只验证官网公开证据，不猜测个人邮箱；域名可解析也不等于邮箱可投递。</p></section>
+      <section class="detail-card"><h3>首次触达策略</h3><p>如后续满足独立审批，只争取一个最小回复 “Sure”；不先索要会议、目录、价格表或表单。</p></section>
+      <p class="governance-note">C/D 级、Hunter 找到邮箱、域名可解析或自动质量检查通过，都不能替代独立外发审批。</p>`;
   }
 
-  async function load() {
-    try {
-      const res = await fetch('/api/apsales/distribution-progress', { credentials: 'include' });
-      if (res.status === 401 || res.status === 403) {
-        root.innerHTML = '<div class="apsales-progress__error">请先登录 Admin 账号后刷新本页。</div>';
-        return;
-      }
-      if (!res.ok) throw new Error(`HTTP ${res.status}`);
-      const data = await res.json();
-      render(data);
-    } catch (err) {
-      root.innerHTML = `<div class="apsales-progress__error">加载失败: ${escapeHtml(err.message)}</div>`;
+  function bindApbdControls() {
+    document.getElementById('apbd-search')?.addEventListener('input', (event) => { state.query = event.target.value; renderLeadList(); renderLeadDetail(); });
+    document.getElementById('apbd-source-filter')?.addEventListener('change', (event) => { state.source = event.target.value; renderLeadList(); renderLeadDetail(); });
+    document.getElementById('apbd-native-filter')?.addEventListener('change', (event) => { state.native = event.target.value; renderLeadList(); renderLeadDetail(); });
+    document.getElementById('run-native-enrichment')?.addEventListener('click', runNativeEnrichment);
+  }
+
+  function renderApbd() {
+    const data = state.data;
+    const summary = data.summary || {};
+    const hunter = data.hunter || {};
+    const native = data.native || {};
+    tabCount.textContent = `${summary.totalLeads || 0} 家`;
+    const runLabel = state.job?.status === 'running' ? '原生补全运行中…' : (state.confirmRun ? '再次点击确认运行 10 家' : '运行自有补全');
+    apbdRoot.innerHTML = `<div class="provider-bar">
+      ${provider('Google Places', `${summary.placesAdded ?? 16} 家新增 · 企业公开数据`, 'is-ready')}
+      ${provider('APBD Native', nativeStatusText(), 'is-ready')}
+      ${provider('Hunter', `${hunter.plan || '按需'} · ${hunter.domainsTested || 0} 域名`, hunter.domainsTested ? 'is-ready' : '')}
+      ${provider('Apollo', data.apollo?.used ? '已使用' : '未配置 · 本轮未使用', '')}
+      ${provider('外部发送', '关闭 · 仍需独立审批', 'is-locked')}
+    </div>
+    <div class="promo-metrics">
+      ${metric('APBD 客户', summary.totalLeads || 0, `${summary.apbdLinked || 0} 家已关联原客户库`)}
+      ${metric('C / D 级', `${summary.gradeC || 0} / ${summary.gradeD || 0}`, `A/B 共 ${(summary.gradeA || 0) + (summary.gradeB || 0)} 家`)}
+      ${metric('Hunter 增量', `+${hunter.newContacts || 0}`, `${hunter.domainsTested || 0} 个域名已测试`)}
+      ${metric('原生已查', native.companiesChecked || 0, `${native.publicEmailsChecked || 0} 个公开邮箱`)}
+      ${metric('公开决策人', native.namedPeopleWithEvidence || 0, '必须有官网角色证据')}
+      ${metric('可外发', summary.outreachReady || 0, '外发仍需独立审批', Number(summary.outreachReady || 0) === 0)}
+    </div>
+    <section class="promo-truth"><div><p class="promotion-kicker">Pilot verdict</p><h2>这次测试说明了什么</h2><p>Places 扩大候选名单；Hunter 对少数域名有增量，但没有把名单自动变成高质量商机。</p></div>
+      <dl class="truth-grid"><div><dt>域名测试</dt><dd><strong>${hunter.domainsTested || 0}</strong><small>按需付费能力</small></dd></div><div><dt>联系人增量</dt><dd><strong>+${hunter.newContacts || 0}</strong><small>不等于采购人</small></dd></div><div><dt>原生角色邮箱</dt><dd><strong>${native.roleMailboxes || 0}</strong><small>只计公开证据</small></dd></div><div><dt>已发送</dt><dd><strong>${summary.sent || 0}</strong><small>本模块保持关闭</small></dd></div></dl>
+      <div class="native-action"><strong>自建层不消耗 Hunter/Apollo 额度</strong><p>检查现有官网公开邮箱、域名解析与公开决策人证据；不进行 SMTP 收件人探测。</p><button id="run-native-enrichment" class="promo-button" type="button" ${state.job?.status === 'running' ? 'disabled' : ''}>${escapeHtml(runLabel)}</button></div>
+    </section>
+    <section class="promo-workflow"><ol><li class="is-complete"><span>01</span><strong>活动简报</strong><small>产品 / 市场 / 客群</small></li><li class="is-complete"><span>02</span><strong>Places 发现</strong><small>企业公开数据</small></li><li class="is-complete"><span>03</span><strong>官网证据</strong><small>事实与缺口</small></li><li class="is-complete"><span>04</span><strong>原生补全</strong><small>无第三方额度</small></li><li class="is-complete"><span>05</span><strong>证据评分</strong><small>排序而非概率</small></li><li><span>06</span><strong>草稿与审批</strong><small>当前未进入</small></li><li><span>07</span><strong>APSales 交接</strong><small>真实询价后接管</small></li></ol></section>
+    <div class="promo-workbench"><section class="lead-queue"><div class="lead-toolbar"><div><p class="promotion-kicker">Canonical APBD queue</p><h2>客户队列</h2></div><div class="lead-filters"><label>搜索<input id="apbd-search" type="search" placeholder="公司、城市或类型"></label><label>来源<select id="apbd-source-filter"><option value="all">全部</option><option value="google_maps">Google Places</option><option value="public_web">公开网页</option></select></label><label>原生补全<select id="apbd-native-filter"><option value="all">全部</option><option value="checked">已检查</option><option value="unchecked">未检查</option></select></label></div></div><div id="apbd-queue-summary" class="queue-summary"></div><div id="apbd-lead-list" class="lead-list"></div></section><article id="apbd-lead-detail" class="lead-detail"></article></div>`;
+    bindApbdControls();
+    renderLeadList();
+    renderLeadDetail();
+  }
+
+  async function runNativeEnrichment() {
+    if (!state.confirmRun) {
+      state.confirmRun = true;
+      showFeedback('将验证最多 10 家委内瑞拉企业的现有公开联系人；不调用 Hunter/Apollo，也不发送邮件。请再次点击按钮确认。', 'warning');
+      renderApbd();
+      return;
     }
+    state.confirmRun = false;
+    try {
+      state.job = await getJson('/api/admin/apbd/native-enrichment/run', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ country: 'VE', limit: 10, workers: 3 }) });
+      showFeedback('原生补全已启动。完成后页面会自动刷新汇总。');
+      renderApbd();
+      startJobPolling();
+    } catch (error) { showFeedback(error.message, 'error'); }
   }
 
-  load();
-  setInterval(load, 60000);
-})();
+  function startJobPolling() {
+    clearInterval(jobTimer);
+    jobTimer = setInterval(async () => {
+      try {
+        state.job = await getJson('/api/admin/apbd/native-enrichment/status');
+        if (state.job.status !== 'running') {
+          clearInterval(jobTimer);
+          await loadApbd();
+          showFeedback(state.job.status === 'complete' ? '原生补全已完成，汇总已更新。' : `原生补全状态：${state.job.status}`, state.job.status === 'complete' ? 'info' : 'error');
+        } else renderApbd();
+      } catch (error) { clearInterval(jobTimer); showFeedback(error.message, 'error'); }
+    }, 3000);
+  }
+
+  async function loadApbd() {
+    try {
+      const [data, job] = await Promise.all([getJson('/api/admin/apbd/solo-trade'), getJson('/api/admin/apbd/native-enrichment/status')]);
+      if (!Array.isArray(data.leads)) throw new Error('APBD 客户数据格式无效');
+      data.leads.sort((a, b) => Number(b.score || 0) - Number(a.score || 0));
+      state.data = data; state.job = job; state.selectedId = state.selectedId || data.leads[0]?.id || '';
+      renderApbd();
+      if (job.status === 'running') startJobPolling();
+    } catch (error) { apbdRoot.innerHTML = `<div class="promotion-error">${escapeHtml(error.message)}</div>`; }
+  }
+
+  function renderActionLinks(links) {
+    return (links || []).map((link) => ({ label: link.label || '链接', url: safeUrl(link.url) })).filter((link) => link.url).map((link) => `<a href="${escapeHtml(link.url)}" target="_blank" rel="noopener noreferrer">${escapeHtml(link.label)}</a>`).join(' · ') || '—';
+  }
+
+  function actionSection(title, items) {
+    const rows = items || [];
+    if (!rows.length) return `<section class="apsales-progress__section"><h3>${escapeHtml(title)}</h3><div class="promotion-empty">暂无可验证记录</div></section>`;
+    return `<section class="apsales-progress__section"><h3>${escapeHtml(title)} · ${rows.length}</h3><div class="apsales-progress__table-wrap"><table class="apsales-progress__table"><thead><tr><th>时间</th><th>类型</th><th>平台</th><th>市场</th><th>内容摘要</th><th>链接</th></tr></thead><tbody>${rows.map((item) => `<tr><td>${escapeHtml(item.at || '—')}</td><td>${escapeHtml(item.type_label || item.type || '—')}</td><td>${escapeHtml(item.platform_label || item.platform || '—')}</td><td>${escapeHtml(item.language_market || item.market || '—')}</td><td>${escapeHtml(item.content_preview || item.group_name || item.summary || '—')}</td><td>${renderActionLinks(item.links)}</td></tr>`).join('')}</tbody></table></div></section>`;
+  }
+
+  async function loadApsales() {
+    try {
+      const data = await getJson('/api/apsales/distribution-progress');
+      const metrics = data.metrics || {};
+      apsalesRoot.innerHTML = `<section class="apsales-progress__section"><p class="promotion-kicker">APSales action log</p><h2>推广动作审计记录</h2><div class="apsales-progress__meta"><span>最后动作：${escapeHtml(data.last_verified_action_at || '尚无')}</span><span>邮件已发：${metrics.emails_sent || 0}</span><span>回复扫描：${metrics.replies_scanned || 0}</span><span>完成度：${data.overall_completion_pct || 0}%</span></div></section>${actionSection('今日互动动作', data.engagement)}${actionSection('已登记帖文（含受阻）', data.posts)}${actionSection('已加入小组', data.groups)}${actionSection('客户回复跟进', data.followups)}`;
+    } catch (error) { apsalesRoot.innerHTML = `<div class="promotion-error">${escapeHtml(error.message)}</div>`; }
+  }
+
+  function switchTab(name) {
+    const apbd = name === 'apbd';
+    apbdRoot.hidden = !apbd; apsalesRoot.hidden = apbd;
+    document.querySelectorAll('[data-promotion-tab]').forEach((tab) => { const active = tab.dataset.promotionTab === name; tab.classList.toggle('is-active', active); tab.setAttribute('aria-selected', String(active)); });
+    if (!apbd) loadApsales();
+  }
+
+  document.querySelectorAll('[data-promotion-tab]').forEach((tab) => tab.addEventListener('click', () => switchTab(tab.dataset.promotionTab)));
+  loadApbd();
+  setInterval(() => { if (!apbdRoot.hidden && state.job?.status !== 'running') loadApbd(); }, 60000);
+}());
