@@ -84,7 +84,7 @@ systemctl reload nginx
 `], { stdio: 'inherit' });
 }
 
-if (target === 'api') {
+if (target === 'api' || target === 'seo-traffic') {
   spawnSync('ssh', ['-o', 'BatchMode=yes', REMOTE, `
 set -e
 node --check /root/.openclaw/workspace/inventory-site/server.js

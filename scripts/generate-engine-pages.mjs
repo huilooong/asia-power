@@ -637,7 +637,7 @@ function buildSitemap(records) {
   return xml;
 }
 
-function writeTaskReport(records) {
+function writeTaskReport(records, preserved = []) {
   const lines = records.map(record => `- \`engines/${record.slug}.html\` - ${record.code}: ${record.inventoryCount} inventory signals; generated differentiated buyer guide, questions, inspection, matching mistakes, supply notes, gearbox notes, export notes, recommendation, and CTA.`).join('\n');
   const strong = records.filter(r => r.inventoryCount >= 20).map(r => r.code).join(', ') || 'none';
   const report = `# TASK-008 - Engine Page Generator Upgrade
@@ -660,7 +660,8 @@ Date: ${TODAY}
   - Export Notes
   - AsiaPower Recommendation
   - Engine-specific CTA
-- Generator updates \`sitemap.xml\` with the regenerated 50 page URLs.
+- Generator updates \`sitemap.xml\` with the regenerated page URLs.
+- Preserved editorial pages: ${preserved.join(', ') || 'none'}.
 
 ## Regenerated Pages
 
@@ -690,11 +691,15 @@ function main() {
     throw new Error(`Expected 50 Production-001 records, got ${records.length}`);
   }
   for (const record of records) {
+    const existing = exists(`engines/${record.slug}.html`) ? read(`engines/${record.slug}.html`) : '';
+    if (existing.includes(`<!-- editorial-engine-page: ${record.code} -->`)) continue;
     write(`engines/${record.slug}.html`, renderPage(record));
   }
-  write('sitemap.xml', buildSitemap(records));
-  writeTaskReport(records);
-  console.log(`[engine-pages] regenerated ${records.length} pages`);
+  const preserved = records.filter(record => read(`engines/${record.slug}.html`).includes(`<!-- editorial-engine-page: ${record.code} -->`));
+  const generated = records.filter(record => !preserved.includes(record));
+  write('sitemap.xml', buildSitemap(generated));
+  writeTaskReport(generated, preserved.map(record => record.code));
+  console.log(`[engine-pages] regenerated ${generated.length} pages; preserved ${preserved.length} editorial pages`);
 }
 
 main();

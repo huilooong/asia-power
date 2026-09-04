@@ -1,0 +1,144 @@
+{
+  "observed_at_utc": "2026-09-04",
+  "production_mutated": false,
+  "ga4": {
+    "property": "543135617",
+    "source": "https://analytics.google.com/analytics/web/#/a399082744p543135617/reports/intelligenthome",
+    "period": [
+      "2026-08-28",
+      "2026-09-03"
+    ],
+    "active_users": 59,
+    "active_users_change_pct": -23.4,
+    "sessions": 77,
+    "sessions_change_pct": -38.4,
+    "key_events": 7,
+    "key_events_change_pct": -61.1,
+    "channels": {
+      "Direct": 57,
+      "Paid Search": 6,
+      "Organic Search": 8,
+      "Referral": 3,
+      "AI Assistant": 3
+    },
+    "caveat": "Key events are not verified leads. Browser UI snapshot; not a full API export."
+  },
+  "gsc": {
+    "source": "https://search.google.com/search-console/performance/search-analytics?resource_id=sc-domain%3Aasia-power.com&num_of_days=28",
+    "period": [
+      "2026-08-06",
+      "2026-09-02"
+    ],
+    "clicks": 26,
+    "impressions": 963,
+    "ctr_pct": 2.7,
+    "position": 22,
+    "queries": [
+      {
+        "query": "asia power",
+        "clicks": 4,
+        "impressions": 133
+      },
+      {
+        "query": "asiapower",
+        "clicks": 1,
+        "impressions": 29
+      },
+      {
+        "query": "byd472qc",
+        "clicks": 1,
+        "impressions": 11
+      },
+      {
+        "query": "g4kd engine",
+        "clicks": 0,
+        "impressions": 25
+      },
+      {
+        "query": "byd472zqb",
+        "clicks": 0,
+        "impressions": 17
+      }
+    ],
+    "homepage": {
+      "clicks": 15,
+      "impressions": 378
+    },
+    "three_month_ui_view": {
+      "chart_period": [
+        "2026-07-20",
+        "2026-09-02"
+      ],
+      "clicks": 42,
+      "impressions": 1277,
+      "ctr_pct": 3.3,
+      "position": 23.1,
+      "caveat": "Chart does not cover a full 90 days; do not compare with 28 days as equal windows."
+    }
+  },
+  "indexing": {
+    "updated": "2026-08-28",
+    "indexed": 771,
+    "not_indexed": 543,
+    "reasons": {
+      "alternate_canonical": 379,
+      "redirected": 109,
+      "404": 26,
+      "soft_404": 5,
+      "redirect_error": 2,
+      "noindex": 1,
+      "duplicate_without_canonical": 1,
+      "crawled_not_indexed": 11,
+      "google_different_canonical": 9
+    },
+    "soft_404_examples": [
+      "https://asia-power.com/half-cuts/?cat=used-cars&brand=bmw",
+      "https://asia-power.com/trucks/",
+      "https://asia-power.com/half-cuts/?cat=used-cars&brand=byd",
+      "https://asia-power.com/half-cuts/?q=2AZ-FE",
+      "https://asia-power.com/half-cuts/?q=HC250513"
+    ]
+  },
+  "origin_analytics": {
+    "source": "production data/site-analytics-daily.json, read-only aggregate",
+    "current_period": [
+      "2026-08-07",
+      "2026-09-03"
+    ],
+    "current_pv": 11621,
+    "current_whatsapp_clicks": 23,
+    "current_identified_probe_pv": 997,
+    "previous_period": [
+      "2026-07-10",
+      "2026-08-06"
+    ],
+    "previous_pv": 19286,
+    "previous_whatsapp_clicks": 101,
+    "previous_identified_probe_pv": 37,
+    "caveat": "Not GA4, not buyer visits; bots/internal use and different periods prevent direct comparison to GSC."
+  },
+  "http": {
+    "sitemap_urls": 781,
+    "non_parameter_urls_checked": 192,
+    "non_parameter_200": 192,
+    "all_inventory_details_audited": false,
+    "config_cache_control": "public, max-age=60, must-revalidate",
+    "sw_cache_control": "public, max-age=60, must-revalidate"
+  },
+  "validation": {
+    "robots_parser_assertions_passed": 66,
+    "analytics_node_tests_passed": 3,
+    "report_wording_smoke": "pass",
+    "node_syntax": "pass",
+    "preview_desktop": "visually checked",
+    "preview_mobile": {
+      "viewport_width": 390,
+      "document_width": 375
+    },
+    "homepage_mobile": {
+      "viewport_width": 390,
+      "document_width": 375
+    },
+    "production_deployed": false
+  }
+}

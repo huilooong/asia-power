@@ -1,0 +1,52 @@
+[
+  {
+    "stockId": "HC250554",
+    "slug": "hyundai-ix35-2010-g4kd-half-cut-hc250554",
+    "brand": "Hyundai",
+    "model": "ix35",
+    "year": 2010,
+    "engineCode": "G4KD",
+    "status": "Available",
+    "priceUsd": 1780
+  },
+  {
+    "stockId": "HC250553",
+    "slug": "hyundai-sonata-2011-g4kd-export-used-car-hc250553",
+    "brand": "Hyundai",
+    "model": "Sonata",
+    "year": 2011,
+    "engineCode": "G4KD",
+    "status": "Available",
+    "priceUsd": 2500
+  },
+  {
+    "stockId": "HC250504",
+    "slug": "hyundai-ix35-2010-g4kd-half-cut-hc250504",
+    "brand": "Hyundai",
+    "model": "ix35",
+    "year": 2010,
+    "engineCode": "G4KD",
+    "status": "Available",
+    "priceUsd": 1600
+  },
+  {
+    "stockId": "HC250485",
+    "slug": "hyundai-ix35-2010-g4kd-half-cut-hc250485",
+    "brand": "Hyundai",
+    "model": "ix35",
+    "year": 2010,
+    "engineCode": "G4KD",
+    "status": "Available",
+    "priceUsd": 1200
+  },
+  {
+    "stockId": "HC250086",
+    "slug": "hyundai-sonata-2009-g4kd-half-cut-hc250086",
+    "brand": "Hyundai",
+    "model": "Sonata",
+    "year": 2009,
+    "engineCode": "G4KD",
+    "status": "Available",
+    "priceUsd": 1000
+  }
+]

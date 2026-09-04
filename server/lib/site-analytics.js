@@ -5,6 +5,7 @@ const path = require('path');
 const { clientIp } = require('./rate-limit');
 const { lookupIpGeo } = require('./ip-geo');
 const { isInternalTestIp } = require('./analytics-internal-ips');
+const { isProbeRequest } = require('./analytics-request-filter');
 
 const MAX_PATH_LENGTH = 240;
 const MAX_DAILY_IPS = 5000;
@@ -162,6 +163,7 @@ function createSiteAnalytics(dataDir, options = {}) {
   }
 
   function shouldTrackPage(pagePath) {
+    if (isProbeRequest(pagePath)) return false;
     const p = String(pagePath || '').split('?')[0];
     if (!p || p.startsWith('/api/') || p.startsWith('/uploads/')) return false;
     if (p.startsWith('/admin/')) return false;

@@ -12,11 +12,13 @@ import {
   stampReleaseIdIntoConfig,
 } from './post-release-validation.mjs';
 import { checkCacheBustConsistency } from './cache-bust-check.mjs';
+import { SEO_TRAFFIC_FILES, SEO_TRAFFIC_REMOTE_PATHS } from './seo-traffic-release.mjs';
 
-export const VALID_TARGETS = ['nginx', 'api', 'engines', 'apbd', 'apbd-global', 'apsales', 'apsales-openclaw', 'finalize', 'home', 'portal', 'chrome', 'categories', 'admin'];
+export const VALID_TARGETS = ['nginx', 'api', 'engines', 'apbd', 'apbd-global', 'apsales', 'apsales-openclaw', 'finalize', 'home', 'portal', 'chrome', 'categories', 'admin', 'seo-traffic'];
 
 /** @type {Record<string, string[]>} */
 export const TARGET_SOURCE_FILES = {
+  'seo-traffic': SEO_TRAFFIC_FILES.map(([source]) => source),
   apbd: [
     'agents/apbd/solo_trade',
     'agents/apbd/leads/adapters/website.py',
@@ -241,6 +243,7 @@ export const TARGET_SOURCE_FILES = {
 
 /** @type {Record<string, string[]>} */
 export const TARGET_REMOTE_PATHS = {
+  'seo-traffic': SEO_TRAFFIC_REMOTE_PATHS,
   apbd: [
     '/root/.openclaw/workspace/AsiaPower/agents/apbd/solo_trade',
     '/root/.openclaw/workspace/AsiaPower/agents/apbd/leads/adapters/website.py',
@@ -644,7 +647,7 @@ export function runPreDeployValidation({ root, target, remote, allowDirty, yes, 
     });
   }
 
-  const backupMode = ['engines', 'apbd', 'apbd-global', 'apsales', 'finalize'].includes(target) ? 'data-only' : 'full';
+  const backupMode = ['engines', 'apbd', 'apbd-global', 'apsales', 'finalize', 'seo-traffic'].includes(target) ? 'data-only' : 'full';
   const backupCmd = backupMode === 'data-only'
     ? 'bash /root/.openclaw/workspace/inventory-site/scripts/backup-inventory-site.sh --data-only'
     : 'bash /root/.openclaw/workspace/inventory-site/scripts/backup-inventory-site.sh';
@@ -705,6 +708,11 @@ echo SNAPSHOT_OK
 export async function runPostDeployValidation({ root, target, remote, baseUrl, releaseId = '' }) {
   /** @type {{name: string, status: 'pass'|'fail'|'skip'|'warn', detail: string}[]} */
   const checks = [];
+
+  if (target === 'seo-traffic') {
+    const result = spawnSync('node', [path.join(root, 'scripts/verify-seo-traffic.mjs'), baseUrl], {cwd:root, encoding:'utf8'});
+    checks.push({name:'seo_traffic_public_contract',status:result.status === 0 ? 'pass' : 'fail',detail:(result.stdout || result.stderr || '').trim()});
+  }
 
   if (target === 'nginx' || target === 'api') {
     const ngx = spawnSync('ssh', ['-o', 'BatchMode=yes', remote, 'nginx -t 2>&1'], { encoding: 'utf8' });

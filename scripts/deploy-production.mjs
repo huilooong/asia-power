@@ -15,6 +15,7 @@ import { spawnSync } from 'child_process';
 import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
+import { deploySeoTraffic } from './lib/seo-traffic-release.mjs';
 import {
   TARGET_REMOTE_PATHS,
   buildReleaseRecord,
@@ -1297,6 +1298,7 @@ function printHelp() {
 }
 
 const targets = {
+  'seo-traffic': (releaseId) => deploySeoTraffic({ root: ROOT, remote: REMOTE, releaseId }),
   nginx: deployNginx,
   api: deployApi,
   engines: deployEngines,
@@ -1348,8 +1350,9 @@ async function main() {
     paths: TARGET_REMOTE_PATHS[targetArg] || [],
   });
   console.log(`[release] snapshot ${snapOk ? 'OK' : 'WARN'} → releases/${releaseId}/snapshots/`);
+  if (targetArg === 'seo-traffic' && !snapOk) throw new Error('SEO traffic snapshot failed; refusing deployment');
 
-  targets[targetArg]();
+  targets[targetArg](releaseId);
 
   const post = await runPostDeployValidation({
     root: ROOT,
@@ -1383,8 +1386,10 @@ async function main() {
   printDeploymentSummary(release);
 
   // Keep newest N REL-* snapshots (local + remote). Never fail the deploy for prune errors.
-  pruneReleaseDirsSafe(path.join(ROOT, 'releases'));
-  pruneRemoteReleaseDirsSafe({ remote: REMOTE });
+  if (targetArg !== 'seo-traffic') {
+    pruneReleaseDirsSafe(path.join(ROOT, 'releases'));
+    pruneRemoteReleaseDirsSafe({ remote: REMOTE });
+  }
 
   if (post.status === 'fail') {
     console.error('[release] post-deploy validation FAILED — consider restore');
