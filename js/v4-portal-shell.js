@@ -14,10 +14,10 @@
       <div class="nav-w">
         <a class="ap-logo" href="/">Asia<span>Power</span></a>
         <div class="nav-links">
-          <a href="/half-cuts/" ${active === 'browse' ? 'class="on"' : ''}>Browse</a>
-          <a href="/buyer-portal/" ${active === 'buyer' ? 'class="on"' : ''}>Buyer</a>
-          <a href="/supplier-portal/dashboard.html" ${active === 'supplier' ? 'class="on"' : ''}>Supplier</a>
-          <span class="ap-auth-slot" data-ap-auth-slot data-variant="portal"><a href="/login/" ${active === 'login' ? 'class="on"' : ''} data-i18n="nav.signIn">Sign in</a></span>
+          <a href="/half-cuts/" ${active === 'browse' ? 'class="on"' : ''}>浏览库存</a>
+          <a href="/buyer-portal/" ${active === 'buyer' ? 'class="on"' : ''}>采购商</a>
+          <a href="/supplier-portal/dashboard.html" ${active === 'supplier' ? 'class="on"' : ''}>供应商</a>
+          <span class="ap-auth-slot" data-ap-auth-slot data-variant="portal"><a href="/login/" ${active === 'login' ? 'class="on"' : ''} data-i18n="nav.signIn">登录</a></span>
         </div>
         <div class="nav-right">
           <a class="nav-wa" href="https://wa.me/8618603773077" target="_blank" rel="noopener">WhatsApp</a>

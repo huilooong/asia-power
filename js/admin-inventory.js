@@ -78,7 +78,7 @@
     const admin = Admin();
     if (!root || !hub || !admin) return;
 
-    root.innerHTML = '<p class="admin-review-empty">Loading…</p>';
+    root.innerHTML = '<p class="admin-review-empty">正在加载…</p>';
 
     try {
       let activeTab = parseTab();
@@ -118,7 +118,7 @@
     const root = document.getElementById('admin-inventory-root');
     if (!root) return;
     if (!window.HalfCutInventoryStore || !Admin() || !Hub()) {
-      root.innerHTML = '<p class="admin-review-empty">Inventory scripts failed to load. Hard-refresh the page (Cmd+Shift+R).</p>';
+      root.innerHTML = '<p class="admin-review-empty">库存脚本加载失败。请强制刷新页面（Ctrl+Shift+R 或 Cmd+Shift+R）。</p>';
       return;
     }
     Admin().ensureAdminSession().then((user) => {

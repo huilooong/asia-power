@@ -5,26 +5,26 @@
   'use strict';
 
   const INTENT_LABELS = {
-    price: 'Request Price',
-    photos: 'Request Photos',
-    similar: 'Request Similar Unit',
-    whatsapp: 'WhatsApp Enquiry',
-    'whatsapp-quote': 'WhatsApp Quote',
-    quote: 'Quote Request',
-    availability: 'Check Availability',
+    price: '询价',
+    photos: '要照片',
+    similar: '要类似车源',
+    whatsapp: 'WhatsApp 询价',
+    'whatsapp-quote': 'WhatsApp 报价',
+    quote: '报价请求',
+    availability: '查库存',
   };
 
   const ENQUIRY_LABELS = {
-    'truck-head': 'Truck Head / Cab Quote',
-    engine: 'Engine Quote',
-    gearbox: 'Gearbox Quote',
-    'truck-parts': 'Truck Parts Quote',
-    'half-cut': 'Half-cut Quote',
-    chassis: 'Chassis Parts Quote',
-    powertrain: 'Engine + Gearbox Set',
-    bulk: 'Bulk / Container Order',
-    partnership: 'B2B Partnership',
-    other: 'Other',
+    'truck-head': '卡车车头 / 驾驶室报价',
+    engine: '发动机报价',
+    gearbox: '变速箱报价',
+    'truck-parts': '卡车配件报价',
+    'half-cut': '半切车报价',
+    chassis: '底盘件报价',
+    powertrain: '发动机 + 变速箱套装',
+    bulk: '批量 / 整柜',
+    partnership: 'B2B 合作',
+    other: '其他',
   };
 
   const WEBSITE_SOURCES = new Set(['contact-form', 'quote-form', 'whatsapp-intent']);
@@ -55,11 +55,11 @@
   }
 
   function intentLabel(intent) {
-    return INTENT_LABELS[intent] || intent || 'Enquiry';
+    return INTENT_LABELS[intent] || intent || '询价';
   }
 
   function enquiryLabel(type) {
-    return ENQUIRY_LABELS[type] || type || 'Quote';
+    return ENQUIRY_LABELS[type] || type || '报价';
   }
 
   function displayValue(value) {
@@ -180,13 +180,13 @@
     if (lead.source === 'half-cut') {
       const contact = displayValue(lead.phone) !== '—'
         ? displayValue(lead.phone)
-        : (displayValue(lead.email) !== '—' ? displayValue(lead.email) : 'No contact');
+        : (displayValue(lead.email) !== '—' ? displayValue(lead.email) : '无联系方式');
       return `${contact} · ${lead.stockId || 'Half-cut'} · ${intentLabel(lead.intent)}`;
     }
     if (lead.source === 'product-catalog') {
       const contact = displayValue(lead.phone) !== '—'
         ? displayValue(lead.phone)
-        : (displayValue(lead.email) !== '—' ? displayValue(lead.email) : 'No contact');
+        : (displayValue(lead.email) !== '—' ? displayValue(lead.email) : '无联系方式');
       return `${contact} · ${lead.enquiryType || 'Product'} · ${lead.model || lead.brand || 'Catalog'}`;
     }
     if (lead.source === 'whatsapp-intent') {
@@ -198,22 +198,22 @@
   function statusBadge(lead) {
     if (lead.replyStatus === 'replied') return '<span class="admin-lead-card__status admin-lead-card__status--replied">Replied</span>';
     if (lead.replyChannel === 'email') {
-      return '<span class="admin-lead-card__status admin-lead-card__status--email">Email reply</span>';
+      return '<span class="admin-lead-card__status admin-lead-card__status--email">邮件回复</span>';
     }
     if (lead.whatsappStatus === 'sent') {
-      return '<span class="admin-lead-card__status admin-lead-card__status--replied">WhatsApp sent</span>';
+      return '<span class="admin-lead-card__status admin-lead-card__status--replied">WhatsApp 已发</span>';
     }
     if (lead.whatsappStatus === 'pending_send') {
-      return '<span class="admin-lead-card__status admin-lead-card__status--pending">WhatsApp pending</span>';
+      return '<span class="admin-lead-card__status admin-lead-card__status--pending">WhatsApp 待发</span>';
     }
-    return '<span class="admin-lead-card__status">Open</span>';
+    return '<span class="admin-lead-card__status">待处理</span>';
   }
 
   function whatsappStatusLabel(status) {
-    if (status === 'not_applicable') return 'Email reply only';
-    if (status === 'sent') return 'WhatsApp confirmed';
-    if (status === 'unknown') return 'WhatsApp unknown';
-    return 'WhatsApp not confirmed';
+    if (status === 'not_applicable') return '仅邮件回复';
+    if (status === 'sent') return 'WhatsApp 已确认';
+    if (status === 'unknown') return 'WhatsApp 未知';
+    return 'WhatsApp 未确认';
   }
 
   function specRow(label, valueHtml) {
@@ -235,7 +235,7 @@
     if (region && region !== city) parts.push(region);
     if (country) parts.push(country);
     if (parts.length) return parts.join(', ');
-    if (lead.clientIp) return 'Unknown location';
+    if (lead.clientIp) return '位置未知';
     return '—';
   }
 
@@ -243,31 +243,31 @@
     const location = visitorLocationText(lead);
     const ip = displayValue(lead.clientIp);
     return `
-        ${specRow('Visitor location', escapeHtml(location))}
-        ${specRow('IP address', escapeHtml(ip))}`;
+        ${specRow('访客位置', escapeHtml(location))}
+        ${specRow('IP 地址', escapeHtml(ip))}`;
   }
 
   function renderContactSpecs(lead) {
     const phone = displayValue(lead.phone);
     const email = displayValue(lead.email);
     const wa = whatsappUrl(lead.phone);
-    const replyVia = lead.replyChannel === 'email' ? 'Email' : 'WhatsApp';
+    const replyVia = lead.replyChannel === 'email' ? '邮件' : 'WhatsApp';
     const phoneCell = phone !== '—' && wa
       ? linkValue(wa, phone, 'admin-lead-card__link')
       : escapeHtml(phone);
 
     return `
       <dl class="admin-review-specs admin-lead-card__specs">
-        ${specRow('Name', escapeHtml(displayValue(lead.name)))}
-        ${specRow('Company', escapeHtml(displayValue(lead.company)))}
-        ${specRow('Phone / WhatsApp', phoneCell)}
-        ${specRow('Email', linkValue(email && email !== '—' ? `mailto:${email}` : '', email, 'admin-lead-card__link'))}
-        ${specRow('Country (form)', escapeHtml(displayValue(lead.country)))}
+        ${specRow('姓名', escapeHtml(displayValue(lead.name)))}
+        ${specRow('公司', escapeHtml(displayValue(lead.company)))}
+        ${specRow('电话 / WhatsApp', phoneCell)}
+        ${specRow('邮箱', linkValue(email && email !== '—' ? `mailto:${email}` : '', email, 'admin-lead-card__link'))}
+        ${specRow('国家（表单）', escapeHtml(displayValue(lead.country)))}
         ${renderVisitorLocationRows(lead)}
-        ${specRow('Enquiry type', escapeHtml(enquiryLabel(lead.enquiryType)))}
-        ${specRow('Reply via', escapeHtml(replyVia))}
-        ${lead.replyChannel !== 'email' ? specRow('WhatsApp status', escapeHtml(whatsappStatusLabel(lead.whatsappStatus))) : specRow('Follow-up', 'Reply by email')}
-        ${specRow('Reference', `<code class="admin-lead-card__code">${escapeHtml(lead.id)}</code>`)}
+        ${specRow('询价类型', escapeHtml(enquiryLabel(lead.enquiryType)))}
+        ${specRow('回复渠道', escapeHtml(replyVia))}
+        ${lead.replyChannel !== 'email' ? specRow('WhatsApp 状态', escapeHtml(whatsappStatusLabel(lead.whatsappStatus))) : specRow('跟进', '请用邮件回复')}
+        ${specRow('编号', `<code class="admin-lead-card__code">${escapeHtml(lead.id)}</code>`)}
       </dl>`;
   }
 
@@ -277,20 +277,20 @@
     const wa = whatsappUrl(lead.phone, lead);
     return `
       <dl class="admin-review-specs admin-lead-card__specs">
-        ${specRow('Name', escapeHtml(displayValue(lead.name)))}
-        ${specRow('Phone / WhatsApp', linkValue(wa, phone, 'admin-lead-card__link'))}
-        ${specRow('Email', linkValue(email && email !== '—' ? `mailto:${email}` : '', email, 'admin-lead-card__link'))}
-        ${specRow('Country', escapeHtml(displayValue(lead.country)))}
-        ${specRow('Stock ID', escapeHtml(displayValue(lead.stockId)))}
-        ${specRow('Intent', escapeHtml(intentLabel(lead.intent)))}
-        ${specRow('Vehicle', escapeHtml(`${displayValue(lead.brand)} ${displayValue(lead.model)}`.trim()))}
-        ${specRow('Engine', escapeHtml(displayValue(lead.engineCode)))}
-        ${specRow('Transmission', escapeHtml(displayValue(lead.transmissionCode)))}
-        ${specRow('Listing status', escapeHtml(displayValue(lead.listingStatus)))}
-        ${specRow('Slug', escapeHtml(displayValue(lead.slug)))}
+        ${specRow('姓名', escapeHtml(displayValue(lead.name)))}
+        ${specRow('电话 / WhatsApp', linkValue(wa, phone, 'admin-lead-card__link'))}
+        ${specRow('邮箱', linkValue(email && email !== '—' ? `mailto:${email}` : '', email, 'admin-lead-card__link'))}
+        ${specRow('国家', escapeHtml(displayValue(lead.country)))}
+        ${specRow('库存编号', escapeHtml(displayValue(lead.stockId)))}
+        ${specRow('意向', escapeHtml(intentLabel(lead.intent)))}
+        ${specRow('车型', escapeHtml(`${displayValue(lead.brand)} ${displayValue(lead.model)}`.trim()))}
+        ${specRow('发动机', escapeHtml(displayValue(lead.engineCode)))}
+        ${specRow('变速箱', escapeHtml(displayValue(lead.transmissionCode)))}
+        ${specRow('库存状态', escapeHtml(displayValue(lead.listingStatus)))}
+        ${specRow('页面标识', escapeHtml(displayValue(lead.slug)))}
         ${renderVisitorLocationRows(lead)}
-        ${specRow('WhatsApp status', escapeHtml(whatsappStatusLabel(lead.whatsappStatus)))}
-        ${specRow('Reference', `<code class="admin-lead-card__code">${escapeHtml(lead.id)}</code>`)}
+        ${specRow('WhatsApp 状态', escapeHtml(whatsappStatusLabel(lead.whatsappStatus)))}
+        ${specRow('编号', `<code class="admin-lead-card__code">${escapeHtml(lead.id)}</code>`)}
       </dl>`;
   }
 
@@ -637,7 +637,7 @@
   async function boot() {
     const root = document.getElementById('admin-leads-root');
     if (!root) return;
-    root.innerHTML = '<p class="admin-review-empty">Loading leads…</p>';
+    root.innerHTML = '<p class="admin-review-empty">正在加载询价…</p>';
 
     try {
       const leads = await fetchLeads();
@@ -668,17 +668,17 @@
 
         <div class="admin-leads-controls">
           <div class="admin-leads-filters" role="tablist" aria-label="Lead filters">
-            ${renderFilterButton('open', 'Open', openCount)}
-            ${renderFilterButton('contact', 'Website', contactCount)}
+            ${renderFilterButton('open', '待回复', openCount)}
+            ${renderFilterButton('contact', '网站表单', contactCount)}
             ${renderFilterButton('whatsapp', 'WhatsApp', whatsappCount)}
-            ${renderFilterButton('half-cut', 'Half-cut', halfCutCount)}
-            ${renderFilterButton('catalog', 'Catalog', catalogCount)}
-            ${renderFilterButton('email', 'Email reply', emailCount)}
-            ${renderFilterButton('replied', 'Replied', repliedCount)}
-            ${renderFilterButton('all', 'All', leads.length)}
+            ${renderFilterButton('half-cut', '半切车', halfCutCount)}
+            ${renderFilterButton('catalog', '目录', catalogCount)}
+            ${renderFilterButton('email', '邮件回复', emailCount)}
+            ${renderFilterButton('replied', '已回复', repliedCount)}
+            ${renderFilterButton('all', '全部', leads.length)}
           </div>
           <label class="admin-leads-search">
-            <input type="search" id="admin-leads-search" placeholder="Search name, phone, stock ID, vehicle…" aria-label="Search leads" value="${escapeHtml(query)}">
+            <input type="search" id="admin-leads-search" placeholder="搜索姓名、电话、库存编号、车型…" aria-label="搜索询价" value="${escapeHtml(query)}">
           </label>
         </div>
 
@@ -687,7 +687,7 @@
         <div class="admin-leads-grid">
           ${filtered.length
             ? filtered.map(renderLeadCard).join('')
-            : `<p class="admin-review-empty">No leads match this filter${query ? ' or search' : ''}.</p>`}
+            : `<p class="admin-review-empty">没有符合当前筛选${query ? '或搜索' : ''}的询价。</p>`}
         </div>`;
 
       const leadMap = new Map(leads.map((lead) => [lead.id, lead]));
@@ -716,7 +716,7 @@
             await markReplied(markBtn.dataset.markReplied);
             if (feedback) {
               feedback.hidden = false;
-              feedback.textContent = 'Lead marked as replied.';
+              feedback.textContent = '已标记为已回复。';
               feedback.className = 'admin-page-feedback admin-page-feedback--success';
               feedback.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
             }

@@ -21,7 +21,15 @@
       Settled: 'badge-green',
       Cancelled: 'badge-red',
     };
-    return `<span class="badge ${map[status] || 'badge-gray'}">${status}</span>`;
+    const labels = {
+      Inquiry: '询价中',
+      Quoted: '已报价',
+      DepositPaid: '已付定金',
+      Shipped: '已发运',
+      Settled: '已结清',
+      Cancelled: '已取消',
+    };
+    return `<span class="badge ${map[status] || 'badge-gray'}">${labels[status] || status}</span>`;
   }
 
   function renderOrders(orders) {
@@ -29,9 +37,9 @@
       ? orders.map((o) => {
         const canPay = o.status === 'Quoted';
         const action = canPay
-          ? `<button class="btn btn-gold" data-pay="${o.id}">Pay Deposit</button>`
+          ? `<button class="btn btn-gold" data-pay="${o.id}">支付定金</button>`
           : o.status === 'DepositPaid'
-            ? '<span class="muted">Reserved</span>'
+            ? '<span class="muted">已锁定</span>'
             : '<span class="muted">—</span>';
         return `<tr>
           <td class="stock">${o.id}</td>
@@ -42,7 +50,7 @@
           <td>${action}</td>
         </tr>`;
       }).join('')
-      : '<tr><td colspan="6" class="muted">No orders yet. Sales will create a quote order for you.</td></tr>';
+      : '<tr><td colspan="6" class="muted">暂无订单。销售确认报价后会出现在这里。</td></tr>';
 
     rows.querySelectorAll('[data-pay]').forEach((btn) => {
       btn.addEventListener('click', () => payDeposit(btn.getAttribute('data-pay')));
@@ -65,7 +73,7 @@
         body: JSON.stringify({ orderId }),
       }).then((r) => r.json());
       if (done.error) return toast(done.error);
-      toast('Demo deposit paid · stock reserved');
+      toast('演示定金已支付 · 库存已锁定');
       await loadOrders();
       return;
     }
@@ -73,7 +81,7 @@
       location.href = res.session.url;
       return;
     }
-    toast('Checkout session created');
+    toast('已创建结账会话');
   }
 
   async function loadOrders() {
@@ -87,17 +95,19 @@
     if (me.user && (me.user.role === 'buyer' || me.user.role === 'admin')) {
       loginGate.hidden = true;
       portal.hidden = false;
-      document.getElementById('buyer-name').textContent = me.user.name || me.user.company || me.user.email || me.user.username || 'Buyer';
+      document.getElementById('buyer-name').textContent = me.user.name || me.user.company || me.user.email || me.user.username || '采购商';
+      const provider = me.user.oauthProvider ? `通过 ${me.user.oauthProvider}` : me.user.authMethod;
+      const logins = me.user.loginCount ? `登录 ${me.user.loginCount} 次` : '';
       const meta = [
         me.user.email,
         me.user.phoneNormalized || me.user.phone,
-        me.user.oauthProvider ? `via ${me.user.oauthProvider}` : me.user.authMethod,
-        me.user.loginCount ? `${me.user.loginCount} logins` : '',
+        provider,
+        logins,
       ].filter(Boolean).join(' · ');
       const metaEl = document.getElementById('buyer-meta');
       if (metaEl) metaEl.textContent = meta;
       if (params.get('deposit') === 'success') {
-        document.getElementById('deposit-banner').textContent = 'Deposit payment received (or demo completed).';
+        document.getElementById('deposit-banner').textContent = '定金已收到（或演示支付完成）。';
       }
       await loadOrders();
       return true;

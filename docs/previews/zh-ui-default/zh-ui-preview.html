@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>预览 · 简体中文界面 · AsiaPower</title>
+  <style>
+    :root {
+      --t1:#1d1d1f; --t2:#6e6e73; --gold:#d4880a; --bg:#f5f5f7;
+      --font:-apple-system,BlinkMacSystemFont,'SF Pro Display','Helvetica Neue',Arial,'PingFang SC',sans-serif;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: var(--font); background: var(--bg); color: var(--t1); line-height: 1.55; }
+    .bar { background:#1d1d1f; color:#f5f5f7; padding:12px 20px; font-size:13px; display:flex; justify-content:space-between; gap:12px; flex-wrap:wrap; }
+    .bar a { color:#f5c542; }
+    .wrap { max-width: 980px; margin: 0 auto; padding: 28px 20px 64px; }
+    h1 { font-size: 1.7rem; font-weight: 800; margin-bottom: 8px; }
+    .sub { color: var(--t2); margin-bottom: 24px; }
+    .mock {
+      background:#fff; border:1px solid #e8e8ed; border-radius:16px; overflow:hidden;
+      box-shadow: 0 2px 10px rgba(0,0,0,.04); margin-bottom: 20px;
+    }
+    .nav { display:flex; align-items:center; justify-content:space-between; padding:14px 18px; border-bottom:1px solid #eee; }
+    .logo { font-weight:800; letter-spacing:-.4px; }
+    .logo span { color: var(--gold); }
+    .links { display:flex; gap:14px; font-size:14px; color:var(--t2); }
+    .lang { display:flex; gap:6px; }
+    .lang b { background:#1d1d1f; color:#fff; border-radius:8px; padding:4px 8px; font-size:12px; }
+    .lang span { border:1px solid #d2d2d7; border-radius:8px; padding:4px 8px; font-size:12px; color:var(--t2); }
+    .hero { padding:28px 18px 32px; }
+    .hero h2 { font-size:1.8rem; font-weight:800; letter-spacing:-.5px; margin:8px 0 10px; }
+    .hero em { font-style:normal; color:var(--gold); }
+    .search { display:flex; border:1.5px solid #d2d2d7; border-radius:18px; overflow:hidden; max-width:520px; }
+    .search input { flex:1; border:none; padding:12px 16px; font-size:14px; }
+    .search button { border:none; background:#1d1d1f; color:#fff; padding:0 18px; font-weight:600; }
+    .login { padding:18px; }
+    .login h3 { margin-bottom:8px; }
+    .row { display:flex; gap:8px; margin:10px 0; }
+    .tab { border:1px solid #d2d2d7; background:#fff; border-radius:10px; padding:6px 12px; font-size:13px; }
+    .tab.on { background:#1d1d1f; color:#fff; border-color:#1d1d1f; }
+    .btn { display:inline-block; margin-top:10px; background:#1d1d1f; color:#fff; border-radius:10px; padding:10px 16px; font-size:14px; }
+    table { width:100%; border-collapse:collapse; font-size:14px; }
+    th, td { text-align:left; padding:8px 10px; border-bottom:1px solid #eee; }
+    .note { color:var(--t2); font-size:14px; }
+    .note li { margin:6px 0 6px 18px; }
+  </style>
+</head>
+<body>
+  <div class="bar">
+    <div><strong>预览 · 未上线</strong> — 官网默认简体中文；右上角仍可切 EN / FR / AR</div>
+    <div><a href="../../index.html">本地首页（需本仓库静态打开）</a></div>
+  </div>
+  <div class="wrap">
+    <h1>简体中文界面</h1>
+    <p class="sub">第一次打开网站会显示中文。海外买家点右上角 EN 即可改回英文。</p>
+
+    <div class="mock">
+      <div class="nav">
+        <div class="logo">Asia<span>Power</span></div>
+        <div class="links">
+          <span>半切车</span><span>发动机</span><span>卡车</span><span>工程机械</span><span>二手车</span>
+        </div>
+        <div class="lang"><span>EN</span><b>中文</b><span>FR</span><span>AR</span></div>
+      </div>
+      <div class="hero">
+        <div style="font-size:13px;color:#6e6e73">视频已验证 · 发往 110+ 国家</div>
+        <h2>全球动力总成交易市场<br><em>二手动力总成</em></h2>
+        <p style="color:#6e6e73;margin-bottom:14px">半切车、发动机、卡车配件 — 中国货源，全球发运。EXW 报价，24 小时回复。</p>
+        <div class="search">
+          <input value="按品牌、车型、发动机代码或库存号搜索…" readonly>
+          <button>搜索</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="mock">
+      <div class="login">
+        <h3>登录页（采购商 / 供应商）</h3>
+        <div class="row">
+          <span class="tab on">采购商</span>
+          <span class="tab">供应商</span>
+        </div>
+        <p>采购商与供应商共用本页。游客仍可浏览、询价，无需注册。</p>
+        <span class="btn">使用 Google 登录</span>
+      </div>
+    </div>
+
+    <div class="mock">
+      <div class="login">
+        <h3>采购商工作台</h3>
+        <table>
+          <thead><tr><th>订单</th><th>库存</th><th>EXW</th><th>定金</th><th>状态</th></tr></thead>
+          <tbody><tr><td colspan="5" style="color:#6e6e73">暂无订单。销售确认报价后会出现在这里。</td></tr></tbody>
+        </table>
+      </div>
+    </div>
+
+    <ul class="note">
+      <li>未点过语言按钮的访客：默认中文。</li>
+      <li>已经点过 EN 并保存在浏览器里的人：仍显示英文，直到改点「中文」。</li>
+      <li>可用网址强制语言：<code>?lang=zh</code> 或 <code>?lang=en</code>。</li>
+      <li>本预览通过后，再走 commit → GitHub → Release Manager 上生产。现网暂未改。</li>
+    </ul>
+  </div>
+</body>
+</html>

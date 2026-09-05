@@ -117,7 +117,7 @@
 
     if (gBtn) {
       gBtn.innerHTML = googleConfigured
-        ? '<span class="oauth-icon" aria-hidden="true">G</span> Continue with Google'
+        ? '<span class="oauth-icon" aria-hidden="true">G</span> 使用 Google 登录'
         : '<span class="oauth-icon" aria-hidden="true">G</span> Google 测试登录';
     }
 

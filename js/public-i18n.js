@@ -1,13 +1,13 @@
 /**
- * AsiaPower — Public website language (EN default; ZH, FR, AR optional).
- * Supplier portal upload pages use the same lang switcher; admin tools stay English-only.
+ * AsiaPower — Public website language (ZH Simplified default; EN, FR, AR optional).
+ * Supplier portal and admin chrome use the same language when PublicI18n is loaded.
  * Coverage: nav/footer/topbar and all public page strings include FR/AR translations.
  */
 (function () {
   'use strict';
 
   const STORAGE_KEY = 'asiapower.lang';
-  const DEFAULT_LANG = 'en';
+  const DEFAULT_LANG = 'zh';
   const SUPPORTED_LANGS = ['en', 'zh', 'fr', 'ar'];
   const RTL_LANGS = ['ar'];
   const LANG_HTML_TAG = { en: 'en', zh: 'zh-CN', fr: 'fr', ar: 'ar' };
@@ -1034,7 +1034,21 @@
   }
 
   function normalizeLang(value) {
-    return SUPPORTED_LANGS.includes(value) ? value : 'en';
+    return SUPPORTED_LANGS.includes(value) ? value : DEFAULT_LANG;
+  }
+
+  function readQueryLang() {
+    try {
+      const raw = new URLSearchParams(window.location.search).get('lang');
+      if (!raw) return null;
+      const n = String(raw).toLowerCase().replace(/_/g, '-');
+      if (n === 'zh-cn' || n === 'zh-hans' || n === 'cn') return 'zh';
+      const short = n.split('-')[0];
+      if (short === 'zh') return 'zh';
+      return SUPPORTED_LANGS.includes(short) ? short : null;
+    } catch {
+      return null;
+    }
   }
 
   function isRtl(lang) {
@@ -1060,26 +1074,14 @@
     });
   }
 
-  function isSupplierPage() {
-    const page = document.body?.dataset?.page || '';
-    if (page === 'supplier') return true;
-    const path = window.location.pathname || '';
-    if (path.includes('/supplier-portal/')) return true;
-    const file = path.split('/').pop() || '';
-    return file === 'supplier-portal.html';
-  }
-
   function getLang() {
-    if (!isSwitchablePublicPage()) return DEFAULT_LANG;
+    const fromUrl = readQueryLang();
+    if (fromUrl) return fromUrl;
     try {
       const stored = localStorage.getItem(STORAGE_KEY);
       if (stored && SUPPORTED_LANGS.includes(stored)) return stored;
     } catch {
       // ignore
-    }
-    if (isSupplierPage()) {
-      const nav = (navigator.language || navigator.userLanguage || '').toLowerCase();
-      if (nav.startsWith('zh')) return 'zh';
     }
     return DEFAULT_LANG;
   }
@@ -1202,6 +1204,14 @@
 
   function bootI18n() {
     if (!isSwitchablePublicPage()) return;
+    const fromUrl = readQueryLang();
+    if (fromUrl) {
+      try {
+        localStorage.setItem(STORAGE_KEY, fromUrl);
+      } catch {
+        // ignore
+      }
+    }
     const lang = getLang();
     applyDirection(lang);
     applyDocumentTitle();
@@ -1249,6 +1259,7 @@
   initDocumentLang();
 
   window.PublicI18n = {
+    DEFAULT_LANG,
     getLang,
     setLang,
     t,

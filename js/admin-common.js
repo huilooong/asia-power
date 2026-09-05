@@ -62,9 +62,8 @@
 
   function authExpiredMessage() {
     return `
-      <strong>Session expired — please sign in again.</strong>
-      <span class="admin-page-feedback__sub">登录已过期，请重新登录后再保存。</span>
-      <button type="button" class="btn btn-navy btn-sm admin-page-feedback__action" data-admin-relogin>Sign in / 登录</button>`;
+      <strong>登录已过期，请重新登录后再保存。</strong>
+      <button type="button" class="btn btn-navy btn-sm admin-page-feedback__action" data-admin-relogin>登录</button>`;
   }
 
   function handleAuthFailure(root, feedbackEl, onRelogin) {
@@ -94,7 +93,7 @@
     if (!btn) return;
     btn.addEventListener('click', async () => {
       try {
-        if (feedbackEl) showFeedback(feedbackEl, 'Redirecting to Google…', 'info');
+        if (feedbackEl) showFeedback(feedbackEl, '正在跳转 Google…', 'info');
         await startGoogleAdminLogin();
       } catch (err) {
         if (feedbackEl) showFeedback(feedbackEl, err.message || 'Google login failed', 'error');
@@ -106,12 +105,12 @@
     return `
       <div class="admin-review-login__oauth">
         <button type="button" class="btn btn-outline-navy" data-admin-google-login>
-          Continue with Google · 用 Google 登录
+          使用 Google 登录
         </button>
         <p class="admin-review-login__hint admin-review-login__hint--oauth">
           CEO 白名单邮箱可直接进入管理后台（无需记住 admin 密码）。
         </p>
-        <p class="admin-review-login__divider"><span>or password</span></p>
+        <p class="admin-review-login__divider"><span>或使用密码</span></p>
       </div>`;
   }
 

@@ -331,14 +331,14 @@
       const filtered = filterInventory(lists.inventory, query);
       return `
         <label class="admin-leads-search">
-          <input type="search" id="admin-inventory-search" placeholder="Search stock ID, brand, model, engine code…" value="${escapeHtml(query)}">
+          <input type="search" id="admin-inventory-search" placeholder="搜索库存编号、品牌、车型、发动机代码…" value="${escapeHtml(query)}">
         </label>
         <div class="admin-inventory-list">
           ${!lists.inventory.length
-            ? '<p class="admin-review-empty">No approved inventory yet. Approve pending submissions in the <strong>Pending Review</strong> tab first.</p>'
+            ? '<p class="admin-review-empty">还没有已上架库存。请先在<strong>待审</strong>标签批准供应商提交。</p>'
             : filtered.length
               ? filtered.map(renderInventoryCard).join('')
-              : '<p class="admin-review-empty">No inventory matches your search.</p>'}
+              : '<p class="admin-review-empty">没有符合搜索条件的库存。</p>'}
         </div>`;
     }
 
