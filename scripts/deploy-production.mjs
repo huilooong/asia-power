@@ -15,6 +15,7 @@ import { spawnSync } from 'child_process';
 import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
+import { deployAdminGmail } from './lib/admin-gmail-release.mjs';
 import { deploySeoAssets } from './lib/seo-assets-release.mjs';
 import { deploySeoTraffic } from './lib/seo-traffic-release.mjs';
 import {
@@ -1299,6 +1300,7 @@ function printHelp() {
 }
 
 const targets = {
+  'admin-gmail': (releaseId) => deployAdminGmail({ root: ROOT, remote: REMOTE, releaseId }),
   'seo-assets': (releaseId) => deploySeoAssets({ root: ROOT, remote: REMOTE, releaseId }),
   'seo-traffic': (releaseId) => deploySeoTraffic({ root: ROOT, remote: REMOTE, releaseId }),
   nginx: deployNginx,
@@ -1352,7 +1354,7 @@ async function main() {
     paths: TARGET_REMOTE_PATHS[targetArg] || [],
   });
   console.log(`[release] snapshot ${snapOk ? 'OK' : 'WARN'} → releases/${releaseId}/snapshots/`);
-  if (['seo-traffic', 'seo-assets'].includes(targetArg) && !snapOk) throw new Error('SEO traffic snapshot failed; refusing deployment');
+  if (['seo-traffic', 'seo-assets', 'admin-gmail'].includes(targetArg) && !snapOk) throw new Error('SEO traffic snapshot failed; refusing deployment');
 
   targets[targetArg](releaseId);
 
@@ -1388,7 +1390,7 @@ async function main() {
   printDeploymentSummary(release);
 
   // Keep newest N REL-* snapshots (local + remote). Never fail the deploy for prune errors.
-  if (!['seo-traffic', 'seo-assets'].includes(targetArg)) {
+  if (!['seo-traffic', 'seo-assets', 'admin-gmail'].includes(targetArg)) {
     pruneReleaseDirsSafe(path.join(ROOT, 'releases'));
     pruneRemoteReleaseDirsSafe({ remote: REMOTE });
   }

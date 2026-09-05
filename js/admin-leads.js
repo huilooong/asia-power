@@ -303,6 +303,17 @@
     return `IP: ${lead.clientIp}`;
   }
 
+  function buildGmailReplyUrl(lead) {
+    const to = String(lead.email || '').trim();
+    if (!/^[^\s@<>,;]+@[^\s@<>,;]+\.[^\s@<>,;]+$/.test(to)) return '';
+    const ctx = enrichLead(lead);
+    const params = new URLSearchParams({
+      authuser: 'sales@asia-power.com', view: 'cm', fs: '1', to,
+      su: ctx.replySubject || `Re: AsiaPower enquiry — ${lead.id || ''}`,
+    });
+    return `https://mail.google.com/mail/?${params.toString()}`;
+  }
+
   function buildEmailReplyUrl(lead) {
     const ctx = enrichLead(lead);
     const to = String(lead.email || '').trim();
@@ -427,6 +438,7 @@
           : (lead.source === 'whatsapp-intent' ? 'WhatsApp enquiry' : 'Contact form')));
     const wa = whatsappUrl(lead.phone, lead);
     const emailReply = buildEmailReplyUrl(lead);
+    const gmailReply = buildGmailReplyUrl(lead);
     const emailOnly = lead.replyChannel === 'email';
 
     return `
@@ -459,6 +471,7 @@
 
         <div class="admin-lead-card__actions">
           ${replied ? '' : `<button type="button" class="btn btn-accent btn-sm" data-mark-replied="${escapeHtml(lead.id)}">Mark Replied</button>`}
+          ${gmailReply ? `<a href="${escapeHtml(gmailReply)}" class="btn btn-accent btn-sm" target="_blank" rel="noopener noreferrer" title="使用 sales@asia-power.com 在 Gmail 中回复">Gmail 回复</a>` : ''}
           ${emailReply && !replied ? `<a href="${escapeHtml(emailReply)}" class="btn ${emailOnly ? 'btn-accent' : 'btn-outline-navy'} btn-sm">Reply by Email</a>` : ''}
           <button type="button" class="btn btn-outline-navy btn-sm" data-copy-wa-reply="${escapeHtml(lead.id)}">复制 WhatsApp 回复</button>
           <button type="button" class="btn btn-outline-navy btn-sm" data-copy-summary="${escapeHtml(lead.id)}">Copy Summary</button>

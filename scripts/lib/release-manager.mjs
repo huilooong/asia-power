@@ -12,13 +12,15 @@ import {
   stampReleaseIdIntoConfig,
 } from './post-release-validation.mjs';
 import { checkCacheBustConsistency } from './cache-bust-check.mjs';
+import { ADMIN_GMAIL_FILES, ADMIN_GMAIL_REMOTE_PATHS } from './admin-gmail-release.mjs';
 import { SEO_ASSETS_FILES, SEO_ASSETS_REMOTE_PATHS } from './seo-assets-release.mjs';
 import { SEO_TRAFFIC_FILES, SEO_TRAFFIC_REMOTE_PATHS } from './seo-traffic-release.mjs';
 
-export const VALID_TARGETS = ['nginx', 'api', 'engines', 'apbd', 'apbd-global', 'apsales', 'apsales-openclaw', 'finalize', 'home', 'portal', 'chrome', 'categories', 'admin', 'seo-traffic', 'seo-assets'];
+export const VALID_TARGETS = ['nginx', 'api', 'engines', 'apbd', 'apbd-global', 'apsales', 'apsales-openclaw', 'finalize', 'home', 'portal', 'chrome', 'categories', 'admin', 'seo-traffic', 'seo-assets', 'admin-gmail'];
 
 /** @type {Record<string, string[]>} */
 export const TARGET_SOURCE_FILES = {
+  'admin-gmail': ADMIN_GMAIL_FILES.map(([source]) => source),
   'seo-assets': SEO_ASSETS_FILES.map(([source]) => source),
   'seo-traffic': SEO_TRAFFIC_FILES.map(([source]) => source),
   apbd: [
@@ -245,6 +247,7 @@ export const TARGET_SOURCE_FILES = {
 
 /** @type {Record<string, string[]>} */
 export const TARGET_REMOTE_PATHS = {
+  'admin-gmail': ADMIN_GMAIL_REMOTE_PATHS,
   'seo-assets': SEO_ASSETS_REMOTE_PATHS,
   'seo-traffic': SEO_TRAFFIC_REMOTE_PATHS,
   apbd: [
@@ -607,7 +610,7 @@ export function runPreDeployValidation({ root, target, remote, allowDirty, yes, 
   });
 
   // A local dependency is not sufficient unless this release actually ships it.
-  if (['engines', 'home', 'portal', 'chrome', 'categories', 'admin', 'seo-traffic', 'seo-assets'].includes(target)) {
+  if (['engines', 'home', 'portal', 'chrome', 'categories', 'admin', 'seo-traffic', 'seo-assets', 'admin-gmail'].includes(target)) {
     const assetGuard = spawnSync('python3', [path.join(root, 'scripts/check-release-assets.py'), '--root', root], {
       input: JSON.stringify(planned), encoding: 'utf8', timeout: 240000, maxBuffer: 2 * 1024 * 1024,
     });
@@ -659,7 +662,7 @@ export function runPreDeployValidation({ root, target, remote, allowDirty, yes, 
     });
   }
 
-  const backupMode = ['engines', 'apbd', 'apbd-global', 'apsales', 'finalize', 'seo-traffic', 'seo-assets'].includes(target) ? 'data-only' : 'full';
+  const backupMode = ['engines', 'apbd', 'apbd-global', 'apsales', 'finalize', 'seo-traffic', 'seo-assets', 'admin-gmail'].includes(target) ? 'data-only' : 'full';
   const backupCmd = backupMode === 'data-only'
     ? 'bash /root/.openclaw/workspace/inventory-site/scripts/backup-inventory-site.sh --data-only'
     : 'bash /root/.openclaw/workspace/inventory-site/scripts/backup-inventory-site.sh';
@@ -720,6 +723,11 @@ echo SNAPSHOT_OK
 export async function runPostDeployValidation({ root, target, remote, baseUrl, releaseId = '' }) {
   /** @type {{name: string, status: 'pass'|'fail'|'skip'|'warn', detail: string}[]} */
   const checks = [];
+
+  if (target === 'admin-gmail') {
+    const result = spawnSync('node', [path.join(root,'scripts/verify-admin-gmail.mjs')], {cwd:root,encoding:'utf8'});
+    checks.push({name:'admin_gmail',status:result.status===0?'pass':'fail',detail:(result.stdout||result.stderr||'').trim()});
+  }
 
   if (target === 'seo-assets') {
     const result = spawnSync('python3', [path.join(root, 'scripts/verify-seo-assets.py')], {cwd:root,encoding:'utf8',timeout:240000});
