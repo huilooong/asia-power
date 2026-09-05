@@ -90,6 +90,8 @@ def run(output,seeds_file=None):
  results=[dict(r,sources=sorted(parents.get(u,[]))) for u,r in sorted(seen.items())]
  failures=[r for r in results if r['status']!=200 or r.get('unexpected_html') or r.get('wrong_mime')]
  report={'checked_at':time.strftime('%Y-%m-%dT%H:%M:%SZ',time.gmtime()),'sitemap_pages':sitemap_count,'initial_seed_pages':len(seeds),'checked':len(results),'pages':sum(r['kind']=='page' for r in results),'assets':sum(r['kind']=='asset' for r in results),'failures':failures,'external_resources_not_checked':sorted(external),'results':results}
- (output/'audit.json').write_text(json.dumps(report,ensure_ascii=False,indent=2)+'\n');print(json.dumps({k:v for k,v in report.items() if k not in ['results','external_resources_not_checked','failures']}));print('FAILURES',len(failures));return report
+ serialized=json.dumps(report,ensure_ascii=False,indent=2)
+ serialized=re.sub(r'([?&](?:access|exp)=)[A-Za-z0-9%._-]+',r'\1REDACTED',serialized)
+ (output/'audit.json').write_text(serialized+'\n');print(json.dumps({k:v for k,v in report.items() if k not in ['results','external_resources_not_checked','failures']}));print('FAILURES',len(failures));return report
 if __name__=='__main__':
  p=argparse.ArgumentParser();p.add_argument('--output',required=True);p.add_argument('--seeds');a=p.parse_args();run(a.output,a.seeds)
