@@ -12,12 +12,14 @@ import {
   stampReleaseIdIntoConfig,
 } from './post-release-validation.mjs';
 import { checkCacheBustConsistency } from './cache-bust-check.mjs';
+import { SEO_ASSETS_FILES, SEO_ASSETS_REMOTE_PATHS } from './seo-assets-release.mjs';
 import { SEO_TRAFFIC_FILES, SEO_TRAFFIC_REMOTE_PATHS } from './seo-traffic-release.mjs';
 
-export const VALID_TARGETS = ['nginx', 'api', 'engines', 'apbd', 'apbd-global', 'apsales', 'apsales-openclaw', 'finalize', 'home', 'portal', 'chrome', 'categories', 'admin', 'seo-traffic'];
+export const VALID_TARGETS = ['nginx', 'api', 'engines', 'apbd', 'apbd-global', 'apsales', 'apsales-openclaw', 'finalize', 'home', 'portal', 'chrome', 'categories', 'admin', 'seo-traffic', 'seo-assets'];
 
 /** @type {Record<string, string[]>} */
 export const TARGET_SOURCE_FILES = {
+  'seo-assets': SEO_ASSETS_FILES.map(([source]) => source),
   'seo-traffic': SEO_TRAFFIC_FILES.map(([source]) => source),
   apbd: [
     'agents/apbd/solo_trade',
@@ -243,6 +245,7 @@ export const TARGET_SOURCE_FILES = {
 
 /** @type {Record<string, string[]>} */
 export const TARGET_REMOTE_PATHS = {
+  'seo-assets': SEO_ASSETS_REMOTE_PATHS,
   'seo-traffic': SEO_TRAFFIC_REMOTE_PATHS,
   apbd: [
     '/root/.openclaw/workspace/AsiaPower/agents/apbd/solo_trade',
@@ -603,6 +606,15 @@ export function runPreDeployValidation({ root, target, remote, allowDirty, yes, 
     detail: planned.length ? `${planned.length} planned file(s)` : 'no source files resolved',
   });
 
+  // A local dependency is not sufficient unless this release actually ships it.
+  if (['engines', 'home', 'portal', 'chrome', 'categories', 'admin', 'seo-traffic', 'seo-assets'].includes(target)) {
+    const assetGuard = spawnSync('python3', [path.join(root, 'scripts/check-release-assets.py'), '--root', root], {
+      input: JSON.stringify(planned), encoding: 'utf8', timeout: 240000, maxBuffer: 2 * 1024 * 1024,
+    });
+    checks.push({name: 'public_asset_dependencies', status: assetGuard.status === 0 ? 'pass' : 'fail',
+      detail: (assetGuard.stdout || assetGuard.stderr || String(assetGuard.error || 'asset check failed')).trim()});
+  }
+
   // Cache-bust: scan live HTML refs (no handwritten table). Warn if a
   // git-changed shared js/css is referenced with inconsistent ?v= across ≥2 pages.
   try {
@@ -647,7 +659,7 @@ export function runPreDeployValidation({ root, target, remote, allowDirty, yes, 
     });
   }
 
-  const backupMode = ['engines', 'apbd', 'apbd-global', 'apsales', 'finalize', 'seo-traffic'].includes(target) ? 'data-only' : 'full';
+  const backupMode = ['engines', 'apbd', 'apbd-global', 'apsales', 'finalize', 'seo-traffic', 'seo-assets'].includes(target) ? 'data-only' : 'full';
   const backupCmd = backupMode === 'data-only'
     ? 'bash /root/.openclaw/workspace/inventory-site/scripts/backup-inventory-site.sh --data-only'
     : 'bash /root/.openclaw/workspace/inventory-site/scripts/backup-inventory-site.sh';
@@ -708,6 +720,11 @@ echo SNAPSHOT_OK
 export async function runPostDeployValidation({ root, target, remote, baseUrl, releaseId = '' }) {
   /** @type {{name: string, status: 'pass'|'fail'|'skip'|'warn', detail: string}[]} */
   const checks = [];
+
+  if (target === 'seo-assets') {
+    const result = spawnSync('python3', [path.join(root, 'scripts/verify-seo-assets.py')], {cwd:root,encoding:'utf8',timeout:240000});
+    checks.push({name:'seo_assets_contract',status:result.status === 0 ? 'pass' : 'fail',detail:(result.stdout || result.stderr || String(result.error || '')).trim()});
+  }
 
   if (target === 'seo-traffic') {
     const result = spawnSync('node', [path.join(root, 'scripts/verify-seo-traffic.mjs'), baseUrl], {cwd:root, encoding:'utf8'});
@@ -862,7 +879,7 @@ fi
       });
     }
   } else {
-    checks.push({ name: 'public_post_release_validation', status: 'skip', detail: `target=${target} not public surface` });
+    checks.push({ name: 'public_post_release_validation', status: 'skip', detail: `target=${target}: covered by target-specific validation when public` });
   }
 
   const hardFail = checks.some((c) => c.status === 'fail');

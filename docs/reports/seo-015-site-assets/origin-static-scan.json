@@ -1,0 +1,17 @@
+{
+  "pages": 290,
+  "resources": 86,
+  "missing": {
+    "/api/half-cuts/public": [
+      "index.html",
+      "front-cuts/index.html",
+      "chassis-parts/index.html",
+      "half-cuts/index.html",
+      "gearboxes/index.html",
+      "tires/index.html",
+      "engines/index.html",
+      "trucks/index.html",
+      "machinery/index.html"
+    ]
+  }
+}

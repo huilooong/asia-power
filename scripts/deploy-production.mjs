@@ -15,6 +15,7 @@ import { spawnSync } from 'child_process';
 import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
+import { deploySeoAssets } from './lib/seo-assets-release.mjs';
 import { deploySeoTraffic } from './lib/seo-traffic-release.mjs';
 import {
   TARGET_REMOTE_PATHS,
@@ -1298,6 +1299,7 @@ function printHelp() {
 }
 
 const targets = {
+  'seo-assets': (releaseId) => deploySeoAssets({ root: ROOT, remote: REMOTE, releaseId }),
   'seo-traffic': (releaseId) => deploySeoTraffic({ root: ROOT, remote: REMOTE, releaseId }),
   nginx: deployNginx,
   api: deployApi,
@@ -1350,7 +1352,7 @@ async function main() {
     paths: TARGET_REMOTE_PATHS[targetArg] || [],
   });
   console.log(`[release] snapshot ${snapOk ? 'OK' : 'WARN'} → releases/${releaseId}/snapshots/`);
-  if (targetArg === 'seo-traffic' && !snapOk) throw new Error('SEO traffic snapshot failed; refusing deployment');
+  if (['seo-traffic', 'seo-assets'].includes(targetArg) && !snapOk) throw new Error('SEO traffic snapshot failed; refusing deployment');
 
   targets[targetArg](releaseId);
 
@@ -1386,7 +1388,7 @@ async function main() {
   printDeploymentSummary(release);
 
   // Keep newest N REL-* snapshots (local + remote). Never fail the deploy for prune errors.
-  if (targetArg !== 'seo-traffic') {
+  if (!['seo-traffic', 'seo-assets'].includes(targetArg)) {
     pruneReleaseDirsSafe(path.join(ROOT, 'releases'));
     pruneRemoteReleaseDirsSafe({ remote: REMOTE });
   }

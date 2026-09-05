@@ -507,10 +507,11 @@ function linkList(items) {
 }
 
 function renderHalfCuts(record) {
-  if (!record.inventoryItems.length) {
+  const publicCandidates = record.inventoryItems.filter(item => !/^QXB/i.test(item.stockId || '') && !/qxb\d+/i.test(item.slug || ''));
+  if (!publicCandidates.length) {
     return `<p>${esc(record.code)} does not yet have public related half-cut examples in this batch. Treat this as a sourcing page until APInventory confirms stock records.</p>`;
   }
-  const items = record.inventoryItems.slice(0, 4).map(item => {
+  const items = publicCandidates.slice(0, 4).map(item => {
     const title = item.title || `${item.brand} ${item.model} ${item.year} ${record.code}`.trim();
     const meta = [item.stockId, item.transmission, item.drivetrain].filter(Boolean).join(' · ');
     if (item.slug) {

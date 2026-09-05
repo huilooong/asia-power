@@ -395,9 +395,7 @@ function buildDetailRootHtml(item, siteUrl) {
     ? `${titleText}. Complete, undismantled China export used vehicle with VIN. Availability, documents and destination eligibility are confirmed before contract.`
     : `${titleText}. EXW export from China — availability, photos and CIF shipping confirmed on enquiry.`);
   const specRow = (label, value) => (value ? `<div class="hc-item-detail__spec"><dt>${label}</dt><dd>${value}</dd></div>` : '');
-  const brandUrl = isUsedCar
-    ? `${base}half-cuts/?cat=used-cars&amp;brand=${escapeAttr(item.brandSlug)}`
-    : `${base}brands/${escapeAttr(item.brandSlug)}.html#halfcuts-inventory`;
+  const brandUrl = escapeAttr(`${ctx.catalogHref}${ctx.catalogHref.includes('?') ? '&' : '?'}brand=${encodeURIComponent(item.brandSlug || '')}`);
   const vehicleInfoHtml = [
     specRow('Brand', `<a href="${brandUrl}">${escapeHtml(item.brand || '')}</a>`),
     specRow('Model', escapeHtml(item.model || '')),
@@ -463,8 +461,8 @@ function buildDetailRootHtml(item, siteUrl) {
           ${isUsedCar
             ? `<li><a href="${brandUrl}">${escapeHtml(item.brand)} Export Used Cars</a></li>`
             : `<li><a href="${brandUrl}">${escapeHtml(item.brand)} Half-Cut Listings</a></li>
-          <li><a href="${base}brands/${escapeAttr(item.brandSlug)}.html#engines">${escapeHtml(item.brand)} Engines</a></li>
-          <li><a href="${base}brands/${escapeAttr(item.brandSlug)}.html#gearboxes">${escapeHtml(item.brand)} Gearboxes</a></li>`}
+          <li><a href="${base}engines/?brand=${escapeAttr(encodeURIComponent(item.brandSlug || ''))}">${escapeHtml(item.brand)} Engines</a></li>
+          <li><a href="${base}gearboxes/?brand=${escapeAttr(encodeURIComponent(item.brandSlug || ''))}">${escapeHtml(item.brand)} Gearboxes</a></li>`}
         </ul>
         <h3>Catalog</h3>
         <ul class="engine-detail__links">

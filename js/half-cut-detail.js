@@ -14,6 +14,12 @@
     return window.SitePaths?.base?.() || '../';
   }
 
+  function brandInventoryUrl(item, b) {
+    const category = item.vehicleCategory === 'truck' ? 'trucks' : (item.vehicleCategory === 'machinery' ? 'machinery' : 'half-cuts');
+    const used = window.HalfCutUtils?.isExportableUsedCarItem?.(item);
+    return `${b}${category}/?${used ? 'cat=used-cars&' : ''}brand=${encodeURIComponent(item.brandSlug || '')}`;
+  }
+
   function upsertJsonLd(id, data) {
     let el = document.getElementById(id);
     if (!el) {
@@ -47,18 +53,6 @@
       .replace(/</g, '&lt;')
       .replace(/>/g, '&gt;')
       .replace(/"/g, '&quot;');
-  }
-
-  function renderDisplayTitle(displayTitle) {
-    const title = String(displayTitle || '').trim();
-    const lang = String(document.documentElement.lang || '').toLowerCase();
-    if (lang.startsWith('ar') && title.includes(' — ')) {
-      const divider = title.lastIndexOf(' — ');
-      const product = title.slice(0, divider).trim();
-      const suffix = title.slice(divider + 3).trim();
-      return `<bdi dir="ltr">${escapeHtml(product)}</bdi><span aria-hidden="true"> — </span><bdi dir="rtl">${escapeHtml(suffix)}</bdi>`;
-    }
-    return `<bdi dir="auto">${escapeHtml(title)}</bdi>`;
   }
 
   function photoLabel(photo, index) {
@@ -299,12 +293,11 @@
 
   function renderBuyBoxActions(item, u) {
     const primary = item.status === 'Available'
-      ? u.leadLink(item, 'price', 'hc-item-detail__btn hc-item-detail__btn--primary', t('nav.requestQuote', 'Get Quote'))
+      ? u.leadLink(item, 'price', 'hc-item-detail__btn hc-item-detail__btn--primary', t('hc.contactTeam', 'Request quote'))
       : u.leadLink(item, 'similar', 'hc-item-detail__btn hc-item-detail__btn--primary', t('hc.requestSimilar', 'Request Similar Unit'));
 
     const secondary = [];
     if (item.status === 'Available') {
-      secondary.push(u.whatsappLink(item, 'hc-item-detail__btn hc-item-detail__btn--secondary hc-item-detail__btn--whatsapp', 'WhatsApp'));
       const price = Number(item.priceUsd);
       secondary.push(
         `<button type="button" class="hc-item-detail__btn hc-item-detail__btn--secondary hc-item-detail__btn--quote" data-quote-add`
@@ -319,6 +312,8 @@
         + ` data-page-url="${escapeHtml(u.listingSharePageUrl?.(item) || u.detailUrl?.(item) || '')}"`
         + `>${t('hc.addToQuoteList', 'Add to quote list')}</button>`,
       );
+      secondary.push(u.whatsappLink(item, 'hc-item-detail__btn hc-item-detail__btn--secondary hc-item-detail__btn--whatsapp', 'WhatsApp'));
+      secondary.push(u.facebookShareLink(item, 'hc-item-detail__btn hc-item-detail__btn--secondary hc-item-detail__btn--facebook', t('hc.shareFacebook', 'Share on Facebook')));
     } else if (item.status === 'Reserved' || item.status === 'In Transit') {
       secondary.push(u.leadLink(item, 'availability', 'hc-item-detail__btn hc-item-detail__btn--secondary', t('hc.checkAvailability', 'Check Availability')));
     }
@@ -513,9 +508,7 @@
     const cards = similar
       .map((entry) => u.renderListingCard(entry, { base: b }))
       .join('');
-    const brandUrl = u?.isExportableUsedCarItem?.(item)
-      ? `${b}half-cuts/?cat=used-cars&brand=${encodeURIComponent(item.brandSlug || '')}`
-      : `${b}brands/${item.brandSlug}.html#halfcuts-inventory`;
+    const brandUrl = brandInventoryUrl(item, b);
 
     return `<section class="hc-item-detail__panel hc-item-detail__similar" aria-labelledby="hc-similar-heading">
       <div class="ebay-section__head hc-item-detail__similar-head">
@@ -533,16 +526,23 @@
   function renderHalfCutDetailContent(item, root) {
     const b = base();
     const u = window.HalfCutUtils;
-    const displayTitle = window.EngineCardLabel?.formatHalfCutDetailH1?.(item)
-      || u.listingVehiclePrimaryTitle?.(item)
-      || u.listingTitle(item)
-      || item.title;
-    const title = u.seoTitle(item);
-    const description = u.seoDescription(item);
-
     const isTruck = item.vehicleCategory === 'truck';
     const isMachinery = item.vehicleCategory === 'machinery';
     const isUsedCar = !!(u.isExportableUsedCarItem?.(item));
+    const rawDisplayTitle = window.EngineCardLabel?.formatHalfCutDetailH1?.(item)
+      || u.listingVehiclePrimaryTitle?.(item)
+      || u.listingTitle(item)
+      || item.title;
+    let displayTitle = String(rawDisplayTitle || '').replace(/\bHalf Cut\b/gi, t('hc.halfCut', 'Half Cut'));
+    if (isUsedCar) {
+      displayTitle = displayTitle.replace(
+        /\bExport Used Car\b/gi,
+        t('hc.usedCarCompleteListing', 'Complete vehicle export listing'),
+      );
+    }
+    const title = u.seoTitle(item);
+    const description = u.seoDescription(item);
+
     const detailPath = isMachinery
       ? 'machinery/detail.html'
       : (isTruck ? 'trucks/detail.html' : (isUsedCar ? 'used-cars/detail.html' : 'half-cuts/detail.html'));
@@ -606,7 +606,7 @@
       ? (item.vehicleCondition || t('machinery.equipment', 'Construction Equipment'))
       : (isTruck
         ? t('trucks.halfCut', 'Truck Half Cut')
-        : (isUsedCar ? t('ebay.catUsedCars', 'Export Used Car') : t('hc.halfCut', 'Half Cut')));
+        : (isUsedCar ? t('hc.usedCarCompleteListing', 'Complete vehicle export listing') : t('hc.halfCut', 'Half Cut')));
 
     upsertJsonLd('schema-halfcut-breadcrumb', {
       '@context': 'https://schema.org',
@@ -621,9 +621,7 @@
     upsertJsonLd('schema-halfcut-product', u.productJsonLd(item, canonical));
 
     const engineUrl = isUsedCar ? null : u.enginePageUrl(b, item);
-    const brandUrl = isUsedCar
-      ? `${b}half-cuts/?cat=used-cars&brand=${encodeURIComponent(item.brandSlug || '')}`
-      : `${b}brands/${item.brandSlug}.html#halfcuts-inventory`;
+    const brandUrl = brandInventoryUrl(item, b);
     const statusLabel = window.PublicI18n?.translateStatus?.(item.status) || item.status;
     const statusClass = u.statusSlug(item.status);
     const priceLabel = u.formatFobPrice(item);
@@ -650,10 +648,10 @@
       : '';
 
     const trustItems = [
-      item.video?.url ? t('hc.trustVideo', 'Real inventory video') : null,
-      t('hc.trustPhotos', 'Real inventory photos'),
+      u.hasVideo(item) ? t('hc.trustVideo', 'Real inventory video') : null,
+      Array.isArray(item.photos) && item.photos.length ? t('hc.trustPhotos', 'Real inventory photos') : null,
       item.maskedVin ? t('hc.trustVin', 'VIN / chassis verifiable') : null,
-      t('hc.trustPrice', 'Transparent EXW price'),
+      priceLabel ? t('hc.trustPrice', 'Transparent EXW price') : null,
       t('hc.trustCif', 'EXW + CIF to your port'),
     ].filter(Boolean);
     const trustHtml = trustItems.slice(0, 4).map((label) => `<li>${escapeHtml(label)}</li>`).join('');
@@ -675,7 +673,7 @@
           </nav>
 
           <div class="hc-item-detail__product-head">
-            <h1 class="hc-item-detail__title">${renderDisplayTitle(displayTitle)}</h1>
+            <h1 class="hc-item-detail__title">${escapeHtml(displayTitle)}</h1>
             <p class="hc-item-detail__stock">${escapeHtml(item.stockId)} · ${escapeHtml(statusLabel)}</p>
             ${window.InquiryCta?.render?.({
               context: { product: `${item.brand} ${item.model} (${item.stockId})`, category: isUsedCar ? 'used-car' : 'half-cut' },
@@ -685,8 +683,8 @@
 
           <div class="hc-item-detail__layout">
             <div class="hc-item-detail__media-col">
-              ${gallery}
               ${videoSection}
+              ${gallery}
             </div>
 
             <aside class="hc-item-detail__buybox" aria-label="${t('hc.viewDetails', 'View Details')}">
@@ -694,7 +692,9 @@
                 <svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true"><path d="M12 2l8 4v6c0 5-3.5 9-8 10-4.5-1-8-5-8-10V6l8-4z" fill="none" stroke="currentColor" stroke-width="1.5"/></svg>
                 ${isUsedCar
                   ? t('hc.usedCarCompleteListing', 'Complete vehicle export listing')
-                  : t('hc.detailVerifiedExport', 'Verified export listing')}
+                  : (item.supplierVerified
+                    ? t('hc.detailVerifiedSupplier', 'Verified supplier listing')
+                    : t('hc.detailExportListing', 'Export listing'))}
               </p>
 
               ${priceHtml}
@@ -747,8 +747,8 @@
                 ${isUsedCar
                   ? `<li><a href="${brandUrl}">${escapeHtml(item.brand)} ${t('ebay.catUsedCars', 'Export Used Cars')}</a></li>`
                   : `<li><a href="${brandUrl}">${escapeHtml(item.brand)} ${t('hc.halfCutListings', 'Half-Cut Listings')}</a></li>
-                <li><a href="${b}brands/${item.brandSlug}.html#engines">${escapeHtml(item.brand)} ${t('engine.brandEngines', 'Engines')}</a></li>
-                <li><a href="${b}brands/${item.brandSlug}.html#gearboxes">${escapeHtml(item.brand)} ${t('engine.brandGearboxes', 'Gearboxes')}</a></li>`}
+                <li><a href="${b}engines/?brand=${encodeURIComponent(item.brandSlug || '')}">${escapeHtml(item.brand)} ${t('engine.brandEngines', 'Engines')}</a></li>
+                <li><a href="${b}gearboxes/?brand=${encodeURIComponent(item.brandSlug || '')}">${escapeHtml(item.brand)} ${t('engine.brandGearboxes', 'Gearboxes')}</a></li>`}
               </ul>
               <h3>${t('hc.catalog', 'Catalog')}</h3>
               <ul class="engine-detail__links">
@@ -781,6 +781,7 @@
       item,
     });
     window.AsiaPowerEbayLayout?.bindCarousels?.();
+    u.bindListingCoverVideos?.(root);
     window.QuoteList?.wireAddButtons?.(root);
   }
 
