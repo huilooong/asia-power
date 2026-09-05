@@ -4,11 +4,11 @@ import {spawnSync} from 'node:child_process';
 import fs from 'node:fs';
 import {SEO_TRAFFIC_FILES,buildSeoTrafficInstallScript} from '../scripts/lib/seo-traffic-release.mjs';
 
-test('release is limited to four approved storefront and analytics files',()=>{
-  assert.deepEqual(SEO_TRAFFIC_FILES.map(x=>x[1]),['public/robots.txt','lib/analytics-request-filter.js','lib/site-analytics.js','public/engines/g4kd.html']);
+test('release is limited to approved storefront, analytics and required style files',()=>{
+  assert.deepEqual(SEO_TRAFFIC_FILES.map(x=>x[1]),['public/robots.txt','lib/analytics-request-filter.js','lib/site-analytics.js','public/engines/g4kd.html','public/css/sitewide-secondary-v1.css']);
 });
 test('install validates baseline before atomic replacement and arms rollback',()=>{
-  const script=buildSeoTrafficInstallScript('REL-20260905-seo-traffic-test',Array(4).fill('a'.repeat(64)));
+  const script=buildSeoTrafficInstallScript('REL-20260905-seo-traffic-test',Array(5).fill('a'.repeat(64)));
   assert.equal(spawnSync('bash',['-n'],{input:script,encoding:'utf8'}).status,0);
   assert.ok(script.indexOf('test ! -e')<script.indexOf('trap rollback ERR'));
   assert.ok(script.indexOf('trap rollback ERR')<script.indexOf('.seo014.tmp'));

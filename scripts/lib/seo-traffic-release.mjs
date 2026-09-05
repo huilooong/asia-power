@@ -4,10 +4,11 @@ import crypto from 'node:crypto';
 import { spawnSync } from 'node:child_process';
 
 export const SEO_TRAFFIC_FILES = [
-  ['robots.txt', 'public/robots.txt', 'f52e0c74d18098ed5220de2b1f18742597dc03a2490f2b2268c1809864b8795f'],
-  ['server/lib/analytics-request-filter.js', 'lib/analytics-request-filter.js', null],
-  ['server/lib/site-analytics.js', 'lib/site-analytics.js', '39f30319a23b71fa59acb10b658b303c2ce8604d71bdd9525ac4f85769650227'],
-  ['engines/g4kd.html', 'public/engines/g4kd.html', '99c49b8474b85c59f9acf38cee297dd525903a313a064d1e5bcb52ac45935907'],
+  ['robots.txt', 'public/robots.txt', 'd1a53c1424e589604d822ab839123bad654eb55908ee4c800e5aa33ec4b38121'],
+  ['server/lib/analytics-request-filter.js', 'lib/analytics-request-filter.js', '774b0899d300618d084a3b5925ffdb4166ce96555e45f44d0e7ef95c49bc5521'],
+  ['server/lib/site-analytics.js', 'lib/site-analytics.js', '53ce9f5afb8a5876784e50d0e8b0b35dbac951371582c45875031b3da8745155'],
+  ['engines/g4kd.html', 'public/engines/g4kd.html', '50143243d7b10b2012da65438e14d3f1e27e98ce126c45eec7a6b7c9670cbfc7'],
+  ['css/sitewide-secondary-v1.css', 'public/css/sitewide-secondary-v1.css', null],
 ];
 const SITE = '/root/.openclaw/workspace/inventory-site';
 export const SEO_TRAFFIC_REMOTE_PATHS = SEO_TRAFFIC_FILES.map(([, dest]) => `${SITE}/${dest}`);

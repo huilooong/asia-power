@@ -23,6 +23,11 @@ assert.ok(html.includes('https://asia-power.com/engines/g4kd.html'));
 assert.ok(html.includes('data-form="contact-enquiry"'));
 assert.ok(html.includes('G-PB2J3VRX5J'));
 assert.ok(html.includes('name="engine_code" value="G4KD"'));
+assert.ok(html.includes('data-ebay-shell="1"'));
+for (const match of html.matchAll(/<link[^>]*rel="stylesheet"[^>]*href="([^"]+)"/g)) {
+  const url=new URL(match[1],base+'/engines/g4kd.html');
+  assert.ok(get(url.pathname+url.search).length>0, url.pathname);
+}
 const stock=JSON.parse(get('/api/half-cuts/public'));
 assert.ok(Array.isArray(stock.approved) && stock.approved.length>0);
 get('/api/admin/buyers',[401,403]);
