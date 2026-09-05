@@ -1,0 +1,103 @@
+{
+  "release_id": "REL-20260905003838-admin-gmail-7043b2efc",
+  "git_commit": "7043b2efc6218915aab11f4be5d2d9af26e80eac",
+  "git_branch": "codex/admin-gmail-reply-20260905",
+  "deploy_target": "admin-gmail",
+  "remote": "root@159.65.86.24",
+  "timestamp": "2026-09-05T00:38:38.139Z",
+  "changed_files": [
+    "admin/leads.html",
+    "js/admin-leads.js"
+  ],
+  "validation": {
+    "pre": {
+      "status": "pass",
+      "checks": [
+        {
+          "name": "git_clean",
+          "status": "pass",
+          "detail": "working tree clean"
+        },
+        {
+          "name": "git_pushed",
+          "status": "pass",
+          "detail": "HEAD is on origin/codex/admin-gmail-reply-20260905"
+        },
+        {
+          "name": "target",
+          "status": "pass",
+          "detail": "admin-gmail"
+        },
+        {
+          "name": "changed_files",
+          "status": "pass",
+          "detail": "2 planned file(s)"
+        },
+        {
+          "name": "public_asset_dependencies",
+          "status": "pass",
+          "detail": "{\"status\": \"pass\", \"checked\": 49, \"remote_checked\": 46, \"failures\": []}"
+        },
+        {
+          "name": "cache_bust_consistency",
+          "status": "pass",
+          "detail": "no inconsistent ?v= on changed shared js/css"
+        },
+        {
+          "name": "target_confirmation",
+          "status": "pass",
+          "detail": "--yes flag set"
+        },
+        {
+          "name": "backup_check",
+          "status": "pass",
+          "detail": "/root/.openclaw/workspace/inventory-site/backups/scheduled/asia-power-data-20260905-003843.tar.gz"
+        }
+      ]
+    },
+    "post": {
+      "status": "pass",
+      "checks": [
+        {
+          "name": "admin_gmail",
+          "status": "pass",
+          "detail": "PASS: admin page version, Gmail action, Sales account, existing status action"
+        },
+        {
+          "name": "nginx_verification",
+          "status": "skip",
+          "detail": "not required"
+        },
+        {
+          "name": "critical_url_check",
+          "status": "skip",
+          "detail": "not required"
+        },
+        {
+          "name": "services_active",
+          "status": "pass",
+          "detail": "active active"
+        },
+        {
+          "name": "apbd_global_worker",
+          "status": "skip",
+          "detail": "not required"
+        },
+        {
+          "name": "public_post_release_validation",
+          "status": "skip",
+          "detail": "target=admin-gmail: covered by target-specific validation when public"
+        }
+      ]
+    },
+    "ops003_public": null,
+    "cloudflare_purge": null
+  },
+  "recovery": {
+    "backup_archive": "/root/.openclaw/workspace/inventory-site/backups/scheduled/asia-power-data-20260905-003843.tar.gz",
+    "backup_mode": "data-only",
+    "snapshot_dir": "/root/.openclaw/workspace/inventory-site/releases/REL-20260905003838-admin-gmail-7043b2efc/snapshots",
+    "restore_command": "RESTORE_CONFIRM=REL-20260905003838-admin-gmail-7043b2efc node scripts/release-restore.mjs REL-20260905003838-admin-gmail-7043b2efc",
+    "local_release_json": "/private/tmp/asiapower-seo014-release/releases/REL-20260905003838-admin-gmail-7043b2efc/release.json"
+  }
+}
