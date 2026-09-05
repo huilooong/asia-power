@@ -1,0 +1,95 @@
+{
+  "checked_at": "2026-09-05T00:28:38.184Z",
+  "results": [
+    {
+      "file": "server/lib/catalog-list-prerender.js",
+      "sha256": "672abe7f116bb87deceb5785b48b40109f1af400f53a16d7c56aca8b8936bb35",
+      "match": true
+    },
+    {
+      "file": "engines/1nz-fe.html",
+      "sha256": "85a858bc6beb698d0cfe1d1d8de712337b3b29ba99c3457d67154c2504f40c93",
+      "match": true
+    },
+    {
+      "file": "engines/4b11.html",
+      "sha256": "27b5e9f2e905b089f0c799eb10a0188cff5c2df90ea33a793ce582a673afced9",
+      "match": true
+    },
+    {
+      "file": "engines/g6ba.html",
+      "sha256": "6f4776eefd727d53491901d5dc4e4813235269b107e7be75749a11023fa8ed9c",
+      "match": true
+    },
+    {
+      "file": "engines/k10b.html",
+      "sha256": "0889064e940fe4a7f9ad9ca91f1ed7961a504cd243f5f1531b4e3c08e8f6d37d",
+      "match": true
+    },
+    {
+      "file": "engines/k24z4.html",
+      "sha256": "bd319c0a37e2aab253a70b8737fea1e32cf2f17bdef42f0556c1894b5d228f5d",
+      "match": true
+    },
+    {
+      "file": "engines/kia-k2-g4fc-half-cut-guide.html",
+      "sha256": "4068e9da1d206971d24eea36b0a4cd45a993848745d343a3b4073ffb67d0d8a0",
+      "match": true
+    },
+    {
+      "file": "engines/l15a7.html",
+      "sha256": "d8e14fd1055db8e0b8243927a62a191f4a4b34e4eea5f1e0e38727df14c698ae",
+      "match": true
+    },
+    {
+      "file": "engines/m271-951.html",
+      "sha256": "3bfb57fb98b1e179d5566ac9fdbfaea66ee0bab884d2d5b1b669765fb3fb2cbf",
+      "match": true
+    },
+    {
+      "file": "engines/r18a1.html",
+      "sha256": "daf7d0d69351c3710992848ff87c06a8295ebf799d9cd288f23ebdfb9fecad7a",
+      "match": true
+    },
+    {
+      "file": "guides/ghana-auto-spare-parts-import-guide.html",
+      "sha256": "52aab525c0dce07fff7d2920f517a77e65461060ebc310c560791f8aef0fd951",
+      "match": true
+    },
+    {
+      "file": "guides/guide-import-moteur-cote-ivoire.html",
+      "sha256": "26a9ade22113c84db95c4f3ac9ee843020d24197eb45e8718dbde8fffbd5e077",
+      "match": true
+    },
+    {
+      "file": "js/half-cut-detail.js",
+      "sha256": "4aea269284e747d7efb2d624e4596acc7e2479bef110d65fae8c1c466d29921b",
+      "match": true
+    },
+    {
+      "file": "server/lib/half-cut-seo.js",
+      "sha256": "cba96cf7d35ca51fac64dd96cf4d94fb2117b544f69e0eaa08db788bd9204af9",
+      "match": true
+    },
+    {
+      "file": "half-cuts/detail.html",
+      "sha256": "a6775f94dcc8cfb10a768b0ee05d0c39db630704d9aa986fee1e206e9d0a5349",
+      "match": true
+    },
+    {
+      "file": "trucks/detail.html",
+      "sha256": "3101a4e2d37d6656889a833a9088e2015214852e0cf1ddc2333bbcc56c3fa922",
+      "match": true
+    },
+    {
+      "file": "machinery/detail.html",
+      "sha256": "e48d1d87d2d82c2a75a8ea6a18db7af05811287b90a95c6bfe7ad196b98e1440",
+      "match": true
+    },
+    {
+      "file": "used-cars/detail.html",
+      "sha256": "44a151e8f4113f509fba0c34b1af6d66b0b6ee6925291a254de611314fd6381a",
+      "match": true
+    }
+  ]
+}

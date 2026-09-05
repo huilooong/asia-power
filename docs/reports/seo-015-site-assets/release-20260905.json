@@ -1,0 +1,119 @@
+{
+  "release_id": "REL-20260905002530-seo-assets-1513d6b52",
+  "git_commit": "1513d6b5255e0c8aa9cb085854f2d3ada289a304",
+  "git_branch": "codex/seo015-site-assets-20260905",
+  "deploy_target": "seo-assets",
+  "remote": "root@159.65.86.24",
+  "timestamp": "2026-09-05T00:25:30.855Z",
+  "changed_files": [
+    "engines/1nz-fe.html",
+    "engines/4b11.html",
+    "engines/g6ba.html",
+    "engines/k10b.html",
+    "engines/k24z4.html",
+    "engines/kia-k2-g4fc-half-cut-guide.html",
+    "engines/l15a7.html",
+    "engines/m271-951.html",
+    "engines/r18a1.html",
+    "guides/ghana-auto-spare-parts-import-guide.html",
+    "guides/guide-import-moteur-cote-ivoire.html",
+    "half-cuts/detail.html",
+    "js/half-cut-detail.js",
+    "machinery/detail.html",
+    "server/lib/catalog-list-prerender.js",
+    "server/lib/half-cut-seo.js",
+    "trucks/detail.html",
+    "used-cars/detail.html"
+  ],
+  "validation": {
+    "pre": {
+      "status": "pass",
+      "checks": [
+        {
+          "name": "git_clean",
+          "status": "pass",
+          "detail": "working tree clean"
+        },
+        {
+          "name": "git_pushed",
+          "status": "pass",
+          "detail": "HEAD is on origin/codex/seo015-site-assets-20260905"
+        },
+        {
+          "name": "target",
+          "status": "pass",
+          "detail": "seo-assets"
+        },
+        {
+          "name": "changed_files",
+          "status": "pass",
+          "detail": "18 planned file(s)"
+        },
+        {
+          "name": "public_asset_dependencies",
+          "status": "pass",
+          "detail": "{\"status\": \"pass\", \"checked\": 102, \"remote_checked\": 85, \"failures\": []}"
+        },
+        {
+          "name": "cache_bust_consistency",
+          "status": "pass",
+          "detail": "no inconsistent ?v= on changed shared js/css"
+        },
+        {
+          "name": "target_confirmation",
+          "status": "pass",
+          "detail": "--yes flag set"
+        },
+        {
+          "name": "backup_check",
+          "status": "pass",
+          "detail": "/root/.openclaw/workspace/inventory-site/backups/scheduled/asia-power-data-20260905-002538.tar.gz"
+        }
+      ]
+    },
+    "post": {
+      "status": "pass",
+      "checks": [
+        {
+          "name": "seo_assets_contract",
+          "status": "pass",
+          "detail": "{\"status\": \"pass\", \"asset_dependencies\": {\"status\": \"pass\", \"checked\": 106, \"remote_checked\": 106, \"failures\": []}, \"catalogs\": [{\"url\": \"https://asia-power.com/half-cuts/\", \"quick_links\": \"pass\", \"noindex\": false}, {\"url\": \"https://asia-power.com/trucks/\", \"quick_links\": \"pass\", \"noindex\": false}, {\"url\": \"https://asia-power.com/machinery/\", \"quick_links\": \"pass\", \"noindex\": false}, {\"url\": \"https://asia-power.com/engines/\", \"quick_links\": \"pass\", \"noindex\": false}, {\"url\": \"https://asia-power.com/gearboxes/\", \"quick_links\": \"pass\", \"noindex\": false}]}\n{\"status\": \"pass\", \"repaired_source_pages\": 63, \"critical_resource_urls\": 179, \"restored_product_photos\": 3, \"public_photo_files\": 6}"
+        },
+        {
+          "name": "nginx_verification",
+          "status": "skip",
+          "detail": "not required"
+        },
+        {
+          "name": "critical_url_check",
+          "status": "skip",
+          "detail": "not required"
+        },
+        {
+          "name": "services_active",
+          "status": "pass",
+          "detail": "active active"
+        },
+        {
+          "name": "apbd_global_worker",
+          "status": "skip",
+          "detail": "not required"
+        },
+        {
+          "name": "public_post_release_validation",
+          "status": "skip",
+          "detail": "target=seo-assets: covered by target-specific validation when public"
+        }
+      ]
+    },
+    "ops003_public": null,
+    "cloudflare_purge": null
+  },
+  "recovery": {
+    "backup_archive": "/root/.openclaw/workspace/inventory-site/backups/scheduled/asia-power-data-20260905-002538.tar.gz",
+    "backup_mode": "data-only",
+    "snapshot_dir": "/root/.openclaw/workspace/inventory-site/releases/REL-20260905002530-seo-assets-1513d6b52/snapshots",
+    "restore_command": "RESTORE_CONFIRM=REL-20260905002530-seo-assets-1513d6b52 node scripts/release-restore.mjs REL-20260905002530-seo-assets-1513d6b52",
+    "local_release_json": "/private/tmp/asiapower-seo014-release/releases/REL-20260905002530-seo-assets-1513d6b52/release.json"
+  }
+}

@@ -1,0 +1,27 @@
+{
+  "updated_at": "2026-09-05T00:28:38.246608+00:00",
+  "automation_id": "asiapower",
+  "latest_release": "REL-20260905002530-seo-assets-1513d6b52",
+  "status": "verified",
+  "initial_audit": {
+    "sitemap_urls": 781,
+    "published_html_files": 290,
+    "page_urls": 1556,
+    "resource_urls": 5692,
+    "raw_failures": 38,
+    "expected_parser_boundaries": 2,
+    "repaired_failure_targets": 36
+  },
+  "post_validation": {
+    "affected_source_pages": 63,
+    "critical_css_js_urls": 179,
+    "catalog_resource_graph_urls": 106,
+    "public_photo_files": 6
+  },
+  "follow_up": [
+    "Check all affected resources and incoming stock media for recurrence",
+    "Verify GSC G4KD indexing and catalog crawl outcome",
+    "Prioritize engine-page content accuracy and stale internal-source language",
+    "Compare full 7-day/28-day GA4 and GSC windows; technical deployment is not traffic growth"
+  ]
+}
