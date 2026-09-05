@@ -1,0 +1,30 @@
+{
+  "checked_at": "2026-09-05T00:06:27.394Z",
+  "results": [
+    {
+      "file": "robots.txt",
+      "sha256": "d1a53c1424e589604d822ab839123bad654eb55908ee4c800e5aa33ec4b38121",
+      "match": true
+    },
+    {
+      "file": "server/lib/analytics-request-filter.js",
+      "sha256": "774b0899d300618d084a3b5925ffdb4166ce96555e45f44d0e7ef95c49bc5521",
+      "match": true
+    },
+    {
+      "file": "server/lib/site-analytics.js",
+      "sha256": "53ce9f5afb8a5876784e50d0e8b0b35dbac951371582c45875031b3da8745155",
+      "match": true
+    },
+    {
+      "file": "engines/g4kd.html",
+      "sha256": "5adfc45aba99e663505a6ce98ca840d5cf0bc004854f52f9888d8c37059c3e73",
+      "match": true
+    },
+    {
+      "file": "css/sitewide-secondary-v1.css",
+      "sha256": "65c60a4fa6da7827ac3a9fbcfea9ea90e955b9fbc13bcd2223080eba0bbd91ff",
+      "match": true
+    }
+  ]
+}

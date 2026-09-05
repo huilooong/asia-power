@@ -1,0 +1,180 @@
+{
+  "release_id": "REL-20260905000306-seo-traffic-47f5f8c44",
+  "git_commit": "47f5f8c44124dbd6bb51a1377bf2600c69de0224",
+  "git_branch": "codex/seo014-traffic-20260905",
+  "deploy_target": "seo-traffic",
+  "remote": "root@159.65.86.24",
+  "timestamp": "2026-09-05T00:03:06.875Z",
+  "changed_files": [
+    "css/sitewide-secondary-v1.css",
+    "engines/g4kd.html",
+    "robots.txt",
+    "server/lib/analytics-request-filter.js",
+    "server/lib/site-analytics.js"
+  ],
+  "validation": {
+    "pre": {
+      "status": "pass",
+      "checks": [
+        {
+          "name": "git_clean",
+          "status": "pass",
+          "detail": "working tree clean"
+        },
+        {
+          "name": "git_pushed",
+          "status": "pass",
+          "detail": "HEAD is on origin/codex/seo014-traffic-20260905"
+        },
+        {
+          "name": "target",
+          "status": "pass",
+          "detail": "seo-traffic"
+        },
+        {
+          "name": "changed_files",
+          "status": "pass",
+          "detail": "5 planned file(s)"
+        },
+        {
+          "name": "cache_bust_consistency",
+          "status": "pass",
+          "detail": "no inconsistent ?v= on changed shared js/css"
+        },
+        {
+          "name": "target_confirmation",
+          "status": "pass",
+          "detail": "--yes flag set"
+        },
+        {
+          "name": "backup_check",
+          "status": "pass",
+          "detail": "/root/.openclaw/workspace/inventory-site/backups/scheduled/asia-power-data-20260905-000309.tar.gz"
+        }
+      ]
+    },
+    "post": {
+      "status": "pass",
+      "checks": [
+        {
+          "name": "seo_traffic_public_contract",
+          "status": "pass",
+          "detail": "{\"status\":\"pass\",\"http_checks\":11,\"robots\":\"pass\",\"editorial_page\":\"pass\",\"form_and_analytics\":\"preserved\",\"public_inventory\":\"nonempty\",\"admin\":\"protected\"}"
+        },
+        {
+          "name": "nginx_verification",
+          "status": "skip",
+          "detail": "not required"
+        },
+        {
+          "name": "critical_url_check",
+          "status": "skip",
+          "detail": "not required"
+        },
+        {
+          "name": "services_active",
+          "status": "pass",
+          "detail": "active active"
+        },
+        {
+          "name": "apbd_global_worker",
+          "status": "skip",
+          "detail": "not required"
+        },
+        {
+          "name": "public_post_release_validation",
+          "status": "skip",
+          "detail": "target=seo-traffic not public surface"
+        }
+      ],
+      "public_report": null,
+      "cloudflare_purge": null
+    },
+    "ops003_public": null,
+    "cloudflare_purge": null,
+    "post_history": [
+      {
+        "status": "fail",
+        "checks": [
+          {
+            "name": "seo_traffic_public_contract",
+            "status": "fail",
+            "detail": "node:internal/modules/run_main:107\n    triggerUncaughtException(\n    ^\n\nAssertionError [ERR_ASSERTION]: /robots.txt: HTTP 502\n    at get (file:///private/tmp/asiapower-seo014-release/scripts/verify-seo-traffic.mjs:11:10)\n    at file:///private/tmp/asiapower-seo014-release/scripts/verify-seo-traffic.mjs:15:14\n    at ModuleJob.run (node:internal/modules/esm/module_job:439:25)\n    at async onImport.tracePromise.__proto__ (node:internal/modules/esm/loader:643:26)\n    at async asyncRunEntryPointWithESMLoader (node:internal/modules/run_main:101:5) {\n  generatedMessage: false,\n  code: 'ERR_ASSERTION',\n  actual: false,\n  expected: true,\n  operator: '==',\n  diff: 'simple'\n}\n\nNode.js v24.18.0"
+          },
+          {
+            "name": "nginx_verification",
+            "status": "skip",
+            "detail": "not required"
+          },
+          {
+            "name": "critical_url_check",
+            "status": "skip",
+            "detail": "not required"
+          },
+          {
+            "name": "services_active",
+            "status": "pass",
+            "detail": "active active"
+          },
+          {
+            "name": "apbd_global_worker",
+            "status": "skip",
+            "detail": "not required"
+          },
+          {
+            "name": "public_post_release_validation",
+            "status": "skip",
+            "detail": "target=seo-traffic not public surface"
+          }
+        ],
+        "observed_at": "2026-09-05T00:03:06.875Z"
+      },
+      {
+        "status": "pass",
+        "checks": [
+          {
+            "name": "seo_traffic_public_contract",
+            "status": "pass",
+            "detail": "{\"status\":\"pass\",\"http_checks\":11,\"robots\":\"pass\",\"editorial_page\":\"pass\",\"form_and_analytics\":\"preserved\",\"public_inventory\":\"nonempty\",\"admin\":\"protected\"}"
+          },
+          {
+            "name": "nginx_verification",
+            "status": "skip",
+            "detail": "not required"
+          },
+          {
+            "name": "critical_url_check",
+            "status": "skip",
+            "detail": "not required"
+          },
+          {
+            "name": "services_active",
+            "status": "pass",
+            "detail": "active active"
+          },
+          {
+            "name": "apbd_global_worker",
+            "status": "skip",
+            "detail": "not required"
+          },
+          {
+            "name": "public_post_release_validation",
+            "status": "skip",
+            "detail": "target=seo-traffic not public surface"
+          }
+        ],
+        "public_report": null,
+        "cloudflare_purge": null,
+        "observed_at": "2026-09-05T00:06:17.059Z"
+      }
+    ],
+    "note": "Initial verification observed HTTP 502 around service restart; subsequent public contract verification passed. Failed result retained in post_history."
+  },
+  "recovery": {
+    "backup_archive": "/root/.openclaw/workspace/inventory-site/backups/scheduled/asia-power-data-20260905-000309.tar.gz",
+    "backup_mode": "data-only",
+    "snapshot_dir": "/root/.openclaw/workspace/inventory-site/releases/REL-20260905000306-seo-traffic-47f5f8c44/snapshots",
+    "restore_command": "RESTORE_CONFIRM=REL-20260905000306-seo-traffic-47f5f8c44 node scripts/release-restore.mjs REL-20260905000306-seo-traffic-47f5f8c44",
+    "local_release_json": "/private/tmp/asiapower-seo014-release/releases/REL-20260905000306-seo-traffic-47f5f8c44/release.json"
+  }
+}

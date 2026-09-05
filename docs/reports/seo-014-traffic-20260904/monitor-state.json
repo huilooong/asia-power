@@ -1,0 +1,36 @@
+{
+  "updated_at": "2026-09-05T00:06:54.553834+00:00",
+  "automation_id": "asiapower",
+  "cadence_hours": 6,
+  "last_weekly_report_date": "2026-09-05",
+  "latest_release": "REL-20260905000306-seo-traffic-47f5f8c44",
+  "gsc_g4kd": {
+    "live_test": "indexable",
+    "index_request": "accepted",
+    "indexing": "pending"
+  },
+  "baseline": {
+    "ga4": {
+      "start": "2026-08-28",
+      "end": "2026-09-03",
+      "active_users": 59,
+      "sessions": 77,
+      "key_events": 7
+    },
+    "gsc": {
+      "start": "2026-08-06",
+      "end": "2026-09-02",
+      "clicks": 26,
+      "impressions": 963,
+      "ctr_percent": 2.7,
+      "average_position": 22
+    }
+  },
+  "pending": [
+    "Check for recurring HTTP 502",
+    "Verify G4KD indexing",
+    "Investigate GSC soft404 and redirect errors",
+    "Verify qualified inquiry definition and source",
+    "Compare complete windows; no data is not zero"
+  ]
+}
