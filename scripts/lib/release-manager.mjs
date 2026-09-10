@@ -13,10 +13,11 @@ import {
 } from './post-release-validation.mjs';
 import { checkCacheBustConsistency } from './cache-bust-check.mjs';
 
-export const VALID_TARGETS = ['nginx', 'api', 'engines', 'apbd', 'apbd-global', 'apsales', 'apsales-openclaw', 'finalize', 'home', 'portal', 'chrome', 'categories', 'admin'];
+export const VALID_TARGETS = ['product-layout', 'nginx', 'api', 'engines', 'apbd', 'apbd-global', 'apsales', 'apsales-openclaw', 'finalize', 'home', 'portal', 'chrome', 'categories', 'admin'];
 
 /** @type {Record<string, string[]>} */
 export const TARGET_SOURCE_FILES = {
+  "product-layout": ["js/half-cut-detail.js", "css/detail-v4-tokens.css", "half-cuts/detail.html", "trucks/detail.html", "machinery/detail.html", "used-cars/detail.html"],
   apbd: [
     'agents/apbd/solo_trade',
     'agents/apbd/leads/adapters/website.py',
@@ -241,6 +242,7 @@ export const TARGET_SOURCE_FILES = {
 
 /** @type {Record<string, string[]>} */
 export const TARGET_REMOTE_PATHS = {
+  "product-layout": ["/root/.openclaw/workspace/inventory-site/public/js/half-cut-detail.js", "/root/.openclaw/workspace/inventory-site/public/css/detail-v4-tokens.css", "/root/.openclaw/workspace/inventory-site/public/half-cuts/detail.html", "/root/.openclaw/workspace/inventory-site/public/trucks/detail.html", "/root/.openclaw/workspace/inventory-site/public/machinery/detail.html", "/root/.openclaw/workspace/inventory-site/public/used-cars/detail.html"],
   apbd: [
     '/root/.openclaw/workspace/AsiaPower/agents/apbd/solo_trade',
     '/root/.openclaw/workspace/AsiaPower/agents/apbd/leads/adapters/website.py',
@@ -644,7 +646,7 @@ export function runPreDeployValidation({ root, target, remote, allowDirty, yes, 
     });
   }
 
-  const backupMode = ['engines', 'apbd', 'apbd-global', 'apsales', 'finalize'].includes(target) ? 'data-only' : 'full';
+  const backupMode = ['product-layout', 'engines', 'apbd', 'apbd-global', 'apsales', 'finalize'].includes(target) ? 'data-only' : 'full';
   const backupCmd = backupMode === 'data-only'
     ? 'bash /root/.openclaw/workspace/inventory-site/scripts/backup-inventory-site.sh --data-only'
     : 'bash /root/.openclaw/workspace/inventory-site/scripts/backup-inventory-site.sh';

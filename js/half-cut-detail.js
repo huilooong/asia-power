@@ -502,24 +502,35 @@
   }
 
   function renderSimilarProductsSection(item, u, b) {
-    const similar = pickSimilarProducts(item, 8);
+    const similar = pickSimilarProducts(item, 4);
     if (!similar.length) return '';
-
-    const cards = similar
-      .map((entry) => u.renderListingCard(entry, { base: b }))
-      .join('');
-    const brandUrl = brandInventoryUrl(item, b);
-
-    return `<section class="hc-item-detail__panel hc-item-detail__similar" aria-labelledby="hc-similar-heading">
-      <div class="ebay-section__head hc-item-detail__similar-head">
-        <h2 class="hc-item-detail__panel-title" id="hc-similar-heading">${t('hc.similarProducts', 'Similar products')}</h2>
-        <a href="${brandUrl}">${escapeHtml(similarSectionSeeAllLabel(item.brand))}</a>
+    const cards = similar.map((entry) => {
+      const display = u.toPublicItem(entry);
+      const href = u.detailUrl(b, display.slug);
+      const title = u.listingVehiclePrimaryTitle(display) || u.listingTitle(display);
+      const photo = u.firstPhotoUrl(display) || `${b}assets/images/supply-halfcut.jpg`;
+      const meta = [u.listingEngineConfirmLine(display), display.year, display.transmissionCode].filter(Boolean);
+      return `<article class="ap-similar-card">
+        <a class="ap-similar-card__photo" href="${escapeHtml(href)}">
+          <img src="${escapeHtml(photo)}" alt="${escapeHtml(title)} · ${escapeHtml(display.stockId)}" loading="lazy">
+          ${u.hasVideo(display) ? `<span class="ap-similar-card__video">▷ ${t('hc.video', 'Video')}</span>` : ''}
+        </a>
+        <div class="ap-similar-card__body">
+          <div class="ap-similar-card__stock">${escapeHtml(display.stockId)}</div>
+          <h3><a href="${escapeHtml(href)}">${escapeHtml(title)}</a></h3>
+          <div class="ap-similar-card__meta">${meta.map(value => `<bdi>${escapeHtml(String(value))}</bdi>`).join(' · ')}</div>
+          <div class="ap-similar-card__status status-${u.statusSlug(display.status)}">${escapeHtml(u.listingStatusLabel(display))}</div>
+          <div class="ap-similar-card__price">${u.priceWithExwLabel(u.formatFobPrice(display), 'Quote')}</div>
+          <a class="ap-similar-card__view" href="${escapeHtml(href)}">${t('hc.viewDetails', 'View Details')} <span aria-hidden="true">↗</span></a>
+        </div>
+      </article>`;
+    }).join('');
+    const note = u.isPassengerHalfCutItem(item) ? `<p>${t('hc.customDismantleNote', 'Custom dismantling · Parts on demand')}</p>` : '';
+    return `<section class="hc-item-detail__similar ap-similar" aria-labelledby="hc-similar-heading">
+      <div class="ap-similar__head"><div><h2 id="hc-similar-heading">${t('hc.similarProducts', 'Similar products')}</h2>${note}</div>
+        <a class="ap-similar__all" href="${brandInventoryUrl(item, b)}">${escapeHtml(similarSectionSeeAllLabel(item.brand))} ↗</a>
       </div>
-      <div class="ebay-carousel hc-item-detail__similar-carousel" data-carousel>
-        <button type="button" class="ebay-carousel__nav ebay-carousel__nav--prev" data-carousel-prev aria-label="${t('hc.prevPhoto', 'Previous')}">‹</button>
-        <div class="ebay-carousel__track" data-carousel-track>${cards}</div>
-        <button type="button" class="ebay-carousel__nav ebay-carousel__nav--next" data-carousel-next aria-label="${t('hc.nextPhoto', 'Next')}">›</button>
-      </div>
+      <div class="ap-similar__grid">${cards}</div>
     </section>`;
   }
 
@@ -733,7 +744,6 @@
                 ${partsHtml}
                 <p class="hc-item-detail__about-disclaimer">${inventoryNote}</p>
               </section>
-              ${renderSimilarProductsSection(item, u, b)}
             </div>
             <aside class="hc-item-detail__side-col">
               ${window.AsiaPowerCifCalculator?.renderDetailPanel?.({
@@ -757,6 +767,7 @@
               </ul>
             </aside>
           </div>
+          ${renderSimilarProductsSection(item, u, b)}
         </div>
       </section>
 
