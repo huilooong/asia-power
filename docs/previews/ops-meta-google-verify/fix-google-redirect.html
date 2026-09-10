@@ -12,35 +12,32 @@
     ol { padding-left: 1.2em; }
     code, .uri { background: #eee; padding: 2px 6px; border-radius: 4px; word-break: break-all; }
     .warn { color: #8a1f11; font-weight: 600; }
-    .swap { display: block; margin: 8px 0; padding: 10px; background: #fff; border-radius: 8px; }
   </style>
 </head>
 <body>
-  <h1>修好 Facebook「使用 Google 验证」报错</h1>
-  <p>你的错误详情已经对上：</p>
-  <p class="uri">redirect_uri=https://web.facebook.com/oauth2/redirect/</p>
-  <p>必须变成：</p>
-  <p class="uri">redirect_uri=https://www.facebook.com/oauth2/redirect/</p>
-  <p class="warn">不要在 Google 红字页上反复点登录。先关掉那一页，回到 Facebook 的 www 再点验证。</p>
+  <h1>www 会跳成 web：不要再改地址栏</h1>
+  <p>这是 Facebook 自己的跳转，改回 www 还会被甩回来，会打转。</p>
+  <p>真正要改的只有发给 Google 的这一行：</p>
+  <p class="uri">https://web.facebook.com/oauth2/redirect/ → https://www.facebook.com/oauth2/redirect/</p>
+  <p class="warn">必须用<strong>普通 Chrome</strong>（不要无痕），并装下面插件。无痕里插件默认不工作。</p>
 
   <div class="card">
-    <p><strong>现在按这 5 步</strong></p>
+    <p><strong>装插件（一次，以后 Agent 也靠同一逻辑）</strong></p>
     <ol>
-      <li>关掉 Google 那张红字标签页</li>
-      <li>新标签打开：<a href="https://www.facebook.com/">https://www.facebook.com/</a></li>
-      <li>看地址栏：如果变成 <code>web.facebook.com</code>，把 <code>web</code> 改成 <code>www</code>，按回车</li>
-      <li><strong>只有地址栏以 www.facebook.com 开头时</strong>，再点「使用 Google 验证」</li>
-      <li>若又出现红字：点地址栏，把所有 <code>web.facebook.com</code> 换成 <code>www.facebook.com</code>，按回车</li>
+      <li>关掉所有无痕窗口</li>
+      <li>地址栏打开 <code>chrome://extensions</code></li>
+      <li>右上角打开「开发者模式」</li>
+      <li>「加载已解压的扩展程序」</li>
+      <li>选文件夹 <code>integrations/social_browser/chrome-facebook-www-guard</code></li>
+      <li>点插件「详情」，打开「在无痕模式下启用」（可选）</li>
+      <li>打开 <a href="https://web.facebook.com/">https://web.facebook.com/</a>（留在 web 即可）</li>
+      <li>再点「使用 Google 验证」</li>
     </ol>
-    <p class="swap">错：<code>https://web.facebook.com/oauth2/redirect/</code><br />对：<code>https://www.facebook.com/oauth2/redirect/</code></p>
   </div>
 
   <div class="card">
-    <p><strong>书签（红字页点它会先送你回 www Facebook）</strong></p>
-    <p>把蓝色按钮拖到书签栏：</p>
-    <p>
-      <a class="btn" href="javascript:(function(){var u=location.href||'';if(/accounts\.google\.com/.test(u)&amp;&amp;/oauth\/error/.test(u)){location.href='https://www.facebook.com/';return;}location.href=u.split('web.facebook.com').join('www.facebook.com');})();">修好Facebook回跳</a>
-    </p>
+    <p><strong>备用：手机版网页</strong>（有时不走这条 Google 回跳）</p>
+    <p>打开 <a href="https://mbasic.facebook.com/">https://mbasic.facebook.com/</a> 用邮箱+密码登录。</p>
   </div>
 </body>
 </html>

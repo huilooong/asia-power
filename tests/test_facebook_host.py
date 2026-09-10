@@ -49,7 +49,9 @@ class FacebookHostTests(unittest.TestCase):
         self.assertIn("www.facebook.com", out)
         self.assertNotIn("web.facebook.com", out)
 
-    def test_rewrites_oauth2_redirect_path(self) -> None:
+    def test_leaves_facebook_web_page_alone(self) -> None:
+        src = "https://web.facebook.com/auth_platform/login_with_third_party/?apc=1"
+        self.assertEqual(rewrite_google_facebook_redirect(src), src)
         src = "https://accounts.google.com/o/oauth2/v2/auth?redirect_uri=https://web.facebook.com/oauth2/redirect/"
         out = rewrite_google_facebook_redirect(src)
         self.assertIn("redirect_uri=https://www.facebook.com/oauth2/redirect/", out)
