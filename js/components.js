@@ -8,7 +8,7 @@
   // Stale CDN entries for old ?v= keys (e.g. v4-listing-card-v1) can keep serving 66px parts thumbs.
   const SITE_EBAY_LAYOUT_VER = 'sitewide-secondary-v1';
   const SITE_COMPONENTS_VER = 'sitewide-secondary-v1';
-  const SITE_SECONDARY_STYLE_VER = 'sitewide-secondary-v1';
+  const SITE_SECONDARY_STYLE_VER = 'footer-readable-20260910';
   // Deploy markers (keep strings discoverable): auth-nav-v1 · auth-nav-once-v2 · auth-nav-sitewide-v1 · login-entry-v1 · lang-sync-v2 · contact-center-v1 · about-type-v2 · list-photo-uniform-v1 · list-photo-uniform-v2 · list-photo-uniform-v2b · parts-photo-v2 · integrity-audit-v1 · parts-placeholder-v1 · parts-parallel-v1 · stock-id-search-v1 · dedicated-price-v1 · catalog-search-v1
   // login-entry-v1 = catalog footer Sign in + clearer toolbar login pill; buyer dial codes expanded (local WIP, not deployed)
   // list-photo-uniform-v1 = half-cut list photo frames fixed 4:3 + cover
@@ -602,7 +602,7 @@
         <div class="ebay-trust__inner">${cards}</div>
         <div class="ap-secondary-footer__main">
           <div class="ap-secondary-footer__brand">
-            <a href="${href('index.html')}" aria-label="AsiaPower Home">${logoImg('ap-secondary-footer__logo', '', 'footer')}</a>
+            <a href="${href('index.html')}" aria-label="AsiaPower Home">${logoImg('ap-secondary-footer__logo', '', 'header')}</a>
             <p data-i18n="footer.circularSummary">Real inventory, traceable evidence and export coordination for reusable vehicles, powertrains, commercial assets and parts.</p>
             <div class="ap-secondary-footer__actions">
               <a class="ap-secondary-footer__quote" href="${href('contact.html')}" data-i18n="nav.requestQuote">${t('nav.requestQuote', 'Get quote')}</a>

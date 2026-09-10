@@ -512,7 +512,7 @@
       const meta = [u.listingEngineConfirmLine(display), display.year, display.transmissionCode].filter(Boolean);
       return `<article class="ap-similar-card">
         <a class="ap-similar-card__photo" href="${escapeHtml(href)}">
-          <img src="${escapeHtml(photo)}" alt="${escapeHtml(title)} · ${escapeHtml(display.stockId)}" loading="lazy">
+          <img src="${escapeHtml(photo)}"${photo.split('?')[0].endsWith('/photo-1785197978785-0a6aed67_full.webp') ? ' data-orientation-fix="clockwise"' : ''} alt="${escapeHtml(title)} · ${escapeHtml(display.stockId)}" loading="lazy">
           ${u.hasVideo(display) ? `<span class="ap-similar-card__video">▷ ${t('hc.video', 'Video')}</span>` : ''}
         </a>
         <div class="ap-similar-card__body">

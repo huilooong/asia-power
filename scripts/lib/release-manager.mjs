@@ -17,7 +17,7 @@ export const VALID_TARGETS = ['product-layout', 'nginx', 'api', 'engines', 'apbd
 
 /** @type {Record<string, string[]>} */
 export const TARGET_SOURCE_FILES = {
-  "product-layout": ["js/half-cut-detail.js", "css/detail-v4-tokens.css", "half-cuts/detail.html", "trucks/detail.html", "machinery/detail.html", "used-cars/detail.html"],
+  "product-layout": ["js/half-cut-detail.js", "css/detail-v4-tokens.css", "half-cuts/detail.html", "trucks/detail.html", "machinery/detail.html", "used-cars/detail.html", "js/components.js", "css/sitewide-secondary-v1.css"],
   apbd: [
     'agents/apbd/solo_trade',
     'agents/apbd/leads/adapters/website.py',
@@ -242,7 +242,7 @@ export const TARGET_SOURCE_FILES = {
 
 /** @type {Record<string, string[]>} */
 export const TARGET_REMOTE_PATHS = {
-  "product-layout": ["/root/.openclaw/workspace/inventory-site/public/js/half-cut-detail.js", "/root/.openclaw/workspace/inventory-site/public/css/detail-v4-tokens.css", "/root/.openclaw/workspace/inventory-site/public/half-cuts/detail.html", "/root/.openclaw/workspace/inventory-site/public/trucks/detail.html", "/root/.openclaw/workspace/inventory-site/public/machinery/detail.html", "/root/.openclaw/workspace/inventory-site/public/used-cars/detail.html"],
+  "product-layout": ["/root/.openclaw/workspace/inventory-site/public/js/half-cut-detail.js", "/root/.openclaw/workspace/inventory-site/public/css/detail-v4-tokens.css", "/root/.openclaw/workspace/inventory-site/public/half-cuts/detail.html", "/root/.openclaw/workspace/inventory-site/public/trucks/detail.html", "/root/.openclaw/workspace/inventory-site/public/machinery/detail.html", "/root/.openclaw/workspace/inventory-site/public/used-cars/detail.html", "/root/.openclaw/workspace/inventory-site/public/js/components.js", "/root/.openclaw/workspace/inventory-site/public/css/sitewide-secondary-v1.css"],
   apbd: [
     '/root/.openclaw/workspace/AsiaPower/agents/apbd/solo_trade',
     '/root/.openclaw/workspace/AsiaPower/agents/apbd/leads/adapters/website.py',

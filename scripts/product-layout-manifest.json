@@ -1,8 +1,10 @@
 {
-  "js/half-cut-detail.js": "4aea269284e747d7efb2d624e4596acc7e2479bef110d65fae8c1c466d29921b",
-  "css/detail-v4-tokens.css": "e42061ca26066686348485a01d803c2c4b2952a1b42d45d23fb09fa2a7f8a68c",
-  "half-cuts/detail.html": "a6775f94dcc8cfb10a768b0ee05d0c39db630704d9aa986fee1e206e9d0a5349",
-  "trucks/detail.html": "3101a4e2d37d6656889a833a9088e2015214852e0cf1ddc2333bbcc56c3fa922",
-  "machinery/detail.html": "e48d1d87d2d82c2a75a8ea6a18db7af05811287b90a95c6bfe7ad196b98e1440",
-  "used-cars/detail.html": "44a151e8f4113f509fba0c34b1af6d66b0b6ee6925291a254de611314fd6381a"
+  "js/half-cut-detail.js": "787b83a3be0bdabe9d4243f18b1be3061582fa5c869f2f9611ac21fae8f709e3",
+  "css/detail-v4-tokens.css": "7cabecd86ecf56fb5893522bdd66762ac69f0f88bea0ec13cbfd96ba7cd146a6",
+  "half-cuts/detail.html": "2630d84d1fdd8eeb9356e79fbfeafd1d77de94d727c78af76e4b0b837187d749",
+  "trucks/detail.html": "8c85415183f3c012ccc1fccab8eb610dfd2ec8e5e76a1dbb4d2361ab1c3a94ff",
+  "machinery/detail.html": "67c8bcdcd3ff38b27d236e989cb95f496edd210739efc7b0076f45271db678b4",
+  "used-cars/detail.html": "1c5d6eee01120e27009032c40898d71739a258a86facf2eb4d9b6cf01b28497e",
+  "js/components.js": "f7589a1a9f72f3f3412aa8de856bb9d8d864bce42796c5d2bbe9dd377ecd2d48",
+  "css/sitewide-secondary-v1.css": "65c60a4fa6da7827ac3a9fbcfea9ea90e955b9fbc13bcd2223080eba0bbd91ff"
 }

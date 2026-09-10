@@ -25,6 +25,6 @@ for(const [i,[f,old]] of Object.entries(manifest).entries()){
 }
 run('ssh',[remote,'bash','-s'],`set -euo pipefail\n${checks}\nrollback(){ trap - ERR; ${restore}\nexit 1; }\ntrap rollback ERR\n${install}\n${verify}\nnode --check '${site}/public/js/half-cut-detail.js'\ntrap - ERR\necho INSTALLED\n`);
 const post=await runPostDeployValidation({root,target,remote,baseUrl:'https://asia-power.com',releaseId:id});
-post.checks.push({name:'deployed_hashes',status:'pass',detail:'All six deployed files match staged SHA-256; prior hashes checked before install.'});
+post.checks.push({name:'deployed_hashes',status:'pass',detail:'All eight deployed files match staged SHA-256; prior hashes checked before install.'});
 const record=buildReleaseRecord({releaseId:id,git:pre.git,target,remote,timestamp,changedFiles:pre.changed_files,pre,post,backupPath:pre.backup_path,backupMode:pre.backup_mode,localReleaseJson:path.join(root,'releases',id,'release.json')});
 writeReleaseJson({remote,release:record,localDir:path.join(root,'releases',id)});printDeploymentSummary(record);if(post.status==='fail')process.exit(1);
