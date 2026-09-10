@@ -18,7 +18,7 @@ const short = run('git', ['rev-parse', '--short', 'HEAD']).trim();
 const releaseId = generateReleaseId(target, short);
 const timestamp = new Date().toISOString();
 const localDir = path.join(root, 'releases', releaseId);
-const stage = `/tmp/${releaseId}`;
+const stage = `/root/.openclaw/workspace/inventory-site/releases/${releaseId}/payload`;
 const pre = runPreDeployValidation({ root, target, remote, allowDirty: false, yes: process.argv.includes('--yes'), releaseId });
 console.log(JSON.stringify({ releaseId, pre }, null, 2));
 if (pre.status !== 'pass') process.exit(1);
