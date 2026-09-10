@@ -39,3 +39,7 @@ User authorized deployment and layout refinement in the current turn. Only diffe
 ## Remaining limits
 
 The catalogue is a sourced subset, not an exhaustive China homologation register. English engine article bodies remain English. Grouped/ambiguous engine-code source records are not silently assigned to individual model years. Suggested next work: resolve these remaining application records against manufacturer sources.
+
+## Follow-up verification
+
+The first production release is REL-20260910074038-site-content-e42c4228c (486 files, validation passed). A follow-up narrows model options to the selected VAG brand and updates language-script query versions on 239 public pages, using current production HTML as the base. This addresses an observed immutable cached path-utils.js response; the new query URL was verified to serve the updated script. Hidden directories, admin and private portal directories are excluded.
