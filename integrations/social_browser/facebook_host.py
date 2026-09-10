@@ -21,6 +21,8 @@ _FACEBOOK_HOSTS = {
 
 # Google OAuth URLs nest facebook hosts at 1–3 encoding layers.
 _WEB_TO_WWW_REPLACEMENTS = (
+    ("https://web.facebook.com/oauth2/redirect/", "https://www.facebook.com/oauth2/redirect/"),
+    ("https://web.facebook.com/oauth2/redirect", "https://www.facebook.com/oauth2/redirect"),
     ("https://web.facebook.com", "https://www.facebook.com"),
     ("http://web.facebook.com", "https://www.facebook.com"),
     ("https%3A%2F%2Fweb.facebook.com", "https%3A%2F%2Fwww.facebook.com"),

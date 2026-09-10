@@ -49,7 +49,11 @@ class FacebookHostTests(unittest.TestCase):
         self.assertIn("www.facebook.com", out)
         self.assertNotIn("web.facebook.com", out)
 
-    def test_rewrites_plain_google_redirect(self) -> None:
+    def test_rewrites_oauth2_redirect_path(self) -> None:
+        src = "https://accounts.google.com/o/oauth2/v2/auth?redirect_uri=https://web.facebook.com/oauth2/redirect/"
+        out = rewrite_google_facebook_redirect(src)
+        self.assertIn("redirect_uri=https://www.facebook.com/oauth2/redirect/", out)
+        self.assertNotIn("web.facebook.com", out)
         src = "https://accounts.google.com/o/oauth2/v2/auth?redirect_uri=https://web.facebook.com/x"
         out = rewrite_google_facebook_redirect(src)
         self.assertIn("https://www.facebook.com/x", out)

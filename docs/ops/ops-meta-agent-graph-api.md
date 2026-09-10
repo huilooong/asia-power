@@ -2,7 +2,9 @@
 
 **Status:** 已提供本机修复（书签 / Chrome 插件 / Playwright 改写）  
 **Date:** 2026-09-10  
-**根因：** Facebook 在 `web.facebook.com` 向 Google 发送回跳地址；Google 只登记了 `www.facebook.com` → 错误 400 `redirect_uri_mismatch`。
+**实测错误详情（CEO 2026-09-10）：**  
+`redirect_uri=https://web.facebook.com/oauth2/redirect/`  
+必须变成 `https://www.facebook.com/oauth2/redirect/` 后再点 Google。红字页本身改不了 Google 云后台；要先回 www 再验证。
 
 ## 结论
 
