@@ -1,6 +1,6 @@
 # Engine finder and site content release
 
-Status: validated locally; production release result is recorded by Release Manager under `releases/<release-id>/release.json`.
+Status: deployed and revalidated. Final release: `REL-20260910074457-site-content-a0751df97`.
 
 ## Deliverables
 
@@ -43,3 +43,9 @@ The catalogue is a sourced subset, not an exhaustive China homologation register
 ## Follow-up verification
 
 The first production release is REL-20260910074038-site-content-e42c4228c (486 files, validation passed). A follow-up narrows model options to the selected VAG brand and updates language-script query versions on 239 public pages, using current production HTML as the base. This addresses an observed immutable cached path-utils.js response; the new query URL was verified to serve the updated script. Hidden directories, admin and private portal directories are excluded.
+
+## Final production verification
+
+All seven critical public URLs returned HTTP 200 with current content. Finder flow passed in production at 390/768/1440px. Shared language script references on homepage, product detail, contact and Audi brand pages serve the new version. The first post-restart HTTP check encountered transient 502 responses; the original failures and later successful verification are both retained in the release record. Services are running with NRestarts=0.
+
+Production screenshots: `finder-390-live.png`, `finder-768-live.png`, `finder-1440-live.png`. No further deployment is needed for the final report and the local release-helper improvement (skip unnecessary service restart for static-only releases).

@@ -32,7 +32,7 @@ try:
   dst=Path(e['remote']);dst.parent.mkdir(parents=True,exist_ok=True);tmp=dst.with_name(dst.name+'.content-release-tmp');shutil.copy2(rel/'staging'/str(i),tmp);os.replace(tmp,dst)
  for e in rows:assert sha(Path(e['remote']))==e['sha256']
  subprocess.run(['node','--check',str(site/'lib/sitemap.js')],check=True)
- subprocess.run(['systemctl','restart','inventory-site.service'],check=True)
+ if any(e['local']=='server/lib/sitemap.js' for e in rows):subprocess.run(['systemctl','restart','inventory-site.service'],check=True)
  subprocess.run(['systemctl','is-active','inventory-site.service'],check=True)
 except Exception:
  restore();raise
@@ -43,4 +43,4 @@ let post=await runPostDeployValidation({root,target,remote,baseUrl:'https://asia
 post.checks.push({name:'scoped_hash_verification',status:'pass',detail:`${manifest.length} staged and installed SHA-256 matches; all previous hashes checked before installation.`});
 for(const url of ['/','/guides/','/guides/engines/','/guides/engines/dsva.html','/guides/engines/dtka.html','/engine-guides-sitemap.xml','/sitemap.xml']){try{let r=await fetch('https://asia-power.com'+url);let text=await r.text();const marker=url==='/guides/engines/'?'finder-form':url==='/sitemap.xml'?'dsva.html':null;post.checks.push({name:'public '+url,status:r.ok&&(!marker||text.includes(marker))?'pass':'fail',detail:String(r.status)+(marker?' / '+marker:'')})}catch(e){post.checks.push({name:'public '+url,status:'fail',detail:e.message})}}
 post.status=post.checks.some(c=>c.status==='fail')?'fail':'pass';
-const record=buildReleaseRecord({releaseId:id,git:pre.git,target,remote,timestamp,changedFiles:manifest.map(e=>e.local),pre,post,backupPath:pre.backup_path,backupMode:pre.backup_mode,localReleaseJson:path.join(localDir,'release.json')});record.scoped_manifest=manifest;record.restore_command=`ssh ${remote} python3 ${rel}/install.py ${rel} --restore`;writeReleaseJson({remote,release:record,localDir});printDeploymentSummary(record);if(post.status==='fail'){console.error(JSON.stringify(post.checks));process.exitCode=1}
+const record=buildReleaseRecord({releaseId:id,git:pre.git,target,remote,timestamp,changedFiles:manifest.map(e=>e.local),pre,post,backupPath:pre.backup_path,backupMode:pre.backup_mode,localReleaseJson:path.join(localDir,'release.json')});record.scoped_manifest=manifest;record.restore_command=`ssh ${remote} python3 ${rel}/install.py ${rel} --restore`;record.recovery.restore_command=record.restore_command;writeReleaseJson({remote,release:record,localDir});printDeploymentSummary(record);if(post.status==='fail'){console.error(JSON.stringify(post.checks));process.exitCode=1}
