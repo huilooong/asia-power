@@ -1,0 +1,157 @@
+[
+  {
+    "stage": "before",
+    "name": "home",
+    "url": "/",
+    "sel": ".ap-nav",
+    "h1": [
+      "Not about making more.About keeping automotive assetsin useful circulation."
+    ],
+    "overflow": false,
+    "lang": "en"
+  },
+  {
+    "stage": "before",
+    "name": "footer",
+    "url": "/",
+    "sel": ".ap-footer",
+    "h1": [
+      "Not about making more.About keeping automotive assetsin useful circulation."
+    ],
+    "overflow": false,
+    "lang": "en"
+  },
+  {
+    "stage": "before",
+    "name": "guides-zh",
+    "url": "/guides/?lang=zh",
+    "sel": "main",
+    "h1": [
+      "Used Engine Import Guides"
+    ],
+    "overflow": false,
+    "lang": "zh-CN"
+  },
+  {
+    "stage": "before",
+    "name": "titles",
+    "url": "/brands.html",
+    "sel": "main",
+    "h1": [
+      "Brand Directory",
+      "品牌目录"
+    ],
+    "overflow": false,
+    "lang": "zh-CN"
+  },
+  {
+    "stage": "before",
+    "name": "contact-fr",
+    "url": "/contact.html?lang=fr",
+    "sel": "main",
+    "h1": [
+      "Contact Us"
+    ],
+    "overflow": false,
+    "lang": "fr"
+  },
+  {
+    "stage": "before",
+    "name": "photo",
+    "url": "/half-cuts/detail.html?slug=toyota-camry-2007-1az-fe-half-cut-hc250602",
+    "sel": ".ap-photo-viewer",
+    "h1": [
+      "TOYOTA Camry Demi-coupe — 1AZ-FE"
+    ],
+    "overflow": false,
+    "lang": "fr"
+  },
+  {
+    "stage": "before",
+    "name": "engines",
+    "url": "/guides/engines/",
+    "sel": "main",
+    "h1": [
+      "Start with the engine code."
+    ],
+    "overflow": false,
+    "lang": "en"
+  },
+  {
+    "stage": "after",
+    "name": "home",
+    "url": "/",
+    "sel": ".ap-nav",
+    "h1": [
+      "Not about making more.About keeping automotive assetsin useful circulation."
+    ],
+    "overflow": false,
+    "lang": "en"
+  },
+  {
+    "stage": "after",
+    "name": "footer",
+    "url": "/",
+    "sel": ".ap-footer",
+    "h1": [
+      "Not about making more.About keeping automotive assetsin useful circulation."
+    ],
+    "overflow": false,
+    "lang": "en"
+  },
+  {
+    "stage": "after",
+    "name": "guides-zh",
+    "url": "/guides/?lang=zh",
+    "sel": "main",
+    "h1": [
+      "博客与采购指南"
+    ],
+    "overflow": false,
+    "lang": "zh-CN"
+  },
+  {
+    "stage": "after",
+    "name": "titles",
+    "url": "/brands.html",
+    "sel": "main",
+    "h1": [
+      "品牌目录"
+    ],
+    "overflow": false,
+    "lang": "zh-CN"
+  },
+  {
+    "stage": "after",
+    "name": "contact-fr",
+    "url": "/contact.html?lang=fr",
+    "sel": "main",
+    "h1": [
+      "Nous contacter"
+    ],
+    "overflow": false,
+    "lang": "fr"
+  },
+  {
+    "stage": "after",
+    "name": "photo",
+    "url": "/half-cuts/detail.html?slug=toyota-camry-2007-1az-fe-half-cut-hc250602",
+    "sel": ".ap-photo-viewer",
+    "h1": [
+      "TOYOTA Camry Demi-coupure — 1AZ-FE"
+    ],
+    "overflow": false,
+    "lang": "fr"
+  },
+  {
+    "stage": "after",
+    "name": "engines",
+    "url": "/guides/engines/",
+    "sel": "main",
+    "h1": [
+      "Find the full engine code."
+    ],
+    "overflow": false,
+    "lang": "en"
+  }
+]

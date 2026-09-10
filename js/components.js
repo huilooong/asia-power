@@ -6,9 +6,9 @@
 
   // Must bump when ebay-layout.css changes — injectEbayStylesheet rewrites all pages to this query.
   // Stale CDN entries for old ?v= keys (e.g. v4-listing-card-v1) can keep serving 66px parts thumbs.
-  const SITE_EBAY_LAYOUT_VER = 'sitewide-secondary-v1';
+  const SITE_EBAY_LAYOUT_VER = 'site-content-titles-20260910';
   const SITE_COMPONENTS_VER = 'sitewide-secondary-v1';
-  const SITE_SECONDARY_STYLE_VER = 'footer-readable-20260910';
+  const SITE_SECONDARY_STYLE_VER = 'site-content-readable-20260910';
   // Deploy markers (keep strings discoverable): auth-nav-v1 · auth-nav-once-v2 · auth-nav-sitewide-v1 · login-entry-v1 · lang-sync-v2 · contact-center-v1 · about-type-v2 · list-photo-uniform-v1 · list-photo-uniform-v2 · list-photo-uniform-v2b · parts-photo-v2 · integrity-audit-v1 · parts-placeholder-v1 · parts-parallel-v1 · stock-id-search-v1 · dedicated-price-v1 · catalog-search-v1
   // login-entry-v1 = catalog footer Sign in + clearer toolbar login pill; buyer dial codes expanded (local WIP, not deployed)
   // list-photo-uniform-v1 = half-cut list photo frames fixed 4:3 + cover
@@ -1072,4 +1072,49 @@
   }
 
   window.addEventListener('asiapower:langchange', injectLayout);
+  // Correct only the reviewed source photograph, including its thumbnail.
+  function repairReviewedPhotoOrientation() {
+    const source = /photo-1785197978785-0a6aed67_(full|thumb)\.webp(?:[?#]|$)/;
+    const fit = frame => {
+      const parent = frame.parentElement;
+      if (!parent) return;
+      const box = parent.getBoundingClientRect();
+      const width = Math.min(box.width, (box.height || box.width * .75) * 4 / 3);
+      frame.style.width = `${width}px`;
+      frame.style.height = `${width * .75}px`;
+    };
+    const resize = new ResizeObserver(entries => entries.forEach(entry => {
+      entry.target.querySelectorAll(':scope > .ap-orientation-frame').forEach(fit);
+    }));
+    function scan(root) {
+      const images = root.matches?.('img') ? [root] : [...(root.querySelectorAll?.('img') || [])];
+      images.forEach(img => {
+        const matches = source.test(img.currentSrc || img.src);
+        if (img.parentElement?.classList.contains('ap-orientation-frame')) {
+          if (!matches) { const frame=img.parentElement; frame.replaceWith(img); img.style.cssText=img.dataset.orientationOriginalStyle || ''; }
+          return;
+        }
+        if (!matches || img.dataset.orientationFix === 'clockwise') return;
+        const parent=img.parentElement;
+        if (!parent) return;
+        const height = parent.getBoundingClientRect().height;
+        if (getComputedStyle(parent).position === 'static') parent.style.position='relative';
+        if (height < 1) parent.style.aspectRatio='4 / 3';
+        parent.style.overflow='hidden';
+        const frame=document.createElement('span');frame.className='ap-orientation-frame';
+        frame.style.cssText='display:block;position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);overflow:hidden;pointer-events:none';
+        img.dataset.orientationOriginalStyle=img.style.cssText;
+        img.replaceWith(frame);frame.appendChild(img);
+        img.style.cssText='position:absolute!important;left:50%!important;top:50%!important;width:75%!important;height:133.3333%!important;max-width:none!important;max-height:none!important;object-fit:fill!important;transform:translate(-66.6667%,-50%) rotate(90deg)!important;margin:0!important';
+        fit(frame);resize.observe(parent);
+      });
+    }
+    const observer = new MutationObserver(records => records.forEach(record => {
+      if (record.type === 'attributes') scan(record.target);
+      else record.addedNodes.forEach(node => { if (node.nodeType===1) scan(node); });
+    }));
+    scan(document);
+    observer.observe(document.body,{subtree:true,childList:true,attributes:true,attributeFilter:['src','srcset']});
+  }
+  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',repairReviewedPhotoOrientation);else repairReviewedPhotoOrientation();
 })();

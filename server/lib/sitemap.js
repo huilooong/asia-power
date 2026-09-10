@@ -60,6 +60,22 @@ function listHtmlPaths(publicDir, subdir, priority, changefreq) {
     });
 }
 
+function guideEntries(publicDir, subdir = 'guides') {
+  const dir = path.join(publicDir, subdir);
+  if (!fs.existsSync(dir)) return [];
+  return fs.readdirSync(dir, { withFileTypes: true }).sort((a,b) => a.name.localeCompare(b.name)).flatMap(entry => {
+    if (entry.name.startsWith('.')) return [];
+    const relative = `${subdir}/${entry.name}`;
+    if (entry.isDirectory()) return guideEntries(publicDir, relative);
+    if (!entry.isFile() || !entry.name.endsWith('.html')) return [];
+    const file = path.join(publicDir, relative);
+    const html = fs.readFileSync(file, 'utf8');
+    const metas = html.match(/<meta\b[^>]*>/gi) || [];
+    if (metas.some(tag => /name\s*=\s*["'](?:robots|googlebot)["']/i.test(tag) && /noindex/i.test(tag))) return [];
+    return [{loc: entry.name === 'index.html' ? `/${subdir}/` : `/${relative}`, priority: '0.6', changefreq: 'monthly', lastmod: fs.statSync(file).mtime.toISOString().slice(0,10)}];
+  });
+}
+
 function isSitemapInventoryEligible(item) {
   if (!item?.slug) return false;
   if (item.status === 'Sold') return false;
@@ -99,13 +115,14 @@ function buildSitemapXml({ siteUrl, publicDir, approved = [] }) {
   const base = normalizeSiteUrl(siteUrl);
   const today = new Date().toISOString().slice(0, 10);
   const entries = [
-    ...CORE_PAGES,
+    ...CORE_PAGES.filter(entry => !entry.loc.startsWith('/guides/')),
+    ...guideEntries(publicDir),
     ...listHtmlPaths(publicDir, 'brands', '0.75', 'weekly'),
     ...listHtmlPaths(publicDir, 'engines', '0.65', 'monthly'),
     ...halfCutEntries(approved, today),
   ];
 
-  const body = entries.map(entry => {
+  const body = [...new Map(entries.map(entry => [entry.loc, entry])).values()].map(entry => {
     const loc = `${base}${entry.loc.startsWith('/') ? entry.loc : `/${entry.loc}`}`;
     const lastmod = entry.lastmod ? `\n    <lastmod>${escapeXml(String(entry.lastmod).slice(0, 10))}</lastmod>` : '';
     return `  <url>

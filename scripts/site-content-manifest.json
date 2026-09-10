@@ -1,0 +1,2918 @@
+[
+  {
+    "local": "contact.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/contact.html",
+    "sha256": "5ee973451ab0b31de27e62df8d09cea96e0fc5362e11a18cf8396e7c0b5fd0b7",
+    "before": "88acb297b3fdad18c436f589ae96517f2b10aa18f8b2fb5f59414626c70b3679"
+  },
+  {
+    "local": "css/home-v4-hybrid.css",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/css/home-v4-hybrid.css",
+    "sha256": "0a69c72d429deb2d164876620d699035f5268c7887149f8c60110dba2ebd557c",
+    "before": "351075cd4fa226448c989364b1cf950c48ac4a6b43a6d1ca1d53152a4c17b782"
+  },
+  {
+    "local": "css/sitewide-secondary-v1.css",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/css/sitewide-secondary-v1.css",
+    "sha256": "2587dcef852b10e6c2a9b23a2d1325b43c74bbd20a4270d8f5abc531ad0ace92",
+    "before": "329a2e2c605f7e7d8a37af36cf3b24efff306b52abbaae4ff7e92c0cae5533d2"
+  },
+  {
+    "local": "engine-guides-sitemap.xml",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/engine-guides-sitemap.xml",
+    "sha256": "13c93a491b263b39f640567a856d5a3aa4dec6a5b51afde5321ff00dc66f19e3",
+    "before": "342d7e37c4e23ac8e326a58a62e40ba8ee6a8348daec5bb367f0709ed465b55c"
+  },
+  {
+    "local": "engines/index.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/engines/index.html",
+    "sha256": "ce501ca9ffafa2de82a971556f557459674c32cb60d1086faf136ed51f582f61",
+    "before": "b6d7899f69f2ad58a6bbaafca8e042ae81f2d6ede1ff0c3c70dbcbcdce2d86c3"
+  },
+  {
+    "local": "guides/engines/15e4e.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/guides/engines/15e4e.html",
+    "sha256": "687d778b3c149774ba78408f3974a2ae47a9a73adc807f709ac666b3305fe6ad",
+    "before": "3739f851f7b15926db748a886bd09296f95532c947ac64a099618223f6023b89"
+  },
+  {
+    "local": "guides/engines/18k4g.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/guides/engines/18k4g.html",
+    "sha256": "a6dac40c91d8849aeb09153270bfc3ceccf18342af70d4926838605428e9515c",
+    "before": "b68830762fb2cfbb1ef65a456e60595feeb8806a2620b605bb03ec8d401d217c"
+  },
+  {
+    "local": "guides/engines/18l4e.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/guides/engines/18l4e.html",
+    "sha256": "046f0b7692c0a969fd2c3dcf54fcdbce7d68dc698a6278abf3b1cce1af34f4c1",
+    "before": "447645686c463d42b15e0c81daa03eaa72bcf088b7e4104314d1b52db22bc498"
+  },
+  {
+    "local": "guides/engines/1az-fe.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/guides/engines/1az-fe.html",
+    "sha256": "d1359082401861ba357e53b22b1ae36a238ee849cb050354cbf1aa590d011466",
+    "before": "70a6320331683a32db1720b74d0c64574d6024f399d99795710c0fb13f2edb88"
+  },
+  {
+    "local": "guides/engines/1gr-fe.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/guides/engines/1gr-fe.html",
+    "sha256": "5e142fbafcd3953e4bd3f0b02389f42ea37e479bc51753da0a53a309329e0319",
+    "before": "22bd16f14cd50f8bf075857a2a8c30f77c72eaea9764c5a6ac95fb2b2255d2b3"
+  },
+  {
+    "local": "guides/engines/1mz-fe.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/guides/engines/1mz-fe.html",
+    "sha256": "f2a83d274f193d9c61cf0a09cd144621b864f0ba51e53992d2b399467d3d5bb1",
+    "before": "66f87df7a5fa26267241406c6de7d8da3ff63c7ab9fd464465a0d0fa2e1c6d43"
+  },
+  {
+    "local": "guides/engines/1zr-fe.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/guides/engines/1zr-fe.html",
+    "sha256": "77881b6a2ed4753073519c18add4e1dd2975e2ad366285b660f9337701559b0a",
+    "before": "a567079868b782fe98e210a5f64c912599d43584252f9c4d996a5f4f46add357"
+  },
+  {
+    "local": "guides/engines/1zz-fe.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/guides/engines/1zz-fe.html",
+    "sha256": "408309ad4760f0274ec66a7641e45c3ecbe405aea35464ffcc2d7326f9c0e4fb",
+    "before": "1b1016b89e4e8874204cfd742a3cab35341ff39787d18a9e47cb5f131fa348a3"
+  },
+  {
+    "local": "guides/engines/20l4e.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/guides/engines/20l4e.html",
+    "sha256": "a93568b2465c84908f32424186e06a9242ab8eecd6ebf395b12f956d3d2fbc2c",
+    "before": "5bade7a603654101baabcf6e0ebf4e4016afcd6ce94cbbab779244ea97df1011"
+  },
+  {
+    "local": "guides/engines/2ar-fe.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/guides/engines/2ar-fe.html",
+    "sha256": "e4a2002a6b01c338d4f6a711b1e8d8f29f7cb8888e35c19e76884c3aa31f9e0e",
+    "before": "68f049aca443b6278ec8f97a71aa648efc5e5fd7a5c1630e04799ef09d2aefc6"
+  },
+  {
+    "local": "guides/engines/2az-fe.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/guides/engines/2az-fe.html",
+    "sha256": "f6d7f9a437a5a9bf216b9b648882166d171e72f587b42b83264f2d39220d17c2",
+    "before": "75a5e872bad7f56b5d90d9b3e60ab9d91c7a3d93a09f8d73c0c95b744161fcd5"
+  },
+  {
+    "local": "guides/engines/2gr-fe.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/guides/engines/2gr-fe.html",
+    "sha256": "78c882bde7aa242b4258a22d1e55effae13d8a6a7205fbfde691d5ca1e6e8075",
+    "before": "df8345503a9518db41e84a6a4f5c74f803318da01f83d52f472628cbcd2dbc6e"
+  },
+  {
+    "local": "guides/engines/2h0.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/guides/engines/2h0.html",
+    "sha256": "07ed8e863e7d760cb1f258cbc324f49774bcc80f59915146eaa45fbba5ebfb3a",
+    "before": "2ee370019fd6f6a18757893ac699065b3d0cbdfbae995f1e57778e3830540e9a"
+  },
+  {
+    "local": "guides/engines/2nz-fe.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/guides/engines/2nz-fe.html",
+    "sha256": "7398534604e548a3da357aca7fd38784dcd3c4d52cb95e4d863a09e38627cff4",
+    "before": "bc6713b1ac430f92b8ad50607b8553f1e8d0ba3921ec80c00749bc93cacc3e7e"
+  },
+  {
+    "local": "guides/engines/2tr-fe.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/guides/engines/2tr-fe.html",
+    "sha256": "db08a929a71cf37db753828d8ac62b0934c4873037c1a180a55144d78df2760a",
+    "before": "b098cff353ae91c7a1a2211b617e20f5ae4ed61a90a959fdacde29676ecbd643"
+  },
+  {
+    "local": "guides/engines/2zr-fe.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/guides/engines/2zr-fe.html",
+    "sha256": "c07294403941d3810bdea97fa1be396d9f4ceb3307f447e6551d6beed407855a",
+    "before": "f8ff231393c1861fb488a799677d08c0ece263ca642d053b387c3980716e9504"
+  },
+  {
+    "local": "guides/engines/2zr-fxe.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/guides/engines/2zr-fxe.html",
+    "sha256": "16721103163ac73faf5de9e6e0ba388b96e443aa3b9111153699e08a02fbc1f8",
+    "before": "18be5d15f80de82314deac7762803bb7d8ce0067d2f5fa5cce961678ac085e86"
+  },
+  {
+    "local": "guides/engines/3rz-fe.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/guides/engines/3rz-fe.html",
+    "sha256": "ac71eebba4996b990d7a27760e7224ff6ee5c43d93f2d5d7d3656a2f3b091d5f",
+    "before": "576dff4077712962355258ccc9258cf22376d83591fe8ae233039ca50c43437b"
+  },
+  {
+    "local": "guides/engines/4a91.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/guides/engines/4a91.html",
+    "sha256": "63ef743b98dfdb90ea964a4dfcbad353c0bf2deb43120f071e85938e08faaa4e",
+    "before": "17eca2ed8329822ad8a97f8a37a1d38853a3d8489826c0c785437bcaf7925dc6"
+  },
+  {
+    "local": "guides/engines/4a92.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/guides/engines/4a92.html",
+    "sha256": "b5a548d3abb7eeddec048ce23412511e1b54502e8e4110958af6e870d39c93d1",
+    "before": "7b0e97821a75a35dbd51be567913d895f1b5eced8b0adcb784145d01ed271d4b"
+  },
+  {
+    "local": "guides/engines/4b11.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/guides/engines/4b11.html",
+    "sha256": "8f7f6f9f0ad3b97ce8bdbd61de42010fa561ac8d006e10b3fbe00304bd30607a",
+    "before": "c4ae7387d3d2b3c54516d7c68c16761283cd80cbf612d7eec780f6bfb82be68d"
+  },
+  {
+    "local": "guides/engines/4b12.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/guides/engines/4b12.html",
+    "sha256": "9b666b3ed641a384209acc231f81ee67cff0e4e5a6a84272ce0a611dbb41fbe3",
+    "before": "188334fd92ad79dffb68288a73a0d1fc68d10be59baf3495d3d536e9cbaa978c"
+  },
+  {
+    "local": "guides/engines/4g15s.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/guides/engines/4g15s.html",
+    "sha256": "5f4010112429bef76a9e2c922faecbac924ea04f59ceab8187f57821376b7ff8",
+    "before": "ce29889496b3c492271b0ff23841dc695674b2ff0165ab8af11d604e1dab3e2c"
+  },
+  {
+    "local": "guides/engines/4g18.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/guides/engines/4g18.html",
+    "sha256": "00cf852200bcd447dd74b1bdd52631c50624693079462727fe051d85bb6f9b4b",
+    "before": "b3134fa796f5d4e07f065d1b9ee617a227a9aa086b905527fe39725e85d33026"
+  },
+  {
+    "local": "guides/engines/4g63.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/guides/engines/4g63.html",
+    "sha256": "37ec4779f3e70efeda353e97df4a71d478fbae46c86f5ac31062df1c16bafbc5",
+    "before": "5ea86e184fb243f4f550af607be7cf037a131bee477d2461dea9dd2942f97656"
+  },
+  {
+    "local": "guides/engines/4g63s4m.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/guides/engines/4g63s4m.html",
+    "sha256": "6843f006ac40809aa4b064d36ffd39c32fd0b0483744c53b4f4b341aa49d4825",
+    "before": "e9a1cb70759146b4921613c89c1f47b2e202a23b69f1bdb7bed4ba6a66210b03"
+  },
+  {
+    "local": "guides/engines/4g64.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/guides/engines/4g64.html",
+    "sha256": "efc4089bf2f4ec7266b5f14478099a4a1e26673b7b126251f45a4e33bda5474c",
+    "before": "551852bdade31dbfac6f89ecf06f4012443d5c0fa7ba10215e5e3b52828d226b"
+  },
+  {
+    "local": "guides/engines/4g64s4m.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/guides/engines/4g64s4m.html",
+    "sha256": "eb1e8d099c3ee3a83ca7fe66f48c3a8ffc1f19295f2bab43139917ded3392fa7",
+    "before": "f0f0037ea485714f196c54a9ab3ce8d4403f22d375076ef82d66b6a4e5c6f9e8"
+  },
+  {
+    "local": "guides/engines/4g69.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/guides/engines/4g69.html",
+    "sha256": "de441cd02832f63d060bce670ddf3ad53b4f325efe2566539db12bb17930f9e8",
+    "before": "b0da2b9359aefb072834c0e7adf2832f5be6ac4b442e8b5038d118cb1424dcdd"
+  },
+  {
+    "local": "guides/engines/4g69s4n.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/guides/engines/4g69s4n.html",
+    "sha256": "7180025812fd78ec98cb69a32a48b4d31b448c6b4b03e707ea41297d5383e7df",
+    "before": "38f40e574d6c6a9489d32406d46eac2c551c465b8f09f6d066ea384fdf3962f2"
+  },
+  {
+    "local": "guides/engines/4g93.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/guides/engines/4g93.html",
+    "sha256": "c4ee717ba237a03de038a83cd7a4424b8eb17f212c87b98804aa7cf5f9da186e",
+    "before": "677c642b16e87fdb953ab276291f38d22d0933088e2f7f2c9ea8d094e3970303"
+  },
+  {
+    "local": "guides/engines/5ar-fe.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/guides/engines/5ar-fe.html",
+    "sha256": "420140afdd062a4da3f80a7784739439f99c962a0beb3cf8a660ec7ea15feac8",
+    "before": "e4d46d611bd20e5d0eb6a47ff738e991889b5e0a6bc0eb3eb2bdffdb87354e91"
+  },
+  {
+    "local": "guides/engines/6ar-fse.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/guides/engines/6ar-fse.html",
+    "sha256": "3ca563d4a9ff98d813c0d3d30ff3570c01d653d11713fe38a13597a281e63f2d",
+    "before": "a0cac09d606b2edb636828b875bb320a70abf93e39b5526308d645573af0386a"
+  },
+  {
+    "local": "guides/engines/6g72.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/guides/engines/6g72.html",
+    "sha256": "0a2ae6e14deb9fe4ae20d8be6a6c93ac106dd3a47a115a26520f7500dd2b599f",
+    "before": "8c69075ec9faf3b8a290bc7da59cc7e1005ab142f9a0e507a3b72c22588fc54e"
+  },
+  {
+    "local": "guides/engines/6zr-fe.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/guides/engines/6zr-fe.html",
+    "sha256": "a40e58ce73cdc442f36cd54c38f51a92ced0e951619fcad7defe160efd8f0a7e",
+    "before": "0a0025461c8ff81c2f7dc3a90682274056d967b03badd8f0328d767216fa902d"
+  },
+  {
+    "local": "guides/engines/7nr-fe.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/guides/engines/7nr-fe.html",
+    "sha256": "c96f3fd84be2d58df118df2478ca52865903ace9c70375b83f39962b7acfca3f",
+    "before": "989c3a9529e0dbec48dca3eb6a663500adc3e5c112442b656eaf9d6bd5ba2cfc"
+  },
+  {
+    "local": "guides/engines/a25a-fks.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/guides/engines/a25a-fks.html",
+    "sha256": "23b3bfd296900270c081ebe0163b45ffdb9130a22f055164b5acaddc18b74313",
+    "before": null
+  },
+  {
+    "local": "guides/engines/b10s1.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/guides/engines/b10s1.html",
+    "sha256": "d228f3d3053f57239cbac284671940cb4aec42702dc838f5664d64d5c6e8996d",
+    "before": null
+  },
+  {
+    "local": "guides/engines/b38a15a.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/guides/engines/b38a15a.html",
+    "sha256": "601dfece52521998f2646a67bcb71edad6829d76f00cf5850613eaafd0d67f85",
+    "before": null
+  },
+  {
+    "local": "guides/engines/b38a15c.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/guides/engines/b38a15c.html",
+    "sha256": "9847966dde81017ec2139a571c83aa58e64b9677d1c3b96ebab70e11d306ffa9",
+    "before": null
+  },
+  {
+    "local": "guides/engines/b38b15a.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/guides/engines/b38b15a.html",
+    "sha256": "83cca06ac16a32677e41c69ad61a2d3c149a32b5306ed21c291fbd016cec2a39",
+    "before": null
+  },
+  {
+    "local": "guides/engines/b38b15c.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/guides/engines/b38b15c.html",
+    "sha256": "7737bbe31c1c779b98a46b51b715a93475611ef7d15e8d765487ce962fbe714c",
+    "before": null
+  },
+  {
+    "local": "guides/engines/b4204t6.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/guides/engines/b4204t6.html",
+    "sha256": "2881c7c32bc217161c1b84b4e898303e7ea1cfa9e5c5f73c596525faf46836a6",
+    "before": null
+  },
+  {
+    "local": "guides/engines/b48a20a.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/guides/engines/b48a20a.html",
+    "sha256": "5947e2886dec093de990a2af358dbeebcca921189a6164fc1ddeae35677af4b9",
+    "before": null
+  },
+  {
+    "local": "guides/engines/b48a20c.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/guides/engines/b48a20c.html",
+    "sha256": "8c97c77f04abf29fb9309a437eb1efd9dcc66713921b92745ddc7edef4dec1b7",
+    "before": null
+  },
+  {
+    "local": "guides/engines/b48a20d.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/guides/engines/b48a20d.html",
+    "sha256": "6474c9616101e74bd2a0a50f99a4c44695f1c65182c5343857bda1097387c85b",
+    "before": null
+  },
+  {
+    "local": "guides/engines/b48b20a.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/guides/engines/b48b20a.html",
+    "sha256": "387b318d248dd9d14524a96412ccbde0e627be352199fe524f482e8db8da9028",
+    "before": null
+  },
+  {
+    "local": "guides/engines/b48b20b.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/guides/engines/b48b20b.html",
+    "sha256": "e689c44ad9c570ee86de6bda98cbb78024cd495b69e8c814f0c3436cff3d2e29",
+    "before": null
+  },
+  {
+    "local": "guides/engines/b48b20c.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/guides/engines/b48b20c.html",
+    "sha256": "346f315c93bfbec50f08ba4aa522d31d2fdbf1b377ea3f45eaff2ad807be9203",
+    "before": null
+  },
+  {
+    "local": "guides/engines/b48b20d.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/guides/engines/b48b20d.html",
+    "sha256": "f78092333e760ddb0995dde9ce2f3a9d73f463b0c584d6a29189f2678554d4b4",
+    "before": null
+  },
+  {
+    "local": "guides/engines/b5204t9.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/guides/engines/b5204t9.html",
+    "sha256": "6ff6c1d212a9dee468cc79ccdc03ae8219f0eda15772c219bfae06135f2ed00d",
+    "before": null
+  },
+  {
+    "local": "guides/engines/b5254t6.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/guides/engines/b5254t6.html",
+    "sha256": "991ab5496b26ddb1b9e6a6421a88e4f25a5015ddb7e2565afd8eb8c437038635",
+    "before": null
+  },
+  {
+    "local": "guides/engines/b58b30a.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/guides/engines/b58b30a.html",
+    "sha256": "b8c51102148cc0eaed0fe88dad3000fdee39c1eb3579c4eb556736ba95537762",
+    "before": null
+  },
+  {
+    "local": "guides/engines/b58b30c.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/guides/engines/b58b30c.html",
+    "sha256": "3d46c3f2f8652c67e01a966f78d05c393213d013f537ccb60961f0e8ba77cb20",
+    "before": null
+  },
+  {
+    "local": "guides/engines/b6304t2.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/guides/engines/b6304t2.html",
+    "sha256": "5b6caf09d3f030be9efa9815f330ff5c45587c4a733d95f9732347f339c14aff",
+    "before": null
+  },
+  {
+    "local": "guides/engines/bdw.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/guides/engines/bdw.html",
+    "sha256": "849b045cfdc013d8e03f22a93dc85a4c47e400340c7b2b3ddcbf96e9ce6317c9",
+    "before": null
+  },
+  {
+    "local": "guides/engines/bdx.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/guides/engines/bdx.html",
+    "sha256": "4c9df8435d9a3652ac097ebc54ed13f8ef889895d0d757480dc204c1fefc0c75",
+    "before": null
+  },
+  {
+    "local": "guides/engines/bjg.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/guides/engines/bjg.html",
+    "sha256": "0392d0483c86060ef2115d99f9e00016c0139f26e837a2992b7fbe9043a614c5",
+    "before": null
+  },
+  {
+    "local": "guides/engines/bku.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/guides/engines/bku.html",
+    "sha256": "1772ed4203ab3a2acfb95b0ef59cd7dd7a88593edaf18f774d69453a0ad1fc20",
+    "before": null
+  },
+  {
+    "local": "guides/engines/bpj.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/guides/engines/bpj.html",
+    "sha256": "b3ed83e3f7c350e12e2f94c544e0b65ba8a91d79cf34920dbaa730054599dfd9",
+    "before": null
+  },
+  {
+    "local": "guides/engines/bpk.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/guides/engines/bpk.html",
+    "sha256": "ab2302ebdeaf2439b1dc6a692fcff121492968a346192a078760f55d516ad504",
+    "before": null
+  },
+  {
+    "local": "guides/engines/bpl.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/guides/engines/bpl.html",
+    "sha256": "fca9f8572a29ef77b059692d505b6da21aa99e71616a12b800314724b4b5ca43",
+    "before": null
+  },
+  {
+    "local": "guides/engines/bse.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/guides/engines/bse.html",
+    "sha256": "04b3f315a9082133b2cac7220c345e305e7bfd0187218017c8a127bd6c53d643",
+    "before": "23b23ba10a0abcfe4156280fb28972e34aa99ba0385ca18a2734d701a51112d3"
+  },
+  {
+    "local": "guides/engines/btl.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/guides/engines/btl.html",
+    "sha256": "0dbf1acf7378a4ab7487ce5e48a19b6e6bb1ffabacf7ce1399d43ee0fc01df7f",
+    "before": null
+  },
+  {
+    "local": "guides/engines/bwh.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/guides/engines/bwh.html",
+    "sha256": "fd3493a7ee3b3427252a08c5e5cd48efcbec42c38460c59061495421c28b1448",
+    "before": "246053bd6fbf2fbe3c556190b8041c9b2ce770aa4f72c5a485ebaa5081102596"
+  },
+  {
+    "local": "guides/engines/byd472qc.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/guides/engines/byd472qc.html",
+    "sha256": "1b9ee75a9b14fb440d5d34e8dc9b27dedf39cbb2ddc72fb3ed2198b573832ed5",
+    "before": "a5c6c40f4a1594f041d18413ba8a768066e51e7bdbfda760bd5fb6518afcd4f5"
+  },
+  {
+    "local": "guides/engines/byd472zqb.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/guides/engines/byd472zqb.html",
+    "sha256": "9a630913a3d73d42a9fb6558c5b69d74b90a3072165669fbd80a41437422aa54",
+    "before": "d46bf6a6f84cbd6890d5ea88becc54a0c88573cbfda8c69aa2a832c52f276a60"
+  },
+  {
+    "local": "guides/engines/byd473qb.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/guides/engines/byd473qb.html",
+    "sha256": "fb3b6d2305de2f71cdc53afc3cbfa853e6ba7c655be47ac3d90ac0f45001fcbe",
+    "before": null
+  },
+  {
+    "local": "guides/engines/byd473qe.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/guides/engines/byd473qe.html",
+    "sha256": "bb0bc318b4215d907340beee5d15b17436970c8eb3d20605abfb7d5d7a735a0f",
+    "before": "ae962fca0a4eadef37c4ad13d3a939c2b0d60e5639d1cd69604a3733084a5310"
+  },
+  {
+    "local": "guides/engines/byd476zqa.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/guides/engines/byd476zqa.html",
+    "sha256": "263f1599db10739b843e64319e24a6119017819f5daaa96482e77747dc4852bd",
+    "before": null
+  },
+  {
+    "local": "guides/engines/byj.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/guides/engines/byj.html",
+    "sha256": "2677c954631ad847a53bb399f9424057b25fcf0f14d2edef5a20e2dad5603e5b",
+    "before": null
+  },
+  {
+    "local": "guides/engines/cad.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/guides/engines/cad.html",
+    "sha256": "4a8c82dbc38a8d098ab719c5078a519f9718bfca317c538afe4a9586ca4e9585",
+    "before": null
+  },
+  {
+    "local": "guides/engines/cada.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/guides/engines/cada.html",
+    "sha256": "09c3d1d5172eedb292f2ee4675b554c8d31bebeacfe47a4a71ea64136fe736b7",
+    "before": null
+  },
+  {
+    "local": "guides/engines/caf384q0.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/guides/engines/caf384q0.html",
+    "sha256": "dab6384ba4fc92a459ae01bf03161e48a5b22a0f3b343e638d888999ae8b3377",
+    "before": "6a0f4a72541fdfe19bcfd653252e0351a62294f87d9aeb2a7e051a90d3183f82"
+  },
+  {
+    "local": "guides/engines/caf479q1.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/guides/engines/caf479q1.html",
+    "sha256": "6e6fbbd7d75381968e63c41e51c3a0524bd2a384695b1a09de4608c1134e5f48",
+    "before": "cb398712b98c1790d6af2e32083a03c41b35050e6af058559a1ecf3560ddc9d0"
+  },
+  {
+    "local": "guides/engines/caf488wq3.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/guides/engines/caf488wq3.html",
+    "sha256": "d432cfa7e50a76a14eeb99f3abb9bdb55148ae2be6f6a9dab2763eefa943ddeb",
+    "before": "645b352d204c5d3b85e374ad4c8ba632cd4a9169d6f2101fd6873221b38fd7bc"
+  },
+  {
+    "local": "guides/engines/caj.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/guides/engines/caj.html",
+    "sha256": "0f92e82860eae959c8aa7792abec53269314caef0f1e1f6fee92567e643c176c",
+    "before": null
+  },
+  {
+    "local": "guides/engines/caja.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/guides/engines/caja.html",
+    "sha256": "1c9c2edf7afd1c3805a73c8e774d2243bb0b97416f88628237b424fc5c4dad92",
+    "before": null
+  },
+  {
+    "local": "guides/engines/cala.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/guides/engines/cala.html",
+    "sha256": "df11d1efddab773bdd933ae6d41d9218ef687bf2621ce0f4d8c217fd54f92736",
+    "before": null
+  },
+  {
+    "local": "guides/engines/calb.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/guides/engines/calb.html",
+    "sha256": "5a6b25c2d0fa5f56dbe787df9b1e4e34d2eb2a5dc6a5b85d4151294c09c64ada",
+    "before": null
+  },
+  {
+    "local": "guides/engines/cbl.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/guides/engines/cbl.html",
+    "sha256": "58c10952c4b3bdd859793aaa56b395b1916b0add1a3cf1bf5ba226ea8f74b555",
+    "before": null
+  },
+  {
+    "local": "guides/engines/cbla.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/guides/engines/cbla.html",
+    "sha256": "e042bcc184b65f54f052d65f86bf1c070feeb4b901853874c13d07e1544eb324",
+    "before": null
+  },
+  {
+    "local": "guides/engines/ccda.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/guides/engines/ccda.html",
+    "sha256": "73e3eb3ae04381f5d49b8c8db3b900566365c042400acb214784a15b7044d086",
+    "before": null
+  },
+  {
+    "local": "guides/engines/cce.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/guides/engines/cce.html",
+    "sha256": "f4c50e7236db08ae5cca5aee2f676ffcb734ff15948d251856eec4df288918e8",
+    "before": null
+  },
+  {
+    "local": "guides/engines/ccu.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/guides/engines/ccu.html",
+    "sha256": "de3575429f82df96cc67baffe613296711911691993e19679be76123a8732d01",
+    "before": null
+  },
+  {
+    "local": "guides/engines/ccua.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/guides/engines/ccua.html",
+    "sha256": "ae3ffaea1696d2a8d362ee471c743b668b658d60527d09c8778d2fe77a2afa3b",
+    "before": null
+  },
+  {
+    "local": "guides/engines/ccza.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/guides/engines/ccza.html",
+    "sha256": "0e2e2d2f87f7a1a7b48aa6cbf6e673cf5529a465bc292d599b07e3b732a14808",
+    "before": null
+  },
+  {
+    "local": "guides/engines/cczb.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/guides/engines/cczb.html",
+    "sha256": "e0b413180e8801f44e134295d131cf2876ece54af94fd71cc04da5ffa02d43e1",
+    "before": null
+  },
+  {
+    "local": "guides/engines/cczc.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/guides/engines/cczc.html",
+    "sha256": "a9e9502b0956fd21860585825a5253effe5ee1cf4a7047a0eb565f7d20830f72",
+    "before": null
+  },
+  {
+    "local": "guides/engines/cdaa.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/guides/engines/cdaa.html",
+    "sha256": "2643db203b0ab4e23ddf5bf4d99b57076c8394cbce64d4d6296e5017337f3458",
+    "before": "dd166db6f6e5023d9ce5ee35fa7bfb664e5fd8f880b87742e73ead3005942754"
+  },
+  {
+    "local": "guides/engines/cdab.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/guides/engines/cdab.html",
+    "sha256": "66029d55edd5fe7a5f4fd9abb8d59cf4b7f189712b1e4862b3aab3621feaca85",
+    "before": null
+  },
+  {
+    "local": "guides/engines/cde.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/guides/engines/cde.html",
+    "sha256": "ca5d8e8b198ffb71be111d8f93296589c736d420ae8cd0baac0e89eb45b7da8e",
+    "before": null
+  },
+  {
+    "local": "guides/engines/cdnb.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/guides/engines/cdnb.html",
+    "sha256": "e6c55c21944565daa8cda6ef0b61791d0bf28c6b003d27cf70167629544bee16",
+    "before": null
+  },
+  {
+    "local": "guides/engines/cdza.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/guides/engines/cdza.html",
+    "sha256": "10aa34953ce74586af925b4da83e611883811774d85d07c56821419c67f2552e",
+    "before": null
+  },
+  {
+    "local": "guides/engines/cea.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/guides/engines/cea.html",
+    "sha256": "b83400666888de9c72dae1e5167a9e38adcca635f3ffb11771aa2107f08de6bc",
+    "before": "72fdcb0f601fb33c0914253d0f6d7b48275114bd2fe8f4b6481c6555b1bac64c"
+  },
+  {
+    "local": "guides/engines/ceaa.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/guides/engines/ceaa.html",
+    "sha256": "0e9c609c7bdfaa2aa06f136f024b95e3c3cc027ac3a1e7bb802e7f578f17aa7b",
+    "before": null
+  },
+  {
+    "local": "guides/engines/cen.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/guides/engines/cen.html",
+    "sha256": "c38f0cba885fd664f7d8dffa45e201318b168c06541c53e6abc0c2e2a8e2de42",
+    "before": null
+  },
+  {
+    "local": "guides/engines/ceua.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/guides/engines/ceua.html",
+    "sha256": "d918146bb0e91f0345c59c24ec4479d1cb46c514f033901e518144492e3b1fe2",
+    "before": null
+  },
+  {
+    "local": "guides/engines/ceuc.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/guides/engines/ceuc.html",
+    "sha256": "f77851c9164407958c3a7f764b2bf5b6f1d9f652cea95918ea6212b4f79d9394",
+    "before": null
+  },
+  {
+    "local": "guides/engines/cfb.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/guides/engines/cfb.html",
+    "sha256": "6d4a5cd1cc73a14b317a7e955efdc4527d1cc5d28b62db0038ed5f597938088e",
+    "before": "9194ad1d47eee9b89dc0ec0f1b271db2e6ba5cc0b98ae26e2378f67300effda0"
+  },
+  {
+    "local": "guides/engines/cgm.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/guides/engines/cgm.html",
+    "sha256": "10d4b931c1c0a37a9d9ada1d5af8615314183845c92bad26f0aea46c390224ce",
+    "before": "80b03ee96e9d0aa268cf1dd34343549b06d37ef120c6119c057f24dc34e6ea99"
+  },
+  {
+    "local": "guides/engines/cgma.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/guides/engines/cgma.html",
+    "sha256": "f9cfd921b7fd710c701890e9a5444dbe378185f01a673b3d084f8b62e03c82cd",
+    "before": null
+  },
+  {
+    "local": "guides/engines/cgwb.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/guides/engines/cgwb.html",
+    "sha256": "ffb7395e791dfa01d9aef2039a36ca34a153715bd470a780351cd31fdf317cc3",
+    "before": null
+  },
+  {
+    "local": "guides/engines/cgz.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/guides/engines/cgz.html",
+    "sha256": "06f7954b06ec88c1185d762093ec91a531e55d349d968b3ec4569ad65ed40de2",
+    "before": null
+  },
+  {
+    "local": "guides/engines/chhb.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/guides/engines/chhb.html",
+    "sha256": "633e319a8955f39a2de194cc34a9e83a0d70873d3759f2b3825d0a4bc13a5275",
+    "before": null
+  },
+  {
+    "local": "guides/engines/chhc.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/guides/engines/chhc.html",
+    "sha256": "39ccd178883008ed64320c7f3eed54fa056673c1711460ba0b95301cbc2f11db",
+    "before": null
+  },
+  {
+    "local": "guides/engines/chja.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/guides/engines/chja.html",
+    "sha256": "75461226645a7bf8ec4f691d98a2e97b222a920b4433840008ef91017769ae36",
+    "before": null
+  },
+  {
+    "local": "guides/engines/chma.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/guides/engines/chma.html",
+    "sha256": "43824dbfaef8b99568ce35ae90f6b45b5fc699e5dc7a2d39180e3c40e8dcad8a",
+    "before": null
+  },
+  {
+    "local": "guides/engines/chmb.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/guides/engines/chmb.html",
+    "sha256": "c3ec331f6b852bc78803095e9fa443d2db62cdf23a4f45a9e03348ce25645b20",
+    "before": null
+  },
+  {
+    "local": "guides/engines/chyb.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/guides/engines/chyb.html",
+    "sha256": "f1c7c2fcc9e0a8c98e7fb70d660ee15edf9a9e37f4588c2bff424aa5bd2d8137",
+    "before": null
+  },
+  {
+    "local": "guides/engines/cjba.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/guides/engines/cjba.html",
+    "sha256": "8485a6f2af224216dbd3fa65fc78c077f6c474f64a7b33b05177da2dfba9d8a7",
+    "before": null
+  },
+  {
+    "local": "guides/engines/cjeb.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/guides/engines/cjeb.html",
+    "sha256": "800072cc708a6571ee497c48407558a6fe43362502580cacdc3fca8db5b0113f",
+    "before": null
+  },
+  {
+    "local": "guides/engines/cjee.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/guides/engines/cjee.html",
+    "sha256": "9fee29c32c27850592fd8abaecc4a50042508bfcb024d607ecf60c3f54eb1202",
+    "before": null
+  },
+  {
+    "local": "guides/engines/cjka.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/guides/engines/cjka.html",
+    "sha256": "fc9be2db24cd926981fe1991fc284cecbaa2bbf48aa38861d5aa75ead19903ed",
+    "before": null
+  },
+  {
+    "local": "guides/engines/cjsb.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/guides/engines/cjsb.html",
+    "sha256": "465229310971a063a669da1ec2e16d23571bbe82f36430c5f5830552f4c192ac",
+    "before": null
+  },
+  {
+    "local": "guides/engines/cjta.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/guides/engines/cjta.html",
+    "sha256": "d787a6a695e67de91d7624337de5cfd492655798c6f041aa205df93ab222011c",
+    "before": null
+  },
+  {
+    "local": "guides/engines/cjwe.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/guides/engines/cjwe.html",
+    "sha256": "b0997dcc7496a9ef95cebaff3db841a3318750d9d5a8b6d6f54885d447a9f95e",
+    "before": null
+  },
+  {
+    "local": "guides/engines/cjxa.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/guides/engines/cjxa.html",
+    "sha256": "33ad4430a3b5ac38bbaf45ad6f1a6778153bc2d072a2de98868066e751cfc25d",
+    "before": null
+  },
+  {
+    "local": "guides/engines/cjxf.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/guides/engines/cjxf.html",
+    "sha256": "dbd70f17f4489285693d1e9f07f966054d1178921ffd102de1e38863667e79b4",
+    "before": null
+  },
+  {
+    "local": "guides/engines/cka.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/guides/engines/cka.html",
+    "sha256": "725b88fd7332e287a80c27f3acd2e54d0ae0b53d28aa36191dbdb3e3a07bc3c7",
+    "before": null
+  },
+  {
+    "local": "guides/engines/clr.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/guides/engines/clr.html",
+    "sha256": "8a73d808e7113948bcc46270455276a134fabbe3ce09e3e6e6f90da1575ecc61",
+    "before": null
+  },
+  {
+    "local": "guides/engines/clx.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/guides/engines/clx.html",
+    "sha256": "894fd4b07ef9a3d4b2af12372b26ac4b73fb633667e4f44ed4140cefd48a6aa7",
+    "before": null
+  },
+  {
+    "local": "guides/engines/clxa.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/guides/engines/clxa.html",
+    "sha256": "15747c5229a277c21b9fcff99e27c65be6675390947fa16bdcf3755410a0bb33",
+    "before": null
+  },
+  {
+    "local": "guides/engines/clxb.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/guides/engines/clxb.html",
+    "sha256": "837c0fb4642f2a5431bc780a769982a8e5b3f7862182e29f2fcb7669b2a02d8d",
+    "before": null
+  },
+  {
+    "local": "guides/engines/cncd.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/guides/engines/cncd.html",
+    "sha256": "219423b63acbd417031dee4e3823c06e8d874ac6fe1474470385fa409d74e6cc",
+    "before": null
+  },
+  {
+    "local": "guides/engines/cnce.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/guides/engines/cnce.html",
+    "sha256": "dd487d61624e6dab634801ee70b0acab758fde10d900d873c7fcaca6dfe8222f",
+    "before": null
+  },
+  {
+    "local": "guides/engines/cng.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/guides/engines/cng.html",
+    "sha256": "599024f899082da5af0978e76d157dbbac6e9a36983b4f428d88dc04efb876d7",
+    "before": null
+  },
+  {
+    "local": "guides/engines/cnyb.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/guides/engines/cnyb.html",
+    "sha256": "39ca501c691b21a725f3525214329e355f70862f8d434f682ea2faca657b0509",
+    "before": null
+  },
+  {
+    "local": "guides/engines/cpda.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/guides/engines/cpda.html",
+    "sha256": "44614167b250f86c3a02bd1433fc63e6f4c82226a49c412b3c73432c827d5ea1",
+    "before": "c6f37ef2864a767caa08d04475c3f6d2c3ce9c3c9f7d9d5d838b6465a564c22e"
+  },
+  {
+    "local": "guides/engines/cpea.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/guides/engines/cpea.html",
+    "sha256": "6d3dc4c46361b92a97e8f207bd3652eb18ea4a3b9d6a843bea4bf40880a21725",
+    "before": null
+  },
+  {
+    "local": "guides/engines/cpsa.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/guides/engines/cpsa.html",
+    "sha256": "c0fc807a249665dfd0556df8010c144b4f750f5f2cb1a6e8da913b0cff5e6751",
+    "before": null
+  },
+  {
+    "local": "guides/engines/cpta.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/guides/engines/cpta.html",
+    "sha256": "b45b6c070852cd8303ddc6e884fdbb45e998e2e503bb3adb454e84c8dcec9488",
+    "before": null
+  },
+  {
+    "local": "guides/engines/crdb.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/guides/engines/crdb.html",
+    "sha256": "812499e755724cb1e1d8bf624677537a36e218f6c5697c5eedd3b33c8a9c9148",
+    "before": null
+  },
+  {
+    "local": "guides/engines/crh.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/guides/engines/crh.html",
+    "sha256": "f963bc4a663075dbf7cb763e159becbd86fc31dff3f813a649bf2ea76c388b93",
+    "before": null
+  },
+  {
+    "local": "guides/engines/crha.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/guides/engines/crha.html",
+    "sha256": "3f99559f1b96329c456eea60691fc04bdfb649536a97bae39031e638ec2f5201",
+    "before": null
+  },
+  {
+    "local": "guides/engines/csr.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/guides/engines/csr.html",
+    "sha256": "6f00f523d199226b008223e530be1a058ee62354c3e7cd8a34aa7c0d7d748461",
+    "before": null
+  },
+  {
+    "local": "guides/engines/csra.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/guides/engines/csra.html",
+    "sha256": "ff103109c99dbcdfd3262d90ff358042613dae8fda13bc4a6069b504a80fbe93",
+    "before": null
+  },
+  {
+    "local": "guides/engines/css.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/guides/engines/css.html",
+    "sha256": "37c03a2a52c95bdda9ff004f88248dc6fea57787fc536905d1c225f208edc65e",
+    "before": null
+  },
+  {
+    "local": "guides/engines/cssa.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/guides/engines/cssa.html",
+    "sha256": "52f21d6b6d540228353b4b8e5c8acc9911003cd2e875e9f8d89df9f324949215",
+    "before": "9396254688be535b39baaa98966501b678e1e0bd8841c4ec6446aa8810710820"
+  },
+  {
+    "local": "guides/engines/csta.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/guides/engines/csta.html",
+    "sha256": "c7a3f5e8508f770ae26473cfa1867de6b5537de9572bf64e8b033b7eaa954936",
+    "before": null
+  },
+  {
+    "local": "guides/engines/ctga.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/guides/engines/ctga.html",
+    "sha256": "472c3006e87b96527f80ee690a7fe55aa1fcab942545e764e03ff6480796fde2",
+    "before": null
+  },
+  {
+    "local": "guides/engines/ctge.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/guides/engines/ctge.html",
+    "sha256": "f8d6172ea621df3ca10155a8891bfedca9d92fdf954db2b5acaf29666da69aa3",
+    "before": null
+  },
+  {
+    "local": "guides/engines/ctta.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/guides/engines/ctta.html",
+    "sha256": "3a4480fd7f4a6cbf33557354d355fb7d7f1e01486c98b9319477b4c241c3d625",
+    "before": null
+  },
+  {
+    "local": "guides/engines/cuc.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/guides/engines/cuc.html",
+    "sha256": "b7867b8890f5669b45fe2ab2aff218d411a926f4e82eb12fe3396c3e470354c2",
+    "before": null
+  },
+  {
+    "local": "guides/engines/cuca.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/guides/engines/cuca.html",
+    "sha256": "c45fd6c49e398635dcd8197ba864aabd6bb42fdaa3d708f902a050c151d54872",
+    "before": null
+  },
+  {
+    "local": "guides/engines/cuf.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/guides/engines/cuf.html",
+    "sha256": "0ed13cbf68fe3eadb88750f49a3bc3d4c4573dece6b131659c818042317dc2f4",
+    "before": null
+  },
+  {
+    "local": "guides/engines/cufa.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/guides/engines/cufa.html",
+    "sha256": "413bb0f56f3b4f32020c9207199a1952cb3e3b6db026c1a36765de6d9ac5aa37",
+    "before": null
+  },
+  {
+    "local": "guides/engines/cug.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/guides/engines/cug.html",
+    "sha256": "57c144687707cefb0fbcbb10eb7e0649a2476bc4f4e5073d69b6b0fdf75a2841",
+    "before": null
+  },
+  {
+    "local": "guides/engines/cuga.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/guides/engines/cuga.html",
+    "sha256": "40b57c54814d8bcf3977c0ed513afbe2e280c7ef3c77d5652a51a83d0dbe21c0",
+    "before": null
+  },
+  {
+    "local": "guides/engines/cuha.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/guides/engines/cuha.html",
+    "sha256": "868d58c0cf64fa5879c20e62eabc2cd454c8071091a5bcf8c9b4d7d37e32beef",
+    "before": null
+  },
+  {
+    "local": "guides/engines/cuhb.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/guides/engines/cuhb.html",
+    "sha256": "c9b8e322820b22a2c0e32d44681973416c44f3c27e068c5769e495e20d961780",
+    "before": null
+  },
+  {
+    "local": "guides/engines/cukc.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/guides/engines/cukc.html",
+    "sha256": "dcf48dde4763cb88c98c36bdeae12e7370750efbaf302889d1460d4f7bbdc76b",
+    "before": null
+  },
+  {
+    "local": "guides/engines/cvja.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/guides/engines/cvja.html",
+    "sha256": "d020036067d0ab4d9f23aaa5b58d1c69d415cbd3422bc0dbf91e04520188dc64",
+    "before": null
+  },
+  {
+    "local": "guides/engines/cvkb.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/guides/engines/cvkb.html",
+    "sha256": "2e8d2574701b2f53e6372203f78c442f348b2d8434f429e14483e1e0055db2d5",
+    "before": null
+  },
+  {
+    "local": "guides/engines/cvn.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/guides/engines/cvn.html",
+    "sha256": "1340259abddf95b4c602e0c68746457bdfc61db06fc33a4c463a96632b3ae4ca",
+    "before": null
+  },
+  {
+    "local": "guides/engines/cvna.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/guides/engines/cvna.html",
+    "sha256": "bd503bfa908bfeb8b76c1b086a22278ce48b371fbe7ad215c2a6080071b565c3",
+    "before": null
+  },
+  {
+    "local": "guides/engines/cwn.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/guides/engines/cwn.html",
+    "sha256": "da4e19ae44a34e4054dbc21b45089bb6ee0ba3d1c189e7fbe6548908814fb47d",
+    "before": null
+  },
+  {
+    "local": "guides/engines/cwp.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/guides/engines/cwp.html",
+    "sha256": "d07c4079fbfb5e1d9a8841ad1b49b1612fdcc826adaab276f4f63ada935b680d",
+    "before": null
+  },
+  {
+    "local": "guides/engines/cwuc.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/guides/engines/cwuc.html",
+    "sha256": "8835bd0aed20e05424b680dfd2561f6be3734665545ab6c284259487db9ae969",
+    "before": null
+  },
+  {
+    "local": "guides/engines/cya.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/guides/engines/cya.html",
+    "sha256": "e8456a47547c9ffed3f4c8e6a14d404c1c198f37191e65302eb80eb082601319",
+    "before": null
+  },
+  {
+    "local": "guides/engines/cyaa.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/guides/engines/cyaa.html",
+    "sha256": "a720e4ea698c0618acde62b59dd20464c82fe5e8fea4ec38d499f938a7675fde",
+    "before": null
+  },
+  {
+    "local": "guides/engines/cyga.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/guides/engines/cyga.html",
+    "sha256": "b97b0d5c1665b6c1737e4d261f3f9a3e12e4867d5686a91e5a3faf3e2710ad31",
+    "before": null
+  },
+  {
+    "local": "guides/engines/cyja.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/guides/engines/cyja.html",
+    "sha256": "d2e441a05d4df524758adff60040ae02a0a6b986eea12ca348fa364bf810ad6a",
+    "before": null
+  },
+  {
+    "local": "guides/engines/cypa.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/guides/engines/cypa.html",
+    "sha256": "ec5302f77036f9327135e53ee2a37b7c733cbf1142a8b51f290be6e8f732d956",
+    "before": null
+  },
+  {
+    "local": "guides/engines/cyrb.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/guides/engines/cyrb.html",
+    "sha256": "cfa0a907294abbc4da599dbbee8d9f54dc07eca176a01a25c18fdd56ec4d2bd1",
+    "before": null
+  },
+  {
+    "local": "guides/engines/cyvd.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/guides/engines/cyvd.html",
+    "sha256": "bff7583e6fb7ba9fd935362813f7ca73a5f0050f34bed2b5d2ba80799293e5bc",
+    "before": null
+  },
+  {
+    "local": "guides/engines/cyya.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/guides/engines/cyya.html",
+    "sha256": "f019c54bedd287a5f61f73dcc0d63250a97328a542ed98860e4a888f380dacfc",
+    "before": null
+  },
+  {
+    "local": "guides/engines/czda.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/guides/engines/czda.html",
+    "sha256": "1394637e7701e0ddd893c03fd72ee5e664cff2e625f50ab20a97a7aa69e152e7",
+    "before": null
+  },
+  {
+    "local": "guides/engines/czdc.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/guides/engines/czdc.html",
+    "sha256": "ea629baeaafae25344ae32ce1eeab2595abbbcc21b091a7f9e8b9d827154f4cc",
+    "before": null
+  },
+  {
+    "local": "guides/engines/czdd.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/guides/engines/czdd.html",
+    "sha256": "d9fc38a7217f1a5a7271a25b12d6644b4ef89a4a6402fa768727e4964085941a",
+    "before": null
+  },
+  {
+    "local": "guides/engines/czpa.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/guides/engines/czpa.html",
+    "sha256": "1bf6603f491f112bc86fda256f2d3f5febccd4f22ddd4749d9bc48cea3d9f7c1",
+    "before": null
+  },
+  {
+    "local": "guides/engines/dah.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/guides/engines/dah.html",
+    "sha256": "46b943e17e650f659f56164e5fb179ed3181be123de1c5126388188c37ee5930",
+    "before": null
+  },
+  {
+    "local": "guides/engines/dbfa.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/guides/engines/dbfa.html",
+    "sha256": "564b67bb2c76d337bd8b60eec67dd1583b01e1ce807813fa9ef2a23ae4234da1",
+    "before": null
+  },
+  {
+    "local": "guides/engines/dbfc.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/guides/engines/dbfc.html",
+    "sha256": "9a98a17bb6ad2456d7ffedf8f0a91e0e86229ca1d51f726091175b77b4060a29",
+    "before": null
+  },
+  {
+    "local": "guides/engines/dbh.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/guides/engines/dbh.html",
+    "sha256": "e3324413e2955af37fcc60b5012b186eef55e3119018f6568ddf7c814101dbf6",
+    "before": null
+  },
+  {
+    "local": "guides/engines/dbha.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/guides/engines/dbha.html",
+    "sha256": "3524adeea9e987907d2294146a17f444be6d195e2d3a734cbbd02a5e6e26790e",
+    "before": null
+  },
+  {
+    "local": "guides/engines/dbja.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/guides/engines/dbja.html",
+    "sha256": "b301837e5d500a4622bd01bb5d7f36699e8e56e583369c59cae8c51f152675af",
+    "before": null
+  },
+  {
+    "local": "guides/engines/dbra.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/guides/engines/dbra.html",
+    "sha256": "a38a6f497bd37afc309c81a26eabcf4d2e9a14b586c427803ddaef9a787ce6c1",
+    "before": null
+  },
+  {
+    "local": "guides/engines/dbsa.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/guides/engines/dbsa.html",
+    "sha256": "3b7699efd22efcea3bd3f458a13af6999d853586fdb93fc322fcac4eb322ee72",
+    "before": null
+  },
+  {
+    "local": "guides/engines/dcfa.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/guides/engines/dcfa.html",
+    "sha256": "4f1db37a0e6e2d6e33d9032bbde5285f067222adfa527d8dae64ccd5c12d01c3",
+    "before": "238d0f8b35c92579a61b53e885a26aa554cbb1275c8789853a48b27fc87cc660"
+  },
+  {
+    "local": "guides/engines/ddka.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/guides/engines/ddka.html",
+    "sha256": "e9d04e221a48e6a0598e462510c3af19cda19ebda896bcdf4ef70ad28d65db24",
+    "before": null
+  },
+  {
+    "local": "guides/engines/deda.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/guides/engines/deda.html",
+    "sha256": "92cbe2c3e4ca47c328b515749f166b872d93ed2ee8acecb85ded718cab3a094e",
+    "before": null
+  },
+  {
+    "local": "guides/engines/dfka.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/guides/engines/dfka.html",
+    "sha256": "b2c11125aaf51617c250e54f08beca133c47ad073ac3332a365e378894ad9578",
+    "before": null
+  },
+  {
+    "local": "guides/engines/djma.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/guides/engines/djma.html",
+    "sha256": "ff8b637e585617c954bf6b5f62dcb5af35161ec087e26abda2f647d6719bd3a3",
+    "before": null
+  },
+  {
+    "local": "guides/engines/djn.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/guides/engines/djn.html",
+    "sha256": "2896932fc829687d157cafc356d8fac37758f0caad4ef14b241a3084a13cd118",
+    "before": null
+  },
+  {
+    "local": "guides/engines/djna.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/guides/engines/djna.html",
+    "sha256": "d7f850f0f13f990c645f724c9ece0c1f267115007f19d76b57199d8d8ff095a6",
+    "before": null
+  },
+  {
+    "local": "guides/engines/djnb.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/guides/engines/djnb.html",
+    "sha256": "1d897ceb35b5346a6e13248cb8cb9f5b00e72986664e75765c65b218e14fc47f",
+    "before": null
+  },
+  {
+    "local": "guides/engines/djs.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/guides/engines/djs.html",
+    "sha256": "8412b94ad57dea979b652eb2a83826db042a2a109b287d008e383850550383d6",
+    "before": null
+  },
+  {
+    "local": "guides/engines/djsa.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/guides/engines/djsa.html",
+    "sha256": "0b473d322763e48c27f1f670c58a6800111efab8eee1dfadf49b4cd59d0cab9b",
+    "before": null
+  },
+  {
+    "local": "guides/engines/djza.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/guides/engines/djza.html",
+    "sha256": "3a643727ec2fbdb2b26f5d5f2303358755d9132bc24e9aa0f4092c66802b4d9f",
+    "before": null
+  },
+  {
+    "local": "guides/engines/dkua.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/guides/engines/dkua.html",
+    "sha256": "2663fddf4660ccfefa95e7b54b36e347c889c744661028372f3082d85b902d1a",
+    "before": null
+  },
+  {
+    "local": "guides/engines/dkub.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/guides/engines/dkub.html",
+    "sha256": "a8280e3a0e801ba7a1e00a67f7d97c9669c46dcfa763a9cb9855197aa6be18cc",
+    "before": null
+  },
+  {
+    "local": "guides/engines/dkvb.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/guides/engines/dkvb.html",
+    "sha256": "2e152a35513eeda63e1bb5b04d5c4591af581a7961855f872c45cc6b0fce216a",
+    "before": null
+  },
+  {
+    "local": "guides/engines/dkw.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/guides/engines/dkw.html",
+    "sha256": "721727ceb856ff4c2d1099af0b6d38096b8247753d0859a084fc9d80952d0139",
+    "before": null
+  },
+  {
+    "local": "guides/engines/dkwa.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/guides/engines/dkwa.html",
+    "sha256": "269c5343c1298955dbeb7ac9f27d4d520d03c7f3d09aa85955653564de085740",
+    "before": null
+  },
+  {
+    "local": "guides/engines/dkwb.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/guides/engines/dkwb.html",
+    "sha256": "fa68c1f817a593f45eb82c0c6e3f8d862ac743b2f9f093058a0b0f0a48ee74fb",
+    "before": null
+  },
+  {
+    "local": "guides/engines/dkxa.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/guides/engines/dkxa.html",
+    "sha256": "66786607e2ebb09aea454fd0009c8bf9ebaa7244913d14a3c32fbe373c1f41a6",
+    "before": null
+  },
+  {
+    "local": "guides/engines/dkya.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/guides/engines/dkya.html",
+    "sha256": "f7bbfd2c393f9bbc9098c0fe23e3438ea7992c4c43c6b2b5805c9d24f5541238",
+    "before": null
+  },
+  {
+    "local": "guides/engines/dlca.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/guides/engines/dlca.html",
+    "sha256": "06a47308a60245ad59a375a37d067946570bb4bdc5d283a3ef00f5a2a28d32ee",
+    "before": null
+  },
+  {
+    "local": "guides/engines/dlfa.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/guides/engines/dlfa.html",
+    "sha256": "d87257cb867f67010b2d2bf2ae0539963f36c2255b8809b6e627518897a20187",
+    "before": null
+  },
+  {
+    "local": "guides/engines/dlha.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/guides/engines/dlha.html",
+    "sha256": "bc0688992128fcefad910aee1f6fa40286d0954afa86b597ef3cb23e62f598aa",
+    "before": null
+  },
+  {
+    "local": "guides/engines/dlsa.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/guides/engines/dlsa.html",
+    "sha256": "7a6dbef55299c6d4b232b5f1787a2e2f5bd939346596d532320bd7b105d68acb",
+    "before": null
+  },
+  {
+    "local": "guides/engines/dlwa.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/guides/engines/dlwa.html",
+    "sha256": "9b07ad08d33863be6bd3ca1f8ecc630c25289cfff4b8565e3fb83879539e5468",
+    "before": null
+  },
+  {
+    "local": "guides/engines/dlxa.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/guides/engines/dlxa.html",
+    "sha256": "fa0ac3b6b11e83618a6d984bb3c5a3c234c660c18d5f44e348f036c9e562805a",
+    "before": null
+  },
+  {
+    "local": "guides/engines/dmb.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/guides/engines/dmb.html",
+    "sha256": "578a12e4aa3da3a2f548046d7fbc5f7b129de15729e531adc94b372c34da2596",
+    "before": null
+  },
+  {
+    "local": "guides/engines/dmba.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/guides/engines/dmba.html",
+    "sha256": "5fae12577bcee84b71a42adc54cc74d811ad7d13cb6c629df021a36c9bfcc2c1",
+    "before": null
+  },
+  {
+    "local": "guides/engines/dmea.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/guides/engines/dmea.html",
+    "sha256": "3953823f4ebcf9c4770643ad7a1d0eeb8ff7f6db8a504c44fcb58ef37bbad330",
+    "before": null
+  },
+  {
+    "local": "guides/engines/dmfa.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/guides/engines/dmfa.html",
+    "sha256": "4ba93efb06537733f704a954ba4f78334d7d0018ee32f3077dee77817af16201",
+    "before": null
+  },
+  {
+    "local": "guides/engines/dmsa.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/guides/engines/dmsa.html",
+    "sha256": "8f0719845de769f94df294b39668e8604837cb3f2fd3a7f89a134e6affefca0d",
+    "before": null
+  },
+  {
+    "local": "guides/engines/dmta.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/guides/engines/dmta.html",
+    "sha256": "d1ac3066ce2198e3f722674827a9f8fadf2708e261adf0727802dd63d0554ff2",
+    "before": null
+  },
+  {
+    "local": "guides/engines/dmtc.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/guides/engines/dmtc.html",
+    "sha256": "e652ceacebd25f94cd4dad0d5e887be1b279aaf9e809d15ebb3e1f8e13d9b545",
+    "before": null
+  },
+  {
+    "local": "guides/engines/dnca.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/guides/engines/dnca.html",
+    "sha256": "cd294707f807fb4a14b14ce16c16dd3286602b150e790158f3db0ea285c1e750",
+    "before": null
+  },
+  {
+    "local": "guides/engines/dnea.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/guides/engines/dnea.html",
+    "sha256": "7a44407a527c592111d8ddf91d5fa061c94df5320be0593c5ba2f08f2396d910",
+    "before": null
+  },
+  {
+    "local": "guides/engines/dpka.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/guides/engines/dpka.html",
+    "sha256": "c5b4fab76d28ec753500588ed9e9ec2207a729af2f2db3a7d25e0cb9af5cc63c",
+    "before": null
+  },
+  {
+    "local": "guides/engines/dpla.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/guides/engines/dpla.html",
+    "sha256": "4715c51a8750d93b657495a0159f5224cc1a96c02470190770953c0f951b65db",
+    "before": null
+  },
+  {
+    "local": "guides/engines/dpma.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/guides/engines/dpma.html",
+    "sha256": "0362a149f554718c903db6dc8a47362bdcea6859634c9be4169992ca14a8ba41",
+    "before": null
+  },
+  {
+    "local": "guides/engines/drza.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/guides/engines/drza.html",
+    "sha256": "12bcfec0f303ee9c7a1b07e58cfd79826bc46ea0820b981db9345b54d46860f3",
+    "before": null
+  },
+  {
+    "local": "guides/engines/dsva.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/guides/engines/dsva.html",
+    "sha256": "f664442bbf32e7503109788e66306e8e4bfc26017fce22e8c29ec944e95e3d04",
+    "before": null
+  },
+  {
+    "local": "guides/engines/dtaa.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/guides/engines/dtaa.html",
+    "sha256": "0e36d0018ab5731ed8390cf91f4b81793e936cb524aef4bf88fe6ff01b51fbc4",
+    "before": null
+  },
+  {
+    "local": "guides/engines/dtga.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/guides/engines/dtga.html",
+    "sha256": "cb4a72532240d0b2201fdaaf5601f62e9167cdcb5214be5cd4fc23999a6e5862",
+    "before": null
+  },
+  {
+    "local": "guides/engines/dtha.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/guides/engines/dtha.html",
+    "sha256": "78f00c1f794d2de97b0ed50d6d3e88779a354cef7e629c1f828177965123280c",
+    "before": null
+  },
+  {
+    "local": "guides/engines/dtja.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/guides/engines/dtja.html",
+    "sha256": "5619da37ea9e61386eaba37a4728323bf50c842c913567debe755c2bc2475748",
+    "before": null
+  },
+  {
+    "local": "guides/engines/dtka.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/guides/engines/dtka.html",
+    "sha256": "dfa8ce39d74b2b1fe0eb8813e1b207aec27ff65005e77242eeddf1d22352e147",
+    "before": null
+  },
+  {
+    "local": "guides/engines/duka.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/guides/engines/duka.html",
+    "sha256": "73f56f8c7547aa2580a32aafc160b12d4d6bb0b4ca40bc353c28edb3f68c4c85",
+    "before": null
+  },
+  {
+    "local": "guides/engines/duv.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/guides/engines/duv.html",
+    "sha256": "7fd4d6c8d9104ac50a490e88e09658c86b60f65861aac611510b6d897f3a5ec9",
+    "before": null
+  },
+  {
+    "local": "guides/engines/duva.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/guides/engines/duva.html",
+    "sha256": "fefd642f36f9e71a2195eaead7a64ab6715c9adfbf28b523db5b7d0c4ebca19b",
+    "before": null
+  },
+  {
+    "local": "guides/engines/dvla.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/guides/engines/dvla.html",
+    "sha256": "f8f07b2d0c8db12933d1e6e733965c4beae43de1e5039259a8e6fcff6f2841fd",
+    "before": null
+  },
+  {
+    "local": "guides/engines/dvlb.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/guides/engines/dvlb.html",
+    "sha256": "fa53fdcd42be71cedc8d89146c4b6f6aa30b786d8006e55857997321fe7c3721",
+    "before": null
+  },
+  {
+    "local": "guides/engines/dvma.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/guides/engines/dvma.html",
+    "sha256": "1808e82a15f4084a42fc2385ec062fb5d34d51956752481b63041acb212b4ff2",
+    "before": null
+  },
+  {
+    "local": "guides/engines/dyza.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/guides/engines/dyza.html",
+    "sha256": "35a31768773e5cd50f2eb4dc6677118c9d2d90bbaee1885818a77319326c9c2b",
+    "before": null
+  },
+  {
+    "local": "guides/engines/ep6c.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/guides/engines/ep6c.html",
+    "sha256": "c02ce24a4d0ce734ba23d7d95b9045c0f11045d02d1c71c7c0005818e3aff666",
+    "before": null
+  },
+  {
+    "local": "guides/engines/ep6cdt.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/guides/engines/ep6cdt.html",
+    "sha256": "8c920115734486e93163014e43bfcc95bee6da744f898525769ca233b92c4019",
+    "before": null
+  },
+  {
+    "local": "guides/engines/ep6cdtmd.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/guides/engines/ep6cdtmd.html",
+    "sha256": "eef993298d0acc488af7a3a21b7db255cf83884ce306c5aa59bd597c95b249d3",
+    "before": null
+  },
+  {
+    "local": "guides/engines/ep6cdtx.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/guides/engines/ep6cdtx.html",
+    "sha256": "6ee01841c84e0c80602125ddc47f18f955333b6fe7ab5a1964d75400761f6bc2",
+    "before": null
+  },
+  {
+    "local": "guides/engines/ep6dt.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/guides/engines/ep6dt.html",
+    "sha256": "ffdd1e919e883798d9a05f7b53398e1bb296757f4cd6c4282d9c7da45afadd01",
+    "before": null
+  },
+  {
+    "local": "guides/engines/ep6dts.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/guides/engines/ep6dts.html",
+    "sha256": "b0a69a5afe10c5ae2105dd3ed90c5183360e783c86a6fb04fa7ff7c5971344d6",
+    "before": null
+  },
+  {
+    "local": "guides/engines/ep6fdt.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/guides/engines/ep6fdt.html",
+    "sha256": "d4eb17e77d2accb8e6ad388eaa62f6fd10d72160d8db4b0d519c83ad2b4026b4",
+    "before": null
+  },
+  {
+    "local": "guides/engines/ew10a.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/guides/engines/ew10a.html",
+    "sha256": "2f989f120d512da18a3888cae632c869c6e656d18357dd847243d2955a6205e4",
+    "before": null
+  },
+  {
+    "local": "guides/engines/ew10j4.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/guides/engines/ew10j4.html",
+    "sha256": "19065db4911ee16519b79d39ce9f18b75f1b15495f5b50d481c8f3ab64242a8a",
+    "before": null
+  },
+  {
+    "local": "guides/engines/ew10j4s.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/guides/engines/ew10j4s.html",
+    "sha256": "bcae8b57bceb50e444f06c6f2e02e9c965779ed8bd839332966cb47b4df6511f",
+    "before": null
+  },
+  {
+    "local": "guides/engines/f10a.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/guides/engines/f10a.html",
+    "sha256": "36105487aa4b5183ef16be505ee82ad78f83f8503cc1cd9eefade90a37e8fc9c",
+    "before": "a46500dc54fe361eba802bc75fedea4138950a57e2f5ac3843b439e02f8234ac"
+  },
+  {
+    "local": "guides/engines/f16d3.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/guides/engines/f16d3.html",
+    "sha256": "6237a89047d9ecb09c96ab43cb593479b0d2618b886e0121f8cad3097751a1e2",
+    "before": "f7d8ea501c5168cb8e0ad5f64b13ddd6ea9bb22fa47c89f0f5d5c6b7a95464ee"
+  },
+  {
+    "local": "guides/engines/g13b.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/guides/engines/g13b.html",
+    "sha256": "8551d426b4a34bff4074a1e1f9143d9a904b13b10bbb6f813e9b948138eebf76",
+    "before": "5751ab05cbad58893a36c52e5ff8390bb2d1102015c26befa63f0abc5e253a8f"
+  },
+  {
+    "local": "guides/engines/g4ed.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/guides/engines/g4ed.html",
+    "sha256": "d22b1610d4530a93474d90476ebd079919e155da5765a673eceb40d37dffc92c",
+    "before": "5d69e3c951533bdf59d14be3cd9956d6548811b9048b39ad8a091184f3299f5c"
+  },
+  {
+    "local": "guides/engines/g4ee.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/guides/engines/g4ee.html",
+    "sha256": "bdbced8031eae6ee59c6638bfb912791c2636fe6c0d2aa183ab8122c247df00b",
+    "before": "cc3661570c33122bca736d15b2f9efc05f6c82df19e71f84022c47d70e9e68d0"
+  },
+  {
+    "local": "guides/engines/g4fa.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/guides/engines/g4fa.html",
+    "sha256": "62918b98a88b47545661ddd2c7ee88a50d535a3ae4fdaf8c526dd5d95efc7f2d",
+    "before": "6e55003e2da6199bb2cda9df6cc050841393a2eef379d79bfef3748723a2aea1"
+  },
+  {
+    "local": "guides/engines/g4fc.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/guides/engines/g4fc.html",
+    "sha256": "5ba8e3aa4658b20b513f212fda00368f92d8d782590edf5147d38c26800542e3",
+    "before": "15df44a30bbe3b084becb336ae0aa16e7f6a043d5a3dcc504256473c2026e3f9"
+  },
+  {
+    "local": "guides/engines/g4fd.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/guides/engines/g4fd.html",
+    "sha256": "5f798936041f0a88631b3e8a1d72abaab8cc07bf6c51d1ac61956ec99780b5eb",
+    "before": "dd9cb86b51accae552c58b4e6ce1f05f57f2f87dcf78a86f4e22acd91d0620de"
+  },
+  {
+    "local": "guides/engines/g4fg.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/guides/engines/g4fg.html",
+    "sha256": "9d5109e9df3154801029dba178551b3076ea327c8e699b8521620dfb0c30743d",
+    "before": "67b5f8ffd00bb624770c43e33de4aa67dcf6e13bf0828db8f77af4ee5336757a"
+  },
+  {
+    "local": "guides/engines/g4fj.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/guides/engines/g4fj.html",
+    "sha256": "e138c508347380b765e68ed6327c6359f11f2554831cab62f533685e949b5b85",
+    "before": "7ca4cb485a091de6e6965199eb64c05f06c2d61b8d5005b3a97145f5c4d25bb5"
+  },
+  {
+    "local": "guides/engines/g4gc.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/guides/engines/g4gc.html",
+    "sha256": "5eaa22dbd44b0a70a74df86eb156ee0c9548b94f2d1b584db32f8342190dcb6f",
+    "before": "31981802b33532ac0a6d522dc38f0d4d2d826ed331f0b77415091d967efb7070"
+  },
+  {
+    "local": "guides/engines/g4ka.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/guides/engines/g4ka.html",
+    "sha256": "3fad79bdd78dd7816ca5b4e962785c599d43b7edf43d681644eb34f8bbe874c2",
+    "before": "b52b1fdfc688c5b750fcba1eea6dbaeb46a5fad451f42576fa39568d2f3b5894"
+  },
+  {
+    "local": "guides/engines/g4kc.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/guides/engines/g4kc.html",
+    "sha256": "58aca43fdc1de124c6713324ae32f8144adbcca7c203fe5939c85c9d374f46ed",
+    "before": "e2571964f6c2ab0d48a63ca4ef393cad84e9b076ef0e8aa32adff97d458a86ca"
+  },
+  {
+    "local": "guides/engines/g4kd.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/guides/engines/g4kd.html",
+    "sha256": "b7da65010f5cadd4b11825614706aab3fe3a32af572f7d6ccf4ee4dcb1f300c5",
+    "before": "d0d3328ef4d6d28de7a5f35c18955889f33745e10078688ca006e52b7276c41e"
+  },
+  {
+    "local": "guides/engines/g4ke.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/guides/engines/g4ke.html",
+    "sha256": "00f8341bed0a29104ba3d2698533799becde63f7afaedc6f43511309117cdb88",
+    "before": "d292e7d065737468d045e0d10b7b939bba00f009f7fa0077166e9db18bd4c09c"
+  },
+  {
+    "local": "guides/engines/g4kh.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/guides/engines/g4kh.html",
+    "sha256": "1d9950414964823b80ac86c8d08d71a00fd961ff51bcf4982b737cb2e84bfb1b",
+    "before": null
+  },
+  {
+    "local": "guides/engines/g4kj.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/guides/engines/g4kj.html",
+    "sha256": "01e982ba2bed59f029a540cdde3cd5d4cb1fe324377262b89ce2b545490ef0a5",
+    "before": "ebad23992ec20ee3dcbd15e3a6a90541410a98dc08387c5c189f04405ba4c737"
+  },
+  {
+    "local": "guides/engines/g4lc.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/guides/engines/g4lc.html",
+    "sha256": "881b5312e74150f0fd21521e97d061caa55fb763b409d76ffa57e3f8b68be30d",
+    "before": null
+  },
+  {
+    "local": "guides/engines/g4ld.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/guides/engines/g4ld.html",
+    "sha256": "79ad9405adedcd8acd8efaf0bda75208a5d500f3bbbc8136bc8cd45523d407a3",
+    "before": null
+  },
+  {
+    "local": "guides/engines/g4na.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/guides/engines/g4na.html",
+    "sha256": "a37fa827b4fc42054bd48c8a60a569c4870eedb88289fae693380e6abb57a52a",
+    "before": "db1834d9500013049abaf9362ab2f1e025af9e2f995292e228d993c7bbb1bd47"
+  },
+  {
+    "local": "guides/engines/g4nb.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/guides/engines/g4nb.html",
+    "sha256": "73d9da2f88fb477f0a24c76bec4390702ceccbc38a20834d03b6485a9585ac18",
+    "before": "3e6367b870dd22175fddd8a6356ebc89b51e7fc0cd3dd663e5393cd84fbbe9ce"
+  },
+  {
+    "local": "guides/engines/g4ng.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/guides/engines/g4ng.html",
+    "sha256": "3f5acefb3be2c91fe17e69ac07773c73d1894c25f98ff7c222929ce10bd3601c",
+    "before": null
+  },
+  {
+    "local": "guides/engines/g6ba.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/guides/engines/g6ba.html",
+    "sha256": "4bd00451cfe5920ac75fa8ff3d8690469fb9f1434d43f95687af8c75ad1f22dc",
+    "before": "69c91a2f99e3b5044296290a03c7f43466e85bcd7c6fc5fe1830e9e6be3b7a05"
+  },
+  {
+    "local": "guides/engines/gw4b15.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/guides/engines/gw4b15.html",
+    "sha256": "2be120f9568d3424fbf40939d6dcc6f4712723bb5b722766987775d60793cced",
+    "before": "218103c9ec16439a890733ddf03b3b845252e05bbbc5aaceab102cb847f45740"
+  },
+  {
+    "local": "guides/engines/gw4c20.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/guides/engines/gw4c20.html",
+    "sha256": "d691319514dad342d6efcd95f4dcffe42620710793345a09518d296c8bb9cb74",
+    "before": null
+  },
+  {
+    "local": "guides/engines/gw4c20a.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/guides/engines/gw4c20a.html",
+    "sha256": "788a774e4acc20847872bcc1297a52e487b26682d2c3e5dda508878811290343",
+    "before": "0b80f0d9901586f851fa18bb54f15eeb9edcffe88c22c0b04c1a82a2cb05a283"
+  },
+  {
+    "local": "guides/engines/gw4g15.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/guides/engines/gw4g15.html",
+    "sha256": "c1134db9c9698fe0d2e8eec100f1dd0fa5ee4f3403968931968e8035ca5e8a49",
+    "before": "95970cb61dbff7cfb88d99923f2c5346135141e228c05f28ee1f415bfb499685"
+  },
+  {
+    "local": "guides/engines/gw4g15b.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/guides/engines/gw4g15b.html",
+    "sha256": "7a3ebf5c39785d748802a5b3c55f3a71a06c08b2081a5cf000e76aea7f35fa63",
+    "before": "eda33147a8437604d5234c487ade096451914d6e4da51a52d214cbb87a2fd1a5"
+  },
+  {
+    "local": "guides/engines/hr15de.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/guides/engines/hr15de.html",
+    "sha256": "13d69ff6bb9ab34d615852592cdd6c40f0c4ea9a996b8e039c43122382d18847",
+    "before": "55881127fef35436739596e8775b99388adc76968d6d59ad1dd3f7582bd611a1"
+  },
+  {
+    "local": "guides/engines/hr16de.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/guides/engines/hr16de.html",
+    "sha256": "e32e11e0b212d05d49c22c791ae140332c8e31a14051293699f82f9a2cc8c0cd",
+    "before": "54620cd91aca96a4f82b100466402c6774da95dd698bf16c665680c8ccd60060"
+  },
+  {
+    "local": "guides/engines/index.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/guides/engines/index.html",
+    "sha256": "289ff518dc1bb954216cc5d25f66d7c62924adf345e1dafc21347b7fa01d8faf",
+    "before": "509b29e18efc1841ecadab4dff14237416bcb60b09a5c8ff7b95241334f84eb8"
+  },
+  {
+    "local": "guides/engines/j30a5.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/guides/engines/j30a5.html",
+    "sha256": "d289096d978ad01645fe0454beba1fa55e876528d9e0ff3dd95263cfcae6c9b6",
+    "before": null
+  },
+  {
+    "local": "guides/engines/jl465q5.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/guides/engines/jl465q5.html",
+    "sha256": "00e1ef13264afffff3e1ea9dc4746e18c5833fc058f72a69735c14c6d35ec9e9",
+    "before": "8d1a5355c354d95e5c9321359f48a7e1e5491f08a39bdead655d2700fe8c4aef"
+  },
+  {
+    "local": "guides/engines/jl474q.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/guides/engines/jl474q.html",
+    "sha256": "83cfc2a5b8c7e5d81e7ae74b19436f911d2dc86f11fe930f99abd3137d26d23d",
+    "before": "77d801e2cc23f7b34760fcd965d334ead9170e510aba2c2c743edeafbe0dae91"
+  },
+  {
+    "local": "guides/engines/jl475q7.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/guides/engines/jl475q7.html",
+    "sha256": "6a6a1e4c2c41c2e2d0ba73b051fcb056e2b3cfd62255458b656f33fa540b79e6",
+    "before": "dc8032503e71af2819279666a911d3fd171a9b89fcc573f11cd246d25899355a"
+  },
+  {
+    "local": "guides/engines/jl475qk.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/guides/engines/jl475qk.html",
+    "sha256": "2f2dfc83d25cbb597cfa161c27fad13060083aa8d27bf390593b008fde03beb2",
+    "before": null
+  },
+  {
+    "local": "guides/engines/jl4g15d.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/guides/engines/jl4g15d.html",
+    "sha256": "b3586a75c73ae12af34fcef6fc0e43554e2467e124782511fb0230d5746da1be",
+    "before": "8fd20d51768adbf8ecc669e28cb0e1356a2d3e47894dfab688c2cdd353c6eab0"
+  },
+  {
+    "local": "guides/engines/jl4g18.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/guides/engines/jl4g18.html",
+    "sha256": "fd5c65638189ff2bea3c0d72ec4710aa250d6d2e83046e407e07ce22fc9f2427",
+    "before": "ea68e030f69cf4ae30819ef8b51cde76311d7440c0fa792832090384ac85e38a"
+  },
+  {
+    "local": "guides/engines/jlb-4g13t.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/guides/engines/jlb-4g13t.html",
+    "sha256": "2a170d3992d356681537d280c972c0dc5d3051f1d9a9f5ffd8e8fc8993047b73",
+    "before": "dd3e9933e88156eda20f1784d4223d9eb1b8ec6a5849d526f5f2b38f27a025b9"
+  },
+  {
+    "local": "guides/engines/jle-4g18td.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/guides/engines/jle-4g18td.html",
+    "sha256": "ec838c40d6cc4ed5a0fbf6fdbc2b07398ae82e222185221d4c61b61768a281f6",
+    "before": "60a82c0574f32ff195684fb15f7d8711aebb3f4e432fec20db5ec708596d5f66"
+  },
+  {
+    "local": "guides/engines/jly-4g15.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/guides/engines/jly-4g15.html",
+    "sha256": "4112424f9cf4b97032a0e4ad3a7936cec818a04aa20901d33ee744f09d599acb",
+    "before": "59bdac1183deb10ced3ee27c194a6bcf9d692293042572bb593b7ba8dc0a95ba"
+  },
+  {
+    "local": "guides/engines/k10a.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/guides/engines/k10a.html",
+    "sha256": "c1c582d2e66294937e4aa9f5e8d25809165f78ef21a3096861b3db49bcc15778",
+    "before": "ec518c74bc294686b768f4a37145c969fbd026f7977c5468926bc6957b1c7de5"
+  },
+  {
+    "local": "guides/engines/k10b.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/guides/engines/k10b.html",
+    "sha256": "7f4ccedfc6d8e14ea12c8d8d5f5c871ead32b506830a6f088b83919efd27bc89",
+    "before": "873f7ea3bda66a39e476f22e78ec93a83a8d9a3eece6533e3ab613376f545ce9"
+  },
+  {
+    "local": "guides/engines/k20a.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/guides/engines/k20a.html",
+    "sha256": "3b807018168b36e22dda139d742dcbf917d05276cc4400e9ccc9460fcd64f650",
+    "before": "aca030ad346d76f122154238cc066d71ce5733ab76a547d833f58c500d329b44"
+  },
+  {
+    "local": "guides/engines/k20a7.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/guides/engines/k20a7.html",
+    "sha256": "9d1f379fed961d7d59e1150b510547662d3c34f7d5c6176107f6a9a2fa1eb83b",
+    "before": "86e26bea1681aaab665033b2aade4eb17d13f31f66aa6e2656b8e4649e252487"
+  },
+  {
+    "local": "guides/engines/k24a.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/guides/engines/k24a.html",
+    "sha256": "1d1956d1171dbe469a0978485f7806408744cd2174988538948903d6c9163a55",
+    "before": "3aabae6e4e2e810a4f098184baf08bf89aa1a41a007c52080c2eccc7271d025f"
+  },
+  {
+    "local": "guides/engines/k24a8.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/guides/engines/k24a8.html",
+    "sha256": "3a693dbbd04f2016fac24677e7061ac9bd1bef9988f30fe6426bfd7b4fbd93ba",
+    "before": "0e0769ff33d1add8626ed7539343b20cb489157e5da17082757dc510536189e1"
+  },
+  {
+    "local": "guides/engines/k24v6.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/guides/engines/k24v6.html",
+    "sha256": "6dee82e919b7b9aa1cb725b744c97d97c399a6c2512d6a2f77d2d0b7d35a1cf1",
+    "before": null
+  },
+  {
+    "local": "guides/engines/k24w5.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/guides/engines/k24w5.html",
+    "sha256": "9c607135c9975e1820a1448b70b689e46a1fc8f81d929155547b351c4b7182d0",
+    "before": null
+  },
+  {
+    "local": "guides/engines/k24z1.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/guides/engines/k24z1.html",
+    "sha256": "6c2ea595b29686effe0dacbfef547ddae0f491f656868b403dc63a02633b5439",
+    "before": null
+  },
+  {
+    "local": "guides/engines/k24z2.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/guides/engines/k24z2.html",
+    "sha256": "4c8df14917e36e53da25582c5b9556513d9a7e02aebb945d0bac5b99c5851c6e",
+    "before": null
+  },
+  {
+    "local": "guides/engines/k24z4.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/guides/engines/k24z4.html",
+    "sha256": "1b23a67d1c0cd3bffaa36878b5bff6d33e985de9fb21290459c00ec1b9449e51",
+    "before": "cd48e33b2101e1052245b05dece0f7b0aadcd30f1ebcd37fb6fd63d6a96425ce"
+  },
+  {
+    "local": "guides/engines/k24z5.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/guides/engines/k24z5.html",
+    "sha256": "133f9b10ea1741c8fbc20b6783a5830a0f60b3030a89613985767c4b8480d4c2",
+    "before": null
+  },
+  {
+    "local": "guides/engines/k24z8.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/guides/engines/k24z8.html",
+    "sha256": "5725ca522b0d7c8c72c2e583fac05c271f603a3c6f0f65cf1113f834768f54ee",
+    "before": null
+  },
+  {
+    "local": "guides/engines/ka24de.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/guides/engines/ka24de.html",
+    "sha256": "ad5919f7f3836c59549724cca7c0183a1979eada6b0d8d360c9f9e573af72e01",
+    "before": "9a43dc529807a5292f40de9155457b90b18f60066f6c334638e1a11b2d824149"
+  },
+  {
+    "local": "guides/engines/l01.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/guides/engines/l01.html",
+    "sha256": "cdf476eb621eed52a529c5ac50f438b31da28c61b1f62e49efd294f1fc89efa1",
+    "before": null
+  },
+  {
+    "local": "guides/engines/l13a3.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/guides/engines/l13a3.html",
+    "sha256": "91afee42bcdf474f879a8fe6c9fc1c7a70f2ec2fc202a5eff698d7739d7effad",
+    "before": null
+  },
+  {
+    "local": "guides/engines/l13z1.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/guides/engines/l13z1.html",
+    "sha256": "139faa93ef099583c44607ab81818770118177d8f8448c8b340e57bc7a3873d5",
+    "before": "581d86014725847e8e4337ba94af27e15727d87fe76e3ff103e8f51a1af00d3f"
+  },
+  {
+    "local": "guides/engines/l15a1.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/guides/engines/l15a1.html",
+    "sha256": "aa68e65dd69f5c3b9f514eb96144582837b67f6edb50fd88d913007ff0d4aafa",
+    "before": "79deb8e18304840868382bff7b4829357a5bc5207f3eee3b07eeb8b953b47909"
+  },
+  {
+    "local": "guides/engines/l15a7.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/guides/engines/l15a7.html",
+    "sha256": "99ad4c7f6934112499282ccace077efb96c512c669a85c3f171fb59c6abcec39",
+    "before": "970ea1cad237ed0fda5e63783f759c66eeff8a6a362292c5ea3e053ec101a5df"
+  },
+  {
+    "local": "guides/engines/l15b5.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/guides/engines/l15b5.html",
+    "sha256": "4059a998ec7eb250b40562f15ff1d6d7fd561b9c0324088e061def0ddaa7888a",
+    "before": null
+  },
+  {
+    "local": "guides/engines/l15bl.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/guides/engines/l15bl.html",
+    "sha256": "eeb6683a4d8ce5eb0ed1990aa1b454508b14dfd6d33a41ab63468372a587c504",
+    "before": null
+  },
+  {
+    "local": "guides/engines/l15bm.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/guides/engines/l15bm.html",
+    "sha256": "6dd19573e5f7f7d651c0efb5eab2bfbdfda38d28b1999cb67d08ebe5d44974f8",
+    "before": null
+  },
+  {
+    "local": "guides/engines/l15bn.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/guides/engines/l15bn.html",
+    "sha256": "532d1736e6b0c3a4023543a98e1ddccbe1973ba6c09227571533b5159ab24a22",
+    "before": null
+  },
+  {
+    "local": "guides/engines/l2b.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/guides/engines/l2b.html",
+    "sha256": "9c29cbf7fa79bc9d8537bd2b95faae61165a0c662ccfa045a3f0b6ad2b3f5bee",
+    "before": "d9d257f993ced943ad5688855302157b548b6da8d3f44b5f61990d6197d4cbdd"
+  },
+  {
+    "local": "guides/engines/l3-vdt.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/guides/engines/l3-vdt.html",
+    "sha256": "480b0f64b844b343499f298e185bf9e9f0178ce4a8ccfaa54c707c72865cbd0a",
+    "before": null
+  },
+  {
+    "local": "guides/engines/l34.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/guides/engines/l34.html",
+    "sha256": "dced4603901292a86edbc203c350c331ec8bb6a9f138487edacbc01a8b01e185",
+    "before": "99723f4a17d7b3e394c625c7d26effc9ad7f1ec552961490fb05ca4b875f5bee"
+  },
+  {
+    "local": "guides/engines/l3a.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/guides/engines/l3a.html",
+    "sha256": "fc58256d586d81d90a71cb07dcd5e101fdcd17813f31f6f4c1a6cc0e7c56202b",
+    "before": null
+  },
+  {
+    "local": "guides/engines/l3g.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/guides/engines/l3g.html",
+    "sha256": "716768b30e39b0a21c4531cccc328143c58a2511735c8c1b59dda3119d5b025c",
+    "before": "36971ba316ba65c27b17b773e0ba921d2d06bb856f137492306d2739ccd660bd"
+  },
+  {
+    "local": "guides/engines/l79.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/guides/engines/l79.html",
+    "sha256": "29b3e7d096da1587817093138197e12aada1736d8be6787b2cf10c0050e72f89",
+    "before": null
+  },
+  {
+    "local": "guides/engines/l91.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/guides/engines/l91.html",
+    "sha256": "7256329cf531a63927cb413002f72b0a60f5ef9b8fc8703cbc3f4542e064a2bc",
+    "before": "caec116af60d131b8ec010fe32983b0064fbdce21d2fa18640a793dc9b7d2608"
+  },
+  {
+    "local": "guides/engines/l95.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/guides/engines/l95.html",
+    "sha256": "1f899cbad304b11fdf52ad164f07ef0a803aa663375532123c49da9538f74523",
+    "before": "dbaff16687ffe462aeab9cd7403648bee8d08849c1a77adbb38178e8d058ab95"
+  },
+  {
+    "local": "guides/engines/laf.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/guides/engines/laf.html",
+    "sha256": "c5ad09cf08aba85021ad74bf19f98d967044636918efb7f0857e3b4e64dffd44",
+    "before": "e1a647c0a5c835449c1c65543f18f856a32346aabcf569e2cb8a6d8be08ec24c"
+  },
+  {
+    "local": "guides/engines/lb8.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/guides/engines/lb8.html",
+    "sha256": "c23589e993a34d6f9d5c05d82d8f2051aef8bebc53aa49706c5e86ccbc104370",
+    "before": null
+  },
+  {
+    "local": "guides/engines/lcu.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/guides/engines/lcu.html",
+    "sha256": "71d78d546a6dcb343057638a6a08be3ce43630f12c1afeb28092cc2d0a6ec8a1",
+    "before": "b9c3b1e13f4a7675a01b154aaaacc6d3f6271647de4739b105e4fe0c5c210e51"
+  },
+  {
+    "local": "guides/engines/lde.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/guides/engines/lde.html",
+    "sha256": "aa3fa7bddc7d06c239fb6efde21e2e360f79b0bbf92e0724b9ea6bb570b18c77",
+    "before": "b59ea5268a7c037780cabf047630326930f4393cb53407e8040066e0d01df98e"
+  },
+  {
+    "local": "guides/engines/le5.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/guides/engines/le5.html",
+    "sha256": "8f601f0b99f79195477af1d2e3bc667476478f167446ba1f4cd3448de3b496e6",
+    "before": "cf358dd52ccfabec2724577371b40677ffe03aa229973a712a7736b06bf21bb3"
+  },
+  {
+    "local": "guides/engines/lf-de.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/guides/engines/lf-de.html",
+    "sha256": "7f60287be41bcac84114e8fe1e77216abb3182a3758e63785684731d07ee256f",
+    "before": "d604bf66fdb902e0202c5f19cb355eed99b032005a6757744a1df068d57cad8c"
+  },
+  {
+    "local": "guides/engines/lf1.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/guides/engines/lf1.html",
+    "sha256": "52691aeee64d517efd1c9ebe1c4cf73510f5f8f2103711aee143a0df23d7210a",
+    "before": null
+  },
+  {
+    "local": "guides/engines/lfa11.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/guides/engines/lfa11.html",
+    "sha256": "11d5d629ce17a066ebdc1c0fc449ca22f13a4111b0f534309ae21f1bf3517f6e",
+    "before": null
+  },
+  {
+    "local": "guides/engines/lfb12.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/guides/engines/lfb12.html",
+    "sha256": "aa1626c8297745ae793cdd486d91c81442fab49fbd861b5160377ddba6673c3a",
+    "before": null
+  },
+  {
+    "local": "guides/engines/lfv.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/guides/engines/lfv.html",
+    "sha256": "19f0f5483d523ccca0f60f1541c35c9973a5ef6dd46b552d487270b49fc490c4",
+    "before": "6062960af0921ed85a3e2e81e703372119bf8bc5672bb73571bf2704d527aaab"
+  },
+  {
+    "local": "guides/engines/llu.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/guides/engines/llu.html",
+    "sha256": "86fa9a033a3ab4bb888144c9472d40f2e1a3bf0a9f8948261e768d3b0db1f796",
+    "before": "cbed29531638aa7f8f8e7abcd897b38f5664a000bb78b7f95bec1bf2bf534596"
+  },
+  {
+    "local": "guides/engines/lmu.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/guides/engines/lmu.html",
+    "sha256": "a106aad94c1a8c9416516815547060ea9e3635d2caaea45a370630fb79a1ed70",
+    "before": "050e4c7e2b0b6b3e038ecdff4a2805e1a7e03fcf7b7d28a180d5189e098b695f"
+  },
+  {
+    "local": "guides/engines/lt1.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/guides/engines/lt1.html",
+    "sha256": "29cfb3742dd9739dfe318dbdb43f55ad04a99422489cd53e7517fe91b97eb09f",
+    "before": null
+  },
+  {
+    "local": "guides/engines/ltg.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/guides/engines/ltg.html",
+    "sha256": "e893b85cb980e3e02f36f16bef08cbb72b2fa5dbd17b7912fab806b2e462e152",
+    "before": "307b0be8ff9beff134e18a55724ea8dcac80036226915ebc2019c504042bdbe4"
+  },
+  {
+    "local": "guides/engines/m113-989.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/guides/engines/m113-989.html",
+    "sha256": "3a5b1267bef1f1b3dc4f2fb14ab36223e3631b19cb2fdbdd7e06b4d5b14fdf20",
+    "before": null
+  },
+  {
+    "local": "guides/engines/m113-993.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/guides/engines/m113-993.html",
+    "sha256": "08f2d9fded7b6826fc0ad79c52021ea79f8ab8ccf0486bba2a9adf79a054a8b7",
+    "before": null
+  },
+  {
+    "local": "guides/engines/m133-980.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/guides/engines/m133-980.html",
+    "sha256": "1ccf312f57fff0ec648594ec43be69e61341827650e98b55d2207f3edbba4c3f",
+    "before": null
+  },
+  {
+    "local": "guides/engines/m139-980.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/guides/engines/m139-980.html",
+    "sha256": "9629b965d82fbeeb50da0b83850ebe0431c8fda59659fcc3a53b4a413371b565",
+    "before": null
+  },
+  {
+    "local": "guides/engines/m155-980.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/guides/engines/m155-980.html",
+    "sha256": "f5afbc701df6a3b13bb4dd21e7207a2966b035803684e7b55465d8c4e3ad8cfc",
+    "before": null
+  },
+  {
+    "local": "guides/engines/m156-963.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/guides/engines/m156-963.html",
+    "sha256": "0d6382b928a9a57d17dce3e60f43a84ac12325717fa9fe4118d9120ea0366cb5",
+    "before": null
+  },
+  {
+    "local": "guides/engines/m156-984.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/guides/engines/m156-984.html",
+    "sha256": "490599259e46bb262b9b016a2288e4120628272f117e753ab87364bb9983c368",
+    "before": null
+  },
+  {
+    "local": "guides/engines/m156-985.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/guides/engines/m156-985.html",
+    "sha256": "43aa00ccd4b818574b46698abaccfe41c5829f1dc8a60064def5515eb4c1802e",
+    "before": null
+  },
+  {
+    "local": "guides/engines/m157-982.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/guides/engines/m157-982.html",
+    "sha256": "3889a78147d876136ec11f93bbb73f1e043c042bb9dea32a9efff30746c9ff56",
+    "before": null
+  },
+  {
+    "local": "guides/engines/m157-983.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/guides/engines/m157-983.html",
+    "sha256": "e1c092394dc78a3c327a6e0f6d3f41d694a8c4bf1dcd061b0bb9f9dd6d2835f9",
+    "before": null
+  },
+  {
+    "local": "guides/engines/m157-984.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/guides/engines/m157-984.html",
+    "sha256": "d8ea48aa96b37937fa3ae12c88443c3faa6a4c584b817b586c1ac41a6434540d",
+    "before": null
+  },
+  {
+    "local": "guides/engines/m159-980.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/guides/engines/m159-980.html",
+    "sha256": "a94bae654485571c524ebf015ac87a46fbeeb66a409e5e094429eeb8405952ec",
+    "before": null
+  },
+  {
+    "local": "guides/engines/m16a.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/guides/engines/m16a.html",
+    "sha256": "7a8326887502691948c5e8ce6519ea9a947eb2654098a59443d826ec0f4b0535",
+    "before": "8cb13ddaafb58a01945f4b76714d56d052f14ca72de1e74a11d3ff817f17fa84"
+  },
+  {
+    "local": "guides/engines/m176-980.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/guides/engines/m176-980.html",
+    "sha256": "f1da750b169b7443dde288cd0e81f7bf9a0bb40dab6f97f8e35984b8c6b1e832",
+    "before": null
+  },
+  {
+    "local": "guides/engines/m177-880.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/guides/engines/m177-880.html",
+    "sha256": "8624b5fb5351b6b22caed04279cc00a48a2d7461c9a8beaa1fd2abcbce2e6d4b",
+    "before": null
+  },
+  {
+    "local": "guides/engines/m177-980.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/guides/engines/m177-980.html",
+    "sha256": "574071acb83e90fb6a5525534df3e764fed03126ea5392bd66970c532190f597",
+    "before": null
+  },
+  {
+    "local": "guides/engines/m178-980.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/guides/engines/m178-980.html",
+    "sha256": "eea2db17cd2cc06b0103f99b8bea5d21b136aa793e4d3f0be0f6275ce772644d",
+    "before": null
+  },
+  {
+    "local": "guides/engines/m18a.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/guides/engines/m18a.html",
+    "sha256": "f27f4d1c9e5b51adf2e6119c4aed9fc5be383757cf13415a99c570592cefda92",
+    "before": "d716063a0f3472ab8d87bef54c2caeee5c3dccb69d69545bfaf5c39b20f7e0cd"
+  },
+  {
+    "local": "guides/engines/m254-915.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/guides/engines/m254-915.html",
+    "sha256": "b9908799f40cd88b3d0886883fcac1909d8f23fd479f694400f548a82765792b",
+    "before": null
+  },
+  {
+    "local": "guides/engines/m254-920.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/guides/engines/m254-920.html",
+    "sha256": "8d1029537d552d8d844ff50d0f01ebcfef233cf0275bac9739e67df0642699b2",
+    "before": null
+  },
+  {
+    "local": "guides/engines/m256-830.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/guides/engines/m256-830.html",
+    "sha256": "0b575f67cc1cf8f6bea4c95a5475318bd910ddde6caaf85c9a66192ed5a696db",
+    "before": null
+  },
+  {
+    "local": "guides/engines/m256-925.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/guides/engines/m256-925.html",
+    "sha256": "99ea5c81644888336d070d18949c8b5677d9cef2385d44dc8f5e1e5beacd396e",
+    "before": null
+  },
+  {
+    "local": "guides/engines/m256-930.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/guides/engines/m256-930.html",
+    "sha256": "b055b7c7b300092d53414d1c51205d6312852dfc218ba25ea712e2d42b9d553c",
+    "before": null
+  },
+  {
+    "local": "guides/engines/m260-920.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/guides/engines/m260-920.html",
+    "sha256": "72cf42d136b21b080435164dda52fca88c01606f6f2ab0625ccdcbe10a035aa6",
+    "before": null
+  },
+  {
+    "local": "guides/engines/m264-915.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/guides/engines/m264-915.html",
+    "sha256": "a2e60dd6c1e303f78c2836a585342d170da743d599534b9062276041eb6775f0",
+    "before": null
+  },
+  {
+    "local": "guides/engines/m264-920.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/guides/engines/m264-920.html",
+    "sha256": "fc7c6a96080dae1ac392fee11bb788004ed25949c8c986d5064dea1813391381",
+    "before": null
+  },
+  {
+    "local": "guides/engines/m270-910.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/guides/engines/m270-910.html",
+    "sha256": "b4e7c9b971ee80dea1771f274f57fbc0db981249a094d7cec6b39e45efaaf540",
+    "before": null
+  },
+  {
+    "local": "guides/engines/m270-920.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/guides/engines/m270-920.html",
+    "sha256": "5d71081b32fd1a803ce70393121db7a95755969993743dc101ad397d30060cf9",
+    "before": null
+  },
+  {
+    "local": "guides/engines/m271-820.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/guides/engines/m271-820.html",
+    "sha256": "a9d27a53a5867d4b3d0ac705e542b33ad3463d44acf7f092ba98117091eb9c16",
+    "before": "f39e96fa5885d57472becb13337bc5d48a5d38a548bdc761cac180aea1c4bb38"
+  },
+  {
+    "local": "guides/engines/m271-860.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/guides/engines/m271-860.html",
+    "sha256": "e95cd85fb669caa94d57b5149eff7c0917c88a5464565351fa3d16902c4e561a",
+    "before": null
+  },
+  {
+    "local": "guides/engines/m271-861.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/guides/engines/m271-861.html",
+    "sha256": "2630b6b0d375d16d6b02717754d820a764e082172a754564d43a0e105d956230",
+    "before": null
+  },
+  {
+    "local": "guides/engines/m271-910.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/guides/engines/m271-910.html",
+    "sha256": "b37b464f4f66064a266ffcf70e731cb69d6daf956865349b318b085bf09c1955",
+    "before": null
+  },
+  {
+    "local": "guides/engines/m271-950.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/guides/engines/m271-950.html",
+    "sha256": "b39eb44c93cd5f359d35bc0972fe7a7c69b431af8a3fcd6bcb31b081f07d674e",
+    "before": null
+  },
+  {
+    "local": "guides/engines/m271-954.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/guides/engines/m271-954.html",
+    "sha256": "68224e48a4c4ae28a8a6b3b8c2f146c63b246d619853844adfca33bc0c66b821",
+    "before": null
+  },
+  {
+    "local": "guides/engines/m272-921.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/guides/engines/m272-921.html",
+    "sha256": "32bf5a3b60364dae2ad10df8346063d9f4ebc38df2367b74b791d47f53c87aff",
+    "before": null
+  },
+  {
+    "local": "guides/engines/m272-922.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/guides/engines/m272-922.html",
+    "sha256": "b198bdc52c31e2be6cc0c7b16e5a98fc42ed96ab73107099d728515d3efea5c6",
+    "before": null
+  },
+  {
+    "local": "guides/engines/m272-939.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/guides/engines/m272-939.html",
+    "sha256": "a2bbfbf9ca8090c77db324e509cd990f9d819aeb72c46766d34f5d3a7cca7fdd",
+    "before": null
+  },
+  {
+    "local": "guides/engines/m272-940.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/guides/engines/m272-940.html",
+    "sha256": "e3623dce4e9b487c5d8033573e1d8baa364d0d9a93245876d864c131a05538e9",
+    "before": null
+  },
+  {
+    "local": "guides/engines/m272-942.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/guides/engines/m272-942.html",
+    "sha256": "e02edb3a5891d39eb82fdb5d004b759b52c78908f4bca270fac60260b57d356c",
+    "before": null
+  },
+  {
+    "local": "guides/engines/m272-943.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/guides/engines/m272-943.html",
+    "sha256": "c8221e5a541ab28d3ea9d002ca86871241c2cdd173ece309c348dd5d9a183d7d",
+    "before": null
+  },
+  {
+    "local": "guides/engines/m272-945.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/guides/engines/m272-945.html",
+    "sha256": "7c0fa42af5505dd6453df02463697fcf7272addf9f4c9ff61efb08b788d90cc7",
+    "before": null
+  },
+  {
+    "local": "guides/engines/m272-947.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/guides/engines/m272-947.html",
+    "sha256": "482f5aeb073205f31123f8f8f907c6c29cba79141d23d88378e5999d5f809feb",
+    "before": null
+  },
+  {
+    "local": "guides/engines/m272-948.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/guides/engines/m272-948.html",
+    "sha256": "920f1d32714cd9c1ba4dfc367f419f18b0c0bc7e72afc1140c38708ecd4ba30d",
+    "before": null
+  },
+  {
+    "local": "guides/engines/m272-949.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/guides/engines/m272-949.html",
+    "sha256": "f2488086eabce0be786fecea39948f421f8c14c9c4d4d374b174e9f2aa928289",
+    "before": null
+  },
+  {
+    "local": "guides/engines/m272-952.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/guides/engines/m272-952.html",
+    "sha256": "397013fe61d668d959d1f6b131df2c9ead6244eab488eb8007238e875b63d609",
+    "before": null
+  },
+  {
+    "local": "guides/engines/m272-961.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/guides/engines/m272-961.html",
+    "sha256": "d0a09c42d4a79c9736d297496bdb40f28f685f1ffb747f04e69e8eb3e3ab21dd",
+    "before": null
+  },
+  {
+    "local": "guides/engines/m272-964.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/guides/engines/m272-964.html",
+    "sha256": "ce09c1228dd6808e6fff2ce6c36b88cbc629a7c1dcf3e59372740e4c1bb01921",
+    "before": null
+  },
+  {
+    "local": "guides/engines/m272-965.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/guides/engines/m272-965.html",
+    "sha256": "0a6323e61f451c90be79ff718acd1d3001cacdddf0024fbdcf82bf208a3f9650",
+    "before": null
+  },
+  {
+    "local": "guides/engines/m272-967.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/guides/engines/m272-967.html",
+    "sha256": "1390280dc4c1f62f3dae4419a8afffb12ba6b10aa4441e0a92af0b7acef4f8ab",
+    "before": "bb4648756ea4a494adc75dc1683956e57e9cb212895668f61c7d1edda19a3e6e"
+  },
+  {
+    "local": "guides/engines/m272-968.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/guides/engines/m272-968.html",
+    "sha256": "1ea1542dd87b242ee014963ee8a31f19428a76d85bb1bb7075cad0a3aa4cf47d",
+    "before": null
+  },
+  {
+    "local": "guides/engines/m272-969.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/guides/engines/m272-969.html",
+    "sha256": "6cd25d60c9c8d1ec5b9e1179d0e51330883298a30efee5c7e83c893c27dc6ef1",
+    "before": null
+  },
+  {
+    "local": "guides/engines/m272-974.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/guides/engines/m272-974.html",
+    "sha256": "72a96af4df0cdb1cdcdc3597405ab9c8ece63b6e73c60a32579cc42e3ecfa787",
+    "before": null
+  },
+  {
+    "local": "guides/engines/m272-985.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/guides/engines/m272-985.html",
+    "sha256": "00d7374a12b0bfefd5c4931d706c10b65375903199d6860b3c583d17bd3c9f22",
+    "before": null
+  },
+  {
+    "local": "guides/engines/m273-960.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/guides/engines/m273-960.html",
+    "sha256": "6f116dbc112831644d255ab0aad190372e4d42dfb55e11813b6b2beeb81c504f",
+    "before": null
+  },
+  {
+    "local": "guides/engines/m273-961.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/guides/engines/m273-961.html",
+    "sha256": "17ada03953a3448d36d0c5285375a6ec4fd1982b7c468393e549f11aebcd07a0",
+    "before": null
+  },
+  {
+    "local": "guides/engines/m273-965.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/guides/engines/m273-965.html",
+    "sha256": "8ad6dad6e77536cfa8a5625cba2511b0df6e208ecd2185d6d76fe37247fa4fec",
+    "before": null
+  },
+  {
+    "local": "guides/engines/m274-910.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/guides/engines/m274-910.html",
+    "sha256": "dd5319b4a0892574ae0bdf52c132dd5d4c707f79e1777fbe89245c12c2c1be29",
+    "before": null
+  },
+  {
+    "local": "guides/engines/m274-920.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/guides/engines/m274-920.html",
+    "sha256": "fc533bd2a9692ef36bca8c46061cd43f4b39565c1bbc11c543930f325f603436",
+    "before": "e3fcacc1bcbdbb366ae962738429dc366d58fb7c6a4c461145a378f2ba06dfd6"
+  },
+  {
+    "local": "guides/engines/m275-981.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/guides/engines/m275-981.html",
+    "sha256": "69764c727ceffcbb8872e71c513f5e91284e9a5a29d9adf78887f7b8e9242550",
+    "before": null
+  },
+  {
+    "local": "guides/engines/m275-982.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/guides/engines/m275-982.html",
+    "sha256": "a0188284eb23da9cbc979fc1c96e36733e68cda3beee37129908e811aafa51b5",
+    "before": null
+  },
+  {
+    "local": "guides/engines/m276-820.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/guides/engines/m276-820.html",
+    "sha256": "886a9f683551aa21b7bcaa816b3c5b922441e9e57243def49dbfc167f564e56c",
+    "before": null
+  },
+  {
+    "local": "guides/engines/m276-821.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/guides/engines/m276-821.html",
+    "sha256": "c84c7d2a9d6648c88012d61397600f24bd273aab0a387ffba3d1f51e215ac0d1",
+    "before": null
+  },
+  {
+    "local": "guides/engines/m276-822.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/guides/engines/m276-822.html",
+    "sha256": "f74a46540f01e2561c425ea0a7480e37f9b35311b67ea8de1ff724052532e80e",
+    "before": null
+  },
+  {
+    "local": "guides/engines/m276-823.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/guides/engines/m276-823.html",
+    "sha256": "78f04c479793dd192dd4f0bbd5488ab3b2d74a88232fdbff63cb882609e06ae5",
+    "before": null
+  },
+  {
+    "local": "guides/engines/m276-824.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/guides/engines/m276-824.html",
+    "sha256": "370089da9043c633825a1aa0bbf4394c644beb647b812c4226524e493b88a3a5",
+    "before": null
+  },
+  {
+    "local": "guides/engines/m276-825.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/guides/engines/m276-825.html",
+    "sha256": "a91a0c95f5d78bc700be907b87264168ae02f864280ce22f208f8cc8ea7296b1",
+    "before": null
+  },
+  {
+    "local": "guides/engines/m276-826.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/guides/engines/m276-826.html",
+    "sha256": "70eeafed98477e4df5677df8317806b7536fb73fe2a6e94bbed9c497c23ffd6c",
+    "before": null
+  },
+  {
+    "local": "guides/engines/m276-950.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/guides/engines/m276-950.html",
+    "sha256": "5a29c4b5fd13faacf49a10edf67049c5985a648fb503809cc28280b475d704db",
+    "before": null
+  },
+  {
+    "local": "guides/engines/m276-952.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/guides/engines/m276-952.html",
+    "sha256": "c3edb904bb126709dba291622a7568f218140848927ac30bd8eb71d8a1b462c9",
+    "before": null
+  },
+  {
+    "local": "guides/engines/m276-954.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/guides/engines/m276-954.html",
+    "sha256": "0ed0886c655ac45bfa826f842efa3090d71170588d05223fb2a0bf6cca938c0a",
+    "before": null
+  },
+  {
+    "local": "guides/engines/m276-955.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/guides/engines/m276-955.html",
+    "sha256": "0c02bd82a3547d1f11bb6affb8965a67bc55738ef5eccd902d387d90c73a56e3",
+    "before": null
+  },
+  {
+    "local": "guides/engines/m276-956.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/guides/engines/m276-956.html",
+    "sha256": "a35578273212f21ae358afb0e46c314cedc0087f05c7fc2232643afbc722cca3",
+    "before": null
+  },
+  {
+    "local": "guides/engines/m276-957.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/guides/engines/m276-957.html",
+    "sha256": "81c111a5e5ace49850791731541a4435f2ee691aec520f49f449c0e9060a829c",
+    "before": null
+  },
+  {
+    "local": "guides/engines/m276-960.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/guides/engines/m276-960.html",
+    "sha256": "a2388cd962801ddbdf08cdeb830e12111a50061c517497b48586b942e14ba8f9",
+    "before": null
+  },
+  {
+    "local": "guides/engines/m277-980.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/guides/engines/m277-980.html",
+    "sha256": "795041602360e5982e555c3b5a77ca3dfa157d2b35fafc3373b6d05797386aa7",
+    "before": null
+  },
+  {
+    "local": "guides/engines/m278-910.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/guides/engines/m278-910.html",
+    "sha256": "a8e9caf61940d16404ca22776cee8d16de636489b93d58b4eb2d0d873536ac4b",
+    "before": null
+  },
+  {
+    "local": "guides/engines/m278-912.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/guides/engines/m278-912.html",
+    "sha256": "73ec66098085fcec18928769936dc5b4c5dca1bb0ed27e04c8d5a2b2213b1120",
+    "before": null
+  },
+  {
+    "local": "guides/engines/m278-922.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/guides/engines/m278-922.html",
+    "sha256": "3ab0f2520d27da5cae53e038b7e9a57caf41e2934d1b41817acca1b474ea0c51",
+    "before": null
+  },
+  {
+    "local": "guides/engines/m278-928.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/guides/engines/m278-928.html",
+    "sha256": "a39c63595cf2b0598ac42b51e2a1fa013f0302f3bfa3aef902aaaf8572d79c55",
+    "before": null
+  },
+  {
+    "local": "guides/engines/m278-932.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/guides/engines/m278-932.html",
+    "sha256": "138036ab8f18e058846507c5d9701ab2bafd35b5d87288c2e66769a24d44070a",
+    "before": null
+  },
+  {
+    "local": "guides/engines/m279-980.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/guides/engines/m279-980.html",
+    "sha256": "6e4a58badfa6c01040ed0b6e33e085e560da1341d5df178b3e5c195f6df967b3",
+    "before": null
+  },
+  {
+    "local": "guides/engines/m279-982.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/guides/engines/m279-982.html",
+    "sha256": "1251a72dacd6f5688137263aad3bcd825780fbbef656170c701879325f37b861",
+    "before": null
+  },
+  {
+    "local": "guides/engines/m282-914.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/guides/engines/m282-914.html",
+    "sha256": "74058200faa096649cd28029f2aac99221e7c46336db96dc75d7dc3b0d2411d1",
+    "before": null
+  },
+  {
+    "local": "guides/engines/mr16ddt.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/guides/engines/mr16ddt.html",
+    "sha256": "a07dfb34286d8bae821477a63e74d600e62d5dd2582c9ed930d93819ac33a046",
+    "before": null
+  },
+  {
+    "local": "guides/engines/mr18de.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/guides/engines/mr18de.html",
+    "sha256": "54c40a0b2341b9569ddb62f0ec982ffbc2481a2a4d72bf39665d311616917ad0",
+    "before": "d0b30b5b7a1f213c54a80e8c61be191d6345abd74fa9d0adc717cbedf6578d6b"
+  },
+  {
+    "local": "guides/engines/mr20dd.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/guides/engines/mr20dd.html",
+    "sha256": "f869b9a106e697b6ac44e57332ee09bd64111833652674649803c035ed12b2a8",
+    "before": null
+  },
+  {
+    "local": "guides/engines/mr20de.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/guides/engines/mr20de.html",
+    "sha256": "19d6c53494af85bf9d91a76a189d965b4cab35712eaa36915f6c36925264f179",
+    "before": "bd19b7edb8c3335b49cbc195fbf11986e45b74851c34e6a78dfd2b254ad7fe49"
+  },
+  {
+    "local": "guides/engines/mr479qa.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/guides/engines/mr479qa.html",
+    "sha256": "7c7c2a5c8a7ec263c6256c8ef2f9f115be8296b8c31bce93a63d2db020dd8179",
+    "before": "7593622354f18681611f82d86e8165e8e1bffc4fbcd6c58e2d2bb32d183fb9f2"
+  },
+  {
+    "local": "guides/engines/mra8de.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/guides/engines/mra8de.html",
+    "sha256": "ade357f6b992911896be0f1d672be5c6afc01f6646bc371990e0724b19cbc751",
+    "before": null
+  },
+  {
+    "local": "guides/engines/n13b16a.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/guides/engines/n13b16a.html",
+    "sha256": "ad01644ee3c6b9ab6cfc0e6c43999779f7ec61173285713328571cf8d931ac51",
+    "before": null
+  },
+  {
+    "local": "guides/engines/n20b16a.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/guides/engines/n20b16a.html",
+    "sha256": "9b0914229849043ce9b7d95fc57b0b8e2d17b8b6bbb8663d5b298bdc1a64d102",
+    "before": null
+  },
+  {
+    "local": "guides/engines/n20b20a.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/guides/engines/n20b20a.html",
+    "sha256": "50cf3174cb406caff39bd477db70dac96042e30969b7b25b51a84dc358d01c35",
+    "before": null
+  },
+  {
+    "local": "guides/engines/n20b20c.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/guides/engines/n20b20c.html",
+    "sha256": "6b346380f80609e35a7af5fe00c7685af8a509d70e267c05f2349efc9751702d",
+    "before": null
+  },
+  {
+    "local": "guides/engines/n20b20d.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/guides/engines/n20b20d.html",
+    "sha256": "d99879d0082dd502c8352291bfd6314f651529f0bf6850fff90d9f51a5e9de0b",
+    "before": null
+  },
+  {
+    "local": "guides/engines/n43b20a.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/guides/engines/n43b20a.html",
+    "sha256": "e5b4be23fafe5f677aeaede4e3953178b986ead3b79e361354523082c8b6f009",
+    "before": null
+  },
+  {
+    "local": "guides/engines/n46b20a.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/guides/engines/n46b20a.html",
+    "sha256": "9e19915d8d36c3a5c85c01cb6810f0885a52a495161894bdc69d1139edcfc9af",
+    "before": null
+  },
+  {
+    "local": "guides/engines/n46b20cc.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/guides/engines/n46b20cc.html",
+    "sha256": "3d4e5ee7f59728d5d5274de4fb0c6b53a97535374e1d20f2b9e297c59d9df25f",
+    "before": null
+  },
+  {
+    "local": "guides/engines/n46b20cd.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/guides/engines/n46b20cd.html",
+    "sha256": "5ad0e603a2875be520acf5596ac4fd477c95476e5044c92bde9df1ae3bdee544",
+    "before": null
+  },
+  {
+    "local": "guides/engines/n52b25a.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/guides/engines/n52b25a.html",
+    "sha256": "a0efac547f4517d505f0d56f1dd5a6ad8f1f9cec02559ac4b68f5b338358a458",
+    "before": null
+  },
+  {
+    "local": "guides/engines/n52b25af.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/guides/engines/n52b25af.html",
+    "sha256": "47d0168705627121089c3ac58bd7d163e08ffb6957e5ce1a8927f2a7cf51be97",
+    "before": null
+  },
+  {
+    "local": "guides/engines/n52b25be.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/guides/engines/n52b25be.html",
+    "sha256": "24d41abfa57de682eda2a02841b0da00a8390d7ab48dc2ca3478efbd7d7de27a",
+    "before": null
+  },
+  {
+    "local": "guides/engines/n52b25bf.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/guides/engines/n52b25bf.html",
+    "sha256": "5a11d94dd95dec64a8ef23cf65e2560b2ccfae02b1f2d07c830f36d7c1011fc1",
+    "before": null
+  },
+  {
+    "local": "guides/engines/n52b30a.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/guides/engines/n52b30a.html",
+    "sha256": "410bd80d224f6ea6422fa31c4cd1f2cc50d85932943e85f0e6a3cb0c2989a8bd",
+    "before": "e31b89d838ed464e96650b4e86e7403a2290b498f891a1b3241a7c66f0e0b78d"
+  },
+  {
+    "local": "guides/engines/n52b30af.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/guides/engines/n52b30af.html",
+    "sha256": "8728fa16ffafd635081a7afba78c30f0e2d9111a7e156cd4aeaa0f16f9f66d0d",
+    "before": null
+  },
+  {
+    "local": "guides/engines/n52b30bf.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/guides/engines/n52b30bf.html",
+    "sha256": "2dec97b8fce24513708e2fb0f718b30687b20b7eeb723c501275db3f4927fe5e",
+    "before": null
+  },
+  {
+    "local": "guides/engines/n53b30a.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/guides/engines/n53b30a.html",
+    "sha256": "a10a8a278d0fd8705d758f0ede27f7b6b146b6f9d7b7fc473affb399f81a5b44",
+    "before": null
+  },
+  {
+    "local": "guides/engines/n54b30a.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/guides/engines/n54b30a.html",
+    "sha256": "c354cfca8471622bdfaf8ca851fbf622b3d733f9476acbddec40b27ebb28e1d0",
+    "before": null
+  },
+  {
+    "local": "guides/engines/n55b30a.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/guides/engines/n55b30a.html",
+    "sha256": "d90e7918294ec44d5b57b46090d0bf527f7e4050442dc10e288b515cc6533dcc",
+    "before": null
+  },
+  {
+    "local": "guides/engines/n62b48b.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/guides/engines/n62b48b.html",
+    "sha256": "4355cbc82dc9e413d0a01b1c426d95ccd18cac4991a3772ff8977bf54c72fe69",
+    "before": null
+  },
+  {
+    "local": "guides/engines/n63b44a.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/guides/engines/n63b44a.html",
+    "sha256": "88e23dd850b89c7fb6ec454791a09d7f5dc583c80d18519d482555f952bea02c",
+    "before": null
+  },
+  {
+    "local": "guides/engines/n63b44b.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/guides/engines/n63b44b.html",
+    "sha256": "32f83ebd84b060ffac41a86581b90ecb9c77a4a036e4f3813f4f64a6a70aee22",
+    "before": null
+  },
+  {
+    "local": "guides/engines/n63b44c.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/guides/engines/n63b44c.html",
+    "sha256": "b20689efc470a10e5a95efdff05edfc9993146859629af6daddc8c68acec72db",
+    "before": null
+  },
+  {
+    "local": "guides/engines/n74b60a.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/guides/engines/n74b60a.html",
+    "sha256": "ad469e371d74da17366f89393db4eed58d4e56b9471a28cc3774bc76bf53d418",
+    "before": null
+  },
+  {
+    "local": "guides/engines/n74b66b.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/guides/engines/n74b66b.html",
+    "sha256": "8e2587efc7a48d005266f859a2afb9f8de532300bf41ceb755c647207934fd6c",
+    "before": null
+  },
+  {
+    "local": "guides/engines/nfp.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/guides/engines/nfp.html",
+    "sha256": "86b6e7245bbbe3415094b81b9e9830342c7d90f3c5bb5b3fc455c68b3851140c",
+    "before": "fb08c7a2fed07bd383bd8df3494adb1b4bf40b175b53f0766631bfb24d36cca2"
+  },
+  {
+    "local": "guides/engines/p10a1.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/guides/engines/p10a1.html",
+    "sha256": "b0ebf40d8f24492ad6fe59d70877d540643414735b68d79c16b5c6f4b38d00e8",
+    "before": null
+  },
+  {
+    "local": "guides/engines/qr20de.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/guides/engines/qr20de.html",
+    "sha256": "0f59d6393265909ce6e4926813b07b7cc0594b4a869021b3f235ffbef5630b34",
+    "before": "1dcd715d67f72bd63ad86c2a34f2e5c9813a4963998e15f454c113cfb46de4b3"
+  },
+  {
+    "local": "guides/engines/qr25de.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/guides/engines/qr25de.html",
+    "sha256": "da6980480d01ac98ca2e83e0c323f3f584717f83bd3262305241efa3389607b3",
+    "before": "afb069bec0e1f9a552df4491d6093d787a5f16957ee021c3de47cfebe38b2982"
+  },
+  {
+    "local": "guides/engines/qr25der.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/guides/engines/qr25der.html",
+    "sha256": "88d2fb39d8879fb0f5abc7d15113917d30a88b034785031023484f3fa91bc240",
+    "before": null
+  },
+  {
+    "local": "guides/engines/r18a1.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/guides/engines/r18a1.html",
+    "sha256": "3c33e5b315b94909e03ce1e7e6e9fd838851312f4b7ad29392aec8788295d29d",
+    "before": "7539df3841c5f645003941567692c934c99a5d377d66bc285039c6ac5de93d88"
+  },
+  {
+    "local": "guides/engines/r18a2.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/guides/engines/r18a2.html",
+    "sha256": "89ca5ef369c4d3b9d96c0f0e7585fcae6afdf29c727d3811dcf434ec9ce2bbd7",
+    "before": "e034340dc4b55c19ed97afe895261793237893041f57f83c183c7bad4fdf7c71"
+  },
+  {
+    "local": "guides/engines/r18za.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/guides/engines/r18za.html",
+    "sha256": "5dc9f1d25a362a270304c3eff4e1c9f0afc713b4a6ed87bdd02cba68c6a55393",
+    "before": null
+  },
+  {
+    "local": "guides/engines/r20a1.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/guides/engines/r20a1.html",
+    "sha256": "a772933197ab21b56db91fb6f5948c7ac54bfc6f73a2f2d2544604bd95bfc766",
+    "before": null
+  },
+  {
+    "local": "guides/engines/r20a3.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/guides/engines/r20a3.html",
+    "sha256": "a9e38766f212349e7f363af69ab44892b5377b2a776251479b2c859472b82892",
+    "before": "4e320731c7b0e35b7505a89a387779a6f805942ac51a55788e9b450141f9027b"
+  },
+  {
+    "local": "guides/engines/r20a7.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/guides/engines/r20a7.html",
+    "sha256": "5960918b78ebdb587882600b07224a98c80d230b7b29ce0ba84ef9812fe9da8e",
+    "before": null
+  },
+  {
+    "local": "guides/engines/r20z4.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/guides/engines/r20z4.html",
+    "sha256": "295f2a6a2afe4b27b928c8f982ab7dc992eb49dfdf433147e4cefe218f65efc2",
+    "before": null
+  },
+  {
+    "local": "guides/engines/rfn.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/guides/engines/rfn.html",
+    "sha256": "1c239e313af16877f39ea4b993d13c9f7d83a395b4e6134c070526b000b9ca08",
+    "before": "d9b240560a9fe6f4d36582961789b54dccc4ea270877a9aa11a80556ff22dce3"
+  },
+  {
+    "local": "guides/engines/s63b44a.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/guides/engines/s63b44a.html",
+    "sha256": "17c2cb82f0c86682117279b145f61cdcffcfcb8d2a76ef028a32e3f04a8231b6",
+    "before": null
+  },
+  {
+    "local": "guides/engines/s63b44b.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/guides/engines/s63b44b.html",
+    "sha256": "960697a2f87a0269619b6069046fcdb79313e4108ea05d4a3282fe8d75d04421",
+    "before": null
+  },
+  {
+    "local": "guides/engines/sqr371f.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/guides/engines/sqr371f.html",
+    "sha256": "e1e1fe2f2a7383c0024946327c5ac817cb7c345dab0af548fd56a1c10de6f79c",
+    "before": null
+  },
+  {
+    "local": "guides/engines/sqr372.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/guides/engines/sqr372.html",
+    "sha256": "c6be30b460f01d7b184c38e24ce777bd93b7b12ea02af8a4dfd75fd2065c2165",
+    "before": "cd1e03a0ead7d389c84991a69a1edff15321a142807f4cfce9dc0b456fa8aa0b"
+  },
+  {
+    "local": "guides/engines/sqr472.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/guides/engines/sqr472.html",
+    "sha256": "02319203cd02209e4af0f380307e73a9ae8652941ac7074581dc3d4e409ed4e6",
+    "before": "489e6b8ffe9c259400cdb8704b4f6104b8987a2800bc6a786a02684a0d9a9114"
+  },
+  {
+    "local": "guides/engines/sqr473f.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/guides/engines/sqr473f.html",
+    "sha256": "d52c3f6a424c1af861c9246cd81591931a59bb7aa75b6e70e52e63284fcbfc67",
+    "before": "1511390742cdb27318f34d835db70bb0e67431ab8a2bfa5a51e6194161480a53"
+  },
+  {
+    "local": "guides/engines/sqr477f.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/guides/engines/sqr477f.html",
+    "sha256": "b26676959836302fe2a62da0880f4e096ea081d1743ec59de92478bb288b9f0e",
+    "before": "33bc79123bdcb87ab724119e43d70fd88ab0d74263bb7389ce6b3f61774ce119"
+  },
+  {
+    "local": "guides/engines/sqr481f.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/guides/engines/sqr481f.html",
+    "sha256": "dacb6ff1b8a311f7c775bea2212af87717115e1ddc5bca3811cb9f773b1f364a",
+    "before": "29ec15a2221135f45d6aa33d60f1d0d8e71d490c16a860c7aa4398835df0a369"
+  },
+  {
+    "local": "guides/engines/sqr481fc.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/guides/engines/sqr481fc.html",
+    "sha256": "206f3064d57c172dbebad9abdae735d497a4803081d63492d613c373e17812ec",
+    "before": "3435e0c2d621011fa614058b955365552f5886411ab8c23a49dbf2568044715f"
+  },
+  {
+    "local": "guides/engines/sqr484f.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/guides/engines/sqr484f.html",
+    "sha256": "dbbe31b769a8f3a402cf2dd44d30dd0642aff7fc692d5c36ab43ca3728b4b90e",
+    "before": "742cbb611b4f486606c173468e7268c0606a3fbc687e48a4a5e7217b0fe00835"
+  },
+  {
+    "local": "guides/engines/sqre4g15b.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/guides/engines/sqre4g15b.html",
+    "sha256": "786d14f30d165139ee1e29d6c12611b3736e09bf345954eff7f7d7c164afb28c",
+    "before": "2113410f338ce8742d5b170f1c9474d6864772ec5f5f9431ae6bb8c7220a4e1f"
+  },
+  {
+    "local": "guides/engines/sqre4g16.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/guides/engines/sqre4g16.html",
+    "sha256": "24db7d36b167bfa10b8790cabc3fe74053cf4a15652c9e98cb4dc63600a5104f",
+    "before": "5560d9045bcbda287995f0de5695862baf329c44b10f571b0a65a7ba3f1c9c35"
+  },
+  {
+    "local": "guides/engines/sqre4t15c.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/guides/engines/sqre4t15c.html",
+    "sha256": "7d67ed0a89fb6b5127e0af14f47b255cb7b2dc33079e78fcb5890f7ff3c32af5",
+    "before": "b47db2804bae3e0ad8c4f87d08c2aa03bd0a0c81aaa1fc70182daba6921fad99"
+  },
+  {
+    "local": "guides/engines/sqrf4j16.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/guides/engines/sqrf4j16.html",
+    "sha256": "39416ee8bc3bf8b62adbe66aa55374c7636aa1059f6cefb69cf0bd93de682d09",
+    "before": "4ed9bdf5fc1efff5145ebf73d162a979dccaa9f243b3b58c46d4553e2d221005"
+  },
+  {
+    "local": "guides/engines/sqrf4j20.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/guides/engines/sqrf4j20.html",
+    "sha256": "37d48a5d00f78066925f5730a5928ce9d46e256b628030bb357607e9954c9c74",
+    "before": "2a2e26585fd496e0ef5232c5c52a5c54cab9af37855fa4515dfb21541ef0bfc8"
+  },
+  {
+    "local": "guides/engines/tu5jp4.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/guides/engines/tu5jp4.html",
+    "sha256": "d71d0081c19d9f55af6386e53ab273b007d8a054ec381a05b99a4221520f3faf",
+    "before": "8c05631e7c7fba735c4f566a416764bded129411f7bb4d0fc0d060e799bb1367"
+  },
+  {
+    "local": "guides/engines/vk56vd.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/guides/engines/vk56vd.html",
+    "sha256": "d7da7d1dc5565a061afe6b2046ee58187a398440f9076519e0a08a9de8a57a49",
+    "before": null
+  },
+  {
+    "local": "guides/engines/vq25de.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/guides/engines/vq25de.html",
+    "sha256": "a8e804ce87b773387be36f81db5f6003433339730484e6b80a734e0163d63273",
+    "before": "c2a3d94a4e9e901326c89061c478e33e36ab54dd228a6e05e9605e3036e3623c"
+  },
+  {
+    "local": "guides/engines/vq35de.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/guides/engines/vq35de.html",
+    "sha256": "2c39d0a312bc9930a616c2420996a42aecd7090efdddf3245d09a0d434c315da",
+    "before": "c1f77460a942f0eb308c24397b89a58d710b74eaa9337d5769849a673459794a"
+  },
+  {
+    "local": "guides/engines/z6v.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/guides/engines/z6v.html",
+    "sha256": "a8afeb1ec3fe069e21d0e8b1ee91b7461eab5ad5aa844f202bab780723c57273",
+    "before": null
+  },
+  {
+    "local": "guides/engines/zy-ve.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/guides/engines/zy-ve.html",
+    "sha256": "2b3c100aaab9ca9dbfd21b3c1f312389b6ba7e47f6134f6d802b54ddc61e6497",
+    "before": "02aae2240a453c66c28e2b863a686e5c3dfa303f12ae60bf0347e0d4751e3169"
+  },
+  {
+    "local": "guides/index.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/guides/index.html",
+    "sha256": "7838ed8b8b67c047f7b5ba4b6a927971de514a8ff980e61314c7ef77536bd0bd",
+    "before": "0297c0309d8ce9ff79134cac4e9b2ec6b4c4405d599634ccd2c13c1b8a401cfc"
+  },
+  {
+    "local": "index.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/index.html",
+    "sha256": "1d70b1e1e16b5cbab0990d3e7179cbd2164307e00f43e938afb292b2639af5ac",
+    "before": "37dd6fe475279d30cd330d542672931d765ebfc330f37c928bacf17e3af9e2da"
+  },
+  {
+    "local": "js/components.js",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/js/components.js",
+    "sha256": "756ea170585e3cb9931a0a03a46b22456899ee9e1987aaa32458de36ac5ec148",
+    "before": "f5f42e3d4be6454308dfa4c00971c7f48107f28035f05449871c5ae2542d8f93"
+  },
+  {
+    "local": "js/ebay-layout.js",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/js/ebay-layout.js",
+    "sha256": "627df13f5ebcc1f45fbb3be76bd3f318995d18d89265103bb023bc86ee59dcf9",
+    "before": "54ab25cf80910e0d0cec8700e5000a6ebe422436c79d873b74d5d3fa39ae161c"
+  },
+  {
+    "local": "js/path-utils.js",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/js/path-utils.js",
+    "sha256": "80290601d191a46a8f44b15e3c26ae9c7656f7c49b263c3b1a2fa90bc01d276a",
+    "before": "0deb52b8f914eb6da00234afbfe6604eff59630a50dbb3bf3ac8d854e923d8f7"
+  },
+  {
+    "local": "js/public-i18n.js",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/js/public-i18n.js",
+    "sha256": "ab3ab1f0f4d2ffb3cdc3a9b82a244bd082194d505c2d4fe968b8187eaed2ab53",
+    "before": "a70132e347dae0172495ad8cb4ea4d8f3bbd09f4e62a59563ce33fb271f9c08c"
+  },
+  {
+    "local": "server/lib/sitemap.js",
+    "remote": "/root/.openclaw/workspace/inventory-site/lib/sitemap.js",
+    "sha256": "2bcdee0dcb7ac4f1481e03961b8d30554ff9c6feee95228891e03550594ff0a6",
+    "before": "c79a894d0224cd2a9eec2a3cf2dd9464383094a4ff380b77778b17ed12637e00"
+  }
+]

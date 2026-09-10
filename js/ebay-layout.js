@@ -478,7 +478,11 @@
       window.location.href = href(`engines/?q=${encodeURIComponent(q)}`);
       return;
     }
-    window.location.href = href(`half-cuts/?q=${encodeURIComponent(q)}`);
+    const scope = document.querySelector('[data-ebay-search] input[type="search"]')?.dataset?.searchScope;
+    const target = scope === 'used-cars'
+      ? `half-cuts/?cat=used-cars&q=${encodeURIComponent(q)}`
+      : `half-cuts/?q=${encodeURIComponent(q)}`;
+    window.location.href = href(target);
   }
 
   function bindSearch() {
@@ -565,6 +569,8 @@
     const shell = document.createElement('div');
     shell.className = 'ebay-page ebay-page--product-detail';
     shell.innerHTML = '<div class="ebay-main ebay-main--product-detail"></div>';
+    const originalHero = main.querySelector('.page-hero');
+    if (originalHero?.querySelector('h1') && !nodes.some(node => node.querySelector?.('h1'))) nodes.unshift(originalHero);
     const contentHost = shell.querySelector('.ebay-main');
     nodes.forEach((node) => contentHost.appendChild(node));
 
@@ -579,22 +585,6 @@
     if (!document.body.classList.contains('scheme-ebay')) return;
     const main = document.getElementById('main-content');
     if (!main) return;
-
-    // Engine explainers and buying guides own a full-width editorial layout.
-    // Keep shared navigation/footer/search, but never wrap them in the catalog
-    // sidebar shell (which would duplicate their title and CTA hierarchy).
-    const publicPage = pageId();
-    if (document.body.classList.contains('engine-page')
-      || document.body.classList.contains('article-page')
-      || document.body.classList.contains('guide-page')
-      || ['about', 'contact', 'brands', 'privacy', 'quote-list'].includes(publicPage)
-      || publicPage.startsWith('brand-')
-      || publicPage.startsWith('market-')) {
-      main.dataset.ebayShell = 'editorial-full';
-      bindSearch();
-      bindCarousels();
-      return;
-    }
 
     const meta = metaForPage();
     if (meta.catalogCategory === 'used-cars') {
@@ -630,6 +620,7 @@
 
     if (main.dataset.ebayShell === '1') {
       migrateInnerHero(main);
+      if (main.querySelector('.ebay-main h1')) main.querySelector('.ebay-page__intro .ebay-page-title')?.remove();
       if (isEbayCatalogPage()) {
         const titleEl = main.querySelector('.ebay-page-title');
         const bcNav = main.querySelector('.ebay-breadcrumb');
@@ -651,13 +642,14 @@
       : parseBreadcrumb(hero);
 
     const contentNodes = collectMainContentNodes(main);
+    const retainedHeading = contentNodes.some(node => node.matches?.('h1') || node.querySelector?.('h1'));
 
     const shell = document.createElement('div');
     shell.className = 'ebay-page';
     shell.innerHTML = `
       <div class="ebay-page__intro">
         ${renderBreadcrumb(breadcrumbParts, meta)}
-        <h1 class="ebay-page-title">${title}</h1>
+        ${retainedHeading ? '' : `<h1 class="ebay-page-title">${title}</h1>`}
       </div>
       <div class="ebay-page__body">
         ${renderSidebar(activeId)}
@@ -682,6 +674,18 @@
     window.setTimeout(applyShell, 600);
     window.setTimeout(applyShell, 1500);
   }
+
+  function keepOnePageHeading() {
+    const main = document.getElementById('main-content');
+    if (!main) return;
+    const reconcile = () => {
+      if (main.querySelector('.ebay-main h1')) main.querySelector('.ebay-page__intro .ebay-page-title')?.remove();
+    };
+    reconcile();
+    new MutationObserver(reconcile).observe(main, {childList: true, subtree: true});
+  }
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', keepOnePageHeading);
+  else keepOnePageHeading();
 
   window.addEventListener('asiapower:layoutrefresh', scheduleApply);
   if (document.readyState === 'loading') {

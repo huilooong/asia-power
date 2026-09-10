@@ -1896,3 +1896,24 @@ html[dir="rtl"] .hc-item-detail__title bdi { unicode-bidi: isolate; }
 .ap-similar .ap-similar-card__photo img[data-orientation-fix]{max-height:none}
 /* This source includes a blank band; remove it from the card crop only. */
 .ap-similar .ap-similar-card__photo img[data-orientation-fix]{transform:translate(-66.6667%,-50%) rotate(90deg)}
+
+/* Actions must remain readable outside the reviewed recommendation component. */
+.ebay-btn,.btn-primary,.btn-secondary,.btn-wa,.hc-card__cta,.hc-card__button,.quote-list-actions button,.ebay-contact-channel__meta{font-size:14px;line-height:1.5}
+.btn-wa{background:#17663d!important;color:#fff!important}
+.ebay-page__intro:not(:has(.ebay-page-title)){min-height:0;padding-bottom:14px}
+.ebay-main--product-detail>.page-hero{display:block!important}
+.engine-card th,.article-card th,.mini-table th{font-size:13px}.engine-card td,.article-card td,.mini-table td{font-size:14px}
+
+.contact-readable-title h1{font-size:clamp(34px,5vw,56px);line-height:1.15;margin:12px 0 28px;color:#252c22}
+:root{--ap2-whatsapp:#17683d}
+.ebay-listing-row__quote,.ebay-listing-row__wa,.hc-item-detail__btn,.ap-secondary-nav__whatsapp,.engine-hero .quick-card .btn-whatsapp{font-size:14px!important;min-height:44px;line-height:1.45}
+.ebay-listing-row__quote,.hc-item-detail__btn--primary{background:#735019!important;border-color:#735019!important;color:#fff!important}
+.ebay-listing-row__ctas{flex-wrap:wrap}
+
+.guide-library-entry{padding:28px;margin-top:32px;background:#fffdf8;border:1px solid #c7c3b9}.guide-library-entry h2{font-size:26px}.guide-library-entry p,.guide-library-entry a{font-size:16px;line-height:1.7}
+
+.guide-more{margin-top:32px}.guide-more h2{font-size:26px}.guide-more .guide-card{padding:20px}.guide-more .guide-card strong{font-size:17px;line-height:1.5}
+/* Legacy guide pages rely on the shell title; do not hide their sole h1. */
+body[data-page="guides"] .ebay-page__intro .ebay-page-title{display:block!important;font-size:clamp(28px,3.3vw,46px);line-height:1.2;max-width:1050px;margin:18px 0 28px}
+
+.guide-language{display:block;margin-top:12px;font-size:13px;color:#50574e}
