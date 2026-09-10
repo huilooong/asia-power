@@ -1,0 +1,44 @@
+[
+  {
+    "path": "css/fonts.css",
+    "status": 200,
+    "bytes": 9934,
+    "sha256": "edbd773dc84609fb57ea62f5b119309f6a1d0ca056b114dc581a05f2330300d7"
+  },
+  {
+    "path": "css/visual-consistency-v1.css",
+    "status": 200,
+    "bytes": 23722,
+    "sha256": "08cb33f2fd4d1230047e0b6c1f5299080b6e97f108083022bf660dca2385d822"
+  },
+  {
+    "path": "js/brand-display.js",
+    "status": 200,
+    "bytes": 13073,
+    "sha256": "92ab2fc85c1ac717acae06c477bc137eded79a6ba75557d3da9d21e2a4be552e"
+  },
+  {
+    "path": "js/country-options.js",
+    "status": 200,
+    "bytes": 6139,
+    "sha256": "9f008bcd51930e0bdbe9706f8bc1ecce2c2dd6000a7de801985eb3470aad2f90"
+  },
+  {
+    "path": "js/phone-utils.js",
+    "status": 200,
+    "bytes": 10856,
+    "sha256": "916e453509251061ac574f93012bbdbbf1e63a68b4929b8e229ec933928d1273"
+  },
+  {
+    "path": "js/site-feedback.js",
+    "status": 200,
+    "bytes": 20095,
+    "sha256": "60f48709a4741274429e24702f1d13a8ee2ec751924bd7c2761af078c595b274"
+  },
+  {
+    "path": "js/catalog-lead-utils.js",
+    "status": 200,
+    "bytes": 2259,
+    "sha256": "4adc69a3b3c002751f8c8f6bf99f8853c4ea0e83d50028ff4261218fc3f8a044"
+  }
+]

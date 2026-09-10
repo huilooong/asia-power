@@ -1,0 +1,14 @@
+[
+  {
+    "path": "guides/index.html",
+    "before_sha256": "0d295251a944fe989d232572255e7cdb07a03bfbb126fd9c03c639dbd3dbd358"
+  },
+  {
+    "path": "engines/index.html",
+    "before_sha256": "538f6161ef21633f6241107f963a1765bf65b112128341c8f6b87ee71b02ad53"
+  },
+  {
+    "path": "robots.txt",
+    "before_sha256": "d1a53c1424e589604d822ab839123bad654eb55908ee4c800e5aa33ec4b38121"
+  }
+]

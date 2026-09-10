@@ -13,7 +13,7 @@ import {
 } from './post-release-validation.mjs';
 import { checkCacheBustConsistency } from './cache-bust-check.mjs';
 
-export const VALID_TARGETS = ['nginx', 'api', 'engines', 'apbd', 'apbd-global', 'apsales', 'apsales-openclaw', 'finalize', 'home', 'portal', 'chrome', 'categories', 'admin'];
+export const VALID_TARGETS = ['nginx', 'api', 'engines', 'apbd', 'apbd-global', 'apsales', 'apsales-openclaw', 'finalize', 'home', 'portal', 'chrome', 'categories', 'admin', 'engine-guides'];
 
 /** @type {Record<string, string[]>} */
 export const TARGET_SOURCE_FILES = {
@@ -179,6 +179,7 @@ export const TARGET_SOURCE_FILES = {
     'package-lock.json',
     'server/lib',
   ],
+  'engine-guides': ['guides/engines', 'guides/index.html', 'engines/index.html', 'engine-guides-sitemap.xml', 'robots.txt'],
   engines: ['engines'],
   apsales: [
     'scripts/apsales-growth-autopilot.py',
@@ -401,6 +402,7 @@ export const TARGET_REMOTE_PATHS = {
     '/root/.openclaw/workspace/inventory-site/package.json',
     '/root/.openclaw/workspace/inventory-site/package-lock.json',
   ],
+  'engine-guides': ['guides/engines', 'guides/index.html', 'engines/index.html', 'engine-guides-sitemap.xml', 'robots.txt'].map(p => '/root/.openclaw/workspace/inventory-site/public/' + p),
   engines: ['/root/.openclaw/workspace/inventory-site/public/engines'],
   apsales: [
     '/root/.openclaw/workspace/AsiaPower/scripts',
@@ -644,7 +646,7 @@ export function runPreDeployValidation({ root, target, remote, allowDirty, yes, 
     });
   }
 
-  const backupMode = ['engines', 'apbd', 'apbd-global', 'apsales', 'finalize'].includes(target) ? 'data-only' : 'full';
+  const backupMode = ['engine-guides', 'engines', 'apbd', 'apbd-global', 'apsales', 'finalize'].includes(target) ? 'data-only' : 'full';
   const backupCmd = backupMode === 'data-only'
     ? 'bash /root/.openclaw/workspace/inventory-site/scripts/backup-inventory-site.sh --data-only'
     : 'bash /root/.openclaw/workspace/inventory-site/scripts/backup-inventory-site.sh';

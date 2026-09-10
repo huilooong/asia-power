@@ -1,0 +1,321 @@
+{
+  "status": "pass",
+  "articles": 52,
+  "application_rows": 144,
+  "release_files": 57,
+  "errors": [],
+  "pages": [
+    {
+      "code": "2NZ-FE",
+      "words": 866,
+      "internal_links": 29,
+      "status": "pass"
+    },
+    {
+      "code": "1ZZ-FE",
+      "words": 882,
+      "internal_links": 29,
+      "status": "pass"
+    },
+    {
+      "code": "1ZR-FE",
+      "words": 910,
+      "internal_links": 31,
+      "status": "pass"
+    },
+    {
+      "code": "2ZR-FE",
+      "words": 928,
+      "internal_links": 32,
+      "status": "pass"
+    },
+    {
+      "code": "1AZ-FE",
+      "words": 869,
+      "internal_links": 28,
+      "status": "pass"
+    },
+    {
+      "code": "2AZ-FE",
+      "words": 904,
+      "internal_links": 32,
+      "status": "pass"
+    },
+    {
+      "code": "2TR-FE",
+      "words": 882,
+      "internal_links": 29,
+      "status": "pass"
+    },
+    {
+      "code": "1GR-FE",
+      "words": 908,
+      "internal_links": 31,
+      "status": "pass"
+    },
+    {
+      "code": "G4FC",
+      "words": 917,
+      "internal_links": 31,
+      "status": "pass"
+    },
+    {
+      "code": "G4FG",
+      "words": 935,
+      "internal_links": 32,
+      "status": "pass"
+    },
+    {
+      "code": "G4GC",
+      "words": 877,
+      "internal_links": 29,
+      "status": "pass"
+    },
+    {
+      "code": "G4KD",
+      "words": 931,
+      "internal_links": 33,
+      "status": "pass"
+    },
+    {
+      "code": "G4KE",
+      "words": 910,
+      "internal_links": 31,
+      "status": "pass"
+    },
+    {
+      "code": "G4KJ",
+      "words": 891,
+      "internal_links": 29,
+      "status": "pass"
+    },
+    {
+      "code": "G4NA",
+      "words": 895,
+      "internal_links": 30,
+      "status": "pass"
+    },
+    {
+      "code": "G6BA",
+      "words": 902,
+      "internal_links": 30,
+      "status": "pass"
+    },
+    {
+      "code": "K20A",
+      "words": 870,
+      "internal_links": 27,
+      "status": "pass"
+    },
+    {
+      "code": "K24A",
+      "words": 832,
+      "internal_links": 25,
+      "status": "pass"
+    },
+    {
+      "code": "K24A8",
+      "words": 907,
+      "internal_links": 28,
+      "status": "pass"
+    },
+    {
+      "code": "K24Z4",
+      "words": 828,
+      "internal_links": 25,
+      "status": "pass"
+    },
+    {
+      "code": "R18A1",
+      "words": 853,
+      "internal_links": 27,
+      "status": "pass"
+    },
+    {
+      "code": "R20A3",
+      "words": 847,
+      "internal_links": 27,
+      "status": "pass"
+    },
+    {
+      "code": "L15A7",
+      "words": 841,
+      "internal_links": 27,
+      "status": "pass"
+    },
+    {
+      "code": "L13Z1",
+      "words": 850,
+      "internal_links": 25,
+      "status": "pass"
+    },
+    {
+      "code": "HR15DE",
+      "words": 880,
+      "internal_links": 30,
+      "status": "pass"
+    },
+    {
+      "code": "HR16DE",
+      "words": 906,
+      "internal_links": 30,
+      "status": "pass"
+    },
+    {
+      "code": "MR20DE",
+      "words": 900,
+      "internal_links": 31,
+      "status": "pass"
+    },
+    {
+      "code": "QR25DE",
+      "words": 881,
+      "internal_links": 29,
+      "status": "pass"
+    },
+    {
+      "code": "4B11",
+      "words": 846,
+      "internal_links": 24,
+      "status": "pass"
+    },
+    {
+      "code": "4B12",
+      "words": 867,
+      "internal_links": 25,
+      "status": "pass"
+    },
+    {
+      "code": "M16A",
+      "words": 867,
+      "internal_links": 25,
+      "status": "pass"
+    },
+    {
+      "code": "K10B",
+      "words": 889,
+      "internal_links": 26,
+      "status": "pass"
+    },
+    {
+      "code": "G4ED",
+      "words": 931,
+      "internal_links": 32,
+      "status": "pass"
+    },
+    {
+      "code": "R18A2",
+      "words": 812,
+      "internal_links": 25,
+      "status": "pass"
+    },
+    {
+      "code": "G4KA",
+      "words": 888,
+      "internal_links": 29,
+      "status": "pass"
+    },
+    {
+      "code": "L15A1",
+      "words": 848,
+      "internal_links": 27,
+      "status": "pass"
+    },
+    {
+      "code": "VQ25DE",
+      "words": 823,
+      "internal_links": 25,
+      "status": "pass"
+    },
+    {
+      "code": "5AR-FE",
+      "words": 871,
+      "internal_links": 30,
+      "status": "pass"
+    },
+    {
+      "code": "6AR-FSE",
+      "words": 856,
+      "internal_links": 29,
+      "status": "pass"
+    },
+    {
+      "code": "7NR-FE",
+      "words": 862,
+      "internal_links": 29,
+      "status": "pass"
+    },
+    {
+      "code": "6ZR-FE",
+      "words": 872,
+      "internal_links": 28,
+      "status": "pass"
+    },
+    {
+      "code": "BYD472QC",
+      "words": 1350,
+      "internal_links": 27,
+      "status": "pass"
+    },
+    {
+      "code": "BYD472ZQB",
+      "words": 1318,
+      "internal_links": 27,
+      "status": "pass"
+    },
+    {
+      "code": "BYD473QE",
+      "words": 893,
+      "internal_links": 27,
+      "status": "pass"
+    },
+    {
+      "code": "GW4G15",
+      "words": 893,
+      "internal_links": 27,
+      "status": "pass"
+    },
+    {
+      "code": "GW4G15B",
+      "words": 891,
+      "internal_links": 30,
+      "status": "pass"
+    },
+    {
+      "code": "GW4B15",
+      "words": 870,
+      "internal_links": 29,
+      "status": "pass"
+    },
+    {
+      "code": "GW4C20A",
+      "words": 870,
+      "internal_links": 26,
+      "status": "pass"
+    },
+    {
+      "code": "SQRE4G16",
+      "words": 854,
+      "internal_links": 23,
+      "status": "pass"
+    },
+    {
+      "code": "SQRE4T15C",
+      "words": 839,
+      "internal_links": 23,
+      "status": "pass"
+    },
+    {
+      "code": "SQRF4J16",
+      "words": 882,
+      "internal_links": 25,
+      "status": "pass"
+    },
+    {
+      "code": "SQRF4J20",
+      "words": 836,
+      "internal_links": 23,
+      "status": "pass"
+    }
+  ]
+}

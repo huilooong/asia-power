@@ -1,0 +1,1957 @@
+{
+  "review_date": "2026-09-10",
+  "sources": {
+    "ngk": {
+      "url": "https://www.ngkntk.com/fileadmin/user_upload/ngk-spark-plug_catalogue_sparkplugsglowplugs_2021-2022.pdf",
+      "title": "NGK application catalogue 2021–2022",
+      "scope": "Multi-market aftermarket catalogue; a part application is not an engine interchange approval."
+    },
+    "mann": {
+      "url": "https://www.mann-filter.com/content/dam/website/mann-filter/mann-filter-com/china/download--hub/%E6%9B%BC%E7%89%8C%E4%B9%98%E7%94%A8%E8%BD%A6%E4%BA%A7%E5%93%81%E5%BA%94%E7%94%A8%E4%B8%BB%E7%9B%AE%E5%BD%952020.pdf",
+      "title": "MANN-FILTER China application catalogue 2020",
+      "scope": "China-market catalogue, including imported vehicles. Dates describe listed applications, not every trim."
+    },
+    "denso": {
+      "url": "https://am.denso.com/plug-global/wp-content/uploads/sites/23/catalog_3_asia_2024.pdf",
+      "title": "DENSO Asia application catalogue 2024",
+      "scope": "Market-specific sections; blank year cells do not establish a production range."
+    },
+    "denso-cooling": {
+      "url": "https://assets.denso-am.eu/production/attachments/Engine-Cooling-Catalogue-Multilingual.pdf",
+      "title": "DENSO Engine Cooling catalogue",
+      "scope": "Component application table; not engine interchange approval."
+    },
+    "qin": {
+      "url": "https://www.byd.com/material/domestic-official/user-manual/dynasty/2026款秦PLUS%20DM-i用户手册20260120.pdf",
+      "title": "BYD 2026 Qin PLUS DM-i owner manual",
+      "scope": "Only the documented vehicle version; publication date is not automatically model year."
+    },
+    "qinl": {
+      "url": "https://www.byd.com/material/domestic-official/user-manual/dynasty/2026款秦L%20DM-i用户手册20260417.pdf",
+      "title": "BYD 2026 Qin L DM-i owner manual",
+      "scope": "Only the documented vehicle version; publication date is not automatically model year."
+    },
+    "hanl": {
+      "url": "https://www.byd.com/material/domestic-official/user-manual/dynasty/汉L%20DM-i用户手册1104.pdf",
+      "title": "BYD Han L DM-i owner manual",
+      "scope": "Only the documented vehicle version; publication date is not automatically model year."
+    },
+    "han": {
+      "url": "https://www.byd.com/material/domestic-official/user-manual/dynasty/汉DM-i智驾版-长续航版%20用户手册20260410.pdf",
+      "title": "BYD Han DM-i intelligent-driving long-range owner manual",
+      "scope": "Only the documented vehicle version; publication date is not automatically model year."
+    },
+    "gwm-h6": {
+      "url": "https://www.gwm-global.com/news_detail-2942.html",
+      "title": "GWM Haval H6 powertrain announcement, 2018",
+      "scope": "Only the documented vehicle version; publication date is not automatically model year."
+    },
+    "chery-tiggo": {
+      "url": "https://cheryauto.co.za/models/tiggo/",
+      "title": "Chery South Africa Tiggo specifications",
+      "scope": "Only the documented vehicle version; publication date is not automatically model year."
+    },
+    "jetour-pk": {
+      "url": "https://jetour.com.pk/media/2025/02/Jetour-X70-Plus-Brochure_27-Nov-2024_Curved.pdf",
+      "title": "Jetour Pakistan X70 Plus brochure",
+      "scope": "Only the documented vehicle version; publication date is not automatically model year."
+    },
+    "jetour-jc1": {
+      "url": "https://storage.mtender.gov.md/get/861e9df4-a584-4a9a-9a1d-855e08a25870-1730729966168",
+      "title": "Chery Commercial Vehicle Jetour JC1 homologation document",
+      "scope": "Only the documented vehicle version; publication date is not automatically model year."
+    },
+    "jetour-t1": {
+      "url": "https://www.jetouruae.com/static/pdfs/jetour-t1-2025my-21.01.2025-1.pdf",
+      "title": "Jetour UAE T1 2025MY specifications",
+      "scope": "Only the documented vehicle version; publication date is not automatically model year."
+    },
+    "jetour-sa": {
+      "url": "https://jetour.co.za/wp-content/uploads/2024/09/Jetour-X70-Plus-Brochure-1.pdf",
+      "title": "Jetour South Africa X70 Plus brochure, September 2024",
+      "scope": "Momentum and Deluxe configurations. Publication date does not establish model year."
+    },
+    "chery-fx": {
+      "url": "https://cheryisrael.co.il/wp-content/uploads/2022/10/FX-%D7%9E%D7%A4%D7%A8%D7%98-%D7%9E%D7%95%D7%A0%D7%92%D7%A9-20.12.pdf",
+      "title": "Chery Israel FX specifications, December 2022",
+      "scope": "Manufacturer-market brochure; engine marking visually verified on PDF page 2. No worldwide year range inferred."
+    }
+  },
+  "engines": [
+    {
+      "code": "2NZ-FE",
+      "brand": "Toyota",
+      "displacement": "1.3 L",
+      "applications": [
+        {
+          "vehicle": "Toyota Vios",
+          "dates": "10/2008–04/2013",
+          "variant": "New Vios 1.3",
+          "market": "China catalogue",
+          "source": "mann",
+          "page": 165
+        },
+        {
+          "vehicle": "Toyota Yaris",
+          "dates": "06/2008–11/2013",
+          "variant": "1.3 petrol",
+          "market": "China catalogue",
+          "source": "mann",
+          "page": 168
+        },
+        {
+          "vehicle": "Toyota Yaris Verso Van",
+          "dates": "04/2003–09/2005",
+          "variant": "NCP22, 1.3 VVT-i",
+          "market": "Multi-market catalogue; confirm vehicle market",
+          "source": "ngk",
+          "page": 420
+        }
+      ],
+      "buyer_focus": "The 1.3-litre entries must be separated from 1.5-litre Vios and Yaris offers. The vehicle name alone cannot identify the engine.",
+      "question": "Does the Vios name prove 2NZ-FE fitment?",
+      "answer": "No. Use the complete code and original-market vehicle records. The table covers specific 1.3-litre applications only.",
+      "status": "verified_documented_applications",
+      "stock": "Confirmation required for each offered unit",
+      "extra_sources": []
+    },
+    {
+      "code": "1ZZ-FE",
+      "brand": "Toyota",
+      "displacement": "1.8 L",
+      "applications": [
+        {
+          "vehicle": "Toyota Corolla (Huaguan)",
+          "dates": "02/2004–05/2007",
+          "variant": "1.8 petrol",
+          "market": "China catalogue",
+          "source": "mann",
+          "page": 163
+        },
+        {
+          "vehicle": "Toyota Celica",
+          "dates": "From 08/1999; end not stated",
+          "variant": "ZZT230, 1.8",
+          "market": "Multi-market catalogue; confirm vehicle market",
+          "source": "ngk",
+          "page": 411
+        },
+        {
+          "vehicle": "Toyota Avensis II",
+          "dates": "03/2003–2009; end month not stated",
+          "variant": "1.8 petrol",
+          "market": "Multi-market catalogue; confirm vehicle market",
+          "source": "ngk",
+          "page": 409
+        }
+      ],
+      "buyer_focus": "China-market Huaguan and later Corolla names overlap in seller listings. Preserve the chassis code and do not merge 1ZZ-FE with 2ZR-FE or performance-engine listings.",
+      "question": "Can a later Corolla 1.8 engine replace it?",
+      "answer": "Displacement is insufficient. Require a parts-number comparison for the original 1ZZ-FE assembly, electronics and transmission interface.",
+      "status": "verified_documented_applications",
+      "stock": "Confirmation required for each offered unit",
+      "extra_sources": []
+    },
+    {
+      "code": "1ZR-FE",
+      "brand": "Toyota",
+      "displacement": "1.6 L",
+      "applications": [
+        {
+          "vehicle": "Toyota Corolla",
+          "dates": "05/2007–12/2014",
+          "variant": "1.6 petrol, 90 kW entry",
+          "market": "China catalogue",
+          "source": "mann",
+          "page": 163
+        },
+        {
+          "vehicle": "Toyota Vios",
+          "dates": "10/2008–04/2013",
+          "variant": "New Vios 1.6",
+          "market": "China catalogue",
+          "source": "mann",
+          "page": 165
+        },
+        {
+          "vehicle": "Toyota EZ (Yizhi)",
+          "dates": "From 06/2011; end not stated",
+          "variant": "1.6 petrol",
+          "market": "China catalogue",
+          "source": "mann",
+          "page": 167
+        },
+        {
+          "vehicle": "Toyota Auris I",
+          "dates": "10/2006–09/2012",
+          "variant": "ZRE151, 1.6 VVT-i",
+          "market": "Multi-market catalogue; confirm vehicle market",
+          "source": "ngk",
+          "page": 408
+        }
+      ],
+      "buyer_focus": "Keep FE and FAE suffixes separate. Some catalogues group both codes for a vehicle name; a shared service part does not make the engines equivalent.",
+      "question": "Is 1ZR enough on a quotation?",
+      "answer": "Ask for the full stamped code, the donor VIN and assembly part number; 1ZR alone leaves the suffix unresolved.",
+      "status": "verified_documented_applications",
+      "stock": "Confirmation required for each offered unit",
+      "extra_sources": []
+    },
+    {
+      "code": "2ZR-FE",
+      "brand": "Toyota",
+      "displacement": "1.8 L",
+      "applications": [
+        {
+          "vehicle": "Toyota Corolla",
+          "dates": "05/2007–09/2010",
+          "variant": "1.8 petrol, 101 kW entry",
+          "market": "China catalogue",
+          "source": "mann",
+          "page": 163
+        },
+        {
+          "vehicle": "Toyota Corolla",
+          "dates": "From 09/2010; end not stated",
+          "variant": "1.8 petrol, 103 kW entry",
+          "market": "China catalogue",
+          "source": "mann",
+          "page": 163
+        },
+        {
+          "vehicle": "Toyota EZ (Yizhi)",
+          "dates": "From 06/2011; end not stated",
+          "variant": "1.8 petrol",
+          "market": "China catalogue",
+          "source": "mann",
+          "page": 167
+        },
+        {
+          "vehicle": "Toyota Auris I",
+          "dates": "10/2006–09/2012",
+          "variant": "1.8 petrol",
+          "market": "Multi-market catalogue; confirm vehicle market",
+          "source": "ngk",
+          "page": 408
+        },
+        {
+          "vehicle": "Toyota Corolla",
+          "dates": "06/2013–12/2018",
+          "variant": "ZRE182, 1.8 VVT-i",
+          "market": "Multi-market catalogue; confirm vehicle market",
+          "source": "ngk",
+          "page": 414
+        }
+      ],
+      "buyer_focus": "Keep 2ZR-FE quotations distinct from hybrid FXE and FAE-coded offers. Confirm what is included in the intake, fuel and electronic-control package.",
+      "question": "Does this guide cover a Corolla hybrid engine?",
+      "answer": "No automatic cross-fit is established. Read the complete code on the car and offered engine before requesting an interchange assessment.",
+      "status": "verified_documented_applications",
+      "stock": "Confirmation required for each offered unit",
+      "extra_sources": []
+    },
+    {
+      "code": "1AZ-FE",
+      "brand": "Toyota",
+      "displacement": "2.0 L",
+      "applications": [
+        {
+          "vehicle": "Toyota Camry",
+          "dates": "06/2006–12/2011",
+          "variant": "2.0 petrol, 108 kW entry",
+          "market": "China catalogue",
+          "source": "mann",
+          "page": 166
+        },
+        {
+          "vehicle": "Toyota Camry",
+          "dates": "12/2011–11/2014",
+          "variant": "2.0 petrol, 109 kW entry",
+          "market": "China catalogue",
+          "source": "mann",
+          "page": 166
+        },
+        {
+          "vehicle": "Toyota Avensis Verso",
+          "dates": "From 05/2001; end not stated",
+          "variant": "ACM20, 2.0",
+          "market": "Multi-market catalogue; confirm vehicle market",
+          "source": "ngk",
+          "page": 410
+        }
+      ],
+      "buyer_focus": "The FE suffix matters: do not combine 1AZ-FE and 1AZ-FSE simply because an aftermarket catalogue groups a service component.",
+      "question": "Can an Avensis engine be ordered for a Camry from this table?",
+      "answer": "This table establishes documented use, not a complete-assembly swap. Compare donor-specific mounts, sump, manifolds, sensors and transmission interface.",
+      "status": "verified_documented_applications",
+      "stock": "Confirmation required for each offered unit",
+      "extra_sources": []
+    },
+    {
+      "code": "2AZ-FE",
+      "brand": "Toyota",
+      "displacement": "2.4 L",
+      "applications": [
+        {
+          "vehicle": "Toyota Camry",
+          "dates": "06/2006–12/2011",
+          "variant": "2.4 petrol",
+          "market": "China catalogue",
+          "source": "mann",
+          "page": 166
+        },
+        {
+          "vehicle": "Toyota Previa / Tarago",
+          "dates": "08/2000–01/2006",
+          "variant": "2.4 petrol",
+          "market": "China catalogue",
+          "source": "mann",
+          "page": 162
+        },
+        {
+          "vehicle": "Toyota Camry",
+          "dates": "01/2006–09/2011",
+          "variant": "ACV40, 2.4 VVT-i",
+          "market": "Multi-market catalogue; confirm vehicle market",
+          "source": "ngk",
+          "page": 410
+        }
+      ],
+      "buyer_focus": "Ask for oil-use history and documented condition assessment. A compression reading by itself does not demonstrate acceptable oil consumption.",
+      "question": "Do oil-consumption campaigns apply to every 2AZ-FE?",
+      "answer": "No. Toyota programme ZE7 is evidence about specified US vehicles and coverage conditions; it is not proof that every 2AZ-FE is defective or that an exported used engine has warranty coverage.",
+      "status": "verified_documented_applications",
+      "stock": "Confirmation required for each offered unit",
+      "extra_sources": [
+        {
+          "url": "https://static.nhtsa.gov/odi/tsbs/2015/MC-10132600-9999.pdf",
+          "title": "Toyota ZE7 programme document; specified US vehicles only"
+        }
+      ]
+    },
+    {
+      "code": "2TR-FE",
+      "brand": "Toyota",
+      "displacement": "2.7 L",
+      "applications": [
+        {
+          "vehicle": "Toyota Prado",
+          "dates": "03/2015–12/2015",
+          "variant": "China-market 2.7 entry",
+          "market": "China catalogue",
+          "source": "mann",
+          "page": 165
+        },
+        {
+          "vehicle": "Toyota Land Cruiser Prado",
+          "dates": "08/2009–09/2013",
+          "variant": "J15, 2.7 imported entry",
+          "market": "China catalogue",
+          "source": "mann",
+          "page": 162
+        },
+        {
+          "vehicle": "Toyota Hilux",
+          "dates": "From 07/2005; end not stated",
+          "variant": "2.7 petrol",
+          "market": "Multi-market catalogue; confirm vehicle market",
+          "source": "ngk",
+          "page": 416
+        }
+      ],
+      "buyer_focus": "Identify the exact donor generation and drivetrain. A Hilux and a Prado may share an engine code while the supplied external assembly still differs.",
+      "question": "Does a 2.7 badge identify 2TR-FE?",
+      "answer": "No. Obtain the stamped code, donor chassis and assembly references. A seller using only “2TR” should clarify the full identity.",
+      "status": "verified_documented_applications",
+      "stock": "Confirmation required for each offered unit",
+      "extra_sources": []
+    },
+    {
+      "code": "1GR-FE",
+      "brand": "Toyota",
+      "displacement": "4.0 L",
+      "applications": [
+        {
+          "vehicle": "Toyota Land Cruiser Prado",
+          "dates": "01/2003–08/2004",
+          "variant": "J12, 4.0 V6",
+          "market": "China catalogue",
+          "source": "mann",
+          "page": 162
+        },
+        {
+          "vehicle": "Toyota Land Cruiser",
+          "dates": "12/2007–02/2012",
+          "variant": "China-market 4.0",
+          "market": "China catalogue",
+          "source": "mann",
+          "page": 164
+        },
+        {
+          "vehicle": "Toyota Hilux",
+          "dates": "From 07/2005; end not stated",
+          "variant": "GGN15/25, 4.0",
+          "market": "Multi-market catalogue; confirm vehicle market",
+          "source": "ngk",
+          "page": 416
+        },
+        {
+          "vehicle": "Toyota Land Cruiser Prado",
+          "dates": "From 11/2012; end not stated",
+          "variant": "GRJ150, 4.0 VVT-i",
+          "market": "Multi-market catalogue; confirm vehicle market",
+          "source": "ngk",
+          "page": 417
+        }
+      ],
+      "buyer_focus": "Request records for both cylinder banks and identify the donor generation. Do not treat all 4.0-litre Toyota assemblies as one configuration.",
+      "question": "Can one bank’s test results certify the V6?",
+      "answer": "No. Ask the workshop to identify the tested cylinders and explain the evidence for the complete offered engine.",
+      "status": "verified_documented_applications",
+      "stock": "Confirmation required for each offered unit",
+      "extra_sources": []
+    },
+    {
+      "code": "G4FC",
+      "brand": "Hyundai / Kia",
+      "displacement": "1.6 L",
+      "applications": [
+        {
+          "vehicle": "Hyundai Elantra Yuedong",
+          "dates": "From 11/2009; end not stated",
+          "variant": "1.6 petrol",
+          "market": "China catalogue",
+          "source": "mann",
+          "page": 84
+        },
+        {
+          "vehicle": "Hyundai Verna",
+          "dates": "08/2010–12/2014",
+          "variant": "1.6 petrol",
+          "market": "China catalogue",
+          "source": "mann",
+          "page": 86
+        },
+        {
+          "vehicle": "Kia Forte",
+          "dates": "06/2009–11/2017",
+          "variant": "1.6 petrol",
+          "market": "China catalogue",
+          "source": "mann",
+          "page": 93
+        },
+        {
+          "vehicle": "Hyundai Elantra",
+          "dates": "06/2006–06/2011",
+          "variant": "HD, 1.6 CVVT; catalogue has a parts change in 02/2009",
+          "market": "Multi-market catalogue; confirm vehicle market",
+          "source": "ngk",
+          "page": 264
+        }
+      ],
+      "buyer_focus": "Keep G4FC, G4FG and G4FJ separate. Even within the documented HD period, catalogue part selections change, so a year range is not a single bill of materials.",
+      "question": "Can I accept a G4FG offered as the same 1.6?",
+      "answer": "Only after a qualified vehicle-specific interchange assessment. This guide does not approve that substitution.",
+      "status": "verified_documented_applications",
+      "stock": "Confirmation required for each offered unit",
+      "extra_sources": []
+    },
+    {
+      "code": "G4FG",
+      "brand": "Hyundai / Kia",
+      "displacement": "1.6 L",
+      "applications": [
+        {
+          "vehicle": "Hyundai Celesta (Yuedong)",
+          "dates": "From 03/2017; end not stated",
+          "variant": "1.6 petrol",
+          "market": "China catalogue",
+          "source": "mann",
+          "page": 84
+        },
+        {
+          "vehicle": "Hyundai Celesta (Yixing)",
+          "dates": "From 08/2018; end not stated",
+          "variant": "1.6 petrol",
+          "market": "China catalogue",
+          "source": "mann",
+          "page": 84
+        },
+        {
+          "vehicle": "Hyundai Verna (Yuena)",
+          "dates": "From 10/2016; end not stated",
+          "variant": "1.6 petrol",
+          "market": "China catalogue",
+          "source": "mann",
+          "page": 87
+        },
+        {
+          "vehicle": "Hyundai Elantra",
+          "dates": "06/2011–12/2015",
+          "variant": "MD, 1.6 CVVT, 96 kW entry",
+          "market": "Multi-market catalogue; confirm vehicle market",
+          "source": "ngk",
+          "page": 264
+        },
+        {
+          "vehicle": "Kia Soul",
+          "dates": "From 02/2014; end not stated",
+          "variant": "PS, 1.6 MPi",
+          "market": "Multi-market catalogue; confirm vehicle market",
+          "source": "ngk",
+          "page": 283
+        }
+      ],
+      "buyer_focus": "Record the Chinese model name as well as the export name. Yuedong and Verna names are used across different generations and specifications.",
+      "question": "Does an Elantra label prove the engine is G4FG?",
+      "answer": "No. The application table includes only identified variants; G4FC and other Elantra engines remain separate.",
+      "status": "verified_documented_applications",
+      "stock": "Confirmation required for each offered unit",
+      "extra_sources": []
+    },
+    {
+      "code": "G4GC",
+      "brand": "Hyundai / Kia",
+      "displacement": "2.0 L",
+      "applications": [
+        {
+          "vehicle": "Hyundai Tucson",
+          "dates": "08/2004–03/2010",
+          "variant": "JM, 2.0 petrol",
+          "market": "China catalogue",
+          "source": "mann",
+          "page": 84
+        },
+        {
+          "vehicle": "Hyundai Elantra",
+          "dates": "06/2000–07/2003",
+          "variant": "XD, 2.0 CVVT",
+          "market": "Multi-market catalogue; confirm vehicle market",
+          "source": "ngk",
+          "page": 264
+        },
+        {
+          "vehicle": "Hyundai Coupe",
+          "dates": "From 1999; end not stated",
+          "variant": "2.0 petrol, 102 kW entry",
+          "market": "Multi-market catalogue; confirm vehicle market",
+          "source": "ngk",
+          "page": 263
+        }
+      ],
+      "buyer_focus": "Preserve suffixes shown in donor records. Catalogue entries written G4GC-G should not silently be treated as proof of every G4GC assembly’s interchangeability.",
+      "question": "Is a Tucson 2.0 engine necessarily G4GC?",
+      "answer": "No. Tucson generations and market versions differ; compare the full engine marking and chassis identity.",
+      "status": "verified_documented_applications",
+      "stock": "Confirmation required for each offered unit",
+      "extra_sources": []
+    },
+    {
+      "code": "G4KD",
+      "brand": "Hyundai / Kia",
+      "displacement": "2.0 L",
+      "applications": [
+        {
+          "vehicle": "Hyundai ix35",
+          "dates": "04/2010–04/2012",
+          "variant": "China-market 2.0 petrol",
+          "market": "China catalogue",
+          "source": "mann",
+          "page": 85
+        },
+        {
+          "vehicle": "Hyundai Sonata VIII",
+          "dates": "04/2011–06/2012",
+          "variant": "YF, 2.0 petrol",
+          "market": "China catalogue",
+          "source": "mann",
+          "page": 86
+        },
+        {
+          "vehicle": "Kia Forte",
+          "dates": "06/2009–12/2012",
+          "variant": "2.0 petrol",
+          "market": "China catalogue",
+          "source": "mann",
+          "page": 93
+        },
+        {
+          "vehicle": "Kia Sportage R (Zhipao)",
+          "dates": "10/2010–11/2011",
+          "variant": "2.0 petrol",
+          "market": "China catalogue",
+          "source": "mann",
+          "page": 95
+        },
+        {
+          "vehicle": "Hyundai ix35",
+          "dates": "08/2009–07/2013",
+          "variant": "EL, 2.0 CVVT",
+          "market": "Multi-market catalogue; confirm vehicle market",
+          "source": "ngk",
+          "page": 267
+        }
+      ],
+      "buyer_focus": "Market-specific production boundaries differ. Keep G4KD separate from G4NA, G4KA and turbo or GDI engines advertised under the same model name.",
+      "question": "Does a Theta-related recall prove this unit is defective?",
+      "answer": "No. The actual campaign, VIN, market and engine specification must match. Do not transfer another engine’s campaign to G4KD by family name alone.",
+      "status": "verified_documented_applications",
+      "stock": "Confirmation required for each offered unit",
+      "extra_sources": []
+    },
+    {
+      "code": "G4KE",
+      "brand": "Hyundai / Kia",
+      "displacement": "2.4 L",
+      "applications": [
+        {
+          "vehicle": "Hyundai Sonata VIII",
+          "dates": "04/2011–02/2015",
+          "variant": "YF, 2.4 petrol",
+          "market": "China catalogue",
+          "source": "mann",
+          "page": 86
+        },
+        {
+          "vehicle": "Hyundai Grandeur",
+          "dates": "01/2011–10/2016",
+          "variant": "HG, 2.4 CVVT",
+          "market": "Multi-market catalogue; confirm vehicle market",
+          "source": "ngk",
+          "page": 265
+        },
+        {
+          "vehicle": "Kia Optima",
+          "dates": "01/2012–12/2015",
+          "variant": "TF, 2.4 CVVT",
+          "market": "Multi-market catalogue; confirm vehicle market",
+          "source": "ngk",
+          "page": 280
+        },
+        {
+          "vehicle": "Kia Sorento",
+          "dates": "From 11/2009; end not stated",
+          "variant": "XM, 2.4 CVVT",
+          "market": "Multi-market catalogue; confirm vehicle market",
+          "source": "ngk",
+          "page": 283
+        }
+      ],
+      "buyer_focus": "G4KE and G4KJ are separate purchasing identities. Confirm fuel-system and control-component references instead of treating every 2.4-litre Sonata or Sorento as equivalent.",
+      "question": "Can I order by “Hyundai 2.4” alone?",
+      "answer": "No. Provide the full code and original VIN. Require an itemised assembly list and a VIN-specific campaign check for the donor market.",
+      "status": "verified_documented_applications",
+      "stock": "Confirmation required for each offered unit",
+      "extra_sources": []
+    },
+    {
+      "code": "G4KJ",
+      "brand": "Hyundai / Kia",
+      "displacement": "2.4 L",
+      "applications": [
+        {
+          "vehicle": "Hyundai Santa Fe",
+          "dates": "From 12/2012; end not stated",
+          "variant": "China-market 2.4",
+          "market": "China catalogue",
+          "source": "mann",
+          "page": 85
+        },
+        {
+          "vehicle": "Hyundai Santa Fe III",
+          "dates": "05/2015–01/2017",
+          "variant": "DM, 2.4 GDi, 138 kW entry",
+          "market": "Multi-market catalogue; confirm vehicle market",
+          "source": "ngk",
+          "page": 269
+        },
+        {
+          "vehicle": "Kia Sorento",
+          "dates": "10/2012–12/2015",
+          "variant": "XM, 2.4 GDi",
+          "market": "Multi-market catalogue; confirm vehicle market",
+          "source": "ngk",
+          "page": 283
+        }
+      ],
+      "buyer_focus": "The cited NGK applications are GDi variants. Identify whether the quoted assembly includes the relevant fuel components; do not assume they come with a bare engine.",
+      "question": "Is a G4KE quotation equivalent?",
+      "answer": "No equivalence is established. Ask the workshop to compare the original G4KJ assembly and control requirements before considering an alternative.",
+      "status": "verified_documented_applications",
+      "stock": "Confirmation required for each offered unit",
+      "extra_sources": []
+    },
+    {
+      "code": "G4NA",
+      "brand": "Hyundai / Kia",
+      "displacement": "2.0 L",
+      "applications": [
+        {
+          "vehicle": "Hyundai Mistra",
+          "dates": "From 11/2013; end not stated",
+          "variant": "2.0 petrol",
+          "market": "China catalogue",
+          "source": "mann",
+          "page": 85
+        },
+        {
+          "vehicle": "Hyundai ix25",
+          "dates": "From 10/2014; end not stated",
+          "variant": "2.0 petrol",
+          "market": "China catalogue",
+          "source": "mann",
+          "page": 85
+        },
+        {
+          "vehicle": "Hyundai Sonata VIII",
+          "dates": "06/2012–02/2015",
+          "variant": "YF, 2.0 petrol",
+          "market": "China catalogue",
+          "source": "mann",
+          "page": 86
+        },
+        {
+          "vehicle": "Hyundai ix35",
+          "dates": "08/2013–12/2015",
+          "variant": "EL, 2.0 CVVT",
+          "market": "Multi-market catalogue; confirm vehicle market",
+          "source": "ngk",
+          "page": 267
+        }
+      ],
+      "buyer_focus": "The ix35 table separates the G4NA period from earlier G4KD applications. Registration year alone can hide that change.",
+      "question": "Can I buy any ix35 2.0 assembly?",
+      "answer": "No. Match the actual engine marking and VIN, especially around a specification change. Neither a shared model name nor an engine-cover photograph is sufficient.",
+      "status": "verified_documented_applications",
+      "stock": "Confirmation required for each offered unit",
+      "extra_sources": []
+    },
+    {
+      "code": "G6BA",
+      "brand": "Hyundai / Kia",
+      "displacement": "2.7 L",
+      "applications": [
+        {
+          "vehicle": "Hyundai Azera",
+          "dates": "05/2006–12/2011",
+          "variant": "TG, 2.7 CVVT",
+          "market": "Multi-market catalogue; confirm vehicle market",
+          "source": "ngk",
+          "page": 263
+        },
+        {
+          "vehicle": "Hyundai Coupe",
+          "dates": "01/2007–08/2009",
+          "variant": "GK, 2.7 CVVT",
+          "market": "Multi-market catalogue; confirm vehicle market",
+          "source": "ngk",
+          "page": 263
+        },
+        {
+          "vehicle": "Hyundai Grandeur",
+          "dates": "11/2006–10/2010",
+          "variant": "TG, 2.7 CVVT",
+          "market": "Multi-market catalogue; confirm vehicle market",
+          "source": "ngk",
+          "page": 265
+        },
+        {
+          "vehicle": "Kia Sportage",
+          "dates": "11/2006–05/2010",
+          "variant": "KM, 2.7 CVVT",
+          "market": "Multi-market catalogue; confirm vehicle market",
+          "source": "ngk",
+          "page": 283
+        }
+      ],
+      "buyer_focus": "Record the complete V6 assembly scope and cylinder-bank test records. Catalogues also contain suffixed G6BA-G entries, which should remain visible when supplied by the seller.",
+      "question": "Does a test of three cylinders cover the engine?",
+      "answer": "No. Ask for complete cylinder identification and the workshop’s assessment of both banks; the catalogue records six cylinders.",
+      "status": "verified_documented_applications",
+      "stock": "Confirmation required for each offered unit",
+      "extra_sources": []
+    },
+    {
+      "code": "K20A",
+      "brand": "Honda",
+      "displacement": "2.0 L",
+      "applications": [
+        {
+          "vehicle": "Honda Integra Type R",
+          "dates": "From 2001; end not stated",
+          "variant": "DC5, 2.0",
+          "market": "Singapore catalogue",
+          "source": "denso",
+          "page": 76
+        },
+        {
+          "vehicle": "Honda Integra Type R",
+          "dates": "From 02/2002; end not stated",
+          "variant": "2.0, 162 kW entry",
+          "market": "Multi-market catalogue; confirm vehicle market",
+          "source": "ngk",
+          "page": 260
+        }
+      ],
+      "buyer_focus": "K20A is used in market-specific documentation and must not be expanded to every K20 suffix. Performance-oriented donor labels need exact identity, not just a red cover.",
+      "question": "Are all K20 engines the Type R specification?",
+      "answer": "No. This guide documents the cited Integra application and does not claim that every K20A offer has the same output or components.",
+      "status": "verified_documented_applications",
+      "stock": "Confirmation required for each offered unit",
+      "extra_sources": []
+    },
+    {
+      "code": "K24A",
+      "brand": "Honda",
+      "displacement": "2.4 L",
+      "applications": [
+        {
+          "vehicle": "Honda Odyssey",
+          "dates": "From 2003; end not stated",
+          "variant": "RB1/RB2, 2.4",
+          "market": "Singapore catalogue",
+          "source": "denso",
+          "page": 76
+        }
+      ],
+      "buyer_focus": "The code appears without a numeric suffix in the cited catalogue. Keep the original marking intact and use the donor chassis and assembly number to resolve configuration.",
+      "question": "Should K24A be automatically renamed K24A8?",
+      "answer": "No. A seller’s shortened listing is not proof of K24A8 identity. Check the original markings and donor records before ordering.",
+      "status": "verified_documented_applications",
+      "stock": "Confirmation required for each offered unit",
+      "extra_sources": []
+    },
+    {
+      "code": "K24A8",
+      "brand": "Honda",
+      "displacement": "2.4 L",
+      "applications": [
+        {
+          "vehicle": "Honda Accord",
+          "dates": "Exact engine-specific model-year boundary requires VIN confirmation",
+          "variant": "China catalogue 2.4 entry; applicability needs VIN confirmation",
+          "market": "China catalogue",
+          "source": "mann",
+          "page": 79
+        }
+      ],
+      "buyer_focus": "MANN-FILTER lists a China Accord 2.4 application over 2003–2007, while DENSO groups K24A8 with another code. Those broad component rows do not establish the engine fitted to every year or trim. Confirm the exact donor identity rather than adopting a universal year range.",
+      "question": "Can the China catalogue date be applied to a US Accord?",
+      "answer": "No. Market and model-year conventions differ. Ask for donor VIN and an exact OE assembly lookup rather than extending the table to another market.",
+      "status": "verified_documented_applications",
+      "stock": "Confirmation required for each offered unit",
+      "extra_sources": [
+        {
+          "url": "https://www.denso-am.eu/catalog/pv/34514",
+          "title": "DENSO Accord VII CM5 application: K24A4 / K24A8"
+        }
+      ]
+    },
+    {
+      "code": "K24Z4",
+      "brand": "Honda",
+      "displacement": "2.4 L",
+      "applications": [
+        {
+          "vehicle": "Honda CR-V III",
+          "dates": "09/2009–06/2012",
+          "variant": "RE7, 2.4 i-VTEC, 122 kW",
+          "market": "Multi-market catalogue; confirm vehicle market",
+          "source": "ngk",
+          "page": 259
+        }
+      ],
+      "buyer_focus": "Keep K24Z4 distinct from other K24Z suffixes. Some parts lists group K24Z1 and K24Z4 because a component is shared; that does not approve an entire engine swap.",
+      "question": "Does a shared CR-V service part establish interchangeability?",
+      "answer": "No. The replacement engine, electronics, mounts and transmission interface still require vehicle-specific confirmation.",
+      "status": "verified_documented_applications",
+      "stock": "Confirmation required for each offered unit",
+      "extra_sources": []
+    },
+    {
+      "code": "R18A1",
+      "brand": "Honda",
+      "displacement": "1.8 L",
+      "applications": [
+        {
+          "vehicle": "Honda Civic",
+          "dates": "11/2006–05/2013",
+          "variant": "FD1, 1.8 i-VTEC Flexfuel entry",
+          "market": "Multi-market catalogue; confirm vehicle market",
+          "source": "ngk",
+          "page": 259
+        },
+        {
+          "vehicle": "Honda FR-V",
+          "dates": "From 01/2007; end not stated",
+          "variant": "BE1, 1.8",
+          "market": "Multi-market catalogue; confirm vehicle market",
+          "source": "ngk",
+          "page": 260
+        }
+      ],
+      "buyer_focus": "Identify the donor’s market and fuel specification. A Flexfuel catalogue row is not proof that every R18A1 donor has the same configuration.",
+      "question": "Can I extend a Flexfuel listing to every Civic 1.8?",
+      "answer": "No. Match the exact market version and original component references; this guide does not certify cross-market interchangeability.",
+      "status": "verified_documented_applications",
+      "stock": "Confirmation required for each offered unit",
+      "extra_sources": []
+    },
+    {
+      "code": "R20A3",
+      "brand": "Honda",
+      "displacement": "2.0 L",
+      "applications": [
+        {
+          "vehicle": "Honda Accord",
+          "dates": "03/2008–09/2013",
+          "variant": "2.0 petrol",
+          "market": "China catalogue",
+          "source": "mann",
+          "page": 79
+        },
+        {
+          "vehicle": "Honda Accord VIII",
+          "dates": "06/2008–06/2015",
+          "variant": "CU1/CW1, 2.0",
+          "market": "Multi-market catalogue; confirm vehicle market",
+          "source": "ngk",
+          "page": 256
+        }
+      ],
+      "buyer_focus": "The China and international catalogue ranges differ. Do not collapse them into a single worldwide production range or assume a CR-V uses the same R20 suffix.",
+      "question": "Is R20 an adequate engine number?",
+      "answer": "No. Preserve the full R20A3 identity and request the donor chassis and assembly numbers.",
+      "status": "verified_documented_applications",
+      "stock": "Confirmation required for each offered unit",
+      "extra_sources": []
+    },
+    {
+      "code": "L15A7",
+      "brand": "Honda",
+      "displacement": "1.5 L",
+      "applications": [
+        {
+          "vehicle": "Honda City (Fengfan)",
+          "dates": "12/2008–08/2015",
+          "variant": "1.5 petrol",
+          "market": "China catalogue",
+          "source": "mann",
+          "page": 80
+        },
+        {
+          "vehicle": "Honda Fit",
+          "dates": "07/2008–05/2014",
+          "variant": "1.5 petrol",
+          "market": "China catalogue",
+          "source": "mann",
+          "page": 81
+        }
+      ],
+      "buyer_focus": "Use the exact L15A7 code. Other L15 versions and competition-engine references should not be used as passenger-car replacement specifications.",
+      "question": "Does an HPD or racing L15A7 listing prove street-car fitment?",
+      "answer": "No. Competition configuration and passenger-car installation scope must be checked separately, even where the base engine code is shared.",
+      "status": "verified_documented_applications",
+      "stock": "Confirmation required for each offered unit",
+      "extra_sources": []
+    },
+    {
+      "code": "L13Z1",
+      "brand": "Honda",
+      "displacement": "1.3 L",
+      "applications": [
+        {
+          "vehicle": "Honda Fit",
+          "dates": "Year not stated",
+          "variant": "1.3 petrol, full code L13Z1",
+          "market": "China",
+          "source": "denso",
+          "page": 16
+        }
+      ],
+      "buyer_focus": "Listings shortened to L13Z leave the suffix unresolved. DENSO’s China section identifies L13Z1, while other market sections use abbreviated codes. This article uses the complete L13Z1 code and does not relabel an unidentified unit.",
+      "question": "Is L13Z always L13Z1?",
+      "answer": "No. Read the original engine marking and vehicle records. This guide replaces an ambiguous content topic with a documented full code, not an automatic inventory conversion.",
+      "status": "verified_documented_applications",
+      "stock": "Confirmation required for each offered unit",
+      "extra_sources": []
+    },
+    {
+      "code": "HR15DE",
+      "brand": "Nissan",
+      "displacement": "1.5 L",
+      "applications": [
+        {
+          "vehicle": "Nissan March",
+          "dates": "From 07/2010; end not stated",
+          "variant": "1.5 petrol",
+          "market": "China catalogue",
+          "source": "mann",
+          "page": 129
+        },
+        {
+          "vehicle": "Nissan Sunny",
+          "dates": "From 12/2010; end not stated",
+          "variant": "1.5 petrol",
+          "market": "China catalogue",
+          "source": "mann",
+          "page": 130
+        }
+      ],
+      "buyer_focus": "Ask which vehicle and generation supplied the engine. Nissan documents technology changes within HR15DE; the code alone cannot settle the supplied fuel-system configuration.",
+      "question": "Does the same HR15DE code guarantee identical injectors?",
+      "answer": "No. Nissan’s 2011 report describes a dual-injector HR15DE application. Compare actual donor component numbers rather than assuming one specification across all years.",
+      "status": "verified_documented_applications",
+      "stock": "Confirmation required for each offered unit",
+      "extra_sources": [
+        {
+          "url": "https://www2.nissan-global.com/EN/DOCUMENT/PDF/SR/2011/SR11E_P013.pdf",
+          "title": "Nissan Sustainability Report 2011: HR15DE dual injectors"
+        }
+      ]
+    },
+    {
+      "code": "HR16DE",
+      "brand": "Nissan",
+      "displacement": "1.6 L",
+      "applications": [
+        {
+          "vehicle": "Nissan Sylphy",
+          "dates": "07/2006–03/2009",
+          "variant": "1.6 petrol, 80 kW entry",
+          "market": "China catalogue",
+          "source": "mann",
+          "page": 128
+        },
+        {
+          "vehicle": "Nissan Sylphy",
+          "dates": "04/2009–07/2012",
+          "variant": "1.6 petrol, 86 kW entry",
+          "market": "China catalogue",
+          "source": "mann",
+          "page": 129
+        },
+        {
+          "vehicle": "Nissan Sylphy",
+          "dates": "From 07/2012; end not stated",
+          "variant": "1.6 petrol, 93 kW entry",
+          "market": "China catalogue",
+          "source": "mann",
+          "page": 129
+        },
+        {
+          "vehicle": "Nissan Cube",
+          "dates": "From 03/2010; end not stated",
+          "variant": "Z12, 1.6 16V",
+          "market": "Multi-market catalogue; confirm vehicle market",
+          "source": "ngk",
+          "page": 330
+        }
+      ],
+      "buyer_focus": "The documented Sylphy outputs and periods differ. Request the actual donor configuration and transmission pairing rather than quoting one universal output for HR16DE.",
+      "question": "Can a Cube assembly be assumed to fit a Sylphy?",
+      "answer": "No. Shared engine code is an initial screening step; complete-assembly compatibility still needs part-number and vehicle checks.",
+      "status": "verified_documented_applications",
+      "stock": "Confirmation required for each offered unit",
+      "extra_sources": []
+    },
+    {
+      "code": "MR20DE",
+      "brand": "Nissan",
+      "displacement": "2.0 L",
+      "applications": [
+        {
+          "vehicle": "Nissan Sylphy",
+          "dates": "07/2006–03/2009",
+          "variant": "2.0 petrol, 100 kW entry",
+          "market": "China catalogue",
+          "source": "mann",
+          "page": 129
+        },
+        {
+          "vehicle": "Nissan Sylphy",
+          "dates": "04/2009–07/2012",
+          "variant": "2.0 petrol, 105 kW entry",
+          "market": "China catalogue",
+          "source": "mann",
+          "page": 129
+        },
+        {
+          "vehicle": "Nissan Qashqai",
+          "dates": "02/2008–10/2010",
+          "variant": "2.0 petrol, 102 kW entry",
+          "market": "China catalogue",
+          "source": "mann",
+          "page": 130
+        },
+        {
+          "vehicle": "Nissan Qashqai",
+          "dates": "11/2010–09/2015",
+          "variant": "2.0 petrol, 106 kW entry",
+          "market": "China catalogue",
+          "source": "mann",
+          "page": 130
+        },
+        {
+          "vehicle": "Nissan X-Trail",
+          "dates": "06/2008–12/2013",
+          "variant": "T31, 2.0",
+          "market": "Multi-market catalogue; confirm vehicle market",
+          "source": "ngk",
+          "page": 340
+        }
+      ],
+      "buyer_focus": "Keep MR20DE separate from MR20DD. A later 2.0-litre Nissan listing does not resolve the suffix or the fuel-system specification.",
+      "question": "Does every Qashqai 2.0 use the same assembly?",
+      "answer": "No. Check market, generation, complete code and transmission before comparing quotations.",
+      "status": "verified_documented_applications",
+      "stock": "Confirmation required for each offered unit",
+      "extra_sources": []
+    },
+    {
+      "code": "QR25DE",
+      "brand": "Nissan",
+      "displacement": "2.5 L",
+      "applications": [
+        {
+          "vehicle": "Nissan X-Trail I",
+          "dates": "01/2003–06/2007",
+          "variant": "T30, 2.5 petrol imported entry",
+          "market": "China catalogue",
+          "source": "mann",
+          "page": 128
+        },
+        {
+          "vehicle": "Nissan Murano",
+          "dates": "From 08/2015; end not stated",
+          "variant": "2.5 petrol",
+          "market": "China catalogue",
+          "source": "mann",
+          "page": 130
+        },
+        {
+          "vehicle": "Nissan X-Trail",
+          "dates": "06/2007 onward; end not stated",
+          "variant": "T31, 2.5",
+          "market": "Multi-market catalogue; confirm vehicle market",
+          "source": "ngk",
+          "page": 340
+        }
+      ],
+      "buyer_focus": "QR25DE and VQ25DE are different identities despite both appearing in 2.5-litre Nissan searches. Check the code before comparing engine photographs or price.",
+      "question": "Can a VQ25DE quote satisfy a QR25DE enquiry?",
+      "answer": "No. Do not treat a displacement match as a substitute for the correct engine code and assembly assessment.",
+      "status": "verified_documented_applications",
+      "stock": "Confirmation required for each offered unit",
+      "extra_sources": []
+    },
+    {
+      "code": "4B11",
+      "brand": "Mitsubishi",
+      "displacement": "2.0 L",
+      "applications": [
+        {
+          "vehicle": "Mitsubishi ASX",
+          "dates": "From 06/2010; end not stated",
+          "variant": "GA2W, 2.0",
+          "market": "Multi-market catalogue; confirm vehicle market",
+          "source": "ngk",
+          "page": 318
+        },
+        {
+          "vehicle": "Mitsubishi Outlander II",
+          "dates": "From 01/2010; end not stated",
+          "variant": "CW4W, 2.0 MIVEC",
+          "market": "China catalogue",
+          "source": "mann",
+          "page": 125
+        }
+      ],
+      "buyer_focus": "Separate ordinary 4B11 applications from Evolution turbo references. Catalogues may show “T/C” or a performance suffix; those distinctions belong on the quotation.",
+      "question": "Is every 4B11 an Evolution engine?",
+      "answer": "No. The documented ASX and Outlander applications do not establish Evolution turbo specification or interchangeability.",
+      "status": "verified_documented_applications",
+      "stock": "Confirmation required for each offered unit",
+      "extra_sources": []
+    },
+    {
+      "code": "4B12",
+      "brand": "Mitsubishi",
+      "displacement": "2.4 L",
+      "applications": [
+        {
+          "vehicle": "Mitsubishi Outlander II",
+          "dates": "06/2007–08/2013",
+          "variant": "CW5W, 2.4 MIVEC",
+          "market": "Multi-market catalogue; confirm vehicle market",
+          "source": "ngk",
+          "page": 324
+        },
+        {
+          "vehicle": "Mitsubishi Outlander II",
+          "dates": "09/2007–06/2010",
+          "variant": "CW5W, 2.4 Flex Fuel",
+          "market": "Multi-market catalogue; confirm vehicle market",
+          "source": "ngk",
+          "page": 324
+        },
+        {
+          "vehicle": "Citroën C-Crosser Enterprise",
+          "dates": "01/2009–12/2012",
+          "variant": "2.4 Mivec Euro 4",
+          "market": "Multi-market catalogue; confirm vehicle market",
+          "source": "ngk",
+          "page": 219
+        }
+      ],
+      "buyer_focus": "The table includes both petrol and Flex Fuel descriptions in the source. Fuel configuration and donor-specific external parts must remain explicit.",
+      "question": "Does shared use by Citroën prove a direct Mitsubishi swap?",
+      "answer": "No. A shared code or service component does not confirm the complete assembly, wiring and control requirements.",
+      "status": "verified_documented_applications",
+      "stock": "Confirmation required for each offered unit",
+      "extra_sources": []
+    },
+    {
+      "code": "M16A",
+      "brand": "Suzuki",
+      "displacement": "1.6 L",
+      "applications": [
+        {
+          "vehicle": "Suzuki SX4",
+          "dates": "11/2006–12/2010",
+          "variant": "China-market 1.6 petrol",
+          "market": "China catalogue",
+          "source": "mann",
+          "page": 160
+        },
+        {
+          "vehicle": "Suzuki Grand Vitara",
+          "dates": "09/2005–02/2015",
+          "variant": "1.6 VVT",
+          "market": "Multi-market catalogue; confirm vehicle market",
+          "source": "ngk",
+          "page": 404
+        },
+        {
+          "vehicle": "Suzuki Liana",
+          "dates": "03/2001–08/2004",
+          "variant": "1.6 VVT",
+          "market": "Multi-market catalogue; confirm vehicle market",
+          "source": "ngk",
+          "page": 405
+        }
+      ],
+      "buyer_focus": "Identify the donor chassis and drivetrain. SX4, Liana and Grand Vitara listings should not be treated as identical complete engine packages.",
+      "question": "Does M16A establish the same output in every Suzuki?",
+      "answer": "No. Variant-specific output and components differ in the catalogues; use the receiving vehicle’s documentation for the replacement assessment.",
+      "status": "verified_documented_applications",
+      "stock": "Confirmation required for each offered unit",
+      "extra_sources": []
+    },
+    {
+      "code": "K10B",
+      "brand": "Suzuki / Nissan",
+      "displacement": "1.0 L",
+      "applications": [
+        {
+          "vehicle": "Suzuki Alto",
+          "dates": "From 04/2009; end not stated",
+          "variant": "AMF310, 1.0",
+          "market": "Multi-market catalogue; confirm vehicle market",
+          "source": "ngk",
+          "page": 402
+        },
+        {
+          "vehicle": "Suzuki Splash",
+          "dates": "01/2008–07/2011",
+          "variant": "A5B310, 1.0",
+          "market": "Multi-market catalogue; confirm vehicle market",
+          "source": "ngk",
+          "page": 405
+        },
+        {
+          "vehicle": "Suzuki Splash",
+          "dates": "06/2011–12/2014",
+          "variant": "A5B310, 1.0 VVT",
+          "market": "Multi-market catalogue; confirm vehicle market",
+          "source": "ngk",
+          "page": 405
+        },
+        {
+          "vehicle": "Nissan Pixo",
+          "dates": "From 06/2009; end not stated",
+          "variant": "UA0, 1.0",
+          "market": "Multi-market catalogue; confirm vehicle market",
+          "source": "ngk",
+          "page": 333
+        }
+      ],
+      "buyer_focus": "The documented 1.0-litre K10B entries have three cylinders. Confirm the complete code instead of accepting another K10-family unit on size alone.",
+      "question": "Does the same engine code settle Nissan-to-Suzuki fitment?",
+      "answer": "No. Verify the complete offered assembly and external components against the receiving vehicle.",
+      "status": "verified_documented_applications",
+      "stock": "Confirmation required for each offered unit",
+      "extra_sources": []
+    },
+    {
+      "code": "G4ED",
+      "brand": "Hyundai / Kia",
+      "displacement": "1.6 L",
+      "applications": [
+        {
+          "vehicle": "Hyundai Accent",
+          "dates": "02/2006–10/2008",
+          "variant": "1.6 petrol",
+          "market": "China catalogue",
+          "source": "mann",
+          "page": 84
+        },
+        {
+          "vehicle": "Kia Cerato",
+          "dates": "05/2005–08/2006",
+          "variant": "1.6 petrol, 76 kW entry",
+          "market": "China catalogue",
+          "source": "mann",
+          "page": 93
+        },
+        {
+          "vehicle": "Kia Cerato",
+          "dates": "From 08/2006; end not stated",
+          "variant": "1.6 petrol, 82 kW entry",
+          "market": "China catalogue",
+          "source": "mann",
+          "page": 93
+        },
+        {
+          "vehicle": "Kia Qianlima",
+          "dates": "12/2002–04/2007",
+          "variant": "1.6 petrol",
+          "market": "China catalogue",
+          "source": "mann",
+          "page": 95
+        },
+        {
+          "vehicle": "Hyundai Coupe",
+          "dates": "02/2002–08/2009",
+          "variant": "GK, 1.6, 77 kW entry",
+          "market": "Multi-market catalogue; confirm vehicle market",
+          "source": "ngk",
+          "page": 263
+        }
+      ],
+      "buyer_focus": "The source identifies multiple 1.6-litre output entries and periods. Retain the full G4ED marking and any suffix rather than merging every Hyundai 1.6 offer.",
+      "question": "Can G4FC be supplied instead because it is also 1.6?",
+      "answer": "No interchange is established. The seller must quote the requested code or present a separately documented compatibility assessment.",
+      "status": "verified_documented_applications",
+      "stock": "Confirmation required for each offered unit",
+      "extra_sources": []
+    },
+    {
+      "code": "R18A2",
+      "brand": "Honda",
+      "displacement": "1.8 L",
+      "applications": [
+        {
+          "vehicle": "Honda Civic VIII Saloon",
+          "dates": "09/2005–02/2012",
+          "variant": "1.8; catalogue groups R18A1 and R18A2",
+          "market": "European catalogue; verify exact vehicle",
+          "source": "denso-cooling",
+          "page": null
+        }
+      ],
+      "buyer_focus": "Keep the final digit visible: R18A1 and R18A2 appear together in some component catalogues but are not automatically interchangeable complete engines.",
+      "question": "Does one shared condenser establish an engine swap?",
+      "answer": "No. A cooling-component application table supports vehicle association only; engine assembly compatibility requires different evidence.",
+      "status": "verified_documented_applications",
+      "stock": "Confirmation required for each offered unit",
+      "extra_sources": []
+    },
+    {
+      "code": "G4KA",
+      "brand": "Hyundai / Kia",
+      "displacement": "2.0 L",
+      "applications": [
+        {
+          "vehicle": "Hyundai Sonata NF",
+          "dates": "09/2005–12/2008",
+          "variant": "China-market 2.0 petrol",
+          "market": "China catalogue",
+          "source": "mann",
+          "page": 86
+        },
+        {
+          "vehicle": "Hyundai Sonata",
+          "dates": "05/2005–11/2010",
+          "variant": "NF, 2.0 CVVT",
+          "market": "Multi-market catalogue; confirm vehicle market",
+          "source": "ngk",
+          "page": 270
+        },
+        {
+          "vehicle": "Kia Carens III",
+          "dates": "From 09/2006; end not stated",
+          "variant": "2.0 petrol",
+          "market": "Multi-market catalogue; confirm vehicle market",
+          "source": "ngk",
+          "page": 278
+        }
+      ],
+      "buyer_focus": "Preserve the distinction between G4KA and later G4KD entries. Model names and catalogues can span both, while the receiving vehicle needs a precise identity.",
+      "question": "Can a Sonata NF engine be selected using model year only?",
+      "answer": "No. The market and engine code must accompany the year; use the VIN and offered-unit marking to resolve overlap.",
+      "status": "verified_documented_applications",
+      "stock": "Confirmation required for each offered unit",
+      "extra_sources": []
+    },
+    {
+      "code": "L15A1",
+      "brand": "Honda",
+      "displacement": "1.5 L",
+      "applications": [
+        {
+          "vehicle": "Honda City (Sidi)",
+          "dates": "04/2006–12/2008",
+          "variant": "1.5 petrol",
+          "market": "China catalogue",
+          "source": "mann",
+          "page": 79
+        },
+        {
+          "vehicle": "Honda Fit",
+          "dates": "06/2004–07/2008",
+          "variant": "1.5 petrol",
+          "market": "China catalogue",
+          "source": "mann",
+          "page": 81
+        }
+      ],
+      "buyer_focus": "Separate L15A1 from later L15A7 offers and keep body style and donor generation on the enquiry. A 1.5-litre Fit label is not a full engine identity.",
+      "question": "Does a later Fit engine automatically replace L15A1?",
+      "answer": "No. Confirm code, component references, control requirements and transmission interface before accepting an alternative.",
+      "status": "verified_documented_applications",
+      "stock": "Confirmation required for each offered unit",
+      "extra_sources": []
+    },
+    {
+      "code": "VQ25DE",
+      "brand": "Nissan",
+      "displacement": "2.5 L",
+      "applications": [
+        {
+          "vehicle": "Nissan Teana",
+          "dates": "06/2008–03/2013",
+          "variant": "J32, 2.5 petrol",
+          "market": "China catalogue",
+          "source": "mann",
+          "page": 131
+        }
+      ],
+      "buyer_focus": "Do not confuse VQ25DE with QR25DE or VQ25HR. Preserve the donor chassis and full code, especially when a listing headline only says “Nissan 2.5”.",
+      "question": "Can I accept a generic Nissan 2.5-litre quotation?",
+      "answer": "Ask for a corrected quotation showing VQ25DE, the actual unit identity, component list and a vehicle-specific compatibility assessment.",
+      "status": "verified_documented_applications",
+      "stock": "Confirmation required for each offered unit",
+      "extra_sources": []
+    },
+    {
+      "code": "5AR-FE",
+      "brand": "Toyota",
+      "displacement": "2.5 L",
+      "applications": [
+        {
+          "vehicle": "Toyota Camry",
+          "dates": "From 12/2011; end not stated",
+          "variant": "China-market 2.5",
+          "market": "China catalogue",
+          "source": "mann",
+          "page": 166
+        },
+        {
+          "vehicle": "Toyota RAV4",
+          "dates": "From 08/2013; end not stated",
+          "variant": "China-market 2.5",
+          "market": "China catalogue",
+          "source": "mann",
+          "page": 165
+        }
+      ],
+      "buyer_focus": "Use the full 5AR-FE code. Camry listings may include different petrol and hybrid codes; a 2.5-litre badge does not settle the identity.",
+      "question": "Does this guide approve a hybrid Camry replacement?",
+      "answer": "No. Check the original engine code and powertrain type. The cited Toyota 2016 configuration separates the petrol and hybrid engine entries.",
+      "status": "verified_documented_applications",
+      "stock": "Confirmation required for each offered unit",
+      "extra_sources": [
+        {
+          "url": "https://www.gac-toyota.com.cn/minisite/Campaigns/2016/CamryCommemorative/m",
+          "title": "GAC Toyota 2016 Camry configuration"
+        }
+      ]
+    },
+    {
+      "code": "6AR-FSE",
+      "brand": "Toyota",
+      "displacement": "2.0 L",
+      "applications": [
+        {
+          "vehicle": "Toyota Camry",
+          "dates": "From 01/2015; end not stated",
+          "variant": "China-market 2.0, 123 kW entry",
+          "market": "China catalogue",
+          "source": "mann",
+          "page": 166
+        },
+        {
+          "vehicle": "Toyota Camry",
+          "dates": "From 11/2017; end not stated",
+          "variant": "China-market 2.0, 124 kW entry",
+          "market": "China catalogue",
+          "source": "mann",
+          "page": 166
+        }
+      ],
+      "buyer_focus": "Keep 6AR-FSE separate from earlier 1AZ-FE Camry 2.0 offers. Confirm the fuel-system assembly scope and corresponding component references.",
+      "question": "Is any Camry 2.0 engine a match?",
+      "answer": "No. The cited configuration and catalogue distinguish engine codes across versions. Compare the full identity before discussing price.",
+      "status": "verified_documented_applications",
+      "stock": "Confirmation required for each offered unit",
+      "extra_sources": [
+        {
+          "url": "https://www.gac-toyota.com.cn/minisite/Campaigns/2016/CamryCommemorative/m",
+          "title": "GAC Toyota 2016 Camry configuration"
+        }
+      ]
+    },
+    {
+      "code": "7NR-FE",
+      "brand": "Toyota",
+      "displacement": "1.5 L",
+      "applications": [
+        {
+          "vehicle": "Toyota Yaris L Zhixuan",
+          "dates": "From 11/2013; end not stated",
+          "variant": "China-market 1.5",
+          "market": "China catalogue",
+          "source": "mann",
+          "page": 168
+        },
+        {
+          "vehicle": "Toyota Yaris L Zhixiang",
+          "dates": "From 03/2017; end not stated",
+          "variant": "China-market 1.5",
+          "market": "China catalogue",
+          "source": "mann",
+          "page": 168
+        }
+      ],
+      "buyer_focus": "Chinese retail names and export Yaris names are not interchangeable model identifiers. Record the market, full code and donor vehicle identity.",
+      "question": "Does every Yaris 1.5 use 7NR-FE?",
+      "answer": "No. The table is for the cited China-market applications; do not apply it to every Yaris sold elsewhere.",
+      "status": "verified_documented_applications",
+      "stock": "Confirmation required for each offered unit",
+      "extra_sources": [
+        {
+          "url": "https://www.gac-toyota.com.cn/minisite/campaigns/2016/yarisactivity/m",
+          "title": "GAC Toyota 2016 Yaris L configuration"
+        }
+      ]
+    },
+    {
+      "code": "6ZR-FE",
+      "brand": "Toyota",
+      "displacement": "2.0 L",
+      "applications": [
+        {
+          "vehicle": "Toyota RAV4",
+          "dates": "08/2013–06/2016",
+          "variant": "China-market 2.0, 108 kW entry",
+          "market": "China catalogue",
+          "source": "mann",
+          "page": 165
+        },
+        {
+          "vehicle": "Toyota RAV4",
+          "dates": "From 07/2016; end not stated",
+          "variant": "China-market 2.0, 111 kW entry",
+          "market": "China catalogue",
+          "source": "mann",
+          "page": 165
+        },
+        {
+          "vehicle": "Toyota RAV4",
+          "dates": "Year not stated",
+          "variant": "2.0, full code 6ZR-FE",
+          "market": "China",
+          "source": "denso",
+          "page": 10
+        }
+      ],
+      "buyer_focus": "The 6ZR-FE suffix is documented in both MANN-FILTER and DENSO catalogues. Do not substitute a generic “6ZR” factory reference for complete vehicle fitment.",
+      "question": "Can 3ZR-FE be treated as an alternative code?",
+      "answer": "No. These are separate purchasing identities. Require an explicit receiving-vehicle parts assessment for any proposed substitution.",
+      "status": "verified_documented_applications",
+      "stock": "Confirmation required for each offered unit",
+      "extra_sources": []
+    },
+    {
+      "code": "BYD472QC",
+      "brand": "BYD",
+      "displacement": "1.498 L",
+      "applications": [
+        {
+          "vehicle": "BYD Qin PLUS DM-i",
+          "dates": "2026 model",
+          "variant": "BYD7155WT6HEV6 / 7 / 8",
+          "market": "China",
+          "source": "qin",
+          "page": null
+        },
+        {
+          "vehicle": "BYD Qin L DM-i",
+          "dates": "2026 model",
+          "variant": "BYD7153WT6HEV6 / 8 / 9 / 10 / 11",
+          "market": "China",
+          "source": "qinl",
+          "page": null
+        }
+      ],
+      "buyer_focus": "This code identifies the petrol combustion engine, not the electric motor or complete hybrid powertrain. The Qin PLUS manual lists 74 kW rated engine output and 70 kW maximum net output; neither is combined-system output.",
+      "question": "Can it replace BYD472ZQB?",
+      "answer": "No automatic substitution is established. Match the exact vehicle code, engine assembly and hybrid-control requirements.",
+      "status": "verified_documented_applications",
+      "stock": "Confirmation required for each offered unit",
+      "extra_sources": []
+    },
+    {
+      "code": "BYD472ZQB",
+      "brand": "BYD",
+      "displacement": "1.498 L",
+      "applications": [
+        {
+          "vehicle": "BYD Han L DM-i",
+          "dates": "Model year not established in cited manual",
+          "variant": "BYD7152ACHEV1 / 4 / 2",
+          "market": "China",
+          "source": "hanl",
+          "page": null
+        },
+        {
+          "vehicle": "BYD Han DM-i intelligent-driving long-range",
+          "dates": "Model year not established; manual dated 2026-04-10",
+          "variant": "BYD7150YT6HEV14 / 15",
+          "market": "China",
+          "source": "han",
+          "page": null
+        }
+      ],
+      "buyer_focus": "The Han L manual lists 115 kW rated engine output and 110 kW maximum net output. Do not use combined hybrid power as an engine-only specification or merge the code with BYD472QC.",
+      "question": "Does an engine-only quotation include hybrid motors?",
+      "answer": "Only if each component is explicitly listed. Identify the petrol engine, hybrid transmission, motors, controllers and battery separately.",
+      "status": "verified_documented_applications",
+      "stock": "Confirmation required for each offered unit",
+      "extra_sources": []
+    },
+    {
+      "code": "BYD473QE",
+      "brand": "BYD",
+      "displacement": "1.5 L",
+      "applications": [
+        {
+          "vehicle": "BYD F3",
+          "dates": "From 08/2012; end not stated",
+          "variant": "1.5 petrol",
+          "market": "China catalogue",
+          "source": "mann",
+          "page": 51
+        },
+        {
+          "vehicle": "BYD Surui",
+          "dates": "Year not stated",
+          "variant": "1.5 petrol",
+          "market": "China",
+          "source": "denso",
+          "page": 1
+        },
+        {
+          "vehicle": "BYD Yuan",
+          "dates": "Year not stated",
+          "variant": "1.5 petrol; not every Yuan version",
+          "market": "China",
+          "source": "denso",
+          "page": 2
+        }
+      ],
+      "buyer_focus": "F3 and Yuan names also appear beside other powertrains. The petrol BYD473QE entries must not be extended to every model with that retail name or to electric versions.",
+      "question": "Does a Yuan badge prove BYD473QE fitment?",
+      "answer": "No. Ask for the engine marking and exact vehicle version. Do not use a present-day electric Yuan description to identify an older petrol engine.",
+      "status": "verified_documented_applications",
+      "stock": "Confirmation required for each offered unit",
+      "extra_sources": []
+    },
+    {
+      "code": "GW4G15",
+      "brand": "Great Wall / Haval",
+      "displacement": "1.5 L",
+      "applications": [
+        {
+          "vehicle": "Great Wall Coolbear",
+          "dates": "From 03/2009; end not stated",
+          "variant": "1.5 petrol",
+          "market": "China catalogue",
+          "source": "mann",
+          "page": 73
+        },
+        {
+          "vehicle": "Great Wall Voleex C30",
+          "dates": "From 05/2010; end not stated",
+          "variant": "1.5, 77 kW entry",
+          "market": "China catalogue",
+          "source": "mann",
+          "page": 73
+        },
+        {
+          "vehicle": "Great Wall Voleex C20R",
+          "dates": "From 09/2011; end not stated",
+          "variant": "1.5, 78 kW entry",
+          "market": "China catalogue",
+          "source": "mann",
+          "page": 73
+        },
+        {
+          "vehicle": "Haval M4",
+          "dates": "From 05/2012; end not stated",
+          "variant": "1.5 VVT",
+          "market": "China catalogue",
+          "source": "mann",
+          "page": 73
+        }
+      ],
+      "buyer_focus": "Keep the complete suffix: GW4G15 and GW4G15B are different quoted identities. A seller using “Great Wall 1.5” has not identified the requested assembly.",
+      "question": "Can GW4G15B be treated as the same code?",
+      "answer": "No. Require the actual unit marking and a separate compatibility assessment; similar family lettering is insufficient.",
+      "status": "verified_documented_applications",
+      "stock": "Confirmation required for each offered unit",
+      "extra_sources": []
+    },
+    {
+      "code": "GW4G15B",
+      "brand": "Great Wall / Haval",
+      "displacement": "1.5 L",
+      "applications": [
+        {
+          "vehicle": "Haval H2",
+          "dates": "From 07/2014; end not stated",
+          "variant": "1.5T",
+          "market": "China catalogue",
+          "source": "mann",
+          "page": 72
+        },
+        {
+          "vehicle": "Haval H6 Coupe",
+          "dates": "From 04/2016; end not stated",
+          "variant": "1.5T",
+          "market": "China catalogue",
+          "source": "mann",
+          "page": 73
+        },
+        {
+          "vehicle": "Haval M6",
+          "dates": "From 07/2017; end not stated",
+          "variant": "1.5T",
+          "market": "China catalogue",
+          "source": "mann",
+          "page": 73
+        }
+      ],
+      "buyer_focus": "GWM explicitly distinguishes the GW4G15B and GW4B15 powertrain platforms. Record the turbo, fuel components and gearbox interface included in the quoted package.",
+      "question": "Is GW4B15 simply a new label for the same engine?",
+      "answer": "No. GWM describes a platform change, so an H6 model name alone cannot approve a replacement.",
+      "status": "verified_documented_applications",
+      "stock": "Confirmation required for each offered unit",
+      "extra_sources": [
+        {
+          "url": "https://www.gwm-global.com/news_detail-2942.html",
+          "title": "GWM Haval H6 powertrain announcement, 2018"
+        }
+      ]
+    },
+    {
+      "code": "GW4B15",
+      "brand": "Great Wall / Haval",
+      "displacement": "1.5 L",
+      "applications": [
+        {
+          "vehicle": "Haval H6 Coupe",
+          "dates": "From 01/2018; end not stated",
+          "variant": "1.5T, 124 kW entry",
+          "market": "China catalogue",
+          "source": "mann",
+          "page": 73
+        },
+        {
+          "vehicle": "Haval H6",
+          "dates": "2018 manufacturer announcement; full year range not supplied",
+          "variant": "1.5 GDIT with 7DCT",
+          "market": "China",
+          "source": "gwm-h6",
+          "page": null
+        }
+      ],
+      "buyer_focus": "Identify the complete engine code and drivetrain package. Do not silently extend GW4B15 to later letter-suffix versions or to the earlier GW4G15B platform.",
+      "question": "Does the H6 badge establish GW4B15?",
+      "answer": "No. H6 appears across multiple powertrains; compare exact code, donor VIN and assembly references.",
+      "status": "verified_documented_applications",
+      "stock": "Confirmation required for each offered unit",
+      "extra_sources": [
+        {
+          "url": "https://www.gwm-global.com/news_detail-2942.html",
+          "title": "GWM Haval H6 powertrain announcement, 2018"
+        }
+      ]
+    },
+    {
+      "code": "GW4C20A",
+      "brand": "Great Wall / Haval",
+      "displacement": "2.0 L",
+      "applications": [
+        {
+          "vehicle": "Haval H7",
+          "dates": "From 04/2016; end not stated",
+          "variant": "2.0T, 170 kW entry",
+          "market": "China catalogue",
+          "source": "mann",
+          "page": 73
+        },
+        {
+          "vehicle": "Haval H7L",
+          "dates": "From 01/2016; end not stated",
+          "variant": "2.0T, 170 kW entry",
+          "market": "China catalogue",
+          "source": "mann",
+          "page": 73
+        },
+        {
+          "vehicle": "Haval H9",
+          "dates": "From 05/2017; end not stated",
+          "variant": "2.0T, 185 kW entry",
+          "market": "China catalogue",
+          "source": "mann",
+          "page": 73
+        }
+      ],
+      "buyer_focus": "The cited H7 and H9 entries have different outputs. Do not present one power figure or one complete assembly as universal for GW4C20A.",
+      "question": "Does GW4C20 without A establish a match?",
+      "answer": "No. Preserve the complete code. Ask for the original vehicle-specific parts comparison and the actual supplied accessories.",
+      "status": "verified_documented_applications",
+      "stock": "Confirmation required for each offered unit",
+      "extra_sources": []
+    },
+    {
+      "code": "SQRE4G16",
+      "brand": "Chery",
+      "displacement": "1.598 L",
+      "applications": [
+        {
+          "vehicle": "Chery Tiggo 3",
+          "dates": "From 04/2015; end not stated",
+          "variant": "1.6 petrol, 93 kW entry",
+          "market": "China catalogue",
+          "source": "mann",
+          "page": 54
+        },
+        {
+          "vehicle": "Chery Tiggo",
+          "dates": "Year not stated",
+          "variant": "1.6 VVT / MPI, 1598 cc entry",
+          "market": "South Africa",
+          "source": "chery-tiggo",
+          "page": null
+        }
+      ],
+      "buyer_focus": "Keep SQRE4G16 distinct from SQRF4J16. The South African specification identifies a 1598 cc MPI configuration; similarly named 1.5-litre or turbo tables should not overwrite that record.",
+      "question": "Is a similarly named online specification enough?",
+      "answer": "No. Check the code, displacement and vehicle configuration together. Contradictory tables need a manufacturer or parts-catalogue cross-check before use.",
+      "status": "verified_documented_applications",
+      "stock": "Confirmation required for each offered unit",
+      "extra_sources": []
+    },
+    {
+      "code": "SQRE4T15C",
+      "brand": "Chery / Jetour",
+      "displacement": "1.5 L",
+      "applications": [
+        {
+          "vehicle": "Jetour X70 Plus",
+          "dates": "Model year not stated; September 2024 brochure",
+          "variant": "Momentum / Deluxe, 1498 cc, 6-speed DCT",
+          "market": "South Africa",
+          "source": "jetour-sa",
+          "page": 9
+        }
+      ],
+      "buyer_focus": "The X70 Plus name is used for different engines by market. Keep the C suffix and confirm the matching transmission and supplied fuel/turbo components.",
+      "question": "Does every X70 Plus use this engine?",
+      "answer": "No. This guide documents the cited South African configurations; other markets and versions require their own engine-code evidence.",
+      "status": "verified_documented_applications",
+      "stock": "Confirmation required for each offered unit",
+      "extra_sources": []
+    },
+    {
+      "code": "SQRF4J16",
+      "brand": "Chery / Jetour",
+      "displacement": "1.598 L",
+      "applications": [
+        {
+          "vehicle": "Chery FX",
+          "dates": "Model year not stated; December 2022 brochure",
+          "variant": "1.6 turbo petrol, 1598 cc; 7DCT",
+          "market": "Israel",
+          "source": "chery-fx",
+          "page": 2
+        },
+        {
+          "vehicle": "Jetour JC1",
+          "dates": "Model year not established in homologation file",
+          "variant": "JC1, 1.6T + 7DCT; 140 kW net, 275 Nm",
+          "market": "Manufacturer homologation document",
+          "source": "jetour-jc1",
+          "page": null
+        }
+      ],
+      "buyer_focus": "Chery FX and Jetour JC1 documentation identify SQRF4J16. Keep the retail market and approval type with the engine code; later SQRF4J16C listings are not automatically the same complete assembly.",
+      "question": "Can a retailer’s broad Tiggo/X70/X90 list establish fitment?",
+      "answer": "No. Request the precise vehicle approval code, full engine marking and OE assembly references. The documented JC1 specification is a bounded example.",
+      "status": "verified_documented_applications",
+      "stock": "Confirmation required for each offered unit",
+      "extra_sources": []
+    },
+    {
+      "code": "SQRF4J20",
+      "brand": "Chery / Jetour",
+      "displacement": "2.0 L",
+      "applications": [
+        {
+          "vehicle": "Jetour T1",
+          "dates": "2025 model year",
+          "variant": "Comfort 2WD and Luxury 4WD; 8AT",
+          "market": "United Arab Emirates",
+          "source": "jetour-t1",
+          "page": null
+        }
+      ],
+      "buyer_focus": "Keep market and transmission details with the code. The cited T1 uses an 8AT configuration; a different vehicle with the same engine family is not automatically the same complete package.",
+      "question": "Does the T1 specification approve every Jetour 2.0 swap?",
+      "answer": "No. Confirm the exact receiving vehicle, full code, assembly number and controls. The table describes only the cited UAE variants.",
+      "status": "verified_documented_applications",
+      "stock": "Confirmation required for each offered unit",
+      "extra_sources": []
+    }
+  ],
+  "normalization": {
+    "L13Z": "Content topic resolved to L13Z1 from DENSO China Fit entry; no inventory relabel or universal equivalence."
+  },
+  "removed": [
+    "1NZ-FE",
+    "3ZR-FE"
+  ]
+}
