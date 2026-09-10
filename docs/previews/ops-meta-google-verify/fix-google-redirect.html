@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>修好 Facebook 的 Google 验证</title>
+  <style>
+    body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; max-width: 720px; margin: 32px auto; padding: 0 20px; color: #111; line-height: 1.55; }
+    h1 { font-size: 22px; }
+    .card { border: 1px solid #ddd; border-radius: 12px; padding: 16px 18px; margin: 16px 0; background: #fafafa; }
+    .btn { display: inline-block; background: #1877f2; color: #fff; padding: 12px 18px; border-radius: 8px; text-decoration: none; font-weight: 600; }
+    ol { padding-left: 1.2em; }
+    code, .uri { background: #eee; padding: 2px 6px; border-radius: 4px; word-break: break-all; }
+    .warn { color: #8a1f11; font-weight: 600; }
+  </style>
+</head>
+<body>
+  <h1>www 会跳成 web：不要再改地址栏</h1>
+  <p>这是 Facebook 自己的跳转，改回 www 还会被甩回来，会打转。</p>
+  <p>真正要改的只有发给 Google 的这一行：</p>
+  <p class="uri">https://web.facebook.com/oauth2/redirect/ → https://www.facebook.com/oauth2/redirect/</p>
+  <p class="warn">必须用<strong>普通 Chrome</strong>（不要无痕），并装下面插件。无痕里插件默认不工作。</p>
+
+  <div class="card">
+    <p><strong>装插件（一次，以后 Agent 也靠同一逻辑）</strong></p>
+    <ol>
+      <li>关掉所有无痕窗口</li>
+      <li>地址栏打开 <code>chrome://extensions</code></li>
+      <li>右上角打开「开发者模式」</li>
+      <li>「加载已解压的扩展程序」</li>
+      <li>选文件夹 <code>integrations/social_browser/chrome-facebook-www-guard</code></li>
+      <li>点插件「详情」，打开「在无痕模式下启用」（可选）</li>
+      <li>打开 <a href="https://web.facebook.com/">https://web.facebook.com/</a>（留在 web 即可）</li>
+      <li>再点「使用 Google 验证」</li>
+    </ol>
+  </div>
+
+  <div class="card">
+    <p><strong>备用：手机版网页</strong>（有时不走这条 Google 回跳）</p>
+    <p>打开 <a href="https://mbasic.facebook.com/">https://mbasic.facebook.com/</a> 用邮箱+密码登录。</p>
+  </div>
+</body>
+</html>

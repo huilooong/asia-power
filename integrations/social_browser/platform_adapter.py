@@ -11,6 +11,7 @@ from pathlib import Path
 from typing import Any
 
 from customer_gateway.social_session import browser_data_dir, mark_connected, mark_disconnected
+from integrations.social_browser.facebook_host import facebook_www_url, is_google_identity_checkpoint
 
 
 def _release_pw_context(pw, context) -> None:
@@ -185,7 +186,12 @@ def open_login_page(platform: str, *, wait_seconds: int = 300) -> dict[str, Any]
             "\n  · 如有 2FA 在手机上确认"
         )
     else:
-        page.goto(PLATFORM_URLS[platform], wait_until="domcontentloaded", timeout=120_000)
+        page.goto(facebook_www_url(PLATFORM_URLS[platform]), wait_until="domcontentloaded", timeout=120_000)
+        print(
+            "\n[facebook] 已强制 www.facebook.com，并改写 Google 回跳地址。"
+            "\n  若出现「使用 Google 验证」：确认地址栏是 www 再点蓝色按钮。"
+            "\n  若仍跳到 Google 红字 400：把地址里的 web.facebook.com 全部换成 www.facebook.com 后回车。"
+        )
     print(f"\n[{platform}] 请在浏览器中完成登录（含 2FA）。登录成功后按 Enter…")
     try:
         input()
@@ -257,26 +263,30 @@ def verify_login(platform: str, *, page=None, context=None, close: bool = True) 
         if platform == "instagram":
             _prepare_instagram_login(page)
         else:
-            page.goto(PLATFORM_URLS[platform], wait_until="domcontentloaded", timeout=120_000)
+            dest = facebook_www_url(PLATFORM_URLS[platform]) if platform == "facebook" else PLATFORM_URLS[platform]
+            page.goto(dest, wait_until="domcontentloaded", timeout=120_000)
         time.sleep(2)
 
     logged_in = False
     try:
         if platform == "facebook":
-            logged_in = page.locator(
-                '[aria-label="Create a post"], [aria-label="Home"], '
-                '[aria-label="创建帖子"], [aria-label="主页"], '
-                '[aria-label="What\'s on your mind?"], [aria-label="Account"]'
-            ).count() > 0
-            if not logged_in:
-                on_login_form = page.locator(
-                    'input[name="email"], input[name="pass"], '
-                    'input[aria-label="Email address or mobile number"], '
-                    'button:has-text("Log in"), button:has-text("登录")'
+            if is_google_identity_checkpoint(page.url):
+                logged_in = False
+            else:
+                logged_in = page.locator(
+                    '[aria-label="Create a post"], [aria-label="Home"], '
+                    '[aria-label="创建帖子"], [aria-label="主页"], '
+                    '[aria-label="What\'s on your mind?"], [aria-label="Account"]'
                 ).count() > 0
-                logged_in = not on_login_form and page.locator(
-                    '[data-pagelet="FeedUnit"], [role="feed"], [aria-label="Stories"]'
-                ).count() > 0
+                if not logged_in:
+                    on_login_form = page.locator(
+                        'input[name="email"], input[name="pass"], '
+                        'input[aria-label="Email address or mobile number"], '
+                        'button:has-text("Log in"), button:has-text("登录")'
+                    ).count() > 0
+                    logged_in = not on_login_form and page.locator(
+                        '[data-pagelet="FeedUnit"], [role="feed"], [aria-label="Stories"]'
+                    ).count() > 0
         elif platform == "instagram":
             if context and _instagram_has_session_cookie(context):
                 logged_in = True

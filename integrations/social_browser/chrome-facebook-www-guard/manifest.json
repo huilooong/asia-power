@@ -1,0 +1,26 @@
+{
+  "manifest_version": 3,
+  "name": "AsiaPower Facebook Google redirect fix",
+  "version": "1.1.0",
+  "description": "Do not fight www→web. Only rewrite Google redirect_uri to www.facebook.com/oauth2/redirect/",
+  "permissions": ["declarativeNetRequest"],
+  "host_permissions": [
+    "https://accounts.google.com/*"
+  ],
+  "declarative_net_request": {
+    "rule_resources": [
+      {
+        "id": "google_oauth_www",
+        "enabled": true,
+        "path": "rules.json"
+      }
+    ]
+  },
+  "content_scripts": [
+    {
+      "matches": ["https://accounts.google.com/*"],
+      "run_at": "document_start",
+      "js": ["content.js"]
+    }
+  ]
+}

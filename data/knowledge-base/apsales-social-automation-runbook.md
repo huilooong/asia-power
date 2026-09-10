@@ -23,6 +23,8 @@
 | **C** | X 付费 API Bearer Token | CEO 买 Basic 档；子敬填 Token | 同上 → 选 **C** |
 
 > **诚实**：Cursor / AI **没有** Facebook 官方插件；Instagram **必须**走路径 A 才能自动发图；浏览器 MCP 不能替 CEO 完成 2FA 登录。
+>
+> **2026-09-10**：电脑 `web.facebook.com`「使用 Google 验证」会触发 Google `redirect_uri_mismatch`。修复：把回跳改成 `www.facebook.com`（书签/插件/Playwright）。手册：`docs/ops/ops-meta-agent-graph-api.md`。
 
 ---
 

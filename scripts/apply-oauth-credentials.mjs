@@ -25,6 +25,9 @@ const KEYS = [
   'GOOGLE_OAUTH_CLIENT_SECRET',
   'FACEBOOK_APP_ID',
   'FACEBOOK_APP_SECRET',
+  'META_PAGE_ID',
+  'META_PAGE_ACCESS_TOKEN',
+  'META_IG_USER_ID',
   'PUBLIC_BASE_URL',
   'OAUTH_DEMO',
 ];
@@ -74,7 +77,7 @@ function summarize(values) {
   return KEYS.map((k) => {
     const v = values[k];
     if (v == null) return `${k}: (skip)`;
-    if (k === 'PUBLIC_BASE_URL' || k === 'OAUTH_DEMO') return `${k}: ${v}`;
+    if (k === 'PUBLIC_BASE_URL' || k === 'OAUTH_DEMO' || k === 'META_PAGE_ID') return `${k}: ${v}`;
     return `${k}: SET(${v.length})`;
   }).join('\n');
 }
@@ -84,9 +87,10 @@ function main() {
   const values = collectValues(args);
   const hasGoogle = values.GOOGLE_OAUTH_CLIENT_ID && values.GOOGLE_OAUTH_CLIENT_SECRET;
   const hasFacebook = values.FACEBOOK_APP_ID && values.FACEBOOK_APP_SECRET;
-  if (!hasGoogle && !hasFacebook) {
-    console.error('Need at least Google (ID+SECRET) or Facebook (ID+SECRET).');
-    console.error('See docs/ops/ops-oauth-ceo-setup.md');
+  const hasMetaPage = values.META_PAGE_ID && values.META_PAGE_ACCESS_TOKEN;
+  if (!hasGoogle && !hasFacebook && !hasMetaPage) {
+    console.error('Need Google OAuth, Facebook Login app, or META_PAGE_ID+META_PAGE_ACCESS_TOKEN.');
+    console.error('See docs/ops/ops-oauth-ceo-setup.md and docs/ops/ops-meta-agent-graph-api.md');
     process.exit(1);
   }
 

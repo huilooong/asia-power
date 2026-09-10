@@ -1,0 +1,26 @@
+[
+  {
+    "id": 1,
+    "priority": 1,
+    "action": {
+      "type": "redirect",
+      "regexSubstitution": "\\1redirect_uri=https://www.facebook.com/oauth2/redirect/\\2"
+    },
+    "condition": {
+      "regexFilter": "^(https://accounts\\.google\\.com/.*)redirect_uri=https://web\\.facebook\\.com/oauth2/redirect/(.*)$",
+      "resourceTypes": ["main_frame", "sub_frame"]
+    }
+  },
+  {
+    "id": 2,
+    "priority": 1,
+    "action": {
+      "type": "redirect",
+      "regexSubstitution": "\\1redirect_uri=https%3A%2F%2Fwww.facebook.com%2Foauth2%2Fredirect%2F\\2"
+    },
+    "condition": {
+      "regexFilter": "^(https://accounts\\.google\\.com/.*)redirect_uri=https%3A%2F%2Fweb\\.facebook\\.com%2Foauth2%2Fredirect%2F(.*)$",
+      "resourceTypes": ["main_frame", "sub_frame"]
+    }
+  }
+]
