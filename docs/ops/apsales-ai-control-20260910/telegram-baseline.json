@@ -1,0 +1,7 @@
+{
+  "remote_path": "/opt/asia-power/telegram_command_center/telegram_command_center.py",
+  "sha256": "10149f0e6cf748aa4bae9dee9b770c88428018b35fe19e07a091e71a2e78930f",
+  "candidate_sha256": "4c8e3b592c6cb0799c7541cc8a751016e3911db7baf2b40866f89a61085849f4",
+  "patch_dry_run": true,
+  "syntax_compile": true
+}

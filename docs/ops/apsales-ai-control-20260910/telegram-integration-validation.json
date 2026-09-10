@@ -1,0 +1,8 @@
+{
+  "owner_private_pause": true,
+  "group_denied": true,
+  "owner_private_resume": true,
+  "customer_messages_sent": 0,
+  "telegram_messages_sent": 0,
+  "method": "Execute patched production handle_message AST with isolated state and fake send_message"
+}

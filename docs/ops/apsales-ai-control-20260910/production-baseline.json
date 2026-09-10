@@ -1,0 +1,78 @@
+{
+  "remote_files": {
+    "/root/.openclaw/workspace/AsiaPower/deploy/apsales-live-draft/bridge.mjs": null,
+    "/root/.openclaw/workspace/AsiaPower/deploy/apsales-live-draft/apsales-whatsapp-session.mjs": null,
+    "/root/.openclaw/workspace/AsiaPower/sales_coach/detectors.py": "85ee596a5611fd45d7e2e15e641ff98c32d8af09d82ee100cc2905d766fd0cc0",
+    "/root/.openclaw/workspace/AsiaPower/sales_coach/self_improve.py": "bbba29c803429aa70c028366cce2a364f72ad4d22ab6cadc6772d0dd55995bf4",
+    "/root/.openclaw/workspace/AsiaPower/sales_coach/llm_audit.py": "2404f41fbc6bea18e625b13649e3015df47691b1dee1ccf77a7cc7bbb824266c",
+    "/root/.openclaw/workspace/AsiaPower/sales_coach/dispatch_to_cursor.py": "4984c570244e706aca94aca9f0c8a6106d3be207f4a05ef1e80bb3da493d3223",
+    "/root/.openclaw/workspace/AsiaPower/sales_coach/escalation.py": "a942c516a9b5fe8a0ea3545939ab39553412927579cccfb8165d8375b61df815",
+    "/root/.openclaw/workspace/AsiaPower/scripts/run-coach-structured.py": "feacc8ce20cc6d0fe474de93f1f2190c0c4aeafe49497990768341f9227c97ad",
+    "/root/.openclaw/workspace/AsiaPower/scripts/run-coach-plan-completion-watch.py": "490eac7b527c8fa793c1fc95c4b629e73ebc9b4405e5df3e3c86758a9f3704f2",
+    "/root/.openclaw/workspace/AsiaPower/docs/zijing-training/LIVE-RULES.md": "7e8f3fce8215222a460a0f58b81bdac04d002580cd8188d1bb75017e222e776e",
+    "/root/.openclaw/extensions/apsales-live-draft/bridge.mjs": "da58832c2cff5a8e0e2233ee5ce9c99aba675bae8d0037f66143a073bb8b7f2d",
+    "/root/.openclaw/extensions/apsales-live-draft/apsales-whatsapp-session.mjs": "369bc72eacece61995a7ec138349560a43f230e221aba4f8e116bbd1731e49b7"
+  },
+  "source_comparison": [
+    {
+      "path": "deploy/apsales-live-draft/bridge.mjs",
+      "local_head_sha256": "da58832c2cff5a8e0e2233ee5ce9c99aba675bae8d0037f66143a073bb8b7f2d",
+      "remote_source_sha256": null,
+      "source_matches_local_head": false
+    },
+    {
+      "path": "deploy/apsales-live-draft/apsales-whatsapp-session.mjs",
+      "local_head_sha256": "369bc72eacece61995a7ec138349560a43f230e221aba4f8e116bbd1731e49b7",
+      "remote_source_sha256": null,
+      "source_matches_local_head": false
+    },
+    {
+      "path": "sales_coach/detectors.py",
+      "local_head_sha256": "85ee596a5611fd45d7e2e15e641ff98c32d8af09d82ee100cc2905d766fd0cc0",
+      "remote_source_sha256": "85ee596a5611fd45d7e2e15e641ff98c32d8af09d82ee100cc2905d766fd0cc0",
+      "source_matches_local_head": true
+    },
+    {
+      "path": "sales_coach/self_improve.py",
+      "local_head_sha256": "bbba29c803429aa70c028366cce2a364f72ad4d22ab6cadc6772d0dd55995bf4",
+      "remote_source_sha256": "bbba29c803429aa70c028366cce2a364f72ad4d22ab6cadc6772d0dd55995bf4",
+      "source_matches_local_head": true
+    },
+    {
+      "path": "sales_coach/llm_audit.py",
+      "local_head_sha256": "2404f41fbc6bea18e625b13649e3015df47691b1dee1ccf77a7cc7bbb824266c",
+      "remote_source_sha256": "2404f41fbc6bea18e625b13649e3015df47691b1dee1ccf77a7cc7bbb824266c",
+      "source_matches_local_head": true
+    },
+    {
+      "path": "sales_coach/dispatch_to_cursor.py",
+      "local_head_sha256": "4984c570244e706aca94aca9f0c8a6106d3be207f4a05ef1e80bb3da493d3223",
+      "remote_source_sha256": "4984c570244e706aca94aca9f0c8a6106d3be207f4a05ef1e80bb3da493d3223",
+      "source_matches_local_head": true
+    },
+    {
+      "path": "sales_coach/escalation.py",
+      "local_head_sha256": "a942c516a9b5fe8a0ea3545939ab39553412927579cccfb8165d8375b61df815",
+      "remote_source_sha256": "a942c516a9b5fe8a0ea3545939ab39553412927579cccfb8165d8375b61df815",
+      "source_matches_local_head": true
+    },
+    {
+      "path": "scripts/run-coach-structured.py",
+      "local_head_sha256": "feacc8ce20cc6d0fe474de93f1f2190c0c4aeafe49497990768341f9227c97ad",
+      "remote_source_sha256": "feacc8ce20cc6d0fe474de93f1f2190c0c4aeafe49497990768341f9227c97ad",
+      "source_matches_local_head": true
+    },
+    {
+      "path": "scripts/run-coach-plan-completion-watch.py",
+      "local_head_sha256": "490eac7b527c8fa793c1fc95c4b629e73ebc9b4405e5df3e3c86758a9f3704f2",
+      "remote_source_sha256": "490eac7b527c8fa793c1fc95c4b629e73ebc9b4405e5df3e3c86758a9f3704f2",
+      "source_matches_local_head": true
+    },
+    {
+      "path": "docs/zijing-training/LIVE-RULES.md",
+      "local_head_sha256": "7e8f3fce8215222a460a0f58b81bdac04d002580cd8188d1bb75017e222e776e",
+      "remote_source_sha256": "7e8f3fce8215222a460a0f58b81bdac04d002580cd8188d1bb75017e222e776e",
+      "source_matches_local_head": true
+    }
+  ]
+}

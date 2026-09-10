@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import re
+import json
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
@@ -106,6 +107,25 @@ def write_coach_fix_plan(
 ) -> Path:
     root = root or workspace_root()
     rule_id = extract_rule_id_from_record(record)
+    # A file is a queued request, never evidence that an executor accepted it.
+    task_dir = root / "memory/sales_coach/tasks"
+    task_dir.mkdir(parents=True, exist_ok=True)
+    task_path = task_dir / f"{slug_for_rule(rule_id, 'task')}.json"
+    task = json.loads(task_path.read_text()) if task_path.is_file() else {}
+    if task and task.get("status") != "verified":
+        existing = Path(task["plan_path"])
+        if not existing.is_file():
+            raise FileNotFoundError(f"Tracked Coach plan missing: {existing}")
+        if record.get("id") not in [r.get("id") for r in task.get("findings", [])]:
+            task.setdefault("findings", []).append(record)
+            task_path.write_text(json.dumps(task, ensure_ascii=False, indent=2))
+        return existing
+    # Keep legacy requests intact and attach evidence rather than making a daily duplicate.
+    legacy = sorted(plans_dir(root).glob(f"coach-fix-{rule_id}-20*.md")) if not task else []
+    if legacy:
+        path = legacy[-1]
+        task_path.write_text(json.dumps({"rule_id": rule_id, "status": "detected", "owner": None, "plan_path": str(path), "legacy_plan_paths": [str(p) for p in legacy], "findings": [record], "created_at": datetime.now(timezone.utc).isoformat()}, ensure_ascii=False, indent=2))
+        return path
     day = datetime.now(timezone.utc).strftime("%Y%m%d")
     slug = slug_for_rule(rule_id, day)
     path = plans_dir(root) / f"{slug}.md"
@@ -114,4 +134,5 @@ def write_coach_fix_plan(
     if path.is_file():
         path = plans_dir(root) / f"{slug}-{str(record.get('id') or 'x')[-6:].lower()}.md"
     path.write_text(render_coach_fix_plan(record), encoding="utf-8")
+    task_path.write_text(json.dumps({"rule_id": rule_id, "status": "detected", "owner": None, "plan_path": str(path), "findings": [record], "created_at": datetime.now(timezone.utc).isoformat()}, ensure_ascii=False, indent=2))
     return path

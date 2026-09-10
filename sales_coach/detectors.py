@@ -266,6 +266,19 @@ def classify_customer_intent(inbound: str) -> str:
     body = (inbound or "").strip()
     if not body:
         return "unknown"
+    # Current intent precedes stale deal/quotation state. Keep this taxonomy shared with bridge.
+    if re.search(r"\b(?:your child|school gate|at school today)\b|孩子.*学校|学校.*孩子", body, re.I):
+        return "non_business"
+    if re.search(r"\b(?:engine you (?:gave|sold|sent)|you (?:gave|sold|sent) us|mechanic.*(?:shaft|fix|fit)|(?:engine|gearbox).*(?:not matching|doesn.t fit|not fitting)|(?:refund|wrong part))\b|售后|装不上|发错|退货", body, re.I):
+        return "after_sales"
+    if re.search(r"\b(?:landmark|directions?|location|plaza|where (?:are you|is (?:your|the) (?:shop|store)))\b|地址|定位|怎么走", body, re.I):
+        return "location"
+    if re.search(r"\b(?:can i call|i.ll call you|call me|phone number)\b|打电话|电话号码", body, re.I):
+        return "contact"
+    if re.search(r"\b(?:transmission oil|gearbox oil|cvt fluid)\b|变速箱油", body, re.I):
+        return "fluid_enquiry"
+    if re.fullmatch(r"(?:ok(?:ay)?|sure|thanks?|thank you|will get back(?: pls)?|let me ask him and see|稍后给你|好的)[.!\s]*", body, re.I):
+        return "acknowledgement"
     if _GREETING_RE.match(body):
         return "greeting"
     if _PRICE_INTENT_RE.search(body):

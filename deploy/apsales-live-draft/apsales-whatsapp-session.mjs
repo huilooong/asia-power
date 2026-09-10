@@ -8,6 +8,7 @@ import path from "node:path";
 import { createWriteStream } from "node:fs";
 import { Readable } from "node:stream";
 import { pipeline } from "node:stream/promises";
+import { trackedTransport } from "./apsales-human-takeover.mjs";
 
 import { n as getStatusCode, t as formatError } from "/root/.openclaw/extensions/whatsapp/dist/session-errors-CbsoQqoy.js";
 import { u as jidToE164 } from "/root/.openclaw/extensions/whatsapp/dist/text-runtime-Dk37KYHj.js";
@@ -190,6 +191,7 @@ function normalizeObservedMessage(message, authDir) {
     mediaSection: media?.sectionName,
     messageId: message.key.id ?? undefined,
     observedAt: new Date().toISOString(),
+    sentAtMs: Number(message.messageTimestamp?.toNumber?.() ?? message.messageTimestamp ?? 0) * 1000,
     poll,
     quoted,
     reaction,
@@ -276,6 +278,8 @@ export async function startApsalesWhatsAppSession(params) {
     for (const rawMessage of event.messages ?? []) {
       const observed = normalizeObservedMessage(rawMessage, params.authDir);
       if (!observed) continue;
+      // Owner takeover must run synchronously even while the main loop awaits an LLM.
+      params.onObservedMessage?.(observed);
       if (observed.messageId) {
         rawByMessageId.set(observed.messageId, rawMessage);
         if (rawByMessageId.size > 300) {
@@ -349,7 +353,10 @@ export async function startApsalesWhatsAppSession(params) {
   }
 
   const sendApi = createWebSendApi({
-    sock,
+    sock: trackedTransport(sock, {
+      beforeSend: (jid) => params.beforeSend?.(jidToE164(jid, { authDir: params.authDir })),
+      noteBotMessage: params.noteBotMessage,
+    }),
     defaultAccountId: "qa-driver",
     authDir: params.authDir,
   });

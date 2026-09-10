@@ -30,32 +30,37 @@ def sandbox_decisions_path(root: Path | None = None) -> Path:
 
 
 def load_sandbox_turns_for_day(day: date, root: Path | None = None) -> list[dict[str, Any]]:
-    path = sandbox_decisions_path(root)
+    """Compatibility name; canonical Evidence is the only WhatsApp input."""
+    from sales_coach.evidence import turns_for_day
+    root = root or config.workspace_root()
+    path = config.evidence_channel_dir("whatsapp", root) / "turns.ndjson"
     if not path.is_file():
-        return []
-    turns: list[dict[str, Any]] = []
-    for line in path.read_text(encoding="utf-8", errors="replace").splitlines():
-        line = line.strip()
-        if not line:
-            continue
-        try:
+        raise FileNotFoundError(f"Coach canonical Evidence missing: {path}")
+    # A broken Evidence stream must not masquerade as a clean zero-issue check.
+    for line in path.read_text(encoding="utf-8").splitlines():
+        if line.strip():
             row = json.loads(line)
-        except json.JSONDecodeError:
+            if not isinstance(row, dict):
+                raise ValueError("Invalid canonical Evidence record")
+    turns: list[dict[str, Any]] = []
+    seen = set()
+    for row in turns_for_day(day.isoformat(), root=root):
+        eid = str(row.get("evidence_id") or "")
+        if not eid or eid in seen:
             continue
-        at = str(row.get("at") or "")
-        if not at.startswith(day.isoformat()):
-            continue
-        inbound = str(row.get("inbound_excerpt") or "")
-        reply = str(row.get("reply_excerpt") or "")
+        seen.add(eid)
+        inbound = str((row.get("customer") or {}).get("message") or "")
+        reply = str((row.get("reply") or {}).get("text") or "")
         turns.append(
             {
-                "source": "whatsapp_sandbox",
-                "at": at,
+                "source": "whatsapp_evidence",
+                "evidence_id": eid,
+                "at": row.get("at"),
                 "inbound": inbound,
                 "reply": reply,
                 "wa_suffix": row.get("wa_suffix"),
-                "wamid_out": row.get("wamid_out"),
-                "reason_code": row.get("reason_code"),
+                "wamid_out": (row.get("reply") or {}).get("outbound_wamid"),
+                "reason_code": (row.get("decision") or {}).get("reason_code"),
                 "risk_blocked": row.get("risk_blocked"),
                 "intent": classify_customer_intent(inbound),
                 # Sandbox currently has no supplier/inventory evidence attached
@@ -119,6 +124,7 @@ def analyze_turns(turns: list[dict[str, Any]]) -> list[dict[str, Any]]:
                 str(turn.get("reply") or ""),
             )
             issue["source"] = turn.get("source")
+            issue["evidence_id"] = turn.get("evidence_id")
             issue["at"] = turn.get("at")
             issue["requires_ceo_approval"] = True
             issue["root_cause"] = issue.get("why")
@@ -187,6 +193,9 @@ def upsert_lessons_from_issues(
         if not rid:
             continue
         existing = by_rule.get(rid)
+        occurrence = str(issue.get("evidence_id") or f"{day.isoformat()}:{issue.get('issue_id')}")
+        if existing and occurrence in existing.get("seen_occurrences", []):
+            continue
         if existing and existing.get("status") == "GRADUATED":
             existing["status"] = "REGRESSED"
             existing["regression_count"] = int(existing.get("regression_count") or 0) + 1
@@ -215,6 +224,7 @@ def upsert_lessons_from_issues(
             }
             assert lesson["status"] in LESSON_STATUSES
             by_rule[rid] = lesson
+        by_rule[rid].setdefault("seen_occurrences", []).append(occurrence)
 
     store["lessons"] = list(by_rule.values())
     store["updated_at"] = datetime.now(timezone.utc).isoformat()

@@ -1,0 +1,124 @@
+{
+  "files": [
+    {
+      "source": "deploy/apsales-live-draft/bridge.mjs",
+      "remote": "/root/.openclaw/extensions/apsales-live-draft/bridge.mjs",
+      "expected_sha256": "da58832c2cff5a8e0e2233ee5ce9c99aba675bae8d0037f66143a073bb8b7f2d"
+    },
+    {
+      "source": "deploy/apsales-live-draft/bridge.mjs",
+      "remote": "/root/.openclaw/workspace/AsiaPower/deploy/apsales-live-draft/bridge.mjs",
+      "expected_sha256": null
+    },
+    {
+      "source": "deploy/apsales-live-draft/apsales-whatsapp-session.mjs",
+      "remote": "/root/.openclaw/extensions/apsales-live-draft/apsales-whatsapp-session.mjs",
+      "expected_sha256": "369bc72eacece61995a7ec138349560a43f230e221aba4f8e116bbd1731e49b7"
+    },
+    {
+      "source": "deploy/apsales-live-draft/apsales-whatsapp-session.mjs",
+      "remote": "/root/.openclaw/workspace/AsiaPower/deploy/apsales-live-draft/apsales-whatsapp-session.mjs",
+      "expected_sha256": null
+    },
+    {
+      "source": "deploy/apsales-live-draft/apsales-human-takeover.mjs",
+      "remote": "/root/.openclaw/extensions/apsales-live-draft/apsales-human-takeover.mjs",
+      "expected_sha256": null
+    },
+    {
+      "source": "deploy/apsales-live-draft/apsales-human-takeover.mjs",
+      "remote": "/root/.openclaw/workspace/AsiaPower/deploy/apsales-live-draft/apsales-human-takeover.mjs",
+      "expected_sha256": null
+    },
+    {
+      "source": "deploy/apsales-live-draft/apsales-reply-control.mjs",
+      "remote": "/root/.openclaw/extensions/apsales-live-draft/apsales-reply-control.mjs",
+      "expected_sha256": null
+    },
+    {
+      "source": "deploy/apsales-live-draft/apsales-reply-control.mjs",
+      "remote": "/root/.openclaw/workspace/AsiaPower/deploy/apsales-live-draft/apsales-reply-control.mjs",
+      "expected_sha256": null
+    },
+    {
+      "source": "deploy/apsales-live-draft/apsales-turn-policy.mjs",
+      "remote": "/root/.openclaw/extensions/apsales-live-draft/apsales-turn-policy.mjs",
+      "expected_sha256": null
+    },
+    {
+      "source": "deploy/apsales-live-draft/apsales-turn-policy.mjs",
+      "remote": "/root/.openclaw/workspace/AsiaPower/deploy/apsales-live-draft/apsales-turn-policy.mjs",
+      "expected_sha256": null
+    },
+    {
+      "source": "customer_gateway/ai_reply_control.py",
+      "remote": "/root/.openclaw/workspace/AsiaPower/customer_gateway/ai_reply_control.py",
+      "expected_sha256": null
+    },
+    {
+      "source": "sales_coach/detectors.py",
+      "remote": "/root/.openclaw/workspace/AsiaPower/sales_coach/detectors.py",
+      "expected_sha256": "85ee596a5611fd45d7e2e15e641ff98c32d8af09d82ee100cc2905d766fd0cc0"
+    },
+    {
+      "source": "sales_coach/self_improve.py",
+      "remote": "/root/.openclaw/workspace/AsiaPower/sales_coach/self_improve.py",
+      "expected_sha256": "bbba29c803429aa70c028366cce2a364f72ad4d22ab6cadc6772d0dd55995bf4"
+    },
+    {
+      "source": "sales_coach/llm_audit.py",
+      "remote": "/root/.openclaw/workspace/AsiaPower/sales_coach/llm_audit.py",
+      "expected_sha256": "2404f41fbc6bea18e625b13649e3015df47691b1dee1ccf77a7cc7bbb824266c"
+    },
+    {
+      "source": "sales_coach/dispatch_to_cursor.py",
+      "remote": "/root/.openclaw/workspace/AsiaPower/sales_coach/dispatch_to_cursor.py",
+      "expected_sha256": "4984c570244e706aca94aca9f0c8a6106d3be207f4a05ef1e80bb3da493d3223"
+    },
+    {
+      "source": "sales_coach/escalation.py",
+      "remote": "/root/.openclaw/workspace/AsiaPower/sales_coach/escalation.py",
+      "expected_sha256": "a942c516a9b5fe8a0ea3545939ab39553412927579cccfb8165d8375b61df815"
+    },
+    {
+      "source": "sales_coach/task_status.py",
+      "remote": "/root/.openclaw/workspace/AsiaPower/sales_coach/task_status.py",
+      "expected_sha256": null
+    },
+    {
+      "source": "scripts/apsales-ai-control.py",
+      "remote": "/root/.openclaw/workspace/AsiaPower/scripts/apsales-ai-control.py",
+      "expected_sha256": null
+    },
+    {
+      "source": "scripts/coach-task-status.py",
+      "remote": "/root/.openclaw/workspace/AsiaPower/scripts/coach-task-status.py",
+      "expected_sha256": null
+    },
+    {
+      "source": "scripts/run-coach-structured.py",
+      "remote": "/root/.openclaw/workspace/AsiaPower/scripts/run-coach-structured.py",
+      "expected_sha256": "feacc8ce20cc6d0fe474de93f1f2190c0c4aeafe49497990768341f9227c97ad"
+    },
+    {
+      "source": "scripts/run-coach-plan-completion-watch.py",
+      "remote": "/root/.openclaw/workspace/AsiaPower/scripts/run-coach-plan-completion-watch.py",
+      "expected_sha256": "490eac7b527c8fa793c1fc95c4b629e73ebc9b4405e5df3e3c86758a9f3704f2"
+    },
+    {
+      "source": "docs/zijing-training/LIVE-RULES.md",
+      "remote": "/root/.openclaw/workspace/AsiaPower/docs/zijing-training/LIVE-RULES.md",
+      "expected_sha256": "7e8f3fce8215222a460a0f58b81bdac04d002580cd8188d1bb75017e222e776e"
+    },
+    {
+      "source": "deploy/telegram-ai-reply-control.patch",
+      "remote": "/opt/asia-power/telegram_command_center/telegram_command_center.py",
+      "expected_sha256": "10149f0e6cf748aa4bae9dee9b770c88428018b35fe19e07a091e71a2e78930f",
+      "patch": true
+    }
+  ],
+  "services": [
+    "apsales-whatsapp-bridge.service",
+    "asia-power-telegram-bot.service"
+  ]
+}

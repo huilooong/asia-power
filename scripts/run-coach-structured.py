@@ -26,13 +26,14 @@ except Exception:
 def main() -> int:
     from sales_coach.self_improve import run_self_improve
 
-    day = date.today()
+    day = datetime.now(timezone.utc).date()
     started = datetime.now(timezone.utc).isoformat()
     print(f"[coach-structured] start {started} day={day.isoformat()}")
     result = run_self_improve(day=day, write=True) or {}
     slim = {
         "day": result.get("day"),
         "turns": result.get("turns"),
+        "coverage_status": "observed" if result.get("turns") else "no_new_evidence_not_a_quality_pass",
         "issue_count": len(result.get("issues") or []),
         "recurring": result.get("recurring"),
         "report_path": result.get("report_path"),

@@ -140,7 +140,7 @@ def select_for_approval(
 
     for rid, items in by_rule.items():
         distinct_keys = {
-            str(i.get("evidence_id") or i.get("customer_id") or id(i)) for i in items
+            str(i.get("customer_id") or i.get("evidence_id") or id(i)) for i in items
         }
         has_high = any(str(i.get("confidence") or "").lower() == "high" for i in items)
         systemic = rid != unc and len(distinct_keys) >= 2

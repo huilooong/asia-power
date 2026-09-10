@@ -13,10 +13,11 @@ import {
 } from './post-release-validation.mjs';
 import { checkCacheBustConsistency } from './cache-bust-check.mjs';
 
-export const VALID_TARGETS = ['nginx', 'api', 'engines', 'apbd', 'apbd-global', 'apsales', 'apsales-openclaw', 'finalize', 'home', 'portal', 'chrome', 'categories', 'admin'];
+export const VALID_TARGETS = ['apsales-ai-control', 'nginx', 'api', 'engines', 'apbd', 'apbd-global', 'apsales', 'apsales-openclaw', 'finalize', 'home', 'portal', 'chrome', 'categories', 'admin'];
 
 /** @type {Record<string, string[]>} */
 export const TARGET_SOURCE_FILES = {
+  "apsales-ai-control": ["customer_gateway/ai_reply_control.py", "deploy/apsales-live-draft/apsales-human-takeover.mjs", "deploy/apsales-live-draft/apsales-reply-control.mjs", "deploy/apsales-live-draft/apsales-turn-policy.mjs", "deploy/apsales-live-draft/apsales-whatsapp-session.mjs", "deploy/apsales-live-draft/bridge.mjs", "deploy/telegram-ai-reply-control.patch", "docs/zijing-training/LIVE-RULES.md", "sales_coach/detectors.py", "sales_coach/dispatch_to_cursor.py", "sales_coach/escalation.py", "sales_coach/llm_audit.py", "sales_coach/self_improve.py", "sales_coach/task_status.py", "scripts/apsales-ai-control.py", "scripts/coach-task-status.py", "scripts/run-coach-plan-completion-watch.py", "scripts/run-coach-structured.py"],
   apbd: [
     'agents/apbd/solo_trade',
     'agents/apbd/leads/adapters/website.py',
@@ -241,6 +242,7 @@ export const TARGET_SOURCE_FILES = {
 
 /** @type {Record<string, string[]>} */
 export const TARGET_REMOTE_PATHS = {
+  "apsales-ai-control": ["/root/.openclaw/extensions/apsales-live-draft/bridge.mjs", "/root/.openclaw/workspace/AsiaPower/deploy/apsales-live-draft/bridge.mjs", "/root/.openclaw/extensions/apsales-live-draft/apsales-whatsapp-session.mjs", "/root/.openclaw/workspace/AsiaPower/deploy/apsales-live-draft/apsales-whatsapp-session.mjs", "/root/.openclaw/extensions/apsales-live-draft/apsales-human-takeover.mjs", "/root/.openclaw/workspace/AsiaPower/deploy/apsales-live-draft/apsales-human-takeover.mjs", "/root/.openclaw/extensions/apsales-live-draft/apsales-reply-control.mjs", "/root/.openclaw/workspace/AsiaPower/deploy/apsales-live-draft/apsales-reply-control.mjs", "/root/.openclaw/extensions/apsales-live-draft/apsales-turn-policy.mjs", "/root/.openclaw/workspace/AsiaPower/deploy/apsales-live-draft/apsales-turn-policy.mjs", "/root/.openclaw/workspace/AsiaPower/customer_gateway/ai_reply_control.py", "/root/.openclaw/workspace/AsiaPower/sales_coach/detectors.py", "/root/.openclaw/workspace/AsiaPower/sales_coach/self_improve.py", "/root/.openclaw/workspace/AsiaPower/sales_coach/llm_audit.py", "/root/.openclaw/workspace/AsiaPower/sales_coach/dispatch_to_cursor.py", "/root/.openclaw/workspace/AsiaPower/sales_coach/escalation.py", "/root/.openclaw/workspace/AsiaPower/sales_coach/task_status.py", "/root/.openclaw/workspace/AsiaPower/scripts/apsales-ai-control.py", "/root/.openclaw/workspace/AsiaPower/scripts/coach-task-status.py", "/root/.openclaw/workspace/AsiaPower/scripts/run-coach-structured.py", "/root/.openclaw/workspace/AsiaPower/scripts/run-coach-plan-completion-watch.py", "/root/.openclaw/workspace/AsiaPower/docs/zijing-training/LIVE-RULES.md", "/opt/asia-power/telegram_command_center/telegram_command_center.py"],
   apbd: [
     '/root/.openclaw/workspace/AsiaPower/agents/apbd/solo_trade',
     '/root/.openclaw/workspace/AsiaPower/agents/apbd/leads/adapters/website.py',
@@ -644,7 +646,7 @@ export function runPreDeployValidation({ root, target, remote, allowDirty, yes, 
     });
   }
 
-  const backupMode = ['engines', 'apbd', 'apbd-global', 'apsales', 'finalize'].includes(target) ? 'data-only' : 'full';
+  const backupMode = ['engines', 'apbd', 'apbd-global', 'apsales', 'apsales-ai-control', 'finalize'].includes(target) ? 'data-only' : 'full';
   const backupCmd = backupMode === 'data-only'
     ? 'bash /root/.openclaw/workspace/inventory-site/scripts/backup-inventory-site.sh --data-only'
     : 'bash /root/.openclaw/workspace/inventory-site/scripts/backup-inventory-site.sh';

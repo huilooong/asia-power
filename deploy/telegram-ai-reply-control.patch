@@ -1,0 +1,26 @@
+--- a/telegram_command_center.py
++++ b/telegram_command_center.py
+@@ -550,6 +550,23 @@
+         send_message(chat_id, "This chat is not authorized for Asia-Power Command Center.")
+         return
+ 
++    # Deterministic owner-only AI control; no LLM or customer-visible command.
++    workspace = Path("/root/.openclaw/workspace/AsiaPower")
++    if str(workspace) not in sys.path:
++        sys.path.insert(0, str(workspace))
++    from customer_gateway.ai_reply_control import handle_command
++    control_reply = handle_command(
++        text,
++        user_id=str(user.get("id", "")),
++        chat_id=str(chat_id),
++        chat_type=chat.get("type", ""),
++        allowed_users={x.strip() for x in str(ALLOWED_CHAT_ID).split(",") if x.strip().isdigit()},
++        root=workspace,
++    )
++    if control_reply is not None:
++        send_message(chat_id, control_reply)
++        return
++
+     log_event("incoming", {"chat_id": chat_id, "sender": sender, "text": text})
+ 
+     normalized = text.strip()

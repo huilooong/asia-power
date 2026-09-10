@@ -85,7 +85,7 @@ def main() -> int:
         if prev.get("notified_sha256") == digest:
             continue
         msg = (
-            f"Cursor 已完成任务（请复核）\n"
+            f"Coach 修复任务出现实施记录（尚未确认完成或上线）\n"
             f"文件: {path}\n"
             f"建议找 Claude 复核一遍 diff / 测试 / 部署再算数——不要只看「已完成」字样。"
         )
@@ -94,11 +94,20 @@ def main() -> int:
 
             sent = notify_ceo(msg)
             print(f"[coach-plan-watch] notified {path.name} sent={sent}")
-            files[path.name]["notified_sha256"] = digest
-            notified += 1
+            if sent:
+                files[path.name]["notified_sha256"] = digest
+                notified += 1
         except Exception as exc:  # noqa: BLE001
             print(f"[coach-plan-watch] notify failed {path.name}: {exc}", file=sys.stderr)
 
+    # One daily digest for requests with no execution receipt; no duplicate task creation.
+    now = datetime.now(timezone.utc)
+    stalled = [p for p in PLANS.glob("coach-fix-*.md") if now.timestamp() - p.stat().st_mtime >= 86400 and not _meaningful(_report_section(p.read_text(encoding="utf-8")))]
+    if stalled and state.get("last_stalled_digest_day") != now.date().isoformat():
+        from coo_core.approval_gate import notify_ceo
+        if notify_ceo(f"Coach 待接手/待回执任务：{len(stalled)} 份已超过 24 小时。生成文件不代表已执行；请安排实际负责人，合并同类问题后处理。"):
+            state["last_stalled_digest_day"] = now.date().isoformat()
+            notified += 1
     _save_state(state)
     print(json.dumps({"ok": True, "notified": notified}, ensure_ascii=False))
     return 0

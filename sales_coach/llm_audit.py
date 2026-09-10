@@ -19,6 +19,7 @@ from typing import Any, Callable
 from sales_coach.config import COACH_READ_ONLY, coach_memory_dir, coach_output_dir, workspace_root
 from sales_coach.evidence import load_merged_turns
 from sales_coach.rule_catalog import catalog_prompt_block, resolve_stable_rule_id, unclassified_id
+from sales_coach.detectors import classify_customer_intent
 
 assert COACH_READ_ONLY is True
 
@@ -88,6 +89,7 @@ def _compact_turns_for_prompt(turns: list[dict[str, Any]]) -> list[dict[str, Any
                 "evidence_id": t.get("evidence_id"),
                 "at": t.get("at"),
                 "customer_message": ((t.get("customer") or {}).get("message") or "")[:800],
+                "current_intent": classify_customer_intent((t.get("customer") or {}).get("message") or ""),
                 "reply_text": ((t.get("reply") or {}).get("text") or "")[:1200],
                 "next_action": ((t.get("decision") or {}).get("next_action") or ""),
             }
@@ -122,6 +124,11 @@ def _system_prompt(rules_text: str) -> str:
         "Your ONLY job: check whether each bot reply conforms to the EXISTING rules below.\n"
         "Do NOT invent new standards. Do NOT rewrite rules. Do NOT suggest new rule text.\n"
         "If unsure whether something violates a written rule, omit it (do not guess).\n"
+        "First decide whether the rule applies to the CURRENT turn. School/personal notices are not sales enquiries. "
+        "Location, contact, after-sales and acknowledgements must not be penalized for failing to ask VIN or advance a sale. "
+        "A clarification question can be a valid next step. Quotation qualification does not require repeating VIN requests on every turn.\n"
+        "Never label compliance as a violation. The same evidence/rule cannot be both good and bad. "
+        "For each violation return applicable=true and verdict=violation; for each good example verdict=compliant.\n"
         "Also identify strong GOOD examples that clearly follow the rules (e.g. VIN confirmed + pin ask).\n\n"
         "IMPORTANT — do not over-generalize listed phrases:\n"
         "Concrete phrases/examples listed in LIVE-RULES are a floor, not a license to widen the rule. "
@@ -214,6 +221,10 @@ def audit_conversation(
         result = _call_llm_judge(compact, rules_text)
 
     violations = []
+    quarantined = []
+    known_ids = {str(t.get("evidence_id")) for t in turns}
+    intents = {str(t.get("evidence_id")): classify_customer_intent((t.get("customer") or {}).get("message") or "") for t in turns}
+    has_personal_context = "non_business" in intents.values()
     for v in result.get("violations") or []:
         if not isinstance(v, dict):
             continue
@@ -221,6 +232,12 @@ def audit_conversation(
         if conf not in ("high", "medium"):
             continue
         if not v.get("evidence_id") or not v.get("reason"):
+            continue
+        if str(v["evidence_id"]) not in known_ids:
+            quarantined.append({**v, "quarantine_reason": "unknown_evidence"})
+            continue
+        if v.get("applicable") is False or v.get("verdict", "violation") != "violation":
+            quarantined.append({**v, "quarantine_reason": "not_an_applicable_violation"})
             continue
         reason = str(v.get("reason") or "")
         # Drop self-negating / hedged judgments the model sometimes still emits.
@@ -236,14 +253,24 @@ def audit_conversation(
                 "hence omitted",
             )
         ):
+            quarantined.append({**v, "quarantine_reason": "self_negating_judgment"})
+            continue
+        if re.search(r"\b(?:is correct and matches|showing adherence|maintaining qualification|following the rule|which is correct)\b", low):
+            quarantined.append({**v, "quarantine_reason": "compliance_labeled_violation"})
             continue
         stable_id = resolve_stable_rule_id(
             rule_id=str(v.get("rule_id") or ""),
             rule_hint=str(v.get("rule_hint") or ""),
             allow_hint_alias=False,
         )
+        current_intent = intents.get(str(v["evidence_id"]))
+        not_sales_turn = current_intent in {"non_business", "location", "after_sales", "contact", "acknowledgement"} or (has_personal_context and current_intent == "unknown")
+        if not_sales_turn and stable_id in {"enquiry_no_next_step", "qualify_before_price", "ask_quantity_before_price", "new_unclear_inquiry_include_website"}:
+            quarantined.append({**v, "quarantine_reason": "sales_rule_not_applicable_to_current_intent"})
+            continue
         candidate = {
             "evidence_id": str(v.get("evidence_id")),
+            "customer_id": _customer_key(next(t for t in turns if str(t.get("evidence_id")) == str(v["evidence_id"]))),
             "rule_id": stable_id,
             "rule_hint": str(v.get("rule_hint") or "")[:200],
             "reason": reason[:600],
@@ -259,6 +286,9 @@ def audit_conversation(
             continue
         if not g.get("evidence_id") or not g.get("why_good"):
             continue
+        if str(g["evidence_id"]) not in known_ids:
+            quarantined.append({**g, "quarantine_reason": "unknown_evidence"})
+            continue
         goods.append(
             {
                 "evidence_id": str(g.get("evidence_id")),
@@ -271,11 +301,23 @@ def audit_conversation(
                 "rule_hint": str(g.get("rule_hint") or "")[:200],
             }
         )
-    goods = goods[:3]  # cap per conversation — avoid flooding the example library
+    # Quarantine BOTH labels, even when the negative label was already rejected above.
+    negative_keys = {
+        (str(v.get("evidence_id")), resolve_stable_rule_id(rule_id=str(v.get("rule_id") or ""), rule_hint=str(v.get("rule_hint") or ""), allow_hint_alias=False))
+        for v in result.get("violations", []) if isinstance(v, dict)
+    }
+    conflicts = negative_keys & {(g["evidence_id"], g["rule_id"]) for g in goods}
+    for items in (violations, goods):
+        for item in items:
+            if (item["evidence_id"], item["rule_id"]) in conflicts:
+                quarantined.append({**item, "quarantine_reason": "conflicting_labels"})
+    violations = [v for v in violations if (v["evidence_id"], v["rule_id"]) not in conflicts]
+    goods = [g for g in goods if (g["evidence_id"], g["rule_id"]) not in conflicts][:3]
 
     return {
         "violations": violations,
         "good_examples": goods,
+        "quarantined": quarantined,
         "turns_audited": len(compact),
         "parse_error": result.get("parse_error"),
     }
@@ -410,6 +452,7 @@ def build_llm_audit_markdown(
         f"- 模型: `{stats.get('model') or '—'}`",
         f"- 估算花费: {stats.get('cost_note') or '见模型单价 × 调用次数（本机未计费）'}",
         f"- parse/API 错误会话: {stats.get('error_conversations', 0)}",
+        f"- 隔离的矛盾/无效判断: {stats.get('quarantined_findings', 0)}（不派工、不进入正例库）",
         "",
         "## A. 违规（对照 LIVE-RULES）",
         "",
@@ -532,6 +575,7 @@ def run_llm_conformance_audit(
 
     model = (os.getenv("COACH_AUDIT_MODEL") or "").strip() or os.getenv("DEFAULT_MODEL") or "gpt-4.1-mini"
     violations: list[dict[str, Any]] = []
+    quarantined: list[dict[str, Any]] = []
     goods: list[dict[str, Any]] = []
     llm_calls = 0
     turns_audited = 0
@@ -548,6 +592,7 @@ def run_llm_conformance_audit(
         if result.get("parse_error"):
             error_conversations += 1
         violations.extend(result.get("violations") or [])
+        quarantined.extend(result.get("quarantined") or [])
         goods.extend(result.get("good_examples") or [])
         for t in turns:
             eid = str(t.get("evidence_id") or "")
@@ -555,6 +600,7 @@ def run_llm_conformance_audit(
                 newly_audited.append(eid)
 
     stats = {
+        "quarantined_findings": len(quarantined),
         "llm_calls": llm_calls,
         "turns_audited": turns_audited,
         "skipped_already_audited": skipped,
@@ -584,6 +630,10 @@ def run_llm_conformance_audit(
     if write:
         out_dir = coach_output_dir(root)
         out_dir.mkdir(parents=True, exist_ok=True)
+        if quarantined:
+            with (out_dir / f"{day}-quarantined.ndjson").open("a", encoding="utf-8") as out:
+                for finding in quarantined:
+                    out.write(json.dumps(finding, ensure_ascii=False) + "\n")
         report_path = out_dir / f"{day}-llm-audit{suffix}.md"
         report_path.write_text(markdown, encoding="utf-8")
         good_paths = persist_good_examples(goods, all_turns, day=day, root=root)
@@ -622,6 +672,7 @@ def run_llm_conformance_audit(
         "violations": violations,
         "good_examples": goods,
         "stats": stats,
+        "quarantined": quarantined,
         "markdown": markdown,
         "report_path": str(report_path) if report_path else None,
         "combined_report_path": str(combined_path) if combined_path else None,
