@@ -211,10 +211,15 @@ export const TARGET_SOURCE_FILES = {
   ],
   'apsales-openclaw': [
     'deploy/apsales-live-draft/bridge.mjs',
+    'deploy/apsales-live-draft/apsales-reply-control.mjs',
+    'deploy/apsales-live-draft/apsales-human-takeover.mjs',
+    'deploy/apsales-live-draft/apsales-turn-policy.mjs',
     'deploy/apsales-live-draft/apsales-price-confirmation-gate.mjs',
     'deploy/apsales-live-draft/apsales-live-rules.mjs',
     'deploy/apsales-live-draft/apsales-reusable-evidence.mjs',
     'scripts/apsales-classify-customer-intent.py',
+    'scripts/apsales-ai-control.py',
+    'customer_gateway/ai_reply_control.py',
     'sales_coach/detectors.py',
     'sales_core/vehicle_intelligence.py',
     'deploy/apsales-live-draft/apsales-whatsapp-session.mjs',
@@ -230,6 +235,10 @@ export const TARGET_SOURCE_FILES = {
     'scripts/apsales-media-vin-intelligence.py',
     'scripts/apsales-media-stt.py',
     'scripts/deploy-production.mjs',
+    'scripts/lib/release-manager.mjs',
+    'tests/test_ai_reply_control.py',
+    'tests/test_apsales_reply_control.mjs',
+    'docs/ops/apsales-whatsapp-conversation-scope-20260910.md',
   ],
   finalize: [
     'deploy/inventory-site-scripts/backup-inventory-site.sh',
@@ -416,10 +425,15 @@ export const TARGET_REMOTE_PATHS = {
   ],
   'apsales-openclaw': [
     '/root/.openclaw/extensions/apsales-live-draft/bridge.mjs',
+    '/root/.openclaw/extensions/apsales-live-draft/apsales-reply-control.mjs',
+    '/root/.openclaw/extensions/apsales-live-draft/apsales-human-takeover.mjs',
+    '/root/.openclaw/extensions/apsales-live-draft/apsales-turn-policy.mjs',
     '/root/.openclaw/extensions/apsales-live-draft/apsales-price-confirmation-gate.mjs',
     '/root/.openclaw/extensions/apsales-live-draft/apsales-live-rules.mjs',
     '/root/.openclaw/extensions/apsales-live-draft/apsales-reusable-evidence.mjs',
     '/root/.openclaw/workspace/AsiaPower/scripts/apsales-classify-customer-intent.py',
+    '/root/.openclaw/workspace/AsiaPower/scripts/apsales-ai-control.py',
+    '/root/.openclaw/workspace/AsiaPower/customer_gateway/ai_reply_control.py',
     '/root/.openclaw/workspace/AsiaPower/sales_coach/detectors.py',
     '/root/.openclaw/workspace/AsiaPower/sales_core/vehicle_intelligence.py',
     '/root/.openclaw/extensions/apsales-live-draft/apsales-whatsapp-session.mjs',
@@ -744,6 +758,36 @@ export async function runPostDeployValidation({ root, target, remote, baseUrl, r
     status: svcOut.split(/\s+/).every((s) => s === 'active') ? 'pass' : 'fail',
     detail: svcOut || 'service check failed',
   });
+
+  if (target === 'apsales-openclaw') {
+    const bridge = spawnSync('ssh', ['-o', 'BatchMode=yes', remote, `
+set -e
+DIR=/root/.openclaw/extensions/apsales-live-draft
+test "$(systemctl is-active apsales-whatsapp-bridge.service)" = active
+MAIN="$(systemctl show apsales-whatsapp-bridge.service -p MainPID --value)"
+test -n "$MAIN"
+test "$MAIN" != 0
+ps -p "$MAIN" -o args= | grep -q 'bridge\\.mjs'
+node --check "$DIR/bridge.mjs"
+node --check "$DIR/apsales-whatsapp-session.mjs"
+node --check "$DIR/apsales-reply-control.mjs"
+node --check "$DIR/apsales-human-takeover.mjs"
+node --check "$DIR/apsales-turn-policy.mjs"
+/root/.openclaw/workspace/AsiaPower/.venv/bin/python3 -m py_compile \
+  /root/.openclaw/workspace/AsiaPower/scripts/apsales-ai-control.py \
+  /root/.openclaw/workspace/AsiaPower/customer_gateway/ai_reply_control.py \
+  /root/.openclaw/workspace/AsiaPower/sales_coach/detectors.py
+echo APSALES_OPENCLAW_OK:$MAIN
+`], { encoding: 'utf8' });
+    const bridgeOut = `${bridge.stdout || ''}${bridge.stderr || ''}`.trim();
+    checks.push({
+      name: 'apsales_whatsapp_bridge',
+      status: bridge.status === 0 && bridgeOut.includes('APSALES_OPENCLAW_OK:') ? 'pass' : 'fail',
+      detail: bridge.status === 0 ? bridgeOut.split('\n').pop() : bridgeOut.slice(-500),
+    });
+  } else {
+    checks.push({ name: 'apsales_whatsapp_bridge', status: 'skip', detail: 'not required' });
+  }
 
   if (target === 'apbd-global') {
     const worker = spawnSync('ssh', ['-o', 'BatchMode=yes', remote, `

@@ -938,6 +938,18 @@ function deployApsalesOpenClaw() {
     `${ROOT}/deploy/apsales-live-draft/bridge.mjs`,
     `${REMOTE}:/root/.openclaw/extensions/apsales-live-draft/bridge.mjs.next`,
   );
+  rsync(
+    `${ROOT}/deploy/apsales-live-draft/apsales-reply-control.mjs`,
+    `${REMOTE}:/root/.openclaw/extensions/apsales-live-draft/apsales-reply-control.mjs.next`,
+  );
+  rsync(
+    `${ROOT}/deploy/apsales-live-draft/apsales-human-takeover.mjs`,
+    `${REMOTE}:/root/.openclaw/extensions/apsales-live-draft/apsales-human-takeover.mjs.next`,
+  );
+  rsync(
+    `${ROOT}/deploy/apsales-live-draft/apsales-turn-policy.mjs`,
+    `${REMOTE}:/root/.openclaw/extensions/apsales-live-draft/apsales-turn-policy.mjs.next`,
+  );
   // Keep bridge imports staged with the bridge itself. Copying bridge first
   // without this module can leave systemd in a restart loop after an update.
   rsync(
@@ -947,6 +959,8 @@ function deployApsalesOpenClaw() {
   rsync(`${ROOT}/deploy/apsales-live-draft/apsales-live-rules.mjs`, `${REMOTE}:/root/.openclaw/extensions/apsales-live-draft/apsales-live-rules.mjs.next`);
   rsync(`${ROOT}/deploy/apsales-live-draft/apsales-reusable-evidence.mjs`, `${REMOTE}:/root/.openclaw/extensions/apsales-live-draft/apsales-reusable-evidence.mjs.next`);
   rsync(`${ROOT}/scripts/apsales-classify-customer-intent.py`, `${REMOTE}:/root/.openclaw/workspace/AsiaPower/scripts/apsales-classify-customer-intent.py`);
+  rsync(`${ROOT}/scripts/apsales-ai-control.py`, `${REMOTE}:/root/.openclaw/workspace/AsiaPower/scripts/apsales-ai-control.py.next`);
+  rsync(`${ROOT}/customer_gateway/ai_reply_control.py`, `${REMOTE}:/root/.openclaw/workspace/AsiaPower/customer_gateway/ai_reply_control.py.next`);
   rsync(`${ROOT}/sales_coach/detectors.py`, `${REMOTE}:/root/.openclaw/workspace/AsiaPower/sales_coach/detectors.py`);
   rsync(`${ROOT}/sales_core/vehicle_intelligence.py`, `${REMOTE}:/root/.openclaw/workspace/AsiaPower/sales_core/vehicle_intelligence.py`);
   rsync(
@@ -1042,6 +1056,16 @@ BRIDGE=\$BRIDGE_DIR/bridge.mjs
 SESSION=\$BRIDGE_DIR/apsales-whatsapp-session.mjs
 NEXT=\${BRIDGE}.next
 SESSION_NEXT=\${SESSION}.next
+REPLY_CONTROL=\$BRIDGE_DIR/apsales-reply-control.mjs
+REPLY_CONTROL_NEXT=\${REPLY_CONTROL}.next
+HUMAN_TAKEOVER=\$BRIDGE_DIR/apsales-human-takeover.mjs
+HUMAN_TAKEOVER_NEXT=\${HUMAN_TAKEOVER}.next
+TURN_POLICY=\$BRIDGE_DIR/apsales-turn-policy.mjs
+TURN_POLICY_NEXT=\${TURN_POLICY}.next
+AI_CONTROL=/root/.openclaw/workspace/AsiaPower/scripts/apsales-ai-control.py
+AI_CONTROL_NEXT=\${AI_CONTROL}.next
+AI_REPLY_CONTROL=/root/.openclaw/workspace/AsiaPower/customer_gateway/ai_reply_control.py
+AI_REPLY_CONTROL_NEXT=\${AI_REPLY_CONTROL}.next
 PRICE_GATE=\$BRIDGE_DIR/apsales-price-confirmation-gate.mjs
 PRICE_GATE_NEXT=\${PRICE_GATE}.next
 LIVE_RULES=\$BRIDGE_DIR/apsales-live-rules.mjs
@@ -1051,6 +1075,11 @@ REUSABLE_EVIDENCE_NEXT=\${REUSABLE_EVIDENCE}.next
 BACKUP=/root/.openclaw/releases/apsales-openclaw-\$(date -u +%Y%m%dT%H%M%SZ)
 test -s "$NEXT"
 test -s "$SESSION_NEXT"
+test -s "$REPLY_CONTROL_NEXT"
+test -s "$HUMAN_TAKEOVER_NEXT"
+test -s "$TURN_POLICY_NEXT"
+test -s "$AI_CONTROL_NEXT"
+test -s "$AI_REPLY_CONTROL_NEXT"
 test -s "$PRICE_GATE_NEXT"
 test -s "$LIVE_RULES_NEXT"
 test -s "$REUSABLE_EVIDENCE_NEXT"
@@ -1068,19 +1097,30 @@ SESSION_CHECK=\$(mktemp /tmp/apsales-session-check-XXXXXX.mjs)
 PRICE_GATE_CHECK=\$(mktemp /tmp/apsales-price-gate-check-XXXXXX.mjs)
 LIVE_RULES_CHECK=\$(mktemp /tmp/apsales-live-rules-check-XXXXXX.mjs)
 REUSABLE_EVIDENCE_CHECK=\$(mktemp /tmp/apsales-reusable-evidence-check-XXXXXX.mjs)
+REPLY_CONTROL_CHECK=\$(mktemp /tmp/apsales-reply-control-check-XXXXXX.mjs)
+HUMAN_TAKEOVER_CHECK=\$(mktemp /tmp/apsales-human-takeover-check-XXXXXX.mjs)
+TURN_POLICY_CHECK=\$(mktemp /tmp/apsales-turn-policy-check-XXXXXX.mjs)
 cp "$NEXT" "$CHECK"
 cp "$SESSION_NEXT" "$SESSION_CHECK"
 cp "$PRICE_GATE_NEXT" "$PRICE_GATE_CHECK"
 cp "$LIVE_RULES_NEXT" "$LIVE_RULES_CHECK"
 cp "$REUSABLE_EVIDENCE_NEXT" "$REUSABLE_EVIDENCE_CHECK"
+cp "$REPLY_CONTROL_NEXT" "$REPLY_CONTROL_CHECK"
+cp "$HUMAN_TAKEOVER_NEXT" "$HUMAN_TAKEOVER_CHECK"
+cp "$TURN_POLICY_NEXT" "$TURN_POLICY_CHECK"
 /usr/bin/node --check "$CHECK"
 /usr/bin/node --check "$SESSION_CHECK"
 /usr/bin/node --check "$PRICE_GATE_CHECK"
 /usr/bin/node --check "$LIVE_RULES_CHECK"
 /usr/bin/node --check "$REUSABLE_EVIDENCE_CHECK"
+/usr/bin/node --check "$REPLY_CONTROL_CHECK"
+/usr/bin/node --check "$HUMAN_TAKEOVER_CHECK"
+/usr/bin/node --check "$TURN_POLICY_CHECK"
 /root/.openclaw/workspace/AsiaPower/.venv/bin/python3 -m py_compile /root/.openclaw/workspace/AsiaPower/scripts/apsales-classify-customer-intent.py
 /root/.openclaw/workspace/AsiaPower/.venv/bin/python3 -m py_compile /root/.openclaw/workspace/AsiaPower/sales_coach/detectors.py
 /root/.openclaw/workspace/AsiaPower/.venv/bin/python3 -m py_compile /root/.openclaw/workspace/AsiaPower/sales_core/vehicle_intelligence.py
+/root/.openclaw/workspace/AsiaPower/.venv/bin/python3 -m py_compile "$AI_CONTROL_NEXT"
+/root/.openclaw/workspace/AsiaPower/.venv/bin/python3 -m py_compile "$AI_REPLY_CONTROL_NEXT"
 /usr/bin/node --check "\$BRIDGE_DIR/apsales-internal-staff.mjs"
 /usr/bin/node --check "\$BRIDGE_DIR/apsales-closing-memory.mjs"
 /usr/bin/node --check "\$BRIDGE_DIR/apsales-soft-angle.mjs"
@@ -1090,13 +1130,15 @@ cp "$REUSABLE_EVIDENCE_NEXT" "$REUSABLE_EVIDENCE_CHECK"
 /usr/bin/node --check "\$BRIDGE_DIR/ghana-staff-handoff.mjs"
 /usr/bin/node --check "\$BRIDGE_DIR/apsales-parse-agent-reply.mjs"
 /usr/bin/node --check /tmp/apsales-bridge-crash-logger.mjs
-rm -f "$CHECK" "$SESSION_CHECK" "$PRICE_GATE_CHECK" "$LIVE_RULES_CHECK" "$REUSABLE_EVIDENCE_CHECK"
+rm -f "$CHECK" "$SESSION_CHECK" "$PRICE_GATE_CHECK" "$LIVE_RULES_CHECK" "$REUSABLE_EVIDENCE_CHECK" "$REPLY_CONTROL_CHECK" "$HUMAN_TAKEOVER_CHECK" "$TURN_POLICY_CHECK"
 mkdir -p "$BACKUP" /etc/systemd/system/apsales-whatsapp-bridge.service.d
 cp -a "$BRIDGE" "$BACKUP/bridge.mjs"
 if [ -f "$SESSION" ]; then cp -a "$SESSION" "$BACKUP/apsales-whatsapp-session.mjs"; fi
-for f in ghana-staff-handoff.mjs apsales-parse-agent-reply.mjs apsales-internal-staff.mjs apsales-closing-memory.mjs apsales-soft-angle.mjs apsales-deal-qualify.mjs apsales-vin-card.mjs apsales-inventory-links.mjs; do
+for f in apsales-reply-control.mjs apsales-human-takeover.mjs apsales-turn-policy.mjs ghana-staff-handoff.mjs apsales-parse-agent-reply.mjs apsales-internal-staff.mjs apsales-closing-memory.mjs apsales-soft-angle.mjs apsales-deal-qualify.mjs apsales-vin-card.mjs apsales-inventory-links.mjs; do
   if [ -f "\$BRIDGE_DIR/\$f" ]; then cp -a "\$BRIDGE_DIR/\$f" "\$BACKUP/\$f"; fi
 done
+if [ -f "$AI_CONTROL" ]; then cp -a "$AI_CONTROL" "$BACKUP/apsales-ai-control.py"; fi
+if [ -f "$AI_REPLY_CONTROL" ]; then cp -a "$AI_REPLY_CONTROL" "$BACKUP/ai_reply_control.py"; fi
 if [ -f /etc/systemd/system/apsales-whatsapp-bridge.service.d/openclaw-sales-agent.conf ]; then
   cp -a /etc/systemd/system/apsales-whatsapp-bridge.service.d/openclaw-sales-agent.conf "$BACKUP/openclaw-sales-agent.conf"
 fi
@@ -1128,6 +1170,11 @@ EnvironmentFile=-/root/.openclaw/workspace/AsiaPower/.env
 EOF
 
 mv "$SESSION_NEXT" "$SESSION"
+mv "$REPLY_CONTROL_NEXT" "$REPLY_CONTROL"
+mv "$HUMAN_TAKEOVER_NEXT" "$HUMAN_TAKEOVER"
+mv "$TURN_POLICY_NEXT" "$TURN_POLICY"
+mv "$AI_CONTROL_NEXT" "$AI_CONTROL"
+mv "$AI_REPLY_CONTROL_NEXT" "$AI_REPLY_CONTROL"
 mv "$PRICE_GATE_NEXT" "$PRICE_GATE"
 mv "$LIVE_RULES_NEXT" "$LIVE_RULES"
 mv "$REUSABLE_EVIDENCE_NEXT" "$REUSABLE_EVIDENCE"

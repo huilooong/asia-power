@@ -3,7 +3,11 @@ import fssync from "node:fs";
 import path from "node:path";
 import { createRequire } from "node:module";
 import { fileURLToPath } from "node:url";
-import { spawn } from "node:child_process";
+import { spawn, spawnSync } from "node:child_process";
+import { AsyncLocalStorage } from "node:async_hooks";
+import { assertReplyAllowed, readReplyControl } from "./apsales-reply-control.mjs";
+import { conversationScopePatch, turnPolicy, routedReply } from "./apsales-turn-policy.mjs";
+import { createHumanTakeover } from "./apsales-human-takeover.mjs";
 import { startApsalesWhatsAppSession } from "./apsales-whatsapp-session.mjs";
 import { recordInboundForEvidence, recordReplyForEvidence } from "./evidence-hook.mjs";
 import {
@@ -74,6 +78,19 @@ import { buildLiveRulesPrompt } from "./apsales-live-rules.mjs";
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const _require = createRequire(import.meta.url);
 const WORKSPACE = "/root/.openclaw/workspace/AsiaPower";
+const replyControlContext = new AsyncLocalStorage();
+let humanTakeover;
+
+function checkCustomerSend(senderId) {
+  if (isInternalStaffNumber(senderId, INTERNAL_STAFF_NUMBERS_E164)) return;
+  const current = readReplyControl(WORKSPACE, senderId);
+  if (humanTakeover?.failures.has(senderId) && current.updatedMs <= humanTakeover.failures.get(senderId)) {
+    const error = new Error("human_takeover_persistence_failed"); error.code = "AI_REPLY_PAUSED"; throw error;
+  }
+  humanTakeover?.failures.delete(senderId);
+  const context = replyControlContext.getStore();
+  assertReplyAllowed(WORKSPACE, senderId, context?.ticket, context?.observedAt || new Date().toISOString());
+}
 
 function loadRetainOrDiscardPhoto() {
   const candidates = [
@@ -299,7 +316,9 @@ async function saveDealState(senderId, patch) {
   const prev = (await loadDealState(senderId)) || {};
   const safePatch = { ...(patch || {}) };
   // New real progress clears stall alert so a later stall can re-alert.
-  const progressKeys = Object.keys(safePatch).filter((k) => k !== "stall_alert_sent_at");
+  const progressKeys = Object.keys(safePatch).filter(
+    (k) => k !== "stall_alert_sent_at" && !k.startsWith("conversation_scope"),
+  );
   if (prev.stall_alert_sent_at && progressKeys.length) {
     safePatch.stall_alert_sent_at = null;
   }
@@ -335,7 +354,12 @@ async function appendTeamReply(senderId, text, messageId) {
 }
 
 /** sendText + remember outbound id so fromMe echoes are not treated as human. */
-async function sendCustomerText(session, senderId, text) {
+async function sendCustomerText(session, senderId, text, createdAt = new Date().toISOString()) {
+  if (!replyControlContext.getStore()) {
+    const ticket = readReplyControl(WORKSPACE, senderId);
+    return replyControlContext.run({ ticket, observedAt: createdAt }, () => sendCustomerText(session, senderId, text, createdAt));
+  }
+  checkCustomerSend(senderId);
   const result = await session.sendText(senderId, text);
   noteBotSend(senderId, text, result?.messageId);
   return result;
@@ -469,9 +493,10 @@ async function runOpenClawReply({ text, senderId, messageId, chatId, observedAt,
   const repeatInfo = detectPossibleRepeat(recentAgentReplies);
   const uncoveredAngles = uncoveredClosingAngles(dealState);
   const softAngleDryRun = !SOFT_ANGLE_SEND;
-  const mustQualifyBeforePrice = computeMustQualifyBeforePrice(dealState);
+  const currentTurnPolicy = turnPolicy(customerIntent, dealState);
+  const mustQualifyBeforePrice = currentTurnPolicy.collectIdentity && computeMustQualifyBeforePrice(dealState);
   const inspectionFeeApplicable = computeInspectionFeeApplicable(dealState);
-  const mustAskQuantityBeforePrice = computeMustAskQuantityBeforePrice(dealState, {
+  const mustAskQuantityBeforePrice = currentTurnPolicy.collectIdentity && computeMustAskQuantityBeforePrice(dealState, {
     inventoryMatches,
   });
   const matches = Array.isArray(inventoryMatches) ? inventoryMatches : [];
@@ -515,7 +540,7 @@ async function runOpenClawReply({ text, senderId, messageId, chatId, observedAt,
     "- The ONLY phone number you may ever give a customer as a number to call is support_contact. NEVER state customer_e164 (the customer's own number) back to them as a number to call — that is always wrong, even by accident.",
     "- Set support_line_unreachable to true ONLY when the customer clearly says they tried contacting support_contact (or the number you gave) and could not get through / no answer. Do not keyword-match one phrase — judge the meaning. If true: apologize briefly, do NOT claim the line is broken or that you checked it, and tell the customer the team will reach out to them directly instead. Signal problems are common; never assert the line itself is dead.",
     "- Set buying_intent_confirmed to true ONLY when the customer clearly shows purchase intent this turn (e.g. yes let's proceed, ask payment/pickup arrangements to buy). Judge meaning — do not keyword-match. This flag is for internal ops only; do NOT change your sales style or force checklist questions about port/qty/payment.",
-    "- must_qualify_before_price is a precomputed flag. If true, your ONLY question this turn must ask for year + engine code (or VIN) — do NOT say you will check price/availability with the team this turn. If vin_unusable is true, prefer engine code over VIN. If false, proceed normally per the other rules above.",
+    "- must_qualify_before_price restricts issuing a firm quote, not answering the current question. If true, identity is needed before a firm quote; ask for it at most once and do not repeat a request already awaiting the customer. If false, do not ask identity merely because an old deal has missing fields. Never substitute an engine/gearbox enquiry for an oil/fluid question. Contact requests need a contact answer, not a VIN demand. Do not promise a personal call or visit.",
     "- must_ask_quantity_before_price is a precomputed flag. If true (and must_qualify_before_price is false), ask for quantity this turn before confirming a firm quote — do not skip straight to quote confirmation. If false, do not re-ask quantity. Wholesale vs retail pricing math is NOT your job yet — just capture quantity.",
     "- inspection_fee_applicable is a precomputed flag. Only mention the $50 inspection fee / pay-in-full choice when this is true. If false (part is not engine/gearbox), skip the $50 inspection fee language entirely — after quote acceptance, proceed with normal payment-in-full flow. Video confirmation before shipment + on-site inspection are NEVER skipped for any part type, even when inspection_fee_applicable is false. Do not invent payment_status or fulfillment_stage — those are team/ops fields.",
     "- If awaiting_quote_followup_reply is true: the customer may be answering what held them back on the quote. If they give a concrete concern, put a short English summary in quote_decline_reason_captured (e.g. \"price too high\", \"shipping time too long\"); if they are off-topic or give no reason, leave quote_decline_reason_captured as an empty string. Do not keyword-match — summarize meaning.",
@@ -536,6 +561,8 @@ async function runOpenClawReply({ text, senderId, messageId, chatId, observedAt,
       media_placeholder: mediaPlaceholder || null,
       media: mediaContext || null,
       deal_state: dealState || null,
+      current_customer_intent: customerIntent,
+      current_turn_policy: currentTurnPolicy,
       must_qualify_before_price: mustQualifyBeforePrice,
       must_ask_quantity_before_price: mustAskQuantityBeforePrice,
       inspection_fee_applicable: inspectionFeeApplicable,
@@ -680,7 +707,7 @@ async function processOutboundQueue(session) {
       const text = String(job.text || "").trim();
       if (!target || !text) throw new Error("missing target or text");
       log("sending approved whatsapp draft", { draftId: job.draft_id, jobId: job.job_id, target });
-      const result = await sendCustomerText(session, target, text);
+      const result = await sendCustomerText(session, target, text, job.created_at || job.approved_at || "");
       const sentAt = new Date().toISOString();
       const sentJob = { ...job, status: "sent", sent_at: sentAt, result };
       await moveJsonFile(jobPath, OUTBOX_SENT_DIR, sentJob);
@@ -697,6 +724,11 @@ async function processOutboundQueue(session) {
       await appendActivity("apsales_whatsapp_sent", `客户 ${target}: 已发送批准草稿 draft=${job.draft_id || ""}`, "sent");
       await sendTelegram(`✅ 子敬已发送 WhatsApp 草稿\n客户: ${job.customer_name || target}\n草稿: ${job.draft_id}\nWhatsApp messageId: ${result?.messageId || "(unknown)"}`);
     } catch (err) {
+      if (err?.code === "AI_REPLY_PAUSED") {
+        await moveJsonFile(jobPath, `${OUTBOX_DIR}_held`, { ...job, status: "held_manual_pause", held_at: new Date().toISOString(), error: err.message });
+        await updateDraftAfterSend(job || {}, { status: "held_manual_pause" });
+        continue;
+      }
       const error = err instanceof Error ? err.message : String(err);
       const failedJob = { ...(job || {}), status: "failed", failed_at: new Date().toISOString(), error };
       await moveJsonFile(jobPath, OUTBOX_FAILED_DIR, failedJob);
@@ -1279,6 +1311,18 @@ async function buildTextVinContext(text, senderId, messageId) {
 }
 
 async function handleMessage(message, state, session) {
+  if (message.fromMe) return handleMessageInner(message, state, session);
+  let ticket;
+  try { ticket = readReplyControl(WORKSPACE, message.fromPhoneE164); }
+  catch (error) {
+    if (error?.code !== "AI_REPLY_PAUSED") throw error;
+    ticket = { paused: true, revision: "unreadable" };
+  }
+  const originalAt = message.sentAtMs ? new Date(message.sentAtMs).toISOString() : message.observedAt;
+  return replyControlContext.run({ ticket, observedAt: originalAt }, () => handleMessageInner(message, state, session));
+}
+
+async function handleMessageInner(message, state, session) {
   const startedAt = Date.now();
   const key = message.messageId || `${message.fromJid}:${message.observedAt}:${message.text}:${message.fromMe ? "me" : "in"}`;
   if (state.seen.includes(key)) return;
@@ -1335,6 +1379,18 @@ async function handleMessage(message, state, session) {
     return;
   }
   const senderId = message.fromPhoneE164;
+  // Retain every inbound while paused, including media metadata, without generating a reply.
+  try {
+    const context = replyControlContext.getStore();
+    assertReplyAllowed(WORKSPACE, senderId, context?.ticket, context?.observedAt || message.observedAt);
+  } catch (error) {
+    if (error?.code !== "AI_REPLY_PAUSED") throw error;
+    await fs.mkdir(path.join(WORKSPACE, "memory/customer_gateway"), { recursive: true });
+    await fs.appendFile(path.join(WORKSPACE, "memory/customer_gateway/ai_paused_inbound.ndjson"), JSON.stringify({ ...message, retained_at: new Date().toISOString(), reason: error.message }) + "\n");
+    recordInboundForEvidence({ senderId, text: message.text || `[${message.kind || "message"}]`, messageId: message.messageId, observedAt: message.observedAt, messageType: message.kind });
+    await appendActivity("apsales_ai_paused_inbound", `人工暂停中，已保留客户消息 ${senderId}`, "received");
+    return;
+  }
   if (isInternalStaffNumber(senderId, INTERNAL_STAFF_NUMBERS_E164)) {
     log("ignored inbound from internal staff number", {
       senderId,
@@ -1363,7 +1419,7 @@ async function handleMessage(message, state, session) {
   }
 
   // Persist confirmed VIN / part intent so later turns cannot "forget" a VIN the customer already typed.
-  const dealState = await rememberDealFromContext(senderId, mediaContext, text);
+  let dealState = await rememberDealFromContext(senderId, mediaContext, text);
   const inventoryEvidence = await findInventoryEvidence({
     brand: dealState?.brand,
     model: dealState?.model,
@@ -1408,6 +1464,31 @@ async function handleMessage(message, state, session) {
 
   try {
     if (REPLY_BRAIN === "openclaw") {
+      const intent = await runPython({ text }, RULE_INTENT_SCRIPT).then((r) => r.intent).catch(() => "unknown");
+      const scopePatch = conversationScopePatch(intent, dealState, {
+        messageId: message.messageId,
+        at: message.observedAt || new Date().toISOString(),
+      });
+      if (scopePatch) dealState = await saveDealState(senderId, scopePatch);
+      const policy = turnPolicy(intent, dealState);
+      if (policy.route !== "model") {
+        if (policy.route === "retain_only") {
+          await appendActivity("apsales_non_business_retained", `非业务消息不自动销售回复 ${senderId}`, "received");
+          return;
+        }
+        let notified = false;
+        if (policy.route === "human_review") {
+          const request = { customer: senderId, message_id: message.messageId, topic: policy.topic, text, at: new Date().toISOString(), status: "pending" };
+          await fs.mkdir(`${WORKSPACE}/memory/customer_gateway`, { recursive: true });
+          await fs.appendFile(`${WORKSPACE}/memory/customer_gateway/human_review_requests.ndjson`, JSON.stringify(request) + "\n");
+          if (policy.topic === "after_sales") await saveDealState(senderId, { support_review_pending: true });
+          await sendTelegram(`🟡 客户需人工处理（${policy.topic}）\n客户: ${senderId}\n${text.slice(0, 1000)}\n暂停该客户 AI：暂停AI ${senderId}`).then(() => { notified = true; }).catch(() => {});
+        }
+        const reply = routedReply(policy, notified);
+        const result = await sendCustomerText(session, senderId, reply);
+        recordReplyForEvidence({ senderId, text, messageId: message.messageId, observedAt: message.observedAt, messageType: message.kind || "text", originalReply: reply, finalReply: reply, reasonCode: policy.route, outboundWamid: result?.messageId || "", sent: Boolean(result?.messageId) });
+        return;
+      }
       const voiceFail = voiceFailureReply(mediaContext);
       if (voiceFail) {
         const result = await sendCustomerText(session, senderId, voiceFail);
@@ -1809,6 +1890,10 @@ async function handleMessage(message, state, session) {
       await appendActivity("apsales_whatsapp_draft_sent", `客户 ${senderId}: Telegram 草稿已发送，draft=${draft.draft_id || ""}`, "sent");
     }
   } catch (err) {
+    if (err?.code === "AI_REPLY_PAUSED") {
+      await appendActivity("apsales_ai_reply_held", `人工暂停或恢复使旧回复失效 ${senderId}`, "held");
+      return; // A manual stop is not an LLM failure: never send a fallback or retry.
+    }
     const error = err instanceof Error ? err.message : String(err);
     const rawText = err && typeof err === "object" && err.rawText ? String(err.rawText).slice(0, 1000) : undefined;
     log("handler failed", {
@@ -1941,6 +2026,13 @@ async function runQuoteFollowups(session, now) {
     }
     if (!shouldSendQuoteFollowup(deal, now, QUOTE_FOLLOWUP_MS)) continue;
     const senderId = senderIdFromDealFile(name, deal);
+    // Resuming must not revive scheduled follow-ups from before the takeover.
+    try {
+      assertReplyAllowed(WORKSPACE, senderId, null, deal.last_customer_message_at || "");
+    } catch (error) {
+      if (error?.code === "AI_REPLY_PAUSED") continue;
+      throw error;
+    }
     const body = buildQuoteFollowupMessage(deal, new Date(now));
     if (!QUOTE_FOLLOWUP_SEND) {
       if (deal.quote_followup_preview_at) continue;
@@ -1984,6 +2076,17 @@ async function checkDealOpsTimers(session) {
 }
 
 async function main() {
+  humanTakeover = createHumanTakeover({
+    workspace: WORKSPACE,
+    isInternal: (number) => isInternalStaffNumber(number, INTERNAL_STAFF_NUMBERS_E164),
+    pause: (target, messageId) => {
+      const saved = spawnSync(PYTHON, [`${WORKSPACE}/scripts/apsales-ai-control.py`], {
+        input: JSON.stringify({ target, message_id: messageId }), encoding: "utf8", timeout: 5000,
+      });
+      if (saved.status !== 0) throw new Error("human_takeover_persistence_failed");
+      log("human takeover saved", { target, messageId });
+    },
+  });
   let state = await readState();
   log("bridge boot", {
     replyBrain: REPLY_BRAIN,
@@ -2007,6 +2110,9 @@ async function main() {
         authDir: AUTH_DIR,
         connectionTimeoutMs: 45000,
         waitForPendingNotifications: false,
+        onObservedMessage: (message) => humanTakeover.observe(message),
+        beforeSend: checkCustomerSend,
+        noteBotMessage: (id) => humanTakeover.noteBotMessage(id),
       });
       log("listener connected");
       loggedOutAlertSent = false;
