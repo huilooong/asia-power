@@ -277,6 +277,10 @@ def _create_browser(platform: str) -> tuple[Any, Any, Any]:
     else:
         launch_kwargs["viewport"] = {"width": 1280, "height": 900}
     context = pw.chromium.launch_persistent_context(**launch_kwargs)
+    if platform == "facebook":
+        from integrations.social_browser.facebook_host import attach_www_facebook_guard
+
+        attach_www_facebook_guard(context)
     page = context.pages[0] if context.pages else context.new_page()
     return pw, context, page
 

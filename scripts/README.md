@@ -32,6 +32,7 @@ Do not run `High` or `Critical` scripts casually. Any script that sends messages
 | `apsales-growth-autopilot.py` | Cron entry for customer finding and traffic actions | High | Intended scheduled growth | Yes | Keep disabled until outbound gate exists |
 | `apsales-maps-leads-run.py` | Google Maps prospecting fallback when social is blocked/idle | High | Growth ops | Yes | Approval required; cap per run |
 | `apsales-meta-ig-setup.py` | Discover Instagram Business account ID via Meta Graph API | High | Setup only | Yes | Manual setup only |
+| `apsales-meta-page-token.py` | Verify and store Facebook Page Graph API token for agent posting | High | Setup only | Yes | Manual; never commit token |
 | `apsales-record-distribution-action.py` | Log verified distribution actions and notify CEO | Medium | Yes | Yes | Allowed for audit/status logging |
 | `apsales-seed-wave1-test-batch.py` | Register CEO-approved wave1 test batch as pending manual posts | Medium | Historical/batch setup | Yes for now | Keep until batch-001 is closed |
 | `apsales-social-alternate-run.py` | Alternate Facebook/X social actions | Critical | Superseded/experimental | Yes for now | Mark legacy; do not schedule |
