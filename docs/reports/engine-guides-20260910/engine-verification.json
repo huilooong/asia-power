@@ -75,6 +75,21 @@
       "url": "https://cheryisrael.co.il/wp-content/uploads/2022/10/FX-%D7%9E%D7%A4%D7%A8%D7%98-%D7%9E%D7%95%D7%A0%D7%92%D7%A9-20.12.pdf",
       "title": "Chery Israel FX specifications, December 2022",
       "scope": "Manufacturer-market brochure; engine marking visually verified on PDF page 2. No worldwide year range inferred."
+    },
+    "denso-sa": {
+      "url": "https://assets.denso-sales.co.za/production/products/DENSO-Sales-South-Africa-service-parts-catalogue-2026.pdf",
+      "title": "DENSO South Africa service-parts catalogue 2026",
+      "scope": "Selected application rows only; inconsistent rows are excluded. Catalogue coverage does not measure sales."
+    },
+    "gud-sa": {
+      "url": "https://www.gud.co.za/wp-content/uploads/pdftemp/Part_Z226_05237ace2c45a84c5de58fec1a099127.pdf",
+      "title": "GUD South Africa application catalogue Z226",
+      "scope": "2023 catalogue snapshot; component fitment is not complete-engine interchange approval."
+    },
+    "fram-sa": {
+      "url": "https://www.fram.co.za/wp-content/uploads/pdftemp/Part_PH4985a_7f1b9e870ce469ea8f20e0a89bbc9ef8.pdf",
+      "title": "FRAM South Africa application catalogue PH4985a",
+      "scope": "2023 catalogue snapshot; an open date does not mean current production."
     }
   },
   "engines": [
@@ -1945,6 +1960,2957 @@
       "status": "verified_documented_applications",
       "stock": "Confirmation required for each offered unit",
       "extra_sources": []
+    },
+    {
+      "code": "F16D3",
+      "brand": "GM / Chevrolet / Buick",
+      "displacement": "1.6 L",
+      "applications": [
+        {
+          "vehicle": "Buick Excelle",
+          "dates": "07/2010–02/2013",
+          "variant": "1.6 L petrol; confirm original vehicle specification",
+          "market": "China-market application",
+          "source": "mann",
+          "page": 49
+        },
+        {
+          "vehicle": "Buick Excelle HRV",
+          "dates": "10/2004–01/2010",
+          "variant": "1.6 L petrol; confirm original vehicle specification",
+          "market": "China-market application",
+          "source": "mann",
+          "page": 49
+        }
+      ],
+      "buyer_focus": "Compare the full F16D3 code with F16D3D, F16D4 and LDE offers. An Excelle or Cruze badge does not identify the same engine across countries.",
+      "question": "What should I resolve first when comparing F16D3 quotations?",
+      "answer": "Compare the full F16D3 code with F16D3D, F16D4 and LDE offers. An Excelle or Cruze badge does not identify the same engine across countries. Ask the receiving workshop to compare the offered unit with the original engine and record any parts that must transfer.",
+      "status": "verified_documented_applications",
+      "stock": "Confirmation required for each offered unit",
+      "extra_sources": [],
+      "sourcing_note": "China-market applications provide donor-search leads, not proof of regular stock. Confirm the exact code and a specific offered unit before ordering.",
+      "expansion_batch": "africa-20260910"
+    },
+    {
+      "code": "LDE",
+      "brand": "GM / Chevrolet / Buick",
+      "displacement": "1.6 L",
+      "applications": [
+        {
+          "vehicle": "Buick Excelle GT",
+          "dates": "06/2010–03/2015",
+          "variant": "1.6 L petrol; confirm original vehicle specification",
+          "market": "China-market application",
+          "source": "mann",
+          "page": 51
+        },
+        {
+          "vehicle": "Buick Excelle XT",
+          "dates": "01/2010–03/2015",
+          "variant": "1.6 L petrol; confirm original vehicle specification",
+          "market": "China-market application",
+          "source": "mann",
+          "page": 51
+        }
+      ],
+      "buyer_focus": "Separate the 1.6-litre LDE from the 1.8-litre 2H0 and turbocharged LLU sold in related Buick and Chevrolet ranges.",
+      "question": "What should I resolve first when comparing LDE quotations?",
+      "answer": "Separate the 1.6-litre LDE from the 1.8-litre 2H0 and turbocharged LLU sold in related Buick and Chevrolet ranges. Ask the receiving workshop to compare the offered unit with the original engine and record any parts that must transfer.",
+      "status": "verified_documented_applications",
+      "stock": "Confirmation required for each offered unit",
+      "extra_sources": [],
+      "sourcing_note": "China-origin engine or half-cut listings provide a sourcing lead for this code. Reconfirm the actual unit, identity, condition and availability with the seller; a listed record is not a stock audit.",
+      "expansion_batch": "africa-20260910"
+    },
+    {
+      "code": "2H0",
+      "brand": "GM / Chevrolet / Buick",
+      "displacement": "1.8 L",
+      "applications": [
+        {
+          "vehicle": "Buick Excelle GT",
+          "dates": "06/2010–03/2015",
+          "variant": "1.8 L petrol; confirm original vehicle specification",
+          "market": "China-market application",
+          "source": "mann",
+          "page": 51
+        },
+        {
+          "vehicle": "Buick Excelle XT",
+          "dates": "01/2010–12/2011",
+          "variant": "1.8 L petrol; confirm original vehicle specification",
+          "market": "China-market application",
+          "source": "mann",
+          "page": 51
+        },
+        {
+          "vehicle": "Chevrolet Orlando",
+          "dates": "2011 onward; end not stated",
+          "variant": "1.8 L",
+          "market": "South Africa catalogue application; confirm original-market VIN",
+          "source": "denso-sa",
+          "page": 28
+        }
+      ],
+      "buyer_focus": "Read the final character as the digit zero. Quotes written as 2HO need a clear stamping photo before ordering.",
+      "question": "What should I resolve first when comparing 2H0 quotations?",
+      "answer": "Read the final character as the digit zero. Quotes written as 2HO need a clear stamping photo before ordering. Ask the receiving workshop to compare the offered unit with the original engine and record any parts that must transfer.",
+      "status": "verified_documented_applications",
+      "stock": "Confirmation required for each offered unit",
+      "extra_sources": [],
+      "sourcing_note": "China-origin engine or half-cut listings provide a sourcing lead for this code. Reconfirm the actual unit, identity, condition and availability with the seller; a listed record is not a stock audit.",
+      "expansion_batch": "africa-20260910"
+    },
+    {
+      "code": "L2B",
+      "brand": "GM / Chevrolet / Buick",
+      "displacement": "1.5 L",
+      "applications": [
+        {
+          "vehicle": "Baojun 610",
+          "dates": "04/2014 onward; end not stated in 2020 catalogue",
+          "variant": "1.5 L petrol; confirm original vehicle specification",
+          "market": "China-market application",
+          "source": "mann",
+          "page": 33
+        },
+        {
+          "vehicle": "Baojun 730",
+          "dates": "07/2014 onward; end not stated in 2020 catalogue",
+          "variant": "1.5 L petrol; confirm original vehicle specification",
+          "market": "China-market application",
+          "source": "mann",
+          "page": 33
+        },
+        {
+          "vehicle": "Buick Excelle",
+          "dates": "02/2013–08/2016",
+          "variant": "1.5 L petrol; confirm original vehicle specification",
+          "market": "China-market application",
+          "source": "mann",
+          "page": 49
+        },
+        {
+          "vehicle": "Wuling Hongguang",
+          "dates": "08/2013 onward; end not stated in 2020 catalogue",
+          "variant": "1.5 L petrol; confirm original vehicle specification",
+          "market": "China-market application",
+          "source": "mann",
+          "page": 193
+        }
+      ],
+      "buyer_focus": "L2B appears in both passenger cars and vans. Check the donor layout, sump, mounting brackets and gearbox connection for the actual application.",
+      "question": "What should I resolve first when comparing L2B quotations?",
+      "answer": "L2B appears in both passenger cars and vans. Check the donor layout, sump, mounting brackets and gearbox connection for the actual application. Ask the receiving workshop to compare the offered unit with the original engine and record any parts that must transfer.",
+      "status": "verified_documented_applications",
+      "stock": "Confirmation required for each offered unit",
+      "extra_sources": [],
+      "sourcing_note": "China-market applications provide donor-search leads, not proof of regular stock. Confirm the exact code and a specific offered unit before ordering.",
+      "expansion_batch": "africa-20260910"
+    },
+    {
+      "code": "LE5",
+      "brand": "GM / Chevrolet / Buick",
+      "displacement": "2.4 L",
+      "applications": [
+        {
+          "vehicle": "Buick GL8 Luzun",
+          "dates": "11/2011–12/2016",
+          "variant": "2.4 L petrol; confirm original vehicle specification",
+          "market": "China-market application",
+          "source": "mann",
+          "page": 49
+        },
+        {
+          "vehicle": "Buick Regal II",
+          "dates": "12/2008–01/2011",
+          "variant": "2.4 L petrol; confirm original vehicle specification",
+          "market": "China-market application",
+          "source": "mann",
+          "page": 49
+        },
+        {
+          "vehicle": "Buick LaCrosse I",
+          "dates": "03/2006–07/2009",
+          "variant": "2.4 L petrol; confirm original vehicle specification",
+          "market": "China-market application",
+          "source": "mann",
+          "page": 49
+        }
+      ],
+      "buyer_focus": "Do not order a 2.4-litre GM engine by displacement alone. LE5 and LAF listings require separate identification and fuel-system checks.",
+      "question": "What should I resolve first when comparing LE5 quotations?",
+      "answer": "Do not order a 2.4-litre GM engine by displacement alone. LE5 and LAF listings require separate identification and fuel-system checks. Ask the receiving workshop to compare the offered unit with the original engine and record any parts that must transfer.",
+      "status": "verified_documented_applications",
+      "stock": "Confirmation required for each offered unit",
+      "extra_sources": [],
+      "sourcing_note": "China-origin engine or half-cut listings provide a sourcing lead for this code. Reconfirm the actual unit, identity, condition and availability with the seller; a listed record is not a stock audit.",
+      "expansion_batch": "africa-20260910"
+    },
+    {
+      "code": "LAF",
+      "brand": "GM / Chevrolet / Buick",
+      "displacement": "2.4 L",
+      "applications": [
+        {
+          "vehicle": "Buick GL8 S",
+          "dates": "01/2013–11/2016",
+          "variant": "2.4 L petrol; confirm original vehicle specification",
+          "market": "China-market application",
+          "source": "mann",
+          "page": 48
+        },
+        {
+          "vehicle": "Buick Regal II",
+          "dates": "01/2011–03/2015",
+          "variant": "2.4 L petrol; confirm original vehicle specification",
+          "market": "China-market application",
+          "source": "mann",
+          "page": 49
+        },
+        {
+          "vehicle": "Chevrolet Malibu",
+          "dates": "02/2012 onward; end not stated in 2020 catalogue",
+          "variant": "2.4 L petrol; confirm original vehicle specification",
+          "market": "China-market application",
+          "source": "mann",
+          "page": 55
+        }
+      ],
+      "buyer_focus": "An LAF quote should identify the engine and the included fuel-system equipment. An LE5 assembly is not approved merely because both are advertised as GM 2.4.",
+      "question": "What should I resolve first when comparing LAF quotations?",
+      "answer": "An LAF quote should identify the engine and the included fuel-system equipment. An LE5 assembly is not approved merely because both are advertised as GM 2.4. Ask the receiving workshop to compare the offered unit with the original engine and record any parts that must transfer.",
+      "status": "verified_documented_applications",
+      "stock": "Confirmation required for each offered unit",
+      "extra_sources": [],
+      "sourcing_note": "China-market applications provide donor-search leads, not proof of regular stock. Confirm the exact code and a specific offered unit before ordering.",
+      "expansion_batch": "africa-20260910"
+    },
+    {
+      "code": "LTG",
+      "brand": "GM / Chevrolet / Buick",
+      "displacement": "2.0 L",
+      "applications": [
+        {
+          "vehicle": "Buick Regal III",
+          "dates": "07/2017 onward; end not stated in 2020 catalogue",
+          "variant": "2.0 L petrol; confirm original vehicle specification",
+          "market": "China-market application",
+          "source": "mann",
+          "page": 49
+        },
+        {
+          "vehicle": "Buick Envision",
+          "dates": "10/2014 onward; end not stated in 2020 catalogue",
+          "variant": "2.0 L petrol; confirm original vehicle specification",
+          "market": "China-market application",
+          "source": "mann",
+          "page": 50
+        },
+        {
+          "vehicle": "Cadillac ATS-L",
+          "dates": "08/2014 onward; end not stated in 2020 catalogue",
+          "variant": "2.0 L petrol; confirm original vehicle specification",
+          "market": "China-market application",
+          "source": "mann",
+          "page": 52
+        },
+        {
+          "vehicle": "Chevrolet Equinox",
+          "dates": "04/2017 onward; end not stated in 2020 catalogue",
+          "variant": "2.0 L petrol; confirm original vehicle specification",
+          "market": "China-market application",
+          "source": "mann",
+          "page": 55
+        }
+      ],
+      "buyer_focus": "LTG spans different vehicle layouts and calibrations. Specify the recipient chassis and identify the turbo, fuel equipment, sump and electronics included in the package.",
+      "question": "What should I resolve first when comparing LTG quotations?",
+      "answer": "LTG spans different vehicle layouts and calibrations. Specify the recipient chassis and identify the turbo, fuel equipment, sump and electronics included in the package. Ask the receiving workshop to compare the offered unit with the original engine and record any parts that must transfer.",
+      "status": "verified_documented_applications",
+      "stock": "Confirmation required for each offered unit",
+      "extra_sources": [],
+      "sourcing_note": "China-market applications provide donor-search leads, not proof of regular stock. Confirm the exact code and a specific offered unit before ordering.",
+      "expansion_batch": "africa-20260910"
+    },
+    {
+      "code": "LFV",
+      "brand": "GM / Chevrolet / Buick",
+      "displacement": "1.5 L",
+      "applications": [
+        {
+          "vehicle": "Buick Regal III",
+          "dates": "07/2017 onward; end not stated in 2020 catalogue",
+          "variant": "1.5 L petrol; confirm original vehicle specification",
+          "market": "China-market application",
+          "source": "mann",
+          "page": 49
+        },
+        {
+          "vehicle": "Buick LaCrosse III",
+          "dates": "03/2016 onward; end not stated in 2020 catalogue",
+          "variant": "1.5 L petrol; confirm original vehicle specification",
+          "market": "China-market application",
+          "source": "mann",
+          "page": 50
+        }
+      ],
+      "buyer_focus": "Keep the 1.5 turbo LFV separate from naturally aspirated L2B and L3G quotations. Confirm the donor vehicle and emissions equipment.",
+      "question": "What should I resolve first when comparing LFV quotations?",
+      "answer": "Keep the 1.5 turbo LFV separate from naturally aspirated L2B and L3G quotations. Confirm the donor vehicle and emissions equipment. Ask the receiving workshop to compare the offered unit with the original engine and record any parts that must transfer.",
+      "status": "verified_documented_applications",
+      "stock": "Confirmation required for each offered unit",
+      "extra_sources": [],
+      "sourcing_note": "China-market applications provide donor-search leads, not proof of regular stock. Confirm the exact code and a specific offered unit before ordering.",
+      "expansion_batch": "africa-20260910"
+    },
+    {
+      "code": "LLU",
+      "brand": "GM / Chevrolet / Buick",
+      "displacement": "1.6 L",
+      "applications": [
+        {
+          "vehicle": "Buick Regal II",
+          "dates": "09/2009–09/2013",
+          "variant": "1.6 L petrol; confirm original vehicle specification",
+          "market": "China-market application",
+          "source": "mann",
+          "page": 49
+        },
+        {
+          "vehicle": "Buick Regal II",
+          "dates": "09/2013 onward; end not stated in 2020 catalogue",
+          "variant": "1.6 L petrol; confirm original vehicle specification",
+          "market": "China-market application",
+          "source": "mann",
+          "page": 49
+        }
+      ],
+      "buyer_focus": "The catalogue distinguishes LLU turbo versions and dates. Record the precise version rather than treating every Buick 1.6 as an LDE replacement.",
+      "question": "What should I resolve first when comparing LLU quotations?",
+      "answer": "The catalogue distinguishes LLU turbo versions and dates. Record the precise version rather than treating every Buick 1.6 as an LDE replacement. Ask the receiving workshop to compare the offered unit with the original engine and record any parts that must transfer.",
+      "status": "verified_documented_applications",
+      "stock": "Confirmation required for each offered unit",
+      "extra_sources": [],
+      "sourcing_note": "China-market applications provide donor-search leads, not proof of regular stock. Confirm the exact code and a specific offered unit before ordering.",
+      "expansion_batch": "africa-20260910"
+    },
+    {
+      "code": "L3G",
+      "brand": "GM / Chevrolet / Buick",
+      "displacement": "1.5 L",
+      "applications": [
+        {
+          "vehicle": "Buick Verano",
+          "dates": "05/2015 onward; end not stated in 2020 catalogue",
+          "variant": "1.5 L petrol; confirm original vehicle specification",
+          "market": "China-market application",
+          "source": "mann",
+          "page": 50
+        },
+        {
+          "vehicle": "Chevrolet Cruze II",
+          "dates": "08/2014 onward; end not stated in 2020 catalogue",
+          "variant": "1.5 L petrol; confirm original vehicle specification",
+          "market": "China-market application",
+          "source": "mann",
+          "page": 55
+        }
+      ],
+      "buyer_focus": "The same 1.5-litre sales description can conceal L3G and L2B differences. Start with the stamping and original vehicle specification.",
+      "question": "What should I resolve first when comparing L3G quotations?",
+      "answer": "The same 1.5-litre sales description can conceal L3G and L2B differences. Start with the stamping and original vehicle specification. Ask the receiving workshop to compare the offered unit with the original engine and record any parts that must transfer.",
+      "status": "verified_documented_applications",
+      "stock": "Confirmation required for each offered unit",
+      "extra_sources": [],
+      "sourcing_note": "China-market applications provide donor-search leads, not proof of regular stock. Confirm the exact code and a specific offered unit before ordering.",
+      "expansion_batch": "africa-20260910"
+    },
+    {
+      "code": "L95",
+      "brand": "GM / Chevrolet / Buick",
+      "displacement": "1.4 L",
+      "applications": [
+        {
+          "vehicle": "Chevrolet Aveo",
+          "dates": "07/2005–05/2010",
+          "variant": "1.4 L petrol; confirm original vehicle specification",
+          "market": "China-market application",
+          "source": "mann",
+          "page": 54
+        },
+        {
+          "vehicle": "Chevrolet Lova",
+          "dates": "03/2006–07/2011",
+          "variant": "1.4 L petrol; confirm original vehicle specification",
+          "market": "China-market application",
+          "source": "mann",
+          "page": 55
+        }
+      ],
+      "buyer_focus": "L95 is a China-market code in these applications. Do not substitute an overseas Aveo engine code without matching the hardware and part numbers.",
+      "question": "What should I resolve first when comparing L95 quotations?",
+      "answer": "L95 is a China-market code in these applications. Do not substitute an overseas Aveo engine code without matching the hardware and part numbers. Ask the receiving workshop to compare the offered unit with the original engine and record any parts that must transfer.",
+      "status": "verified_documented_applications",
+      "stock": "Confirmation required for each offered unit",
+      "extra_sources": [],
+      "sourcing_note": "China-market applications provide donor-search leads, not proof of regular stock. Confirm the exact code and a specific offered unit before ordering.",
+      "expansion_batch": "africa-20260910"
+    },
+    {
+      "code": "L91",
+      "brand": "GM / Chevrolet / Buick",
+      "displacement": "1.6 L",
+      "applications": [
+        {
+          "vehicle": "Chevrolet Lova",
+          "dates": "01/2006–03/2011",
+          "variant": "1.6 L petrol; confirm original vehicle specification",
+          "market": "China-market application",
+          "source": "mann",
+          "page": 55
+        }
+      ],
+      "buyer_focus": "A Lova or Aveo model name alone is insufficient. Ask the seller to distinguish the 1.6-litre L91 from 1.4-litre L95 stock.",
+      "question": "What should I resolve first when comparing L91 quotations?",
+      "answer": "A Lova or Aveo model name alone is insufficient. Ask the seller to distinguish the 1.6-litre L91 from 1.4-litre L95 stock. Ask the receiving workshop to compare the offered unit with the original engine and record any parts that must transfer.",
+      "status": "verified_documented_applications",
+      "stock": "Confirmation required for each offered unit",
+      "extra_sources": [],
+      "sourcing_note": "China-market applications provide donor-search leads, not proof of regular stock. Confirm the exact code and a specific offered unit before ordering.",
+      "expansion_batch": "africa-20260910"
+    },
+    {
+      "code": "L34",
+      "brand": "GM / Chevrolet / Buick",
+      "displacement": "2.0 L",
+      "applications": [
+        {
+          "vehicle": "Buick Regal I",
+          "dates": "02/2003–12/2008",
+          "variant": "2.0 L petrol; confirm original vehicle specification",
+          "market": "China-market application",
+          "source": "mann",
+          "page": 49
+        },
+        {
+          "vehicle": "Chevrolet Epica",
+          "dates": "04/2006–09/2009",
+          "variant": "2.0 L petrol; confirm original vehicle specification",
+          "market": "China-market application",
+          "source": "mann",
+          "page": 55
+        }
+      ],
+      "buyer_focus": "The Epica catalogue groups L34 with T20SED. A shared application row establishes a purchasing lead, not automatic interchangeability.",
+      "question": "What should I resolve first when comparing L34 quotations?",
+      "answer": "The Epica catalogue groups L34 with T20SED. A shared application row establishes a purchasing lead, not automatic interchangeability. Ask the receiving workshop to compare the offered unit with the original engine and record any parts that must transfer.",
+      "status": "verified_documented_applications",
+      "stock": "Confirmation required for each offered unit",
+      "extra_sources": [],
+      "sourcing_note": "China-origin engine or half-cut listings provide a sourcing lead for this code. Reconfirm the actual unit, identity, condition and availability with the seller; a listed record is not a stock audit.",
+      "expansion_batch": "africa-20260910"
+    },
+    {
+      "code": "LMU",
+      "brand": "GM / Chevrolet / Buick",
+      "displacement": "1.2 L",
+      "applications": [
+        {
+          "vehicle": "Baojun Spark",
+          "dates": "08/2012 onward; end not stated in 2020 catalogue",
+          "variant": "1.2 L petrol; confirm original vehicle specification",
+          "market": "China-market application",
+          "source": "mann",
+          "page": 33
+        },
+        {
+          "vehicle": "Chevrolet Lova",
+          "dates": "12/2008–12/2010",
+          "variant": "1.2 L petrol; confirm original vehicle specification",
+          "market": "China-market application",
+          "source": "mann",
+          "page": 55
+        },
+        {
+          "vehicle": "Chevrolet Aveo",
+          "dates": "2008 onward; end not stated",
+          "variant": "1.2 L",
+          "market": "South Africa catalogue application; confirm original-market VIN",
+          "source": "denso-sa",
+          "page": 27
+        }
+      ],
+      "buyer_focus": "Specify whether the LMU donor is a small passenger car or a van. Verify sump, mounting and accessory arrangements against the vehicle being repaired.",
+      "question": "What should I resolve first when comparing LMU quotations?",
+      "answer": "Specify whether the LMU donor is a small passenger car or a van. Verify sump, mounting and accessory arrangements against the vehicle being repaired. Ask the receiving workshop to compare the offered unit with the original engine and record any parts that must transfer.",
+      "status": "verified_documented_applications",
+      "stock": "Confirmation required for each offered unit",
+      "extra_sources": [],
+      "sourcing_note": "China-origin engine or half-cut listings provide a sourcing lead for this code. Reconfirm the actual unit, identity, condition and availability with the seller; a listed record is not a stock audit.",
+      "expansion_batch": "africa-20260910"
+    },
+    {
+      "code": "LCU",
+      "brand": "GM / Chevrolet / Buick",
+      "displacement": "1.4 L",
+      "applications": [
+        {
+          "vehicle": "Chevrolet Aveo T300",
+          "dates": "05/2011 onward; end not stated in 2020 catalogue",
+          "variant": "1.4 L petrol; confirm original vehicle specification",
+          "market": "China-market application",
+          "source": "mann",
+          "page": 54
+        },
+        {
+          "vehicle": "Chevrolet Sail",
+          "dates": "01/2010–11/2014",
+          "variant": "1.4 L petrol; confirm original vehicle specification",
+          "market": "China-market application",
+          "source": "mann",
+          "page": 56
+        }
+      ],
+      "buyer_focus": "LCU is documented in different Chevrolet platforms. Match the actual assembly and connectors instead of relying on a generic 1.4-litre description.",
+      "question": "What should I resolve first when comparing LCU quotations?",
+      "answer": "LCU is documented in different Chevrolet platforms. Match the actual assembly and connectors instead of relying on a generic 1.4-litre description. Ask the receiving workshop to compare the offered unit with the original engine and record any parts that must transfer.",
+      "status": "verified_documented_applications",
+      "stock": "Confirmation required for each offered unit",
+      "extra_sources": [],
+      "sourcing_note": "China-origin engine or half-cut listings provide a sourcing lead for this code. Reconfirm the actual unit, identity, condition and availability with the seller; a listed record is not a stock audit.",
+      "expansion_batch": "africa-20260910"
+    },
+    {
+      "code": "4G15S",
+      "brand": "Mitsubishi / China-built derivatives",
+      "displacement": "1.5 L",
+      "applications": [
+        {
+          "vehicle": "BYD F3",
+          "dates": "09/2007 onward; end not stated in 2020 catalogue",
+          "variant": "1.5 L petrol; confirm original vehicle specification",
+          "market": "China-market application",
+          "source": "mann",
+          "page": 51
+        },
+        {
+          "vehicle": "BYD F3R",
+          "dates": "09/2007 onward; end not stated in 2020 catalogue",
+          "variant": "1.5 L petrol; confirm original vehicle specification",
+          "market": "China-market application",
+          "source": "mann",
+          "page": 51
+        }
+      ],
+      "buyer_focus": "Retain the S suffix in a 4G15S enquiry. A short 4G15 advertisement can cover a different installation or specification.",
+      "question": "What should I resolve first when comparing 4G15S quotations?",
+      "answer": "Retain the S suffix in a 4G15S enquiry. A short 4G15 advertisement can cover a different installation or specification. Ask the receiving workshop to compare the offered unit with the original engine and record any parts that must transfer.",
+      "status": "verified_documented_applications",
+      "stock": "Confirmation required for each offered unit",
+      "extra_sources": [],
+      "sourcing_note": "China-market applications provide donor-search leads, not proof of regular stock. Confirm the exact code and a specific offered unit before ordering.",
+      "expansion_batch": "africa-20260910"
+    },
+    {
+      "code": "4G18",
+      "brand": "Mitsubishi / China-built derivatives",
+      "displacement": "1.6 L",
+      "applications": [
+        {
+          "vehicle": "BYD F3",
+          "dates": "09/2005 onward; end not stated in 2020 catalogue",
+          "variant": "1.6 L petrol; confirm original vehicle specification",
+          "market": "China-market application",
+          "source": "mann",
+          "page": 51
+        },
+        {
+          "vehicle": "Mitsubishi Lancer",
+          "dates": "05/2006 onward; end not stated in 2020 catalogue",
+          "variant": "1.6 L petrol; confirm original vehicle specification",
+          "market": "China-market application",
+          "source": "mann",
+          "page": 127
+        },
+        {
+          "vehicle": "Brilliance Junjie FRV",
+          "dates": "05/2008–03/2010",
+          "variant": "1.6 L petrol; confirm original vehicle specification",
+          "market": "China-market application",
+          "source": "mann",
+          "page": 194
+        }
+      ],
+      "buyer_focus": "The 4G18 code is documented across several manufacturers. Compare the installed brackets, intake, sump and electrical interfaces for each donor.",
+      "question": "What should I resolve first when comparing 4G18 quotations?",
+      "answer": "The 4G18 code is documented across several manufacturers. Compare the installed brackets, intake, sump and electrical interfaces for each donor. Ask the receiving workshop to compare the offered unit with the original engine and record any parts that must transfer.",
+      "status": "verified_documented_applications",
+      "stock": "Confirmation required for each offered unit",
+      "extra_sources": [],
+      "sourcing_note": "China-market applications provide donor-search leads, not proof of regular stock. Confirm the exact code and a specific offered unit before ordering.",
+      "expansion_batch": "africa-20260910"
+    },
+    {
+      "code": "4G63S4M",
+      "brand": "Mitsubishi / China-built derivatives",
+      "displacement": "2.0 L",
+      "applications": [
+        {
+          "vehicle": "Chery Eastar",
+          "dates": "03/2004–12/2008",
+          "variant": "2.0 L petrol; confirm original vehicle specification",
+          "market": "China-market application",
+          "source": "mann",
+          "page": 53
+        },
+        {
+          "vehicle": "Chery Tiggo T11",
+          "dates": "03/2005–12/2008",
+          "variant": "2.0 L petrol; confirm original vehicle specification",
+          "market": "China-market application",
+          "source": "mann",
+          "page": 54
+        },
+        {
+          "vehicle": "GWM Hover H3",
+          "dates": "05/2009–01/2013",
+          "variant": "2.0 L petrol; confirm original vehicle specification",
+          "market": "China-market application",
+          "source": "mann",
+          "page": 72
+        }
+      ],
+      "buyer_focus": "Use the complete S4M suffix. A generic 4G63 or turbo S4T offer must not be treated as a confirmed replacement.",
+      "question": "What should I resolve first when comparing 4G63S4M quotations?",
+      "answer": "Use the complete S4M suffix. A generic 4G63 or turbo S4T offer must not be treated as a confirmed replacement. Ask the receiving workshop to compare the offered unit with the original engine and record any parts that must transfer.",
+      "status": "verified_documented_applications",
+      "stock": "Confirmation required for each offered unit",
+      "extra_sources": [],
+      "sourcing_note": "China-market applications provide donor-search leads, not proof of regular stock. Confirm the exact code and a specific offered unit before ordering.",
+      "expansion_batch": "africa-20260910"
+    },
+    {
+      "code": "4G64S4M",
+      "brand": "Mitsubishi / China-built derivatives",
+      "displacement": "2.4 L",
+      "applications": [
+        {
+          "vehicle": "Chery Eastar",
+          "dates": "06/2003–12/2007",
+          "variant": "2.4 L petrol; confirm original vehicle specification",
+          "market": "China-market application",
+          "source": "mann",
+          "page": 53
+        },
+        {
+          "vehicle": "Chery Tiggo",
+          "dates": "03/2005–12/2008",
+          "variant": "2.4 L petrol; confirm original vehicle specification",
+          "market": "China-market application",
+          "source": "mann",
+          "page": 54
+        },
+        {
+          "vehicle": "Soueast Delica",
+          "dates": "04/1997–08/2003",
+          "variant": "2.4 L petrol; confirm original vehicle specification",
+          "market": "China-market application",
+          "source": "mann",
+          "page": 64
+        }
+      ],
+      "buyer_focus": "Keep the complete 4G64S4M identity and the donor installation. A common engine family can still have different sump and accessory configurations.",
+      "question": "What should I resolve first when comparing 4G64S4M quotations?",
+      "answer": "Keep the complete 4G64S4M identity and the donor installation. A common engine family can still have different sump and accessory configurations. Ask the receiving workshop to compare the offered unit with the original engine and record any parts that must transfer.",
+      "status": "verified_documented_applications",
+      "stock": "Confirmation required for each offered unit",
+      "extra_sources": [],
+      "sourcing_note": "China-market applications provide donor-search leads, not proof of regular stock. Confirm the exact code and a specific offered unit before ordering.",
+      "expansion_batch": "africa-20260910"
+    },
+    {
+      "code": "4G69S4N",
+      "brand": "Mitsubishi / China-built derivatives",
+      "displacement": "2.4 L",
+      "applications": [
+        {
+          "vehicle": "GWM Hover H3",
+          "dates": "07/2010–06/2012",
+          "variant": "2.4 L petrol; confirm original vehicle specification",
+          "market": "China-market application",
+          "source": "mann",
+          "page": 72
+        },
+        {
+          "vehicle": "GWM Haval H5",
+          "dates": "06/2010 onward; end not stated in 2020 catalogue",
+          "variant": "2.4 L petrol; confirm original vehicle specification",
+          "market": "China-market application",
+          "source": "mann",
+          "page": 72
+        }
+      ],
+      "buyer_focus": "Compare the complete S4N suffix and vehicle application. A seller advertising only 4G69 has not yet established the required replacement version.",
+      "question": "What should I resolve first when comparing 4G69S4N quotations?",
+      "answer": "Compare the complete S4N suffix and vehicle application. A seller advertising only 4G69 has not yet established the required replacement version. Ask the receiving workshop to compare the offered unit with the original engine and record any parts that must transfer.",
+      "status": "verified_documented_applications",
+      "stock": "Confirmation required for each offered unit",
+      "extra_sources": [],
+      "sourcing_note": "China-market applications provide donor-search leads, not proof of regular stock. Confirm the exact code and a specific offered unit before ordering.",
+      "expansion_batch": "africa-20260910"
+    },
+    {
+      "code": "4G63",
+      "brand": "Mitsubishi / China-built derivatives",
+      "displacement": "2.0 L",
+      "applications": [
+        {
+          "vehicle": "Soueast Delica",
+          "dates": "02/1997 onward; end not stated in 2020 catalogue",
+          "variant": "2.0 L petrol; confirm original vehicle specification",
+          "market": "China-market application",
+          "source": "mann",
+          "page": 64
+        },
+        {
+          "vehicle": "Soueast Freeca",
+          "dates": "03/2000–09/2004",
+          "variant": "2.0 L petrol; confirm original vehicle specification",
+          "market": "China-market application",
+          "source": "mann",
+          "page": 64
+        }
+      ],
+      "buyer_focus": "This code covers documented van applications as well as other platforms. Do not use performance-car 4G63 specifications to judge a van engine package.",
+      "question": "What should I resolve first when comparing 4G63 quotations?",
+      "answer": "This code covers documented van applications as well as other platforms. Do not use performance-car 4G63 specifications to judge a van engine package. Ask the receiving workshop to compare the offered unit with the original engine and record any parts that must transfer.",
+      "status": "verified_documented_applications",
+      "stock": "Confirmation required for each offered unit",
+      "extra_sources": [],
+      "sourcing_note": "China-market applications provide donor-search leads, not proof of regular stock. Confirm the exact code and a specific offered unit before ordering.",
+      "expansion_batch": "africa-20260910"
+    },
+    {
+      "code": "4G64",
+      "brand": "Mitsubishi / China-built derivatives",
+      "displacement": "2.4 L",
+      "applications": [
+        {
+          "vehicle": "Soueast Soveran",
+          "dates": "05/2004 onward; end not stated in 2020 catalogue",
+          "variant": "2.4 L petrol; confirm original vehicle specification",
+          "market": "China-market application",
+          "source": "mann",
+          "page": 64
+        },
+        {
+          "vehicle": "Mitsubishi Triton",
+          "dates": "2007–2017",
+          "variant": "2.4 L petrol",
+          "market": "South Africa catalogue application; confirm original-market VIN",
+          "source": "gud-sa",
+          "page": 8
+        }
+      ],
+      "buyer_focus": "A 4G64 assembly needs an installation-specific comparison. Retain any longer suffix on the donor and confirm the original valve-train and fuel-system version.",
+      "question": "What should I resolve first when comparing 4G64 quotations?",
+      "answer": "A 4G64 assembly needs an installation-specific comparison. Retain any longer suffix on the donor and confirm the original valve-train and fuel-system version. Ask the receiving workshop to compare the offered unit with the original engine and record any parts that must transfer.",
+      "status": "verified_documented_applications",
+      "stock": "Confirmation required for each offered unit",
+      "extra_sources": [],
+      "sourcing_note": "China-market applications provide donor-search leads, not proof of regular stock. Confirm the exact code and a specific offered unit before ordering.",
+      "expansion_batch": "africa-20260910"
+    },
+    {
+      "code": "4G69",
+      "brand": "Mitsubishi / China-built derivatives",
+      "displacement": "2.4 L",
+      "applications": [
+        {
+          "vehicle": "BYD M6",
+          "dates": "07/2010 onward; end not stated in 2020 catalogue",
+          "variant": "2.4 L petrol; confirm original vehicle specification",
+          "market": "China-market application",
+          "source": "mann",
+          "page": 52
+        },
+        {
+          "vehicle": "BYD S6",
+          "dates": "05/2011 onward; end not stated in 2020 catalogue",
+          "variant": "2.4 L petrol; confirm original vehicle specification",
+          "market": "China-market application",
+          "source": "mann",
+          "page": 52
+        },
+        {
+          "vehicle": "Mitsubishi Galant",
+          "dates": "09/2006 onward; end not stated in 2020 catalogue",
+          "variant": "2.4 L petrol; confirm original vehicle specification",
+          "market": "China-market application",
+          "source": "mann",
+          "page": 127
+        }
+      ],
+      "buyer_focus": "Mitsubishi and China-built applications share this code label. Confirm the exact valvetrain controls, mounting points and supplied accessories before comparing prices.",
+      "question": "What should I resolve first when comparing 4G69 quotations?",
+      "answer": "Mitsubishi and China-built applications share this code label. Confirm the exact valvetrain controls, mounting points and supplied accessories before comparing prices. Ask the receiving workshop to compare the offered unit with the original engine and record any parts that must transfer.",
+      "status": "verified_documented_applications",
+      "stock": "Confirmation required for each offered unit",
+      "extra_sources": [],
+      "sourcing_note": "China-market applications provide donor-search leads, not proof of regular stock. Confirm the exact code and a specific offered unit before ordering.",
+      "expansion_batch": "africa-20260910"
+    },
+    {
+      "code": "4A91",
+      "brand": "Mitsubishi / China-built derivatives",
+      "displacement": "1.5 L",
+      "applications": [
+        {
+          "vehicle": "Soueast V3",
+          "dates": "01/2009 onward; end not stated in 2020 catalogue",
+          "variant": "1.5 L petrol; confirm original vehicle specification",
+          "market": "China-market application",
+          "source": "mann",
+          "page": 64
+        },
+        {
+          "vehicle": "Mitsubishi Xpander NC1W",
+          "dates": "2021 onward; end not stated in 2023 catalogue",
+          "variant": "1.5 L",
+          "market": "South Africa catalogue application; confirm original-market VIN",
+          "source": "gud-sa",
+          "page": 7
+        }
+      ],
+      "buyer_focus": "A 1.5-litre 4A91 quotation should not be merged with a 1.6-litre 4A92 offer. Confirm the donor vehicle, transmission and electronic interfaces.",
+      "question": "What should I resolve first when comparing 4A91 quotations?",
+      "answer": "A 1.5-litre 4A91 quotation should not be merged with a 1.6-litre 4A92 offer. Confirm the donor vehicle, transmission and electronic interfaces. Ask the receiving workshop to compare the offered unit with the original engine and record any parts that must transfer.",
+      "status": "verified_documented_applications",
+      "stock": "Confirmation required for each offered unit",
+      "extra_sources": [],
+      "sourcing_note": "China-market applications provide donor-search leads, not proof of regular stock. Confirm the exact code and a specific offered unit before ordering.",
+      "expansion_batch": "africa-20260910"
+    },
+    {
+      "code": "4A92",
+      "brand": "Mitsubishi / China-built derivatives",
+      "displacement": "1.6 L",
+      "applications": [
+        {
+          "vehicle": "Mitsubishi ASX",
+          "dates": "11/2012 onward; end not stated in 2020 catalogue",
+          "variant": "1.6 L petrol; confirm original vehicle specification",
+          "market": "China-market application",
+          "source": "mann",
+          "page": 127
+        }
+      ],
+      "buyer_focus": "The documented ASX application is 1.6 litres. Reject an unverified 2.0-litre 4A92 description and request the engine stamping and vehicle specification.",
+      "question": "What should I resolve first when comparing 4A92 quotations?",
+      "answer": "The documented ASX application is 1.6 litres. Reject an unverified 2.0-litre 4A92 description and request the engine stamping and vehicle specification. Ask the receiving workshop to compare the offered unit with the original engine and record any parts that must transfer.",
+      "status": "verified_documented_applications",
+      "stock": "Confirmation required for each offered unit",
+      "extra_sources": [],
+      "sourcing_note": "China-market applications provide donor-search leads, not proof of regular stock. Confirm the exact code and a specific offered unit before ordering.",
+      "expansion_batch": "africa-20260910"
+    },
+    {
+      "code": "4G93",
+      "brand": "Mitsubishi / China-built derivatives",
+      "displacement": "1.8 L",
+      "applications": [
+        {
+          "vehicle": "Dongfeng Fengxing Future",
+          "dates": "12/2007 onward; end not stated in 2020 catalogue",
+          "variant": "1.8 L petrol; confirm original vehicle specification",
+          "market": "China-market application",
+          "source": "mann",
+          "page": 63
+        },
+        {
+          "vehicle": "Mitsubishi Pajero iO H66W",
+          "dates": "03/2001–02/2005",
+          "variant": "1.8 L petrol; confirm original vehicle specification",
+          "market": "China-market application",
+          "source": "mann",
+          "page": 126
+        },
+        {
+          "vehicle": "Mitsubishi Pajero iO",
+          "dates": "1998–2001",
+          "variant": "1.8 L",
+          "market": "South Africa catalogue application; confirm original-market VIN",
+          "source": "gud-sa",
+          "page": 7
+        }
+      ],
+      "buyer_focus": "Do not merge all 4G93 fuel-system variants. Match the installed fuel equipment and electronics to the original vehicle.",
+      "question": "What should I resolve first when comparing 4G93 quotations?",
+      "answer": "Do not merge all 4G93 fuel-system variants. Match the installed fuel equipment and electronics to the original vehicle. Ask the receiving workshop to compare the offered unit with the original engine and record any parts that must transfer.",
+      "status": "verified_documented_applications",
+      "stock": "Confirmation required for each offered unit",
+      "extra_sources": [],
+      "sourcing_note": "China-market applications provide donor-search leads, not proof of regular stock. Confirm the exact code and a specific offered unit before ordering.",
+      "expansion_batch": "africa-20260910"
+    },
+    {
+      "code": "6G72",
+      "brand": "Mitsubishi",
+      "displacement": "3.0 L",
+      "applications": [
+        {
+          "vehicle": "Mitsubishi Pajero II",
+          "dates": "06/1994–05/1997",
+          "variant": "3.0 L petrol; confirm original vehicle specification",
+          "market": "China-market application",
+          "source": "mann",
+          "page": 126
+        },
+        {
+          "vehicle": "Mitsubishi Pajero II",
+          "dates": "06/1997–04/2000",
+          "variant": "3.0 L petrol; confirm original vehicle specification",
+          "market": "China-market application",
+          "source": "mann",
+          "page": 126
+        },
+        {
+          "vehicle": "Mitsubishi Pajero IV V93W",
+          "dates": "03/2007 onward; end not stated in 2020 catalogue",
+          "variant": "3.0 L petrol; confirm original vehicle specification",
+          "market": "China-market application",
+          "source": "mann",
+          "page": 126
+        }
+      ],
+      "buyer_focus": "The catalogue distinguishes 24-valve Pajero applications. Other 6G72 variants require separate checking of cylinder heads, intake and installation.",
+      "question": "What should I resolve first when comparing 6G72 quotations?",
+      "answer": "The catalogue distinguishes 24-valve Pajero applications. Other 6G72 variants require separate checking of cylinder heads, intake and installation. Ask the receiving workshop to compare the offered unit with the original engine and record any parts that must transfer.",
+      "status": "verified_documented_applications",
+      "stock": "Confirmation required for each offered unit",
+      "extra_sources": [],
+      "sourcing_note": "China-origin engine or half-cut listings provide a sourcing lead for this code. Reconfirm the actual unit, identity, condition and availability with the seller; a listed record is not a stock audit.",
+      "expansion_batch": "africa-20260910"
+    },
+    {
+      "code": "JL4G18",
+      "brand": "Geely",
+      "displacement": "1.8 L",
+      "applications": [
+        {
+          "vehicle": "Geely Emgrand EC7",
+          "dates": "07/2009 onward; end not stated in 2020 catalogue",
+          "variant": "1.8 L petrol; confirm original vehicle specification",
+          "market": "China-market application",
+          "source": "mann",
+          "page": 71
+        },
+        {
+          "vehicle": "Geely Vision",
+          "dates": "08/2006–12/2012",
+          "variant": "1.8 L petrol; confirm original vehicle specification",
+          "market": "China-market application",
+          "source": "mann",
+          "page": 72
+        },
+        {
+          "vehicle": "SMA Haijing",
+          "dates": "06/2009 onward; end not stated in 2020 catalogue",
+          "variant": "1.8 L petrol; confirm original vehicle specification",
+          "market": "China-market application",
+          "source": "mann",
+          "page": 156
+        }
+      ],
+      "buyer_focus": "Keep JL4G18 separate from JLC-4G18 and turbo JLE-4G18TD offers. Similar lettering and shared model names do not prove a match.",
+      "question": "What should I resolve first when comparing JL4G18 quotations?",
+      "answer": "Keep JL4G18 separate from JLC-4G18 and turbo JLE-4G18TD offers. Similar lettering and shared model names do not prove a match. Ask the receiving workshop to compare the offered unit with the original engine and record any parts that must transfer.",
+      "status": "verified_documented_applications",
+      "stock": "Confirmation required for each offered unit",
+      "extra_sources": [],
+      "sourcing_note": "China-market applications provide donor-search leads, not proof of regular stock. Confirm the exact code and a specific offered unit before ordering.",
+      "expansion_batch": "africa-20260910"
+    },
+    {
+      "code": "JL4G15D",
+      "brand": "Geely",
+      "displacement": "1.5 L",
+      "applications": [
+        {
+          "vehicle": "Geely Emgrand EC7",
+          "dates": "05/2012 onward; end not stated in 2020 catalogue",
+          "variant": "1.5 L petrol; confirm original vehicle specification",
+          "market": "China-market application",
+          "source": "mann",
+          "page": 71
+        },
+        {
+          "vehicle": "Geely Freedom Warship",
+          "dates": "12/2011 onward; end not stated in 2020 catalogue",
+          "variant": "1.5 L petrol; confirm original vehicle specification",
+          "market": "China-market application",
+          "source": "mann",
+          "page": 72
+        }
+      ],
+      "buyer_focus": "The final D matters. Ask for the stamping when an offer uses only 4G15 or a different Geely prefix.",
+      "question": "What should I resolve first when comparing JL4G15D quotations?",
+      "answer": "The final D matters. Ask for the stamping when an offer uses only 4G15 or a different Geely prefix. Ask the receiving workshop to compare the offered unit with the original engine and record any parts that must transfer.",
+      "status": "verified_documented_applications",
+      "stock": "Confirmation required for each offered unit",
+      "extra_sources": [],
+      "sourcing_note": "China-market applications provide donor-search leads, not proof of regular stock. Confirm the exact code and a specific offered unit before ordering.",
+      "expansion_batch": "africa-20260910"
+    },
+    {
+      "code": "MR479QA",
+      "brand": "Geely",
+      "displacement": "1.5 L",
+      "applications": [
+        {
+          "vehicle": "Geely Kingkong",
+          "dates": "05/2006 onward; end not stated in 2020 catalogue",
+          "variant": "1.5 L petrol; confirm original vehicle specification",
+          "market": "China-market application",
+          "source": "mann",
+          "page": 72
+        },
+        {
+          "vehicle": "Geely Merrie",
+          "dates": "07/2005 onward; end not stated in 2020 catalogue",
+          "variant": "1.5 L petrol; confirm original vehicle specification",
+          "market": "China-market application",
+          "source": "mann",
+          "page": 72
+        }
+      ],
+      "buyer_focus": "The catalogue groups MR479QA with another code in one application. Use donor identification and part numbers to resolve the actual engine rather than assuming equivalence.",
+      "question": "What should I resolve first when comparing MR479QA quotations?",
+      "answer": "The catalogue groups MR479QA with another code in one application. Use donor identification and part numbers to resolve the actual engine rather than assuming equivalence. Ask the receiving workshop to compare the offered unit with the original engine and record any parts that must transfer.",
+      "status": "verified_documented_applications",
+      "stock": "Confirmation required for each offered unit",
+      "extra_sources": [],
+      "sourcing_note": "China-market applications provide donor-search leads, not proof of regular stock. Confirm the exact code and a specific offered unit before ordering.",
+      "expansion_batch": "africa-20260910"
+    },
+    {
+      "code": "JLE-4G18TD",
+      "brand": "Geely",
+      "displacement": "1.8 L",
+      "applications": [
+        {
+          "vehicle": "Geely Borui",
+          "dates": "04/2015 onward; end not stated in 2020 catalogue",
+          "variant": "1.8 L petrol; confirm original vehicle specification",
+          "market": "China-market application",
+          "source": "mann",
+          "page": 71
+        },
+        {
+          "vehicle": "Geely Boyue",
+          "dates": "03/2016 onward; end not stated in 2020 catalogue",
+          "variant": "1.8 L petrol; confirm original vehicle specification",
+          "market": "China-market application",
+          "source": "mann",
+          "page": 71
+        }
+      ],
+      "buyer_focus": "Retain the complete TD ending. TDB and TDC suffixes in other offers require a separate comparison of the engine and its control equipment.",
+      "question": "What should I resolve first when comparing JLE-4G18TD quotations?",
+      "answer": "Retain the complete TD ending. TDB and TDC suffixes in other offers require a separate comparison of the engine and its control equipment. Ask the receiving workshop to compare the offered unit with the original engine and record any parts that must transfer.",
+      "status": "verified_documented_applications",
+      "stock": "Confirmation required for each offered unit",
+      "extra_sources": [],
+      "sourcing_note": "China-market applications provide donor-search leads, not proof of regular stock. Confirm the exact code and a specific offered unit before ordering.",
+      "expansion_batch": "africa-20260910"
+    },
+    {
+      "code": "JLB-4G13T",
+      "brand": "Geely",
+      "displacement": "1.3 L",
+      "applications": [
+        {
+          "vehicle": "Geely Emgrand RS",
+          "dates": "01/2015 onward; end not stated in 2020 catalogue",
+          "variant": "1.3 L petrol; confirm original vehicle specification",
+          "market": "China-market application",
+          "source": "mann",
+          "page": 71
+        },
+        {
+          "vehicle": "Geely Emgrand",
+          "dates": "07/2014 onward; end not stated in 2020 catalogue",
+          "variant": "1.3 L petrol; confirm original vehicle specification",
+          "market": "China-market application",
+          "source": "mann",
+          "page": 71
+        }
+      ],
+      "buyer_focus": "Separate this 1.3 turbo code from the 1.5-litre engines offered in related Emgrand models. Confirm the turbo and fuel equipment included in the quote.",
+      "question": "What should I resolve first when comparing JLB-4G13T quotations?",
+      "answer": "Separate this 1.3 turbo code from the 1.5-litre engines offered in related Emgrand models. Confirm the turbo and fuel equipment included in the quote. Ask the receiving workshop to compare the offered unit with the original engine and record any parts that must transfer.",
+      "status": "verified_documented_applications",
+      "stock": "Confirmation required for each offered unit",
+      "extra_sources": [],
+      "sourcing_note": "China-market applications provide donor-search leads, not proof of regular stock. Confirm the exact code and a specific offered unit before ordering.",
+      "expansion_batch": "africa-20260910"
+    },
+    {
+      "code": "JLY-4G15",
+      "brand": "Geely",
+      "displacement": "1.5 L",
+      "applications": [
+        {
+          "vehicle": "Geely Emgrand RS",
+          "dates": "01/2015 onward; end not stated in 2020 catalogue",
+          "variant": "1.5 L petrol; confirm original vehicle specification",
+          "market": "China-market application",
+          "source": "mann",
+          "page": 71
+        },
+        {
+          "vehicle": "Geely Vision S1",
+          "dates": "11/2017 onward; end not stated in 2020 catalogue",
+          "variant": "1.5 L petrol; confirm original vehicle specification",
+          "market": "China-market application",
+          "source": "mann",
+          "page": 71
+        }
+      ],
+      "buyer_focus": "Read the JLY prefix from the actual stamping. Do not silently convert a handwritten or Greek-letter Geely code into JLY-4G15.",
+      "question": "What should I resolve first when comparing JLY-4G15 quotations?",
+      "answer": "Read the JLY prefix from the actual stamping. Do not silently convert a handwritten or Greek-letter Geely code into JLY-4G15. Ask the receiving workshop to compare the offered unit with the original engine and record any parts that must transfer.",
+      "status": "verified_documented_applications",
+      "stock": "Confirmation required for each offered unit",
+      "extra_sources": [],
+      "sourcing_note": "China-market applications provide donor-search leads, not proof of regular stock. Confirm the exact code and a specific offered unit before ordering.",
+      "expansion_batch": "africa-20260910"
+    },
+    {
+      "code": "SQR372",
+      "brand": "Chery",
+      "displacement": "0.8 L",
+      "applications": [
+        {
+          "vehicle": "Chery QQ3",
+          "dates": "03/2004–01/2012",
+          "variant": "0.8 L petrol; confirm original vehicle specification",
+          "market": "China-market application",
+          "source": "mann",
+          "page": 54
+        },
+        {
+          "vehicle": "Chery QQ3",
+          "dates": "2008 onward; end not stated",
+          "variant": "0.8 L",
+          "market": "South Africa catalogue application; confirm original-market VIN",
+          "source": "denso-sa",
+          "page": 27
+        }
+      ],
+      "buyer_focus": "QQ3 was sold with more than one engine size. Confirm SQR372 directly instead of ordering a generic QQ engine.",
+      "question": "What should I resolve first when comparing SQR372 quotations?",
+      "answer": "QQ3 was sold with more than one engine size. Confirm SQR372 directly instead of ordering a generic QQ engine. Ask the receiving workshop to compare the offered unit with the original engine and record any parts that must transfer.",
+      "status": "verified_documented_applications",
+      "stock": "Confirmation required for each offered unit",
+      "extra_sources": [],
+      "sourcing_note": "China-market applications provide donor-search leads, not proof of regular stock. Confirm the exact code and a specific offered unit before ordering.",
+      "expansion_batch": "africa-20260910"
+    },
+    {
+      "code": "SQR472",
+      "brand": "Chery",
+      "displacement": "1.1 L",
+      "applications": [
+        {
+          "vehicle": "Chery QQ3",
+          "dates": "06/2006–03/2010",
+          "variant": "1.1 L petrol; confirm original vehicle specification",
+          "market": "China-market application",
+          "source": "mann",
+          "page": 54
+        },
+        {
+          "vehicle": "Chery QQ6",
+          "dates": "12/2006 onward; end not stated in 2020 catalogue",
+          "variant": "1.1 L petrol; confirm original vehicle specification",
+          "market": "China-market application",
+          "source": "mann",
+          "page": 54
+        }
+      ],
+      "buyer_focus": "The 1.1-litre SQR472 is not established by a bare SQR description. Keep CAC-SQR472FB and other longer codes separate until verified.",
+      "question": "What should I resolve first when comparing SQR472 quotations?",
+      "answer": "The 1.1-litre SQR472 is not established by a bare SQR description. Keep CAC-SQR472FB and other longer codes separate until verified. Ask the receiving workshop to compare the offered unit with the original engine and record any parts that must transfer.",
+      "status": "verified_documented_applications",
+      "stock": "Confirmation required for each offered unit",
+      "extra_sources": [],
+      "sourcing_note": "China-market applications provide donor-search leads, not proof of regular stock. Confirm the exact code and a specific offered unit before ordering.",
+      "expansion_batch": "africa-20260910"
+    },
+    {
+      "code": "SQR473F",
+      "brand": "Chery",
+      "displacement": "1.3 L",
+      "applications": [
+        {
+          "vehicle": "Chery QQ6",
+          "dates": "06/2006 onward; end not stated in 2020 catalogue",
+          "variant": "1.3 L petrol; confirm original vehicle specification",
+          "market": "China-market application",
+          "source": "mann",
+          "page": 54
+        },
+        {
+          "vehicle": "Chery QQ Me",
+          "dates": "06/2009 onward; end not stated in 2020 catalogue",
+          "variant": "1.3 L petrol; confirm original vehicle specification",
+          "market": "China-market application",
+          "source": "mann",
+          "page": 54
+        }
+      ],
+      "buyer_focus": "Confirm the full SQR473F code and the donor vehicle. A QQ, J1 or export badge needs market-specific checking before inclusion in a purchase order.",
+      "question": "What should I resolve first when comparing SQR473F quotations?",
+      "answer": "Confirm the full SQR473F code and the donor vehicle. A QQ, J1 or export badge needs market-specific checking before inclusion in a purchase order. Ask the receiving workshop to compare the offered unit with the original engine and record any parts that must transfer.",
+      "status": "verified_documented_applications",
+      "stock": "Confirmation required for each offered unit",
+      "extra_sources": [],
+      "sourcing_note": "China-market applications provide donor-search leads, not proof of regular stock. Confirm the exact code and a specific offered unit before ordering.",
+      "expansion_batch": "africa-20260910"
+    },
+    {
+      "code": "SQR477F",
+      "brand": "Chery",
+      "displacement": "1.5 L",
+      "applications": [
+        {
+          "vehicle": "Chery A5",
+          "dates": "06/2009 onward; end not stated in 2020 catalogue",
+          "variant": "1.5 L petrol; confirm original vehicle specification",
+          "market": "China-market application",
+          "source": "mann",
+          "page": 53
+        },
+        {
+          "vehicle": "Chery Fulwin 2",
+          "dates": "10/2009 onward; end not stated in 2020 catalogue",
+          "variant": "1.5 L petrol; confirm original vehicle specification",
+          "market": "China-market application",
+          "source": "mann",
+          "page": 53
+        },
+        {
+          "vehicle": "Chery Qiyun",
+          "dates": "07/2008–05/2010",
+          "variant": "1.5 L petrol; confirm original vehicle specification",
+          "market": "China-market application",
+          "source": "mann",
+          "page": 53
+        },
+        {
+          "vehicle": "Chery J2",
+          "dates": "2013–2017",
+          "variant": "1.5 L",
+          "market": "South Africa catalogue application; confirm original-market VIN",
+          "source": "fram-sa",
+          "page": 1
+        }
+      ],
+      "buyer_focus": "This code has several China-market applications. Match the donor components to the recipient rather than treating every Chery 1.5 as the same engine.",
+      "question": "What should I resolve first when comparing SQR477F quotations?",
+      "answer": "This code has several China-market applications. Match the donor components to the recipient rather than treating every Chery 1.5 as the same engine. Ask the receiving workshop to compare the offered unit with the original engine and record any parts that must transfer.",
+      "status": "verified_documented_applications",
+      "stock": "Confirmation required for each offered unit",
+      "extra_sources": [],
+      "sourcing_note": "China-market applications provide donor-search leads, not proof of regular stock. Confirm the exact code and a specific offered unit before ordering.",
+      "expansion_batch": "africa-20260910"
+    },
+    {
+      "code": "SQR481F",
+      "brand": "Chery",
+      "displacement": "1.6 L",
+      "applications": [
+        {
+          "vehicle": "Chery A5",
+          "dates": "01/2006–12/2012",
+          "variant": "1.6 L petrol; confirm original vehicle specification",
+          "market": "China-market application",
+          "source": "mann",
+          "page": 53
+        },
+        {
+          "vehicle": "Chery Tiggo",
+          "dates": "07/2006–12/2007",
+          "variant": "1.6 L petrol; confirm original vehicle specification",
+          "market": "China-market application",
+          "source": "mann",
+          "page": 54
+        }
+      ],
+      "buyer_focus": "The final F distinguishes this documented 1.6-litre engine from the 1.8-litre SQR481FC. Require a readable suffix in every quotation.",
+      "question": "What should I resolve first when comparing SQR481F quotations?",
+      "answer": "The final F distinguishes this documented 1.6-litre engine from the 1.8-litre SQR481FC. Require a readable suffix in every quotation. Ask the receiving workshop to compare the offered unit with the original engine and record any parts that must transfer.",
+      "status": "verified_documented_applications",
+      "stock": "Confirmation required for each offered unit",
+      "extra_sources": [],
+      "sourcing_note": "China-market applications provide donor-search leads, not proof of regular stock. Confirm the exact code and a specific offered unit before ordering.",
+      "expansion_batch": "africa-20260910"
+    },
+    {
+      "code": "SQR481FC",
+      "brand": "Chery",
+      "displacement": "1.8 L",
+      "applications": [
+        {
+          "vehicle": "Chery A5",
+          "dates": "09/2007–06/2009",
+          "variant": "1.8 L petrol; confirm original vehicle specification",
+          "market": "China-market application",
+          "source": "mann",
+          "page": 53
+        }
+      ],
+      "buyer_focus": "Retain both letters FC. A quotation shortened to SQR481 can conceal the wrong displacement and application.",
+      "question": "What should I resolve first when comparing SQR481FC quotations?",
+      "answer": "Retain both letters FC. A quotation shortened to SQR481 can conceal the wrong displacement and application. Ask the receiving workshop to compare the offered unit with the original engine and record any parts that must transfer.",
+      "status": "verified_documented_applications",
+      "stock": "Confirmation required for each offered unit",
+      "extra_sources": [],
+      "sourcing_note": "China-market applications provide donor-search leads, not proof of regular stock. Confirm the exact code and a specific offered unit before ordering.",
+      "expansion_batch": "africa-20260910"
+    },
+    {
+      "code": "SQR484F",
+      "brand": "Chery",
+      "displacement": "2.0 L",
+      "applications": [
+        {
+          "vehicle": "Chery A5",
+          "dates": "09/2007–12/2012",
+          "variant": "2.0 L petrol; confirm original vehicle specification",
+          "market": "China-market application",
+          "source": "mann",
+          "page": 53
+        },
+        {
+          "vehicle": "Chery Tiggo",
+          "dates": "09/2006–12/2008",
+          "variant": "2.0 L petrol; confirm original vehicle specification",
+          "market": "China-market application",
+          "source": "mann",
+          "page": 54
+        },
+        {
+          "vehicle": "Chery Tiggo 5",
+          "dates": "11/2013 onward; end not stated in 2020 catalogue",
+          "variant": "2.0 L petrol; confirm original vehicle specification",
+          "market": "China-market application",
+          "source": "mann",
+          "page": 54
+        }
+      ],
+      "buyer_focus": "Keep this code separate from later turbocharged Tiggo engines. The model name Tiggo alone cannot establish the original powertrain.",
+      "question": "What should I resolve first when comparing SQR484F quotations?",
+      "answer": "Keep this code separate from later turbocharged Tiggo engines. The model name Tiggo alone cannot establish the original powertrain. Ask the receiving workshop to compare the offered unit with the original engine and record any parts that must transfer.",
+      "status": "verified_documented_applications",
+      "stock": "Confirmation required for each offered unit",
+      "extra_sources": [],
+      "sourcing_note": "China-market applications provide donor-search leads, not proof of regular stock. Confirm the exact code and a specific offered unit before ordering.",
+      "expansion_batch": "africa-20260910"
+    },
+    {
+      "code": "SQRE4G15B",
+      "brand": "Chery",
+      "displacement": "1.5 L",
+      "applications": [
+        {
+          "vehicle": "Chery Arrizo 5",
+          "dates": "03/2016 onward; end not stated in 2020 catalogue",
+          "variant": "1.5 L petrol; confirm original vehicle specification",
+          "market": "China-market application",
+          "source": "mann",
+          "page": 53
+        },
+        {
+          "vehicle": "Chery Tiggo 4 Pro",
+          "dates": "2021 onward; end not stated in 2023 catalogue",
+          "variant": "1.5 L; distinguish turbo E4T15B",
+          "market": "South Africa catalogue application; confirm original-market VIN",
+          "source": "fram-sa",
+          "page": 1
+        }
+      ],
+      "buyer_focus": "Do not confuse E4G15B with E4T15B. Obtain the complete stamping and establish the original induction system before ordering.",
+      "question": "What should I resolve first when comparing SQRE4G15B quotations?",
+      "answer": "Do not confuse E4G15B with E4T15B. Obtain the complete stamping and establish the original induction system before ordering. Ask the receiving workshop to compare the offered unit with the original engine and record any parts that must transfer.",
+      "status": "verified_documented_applications",
+      "stock": "Confirmation required for each offered unit",
+      "extra_sources": [],
+      "sourcing_note": "China-market applications provide donor-search leads, not proof of regular stock. Confirm the exact code and a specific offered unit before ordering.",
+      "expansion_batch": "africa-20260910"
+    },
+    {
+      "code": "JL465Q5",
+      "brand": "Changan",
+      "displacement": "1.0 L",
+      "applications": [
+        {
+          "vehicle": "Changan SC",
+          "dates": "03/1999–07/2000",
+          "variant": "1.0 L petrol; confirm original vehicle specification",
+          "market": "China-market application",
+          "source": "mann",
+          "page": 53
+        },
+        {
+          "vehicle": "Changan Star",
+          "dates": "06/2001 onward; end not stated in 2020 catalogue",
+          "variant": "1.0 L petrol; confirm original vehicle specification",
+          "market": "China-market application",
+          "source": "mann",
+          "page": 53
+        },
+        {
+          "vehicle": "Chana Star",
+          "dates": "2006 onward; end not stated",
+          "variant": "1.0 L",
+          "market": "South Africa catalogue application; confirm original-market VIN",
+          "source": "denso-sa",
+          "page": 27
+        }
+      ],
+      "buyer_focus": "Use the complete Q5 suffix and the documented 1.0-litre application. Broad minivan listings may combine several engines under one advertisement.",
+      "question": "What should I resolve first when comparing JL465Q5 quotations?",
+      "answer": "Use the complete Q5 suffix and the documented 1.0-litre application. Broad minivan listings may combine several engines under one advertisement. Ask the receiving workshop to compare the offered unit with the original engine and record any parts that must transfer.",
+      "status": "verified_documented_applications",
+      "stock": "Confirmation required for each offered unit",
+      "extra_sources": [],
+      "sourcing_note": "China-market applications provide donor-search leads, not proof of regular stock. Confirm the exact code and a specific offered unit before ordering.",
+      "expansion_batch": "africa-20260910"
+    },
+    {
+      "code": "JL474Q",
+      "brand": "Changan",
+      "displacement": "1.3 L",
+      "applications": [
+        {
+          "vehicle": "Changan SC",
+          "dates": "02/1999–06/2001",
+          "variant": "1.3 L petrol; confirm original vehicle specification",
+          "market": "China-market application",
+          "source": "mann",
+          "page": 53
+        },
+        {
+          "vehicle": "Changan Star",
+          "dates": "06/2000 onward; end not stated in 2020 catalogue",
+          "variant": "1.3 L petrol; confirm original vehicle specification",
+          "market": "China-market application",
+          "source": "mann",
+          "page": 53
+        },
+        {
+          "vehicle": "Chana Star",
+          "dates": "2006 onward; end not stated",
+          "variant": "1.3 L",
+          "market": "South Africa catalogue application; confirm original-market VIN",
+          "source": "denso-sa",
+          "page": 27
+        }
+      ],
+      "buyer_focus": "These selected records describe 1.3-litre applications. Conflicting shortened catalogue entries should be resolved from the vehicle and engine plates.",
+      "question": "What should I resolve first when comparing JL474Q quotations?",
+      "answer": "These selected records describe 1.3-litre applications. Conflicting shortened catalogue entries should be resolved from the vehicle and engine plates. Ask the receiving workshop to compare the offered unit with the original engine and record any parts that must transfer.",
+      "status": "verified_documented_applications",
+      "stock": "Confirmation required for each offered unit",
+      "extra_sources": [],
+      "sourcing_note": "China-market applications provide donor-search leads, not proof of regular stock. Confirm the exact code and a specific offered unit before ordering.",
+      "expansion_batch": "africa-20260910"
+    },
+    {
+      "code": "JL475Q7",
+      "brand": "Changan",
+      "displacement": "1.5 L",
+      "applications": [
+        {
+          "vehicle": "Changan Yuexiang",
+          "dates": "01/2009 onward; end not stated in 2020 catalogue",
+          "variant": "1.5 L petrol; confirm original vehicle specification",
+          "market": "China-market application",
+          "source": "mann",
+          "page": 53
+        }
+      ],
+      "buyer_focus": "Retain the Q7 suffix and the recipient vehicle details. Other JL475 variants must be checked independently.",
+      "question": "What should I resolve first when comparing JL475Q7 quotations?",
+      "answer": "Retain the Q7 suffix and the recipient vehicle details. Other JL475 variants must be checked independently. Ask the receiving workshop to compare the offered unit with the original engine and record any parts that must transfer.",
+      "status": "verified_documented_applications",
+      "stock": "Confirmation required for each offered unit",
+      "extra_sources": [],
+      "sourcing_note": "China-market applications provide donor-search leads, not proof of regular stock. Confirm the exact code and a specific offered unit before ordering.",
+      "expansion_batch": "africa-20260910"
+    },
+    {
+      "code": "CAF479Q1",
+      "brand": "Ford",
+      "displacement": "1.5 L",
+      "applications": [
+        {
+          "vehicle": "Ford Escort",
+          "dates": "12/2014 onward; end not stated in 2020 catalogue",
+          "variant": "1.5 L petrol; confirm original vehicle specification",
+          "market": "China-market application",
+          "source": "mann",
+          "page": 70
+        }
+      ],
+      "buyer_focus": "Escort is used for different generations and markets. This article covers the documented China-market CAF479Q1 application, not every global Escort engine.",
+      "question": "What should I resolve first when comparing CAF479Q1 quotations?",
+      "answer": "Escort is used for different generations and markets. This article covers the documented China-market CAF479Q1 application, not every global Escort engine. Ask the receiving workshop to compare the offered unit with the original engine and record any parts that must transfer.",
+      "status": "verified_documented_applications",
+      "stock": "Confirmation required for each offered unit",
+      "extra_sources": [],
+      "sourcing_note": "China-origin engine or half-cut listings provide a sourcing lead for this code. Reconfirm the actual unit, identity, condition and availability with the seller; a listed record is not a stock audit.",
+      "expansion_batch": "africa-20260910"
+    },
+    {
+      "code": "CAF384Q0",
+      "brand": "Ford",
+      "displacement": "1.5 L",
+      "applications": [
+        {
+          "vehicle": "Ford EcoSport",
+          "dates": "09/2017 onward; end not stated in 2020 catalogue",
+          "variant": "1.5 L petrol; confirm original vehicle specification",
+          "market": "China-market application",
+          "source": "mann",
+          "page": 69
+        }
+      ],
+      "buyer_focus": "The trailing zero is part of the code. A supply listing abbreviated to CAF384Q needs a stamping photo before it can be matched to CAF384Q0.",
+      "question": "What should I resolve first when comparing CAF384Q0 quotations?",
+      "answer": "The trailing zero is part of the code. A supply listing abbreviated to CAF384Q needs a stamping photo before it can be matched to CAF384Q0. Ask the receiving workshop to compare the offered unit with the original engine and record any parts that must transfer.",
+      "status": "verified_documented_applications",
+      "stock": "Confirmation required for each offered unit",
+      "extra_sources": [],
+      "sourcing_note": "China-market applications provide donor-search leads, not proof of regular stock. Confirm the exact code and a specific offered unit before ordering.",
+      "expansion_batch": "africa-20260910"
+    },
+    {
+      "code": "CAF488WQ3",
+      "brand": "Ford",
+      "displacement": "2.0 L",
+      "applications": [
+        {
+          "vehicle": "Ford Mondeo III",
+          "dates": "08/2013 onward; end not stated in 2020 catalogue",
+          "variant": "2.0 L petrol; confirm original vehicle specification",
+          "market": "China-market application",
+          "source": "mann",
+          "page": 70
+        }
+      ],
+      "buyer_focus": "EcoBoost is a product name, not a complete engine code. Preserve WQ3 and check the original Mondeo configuration and supplied turbo equipment.",
+      "question": "What should I resolve first when comparing CAF488WQ3 quotations?",
+      "answer": "EcoBoost is a product name, not a complete engine code. Preserve WQ3 and check the original Mondeo configuration and supplied turbo equipment. Ask the receiving workshop to compare the offered unit with the original engine and record any parts that must transfer.",
+      "status": "verified_documented_applications",
+      "stock": "Confirmation required for each offered unit",
+      "extra_sources": [],
+      "sourcing_note": "China-market applications provide donor-search leads, not proof of regular stock. Confirm the exact code and a specific offered unit before ordering.",
+      "expansion_batch": "africa-20260910"
+    },
+    {
+      "code": "LF-DE",
+      "brand": "Mazda / Ford",
+      "displacement": "2.0 L",
+      "applications": [
+        {
+          "vehicle": "Ford Mondeo I",
+          "dates": "05/2003–11/2007",
+          "variant": "2.0 L petrol; confirm original vehicle specification",
+          "market": "China-market application",
+          "source": "mann",
+          "page": 70
+        },
+        {
+          "vehicle": "Ford Mondeo II Zhisheng",
+          "dates": "09/2007–08/2013",
+          "variant": "2.0 L petrol; confirm original vehicle specification",
+          "market": "China-market application",
+          "source": "mann",
+          "page": 70
+        },
+        {
+          "vehicle": "Mazda3",
+          "dates": "02/2006–08/2011",
+          "variant": "2.0 L petrol; confirm original vehicle specification",
+          "market": "China-market application",
+          "source": "mann",
+          "page": 105
+        },
+        {
+          "vehicle": "Mazda3",
+          "dates": "2004–2009",
+          "variant": "2.0 L",
+          "market": "South Africa catalogue application; confirm original-market VIN",
+          "source": "denso-sa",
+          "page": 39
+        },
+        {
+          "vehicle": "Mazda6",
+          "dates": "2003–2005",
+          "variant": "2.0 L",
+          "market": "South Africa catalogue application; confirm original-market VIN",
+          "source": "denso-sa",
+          "page": 39
+        }
+      ],
+      "buyer_focus": "Mazda and Ford applications need installation-specific comparison. Do not merge LF-DE, LF-VE and an advertisement saying only LF.",
+      "question": "What should I resolve first when comparing LF-DE quotations?",
+      "answer": "Mazda and Ford applications need installation-specific comparison. Do not merge LF-DE, LF-VE and an advertisement saying only LF. Ask the receiving workshop to compare the offered unit with the original engine and record any parts that must transfer.",
+      "status": "verified_documented_applications",
+      "stock": "Confirmation required for each offered unit",
+      "extra_sources": [],
+      "sourcing_note": "China-market applications provide donor-search leads, not proof of regular stock. Confirm the exact code and a specific offered unit before ordering.",
+      "expansion_batch": "africa-20260910"
+    },
+    {
+      "code": "ZY-VE",
+      "brand": "Mazda",
+      "displacement": "1.5 L",
+      "applications": [
+        {
+          "vehicle": "Mazda2",
+          "dates": "10/2007 onward; end not stated in 2020 catalogue",
+          "variant": "1.5 L petrol; confirm original vehicle specification",
+          "market": "China-market application",
+          "source": "mann",
+          "page": 104
+        },
+        {
+          "vehicle": "Mazda2",
+          "dates": "2007 onward; end not stated",
+          "variant": "1.5 L",
+          "market": "South Africa catalogue application; confirm original-market VIN",
+          "source": "denso-sa",
+          "page": 39
+        }
+      ],
+      "buyer_focus": "A Mazda2 badge does not distinguish its 1.3- and 1.5-litre engines. Confirm ZY-VE and do not automatically extend the fitment to Ford variants.",
+      "question": "What should I resolve first when comparing ZY-VE quotations?",
+      "answer": "A Mazda2 badge does not distinguish its 1.3- and 1.5-litre engines. Confirm ZY-VE and do not automatically extend the fitment to Ford variants. Ask the receiving workshop to compare the offered unit with the original engine and record any parts that must transfer.",
+      "status": "verified_documented_applications",
+      "stock": "Confirmation required for each offered unit",
+      "extra_sources": [],
+      "sourcing_note": "China-market applications provide donor-search leads, not proof of regular stock. Confirm the exact code and a specific offered unit before ordering.",
+      "expansion_batch": "africa-20260910"
+    },
+    {
+      "code": "TU5JP4",
+      "brand": "Peugeot / Citroen",
+      "displacement": "1.6 L",
+      "applications": [
+        {
+          "vehicle": "Citroen C2",
+          "dates": "10/2006–04/2014",
+          "variant": "1.6 L petrol; confirm original vehicle specification",
+          "market": "China-market application",
+          "source": "mann",
+          "page": 60
+        },
+        {
+          "vehicle": "Citroen Elysee",
+          "dates": "04/2008–07/2014",
+          "variant": "1.6 L petrol; confirm original vehicle specification",
+          "market": "China-market application",
+          "source": "mann",
+          "page": 62
+        },
+        {
+          "vehicle": "Citroen Fukang",
+          "dates": "05/2005–12/2008",
+          "variant": "1.6 L petrol; confirm original vehicle specification",
+          "market": "China-market application",
+          "source": "mann",
+          "page": 62
+        },
+        {
+          "vehicle": "Citroen Berlingo",
+          "dates": "2001 onward; end not stated",
+          "variant": "1.6 L",
+          "market": "South Africa catalogue application; confirm original-market VIN",
+          "source": "denso-sa",
+          "page": 29
+        }
+      ],
+      "buyer_focus": "Check the full technical designation and emissions version. Shared PSA terminology does not establish that every 1.6-litre Peugeot or Citroen assembly interchanges.",
+      "question": "What should I resolve first when comparing TU5JP4 quotations?",
+      "answer": "Check the full technical designation and emissions version. Shared PSA terminology does not establish that every 1.6-litre Peugeot or Citroen assembly interchanges. Ask the receiving workshop to compare the offered unit with the original engine and record any parts that must transfer.",
+      "status": "verified_documented_applications",
+      "stock": "Confirmation required for each offered unit",
+      "extra_sources": [],
+      "sourcing_note": "China-market applications provide donor-search leads, not proof of regular stock. Confirm the exact code and a specific offered unit before ordering.",
+      "expansion_batch": "africa-20260910"
+    },
+    {
+      "code": "NFP",
+      "brand": "Peugeot / Citroen",
+      "displacement": "1.6 L",
+      "applications": [
+        {
+          "vehicle": "Citroen C3-XR",
+          "dates": "12/2014 onward; end not stated in 2020 catalogue",
+          "variant": "1.6 L petrol; confirm original vehicle specification",
+          "market": "China-market application",
+          "source": "mann",
+          "page": 60
+        },
+        {
+          "vehicle": "Citroen C4-Quatre",
+          "dates": "11/2015 onward; end not stated in 2020 catalogue",
+          "variant": "1.6 L petrol; confirm original vehicle specification",
+          "market": "China-market application",
+          "source": "mann",
+          "page": 60
+        },
+        {
+          "vehicle": "Citroen Elysee",
+          "dates": "08/2014 onward; end not stated in 2020 catalogue",
+          "variant": "1.6 L petrol; confirm original vehicle specification",
+          "market": "China-market application",
+          "source": "mann",
+          "page": 62
+        }
+      ],
+      "buyer_focus": "NFP should be identified separately from older NFU and TU5 listings. Confirm the fuel system, control equipment and original vehicle specification.",
+      "question": "What should I resolve first when comparing NFP quotations?",
+      "answer": "NFP should be identified separately from older NFU and TU5 listings. Confirm the fuel system, control equipment and original vehicle specification. Ask the receiving workshop to compare the offered unit with the original engine and record any parts that must transfer.",
+      "status": "verified_documented_applications",
+      "stock": "Confirmation required for each offered unit",
+      "extra_sources": [],
+      "sourcing_note": "China-market applications provide donor-search leads, not proof of regular stock. Confirm the exact code and a specific offered unit before ordering.",
+      "expansion_batch": "africa-20260910"
+    },
+    {
+      "code": "RFN",
+      "brand": "Peugeot / Citroen",
+      "displacement": "2.0 L",
+      "applications": [
+        {
+          "vehicle": "Citroen Xsara Picasso",
+          "dates": "01/2003–04/2010",
+          "variant": "2.0 L petrol; confirm original vehicle specification",
+          "market": "China-market application",
+          "source": "mann",
+          "page": 59
+        },
+        {
+          "vehicle": "Citroen C5",
+          "dates": "11/2009 onward; end not stated in 2020 catalogue",
+          "variant": "2.0 L petrol; confirm original vehicle specification",
+          "market": "China-market application",
+          "source": "mann",
+          "page": 61
+        },
+        {
+          "vehicle": "Citroen C-Quatre",
+          "dates": "06/2009 onward; end not stated in 2020 catalogue",
+          "variant": "2.0 L petrol; confirm original vehicle specification",
+          "market": "China-market application",
+          "source": "mann",
+          "page": 61
+        },
+        {
+          "vehicle": "Citroen C5",
+          "dates": "2001 onward; end not stated",
+          "variant": "2.0 L; catalogue designation EW10J4 / RFN",
+          "market": "South Africa catalogue application; confirm original-market VIN",
+          "source": "denso-sa",
+          "page": 29
+        }
+      ],
+      "buyer_focus": "RFN is not globally unique across manufacturers. This guide concerns PSA petrol applications; a matching short code on another manufacturer's engine is not sufficient.",
+      "question": "What should I resolve first when comparing RFN quotations?",
+      "answer": "RFN is not globally unique across manufacturers. This guide concerns PSA petrol applications; a matching short code on another manufacturer's engine is not sufficient. Ask the receiving workshop to compare the offered unit with the original engine and record any parts that must transfer.",
+      "status": "verified_documented_applications",
+      "stock": "Confirmation required for each offered unit",
+      "extra_sources": [],
+      "sourcing_note": "China-market applications provide donor-search leads, not proof of regular stock. Confirm the exact code and a specific offered unit before ordering.",
+      "expansion_batch": "africa-20260910"
+    },
+    {
+      "code": "BWH",
+      "brand": "Volkswagen / Audi / Skoda",
+      "displacement": "1.6 L",
+      "applications": [
+        {
+          "vehicle": "FAW Besturn B50",
+          "dates": "05/2009–08/2013",
+          "variant": "1.6 L petrol; confirm original vehicle specification",
+          "market": "China-market application",
+          "source": "mann",
+          "page": 65
+        },
+        {
+          "vehicle": "Volkswagen Bora",
+          "dates": "11/2008–06/2010",
+          "variant": "1.6 L petrol; confirm original vehicle specification",
+          "market": "China-market application",
+          "source": "mann",
+          "page": 175
+        },
+        {
+          "vehicle": "Volkswagen Sagitar",
+          "dates": "02/2006–01/2012",
+          "variant": "1.6 L petrol; confirm original vehicle specification",
+          "market": "China-market application",
+          "source": "mann",
+          "page": 178
+        }
+      ],
+      "buyer_focus": "BWH is documented in FAW and Volkswagen applications. Compare installation hardware and electronics, and do not equate it with every EA111 engine.",
+      "question": "What should I resolve first when comparing BWH quotations?",
+      "answer": "BWH is documented in FAW and Volkswagen applications. Compare installation hardware and electronics, and do not equate it with every EA111 engine. Ask the receiving workshop to compare the offered unit with the original engine and record any parts that must transfer.",
+      "status": "verified_documented_applications",
+      "stock": "Confirmation required for each offered unit",
+      "extra_sources": [],
+      "sourcing_note": "China-origin engine or half-cut listings provide a sourcing lead for this code. Reconfirm the actual unit, identity, condition and availability with the seller; a listed record is not a stock audit.",
+      "expansion_batch": "africa-20260910"
+    },
+    {
+      "code": "CEA",
+      "brand": "Volkswagen / Audi / Skoda",
+      "displacement": "1.8 L",
+      "applications": [
+        {
+          "vehicle": "Skoda Superb",
+          "dates": "08/2009–08/2013",
+          "variant": "1.8 L petrol; confirm original vehicle specification",
+          "market": "China-market application",
+          "source": "mann",
+          "page": 156
+        },
+        {
+          "vehicle": "Volkswagen Passat B7",
+          "dates": "04/2011–12/2015",
+          "variant": "1.8 L petrol; confirm original vehicle specification",
+          "market": "China-market application",
+          "source": "mann",
+          "page": 181
+        },
+        {
+          "vehicle": "Volkswagen Tiguan",
+          "dates": "03/2010 onward; end not stated in 2020 catalogue",
+          "variant": "1.8 L petrol; confirm original vehicle specification",
+          "market": "China-market application",
+          "source": "mann",
+          "page": 184
+        }
+      ],
+      "buyer_focus": "EA888 alone is insufficient. Preserve CEA, the original vehicle generation and all additional characters shown on the stamping or parts documentation.",
+      "question": "What should I resolve first when comparing CEA quotations?",
+      "answer": "EA888 alone is insufficient. Preserve CEA, the original vehicle generation and all additional characters shown on the stamping or parts documentation. Ask the receiving workshop to compare the offered unit with the original engine and record any parts that must transfer.",
+      "status": "verified_documented_applications",
+      "stock": "Confirmation required for each offered unit",
+      "extra_sources": [],
+      "sourcing_note": "China-origin engine or half-cut listings provide a sourcing lead for this code. Reconfirm the actual unit, identity, condition and availability with the seller; a listed record is not a stock audit.",
+      "expansion_batch": "africa-20260910"
+    },
+    {
+      "code": "CFB",
+      "brand": "Volkswagen / Audi / Skoda",
+      "displacement": "1.4 L",
+      "applications": [
+        {
+          "vehicle": "Skoda Octavia",
+          "dates": "04/2010–05/2014",
+          "variant": "1.4 L petrol; confirm original vehicle specification",
+          "market": "China-market application",
+          "source": "mann",
+          "page": 155
+        },
+        {
+          "vehicle": "Skoda Superb",
+          "dates": "04/2010–08/2013",
+          "variant": "1.4 L petrol; confirm original vehicle specification",
+          "market": "China-market application",
+          "source": "mann",
+          "page": 156
+        }
+      ],
+      "buyer_focus": "A China-market CFB quotation should not be relabelled as CAXA solely because both are advertised as 1.4 TSI. Compare the complete identification and equipment.",
+      "question": "What should I resolve first when comparing CFB quotations?",
+      "answer": "A China-market CFB quotation should not be relabelled as CAXA solely because both are advertised as 1.4 TSI. Compare the complete identification and equipment. Ask the receiving workshop to compare the offered unit with the original engine and record any parts that must transfer.",
+      "status": "verified_documented_applications",
+      "stock": "Confirmation required for each offered unit",
+      "extra_sources": [],
+      "sourcing_note": "China-origin engine or half-cut listings provide a sourcing lead for this code. Reconfirm the actual unit, identity, condition and availability with the seller; a listed record is not a stock audit.",
+      "expansion_batch": "africa-20260910"
+    },
+    {
+      "code": "CGM",
+      "brand": "Volkswagen / Audi / Skoda",
+      "displacement": "2.0 L",
+      "applications": [
+        {
+          "vehicle": "Skoda Octavia RS",
+          "dates": "04/2010 onward; end not stated in 2020 catalogue",
+          "variant": "2.0 L petrol; confirm original vehicle specification",
+          "market": "China-market application",
+          "source": "mann",
+          "page": 155
+        }
+      ],
+      "buyer_focus": "Keep CGM distinct from similarly named Volkswagen 2.0 turbo engines. The donor generation and original vehicle specification are necessary for a replacement decision.",
+      "question": "What should I resolve first when comparing CGM quotations?",
+      "answer": "Keep CGM distinct from similarly named Volkswagen 2.0 turbo engines. The donor generation and original vehicle specification are necessary for a replacement decision. Ask the receiving workshop to compare the offered unit with the original engine and record any parts that must transfer.",
+      "status": "verified_documented_applications",
+      "stock": "Confirmation required for each offered unit",
+      "extra_sources": [],
+      "sourcing_note": "China-market applications provide donor-search leads, not proof of regular stock. Confirm the exact code and a specific offered unit before ordering.",
+      "expansion_batch": "africa-20260910"
+    },
+    {
+      "code": "CPDA",
+      "brand": "Volkswagen / Audi / Skoda",
+      "displacement": "1.6 L",
+      "applications": [
+        {
+          "vehicle": "Skoda Rapid",
+          "dates": "04/2014 onward; end not stated in 2020 catalogue",
+          "variant": "1.6 L petrol; confirm original vehicle specification",
+          "market": "China-market application",
+          "source": "mann",
+          "page": 155
+        },
+        {
+          "vehicle": "Volkswagen Sagitar",
+          "dates": "03/2015 onward; end not stated in 2020 catalogue",
+          "variant": "1.6 L petrol; confirm original vehicle specification",
+          "market": "China-market application",
+          "source": "mann",
+          "page": 178
+        }
+      ],
+      "buyer_focus": "Use CPDA rather than EA211 alone in the enquiry. A family name covers more engines than the specific 1.6-litre application documented here.",
+      "question": "What should I resolve first when comparing CPDA quotations?",
+      "answer": "Use CPDA rather than EA211 alone in the enquiry. A family name covers more engines than the specific 1.6-litre application documented here. Ask the receiving workshop to compare the offered unit with the original engine and record any parts that must transfer.",
+      "status": "verified_documented_applications",
+      "stock": "Confirmation required for each offered unit",
+      "extra_sources": [],
+      "sourcing_note": "China-market applications provide donor-search leads, not proof of regular stock. Confirm the exact code and a specific offered unit before ordering.",
+      "expansion_batch": "africa-20260910"
+    },
+    {
+      "code": "CSSA",
+      "brand": "Volkswagen / Audi / Skoda",
+      "displacement": "1.4 L",
+      "applications": [
+        {
+          "vehicle": "Skoda Karoq",
+          "dates": "03/2018 onward; end not stated in 2020 catalogue",
+          "variant": "1.4 L petrol; confirm original vehicle specification",
+          "market": "China-market application",
+          "source": "mann",
+          "page": 154
+        },
+        {
+          "vehicle": "Skoda Yeti",
+          "dates": "11/2013 onward; end not stated in 2020 catalogue",
+          "variant": "1.4 L petrol; confirm original vehicle specification",
+          "market": "China-market application",
+          "source": "mann",
+          "page": 156
+        },
+        {
+          "vehicle": "Volkswagen Bora MQB",
+          "dates": "06/2018 onward; end not stated in 2020 catalogue",
+          "variant": "1.4 L petrol; confirm original vehicle specification",
+          "market": "China-market application",
+          "source": "mann",
+          "page": 176
+        }
+      ],
+      "buyer_focus": "CSSA appears in several China-market platforms. A 280 TSI badge is not a substitute for the complete code and vehicle identification.",
+      "question": "What should I resolve first when comparing CSSA quotations?",
+      "answer": "CSSA appears in several China-market platforms. A 280 TSI badge is not a substitute for the complete code and vehicle identification. Ask the receiving workshop to compare the offered unit with the original engine and record any parts that must transfer.",
+      "status": "verified_documented_applications",
+      "stock": "Confirmation required for each offered unit",
+      "extra_sources": [],
+      "sourcing_note": "China-market applications provide donor-search leads, not proof of regular stock. Confirm the exact code and a specific offered unit before ordering.",
+      "expansion_batch": "africa-20260910"
+    },
+    {
+      "code": "DCFA",
+      "brand": "Volkswagen / Audi / Skoda",
+      "displacement": "1.5 L",
+      "applications": [
+        {
+          "vehicle": "Volkswagen Bora",
+          "dates": "10/2017 onward; end not stated in 2020 catalogue",
+          "variant": "1.5 L petrol; confirm original vehicle specification",
+          "market": "China-market application",
+          "source": "mann",
+          "page": 175
+        },
+        {
+          "vehicle": "Volkswagen C-Trek",
+          "dates": "10/2017 onward; end not stated in 2020 catalogue",
+          "variant": "1.5 L petrol; confirm original vehicle specification",
+          "market": "China-market application",
+          "source": "mann",
+          "page": 176
+        }
+      ],
+      "buyer_focus": "A 1.5-litre DCFA engine must be separated from 1.6-litre CPDA offers. Match the original engine code before comparing an apparently similar assembly.",
+      "question": "What should I resolve first when comparing DCFA quotations?",
+      "answer": "A 1.5-litre DCFA engine must be separated from 1.6-litre CPDA offers. Match the original engine code before comparing an apparently similar assembly. Ask the receiving workshop to compare the offered unit with the original engine and record any parts that must transfer.",
+      "status": "verified_documented_applications",
+      "stock": "Confirmation required for each offered unit",
+      "extra_sources": [],
+      "sourcing_note": "China-market applications provide donor-search leads, not proof of regular stock. Confirm the exact code and a specific offered unit before ordering.",
+      "expansion_batch": "africa-20260910"
+    },
+    {
+      "code": "BSE",
+      "brand": "Volkswagen / Audi / Skoda",
+      "displacement": "1.6 L",
+      "applications": [
+        {
+          "vehicle": "Volkswagen Golf V / Golf Plus",
+          "dates": "01/2004–07/2009; catalogue groups engine codes, verify exact version",
+          "variant": "1.6 L petrol; confirm original vehicle specification",
+          "market": "China catalogue — imported-vehicle application",
+          "source": "mann",
+          "page": 186
+        },
+        {
+          "vehicle": "Volkswagen Golf VI / Golf Plus",
+          "dates": "10/2008–11/2012; catalogue groups engine codes, verify exact version",
+          "variant": "1.6 L petrol; confirm original vehicle specification",
+          "market": "China catalogue — imported-vehicle application",
+          "source": "mann",
+          "page": 187
+        }
+      ],
+      "buyer_focus": "The catalogue groups BSE with other codes. It does not prove that every listed code is interchangeable or that China has regular domestic donor supply.",
+      "question": "What should I resolve first when comparing BSE quotations?",
+      "answer": "The catalogue groups BSE with other codes. It does not prove that every listed code is interchangeable or that China has regular domestic donor supply. Ask the receiving workshop to compare the offered unit with the original engine and record any parts that must transfer.",
+      "status": "verified_documented_applications",
+      "stock": "Confirmation required for each offered unit",
+      "extra_sources": [],
+      "sourcing_note": "These imported-vehicle applications do not establish high-volume domestic donor supply in China. Ask for a unit-specific sourcing check before budgeting for shipment.",
+      "expansion_batch": "africa-20260910"
+    },
+    {
+      "code": "CDAA",
+      "brand": "Volkswagen / Audi / Skoda",
+      "displacement": "1.8 L",
+      "applications": [
+        {
+          "vehicle": "Audi TT",
+          "dates": "06/2008 onward; end not stated in 2020 catalogue",
+          "variant": "1.8 L petrol; confirm original vehicle specification",
+          "market": "China catalogue — imported-vehicle application",
+          "source": "mann",
+          "page": 29
+        }
+      ],
+      "buyer_focus": "This is a specific imported-vehicle application in the China catalogue. Confirm actual sourcing and do not substitute the local-market CEA code without a full comparison.",
+      "question": "What should I resolve first when comparing CDAA quotations?",
+      "answer": "This is a specific imported-vehicle application in the China catalogue. Confirm actual sourcing and do not substitute the local-market CEA code without a full comparison. Ask the receiving workshop to compare the offered unit with the original engine and record any parts that must transfer.",
+      "status": "verified_documented_applications",
+      "stock": "Confirmation required for each offered unit",
+      "extra_sources": [],
+      "sourcing_note": "These imported-vehicle applications do not establish high-volume domestic donor supply in China. Ask for a unit-specific sourcing check before budgeting for shipment.",
+      "expansion_batch": "africa-20260910"
+    },
+    {
+      "code": "15E4E",
+      "brand": "MG / Roewe",
+      "displacement": "1.5 L",
+      "applications": [
+        {
+          "vehicle": "MG6",
+          "dates": "11/2017 onward; end not stated in 2020 catalogue",
+          "variant": "1.5 L petrol; confirm original vehicle specification",
+          "market": "China-market application",
+          "source": "mann",
+          "page": 122
+        },
+        {
+          "vehicle": "MG GS",
+          "dates": "03/2015 onward; end not stated in 2020 catalogue",
+          "variant": "1.5 L petrol; confirm original vehicle specification",
+          "market": "China-market application",
+          "source": "mann",
+          "page": 123
+        },
+        {
+          "vehicle": "Roewe RX5",
+          "dates": "07/2016 onward; end not stated in 2020 catalogue",
+          "variant": "1.5 L petrol; confirm original vehicle specification",
+          "market": "China-market application",
+          "source": "mann",
+          "page": 149
+        }
+      ],
+      "buyer_focus": "MG6 and RX5 were sold with different engines over time. Keep 15E4E distinct from naturally aspirated 15S-series and 2.0-litre quotations.",
+      "question": "What should I resolve first when comparing 15E4E quotations?",
+      "answer": "MG6 and RX5 were sold with different engines over time. Keep 15E4E distinct from naturally aspirated 15S-series and 2.0-litre quotations. Ask the receiving workshop to compare the offered unit with the original engine and record any parts that must transfer.",
+      "status": "verified_documented_applications",
+      "stock": "Confirmation required for each offered unit",
+      "extra_sources": [],
+      "sourcing_note": "China-market applications provide donor-search leads, not proof of regular stock. Confirm the exact code and a specific offered unit before ordering.",
+      "expansion_batch": "africa-20260910"
+    },
+    {
+      "code": "18K4G",
+      "brand": "MG / Roewe",
+      "displacement": "1.8 L",
+      "applications": [
+        {
+          "vehicle": "MG6",
+          "dates": "12/2009 onward; end not stated in 2020 catalogue",
+          "variant": "1.8 L petrol; confirm original vehicle specification",
+          "market": "China-market application",
+          "source": "mann",
+          "page": 123
+        },
+        {
+          "vehicle": "Roewe 550",
+          "dates": "06/2008 onward; end not stated in 2020 catalogue",
+          "variant": "1.8 L petrol; confirm original vehicle specification",
+          "market": "China-market application",
+          "source": "mann",
+          "page": 149
+        },
+        {
+          "vehicle": "Roewe 750",
+          "dates": "03/2008 onward; end not stated in 2020 catalogue",
+          "variant": "1.8 L petrol; confirm original vehicle specification",
+          "market": "China-market application",
+          "source": "mann",
+          "page": 149
+        }
+      ],
+      "buyer_focus": "Retain the full 18K4G code. An MG or Roewe 1.8 description can also refer to other engine designations that need separate matching.",
+      "question": "What should I resolve first when comparing 18K4G quotations?",
+      "answer": "Retain the full 18K4G code. An MG or Roewe 1.8 description can also refer to other engine designations that need separate matching. Ask the receiving workshop to compare the offered unit with the original engine and record any parts that must transfer.",
+      "status": "verified_documented_applications",
+      "stock": "Confirmation required for each offered unit",
+      "extra_sources": [],
+      "sourcing_note": "China-market applications provide donor-search leads, not proof of regular stock. Confirm the exact code and a specific offered unit before ordering.",
+      "expansion_batch": "africa-20260910"
+    },
+    {
+      "code": "18L4E",
+      "brand": "MG / Roewe",
+      "displacement": "1.8 L",
+      "applications": [
+        {
+          "vehicle": "Roewe 950",
+          "dates": "07/2015 onward; end not stated in 2020 catalogue",
+          "variant": "1.8 L petrol; confirm original vehicle specification",
+          "market": "China-market application",
+          "source": "mann",
+          "page": 149
+        }
+      ],
+      "buyer_focus": "The L4E and K4G designations must not be merged because they share a nominal 1.8-litre size. Confirm the exact engine and supporting equipment.",
+      "question": "What should I resolve first when comparing 18L4E quotations?",
+      "answer": "The L4E and K4G designations must not be merged because they share a nominal 1.8-litre size. Confirm the exact engine and supporting equipment. Ask the receiving workshop to compare the offered unit with the original engine and record any parts that must transfer.",
+      "status": "verified_documented_applications",
+      "stock": "Confirmation required for each offered unit",
+      "extra_sources": [],
+      "sourcing_note": "China-market applications provide donor-search leads, not proof of regular stock. Confirm the exact code and a specific offered unit before ordering.",
+      "expansion_batch": "africa-20260910"
+    },
+    {
+      "code": "20L4E",
+      "brand": "MG / Roewe",
+      "displacement": "2.0 L",
+      "applications": [
+        {
+          "vehicle": "MG GS",
+          "dates": "03/2015 onward; end not stated in 2020 catalogue",
+          "variant": "2.0 L petrol; confirm original vehicle specification",
+          "market": "China-market application",
+          "source": "mann",
+          "page": 123
+        },
+        {
+          "vehicle": "Roewe 950",
+          "dates": "07/2015 onward; end not stated in 2020 catalogue",
+          "variant": "2.0 L petrol; confirm original vehicle specification",
+          "market": "China-market application",
+          "source": "mann",
+          "page": 149
+        },
+        {
+          "vehicle": "Roewe RX5",
+          "dates": "07/2016 onward; end not stated in 2020 catalogue",
+          "variant": "2.0 L petrol; confirm original vehicle specification",
+          "market": "China-market application",
+          "source": "mann",
+          "page": 149
+        }
+      ],
+      "buyer_focus": "This code spans more than one SAIC model. Check the complete donor specification, turbo equipment and installation before purchasing a bare or complete engine.",
+      "question": "What should I resolve first when comparing 20L4E quotations?",
+      "answer": "This code spans more than one SAIC model. Check the complete donor specification, turbo equipment and installation before purchasing a bare or complete engine. Ask the receiving workshop to compare the offered unit with the original engine and record any parts that must transfer.",
+      "status": "verified_documented_applications",
+      "stock": "Confirmation required for each offered unit",
+      "extra_sources": [],
+      "sourcing_note": "China-market applications provide donor-search leads, not proof of regular stock. Confirm the exact code and a specific offered unit before ordering.",
+      "expansion_batch": "africa-20260910"
+    },
+    {
+      "code": "G13B",
+      "brand": "Suzuki / Changan",
+      "displacement": "1.3 L",
+      "applications": [
+        {
+          "vehicle": "Changan Benben Love",
+          "dates": "11/2006 onward; end not stated in 2020 catalogue",
+          "variant": "1.3 L petrol; confirm original vehicle specification",
+          "market": "China-market application",
+          "source": "mann",
+          "page": 52
+        },
+        {
+          "vehicle": "Suzuki Gazelle",
+          "dates": "01/2001–12/2011",
+          "variant": "1.3 L petrol; confirm original vehicle specification",
+          "market": "China-market application",
+          "source": "mann",
+          "page": 160
+        },
+        {
+          "vehicle": "Suzuki Swift",
+          "dates": "05/2005–03/2013",
+          "variant": "1.3 L petrol; confirm original vehicle specification",
+          "market": "China-market application",
+          "source": "mann",
+          "page": 160
+        }
+      ],
+      "buyer_focus": "Do not use a G13B label to assume one cylinder-head or installation variant. Match the documented China-market vehicle and retain any additional identifiers.",
+      "question": "What should I resolve first when comparing G13B quotations?",
+      "answer": "Do not use a G13B label to assume one cylinder-head or installation variant. Match the documented China-market vehicle and retain any additional identifiers. Ask the receiving workshop to compare the offered unit with the original engine and record any parts that must transfer.",
+      "status": "verified_documented_applications",
+      "stock": "Confirmation required for each offered unit",
+      "extra_sources": [],
+      "sourcing_note": "China-market applications provide donor-search leads, not proof of regular stock. Confirm the exact code and a specific offered unit before ordering.",
+      "expansion_batch": "africa-20260910"
+    },
+    {
+      "code": "M18A",
+      "brand": "Suzuki",
+      "displacement": "1.8 L",
+      "applications": [
+        {
+          "vehicle": "Suzuki SX4",
+          "dates": "04/2009–12/2010",
+          "variant": "1.8 L petrol; confirm original vehicle specification",
+          "market": "China-market application",
+          "source": "mann",
+          "page": 160
+        }
+      ],
+      "buyer_focus": "The SX4 model name also appears with smaller engines. Check M18A explicitly rather than ordering by the badge alone.",
+      "question": "What should I resolve first when comparing M18A quotations?",
+      "answer": "The SX4 model name also appears with smaller engines. Check M18A explicitly rather than ordering by the badge alone. Ask the receiving workshop to compare the offered unit with the original engine and record any parts that must transfer.",
+      "status": "verified_documented_applications",
+      "stock": "Confirmation required for each offered unit",
+      "extra_sources": [],
+      "sourcing_note": "China-market applications provide donor-search leads, not proof of regular stock. Confirm the exact code and a specific offered unit before ordering.",
+      "expansion_batch": "africa-20260910"
+    },
+    {
+      "code": "F10A",
+      "brand": "Suzuki",
+      "displacement": "1.0 L",
+      "applications": [
+        {
+          "vehicle": "Suzuki Wagon R Beidouxing",
+          "dates": "08/1999–07/2004",
+          "variant": "1.0 L petrol; confirm original vehicle specification",
+          "market": "China-market application",
+          "source": "mann",
+          "page": 161
+        }
+      ],
+      "buyer_focus": "F10A and K10A appear in the same model range. Their similar displacement does not establish interchangeable complete engines.",
+      "question": "What should I resolve first when comparing F10A quotations?",
+      "answer": "F10A and K10A appear in the same model range. Their similar displacement does not establish interchangeable complete engines. Ask the receiving workshop to compare the offered unit with the original engine and record any parts that must transfer.",
+      "status": "verified_documented_applications",
+      "stock": "Confirmation required for each offered unit",
+      "extra_sources": [],
+      "sourcing_note": "China-market applications provide donor-search leads, not proof of regular stock. Confirm the exact code and a specific offered unit before ordering.",
+      "expansion_batch": "africa-20260910"
+    },
+    {
+      "code": "K10A",
+      "brand": "Suzuki",
+      "displacement": "1.0 L",
+      "applications": [
+        {
+          "vehicle": "Suzuki Wagon R Beidouxing",
+          "dates": "08/1999–07/2004",
+          "variant": "1.0 L petrol; confirm original vehicle specification",
+          "market": "China-market application",
+          "source": "mann",
+          "page": 161
+        }
+      ],
+      "buyer_focus": "Keep K10A separate from F10A and K10B. Require the complete code and recipient installation details for a replacement quotation.",
+      "question": "What should I resolve first when comparing K10A quotations?",
+      "answer": "Keep K10A separate from F10A and K10B. Require the complete code and recipient installation details for a replacement quotation. Ask the receiving workshop to compare the offered unit with the original engine and record any parts that must transfer.",
+      "status": "verified_documented_applications",
+      "stock": "Confirmation required for each offered unit",
+      "extra_sources": [],
+      "sourcing_note": "China-market applications provide donor-search leads, not proof of regular stock. Confirm the exact code and a specific offered unit before ordering.",
+      "expansion_batch": "africa-20260910"
+    },
+    {
+      "code": "G4FA",
+      "brand": "Hyundai / Kia",
+      "displacement": "1.4 L",
+      "applications": [
+        {
+          "vehicle": "Hyundai Verna",
+          "dates": "08/2010–12/2013",
+          "variant": "1.4 L petrol; confirm original vehicle specification",
+          "market": "China-market application",
+          "source": "mann",
+          "page": 86
+        },
+        {
+          "vehicle": "Hyundai Verna",
+          "dates": "01/2014 onward; end not stated in 2020 catalogue",
+          "variant": "1.4 L petrol; confirm original vehicle specification",
+          "market": "China-market application",
+          "source": "mann",
+          "page": 86
+        },
+        {
+          "vehicle": "Kia K2",
+          "dates": "07/2011 onward; end not stated in 2020 catalogue",
+          "variant": "1.4 L petrol; confirm original vehicle specification",
+          "market": "China-market application",
+          "source": "mann",
+          "page": 93
+        },
+        {
+          "vehicle": "Kia Rio",
+          "dates": "2011 onward; end not stated",
+          "variant": "1.4 L",
+          "market": "South Africa catalogue application; confirm original-market VIN",
+          "source": "denso-sa",
+          "page": 36
+        }
+      ],
+      "buyer_focus": "Distinguish the 1.4-litre G4FA from 1.6-litre G4FC offers, even when both vehicles are sold under the Rio or Accent name.",
+      "question": "What should I resolve first when comparing G4FA quotations?",
+      "answer": "Distinguish the 1.4-litre G4FA from 1.6-litre G4FC offers, even when both vehicles are sold under the Rio or Accent name. Ask the receiving workshop to compare the offered unit with the original engine and record any parts that must transfer.",
+      "status": "verified_documented_applications",
+      "stock": "Confirmation required for each offered unit",
+      "extra_sources": [],
+      "sourcing_note": "China-origin engine or half-cut listings provide a sourcing lead for this code. Reconfirm the actual unit, identity, condition and availability with the seller; a listed record is not a stock audit.",
+      "expansion_batch": "africa-20260910"
+    },
+    {
+      "code": "G4KC",
+      "brand": "Hyundai / Kia",
+      "displacement": "2.4 L",
+      "applications": [
+        {
+          "vehicle": "Hyundai Sonata NF",
+          "dates": "09/2005–12/2008",
+          "variant": "2.4 L petrol; confirm original vehicle specification",
+          "market": "China-market application",
+          "source": "mann",
+          "page": 86
+        }
+      ],
+      "buyer_focus": "Sonata NF has multiple engine choices. Keep G4KC separate from G4KE and other 2.4-litre assemblies unless the exact replacement is confirmed.",
+      "question": "What should I resolve first when comparing G4KC quotations?",
+      "answer": "Sonata NF has multiple engine choices. Keep G4KC separate from G4KE and other 2.4-litre assemblies unless the exact replacement is confirmed. Ask the receiving workshop to compare the offered unit with the original engine and record any parts that must transfer.",
+      "status": "verified_documented_applications",
+      "stock": "Confirmation required for each offered unit",
+      "extra_sources": [],
+      "sourcing_note": "China-origin engine or half-cut listings provide a sourcing lead for this code. Reconfirm the actual unit, identity, condition and availability with the seller; a listed record is not a stock audit.",
+      "expansion_batch": "africa-20260910"
+    },
+    {
+      "code": "G4EE",
+      "brand": "Hyundai / Kia",
+      "displacement": "1.4 L",
+      "applications": [
+        {
+          "vehicle": "Hyundai Accent",
+          "dates": "02/2006–11/2012",
+          "variant": "1.4 L petrol; confirm original vehicle specification",
+          "market": "China-market application",
+          "source": "mann",
+          "page": 84
+        },
+        {
+          "vehicle": "Kia Rio",
+          "dates": "01/2007 onward; end not stated in 2020 catalogue",
+          "variant": "1.4 L petrol; confirm original vehicle specification",
+          "market": "China-market application",
+          "source": "mann",
+          "page": 95
+        },
+        {
+          "vehicle": "Kia Rio",
+          "dates": "2005 onward; end not stated",
+          "variant": "1.4 L",
+          "market": "South Africa catalogue application; confirm original-market VIN",
+          "source": "denso-sa",
+          "page": 36
+        }
+      ],
+      "buyer_focus": "An Accent or Rio badge can cover both G4EE and later engine codes. Use the original engine identity and generation in the enquiry.",
+      "question": "What should I resolve first when comparing G4EE quotations?",
+      "answer": "An Accent or Rio badge can cover both G4EE and later engine codes. Use the original engine identity and generation in the enquiry. Ask the receiving workshop to compare the offered unit with the original engine and record any parts that must transfer.",
+      "status": "verified_documented_applications",
+      "stock": "Confirmation required for each offered unit",
+      "extra_sources": [],
+      "sourcing_note": "China-origin engine or half-cut listings provide a sourcing lead for this code. Reconfirm the actual unit, identity, condition and availability with the seller; a listed record is not a stock audit.",
+      "expansion_batch": "africa-20260910"
+    },
+    {
+      "code": "G4NB",
+      "brand": "Hyundai / Kia",
+      "displacement": "1.8 L",
+      "applications": [
+        {
+          "vehicle": "Hyundai Mistra",
+          "dates": "11/2013 onward; end not stated in 2020 catalogue",
+          "variant": "1.8 L petrol; confirm original vehicle specification",
+          "market": "China-market application",
+          "source": "mann",
+          "page": 85
+        },
+        {
+          "vehicle": "Kia K4",
+          "dates": "09/2014 onward; end not stated in 2020 catalogue",
+          "variant": "1.8 L petrol; confirm original vehicle specification",
+          "market": "China-market application",
+          "source": "mann",
+          "page": 93
+        }
+      ],
+      "buyer_focus": "Do not accept G4NA solely as a similar-looking substitute: these selected G4NB applications are 1.8 litres. Match the original control and installation equipment.",
+      "question": "What should I resolve first when comparing G4NB quotations?",
+      "answer": "Do not accept G4NA solely as a similar-looking substitute: these selected G4NB applications are 1.8 litres. Match the original control and installation equipment. Ask the receiving workshop to compare the offered unit with the original engine and record any parts that must transfer.",
+      "status": "verified_documented_applications",
+      "stock": "Confirmation required for each offered unit",
+      "extra_sources": [],
+      "sourcing_note": "China-market applications provide donor-search leads, not proof of regular stock. Confirm the exact code and a specific offered unit before ordering.",
+      "expansion_batch": "africa-20260910"
+    },
+    {
+      "code": "G4FD",
+      "brand": "Hyundai / Kia",
+      "displacement": "1.6 L",
+      "applications": [
+        {
+          "vehicle": "Hyundai Lingdong",
+          "dates": "03/2016 onward; end not stated in 2020 catalogue",
+          "variant": "1.6 L petrol; confirm original vehicle specification",
+          "market": "China-market application",
+          "source": "mann",
+          "page": 85
+        },
+        {
+          "vehicle": "Hyundai Lingdong",
+          "dates": "03/2016 onward; end not stated in 2020 catalogue",
+          "variant": "1.6 L petrol; confirm original vehicle specification",
+          "market": "China-market application",
+          "source": "mann",
+          "page": 85
+        },
+        {
+          "vehicle": "Kia Sportage",
+          "dates": "2018–2022",
+          "variant": "1.6 L",
+          "market": "South Africa catalogue application; confirm original-market VIN",
+          "source": "denso-sa",
+          "page": 37
+        }
+      ],
+      "buyer_focus": "A 1.6-litre Hyundai quotation requires the complete G4FD code and a fuel-system check. Do not group it with G4FC or turbo G4FJ solely by displacement.",
+      "question": "What should I resolve first when comparing G4FD quotations?",
+      "answer": "A 1.6-litre Hyundai quotation requires the complete G4FD code and a fuel-system check. Do not group it with G4FC or turbo G4FJ solely by displacement. Ask the receiving workshop to compare the offered unit with the original engine and record any parts that must transfer.",
+      "status": "verified_documented_applications",
+      "stock": "Confirmation required for each offered unit",
+      "extra_sources": [],
+      "sourcing_note": "China-market applications provide donor-search leads, not proof of regular stock. Confirm the exact code and a specific offered unit before ordering.",
+      "expansion_batch": "africa-20260910"
+    },
+    {
+      "code": "G4FJ",
+      "brand": "Hyundai / Kia",
+      "displacement": "1.6 L",
+      "applications": [
+        {
+          "vehicle": "Hyundai Encino",
+          "dates": "04/2018 onward; end not stated in 2020 catalogue",
+          "variant": "1.6 L petrol; confirm original vehicle specification",
+          "market": "China-market application",
+          "source": "mann",
+          "page": 84
+        },
+        {
+          "vehicle": "Hyundai ix25",
+          "dates": "09/2016 onward; end not stated in 2020 catalogue",
+          "variant": "1.6 L petrol; confirm original vehicle specification",
+          "market": "China-market application",
+          "source": "mann",
+          "page": 85
+        },
+        {
+          "vehicle": "Kia K4",
+          "dates": "09/2014 onward; end not stated in 2020 catalogue",
+          "variant": "1.6 L petrol; confirm original vehicle specification",
+          "market": "China-market application",
+          "source": "mann",
+          "page": 93
+        }
+      ],
+      "buyer_focus": "For this turbo application, identify whether the quoted assembly includes the turbocharger and fuel equipment. Compare those parts with the original vehicle.",
+      "question": "What should I resolve first when comparing G4FJ quotations?",
+      "answer": "For this turbo application, identify whether the quoted assembly includes the turbocharger and fuel equipment. Compare those parts with the original vehicle. Ask the receiving workshop to compare the offered unit with the original engine and record any parts that must transfer.",
+      "status": "verified_documented_applications",
+      "stock": "Confirmation required for each offered unit",
+      "extra_sources": [],
+      "sourcing_note": "China-market applications provide donor-search leads, not proof of regular stock. Confirm the exact code and a specific offered unit before ordering.",
+      "expansion_batch": "africa-20260910"
+    },
+    {
+      "code": "QR20DE",
+      "brand": "Nissan",
+      "displacement": "2.0 L",
+      "applications": [
+        {
+          "vehicle": "Nissan X-Trail T30",
+          "dates": "07/2001–06/2007",
+          "variant": "2.0 L petrol; confirm original vehicle specification",
+          "market": "China-market application",
+          "source": "mann",
+          "page": 128
+        },
+        {
+          "vehicle": "Nissan Teana J31",
+          "dates": "09/2004–06/2008",
+          "variant": "2.0 L petrol; confirm original vehicle specification",
+          "market": "China-market application",
+          "source": "mann",
+          "page": 130
+        },
+        {
+          "vehicle": "Nissan X-Trail",
+          "dates": "2001 onward; end not stated",
+          "variant": "2.0 L",
+          "market": "South Africa catalogue application; confirm original-market VIN",
+          "source": "denso-sa",
+          "page": 45
+        }
+      ],
+      "buyer_focus": "Keep QR20DE separate from QR25DE and MR20DE. A 2.0-litre Nissan description does not establish the required engine family or installation.",
+      "question": "What should I resolve first when comparing QR20DE quotations?",
+      "answer": "Keep QR20DE separate from QR25DE and MR20DE. A 2.0-litre Nissan description does not establish the required engine family or installation. Ask the receiving workshop to compare the offered unit with the original engine and record any parts that must transfer.",
+      "status": "verified_documented_applications",
+      "stock": "Confirmation required for each offered unit",
+      "extra_sources": [],
+      "sourcing_note": "China-market applications provide donor-search leads, not proof of regular stock. Confirm the exact code and a specific offered unit before ordering.",
+      "expansion_batch": "africa-20260910"
+    },
+    {
+      "code": "MR18DE",
+      "brand": "Nissan",
+      "displacement": "1.8 L",
+      "applications": [
+        {
+          "vehicle": "Nissan Geniss",
+          "dates": "10/2006 onward; end not stated in 2020 catalogue",
+          "variant": "1.8 L petrol; confirm original vehicle specification",
+          "market": "China-market application",
+          "source": "mann",
+          "page": 129
+        },
+        {
+          "vehicle": "Nissan Livina",
+          "dates": "03/2010 onward; end not stated in 2020 catalogue",
+          "variant": "1.8 L petrol; confirm original vehicle specification",
+          "market": "China-market application",
+          "source": "mann",
+          "page": 129
+        },
+        {
+          "vehicle": "Nissan Tiida",
+          "dates": "2008 onward; end not stated",
+          "variant": "1.8 L",
+          "market": "South Africa catalogue application; confirm original-market VIN",
+          "source": "denso-sa",
+          "page": 45
+        }
+      ],
+      "buyer_focus": "The documented 1.8-litre Geniss and Livina applications need their own identification. Do not infer HR16DE fitment from a shared Livina badge.",
+      "question": "What should I resolve first when comparing MR18DE quotations?",
+      "answer": "The documented 1.8-litre Geniss and Livina applications need their own identification. Do not infer HR16DE fitment from a shared Livina badge. Ask the receiving workshop to compare the offered unit with the original engine and record any parts that must transfer.",
+      "status": "verified_documented_applications",
+      "stock": "Confirmation required for each offered unit",
+      "extra_sources": [],
+      "sourcing_note": "China-origin engine or half-cut listings provide a sourcing lead for this code. Reconfirm the actual unit, identity, condition and availability with the seller; a listed record is not a stock audit.",
+      "expansion_batch": "africa-20260910"
+    },
+    {
+      "code": "VQ35DE",
+      "brand": "Nissan / Infiniti",
+      "displacement": "3.5 L",
+      "applications": [
+        {
+          "vehicle": "Nissan Murano",
+          "dates": "09/2011 onward; end not stated in 2020 catalogue",
+          "variant": "3.5 L petrol; confirm original vehicle specification",
+          "market": "China-market application",
+          "source": "mann",
+          "page": 130
+        },
+        {
+          "vehicle": "Nissan Teana J31",
+          "dates": "09/2004–06/2008",
+          "variant": "3.5 L petrol; confirm original vehicle specification",
+          "market": "China-market application",
+          "source": "mann",
+          "page": 131
+        },
+        {
+          "vehicle": "Nissan Teana J32",
+          "dates": "06/2008–11/2010",
+          "variant": "3.5 L petrol; confirm original vehicle specification",
+          "market": "China-market application",
+          "source": "mann",
+          "page": 131
+        }
+      ],
+      "buyer_focus": "A transverse Teana or Murano donor needs a different installation comparison from a sports-car enquiry. Keep VQ35DE separate from VQ35HR.",
+      "question": "What should I resolve first when comparing VQ35DE quotations?",
+      "answer": "A transverse Teana or Murano donor needs a different installation comparison from a sports-car enquiry. Keep VQ35DE separate from VQ35HR. Ask the receiving workshop to compare the offered unit with the original engine and record any parts that must transfer.",
+      "status": "verified_documented_applications",
+      "stock": "Confirmation required for each offered unit",
+      "extra_sources": [],
+      "sourcing_note": "China-market applications provide donor-search leads, not proof of regular stock. Confirm the exact code and a specific offered unit before ordering.",
+      "expansion_batch": "africa-20260910"
+    },
+    {
+      "code": "KA24DE",
+      "brand": "Nissan",
+      "displacement": "2.4 L",
+      "applications": [
+        {
+          "vehicle": "Nissan Paladin",
+          "dates": "02/2003 onward; end not stated in 2020 catalogue",
+          "variant": "2.4 L petrol; confirm original vehicle specification",
+          "market": "China-market application",
+          "source": "mann",
+          "page": 132
+        }
+      ],
+      "buyer_focus": "Retain the DE suffix and match the Paladin installation. A bare KA24 listing does not establish the correct complete engine and accessories.",
+      "question": "What should I resolve first when comparing KA24DE quotations?",
+      "answer": "Retain the DE suffix and match the Paladin installation. A bare KA24 listing does not establish the correct complete engine and accessories. Ask the receiving workshop to compare the offered unit with the original engine and record any parts that must transfer.",
+      "status": "verified_documented_applications",
+      "stock": "Confirmation required for each offered unit",
+      "extra_sources": [],
+      "sourcing_note": "China-market applications provide donor-search leads, not proof of regular stock. Confirm the exact code and a specific offered unit before ordering.",
+      "expansion_batch": "africa-20260910"
+    },
+    {
+      "code": "3RZ-FE",
+      "brand": "Toyota",
+      "displacement": "2.7 L",
+      "applications": [
+        {
+          "vehicle": "Toyota Land Cruiser Prado J9",
+          "dates": "09/2002–08/2004",
+          "variant": "2.7 L petrol; confirm original vehicle specification",
+          "market": "China catalogue — imported-vehicle application",
+          "source": "mann",
+          "page": 162
+        }
+      ],
+      "buyer_focus": "Separate 3RZ-FE from later 2TR-FE offers. China sourcing must be checked per unit rather than inferred from the Prado model name.",
+      "question": "What should I resolve first when comparing 3RZ-FE quotations?",
+      "answer": "Separate 3RZ-FE from later 2TR-FE offers. China sourcing must be checked per unit rather than inferred from the Prado model name. Ask the receiving workshop to compare the offered unit with the original engine and record any parts that must transfer.",
+      "status": "verified_documented_applications",
+      "stock": "Confirmation required for each offered unit",
+      "extra_sources": [],
+      "sourcing_note": "China-origin engine or half-cut listings provide a sourcing lead for this code. Reconfirm the actual unit, identity, condition and availability with the seller; a listed record is not a stock audit.",
+      "expansion_batch": "africa-20260910"
+    },
+    {
+      "code": "2GR-FE",
+      "brand": "Toyota / Lexus",
+      "displacement": "3.5 L",
+      "applications": [
+        {
+          "vehicle": "Toyota Highlander",
+          "dates": "05/2009–05/2012",
+          "variant": "3.5 L petrol; confirm original vehicle specification",
+          "market": "China-market application",
+          "source": "mann",
+          "page": 167
+        },
+        {
+          "vehicle": "Toyota Highlander",
+          "dates": "03/2015 onward; end not stated in 2020 catalogue",
+          "variant": "3.5 L petrol; confirm original vehicle specification",
+          "market": "China-market application",
+          "source": "mann",
+          "page": 167
+        }
+      ],
+      "buyer_focus": "Record the specific Highlander generation and engine package. Do not treat FSE, FKS or FXE suffixes as equivalent to 2GR-FE.",
+      "question": "What should I resolve first when comparing 2GR-FE quotations?",
+      "answer": "Record the specific Highlander generation and engine package. Do not treat FSE, FKS or FXE suffixes as equivalent to 2GR-FE. Ask the receiving workshop to compare the offered unit with the original engine and record any parts that must transfer.",
+      "status": "verified_documented_applications",
+      "stock": "Confirmation required for each offered unit",
+      "extra_sources": [],
+      "sourcing_note": "China-market applications provide donor-search leads, not proof of regular stock. Confirm the exact code and a specific offered unit before ordering.",
+      "expansion_batch": "africa-20260910"
+    },
+    {
+      "code": "2AR-FE",
+      "brand": "Toyota",
+      "displacement": "2.5 L",
+      "applications": [
+        {
+          "vehicle": "Toyota Camry XV50",
+          "dates": "09/2011–09/2017",
+          "variant": "2.5 L petrol; confirm original vehicle specification",
+          "market": "China catalogue — imported-vehicle application",
+          "source": "mann",
+          "page": 161
+        }
+      ],
+      "buyer_focus": "A 2.5-litre China-market Camry may carry a different code. Do not silently substitute 5AR-FE for 2AR-FE when responding to an overseas buyer.",
+      "question": "What should I resolve first when comparing 2AR-FE quotations?",
+      "answer": "A 2.5-litre China-market Camry may carry a different code. Do not silently substitute 5AR-FE for 2AR-FE when responding to an overseas buyer. Ask the receiving workshop to compare the offered unit with the original engine and record any parts that must transfer.",
+      "status": "verified_documented_applications",
+      "stock": "Confirmation required for each offered unit",
+      "extra_sources": [],
+      "sourcing_note": "These imported-vehicle applications do not establish high-volume domestic donor supply in China. Ask for a unit-specific sourcing check before budgeting for shipment.",
+      "expansion_batch": "africa-20260910"
+    },
+    {
+      "code": "1MZ-FE",
+      "brand": "Toyota / Lexus",
+      "displacement": "3.0 L",
+      "applications": [
+        {
+          "vehicle": "Lexus RX300 MCU15",
+          "dates": "10/2000–05/2003",
+          "variant": "3.0 L petrol; confirm original vehicle specification",
+          "market": "China catalogue — imported-vehicle application",
+          "source": "mann",
+          "page": 102
+        },
+        {
+          "vehicle": "Lexus RX300 MCU3",
+          "dates": "05/2003–12/2008",
+          "variant": "3.0 L petrol; confirm original vehicle specification",
+          "market": "China catalogue — imported-vehicle application",
+          "source": "mann",
+          "page": 102
+        },
+        {
+          "vehicle": "Toyota Camry XV30",
+          "dates": "11/2001–12/2005",
+          "variant": "3.0 L petrol; confirm original vehicle specification",
+          "market": "China catalogue — imported-vehicle application",
+          "source": "mann",
+          "page": 161
+        }
+      ],
+      "buyer_focus": "Record whether the original 1MZ-FE installation uses VVT-i and match the complete intake and control equipment. A generic 3.0 V6 label is inadequate.",
+      "question": "What should I resolve first when comparing 1MZ-FE quotations?",
+      "answer": "Record whether the original 1MZ-FE installation uses VVT-i and match the complete intake and control equipment. A generic 3.0 V6 label is inadequate. Ask the receiving workshop to compare the offered unit with the original engine and record any parts that must transfer.",
+      "status": "verified_documented_applications",
+      "stock": "Confirmation required for each offered unit",
+      "extra_sources": [],
+      "sourcing_note": "These imported-vehicle applications do not establish high-volume domestic donor supply in China. Ask for a unit-specific sourcing check before budgeting for shipment.",
+      "expansion_batch": "africa-20260910"
+    },
+    {
+      "code": "2ZR-FXE",
+      "brand": "Toyota / Lexus",
+      "displacement": "1.8 L",
+      "applications": [
+        {
+          "vehicle": "Lexus CT200h ZWA10",
+          "dates": "03/2011 onward; end not stated in 2020 catalogue",
+          "variant": "1.8 L petrol; confirm original vehicle specification",
+          "market": "China catalogue — imported-vehicle application",
+          "source": "mann",
+          "page": 100
+        }
+      ],
+      "buyer_focus": "This is the petrol combustion engine in a hybrid application. The quotation must distinguish the engine from the motor, inverter and hybrid transmission.",
+      "question": "What should I resolve first when comparing 2ZR-FXE quotations?",
+      "answer": "This is the petrol combustion engine in a hybrid application. The quotation must distinguish the engine from the motor, inverter and hybrid transmission. Ask the receiving workshop to compare the offered unit with the original engine and record any parts that must transfer.",
+      "status": "verified_documented_applications",
+      "stock": "Confirmation required for each offered unit",
+      "extra_sources": [],
+      "sourcing_note": "China-origin engine or half-cut listings provide a sourcing lead for this code. Reconfirm the actual unit, identity, condition and availability with the seller; a listed record is not a stock audit.",
+      "expansion_batch": "africa-20260910"
+    },
+    {
+      "code": "K20A7",
+      "brand": "Honda",
+      "displacement": "2.0 L",
+      "applications": [
+        {
+          "vehicle": "Honda Accord",
+          "dates": "01/2003–12/2007",
+          "variant": "2.0 L petrol; confirm original vehicle specification",
+          "market": "China-market application",
+          "source": "mann",
+          "page": 79
+        },
+        {
+          "vehicle": "Honda Accord",
+          "dates": "Exact engine-specific year range requires VIN confirmation",
+          "variant": "2.0 L petrol; confirm original vehicle specification",
+          "market": "China-market application",
+          "source": "mann",
+          "page": 79
+        }
+      ],
+      "buyer_focus": "The A7 suffix is required. Other K20A variants and a generic Honda 2.0 listing cannot establish the correct replacement for this application.",
+      "question": "What should I resolve first when comparing K20A7 quotations?",
+      "answer": "The A7 suffix is required. Other K20A variants and a generic Honda 2.0 listing cannot establish the correct replacement for this application. Ask the receiving workshop to compare the offered unit with the original engine and record any parts that must transfer.",
+      "status": "verified_documented_applications",
+      "stock": "Confirmation required for each offered unit",
+      "extra_sources": [],
+      "sourcing_note": "China-origin engine or half-cut listings provide a sourcing lead for this code. Reconfirm the actual unit, identity, condition and availability with the seller; a listed record is not a stock audit.",
+      "expansion_batch": "africa-20260910"
+    },
+    {
+      "code": "N52B30A",
+      "brand": "BMW",
+      "displacement": "3.0 L",
+      "applications": [
+        {
+          "vehicle": "BMW X5 E70",
+          "dates": "02/2007–06/2010; catalogue groups engine codes, verify exact version",
+          "variant": "3.0 L petrol; confirm original vehicle specification",
+          "market": "China catalogue — imported-vehicle application",
+          "source": "mann",
+          "page": 44
+        }
+      ],
+      "buyer_focus": "The catalogue groups N52B30A with another suffix. Match the actual stamping, donor chassis and electronics instead of treating all N52 3.0 engines alike.",
+      "question": "What should I resolve first when comparing N52B30A quotations?",
+      "answer": "The catalogue groups N52B30A with another suffix. Match the actual stamping, donor chassis and electronics instead of treating all N52 3.0 engines alike. Ask the receiving workshop to compare the offered unit with the original engine and record any parts that must transfer.",
+      "status": "verified_documented_applications",
+      "stock": "Confirmation required for each offered unit",
+      "extra_sources": [],
+      "sourcing_note": "China-origin engine or half-cut listings provide a sourcing lead for this code. Reconfirm the actual unit, identity, condition and availability with the seller; a listed record is not a stock audit.",
+      "expansion_batch": "africa-20260910"
+    },
+    {
+      "code": "M271.820",
+      "brand": "Mercedes-Benz",
+      "displacement": "1.8 L",
+      "applications": [
+        {
+          "vehicle": "Mercedes-Benz C180 CGI W204",
+          "dates": "11/2009–12/2014",
+          "variant": "1.8 L petrol; confirm original vehicle specification",
+          "market": "China catalogue — imported-vehicle application",
+          "source": "mann",
+          "page": 107
+        },
+        {
+          "vehicle": "Mercedes-Benz C200 CGI W204",
+          "dates": "09/2009–12/2014; catalogue groups engine codes, verify exact version",
+          "variant": "1.8 L petrol; confirm original vehicle specification",
+          "market": "China catalogue — imported-vehicle application",
+          "source": "mann",
+          "page": 108
+        }
+      ],
+      "buyer_focus": "Use the full numeric suffix. CGI and other M271 applications require separate identification; a family-only quote is not sufficient.",
+      "question": "What should I resolve first when comparing M271.820 quotations?",
+      "answer": "Use the full numeric suffix. CGI and other M271 applications require separate identification; a family-only quote is not sufficient. Ask the receiving workshop to compare the offered unit with the original engine and record any parts that must transfer.",
+      "status": "verified_documented_applications",
+      "stock": "Confirmation required for each offered unit",
+      "extra_sources": [],
+      "sourcing_note": "China-origin engine or half-cut listings provide a sourcing lead for this code. Reconfirm the actual unit, identity, condition and availability with the seller; a listed record is not a stock audit.",
+      "expansion_batch": "africa-20260910"
+    },
+    {
+      "code": "M272.967",
+      "brand": "Mercedes-Benz",
+      "displacement": "3.5 L",
+      "applications": [
+        {
+          "vehicle": "Mercedes-Benz R350 W251",
+          "dates": "09/2005 onward; end not stated in 2020 catalogue",
+          "variant": "3.5 L petrol; confirm original vehicle specification",
+          "market": "China catalogue — imported-vehicle application",
+          "source": "mann",
+          "page": 115
+        }
+      ],
+      "buyer_focus": "The .967 suffix identifies a documented R-Class application. A seller offering a generic M272 V6 still needs to prove installation compatibility.",
+      "question": "What should I resolve first when comparing M272.967 quotations?",
+      "answer": "The .967 suffix identifies a documented R-Class application. A seller offering a generic M272 V6 still needs to prove installation compatibility. Ask the receiving workshop to compare the offered unit with the original engine and record any parts that must transfer.",
+      "status": "verified_documented_applications",
+      "stock": "Confirmation required for each offered unit",
+      "extra_sources": [],
+      "sourcing_note": "China-origin engine or half-cut listings provide a sourcing lead for this code. Reconfirm the actual unit, identity, condition and availability with the seller; a listed record is not a stock audit.",
+      "expansion_batch": "africa-20260910"
+    },
+    {
+      "code": "M274.920",
+      "brand": "Mercedes-Benz",
+      "displacement": "2.0 L",
+      "applications": [
+        {
+          "vehicle": "Mercedes-Benz C200 W205",
+          "dates": "03/2014 onward; end not stated in 2020 catalogue",
+          "variant": "2.0 L petrol; confirm original vehicle specification",
+          "market": "China catalogue — imported-vehicle application",
+          "source": "mann",
+          "page": 108
+        },
+        {
+          "vehicle": "Mercedes-Benz C300 W205",
+          "dates": "04/2015–07/2018",
+          "variant": "2.0 L petrol; confirm original vehicle specification",
+          "market": "China catalogue — imported-vehicle application",
+          "source": "mann",
+          "page": 108
+        }
+      ],
+      "buyer_focus": "Both the full suffix and vehicle specification matter. C200 and C300 catalogue entries do not establish identical calibration or complete package contents.",
+      "question": "What should I resolve first when comparing M274.920 quotations?",
+      "answer": "Both the full suffix and vehicle specification matter. C200 and C300 catalogue entries do not establish identical calibration or complete package contents. Ask the receiving workshop to compare the offered unit with the original engine and record any parts that must transfer.",
+      "status": "verified_documented_applications",
+      "stock": "Confirmation required for each offered unit",
+      "extra_sources": [],
+      "sourcing_note": "These imported-vehicle applications do not establish high-volume domestic donor supply in China. Ask for a unit-specific sourcing check before budgeting for shipment.",
+      "expansion_batch": "africa-20260910"
     }
   ],
   "normalization": {
@@ -1953,5 +4919,11 @@
   "removed": [
     "1NZ-FE",
     "3ZR-FE"
-  ]
+  ],
+  "expansion": {
+    "date": "2026-09-10",
+    "added_codes": 89,
+    "source": "docs/reports/engine-africa-expansion-20260910/reviewed-source-rows.json",
+    "note": "Country application evidence and China supply leads are separate; no continent-wide best-seller claim."
+  }
 }

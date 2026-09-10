@@ -1,0 +1,92 @@
+{
+  "ngk": {
+    "url": "https://www.ngkntk.com/fileadmin/user_upload/ngk-spark-plug_catalogue_sparkplugsglowplugs_2021-2022.pdf",
+    "title": "NGK application catalogue 2021–2022",
+    "scope": "Multi-market aftermarket catalogue; a part application is not an engine interchange approval."
+  },
+  "mann": {
+    "url": "https://www.mann-filter.com/content/dam/website/mann-filter/mann-filter-com/china/download--hub/%E6%9B%BC%E7%89%8C%E4%B9%98%E7%94%A8%E8%BD%A6%E4%BA%A7%E5%93%81%E5%BA%94%E7%94%A8%E4%B8%BB%E7%9B%AE%E5%BD%952020.pdf",
+    "title": "MANN-FILTER China application catalogue 2020",
+    "scope": "China-market catalogue, including imported vehicles. Dates describe listed applications, not every trim."
+  },
+  "denso": {
+    "url": "https://am.denso.com/plug-global/wp-content/uploads/sites/23/catalog_3_asia_2024.pdf",
+    "title": "DENSO Asia application catalogue 2024",
+    "scope": "Market-specific sections; blank year cells do not establish a production range."
+  },
+  "denso-cooling": {
+    "url": "https://assets.denso-am.eu/production/attachments/Engine-Cooling-Catalogue-Multilingual.pdf",
+    "title": "DENSO Engine Cooling catalogue",
+    "scope": "Component application table; not engine interchange approval."
+  },
+  "qin": {
+    "url": "https://www.byd.com/material/domestic-official/user-manual/dynasty/2026款秦PLUS%20DM-i用户手册20260120.pdf",
+    "title": "BYD 2026 Qin PLUS DM-i owner manual",
+    "scope": "Only the documented vehicle version; publication date is not automatically model year."
+  },
+  "qinl": {
+    "url": "https://www.byd.com/material/domestic-official/user-manual/dynasty/2026款秦L%20DM-i用户手册20260417.pdf",
+    "title": "BYD 2026 Qin L DM-i owner manual",
+    "scope": "Only the documented vehicle version; publication date is not automatically model year."
+  },
+  "hanl": {
+    "url": "https://www.byd.com/material/domestic-official/user-manual/dynasty/汉L%20DM-i用户手册1104.pdf",
+    "title": "BYD Han L DM-i owner manual",
+    "scope": "Only the documented vehicle version; publication date is not automatically model year."
+  },
+  "han": {
+    "url": "https://www.byd.com/material/domestic-official/user-manual/dynasty/汉DM-i智驾版-长续航版%20用户手册20260410.pdf",
+    "title": "BYD Han DM-i intelligent-driving long-range owner manual",
+    "scope": "Only the documented vehicle version; publication date is not automatically model year."
+  },
+  "gwm-h6": {
+    "url": "https://www.gwm-global.com/news_detail-2942.html",
+    "title": "GWM Haval H6 powertrain announcement, 2018",
+    "scope": "Only the documented vehicle version; publication date is not automatically model year."
+  },
+  "chery-tiggo": {
+    "url": "https://cheryauto.co.za/models/tiggo/",
+    "title": "Chery South Africa Tiggo specifications",
+    "scope": "Only the documented vehicle version; publication date is not automatically model year."
+  },
+  "jetour-pk": {
+    "url": "https://jetour.com.pk/media/2025/02/Jetour-X70-Plus-Brochure_27-Nov-2024_Curved.pdf",
+    "title": "Jetour Pakistan X70 Plus brochure",
+    "scope": "Only the documented vehicle version; publication date is not automatically model year."
+  },
+  "jetour-jc1": {
+    "url": "https://storage.mtender.gov.md/get/861e9df4-a584-4a9a-9a1d-855e08a25870-1730729966168",
+    "title": "Chery Commercial Vehicle Jetour JC1 homologation document",
+    "scope": "Only the documented vehicle version; publication date is not automatically model year."
+  },
+  "jetour-t1": {
+    "url": "https://www.jetouruae.com/static/pdfs/jetour-t1-2025my-21.01.2025-1.pdf",
+    "title": "Jetour UAE T1 2025MY specifications",
+    "scope": "Only the documented vehicle version; publication date is not automatically model year."
+  },
+  "jetour-sa": {
+    "url": "https://jetour.co.za/wp-content/uploads/2024/09/Jetour-X70-Plus-Brochure-1.pdf",
+    "title": "Jetour South Africa X70 Plus brochure, September 2024",
+    "scope": "Momentum and Deluxe configurations. Publication date does not establish model year."
+  },
+  "chery-fx": {
+    "url": "https://cheryisrael.co.il/wp-content/uploads/2022/10/FX-%D7%9E%D7%A4%D7%A8%D7%98-%D7%9E%D7%95%D7%A0%D7%92%D7%A9-20.12.pdf",
+    "title": "Chery Israel FX specifications, December 2022",
+    "scope": "Manufacturer-market brochure; engine marking visually verified on PDF page 2. No worldwide year range inferred."
+  },
+  "denso-sa": {
+    "url": "https://assets.denso-sales.co.za/production/products/DENSO-Sales-South-Africa-service-parts-catalogue-2026.pdf",
+    "title": "DENSO South Africa service-parts catalogue 2026",
+    "scope": "Selected application rows only; inconsistent rows are excluded. Catalogue coverage does not measure sales."
+  },
+  "gud-sa": {
+    "url": "https://www.gud.co.za/wp-content/uploads/pdftemp/Part_Z226_05237ace2c45a84c5de58fec1a099127.pdf",
+    "title": "GUD South Africa application catalogue Z226",
+    "scope": "2023 catalogue snapshot; component fitment is not complete-engine interchange approval."
+  },
+  "fram-sa": {
+    "url": "https://www.fram.co.za/wp-content/uploads/pdftemp/Part_PH4985a_7f1b9e870ce469ea8f20e0a89bbc9ef8.pdf",
+    "title": "FRAM South Africa application catalogue PH4985a",
+    "scope": "2023 catalogue snapshot; an open date does not mean current production."
+  }
+}

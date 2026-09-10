@@ -1,0 +1,1272 @@
+{
+  "F16D3": [
+    {
+      "page": 49,
+      "vehicle": "Buick Excelle",
+      "application_dates_raw": "07/10-02/13",
+      "engine_row": "1.6L                   F16D3     81 (110)   07/10-02/13"
+    },
+    {
+      "page": 49,
+      "vehicle": "Buick Excelle HRV",
+      "application_dates_raw": "10/04-01/10",
+      "engine_row": "1.6L                   F16D3     78 (106)   10/04-01/10"
+    }
+  ],
+  "LDE": [
+    {
+      "page": 51,
+      "vehicle": "Buick Excelle GT",
+      "application_dates_raw": "06/10-03/15",
+      "engine_row": "1.6L                   LDE         89 (121)   06/10-03/15"
+    },
+    {
+      "page": 51,
+      "vehicle": "Buick Excelle XT",
+      "application_dates_raw": "01/10-03/15",
+      "engine_row": "1.6L                   LDE         89 (121)   01/10-03/15"
+    }
+  ],
+  "2H0": [
+    {
+      "page": 51,
+      "vehicle": "Buick Excelle GT",
+      "application_dates_raw": "06/10-03/15",
+      "engine_row": "1.8L                   2H0        108 (146)   06/10-03/15"
+    },
+    {
+      "page": 51,
+      "vehicle": "Buick Excelle XT",
+      "application_dates_raw": "01/10-12/11",
+      "engine_row": "1.8L                   2H0        108 (146)   01/10-12/11"
+    }
+  ],
+  "L2B": [
+    {
+      "page": 33,
+      "vehicle": "Baojun 610",
+      "application_dates_raw": "04/14 Þ",
+      "engine_row": "1.5L                               L2B           82 (112)     04/14 Þ"
+    },
+    {
+      "page": 33,
+      "vehicle": "Baojun 730",
+      "application_dates_raw": "07/14 Þ",
+      "engine_row": "1.5L                               L2B           82 (112)     07/14 Þ"
+    },
+    {
+      "page": 49,
+      "vehicle": "Buick Excelle",
+      "application_dates_raw": "02/13-08/16",
+      "engine_row": "1.5L                   L2B       83 (113)   02/13-08/16"
+    },
+    {
+      "page": 193,
+      "vehicle": "Wuling Hongguang",
+      "application_dates_raw": "08/13 Þ",
+      "engine_row": "1.5L                    L2B           82 (111)     08/13 Þ"
+    }
+  ],
+  "LE5": [
+    {
+      "page": 49,
+      "vehicle": "Buick GL8 Luzun",
+      "application_dates_raw": "11/11-12/16",
+      "engine_row": "2.4L                   LE5      123 (167)   11/11-12/16"
+    },
+    {
+      "page": 49,
+      "vehicle": "Buick Regal II",
+      "application_dates_raw": "12/08-01/11",
+      "engine_row": "2.4L                   LE5      127 (173)   12/08-01/11"
+    },
+    {
+      "page": 49,
+      "vehicle": "Buick LaCrosse I",
+      "application_dates_raw": "03/06-07/09",
+      "engine_row": "2.4L                   LE5      125 (170)   03/06-07/09"
+    }
+  ],
+  "LAF": [
+    {
+      "page": 48,
+      "vehicle": "Buick GL8 S",
+      "application_dates_raw": "01/13-11/16",
+      "engine_row": "2.4L SIDI                 LAF          137 (186)   01/13-11/16"
+    },
+    {
+      "page": 49,
+      "vehicle": "Buick Regal II",
+      "application_dates_raw": "01/11-03/15",
+      "engine_row": "2.4L                   LAF      137 (186)   01/11-03/15"
+    },
+    {
+      "page": 55,
+      "vehicle": "Chevrolet Malibu",
+      "application_dates_raw": "02/12 Þ",
+      "engine_row": "2.4L               LAF            137 (186)     02/12 Þ"
+    }
+  ],
+  "LTG": [
+    {
+      "page": 49,
+      "vehicle": "Buick Regal III",
+      "application_dates_raw": "07/17 Þ",
+      "engine_row": "2.0T                   LTG      192 (261)     07/17 Þ"
+    },
+    {
+      "page": 50,
+      "vehicle": "Buick Envision",
+      "application_dates_raw": "10/14 Þ",
+      "engine_row": "2.0T                  LTG       191 (260)     10/14 Þ"
+    },
+    {
+      "page": 52,
+      "vehicle": "Cadillac ATS-L",
+      "application_dates_raw": "08/14 Þ",
+      "engine_row": "2.0T                    LTG         169 (230)     08/14 Þ"
+    },
+    {
+      "page": 55,
+      "vehicle": "Chevrolet Equinox",
+      "application_dates_raw": "04/17 Þ",
+      "engine_row": "550T                LTG           191 (260)     04/17 Þ"
+    }
+  ],
+  "LFV": [
+    {
+      "page": 49,
+      "vehicle": "Buick Regal III",
+      "application_dates_raw": "07/17 Þ",
+      "engine_row": "1.5T                   LFV      125 (170)     07/17 Þ"
+    },
+    {
+      "page": 50,
+      "vehicle": "Buick LaCrosse III",
+      "application_dates_raw": "03/16 Þ",
+      "engine_row": "1.5T                  LFV       125 (170)     03/16 Þ"
+    }
+  ],
+  "LLU": [
+    {
+      "page": 49,
+      "vehicle": "Buick Regal II",
+      "application_dates_raw": "09/09-09/13",
+      "engine_row": "1.6T                   LLU      132 (178)   09/09-09/13"
+    },
+    {
+      "page": 49,
+      "vehicle": "Buick Regal II",
+      "application_dates_raw": "09/13 Þ",
+      "engine_row": "1.6Turbo               LLU      135 (184)     09/13 Þ"
+    }
+  ],
+  "L3G": [
+    {
+      "page": 50,
+      "vehicle": "Buick Verano",
+      "application_dates_raw": "05/15 Þ",
+      "engine_row": "1.5L                  L3G        87 (118)     05/15 Þ"
+    },
+    {
+      "page": 55,
+      "vehicle": "Chevrolet Cruze II",
+      "application_dates_raw": "08/14 Þ",
+      "engine_row": "1.5L                L3G            84 (114)     08/14 Þ"
+    }
+  ],
+  "L95": [
+    {
+      "page": 54,
+      "vehicle": "Chevrolet Aveo",
+      "application_dates_raw": "07/05-05/10",
+      "engine_row": "1.4L              L95             69 (93)    07/05-05/10"
+    },
+    {
+      "page": 55,
+      "vehicle": "Chevrolet Lova",
+      "application_dates_raw": "03/06-07/11",
+      "engine_row": "1.4L                L95            69 (93)    03/06-07/11"
+    }
+  ],
+  "L91": [
+    {
+      "page": 55,
+      "vehicle": "Chevrolet Lova",
+      "application_dates_raw": "01/06-03/11",
+      "engine_row": "1.6L                L91            78 (106)   01/06-03/11"
+    }
+  ],
+  "L34": [
+    {
+      "page": 49,
+      "vehicle": "Buick Regal I",
+      "application_dates_raw": "02/03-12/08",
+      "engine_row": "2.0L                   L34       91 (124)   02/03-12/08"
+    },
+    {
+      "page": 55,
+      "vehicle": "Chevrolet Epica",
+      "application_dates_raw": "04/06-09/09",
+      "engine_row": "2.0L                L34, T20SED    95 (129)   04/06-09/09"
+    }
+  ],
+  "LMU": [
+    {
+      "page": 33,
+      "vehicle": "Baojun Spark",
+      "application_dates_raw": "08/12 Þ",
+      "engine_row": "1.2L                               LMU           63 (86)      08/12 Þ"
+    },
+    {
+      "page": 55,
+      "vehicle": "Chevrolet Lova",
+      "application_dates_raw": "12/08-12/10",
+      "engine_row": "1.2L                LMU            64 (87)    12/08-12/10"
+    }
+  ],
+  "LCU": [
+    {
+      "page": 54,
+      "vehicle": "Chevrolet Aveo T300",
+      "application_dates_raw": "05/11 Þ",
+      "engine_row": "1.4L (T300)       LCU             76 (103)     05/11 Þ"
+    },
+    {
+      "page": 56,
+      "vehicle": "Chevrolet Sail",
+      "application_dates_raw": "01/10-11/14",
+      "engine_row": "1.4L                 LCU            76 (103)   01/10-11/14"
+    }
+  ],
+  "4G15S": [
+    {
+      "page": 51,
+      "vehicle": "BYD F3",
+      "application_dates_raw": "09/07 Þ",
+      "engine_row": "1.5L                   4G15S       78 (106)     09/07 Þ"
+    },
+    {
+      "page": 51,
+      "vehicle": "BYD F3R",
+      "application_dates_raw": "09/07 Þ",
+      "engine_row": "1.5L                   4G15S       78 (106)     09/07 Þ"
+    }
+  ],
+  "4G18": [
+    {
+      "page": 51,
+      "vehicle": "BYD F3",
+      "application_dates_raw": "09/05 Þ",
+      "engine_row": "1.6L                   4G18        74 (101)     09/05 Þ"
+    },
+    {
+      "page": 127,
+      "vehicle": "Mitsubishi Lancer",
+      "application_dates_raw": "05/06 Þ",
+      "engine_row": "1.6L                  4G18      74 (101)     05/06 Þ"
+    },
+    {
+      "page": 194,
+      "vehicle": "Brilliance Junjie FRV",
+      "application_dates_raw": "05/08-03/10",
+      "engine_row": "1.6L                   4G18         74 (101)   05/08-03/10"
+    }
+  ],
+  "4G63S4M": [
+    {
+      "page": 53,
+      "vehicle": "Chery Eastar",
+      "application_dates_raw": "03/04-12/08",
+      "engine_row": "2.0L                   4G63S4M             92 (125)   03/04-12/08"
+    },
+    {
+      "page": 54,
+      "vehicle": "Chery Tiggo T11",
+      "application_dates_raw": "03/05-12/08",
+      "engine_row": "2.0L (T11)        4G63S4M         92 (125)   03/05-12/08"
+    },
+    {
+      "page": 72,
+      "vehicle": "GWM Hover H3",
+      "application_dates_raw": "05/09-01/13",
+      "engine_row": "2.0L                 4G63S4M          90 (122)   05/09-01/13"
+    }
+  ],
+  "4G64S4M": [
+    {
+      "page": 53,
+      "vehicle": "Chery Eastar",
+      "application_dates_raw": "06/03-12/07",
+      "engine_row": "2.4L                   4G64S4M             95 (129)   06/03-12/07"
+    },
+    {
+      "page": 54,
+      "vehicle": "Chery Tiggo",
+      "application_dates_raw": "03/05-12/08",
+      "engine_row": "2.4L              4G64S4M         95 (129)   03/05-12/08"
+    },
+    {
+      "page": 64,
+      "vehicle": "Soueast Delica",
+      "application_dates_raw": "04/97-08/03",
+      "engine_row": "2.4L                4G64S4M       96 (131)   04/97-08/03"
+    }
+  ],
+  "4G69S4N": [
+    {
+      "page": 72,
+      "vehicle": "GWM Hover H3",
+      "application_dates_raw": "07/10-06/12",
+      "engine_row": "2.4L                  4G69S4N        100 (136)   07/10-06/12"
+    },
+    {
+      "page": 72,
+      "vehicle": "GWM Haval H5",
+      "application_dates_raw": "06/10 Þ",
+      "engine_row": "2.4L                 4G69S4N         100 (136)     06/10 Þ"
+    }
+  ],
+  "4G63": [
+    {
+      "page": 64,
+      "vehicle": "Soueast Delica",
+      "application_dates_raw": "02/97 Þ",
+      "engine_row": "2.0L                4G63          83 (113)     02/97 Þ"
+    },
+    {
+      "page": 64,
+      "vehicle": "Soueast Freeca",
+      "application_dates_raw": "03/00-09/04",
+      "engine_row": "2.0L                4G63          84 (114)   03/00-09/04"
+    }
+  ],
+  "4G64": [
+    {
+      "page": 64,
+      "vehicle": "Soueast Soveran",
+      "application_dates_raw": "05/04 Þ",
+      "engine_row": "2.4L                4G64          96 (131)     05/04 Þ"
+    }
+  ],
+  "4G69": [
+    {
+      "page": 52,
+      "vehicle": "BYD M6",
+      "application_dates_raw": "07/10 Þ",
+      "engine_row": "2.4L                    4G69        118 (160)     07/10 Þ"
+    },
+    {
+      "page": 52,
+      "vehicle": "BYD S6",
+      "application_dates_raw": "05/11 Þ",
+      "engine_row": "2.4L                    4G69        118 (160)     05/11 Þ"
+    },
+    {
+      "page": 127,
+      "vehicle": "Mitsubishi Galant",
+      "application_dates_raw": "09/06 Þ",
+      "engine_row": "2.4L                  4G69     115 (156)     09/06 Þ"
+    }
+  ],
+  "4A91": [
+    {
+      "page": 64,
+      "vehicle": "Soueast V3",
+      "application_dates_raw": "01/09 Þ",
+      "engine_row": "1.5L                4A91 MIVEC    88 (120)     01/09 Þ"
+    }
+  ],
+  "4A92": [
+    {
+      "page": 127,
+      "vehicle": "Mitsubishi ASX",
+      "application_dates_raw": "11/12 Þ",
+      "engine_row": "1.6L                  4A92      91 (124)     11/12 Þ"
+    }
+  ],
+  "4G93": [
+    {
+      "page": 63,
+      "vehicle": "Dongfeng Fengxing Future",
+      "application_dates_raw": "12/07 Þ",
+      "engine_row": "1.8L                 4G93             103 (140)     12/07 Þ"
+    },
+    {
+      "page": 126,
+      "vehicle": "Mitsubishi Pajero iO H66W",
+      "application_dates_raw": "03/01-02/05",
+      "engine_row": "1.8L (H66W)                4G93               84 (114)   03/01-02/05"
+    }
+  ],
+  "6G72": [
+    {
+      "page": 126,
+      "vehicle": "Mitsubishi Pajero II",
+      "application_dates_raw": "06/94-05/97",
+      "engine_row": "3.0 V6 24V                 6G72 (SOHC 24V)   133 (181)   06/94-05/97"
+    },
+    {
+      "page": 126,
+      "vehicle": "Mitsubishi Pajero II",
+      "application_dates_raw": "06/97-04/00",
+      "engine_row": "3.0 V6 24V                 6G72              130 (177)   06/97-04/00"
+    },
+    {
+      "page": 126,
+      "vehicle": "Mitsubishi Pajero IV V93W",
+      "application_dates_raw": "03/07 Þ",
+      "engine_row": "3.0 V6 (V93W)              6G72              131 (178)     03/07 Þ"
+    }
+  ],
+  "JL4G18": [
+    {
+      "page": 71,
+      "vehicle": "Geely Emgrand EC7",
+      "application_dates_raw": "07/09 Þ",
+      "engine_row": "1.8L                    JL4G18         94 (128)     07/09 Þ"
+    },
+    {
+      "page": 72,
+      "vehicle": "Geely Vision",
+      "application_dates_raw": "08/06-12/12",
+      "engine_row": "1.8L                 JL4G18          103 (138)   08/06-12/12"
+    },
+    {
+      "page": 156,
+      "vehicle": "SMA Haijing",
+      "application_dates_raw": "06/09 Þ",
+      "engine_row": "1.8L                       JL4G18      103 (140)     06/09 Þ"
+    }
+  ],
+  "JL4G15D": [
+    {
+      "page": 71,
+      "vehicle": "Geely Emgrand EC7",
+      "application_dates_raw": "05/12 Þ",
+      "engine_row": "1.5L                    JL4G15D        78 (106)     05/12 Þ"
+    },
+    {
+      "page": 72,
+      "vehicle": "Geely Freedom Warship",
+      "application_dates_raw": "12/11 Þ",
+      "engine_row": "1.5L                 JL4G15D          78 (106)     12/11 Þ"
+    }
+  ],
+  "MR479QA": [
+    {
+      "page": 72,
+      "vehicle": "Geely Kingkong",
+      "application_dates_raw": "05/06 Þ",
+      "engine_row": "1.5L                 5A-FE,MR479QA    69 (94)      05/06 Þ"
+    },
+    {
+      "page": 72,
+      "vehicle": "Geely Merrie",
+      "application_dates_raw": "07/05 Þ",
+      "engine_row": "1.5L                 MR479QA          69 (94)      07/05 Þ"
+    }
+  ],
+  "JLE-4G18TD": [
+    {
+      "page": 71,
+      "vehicle": "Geely Borui",
+      "application_dates_raw": "04/15 Þ",
+      "engine_row": "1.8T                    JLE-4G18TD    120 (163)     04/15 Þ"
+    },
+    {
+      "page": 71,
+      "vehicle": "Geely Boyue",
+      "application_dates_raw": "03/16 Þ",
+      "engine_row": "1.8TD                   JLE-4G18TD    120 (163)     03/16 Þ"
+    }
+  ],
+  "JLB-4G13T": [
+    {
+      "page": 71,
+      "vehicle": "Geely Emgrand RS",
+      "application_dates_raw": "01/15 Þ",
+      "engine_row": "1.3T                    JLB-4G13T      98 (133)     01/15 Þ"
+    },
+    {
+      "page": 71,
+      "vehicle": "Geely Emgrand",
+      "application_dates_raw": "07/14 Þ",
+      "engine_row": "1.3T                    JLB-4G13T      98 (133)     07/14 Þ"
+    }
+  ],
+  "JLY-4G15": [
+    {
+      "page": 71,
+      "vehicle": "Geely Emgrand RS",
+      "application_dates_raw": "01/15 Þ",
+      "engine_row": "1.5L                    JLY-4G15       80 (109)     01/15 Þ"
+    },
+    {
+      "page": 71,
+      "vehicle": "Geely Vision S1",
+      "application_dates_raw": "11/17 Þ",
+      "engine_row": "1.5L                    JLY-4G15       80 (109)     11/17 Þ"
+    }
+  ],
+  "SQR372": [
+    {
+      "page": 54,
+      "vehicle": "Chery QQ3",
+      "application_dates_raw": "03/04-01/12",
+      "engine_row": "0.8L              SQR372          38 (52)    03/04-01/12"
+    }
+  ],
+  "SQR472": [
+    {
+      "page": 54,
+      "vehicle": "Chery QQ3",
+      "application_dates_raw": "06/06-03/10",
+      "engine_row": "1.1L              SQR472          50 (68)    06/06-03/10"
+    },
+    {
+      "page": 54,
+      "vehicle": "Chery QQ6",
+      "application_dates_raw": "12/06 Þ",
+      "engine_row": "1.1L              SQR472          50 (68)      12/06 Þ"
+    }
+  ],
+  "SQR473F": [
+    {
+      "page": 54,
+      "vehicle": "Chery QQ6",
+      "application_dates_raw": "06/06 Þ",
+      "engine_row": "1.3L              SQR473F         61 (83)      06/06 Þ"
+    },
+    {
+      "page": 54,
+      "vehicle": "Chery QQ Me",
+      "application_dates_raw": "06/09 Þ",
+      "engine_row": "1.3               SQR473F         61 (83)      06/09 Þ"
+    }
+  ],
+  "SQR477F": [
+    {
+      "page": 53,
+      "vehicle": "Chery A5",
+      "application_dates_raw": "06/09 Þ",
+      "engine_row": "1.5L                   SQR477F             80 (109)     06/09 Þ"
+    },
+    {
+      "page": 53,
+      "vehicle": "Chery Fulwin 2",
+      "application_dates_raw": "10/09 Þ",
+      "engine_row": "1.5L                   SQR477F             80 (109)     10/09 Þ"
+    },
+    {
+      "page": 53,
+      "vehicle": "Chery Qiyun",
+      "application_dates_raw": "07/08-05/10",
+      "engine_row": "1.5L                   SQR477F             80 (109)   07/08-05/10"
+    }
+  ],
+  "SQR481F": [
+    {
+      "page": 53,
+      "vehicle": "Chery A5",
+      "application_dates_raw": "01/06-12/12",
+      "engine_row": "1.6L                   SQR481F             80 (109)   01/06-12/12"
+    },
+    {
+      "page": 54,
+      "vehicle": "Chery Tiggo",
+      "application_dates_raw": "07/06-12/07",
+      "engine_row": "1.6L              SQR481F         80 (109)   07/06-12/07"
+    }
+  ],
+  "SQR481FC": [
+    {
+      "page": 53,
+      "vehicle": "Chery A5",
+      "application_dates_raw": "09/07-06/09",
+      "engine_row": "1.8L                   SQR481FC            97 (132)   09/07-06/09"
+    }
+  ],
+  "SQR484F": [
+    {
+      "page": 53,
+      "vehicle": "Chery A5",
+      "application_dates_raw": "09/07-12/12",
+      "engine_row": "2.0L                   SQR484F            102 (139)   09/07-12/12"
+    },
+    {
+      "page": 54,
+      "vehicle": "Chery Tiggo",
+      "application_dates_raw": "09/06-12/08",
+      "engine_row": "2.0L              SQR484F        102 (139)   09/06-12/08"
+    },
+    {
+      "page": 54,
+      "vehicle": "Chery Tiggo 5",
+      "application_dates_raw": "11/13 Þ",
+      "engine_row": "2.0L              SQR484F        102 (139)     11/13 Þ"
+    }
+  ],
+  "SQRE4G15B": [
+    {
+      "page": 53,
+      "vehicle": "Chery Arrizo 5",
+      "application_dates_raw": "03/16 Þ",
+      "engine_row": "1.5L                   SQRE4G15B           85 (116)     03/16 Þ"
+    }
+  ],
+  "JL465Q5": [
+    {
+      "page": 53,
+      "vehicle": "Changan SC",
+      "application_dates_raw": "03/99-07/00",
+      "engine_row": "1.0L                   JL465Q5             36 (49)    03/99-07/00"
+    },
+    {
+      "page": 53,
+      "vehicle": "Changan Star",
+      "application_dates_raw": "06/01 Þ",
+      "engine_row": "1.0L                   JL465Q5             39 (53)      06/01 Þ"
+    }
+  ],
+  "JL474Q": [
+    {
+      "page": 53,
+      "vehicle": "Changan SC",
+      "application_dates_raw": "02/99-06/01",
+      "engine_row": "1.3L                   JL474Q              60 (82)    02/99-06/01"
+    },
+    {
+      "page": 53,
+      "vehicle": "Changan Star",
+      "application_dates_raw": "06/00 Þ",
+      "engine_row": "1.3L                   JL474Q              61 (83)      06/00 Þ"
+    }
+  ],
+  "JL475Q7": [
+    {
+      "page": 53,
+      "vehicle": "Changan Yuexiang",
+      "application_dates_raw": "01/09 Þ",
+      "engine_row": "1.5L                   JL475Q7             72 (98)      01/09 Þ"
+    }
+  ],
+  "CAF479Q1": [
+    {
+      "page": 70,
+      "vehicle": "Ford Escort",
+      "application_dates_raw": "12/14 Þ",
+      "engine_row": "1.5L                   CAF479Q1             83 (113)     12/14 Þ"
+    }
+  ],
+  "CAF384Q0": [
+    {
+      "page": 69,
+      "vehicle": "Ford EcoSport",
+      "application_dates_raw": "09/17 Þ",
+      "engine_row": "1.5L               CAF384Q0         88 (120)     09/17 Þ"
+    }
+  ],
+  "CAF488WQ3": [
+    {
+      "page": 70,
+      "vehicle": "Ford Mondeo III",
+      "application_dates_raw": "08/13 Þ",
+      "engine_row": "2.0 GTDi200            CAF488WQ3           149 (203)     08/13 Þ"
+    }
+  ],
+  "LF-DE": [
+    {
+      "page": 70,
+      "vehicle": "Ford Mondeo I",
+      "application_dates_raw": "05/03-11/07",
+      "engine_row": "2.0L                   LF-DE               105 (143)   05/03-11/07"
+    },
+    {
+      "page": 70,
+      "vehicle": "Ford Mondeo II Zhisheng",
+      "application_dates_raw": "09/07-08/13",
+      "engine_row": "2.0L                   LF-DE               107 (145)   09/07-08/13"
+    },
+    {
+      "page": 105,
+      "vehicle": "Mazda3",
+      "application_dates_raw": "02/06-08/11",
+      "engine_row": "2.0L              LF-DE    110 (150)   02/06-08/11"
+    }
+  ],
+  "ZY-VE": [
+    {
+      "page": 104,
+      "vehicle": "Mazda2",
+      "application_dates_raw": "10/07 Þ",
+      "engine_row": "1.5L                          ZY-VE         76 (103)     10/07 Þ"
+    }
+  ],
+  "TU5JP4": [
+    {
+      "page": 60,
+      "vehicle": "Citroen C2",
+      "application_dates_raw": "10/06-04/14",
+      "engine_row": "1.6L (T11)             TU5JP4            78 (106)   10/06-04/14"
+    },
+    {
+      "page": 62,
+      "vehicle": "Citroen Elysee",
+      "application_dates_raw": "04/08-07/14",
+      "engine_row": "1.6L (R31)             TU5JP4            78 (106)   04/08-07/14"
+    },
+    {
+      "page": 62,
+      "vehicle": "Citroen Fukang",
+      "application_dates_raw": "05/05-12/08",
+      "engine_row": "1.6L                   TU5JP4            78 (106)   05/05-12/08"
+    }
+  ],
+  "NFP": [
+    {
+      "page": 60,
+      "vehicle": "Citroen C3-XR",
+      "application_dates_raw": "12/14 Þ",
+      "engine_row": "1.6L                   NFP               86 (117)     12/14 Þ"
+    },
+    {
+      "page": 60,
+      "vehicle": "Citroen C4-Quatre",
+      "application_dates_raw": "11/15 Þ",
+      "engine_row": "1.6L                   NFP               86 (117)     11/15 Þ"
+    },
+    {
+      "page": 62,
+      "vehicle": "Citroen Elysee",
+      "application_dates_raw": "08/14 Þ",
+      "engine_row": "1.6L                   NFP               86 (117)     08/14 Þ"
+    }
+  ],
+  "RFN": [
+    {
+      "page": 59,
+      "vehicle": "Citroen Xsara Picasso",
+      "application_dates_raw": "01/03-04/10",
+      "engine_row": "2.0i 16V            RFN (EW10)      100 (136)   01/03-04/10"
+    },
+    {
+      "page": 61,
+      "vehicle": "Citroen C5",
+      "application_dates_raw": "11/09 Þ",
+      "engine_row": "2.0L                  PSA RFN 10LH3X   108 (147)     11/09 Þ"
+    },
+    {
+      "page": 61,
+      "vehicle": "Citroen C-Quatre",
+      "application_dates_raw": "06/09 Þ",
+      "engine_row": "2.0L                  RFN              108 (147)     06/09 Þ"
+    }
+  ],
+  "BWH": [
+    {
+      "page": 65,
+      "vehicle": "FAW Besturn B50",
+      "application_dates_raw": "05/09-08/13",
+      "engine_row": "1.6L                   BWH              76 (103)   05/09-08/13"
+    },
+    {
+      "page": 175,
+      "vehicle": "Volkswagen Bora",
+      "application_dates_raw": "11/08-06/10",
+      "engine_row": "1.6L              BWH          74 (101)   11/08-06/10"
+    },
+    {
+      "page": 178,
+      "vehicle": "Volkswagen Sagitar",
+      "application_dates_raw": "02/06-01/12",
+      "engine_row": "1.6L                     BWH             74 (101)   02/06-01/12"
+    }
+  ],
+  "CEA": [
+    {
+      "page": 156,
+      "vehicle": "Skoda Superb",
+      "application_dates_raw": "08/09-08/13",
+      "engine_row": "1.8 TSI                    CEA         118 (160)   08/09-08/13"
+    },
+    {
+      "page": 181,
+      "vehicle": "Volkswagen Passat B7",
+      "application_dates_raw": "04/11-12/15",
+      "engine_row": "1.8 TSI (B7)         CEA         118 (160)   04/11-12/15"
+    },
+    {
+      "page": 184,
+      "vehicle": "Volkswagen Tiguan",
+      "application_dates_raw": "03/10 Þ",
+      "engine_row": "1.8 TSI             CEA             118 (160)     03/10 Þ"
+    }
+  ],
+  "CFB": [
+    {
+      "page": 155,
+      "vehicle": "Skoda Octavia",
+      "application_dates_raw": "04/10-05/14",
+      "engine_row": "1.4 TSI             CFB              96 (131)   04/10-05/14"
+    },
+    {
+      "page": 156,
+      "vehicle": "Skoda Superb",
+      "application_dates_raw": "04/10-08/13",
+      "engine_row": "1.4 TSI                    CFB          96 (131)   04/10-08/13"
+    }
+  ],
+  "CGM": [
+    {
+      "page": 155,
+      "vehicle": "Skoda Octavia RS",
+      "application_dates_raw": "04/10 Þ",
+      "engine_row": "2.0 TSI             CGM             147 (200)     04/10 Þ"
+    }
+  ],
+  "CPDA": [
+    {
+      "page": 155,
+      "vehicle": "Skoda Rapid",
+      "application_dates_raw": "04/14 Þ",
+      "engine_row": "1.6L                CPDA             81 (110)     04/14 Þ"
+    },
+    {
+      "page": 178,
+      "vehicle": "Volkswagen Sagitar",
+      "application_dates_raw": "03/15 Þ",
+      "engine_row": "1.6L                     CPDA            81 (110)     03/15 Þ"
+    }
+  ],
+  "CSSA": [
+    {
+      "page": 154,
+      "vehicle": "Skoda Karoq",
+      "application_dates_raw": "03/18 Þ",
+      "engine_row": "1.4 TSI 280        CSSA       110 (150)     03/18 Þ"
+    },
+    {
+      "page": 156,
+      "vehicle": "Skoda Yeti",
+      "application_dates_raw": "11/13 Þ",
+      "engine_row": "1.4 TSI                    CSSA        110 (150)     11/13 Þ"
+    },
+    {
+      "page": 176,
+      "vehicle": "Volkswagen Bora MQB",
+      "application_dates_raw": "06/18 Þ",
+      "engine_row": "1.4 280TSI DSG (MQB)   CSSA       110 (150)     06/18 Þ"
+    }
+  ],
+  "DCFA": [
+    {
+      "page": 175,
+      "vehicle": "Volkswagen Bora",
+      "application_dates_raw": "10/17 Þ",
+      "engine_row": "1.5L              DCFA         81 (110)     10/17 Þ"
+    },
+    {
+      "page": 176,
+      "vehicle": "Volkswagen C-Trek",
+      "application_dates_raw": "10/17 Þ",
+      "engine_row": "1.5L                   DCFA        81 (110)     10/17 Þ"
+    }
+  ],
+  "BSE": [
+    {
+      "page": 186,
+      "vehicle": "Volkswagen Golf V / Golf Plus",
+      "application_dates_raw": "01/04-07/09",
+      "engine_row": "1.6 16V (1K1, 1K5, AJ5, 5M1, 521) BGU, BSE, BSF, CCSA    75 (102)   01/04-07/09"
+    },
+    {
+      "page": 187,
+      "vehicle": "Volkswagen Golf VI / Golf Plus",
+      "application_dates_raw": "10/08-11/12",
+      "engine_row": "1.6 (5K1, 1K5, AJ5, 5M1, 521) BSE, BSF, CCSA, CHGA, CMXA 75 (102)            10/08-11/12"
+    }
+  ],
+  "CDAA": [
+    {
+      "page": 29,
+      "vehicle": "Audi TT",
+      "application_dates_raw": "06/08 Þ",
+      "engine_row": "1.8 TFSI                   CDAA                  118 (160)       06/08 Þ"
+    }
+  ],
+  "15E4E": [
+    {
+      "page": 122,
+      "vehicle": "MG6",
+      "application_dates_raw": "11/17 Þ",
+      "engine_row": "1.5T                15E4E         124 (169)     11/17 Þ"
+    },
+    {
+      "page": 123,
+      "vehicle": "MG GS",
+      "application_dates_raw": "03/15 Þ",
+      "engine_row": "1.5T                        15E4E             124 (169)      03/15 Þ"
+    },
+    {
+      "page": 149,
+      "vehicle": "Roewe RX5",
+      "application_dates_raw": "07/16 Þ",
+      "engine_row": "1.5T                  15E4E        124 (169)   07/16 Þ"
+    }
+  ],
+  "18K4G": [
+    {
+      "page": 123,
+      "vehicle": "MG6",
+      "application_dates_raw": "12/09 Þ",
+      "engine_row": "1.8T                        18K4G             118 (160)      12/09 Þ"
+    },
+    {
+      "page": 149,
+      "vehicle": "Roewe 550",
+      "application_dates_raw": "06/08 Þ",
+      "engine_row": "1.8T                  18K4G        118 (160)   06/08 Þ"
+    },
+    {
+      "page": 149,
+      "vehicle": "Roewe 750",
+      "application_dates_raw": "03/08 Þ",
+      "engine_row": "1.8T                  18K4G        118 (160)   03/08 Þ"
+    }
+  ],
+  "18L4E": [
+    {
+      "page": 149,
+      "vehicle": "Roewe 950",
+      "application_dates_raw": "07/15 Þ",
+      "engine_row": "1.8T                  18L4E        136 (185)   07/15 Þ"
+    }
+  ],
+  "20L4E": [
+    {
+      "page": 123,
+      "vehicle": "MG GS",
+      "application_dates_raw": "03/15 Þ",
+      "engine_row": "2.0T                        20L4E             162 (220)      03/15 Þ"
+    },
+    {
+      "page": 149,
+      "vehicle": "Roewe 950",
+      "application_dates_raw": "07/15 Þ",
+      "engine_row": "2.0T                  20L4E        162 (220)   07/15 Þ"
+    },
+    {
+      "page": 149,
+      "vehicle": "Roewe RX5",
+      "application_dates_raw": "07/16 Þ",
+      "engine_row": "2.0T                  20L4E        162 (220)   07/16 Þ"
+    }
+  ],
+  "G13B": [
+    {
+      "page": 52,
+      "vehicle": "Changan Benben Love",
+      "application_dates_raw": "11/06 Þ",
+      "engine_row": "1.3L                    G13B         63 (86)      11/06 Þ"
+    },
+    {
+      "page": 160,
+      "vehicle": "Suzuki Gazelle",
+      "application_dates_raw": "01/01-12/11",
+      "engine_row": "1.3L                      G13B         63 (86)    01/01-12/11"
+    },
+    {
+      "page": 160,
+      "vehicle": "Suzuki Swift",
+      "application_dates_raw": "05/05-03/13",
+      "engine_row": "1.3L                      G13B         63 (86)    05/05-03/13"
+    }
+  ],
+  "M18A": [
+    {
+      "page": 160,
+      "vehicle": "Suzuki SX4",
+      "application_dates_raw": "04/09-12/10",
+      "engine_row": "1.8L                      M18A         92 (125)   04/09-12/10"
+    }
+  ],
+  "F10A": [
+    {
+      "page": 161,
+      "vehicle": "Suzuki Wagon R Beidouxing",
+      "application_dates_raw": "08/99-07/04",
+      "engine_row": "1.0L                              F10A           34 (46)    08/99-07/04"
+    }
+  ],
+  "K10A": [
+    {
+      "page": 161,
+      "vehicle": "Suzuki Wagon R Beidouxing",
+      "application_dates_raw": "08/99-07/04",
+      "engine_row": "1.0L                              K10A           48 (65)    08/99-07/04"
+    }
+  ],
+  "G4FA": [
+    {
+      "page": 86,
+      "vehicle": "Hyundai Verna",
+      "application_dates_raw": "08/10-12/13",
+      "engine_row": "1.4L                    G4FA        79 (107)   08/10-12/13"
+    },
+    {
+      "page": 86,
+      "vehicle": "Hyundai Verna",
+      "application_dates_raw": "01/14 Þ",
+      "engine_row": "1.4L                    G4FA        79 (107)     01/14 Þ"
+    },
+    {
+      "page": 93,
+      "vehicle": "Kia K2",
+      "application_dates_raw": "07/11 Þ",
+      "engine_row": "1.4L                      G4FA    79 (107)     07/11 Þ"
+    }
+  ],
+  "G4KC": [
+    {
+      "page": 86,
+      "vehicle": "Hyundai Sonata NF",
+      "application_dates_raw": "09/05-12/08",
+      "engine_row": "2.4L                    G4KC       119 (162)   09/05-12/08"
+    }
+  ],
+  "G4EE": [
+    {
+      "page": 84,
+      "vehicle": "Hyundai Accent",
+      "application_dates_raw": "02/06-11/12",
+      "engine_row": "1.4L                 G4EE          70 (95)    02/06-11/12"
+    },
+    {
+      "page": 95,
+      "vehicle": "Kia Rio",
+      "application_dates_raw": "01/07 Þ",
+      "engine_row": "1.4L                  G4EE     70 (95)      01/07 Þ"
+    }
+  ],
+  "G4NB": [
+    {
+      "page": 85,
+      "vehicle": "Hyundai Mistra",
+      "application_dates_raw": "11/13 Þ",
+      "engine_row": "1.8L                    G4NB   105 (143)     11/13 Þ"
+    },
+    {
+      "page": 93,
+      "vehicle": "Kia K4",
+      "application_dates_raw": "09/14 Þ",
+      "engine_row": "1.8L                      G4NB   105 (143)     09/14 Þ"
+    }
+  ],
+  "G4FD": [
+    {
+      "page": 85,
+      "vehicle": "Hyundai Lingdong",
+      "application_dates_raw": "03/16 Þ",
+      "engine_row": "1.6L                    G4FD    95 (130)     03/16 Þ"
+    },
+    {
+      "page": 85,
+      "vehicle": "Hyundai Lingdong",
+      "application_dates_raw": "03/16 Þ",
+      "engine_row": "1.6L                    G4FD    94 (128)     03/16 Þ"
+    }
+  ],
+  "G4FJ": [
+    {
+      "page": 84,
+      "vehicle": "Hyundai Encino",
+      "application_dates_raw": "04/18 Þ",
+      "engine_row": "1.6 TGDI             G4FJ         130 (177)     04/18 Þ"
+    },
+    {
+      "page": 85,
+      "vehicle": "Hyundai ix25",
+      "application_dates_raw": "09/16 Þ",
+      "engine_row": "1.6T                    G4FJ   118 (160)     09/16 Þ"
+    },
+    {
+      "page": 93,
+      "vehicle": "Kia K4",
+      "application_dates_raw": "09/14 Þ",
+      "engine_row": "1.6T                      G4FJ   129 (175)     09/14 Þ"
+    }
+  ],
+  "QR20DE": [
+    {
+      "page": 128,
+      "vehicle": "Nissan X-Trail T30",
+      "application_dates_raw": "07/01-06/07",
+      "engine_row": "2.0i (T30)           QR20DE            103 (140)   07/01-06/07"
+    },
+    {
+      "page": 130,
+      "vehicle": "Nissan Teana J31",
+      "application_dates_raw": "09/04-06/08",
+      "engine_row": "2.0L             QR20DE    100 (136)   09/04-06/08"
+    }
+  ],
+  "MR18DE": [
+    {
+      "page": 129,
+      "vehicle": "Nissan Geniss",
+      "application_dates_raw": "10/06 Þ",
+      "engine_row": "1.8L                   MR18DE    93 (126)     10/06 Þ"
+    },
+    {
+      "page": 129,
+      "vehicle": "Nissan Livina",
+      "application_dates_raw": "03/10 Þ",
+      "engine_row": "1.8L                   MR18DE    93 (126)     03/10 Þ"
+    }
+  ],
+  "VQ35DE": [
+    {
+      "page": 130,
+      "vehicle": "Nissan Murano",
+      "application_dates_raw": "09/11 Þ",
+      "engine_row": "3.5L             VQ35DE    228 (310)     09/11 Þ"
+    },
+    {
+      "page": 131,
+      "vehicle": "Nissan Teana J31",
+      "application_dates_raw": "09/04-06/08",
+      "engine_row": "3.5L               VQ35DE    180 (245)   09/04-06/08"
+    },
+    {
+      "page": 131,
+      "vehicle": "Nissan Teana J32",
+      "application_dates_raw": "06/08-11/10",
+      "engine_row": "3.5L (J32)         VQ35DE    185 (252)   06/08-11/10"
+    }
+  ],
+  "KA24DE": [
+    {
+      "page": 132,
+      "vehicle": "Nissan Paladin",
+      "application_dates_raw": "02/03 Þ",
+      "engine_row": "2.4L                    KA24DE      110 (148)     02/03 Þ"
+    }
+  ],
+  "3RZ-FE": [
+    {
+      "page": 162,
+      "vehicle": "Toyota Land Cruiser Prado J9",
+      "application_dates_raw": "09/02-08/04",
+      "engine_row": "2.7 16V (J9/90/95/Prado)   3RZ-FE    112 (152)   09/02-08/04"
+    }
+  ],
+  "2GR-FE": [
+    {
+      "page": 167,
+      "vehicle": "Toyota Highlander",
+      "application_dates_raw": "05/09-05/12",
+      "engine_row": "3.5L                2GR-FE         201 (273)   05/09-05/12"
+    },
+    {
+      "page": 167,
+      "vehicle": "Toyota Highlander",
+      "application_dates_raw": "03/15 Þ",
+      "engine_row": "3.5L                2GR-FE         201 (273)     03/15 Þ"
+    }
+  ],
+  "2AR-FE": [
+    {
+      "page": 161,
+      "vehicle": "Toyota Camry XV50",
+      "application_dates_raw": "09/11-09/17",
+      "engine_row": "2.5 (XV50)                        2AR-FE        133 (181)   09/11-09/17"
+    }
+  ],
+  "1MZ-FE": [
+    {
+      "page": 102,
+      "vehicle": "Lexus RX300 MCU15",
+      "application_dates_raw": "10/00-05/03",
+      "engine_row": "300 3.0 V6 (MCU15)      1MZ-FE VVT-i       148 (201)   10/00-05/03"
+    },
+    {
+      "page": 102,
+      "vehicle": "Lexus RX300 MCU3",
+      "application_dates_raw": "05/03-12/08",
+      "engine_row": "300 3.0 V6 (MCU3)       1MZ-FE             150 (204)   05/03-12/08"
+    },
+    {
+      "page": 161,
+      "vehicle": "Toyota Camry XV30",
+      "application_dates_raw": "11/01-12/05",
+      "engine_row": "3.0 V6 (XV30)                     1MZ-FE        136 (186)   11/01-12/05"
+    }
+  ],
+  "2ZR-FXE": [
+    {
+      "page": 100,
+      "vehicle": "Lexus CT200h ZWA10",
+      "application_dates_raw": "03/11 Þ",
+      "engine_row": "CT200h (ZWA10)           2ZR-FXE    73 (99)      03/11 Þ"
+    }
+  ],
+  "K20A7": [
+    {
+      "page": 79,
+      "vehicle": "Honda Accord",
+      "application_dates_raw": "01/03-12/07",
+      "engine_row": "2.0L               K20A7      110 (150)   01/03-12/07"
+    },
+    {
+      "page": 79,
+      "vehicle": "Honda Accord",
+      "application_dates_raw": "10/07 Þ",
+      "engine_row": "2.0 VTEC           K20A7      115 (156)     10/07 Þ"
+    }
+  ],
+  "N52B30A": [
+    {
+      "page": 44,
+      "vehicle": "BMW X5 E70",
+      "application_dates_raw": "02/07-06/10",
+      "engine_row": "3.0si (E70)           N52B30A, N52B30BF   200 (272)   02/07-06/10"
+    }
+  ],
+  "M271.820": [
+    {
+      "page": 107,
+      "vehicle": "Mercedes-Benz C180 CGI W204",
+      "application_dates_raw": "11/09-12/14",
+      "engine_row": "C 180 1.8 CGI               M 271.820               115 (156)      11/09-12/14"
+    },
+    {
+      "page": 108,
+      "vehicle": "Mercedes-Benz C200 CGI W204",
+      "application_dates_raw": "09/09-12/14",
+      "engine_row": "C 200 CGI BlueEFFICIENCY M 271.820/860               135 (184)      09/09-12/14"
+    }
+  ],
+  "M272.967": [
+    {
+      "page": 115,
+      "vehicle": "Mercedes-Benz R350 W251",
+      "application_dates_raw": "09/05 Þ",
+      "engine_row": "R 350 (W251)                  M 272.967       200 (272)     09/05 Þ"
+    }
+  ],
+  "M274.920": [
+    {
+      "page": 108,
+      "vehicle": "Mercedes-Benz C200 W205",
+      "application_dates_raw": "03/14 Þ",
+      "engine_row": "C 200 (205)                 M 274.920                135 (184)        03/14 Þ"
+    },
+    {
+      "page": 108,
+      "vehicle": "Mercedes-Benz C300 W205",
+      "application_dates_raw": "04/15-07/18",
+      "engine_row": "C 300 (205)                 M 274.920                180 (245)      04/15-07/18"
+    }
+  ]
+}

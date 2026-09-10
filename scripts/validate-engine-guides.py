@@ -26,8 +26,12 @@ class Doc(HTMLParser):
 live_assets={x['path']:x for x in json.loads((R/'live-asset-check.json').read_text())}
 manifest=json.loads((R/'release-manifest.json').read_text());d=json.loads((R/'engine-verification.json').read_text());errors=[];pages=[]
 check=lambda cond,msg:errors.append(msg) if not cond else None
-check(len(d['engines'])==52,'engine count')
-check(len({e['code'] for e in d['engines']})==52,'duplicate engine codes')
+scope=json.loads((ROOT/'docs/reports/engine-africa-expansion-20260910/release-scope.json').read_text())
+expected_count=scope['expected_articles']
+code_by_slug={e['code'].lower().replace('.', '-'):e['code'] for e in d['engines']}
+check(len(d['engines'])==expected_count,'engine count')
+check(len(manifest)==scope['expected_public_files'],'manifest file count')
+check(len({e['code'] for e in d['engines']})==expected_count,'duplicate engine codes')
 check(not set(d['removed']) & {e['code'] for e in d['engines']},'removed priority codes included')
 check('L13Z' not in {e['code'] for e in d['engines']},'ambiguous unsuffixed content code')
 for e in d['engines']:
@@ -61,14 +65,16 @@ for m in manifest:
   remote_verified=(not isguide and rel in live_assets and live_assets[rel].get('status')==200)
   check(target.exists() or remote_verified,m['path']+': missing local link '+href)
  if isguide and p.name!='index.html':
-  code=p.stem.upper();check(code in t,m['path']+': code missing')
+  code=code_by_slug.get(p.stem,p.stem.upper());check(code in t,m['path']+': code missing')
   check('data-guide-enquiry="'+code+'"' in t,m['path']+': missing tracked inquiry')
   check(bool(re.search(r'<table>',t)),m['path']+': missing application table')
   check(not any(x in t for x in ['QixiuBao','UNVERIFIED','HC250','current_stock_verified','historical_rows']),m['path']+': internal provenance leak')
   check(not re.search(r'guaranteed stock|guaranteed fit|all models fit|\bInStock\b',t,re.I),m['path']+': unsupported sales claim')
   pages.append(dict(code=code,words=len(' '.join(doc.text).split()),internal_links=len(doc.links),status='pass'))
+index=Doc((ROOT/'guides/engines/index.html').read_text())
+for slug in code_by_slug:check(slug+'.html' in index.links,'index missing '+slug)
 xml=ET.parse(ROOT/'engine-guides-sitemap.xml');urls=[e.text for e in xml.findall('.//{*}loc')]
-check(len(urls)==53 and len(set(urls))==53,'sitemap count')
+check(len(urls)==expected_count+1 and len(set(urls))==expected_count+1,'sitemap count')
 check('Sitemap: https://asia-power.com/engine-guides-sitemap.xml' in (ROOT/'robots.txt').read_text(),'robots sitemap declaration')
 result=dict(status='fail' if errors else 'pass',articles=len(pages),application_rows=sum(len(e['applications']) for e in d['engines']),release_files=len(manifest),errors=errors,pages=pages)
 if '--write' in sys.argv:(R/'validation.json').write_text(json.dumps(result,indent=2)+'\n')
