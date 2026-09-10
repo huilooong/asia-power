@@ -1,27 +1,28 @@
-# OPS · 修好 Facebook「使用 Google 验证」（redirect_uri_mismatch）
+# OPS · Facebook 电脑 Google 验证（死胡同记录）
 
-**Status:** www→web 是 Facebook 强制跳转，不要对抗  
-**Date:** 2026-09-10  
-**实测：** `redirect_uri=https://web.facebook.com/oauth2/redirect/` → 必须在 **Google 请求里**改成 www；Facebook 页面可以留在 web。
+**Status:** 电脑 Google OAuth **过不去**（2026-09-10 CEO 实测）  
+**错误：** `redirect_uri=https://web.facebook.com/oauth2/redirect/` → Google 400 `redirect_uri_mismatch`
 
-## 结论
+## 已否决 / 已失败
 
-| 项 | 说明 |
-|----|------|
-| www 自动变 web | **正常**，再改地址栏会打转 |
-| 正确修法 | 人留在 `web.facebook.com`，只改发给 Google 的 `redirect_uri` |
-| 怎么改 | Chrome 加载插件 `integrations/social_browser/chrome-facebook-www-guard`（不要无痕） |
-| 不要 | 去 Google Cloud Console 登记 facebook.com；不要跟 www↔web 对着干 |
+| 做法 | 结果 |
+|------|------|
+| 改地址栏 web→www | Facebook 强制跳回 web，打转 |
+| Google Cloud 登记该 URI | 那是 Facebook 的域名，咱们项目加不上 |
+| 插件改 Google 回跳 | CEO 仍过不了认证 |
+| Graph Explorer | 走不通 |
+| 手机 App 已登录 | 不能给电脑 Agent 用会话 |
 
-## CEO 步骤
+## 剩余唯一门（手机改验证方式）
 
-1. 关无痕  
-2. `chrome://extensions` → 开发者模式 → 加载已解压 → `chrome-facebook-www-guard`  
-3. 打开 https://web.facebook.com/  
-4. 点「使用 Google 验证」
+电脑这条 Google 认证是 Facebook 用 Gmail 做「是不是本人」。要绕开，必须在**已登录的手机 App**里加上手机号和独立密码，电脑改走 **mbasic + 手机号/密码**，不要再点「使用 Google 验证」。
 
-备用：https://mbasic.facebook.com/
+1. 手机 Facebook App（保持登录）
+2. 菜单 → 设置与隐私 → 设置 → **账号中心**
+3. **密码与安全** → **密码** → 设一个 Facebook 自己的密码（记住）
+4. **个人详情** → **联系方式** → **添加手机号** → 收短信验证
+5. 电脑关掉无痕；打开 https://mbasic.facebook.com/
+6. 用 **手机号 + 刚设的密码** 登录（不要点 Google）
+7. 登录成功后再开 https://web.facebook.com/ 看是否已进
 
-## Agent
-
-Playwright 只拦截 `accounts.google.com`，不把 Facebook 从 web 打回 www。
+Agent 仍优先 Graph API token；浏览器会话只能在电脑真正登录成功后保存。
