@@ -1,0 +1,32 @@
+{
+  "manifest_version": 3,
+  "name": "AsiaPower Facebook www Google fix",
+  "version": "1.0.0",
+  "description": "Rewrite web.facebook.com to www.facebook.com so Google identity verify is not redirect_uri_mismatch.",
+  "permissions": ["declarativeNetRequest"],
+  "host_permissions": [
+    "https://web.facebook.com/*",
+    "http://web.facebook.com/*",
+    "https://www.facebook.com/*",
+    "https://accounts.google.com/*"
+  ],
+  "declarative_net_request": {
+    "rule_resources": [
+      {
+        "id": "facebook_www",
+        "enabled": true,
+        "path": "rules.json"
+      }
+    ]
+  },
+  "content_scripts": [
+    {
+      "matches": [
+        "https://web.facebook.com/*",
+        "https://accounts.google.com/*"
+      ],
+      "run_at": "document_start",
+      "js": ["content.js"]
+    }
+  ]
+}

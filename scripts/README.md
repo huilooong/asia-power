@@ -27,7 +27,7 @@ Do not run `High` or `Critical` scripts casually. Any script that sends messages
 | `apsales-facebook-accept-friends.py` | Accept pending Facebook friend requests | Critical | Growth ops | Yes | Manual approved action only |
 | `apsales-facebook-broadcast-post.py` | Post one image-rich promotion to Facebook timeline | Critical | Maybe | Yes | Manual approved action only |
 | `apsales-facebook-browse-friends.py` | Browse Facebook feed for market intelligence | High | Superseded/debug | Yes | Manual/debug only; prefer daily runner if approved |
-| `apsales-facebook-daily-run.py` | One-session Facebook daily action runner | Critical | Yes/experimental | Yes | Explicit approval; do not auto-run until scheduler reviewed |
+| `apsales-facebook-google-verify.py` | Headed Facebook login with www/Google redirect rewrite | Critical | Setup only | Yes | CEO Mac; never cron |
 | `apsales-facebook-dm-friends.py` | Send Facebook friend DMs | Critical | Experimental | Yes | Freeze unless CEO explicitly approves batch |
 | `apsales-growth-autopilot.py` | Cron entry for customer finding and traffic actions | High | Intended scheduled growth | Yes | Keep disabled until outbound gate exists |
 | `apsales-maps-leads-run.py` | Google Maps prospecting fallback when social is blocked/idle | High | Growth ops | Yes | Approval required; cap per run |

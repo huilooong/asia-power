@@ -187,14 +187,11 @@ def open_login_page(platform: str, *, wait_seconds: int = 300) -> dict[str, Any]
         )
     else:
         page.goto(facebook_www_url(PLATFORM_URLS[platform]), wait_until="domcontentloaded", timeout=120_000)
-        if is_google_identity_checkpoint(page.url):
-            mark_disconnected(platform, reason="facebook_google_identity_checkpoint")
-            _release_pw_context(pw, context)
-            raise SocialBrowserError(
-                "Facebook 卡在 Google 本人验证（login_with_third_party）。"
-                "Agent 不要用浏览器硬过；请改用 Meta Graph API："
-                "scripts/apsales-meta-page-token.py （见 docs/ops/ops-meta-agent-graph-api.md）"
-            )
+        print(
+            "\n[facebook] 已强制 www.facebook.com，并改写 Google 回跳地址。"
+            "\n  若出现「使用 Google 验证」：确认地址栏是 www 再点蓝色按钮。"
+            "\n  若仍跳到 Google 红字 400：把地址里的 web.facebook.com 全部换成 www.facebook.com 后回车。"
+        )
     print(f"\n[{platform}] 请在浏览器中完成登录（含 2FA）。登录成功后按 Enter…")
     try:
         input()

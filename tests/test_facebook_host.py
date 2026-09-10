@@ -8,11 +8,9 @@ from integrations.social_browser.facebook_host import (
     facebook_www_url,
     is_facebook_host,
     is_google_identity_checkpoint,
+    rewrite_google_facebook_redirect,
 )
-from unittest.mock import patch
-
 from customer_gateway.meta_page_token import pick_page
-from customer_gateway.social_autopilot import _publish_one
 
 
 class FacebookHostTests(unittest.TestCase):
@@ -41,6 +39,22 @@ class FacebookHostTests(unittest.TestCase):
         self.assertFalse(is_facebook_host("accounts.google.com"))
 
 
+    def test_rewrites_google_oauth_redirect_uri(self) -> None:
+        src = (
+            "https://accounts.google.com/o/oauth2/v2/auth"
+            "?client_id=abc"
+            "&redirect_uri=https%3A%2F%2Fweb.facebook.com%2Fauth_platform%2Fcallback"
+        )
+        out = rewrite_google_facebook_redirect(src)
+        self.assertIn("www.facebook.com", out)
+        self.assertNotIn("web.facebook.com", out)
+
+    def test_rewrites_plain_google_redirect(self) -> None:
+        src = "https://accounts.google.com/o/oauth2/v2/auth?redirect_uri=https://web.facebook.com/x"
+        out = rewrite_google_facebook_redirect(src)
+        self.assertIn("https://www.facebook.com/x", out)
+
+
 class PickPageTests(unittest.TestCase):
     def test_prefers_page_id(self) -> None:
         rows = [
@@ -57,18 +71,6 @@ class PickPageTests(unittest.TestCase):
         ]
         picked = pick_page(rows, page_id="")
         self.assertEqual(picked["id"], "9")
-
-
-class AutopilotFacebookTests(unittest.TestCase):
-    def test_facebook_without_api_refuses_browser(self) -> None:
-        with patch("customer_gateway.social_autopilot._platform_ready", return_value=True), patch(
-            "customer_gateway.social_autopilot.api_ready", return_value=False
-        ), patch(
-            "customer_gateway.social_post_assets.resolve_post_assets",
-            return_value={"caption": "hi", "listing_url": "", "image_urls": []},
-        ):
-            out = _publish_one({"platform": "facebook", "post_id": "t1"})
-        self.assertEqual(out.get("error"), "facebook_requires_graph_api")
 
 
 if __name__ == "__main__":

@@ -1,0 +1,14 @@
+[
+  {
+    "id": 1,
+    "priority": 1,
+    "action": {
+      "type": "redirect",
+      "regexSubstitution": "https://www.facebook.com\\1"
+    },
+    "condition": {
+      "regexFilter": "^https://web\\.facebook\\.com(.*)$",
+      "resourceTypes": ["main_frame", "sub_frame"]
+    }
+  }
+]

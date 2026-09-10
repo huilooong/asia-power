@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>修好 Facebook 的 Google 验证</title>
+  <style>
+    body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; max-width: 720px; margin: 32px auto; padding: 0 20px; color: #111; line-height: 1.5; }
+    h1 { font-size: 22px; }
+    .card { border: 1px solid #ddd; border-radius: 12px; padding: 16px 18px; margin: 16px 0; background: #fafafa; }
+    .btn { display: inline-block; background: #1877f2; color: #fff; padding: 12px 18px; border-radius: 8px; text-decoration: none; font-weight: 600; }
+    ol { padding-left: 1.2em; }
+    code { background: #eee; padding: 2px 6px; border-radius: 4px; }
+    .warn { color: #8a1f11; }
+  </style>
+</head>
+<body>
+  <h1>修好 Facebook「使用 Google 验证」报错</h1>
+  <p>红字 <code>redirect_uri_mismatch</code> 的原因：Facebook 把回跳写成了 <code>web.facebook.com</code>，Google 只认 <code>www.facebook.com</code>。</p>
+
+  <div class="card">
+    <p><strong>办法 A（最快）· 拖一个书签</strong></p>
+    <p>把下面蓝色按钮拖到浏览器书签栏。下次卡在 Google 红字页时，点这个书签。</p>
+    <p>
+      <a class="btn" href="javascript:(function(){location.href=location.href.split('web.facebook.com').join('www.facebook.com');})();">修好Facebook回跳</a>
+    </p>
+    <ol>
+      <li>打开<strong>平时用的 Chrome</strong>（不要无痕）</li>
+      <li>打开 <a href="https://www.facebook.com/">https://www.facebook.com/</a></li>
+      <li>到「使用 Google 验证」→ 若出现红字，点书签「修好Facebook回跳」</li>
+      <li>再选 <code>gooddlong@gmail.com</code></li>
+    </ol>
+  </div>
+
+  <div class="card">
+    <p><strong>办法 B · 装小插件（一劳永逸）</strong></p>
+    <ol>
+      <li>打开 Chrome 地址栏：<code>chrome://extensions</code></li>
+      <li>右上角打开「开发者模式」</li>
+      <li>「加载已解压的扩展程序」</li>
+      <li>选仓库里的文件夹 <code>integrations/social_browser/chrome-facebook-www-guard</code></li>
+    </ol>
+    <p class="warn">装好后不要用无痕（无痕默认不加载插件）。</p>
+  </div>
+</body>
+</html>

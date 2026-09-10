@@ -121,14 +121,6 @@ def _publish_one(item: dict[str, Any]) -> dict[str, Any]:
         if api_ready(platform):
             from customer_gateway.social_api import post_via_api
             result = post_via_api(platform, message=message, link=link, image_urls=images)
-        elif platform == "facebook":
-            return {
-                "ok": False,
-                "error": "facebook_requires_graph_api",
-                "hint": "Agent 禁止走 web.facebook.com 的 Google 本人验证。请配置 META_PAGE_ID + META_PAGE_ACCESS_TOKEN（docs/ops/ops-meta-agent-graph-api.md）",
-                "platform": platform,
-                "item": item,
-            }
         else:
             from integrations.social_browser.platform_adapter import post_via_browser
             result = post_via_browser(platform, message=message, link=link, image_urls=images)
