@@ -1484,7 +1484,7 @@ async function handleMessageInner(message, state, session) {
           if (policy.topic === "after_sales") await saveDealState(senderId, { support_review_pending: true });
           await sendTelegram(`🟡 客户需人工处理（${policy.topic}）\n客户: ${senderId}\n${text.slice(0, 1000)}\n暂停该客户 AI：暂停AI ${senderId}`).then(() => { notified = true; }).catch(() => {});
         }
-        const reply = routedReply(policy, notified);
+        const reply = routedReply(policy, notified, text);
         const result = await sendCustomerText(session, senderId, reply);
         recordReplyForEvidence({ senderId, text, messageId: message.messageId, observedAt: message.observedAt, messageType: message.kind || "text", originalReply: reply, finalReply: reply, reasonCode: policy.route, outboundWamid: result?.messageId || "", sent: Boolean(result?.messageId) });
         return;

@@ -29,6 +29,8 @@ The WhatsApp bridge stores `conversation_scope` in the existing per-contact deal
 
 The `apsales-openclaw` Release Manager target now ships, snapshots, syntax-checks, and validates the reply-control, human-takeover, turn-policy, and Python control modules that the bridge imports.
 
+Pure greetings inside an active business conversation now receive only the matching short greeting. They do not enter the sales model again, so a greeting after a photo, VIN, part number, or other evidence cannot repeat the previous request. A first-contact greeting and an explicit follow-up such as a price request still use the normal sales flow.
+
 ## Rollback impact
 
 Release Manager snapshots every changed production path before deployment. Restore with `RESTORE_CONFIRM=<release-id> node scripts/release-restore.mjs <release-id>`. The deploy target also keeps a timestamped bridge backup under `/root/.openclaw/releases/apsales-openclaw-*`.
@@ -38,5 +40,6 @@ Release Manager snapshots every changed production path before deployment. Resto
 - Node syntax checks for the bridge, session, policy, takeover, reply control, deployment script, and Release Manager.
 - Python compilation for the classifier and reply-control modules.
 - Regression sequence: school update -> non-business scope; later `Hi Sir` -> retain only; later `Need engine` -> business routing.
+- Regression sequence: active gearbox enquiry -> `Good morning` -> `Good morning.` only; first-contact greeting and explicit quotation intent keep normal routing.
 - Reply-control tests cover persisted pauses, restart behavior, final transport send checks, corrupt-state fail-closed behavior, and delayed human-device synchronization.
 - Production validation checks the running systemd bridge process and live module syntax after deployment.

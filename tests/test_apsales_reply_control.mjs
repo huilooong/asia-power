@@ -140,3 +140,22 @@ test("school conversation stays silent across a later greeting but explicit sale
   assert.equal(businessPatch.conversation_scope, "business");
   assert.equal(turnPolicy(salesIntent, { ...schoolPatch, ...businessPatch }).route, "model");
 });
+
+test("pure greeting in an active business conversation does not repeat the sales question", () => {
+  const activeGearboxEnquiry = {
+    conversation_scope: "business",
+    part_intent: "gearbox",
+  };
+  const policy = turnPolicy("greeting", activeGearboxEnquiry);
+  assert.deepEqual(policy, {
+    route: "greet",
+    collectIdentity: false,
+    reason: "active_business_greeting",
+  });
+  const reply = routedReply(policy, false, "Good morning");
+  assert.equal(reply, "Good morning.");
+  assert.doesNotMatch(reply, /photo|VIN|code|price|gearbox/i);
+
+  assert.equal(turnPolicy("greeting", {}).route, "model");
+  assert.equal(turnPolicy("quotation", activeGearboxEnquiry).route, "model");
+});

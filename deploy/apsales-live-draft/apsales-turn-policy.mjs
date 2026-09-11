@@ -48,6 +48,9 @@ export function turnPolicy(intent, dealState = {}) {
   if (dealState.conversation_scope === "non_business" && WEAK_SCOPE_INTENTS.has(intent)) {
     return { route: "retain_only", collectIdentity: false, reason: "persisted_non_business_scope" };
   }
+  if (intent === "greeting" && dealState.conversation_scope === "business") {
+    return { route: "greet", collectIdentity: false, reason: "active_business_greeting" };
+  }
   if (intent === "non_business") return { route: "retain_only", collectIdentity: false };
   if (intent === "after_sales") return { route: "human_review", topic: "after_sales", collectIdentity: false };
   if (intent === "location") return { route: "human_review", topic: "location", collectIdentity: false };
@@ -56,8 +59,15 @@ export function turnPolicy(intent, dealState = {}) {
   return { route: "model", collectIdentity: ["quotation", "product_enquiry", "availability", "negotiation", "closing"].includes(intent) || (intent === "acknowledgement" && dealState.last_outbound_cue === "offer_price_go_ahead") };
 }
 
-export function routedReply(policy, notified) {
+export function routedReply(policy, notified, customerText = "") {
   if (policy.route === "acknowledge") return "Okay.";
+  if (policy.route === "greet") {
+    const greeting = String(customerText || "").trim().toLowerCase();
+    if (/\bgood\s+morning\b/.test(greeting)) return "Good morning.";
+    if (/\bgood\s+afternoon\b/.test(greeting)) return "Good afternoon.";
+    if (/\bgood\s+evening\b/.test(greeting)) return "Good evening.";
+    return "Hello.";
+  }
   if (policy.topic === "location") return notified
     ? "I’ve passed your location request to our team to confirm the directions."
     : "I don’t have a confirmed location to share here.";
