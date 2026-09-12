@@ -107,6 +107,11 @@
 - `normalizeKey` 必须保留 CJK；剥成空串会把尚酷等塌成目录里第一个中文名（例：朗逸）
 - 显式映射：尚酷→Scirocco；详见 `docs/ops/ops-hc250552-scirocco-model-fix.md`
 
+## JAC 双品牌（2026-09-12）
+- 江淮**同时**做卡车和乘用车。过滤时**禁止**把整个 JAC 当成乘用车品牌，否则帅铃/轻卡会被踢出卡车栏。
+- 只拦乘用系列：S2/S3/S4/S5/S7、Refine/瑞风、和悦、思皓。例：HC250613 JAC S3 曾被标成卡车驾驶室且占首页卡车第 1。
+- 对照：Refine M5 = 乘用半切；帅铃/轻型货车 = 卡车。报告：`docs/ops/ops-hc250613-jac-s3-truck-mistag.md`
+
 ## Engineering gotchas
 - **CSS cache-bust**：改 `ebay-layout.css` 必须同步 bump `js/components.js` 的 `SITE_EBAY_LAYOUT_VER`，否则 CDN 旧 `?v=` 会盖掉新样式（parts 真图曾因此卡在 66px）。
 - **库存号搜索跨分类（P0 2026-07-10）**：顶栏搜数字/`HC…` 默认进半切页；若车在 used-cars/卡车等分类会被踢空。规则：`isStockIdQuery` + `mergeStockIdHitsIntoInventory`；现网 cache key 已升到 `stock-id-search-v2`（v1 逻辑曾在 origin 但 CF 仍喂 `parts-parallel-v1` 旧 JS → CEO 测仍空）。回归 `node scripts/verify-stock-id-search.mjs` + 现网截图。报告：`docs/ops/ops-p0-stock-id-search-live-retest-2026-07-10.md`。

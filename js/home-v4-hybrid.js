@@ -97,10 +97,17 @@
       || String(item?.vehicleCondition || '').trim() === 'Driver Cab';
   }
 
+  /** Dual-use OEM: JAC also makes trucks (Shuailing / 轻卡). Only passenger series. */
+  function isJacPassengerModel(brand, model, title) {
+    if (!/jac|江淮/i.test(String(brand || ''))) return false;
+    return /\b(s2|s3|s4|s5|s7|refine|瑞风|heyue|和悦|sehol|sihao|思皓)\b/i.test(`${model || ''} ${title || ''}`);
+  }
+
   /** Passenger OEMs / models that must never appear in Trucks shelf */
   function looksLikePassengerVehicle(item) {
     const brand = String(item?.brand || '');
     const model = String(item?.model || '');
+    if (isJacPassengerModel(brand, model, item?.title)) return true;
     const blob = `${brand} ${model} ${item?.title || ''}`.toLowerCase();
     const passengerOem = [
       '吉利', '雪佛兰', '别克', '福特', '大众', '马自达', '哈弗', '长安', '猎豹',
@@ -141,9 +148,9 @@
 
   function isPassengerHalf(item) {
     if (isMachinery(item) || isTruckCab(item) || isUsedCar(item)) return false;
-    if (item?.vehicleCategory === 'truck') return false;
+    if (item?.vehicleCategory === 'truck' && !looksLikePassengerVehicle(item)) return false;
     const cond = String(item?.vehicleCondition || '');
-    return cond === 'Half Cut' || item?.vehicleCategory === 'passenger';
+    return cond === 'Half Cut' || item?.vehicleCategory === 'passenger' || looksLikePassengerVehicle(item);
   }
 
   function titleOf(item, variant) {

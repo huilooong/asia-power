@@ -186,9 +186,15 @@
     return item?.vehicleCategory || 'passenger';
   }
 
+  function isJacPassengerModel(brand, model, title) {
+    if (!/jac|江淮/i.test(String(brand || ''))) return false;
+    return /\b(s2|s3|s4|s5|s7|refine|瑞风|heyue|和悦|sehol|sihao|思皓)\b/i.test(`${model || ''} ${title || ''}`);
+  }
+
   function looksLikePassengerMisTag(item) {
     const brand = String(item?.brand || '');
     const model = String(item?.model || '');
+    if (isJacPassengerModel(brand, model, item?.title)) return true;
     const blob = `${brand} ${model}`.toLowerCase();
     const passengerOem = ['吉利', '雪佛兰', '别克', '福特', '大众', '马自达', '哈弗', '长安', '猎豹', '宝马', '奥迪', '丰田', '本田', '日产', '现代', '起亚', '荣威', '名爵', '比亚迪', '奇瑞', '长城', '传祺', '五菱', '宝骏', '路虎', '捷豹', 'toyota', 'honda', 'ford', 'chevrolet', 'buick', 'geely', 'haval', 'mazda', 'volkswagen', 'bmw', 'audi', 'lexus', 'jeep', 'porsche', 'jaguar', 'land rover', 'landrover', 'liebao', 'byd', 'mg', 'roewe'];
     if (!passengerOem.some((b) => brand.includes(b) || blob.includes(b.toLowerCase()))) return false;

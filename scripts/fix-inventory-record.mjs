@@ -54,7 +54,12 @@ function parseArgs(argv) {
       args.vehicleCategory = next;
       i += 1;
     } else if (key === '--truck-part' && next) {
-      args.truckPartType = next;
+      args.truckPartType = next === '-' ? '' : next;
+      i += 1;
+    } else if (key === '--clear-truck-part') {
+      args.truckPartType = '';
+    } else if (key === '--passenger-part' && next) {
+      args.passengerPartType = next;
       i += 1;
     } else if (key === '--condition' && next) {
       args.vehicleCondition = next;
@@ -172,7 +177,8 @@ function main() {
   if (args.transmissionCode) fields.transmissionCode = args.transmissionCode;
   if (args.year) fields.year = Number(args.year);
   if (args.vehicleCategory) fields.vehicleCategory = args.vehicleCategory;
-  if (args.truckPartType) fields.truckPartType = args.truckPartType;
+  if (Object.prototype.hasOwnProperty.call(args, 'truckPartType')) fields.truckPartType = args.truckPartType;
+  if (args.passengerPartType) fields.passengerPartType = args.passengerPartType;
   if (args.vehicleCategory === 'truck' && !fields.truckPartType) {
     fields.truckPartType = 'vehicle';
   }
@@ -199,7 +205,7 @@ function main() {
   }
   if (args.machineryType) fields.machineryType = args.machineryType;
   if (!Object.keys(fields).length) {
-    console.error('Provide at least one field: --brand, --model, --engine, --transmission, --year, --category, --machinery-type, --condition, --description, --origin, --drivetrain, --parts');
+    console.error('Provide at least one field: --brand, --model, --engine, --transmission, --year, --category, --machinery-type, --condition, --passenger-part, --clear-truck-part, --description, --origin, --drivetrain, --parts');
     process.exit(1);
   }
 

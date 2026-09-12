@@ -23,7 +23,13 @@
     return item;
   }
 
+  function isJacPassengerModel(brand, model, title) {
+    if (!/jac|江淮/i.test(String(brand || ''))) return false;
+    return /\b(s2|s3|s4|s5|s7|refine|瑞风|heyue|和悦|sehol|sihao|思皓)\b/i.test(`${model || ''} ${title || ''}`);
+  }
+
   function isTruckCab(item) {
+    if (isJacPassengerModel(item?.brand, item?.model, item?.title)) return false;
     if (window.HalfCutUploadLayer?.isTruckCab?.(item)) {
       // Still require truck category to avoid passenger mis-tags
       if (item?.vehicleCategory && item.vehicleCategory !== 'truck') return false;

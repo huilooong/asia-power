@@ -124,14 +124,25 @@
     const model = String(record.model || '');
     const blob = `${brand} ${model}`.toLowerCase();
     const passengerOem = ['吉利', '雪佛兰', '别克', '福特', '大众', '马自达', '哈弗', '长安', '猎豹', '宝马', '奥迪', '丰田', '本田', '日产', '现代', '起亚', '荣威', '名爵', '比亚迪', '奇瑞', '长城', '传祺', '五菱', '宝骏', '路虎', '捷豹', 'toyota', 'honda', 'ford', 'chevrolet', 'buick', 'geely', 'haval', 'mazda', 'volkswagen', 'bmw', 'audi', 'lexus', 'jeep', 'porsche', 'jaguar', 'land rover', 'landrover', 'liebao', 'byd', 'mg', 'roewe'];
-    const looksPassenger = passengerOem.some((b) => brand.includes(b) || blob.includes(b.toLowerCase()))
-      && !/\b(truck|giga|elf|nqr|npr|howo|t7|f3000|m3000)\b/i.test(blob);
+    const isJacPassenger = /jac|江淮/i.test(brand)
+      && /\b(s2|s3|s4|s5|s7|refine|瑞风|heyue|和悦|sehol|sihao|思皓)\b/i.test(`${model} ${record.title || ''}`);
+    const looksPassenger = isJacPassenger || (passengerOem.some((b) => brand.includes(b) || blob.includes(b.toLowerCase()))
+      && !/\b(truck|giga|elf|nqr|npr|howo|t7|f3000|m3000)\b/i.test(blob));
+    const passengerPartCondition = {
+      front: 'Front Cut',
+      engine: 'Engine Assembly',
+      transmission: 'Transmission Assembly',
+      chassis: 'Chassis Part',
+      other: 'Part',
+    }[passengerPartType];
     if (looksPassenger && (condition === 'Driver Cab' || truckPartType === 'cab' || vehicleCategory === 'truck' || slug.includes('-truck-cab-'))) {
       return {
         vehicleCategory: 'passenger',
         truckPartType: '',
         passengerPartType: passengerPartType || '',
-        vehicleCondition: (condition && condition !== 'Driver Cab') ? condition : 'Half Cut',
+        vehicleCondition: (condition && condition !== 'Driver Cab')
+          ? condition
+          : (passengerPartCondition || 'Half Cut'),
       };
     }
 
