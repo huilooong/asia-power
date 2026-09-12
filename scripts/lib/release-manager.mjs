@@ -37,6 +37,7 @@ export const TARGET_SOURCE_FILES = {
     'js/public-i18n.js',
     'js/ebay-layout.js',
     'js/half-cut-directory.js',
+    'js/half-cut-upload-layer.js',
     'js/ebay-catalog-hub.js',
     'css/ebay-layout.css',
     'css/styles.css',

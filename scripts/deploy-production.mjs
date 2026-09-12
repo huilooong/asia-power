@@ -196,6 +196,7 @@ function deployChrome() {
   rsync(`${ROOT}/js/public-i18n.js`, `${pub}/js/public-i18n.js`);
   rsync(`${ROOT}/js/ebay-layout.js`, `${pub}/js/ebay-layout.js`);
   rsync(`${ROOT}/js/half-cut-directory.js`, `${pub}/js/half-cut-directory.js`);
+  rsync(`${ROOT}/js/half-cut-upload-layer.js`, `${pub}/js/half-cut-upload-layer.js`);
   rsync(`${ROOT}/js/catalog-search-aliases.js`, `${pub}/js/catalog-search-aliases.js`);
   rsync(`${ROOT}/js/ebay-catalog-hub.js`, `${pub}/js/ebay-catalog-hub.js`);
   rsync(`${ROOT}/js/half-cut-catalog.js`, `${pub}/js/half-cut-catalog.js`);
