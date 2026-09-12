@@ -177,6 +177,8 @@
     const meta = window.HalfCutUploadLayer?.resolveListingMeta?.(item);
     if (meta?.vehicleCategory === 'machinery') return 'machinery';
     if (isMachineryLike(item)) return 'machinery';
+    if (isHyundaiCommercialTruck(item?.brand, item?.model, item?.title, item?.engineCode)) return 'truck';
+    if (isChanganCommercialTruck(item?.brand, item?.model, item?.title)) return 'truck';
     if (looksLikePassengerMisTag(item)) return item?.vehicleCategory === 'machinery' ? 'machinery' : 'passenger';
     if (meta?.vehicleCategory === 'truck') return 'truck';
     if (item?.vehicleCategory === 'truck') return 'truck';
@@ -186,9 +188,37 @@
     return item?.vehicleCategory || 'passenger';
   }
 
+  function isJacPassengerModel(brand, model, title) {
+    if (!/jac|江淮/i.test(String(brand || ''))) return false;
+    return /\b(s2|s3|s4|s5|s7|refine|瑞风|heyue|和悦|sehol|sihao|思皓)\b/i.test(`${model || ''} ${title || ''}`);
+  }
+
+  function isVolvoPassengerModel(brand, model, title) {
+    if (!/volvo|沃尔沃/i.test(String(brand || ''))) return false;
+    return /\b(xc[0-9]{2}|s[468]0|v[467]0|c[37]0)\b/i.test(`${model || ''} ${title || ''}`);
+  }
+
+  function isHyundaiCommercialTruck(brand, model, title, engineCode) {
+    const brandText = String(brand || '');
+    const blob = `${brandText} ${model || ''} ${title || ''} ${engineCode || ''}`;
+    if (/hyundai\s*trucks/i.test(brandText) || /hyundai\s*trucks/i.test(blob)) return true;
+    if (/hyundai/i.test(brandText) && (/\b(xcient|mighty|p440|trago)\b/i.test(blob) || /d6cf/i.test(blob))) {
+      return true;
+    }
+    return false;
+  }
+
+  function isChanganCommercialTruck(brand, model, title) {
+    return /kuayue|跨越|xinbao|新豹|神骐/i.test(`${brand || ''} ${model || ''} ${title || ''}`);
+  }
+
   function looksLikePassengerMisTag(item) {
     const brand = String(item?.brand || '');
     const model = String(item?.model || '');
+    if (isHyundaiCommercialTruck(brand, model, item?.title, item?.engineCode)) return false;
+    if (isChanganCommercialTruck(brand, model, item?.title)) return false;
+    if (isJacPassengerModel(brand, model, item?.title)) return true;
+    if (isVolvoPassengerModel(brand, model, item?.title)) return true;
     const blob = `${brand} ${model}`.toLowerCase();
     const passengerOem = ['吉利', '雪佛兰', '别克', '福特', '大众', '马自达', '哈弗', '长安', '猎豹', '宝马', '奥迪', '丰田', '本田', '日产', '现代', '起亚', '荣威', '名爵', '比亚迪', '奇瑞', '长城', '传祺', '五菱', '宝骏', '路虎', '捷豹', 'toyota', 'honda', 'ford', 'chevrolet', 'buick', 'geely', 'haval', 'mazda', 'volkswagen', 'bmw', 'audi', 'lexus', 'jeep', 'porsche', 'jaguar', 'land rover', 'landrover', 'liebao', 'byd', 'mg', 'roewe'];
     if (!passengerOem.some((b) => brand.includes(b) || blob.includes(b.toLowerCase()))) return false;

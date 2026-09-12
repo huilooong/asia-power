@@ -254,9 +254,24 @@ function slugifyPart(value) {
     .replace(/^-+|-+$/g, '');
 }
 
+const listingCorrections = require('./listing-category-corrections');
+const {
+  isJacPassengerModel,
+  isVolvoPassengerModel,
+  isHyundaiCommercialTruck,
+  isChanganCommercialTruck,
+  applyListingCategoryCorrection,
+  forceHyundaiCommercialTruckMeta,
+} = listingCorrections;
+
 function looksLikePassengerBrand(record) {
   const brand = String(record?.brand || '');
   const model = String(record?.model || '');
+  const title = String(record?.title || '');
+  if (isHyundaiCommercialTruck(brand, model, title, record?.engineCode)) return false;
+  if (isChanganCommercialTruck(brand, model, title)) return false;
+  if (isJacPassengerModel(brand, model, title)) return true;
+  if (isVolvoPassengerModel(brand, model, title)) return true;
   const blob = `${brand} ${model}`.toLowerCase();
   const passengerOem = [
     '吉利', '雪佛兰', '别克', '福特', '大众', '马自达', '哈弗', '长安', '猎豹',
@@ -278,12 +293,25 @@ function looksLikePassengerBrand(record) {
 
 function normalizeListingMeta(record) {
   if (!record || typeof record !== 'object') return record;
+  record = applyListingCategoryCorrection(record);
+  const hyundaiTruck = forceHyundaiCommercialTruckMeta(record);
+  if (hyundaiTruck) {
+    return { ...record, ...hyundaiTruck };
+  }
   const condition = String(record.vehicleCondition || '').trim();
   let vehicleCategory = String(record.vehicleCategory || '').trim();
   let truckPartType = String(record.truckPartType || '').trim();
   const slug = String(record.slug || record.approvedSlug || '');
 
-  // Passenger OEMs must not be forced into truck cab by Driver Cab / cab flags
+  // Passenger OEMs / JAC passenger series must not be forced into truck cab
+  const passengerPartType = String(record.passengerPartType || '').trim();
+  const passengerPartCondition = {
+    front: 'Front Cut',
+    engine: 'Engine Assembly',
+    transmission: 'Transmission Assembly',
+    chassis: 'Chassis Part',
+    other: 'Part',
+  }[passengerPartType];
   if (
     (condition === 'Driver Cab' || truckPartType === 'cab' || vehicleCategory === 'truck' || slug.includes('-truck-cab-'))
     && looksLikePassengerBrand(record)
@@ -292,8 +320,10 @@ function normalizeListingMeta(record) {
       ...record,
       vehicleCategory: 'passenger',
       truckPartType: '',
-      passengerPartType: record.passengerPartType || '',
-      vehicleCondition: (condition && condition !== 'Driver Cab') ? condition : 'Half Cut',
+      passengerPartType,
+      vehicleCondition: (condition && condition !== 'Driver Cab')
+        ? condition
+        : (passengerPartCondition || 'Half Cut'),
     };
   }
 
@@ -416,7 +446,6 @@ function normalizeListingMeta(record) {
         vehicleCondition: 'Truck Half Cut',
       };
     }
-    const passengerPartType = String(record.passengerPartType || '').trim();
     if (slug.includes('-front-cut-') || passengerPartType === 'front' || condition === 'Front Cut') {
       return {
         ...record,
@@ -451,6 +480,15 @@ function normalizeListingMeta(record) {
         truckPartType: '',
         passengerPartType: 'chassis',
         vehicleCondition: condition || 'Chassis Part',
+      };
+    }
+    if (slug.includes('-passenger-tire-') || passengerPartType === 'tire' || condition === 'Used Tire') {
+      return {
+        ...record,
+        vehicleCategory: 'passenger',
+        truckPartType: '',
+        passengerPartType: 'tire',
+        vehicleCondition: condition || 'Used Tire',
       };
     }
     if (slug.includes('-passenger-part-') || passengerPartType === 'other' || condition === 'Part') {
@@ -758,4 +796,10 @@ module.exports = {
   normalizeInventoryRecord,
   normalizeState,
   rebuildInventoryDerivedFields,
+  looksLikePassengerBrand,
+  isJacPassengerModel,
+  isVolvoPassengerModel,
+  isHyundaiCommercialTruck,
+  isChanganCommercialTruck,
+  applyListingCategoryCorrection,
 };

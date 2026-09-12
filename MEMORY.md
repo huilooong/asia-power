@@ -56,6 +56,7 @@
 2. **禁止**常态用 `--allow-dirty` 直 rsync 生产（未入库、未上 GitHub 的脏树不得上线）
 3. 紧急例外仅限显式 env（`DEPLOY_ALLOW_DIRTY=1` / `DEPLOY_ALLOW_UNPUSHED=1`）且必须打日志；**默认拒绝 dirty + 未 push**
 4. **不要**在 CEO 未说可以时擅自补 push / 再部署生产来「补救」
+5. **上线必须本机 Cursor（This Computer）**：Cloud Agent / 云 VM 没有生产 SSH 钥。`Task environment=local` 仍落在云端，绑不到 `longMacBook Pro` worker。看到 worker 在线 ≠ 已在 Mac 上跑。无钥就停。本机指令见 `docs/ops/ops-hc250613-mac-local-deploy.md`
 
 ## 部署与安全（2026-06-29）
 
@@ -106,6 +107,12 @@
 ## 中文车型 normalize（2026-07-10）
 - `normalizeKey` 必须保留 CJK；剥成空串会把尚酷等塌成目录里第一个中文名（例：朗逸）
 - 显式映射：尚酷→Scirocco；详见 `docs/ops/ops-hc250552-scirocco-model-fix.md`
+
+## 双品牌 / 错栏（2026-09-12）
+- 江淮、沃尔沃**同时**做卡车和乘用车：只按车系拦（S3/Refine、XC60），禁止把整个品牌当乘用车。
+- `Hyundai Trucks` / Xcient / Mighty / P440 / D6CF、长安跨越/新豹 = 卡车，不能因「现代/长安」被收进乘用车。
+- HC250613 JAC S3 = **发动机**（不是驾驶室/前脸）。HC250581 Volvo XC60 = **半切**。
+- 全库扫描脚本：`scripts/scan-inventory-category-mistags.mjs`。报告：`docs/ops/ops-hc250613-jac-s3-truck-mistag.md`
 
 ## Engineering gotchas
 - **CSS cache-bust**：改 `ebay-layout.css` 必须同步 bump `js/components.js` 的 `SITE_EBAY_LAYOUT_VER`，否则 CDN 旧 `?v=` 会盖掉新样式（parts 真图曾因此卡在 66px）。

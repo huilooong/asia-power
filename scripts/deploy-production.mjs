@@ -41,7 +41,11 @@ const BASE_URL = process.env.SITE_URL || 'https://asia-power.com';
 
 function run(cmd, argv, opts = {}) {
   const r = spawnSync(cmd, argv, { stdio: 'inherit', ...opts });
-  if (r.status !== 0) process.exit(r.status ?? 1);
+  if (r.status !== 0) {
+    if (r.error) console.error(`[deploy] ${cmd} spawn error: ${r.error.message}`);
+    if (r.signal) console.error(`[deploy] ${cmd} killed by ${r.signal}`);
+    process.exit(r.status ?? 1);
+  }
 }
 
 function rsync(local, remote, extra = []) {
@@ -49,7 +53,11 @@ function rsync(local, remote, extra = []) {
 }
 
 function ssh(script) {
-  run('ssh', [REMOTE, script]);
+  // BatchMode + closed stdin: agent/CI often backgrounds the deploy after 30s.
+  // Without this, the trailing remote grep block exits 1 with no output.
+  run('ssh', ['-o', 'BatchMode=yes', '-o', 'RequestTTY=no', REMOTE, script], {
+    stdio: ['ignore', 'inherit', 'inherit'],
+  });
 }
 
 function deployNginx() {
@@ -131,12 +139,12 @@ test -f "$PUB/assets/home-v4-inventory-snapshot.json"
 grep -q 'page-home-v4-hybrid' "$PUB/index.html"
 grep -q 'home-v4-hybrid' "$PUB/index.html"
 grep -q 'home-lang-v1' "$PUB/index.html"
-grep -q 'lang-sync-v2\|auth-nav-once-v2' "$PUB/index.html"
+grep -E -q 'lang-sync-v2|auth-nav-once-v2' "$PUB/index.html"
 grep -q 'lang-sync-v2' "$PUB/css/styles.css"
 grep -q 'home.v4.hero.title' "$PUB/index.html"
 grep -q 'data-ap-auth-slot' "$PUB/index.html"
 grep -q 'auth-nav-once-v2' "$PUB/index.html"
-grep -q 'nav-list-direct-v1' "$PUB/index.html"
+grep -q 'jac-s3-mistag-v2' "$PUB/index.html"
 grep -q 'href="/half-cuts/"' "$PUB/index.html"
 grep -q 'href="/engines/"' "$PUB/index.html"
 grep -q 'href="/trucks/"' "$PUB/index.html"
@@ -196,6 +204,7 @@ function deployChrome() {
   rsync(`${ROOT}/js/public-i18n.js`, `${pub}/js/public-i18n.js`);
   rsync(`${ROOT}/js/ebay-layout.js`, `${pub}/js/ebay-layout.js`);
   rsync(`${ROOT}/js/half-cut-directory.js`, `${pub}/js/half-cut-directory.js`);
+  rsync(`${ROOT}/js/half-cut-upload-layer.js`, `${pub}/js/half-cut-upload-layer.js`);
   rsync(`${ROOT}/js/catalog-search-aliases.js`, `${pub}/js/catalog-search-aliases.js`);
   rsync(`${ROOT}/js/ebay-catalog-hub.js`, `${pub}/js/ebay-catalog-hub.js`);
   rsync(`${ROOT}/js/half-cut-catalog.js`, `${pub}/js/half-cut-catalog.js`);
@@ -280,11 +289,11 @@ grep -q 'dedicated-price-v1' "$PUB/js/components.js"
 grep -q 'formatCatalogPartPrice' "$PUB/js/half-cut-directory.js"
 grep -q 'catalogPartPriceAmount' "$PUB/js/half-cut-directory.js"
 grep -q 'formatCatalogPartPrice' "$PUB/js/ebay-catalog-hub.js"
-grep -E -q 'half-cut-directory\.js\?v=(parts-parallel-v1|stock-id-search-v1|stock-id-search-v2|dedicated-price-v1|catalog-search-v1|catalog-search-v2)' "$PUB/half-cuts/index.html"
-grep -E -q 'ebay-catalog-hub\.js\?v=(parts-parallel-v1|stock-id-search-v1|stock-id-search-v2|dedicated-price-v1|catalog-search-v1|catalog-search-v2)' "$PUB/half-cuts/index.html"
-grep -E -q 'half-cut-directory\.js\?v=(stock-id-search-v2|dedicated-price-v1|catalog-search-v1|catalog-search-v2)' "$PUB/gearboxes/index.html"
-grep -E -q 'ebay-catalog-hub\.js\?v=(stock-id-search-v2|dedicated-price-v1|catalog-search-v1|catalog-search-v2)' "$PUB/gearboxes/index.html"
-grep -E -q 'catalog-search-v1|catalog-search-v2|stock-id-search-v[12]' "$PUB/half-cuts/index.html"
+grep -E -q 'half-cut-directory[.]js[?]v=(parts-parallel-v1|stock-id-search-v1|stock-id-search-v2|dedicated-price-v1|catalog-search-v1|catalog-search-v2|jac-s3-mistag-v1|jac-s3-mistag-v2)' "$PUB/half-cuts/index.html"
+grep -E -q 'ebay-catalog-hub[.]js[?]v=(parts-parallel-v1|stock-id-search-v1|stock-id-search-v2|dedicated-price-v1|catalog-search-v1|catalog-search-v2|jac-s3-mistag-v1|jac-s3-mistag-v2)' "$PUB/half-cuts/index.html"
+grep -E -q 'half-cut-directory[.]js[?]v=(stock-id-search-v2|dedicated-price-v1|catalog-search-v1|catalog-search-v2|jac-s3-mistag-v1|jac-s3-mistag-v2)' "$PUB/gearboxes/index.html"
+grep -E -q 'ebay-catalog-hub[.]js[?]v=(stock-id-search-v2|dedicated-price-v1|catalog-search-v1|catalog-search-v2|jac-s3-mistag-v1|jac-s3-mistag-v2)' "$PUB/gearboxes/index.html"
+grep -E -q 'catalog-search-v1|catalog-search-v2|stock-id-search-v[12]|jac-s3-mistag-v1|jac-s3-mistag-v2' "$PUB/half-cuts/index.html"
 grep -q 'catalog-search-aliases.js' "$PUB/half-cuts/index.html"
 grep -q 'hc.exwBadge' "$PUB/js/public-i18n.js"
 grep -q 'ebay-sidebar__brands' "$PUB/js/ebay-layout.js"
@@ -292,7 +301,7 @@ grep -q 'exwBadgeHtml' "$PUB/js/half-cut-directory.js"
 grep -q 'productImages,' "$PUB/js/half-cut-directory.js"
 grep -q 'fetchPublicItemBySlug' "$PUB/js/half-cut-detail.js"
 grep -q "params.get('id')" "$PUB/js/half-cut-detail.js"
-grep -q 'parts-parallel-v1' "$PUB/half-cuts/detail.html"
+grep -E -q 'parts-parallel-v1|jac-s3-mistag-v1|jac-s3-mistag-v2' "$PUB/half-cuts/detail.html"
 grep -q 'ebay-sidebar--v4' "$PUB/css/ebay-layout.css"
 grep -qF -- '--ebay-list-photo-w: 200px' "$PUB/css/ebay-layout.css"
 grep -q 'photo--parts-ph' "$PUB/css/ebay-layout.css"
@@ -306,9 +315,9 @@ grep -q 'max-width: 920px' "$PUB/css/ebay-layout.css"
 grep -q 'about-type-v2' "$PUB/kenya.html"
 grep -q 'about-type-v2' "$PUB/brands/toyota.html"
 grep -q 'about-type-v2' "$PUB/half-cuts/index.html"
-grep -E -q 'catalog-search-v1|catalog-search-v2|stock-id-search-v[12]' "$PUB/half-cuts/index.html"
+grep -E -q 'catalog-search-v1|catalog-search-v2|stock-id-search-v[12]|jac-s3-mistag-v1|jac-s3-mistag-v2' "$PUB/half-cuts/index.html"
 grep -q 'about-type-v2' "$PUB/engines/index.html"
-grep -E -q 'catalog-search-v1|catalog-search-v2|stock-id-search-v[12]|dedicated-price-v1' "$PUB/engines/index.html"
+grep -E -q 'catalog-search-v1|catalog-search-v2|stock-id-search-v[12]|dedicated-price-v1|jac-s3-mistag-v1|jac-s3-mistag-v2' "$PUB/engines/index.html"
 test -f "$PUB/assets/images/parts-placeholder.svg"
 echo "[deploy:chrome] listing + static chrome OK on remote"
 `);

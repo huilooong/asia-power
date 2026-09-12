@@ -276,6 +276,10 @@ const MODEL_ZH_TO_EN = {
     '爱丽舍': 'Elysee',
   },
   jac: {
+    '瑞风S3': 'S3',
+    '瑞风S2': 'S2',
+    '瑞风S5': 'S5',
+    '瑞风S7': 'S7',
     '瑞风M5': 'Refine M5',
     '瑞风': 'Refine',
   },

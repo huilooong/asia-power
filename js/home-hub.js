@@ -23,7 +23,19 @@
     return item;
   }
 
+  function isJacPassengerModel(brand, model, title) {
+    if (!/jac|江淮/i.test(String(brand || ''))) return false;
+    return /\b(s2|s3|s4|s5|s7|refine|瑞风|heyue|和悦|sehol|sihao|思皓)\b/i.test(`${model || ''} ${title || ''}`);
+  }
+
+  function isVolvoPassengerModel(brand, model, title) {
+    if (!/volvo|沃尔沃/i.test(String(brand || ''))) return false;
+    return /\b(xc[0-9]{2}|s[468]0|v[467]0|c[37]0)\b/i.test(`${model || ''} ${title || ''}`);
+  }
+
   function isTruckCab(item) {
+    if (isJacPassengerModel(item?.brand, item?.model, item?.title)) return false;
+    if (isVolvoPassengerModel(item?.brand, item?.model, item?.title)) return false;
     if (window.HalfCutUploadLayer?.isTruckCab?.(item)) {
       // Still require truck category to avoid passenger mis-tags
       if (item?.vehicleCategory && item.vehicleCategory !== 'truck') return false;
