@@ -126,8 +126,24 @@
     const passengerOem = ['吉利', '雪佛兰', '别克', '福特', '大众', '马自达', '哈弗', '长安', '猎豹', '宝马', '奥迪', '丰田', '本田', '日产', '现代', '起亚', '荣威', '名爵', '比亚迪', '奇瑞', '长城', '传祺', '五菱', '宝骏', '路虎', '捷豹', 'toyota', 'honda', 'ford', 'chevrolet', 'buick', 'geely', 'haval', 'mazda', 'volkswagen', 'bmw', 'audi', 'lexus', 'jeep', 'porsche', 'jaguar', 'land rover', 'landrover', 'liebao', 'byd', 'mg', 'roewe'];
     const isJacPassenger = /jac|江淮/i.test(brand)
       && /\b(s2|s3|s4|s5|s7|refine|瑞风|heyue|和悦|sehol|sihao|思皓)\b/i.test(`${model} ${record.title || ''}`);
-    const looksPassenger = isJacPassenger || (passengerOem.some((b) => brand.includes(b) || blob.includes(b.toLowerCase()))
-      && !/\b(truck|giga|elf|nqr|npr|howo|t7|f3000|m3000)\b/i.test(blob));
+    const isVolvoPassenger = /volvo|沃尔沃/i.test(brand)
+      && /\b(xc[0-9]{2}|s[468]0|v[467]0|c[37]0)\b/i.test(`${model} ${record.title || ''}`);
+    const isHyundaiTruck = /hyundai\s*trucks/i.test(brand)
+      || (/hyundai/i.test(brand) && (/\b(xcient|mighty|p440|trago)\b/i.test(`${model} ${record.title || ''}`) || /d6cf/i.test(`${model} ${record.title || ''} ${record.engineCode || ''}`)));
+    const isChanganTruck = /kuayue|跨越|xinbao|新豹|神骐/i.test(`${brand} ${model} ${record.title || ''}`);
+    const looksPassenger = !isHyundaiTruck && !isChanganTruck && (isJacPassenger || isVolvoPassenger || (passengerOem.some((b) => brand.includes(b) || blob.includes(b.toLowerCase()))
+      && !/\b(truck|giga|elf|nqr|npr|howo|t7|f3000|m3000)\b/i.test(blob)));
+    if (isHyundaiTruck && vehicleCategory !== 'truck') {
+      const running = condition === 'Running Vehicle'
+        || record.isExportUsedCar === true
+        || /export used car/i.test(String(record.title || ''));
+      return {
+        vehicleCategory: 'truck',
+        truckPartType: running ? 'vehicle' : 'cab',
+        passengerPartType: '',
+        vehicleCondition: running ? 'Running Vehicle' : 'Driver Cab',
+      };
+    }
     const passengerPartCondition = {
       front: 'Front Cut',
       engine: 'Engine Assembly',

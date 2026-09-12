@@ -107,10 +107,11 @@
 - `normalizeKey` 必须保留 CJK；剥成空串会把尚酷等塌成目录里第一个中文名（例：朗逸）
 - 显式映射：尚酷→Scirocco；详见 `docs/ops/ops-hc250552-scirocco-model-fix.md`
 
-## JAC 双品牌（2026-09-12）
-- 江淮**同时**做卡车和乘用车。过滤时**禁止**把整个 JAC 当成乘用车品牌，否则帅铃/轻卡会被踢出卡车栏。
-- 只拦乘用系列：S2/S3/S4/S5/S7、Refine/瑞风、和悦、思皓。例：HC250613 JAC S3 曾被标成卡车驾驶室且占首页卡车第 1。
-- 对照：Refine M5 = 乘用半切；帅铃/轻型货车 = 卡车。报告：`docs/ops/ops-hc250613-jac-s3-truck-mistag.md`
+## 双品牌 / 错栏（2026-09-12）
+- 江淮、沃尔沃**同时**做卡车和乘用车：只按车系拦（S3/Refine、XC60），禁止把整个品牌当乘用车。
+- `Hyundai Trucks` / Xcient / Mighty / P440 / D6CF、长安跨越/新豹 = 卡车，不能因「现代/长安」被收进乘用车。
+- HC250613 JAC S3 = **发动机**（不是驾驶室/前脸）。HC250581 Volvo XC60 = **半切**。
+- 全库扫描脚本：`scripts/scan-inventory-category-mistags.mjs`。报告：`docs/ops/ops-hc250613-jac-s3-truck-mistag.md`
 
 ## Engineering gotchas
 - **CSS cache-bust**：改 `ebay-layout.css` 必须同步 bump `js/components.js` 的 `SITE_EBAY_LAYOUT_VER`，否则 CDN 旧 `?v=` 会盖掉新样式（parts 真图曾因此卡在 66px）。

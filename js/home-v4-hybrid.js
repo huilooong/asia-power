@@ -103,11 +103,33 @@
     return /\b(s2|s3|s4|s5|s7|refine|瑞风|heyue|和悦|sehol|sihao|思皓)\b/i.test(`${model || ''} ${title || ''}`);
   }
 
+  function isVolvoPassengerModel(brand, model, title) {
+    if (!/volvo|沃尔沃/i.test(String(brand || ''))) return false;
+    return /\b(xc[0-9]{2}|s[468]0|v[467]0|c[37]0)\b/i.test(`${model || ''} ${title || ''}`);
+  }
+
+  function isHyundaiCommercialTruck(brand, model, title, engineCode) {
+    const brandText = String(brand || '');
+    const blob = `${brandText} ${model || ''} ${title || ''} ${engineCode || ''}`;
+    if (/hyundai\s*trucks/i.test(brandText) || /hyundai\s*trucks/i.test(blob)) return true;
+    if (/hyundai/i.test(brandText) && (/\b(xcient|mighty|p440|trago)\b/i.test(blob) || /d6cf/i.test(blob))) {
+      return true;
+    }
+    return false;
+  }
+
+  function isChanganCommercialTruck(brand, model, title) {
+    return /kuayue|跨越|xinbao|新豹|神骐/i.test(`${brand || ''} ${model || ''} ${title || ''}`);
+  }
+
   /** Passenger OEMs / models that must never appear in Trucks shelf */
   function looksLikePassengerVehicle(item) {
     const brand = String(item?.brand || '');
     const model = String(item?.model || '');
+    if (isHyundaiCommercialTruck(brand, model, item?.title, item?.engineCode)) return false;
+    if (isChanganCommercialTruck(brand, model, item?.title)) return false;
     if (isJacPassengerModel(brand, model, item?.title)) return true;
+    if (isVolvoPassengerModel(brand, model, item?.title)) return true;
     const blob = `${brand} ${model} ${item?.title || ''}`.toLowerCase();
     const passengerOem = [
       '吉利', '雪佛兰', '别克', '福特', '大众', '马自达', '哈弗', '长安', '猎豹',

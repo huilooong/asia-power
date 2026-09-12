@@ -8,6 +8,7 @@ const halfCutTitle = require('./half-cut-title');
 const contactRedact = require('./contact-redact');
 const vehicleTitleI18n = require('./half-cut-vehicle-title-i18n');
 const { BRAND_ZH_TO_EN, MODEL_ZH_TO_EN } = require('./vin/zh-en-seed');
+const nameNorm = require('./vehicle-name-normalize');
 
 function maskVin(vin) {
   const value = String(vin || '').toUpperCase();
@@ -182,9 +183,21 @@ function filterPublicIncludedParts(parts) {
   });
 }
 
+function applyPublicCategoryFix(item) {
+  if (!item || typeof item !== 'object') return item;
+  const intended = (
+    nameNorm.isJacPassengerModel?.(item.brand, item.model, item.title)
+    || nameNorm.isVolvoPassengerModel?.(item.brand, item.model, item.title)
+    || nameNorm.isHyundaiCommercialTruck?.(item.brand, item.model, item.title, item.engineCode)
+  );
+  if (!intended) return item;
+  return nameNorm.normalizeListingMeta(item) || item;
+}
+
 function toPublicItem(item) {
   if (!item || typeof item !== 'object') return null;
-  const copy = { ...item };
+  const corrected = applyPublicCategoryFix(item);
+  const copy = { ...corrected };
   for (const key of SUPPLIER_FIELDS) delete copy[key];
   if (item.vin) copy.maskedVin = maskVin(item.vin);
 
@@ -199,7 +212,7 @@ function toPublicItem(item) {
   }
 
   Object.assign(copy, localizePublicNames({
-    ...item,
+    ...corrected,
     originalVehicleName: copy.originalVehicleName || item.originalVehicleName,
   }));
 

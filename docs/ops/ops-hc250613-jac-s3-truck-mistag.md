@@ -1,76 +1,51 @@
-# OPS · HC250613 江淮 S3 误进卡车栏
+# OPS · 库存错位扫描（HC250613 发动机 + XC60 半切）
 
 **Date:** 2026-09-12  
-**Stock:** HC250613  
-**Status:** 代码已修（待 CEO 批准部署 + 生产改库）
+**Scan:** 现网公开目录 599 条  
+**Status:** 规则已修（待 CEO 批准部署）
 
 ## 结论
 
-| 项 | 内容 |
-|---|---|
-| 现网位置 | **不对**。出现在卡车 / 驾驶室，而且是首页卡车货架第 1 条 |
-| 正确位置 | 乘用车（江淮瑞风 S3），不应出现在 Trucks |
-| 现网链接 | https://asia-power.com/trucks/detail.html?slug=jac-s3-2018-hfc4gb2-3e-truck-cab-hc250613 |
+| 库存号 | 现网位置 | 正确位置 | 依据 |
+|---|---|---|---|
+| **HC250613** JAC S3 | 卡车驾驶室（首页卡车第 1） | **乘用发动机** `/engines/` | 5 张图全是独立发动机；$300；CEO 确认 |
+| **HC250581** Volvo XC60 | 卡车驾驶室（已预留） | **乘用半切** `/half-cuts/` | 半切件清单 + $3900；CEO 确认 |
+| **HC250102** Hyundai Mighty | 乘用半切 | **卡车驾驶室** | 品牌 Hyundai Trucks；照片全是驾驶室 |
+| **HC250103** Hyundai P440 | 乘用半切 | **卡车驾驶室** | 同上；说明也写 driver cab |
+| **HC250516** Hyundai Xcient | 乘用二手整车 | **卡车整车** | 现代重卡，不该进乘用二手车 |
 
-## 现网字段（2026-09-12 现网 API）
+## 全库扫描：这 5 条要改，其余不用动
 
-| 字段 | 值 | 是否合理 |
-|---|---|---|
-| brand / model | JAC / S3 | 乘用 SUV（瑞风 S3） |
-| vehicleCategory | truck | 错 |
-| vehicleCondition | Driver Cab | 错 |
-| truckPartType | cab | 错 |
-| passengerPartType | front | 和卡车驾驶室互相矛盾 |
-| includedParts | Front clip assembly | 库里写成前脸 |
-| priceUsd | 300 | 更接近发动机总成，不像前切（同类前切 $3000+） |
-| 5 张图 | 全是独立发动机（GREENJET / HFC4GB2.3E） | 和「驾驶室 / 前脸」标签不一致 |
+对照留下的正确例子：
 
-对照：同品牌 **JAC Refine M5 HC250153** 正确在乘用半切；**JAC 帅铃 / 轻型货车** 留在卡车是对的。
+- JAC 帅铃 / 轻型货车 → 卡车（对）
+- JAC Refine M5 → 乘用半切（对）
+- Hyundai D6CF48E5 HC250074 → 卡车半切（对，不能当乘用车踢走）
+- 长安跨越新豹 HC250154 → 轻卡（对）
+- 比亚迪轮胎 HC250585 → 乘用轮胎（对）
+- 便宜半切（阳光、雨燕 $500–800）→ 仍是半切，不是发动机
 
-## 为什么过滤没拦住
-
-江淮同时做卡车和乘用车。旧的「乘用车品牌黑名单」**不能**把整个 JAC 标成乘用车，否则帅铃也会被踢出卡车。于是 S3 这种乘用 SUV 漏网。
-
-同类旧案：2026-07-10 卡车栏混入乘用车、路虎 Freelander。
-
-## 代码修复（本 PR）
-
-1. 只拦江淮**乘用系列**：S2/S3/S4/S5/S7、Refine/瑞风、和悦、思皓  
-2. 不拦：帅铃 Shuailing、轻型货车  
-3. 文件：`server/lib/vehicle-name-normalize.js`、`js/home-v4-hybrid.js`、`js/half-cut-directory.js`、`js/half-cut-upload-layer.js`、`js/home-hub.js`  
-4. 前端 cache key：`jac-s3-mistag-v1`  
-5. 改库脚本支持 `--passenger-part` / `--clear-truck-part`
-
-## 生产改库（部署后或 SSH 立刻做）
-
-照片和 $300 更像**发动机总成**。库里写的是前脸。先离开卡车栏；品类建议：
-
-```bash
-node scripts/fix-inventory-record.mjs --stock HC250613 \
-  --category passenger \
-  --condition "Engine Assembly" \
-  --passenger-part engine \
-  --clear-truck-part \
-  --parts "Engine assembly" \
-  --description "2018 JAC S3 HFC4GB2.3E engine assembly — supplier-verified listing via AsiaPower." \
-  --root /root/.openclaw/workspace/inventory-site
-```
-
-若 CEO 确认卖的是前脸而不是发动机，把 `--condition "Front Cut" --passenger-part front --parts "Front clip assembly"` 即可，**仍必须是 passenger，不能是 truck**。
-
-## 验证
+回归：
 
 ```bash
 node scripts/verify-jac-s3-passenger-mistag.mjs
+node scripts/scan-inventory-category-mistags.mjs --file /tmp/catalog.json
 ```
 
-部署后：
+扫描结果必须正好 5 条，不能再误伤跨越小卡 / 现代轻卡 / 轮胎。
 
-- API `HC250613.vehicleCategory === passenger`
-- 首页卡车货架、`/trucks/` 不再出现 HC250613
-- `/half-cuts/?q=250613` 能搜到
-- JAC 帅铃 HC250125 / HC250126 仍在卡车
+## 规则
 
-## 顺带发现（未改）
+1. 江淮、沃尔沃是双品牌：只按**车系**判断乘用（S3 / Refine / XC60），不能把整个品牌当乘用车。
+2. `Hyundai Trucks` / Xcient / Mighty / P440 / D6CF → 卡车。
+3. 长安跨越 / 新豹 → 轻卡，不能因「长安」进乘用车。
+4. HC250613 必须是 `passenger` + `Engine Assembly` + `passengerPartType=engine`，才会出现在发动机目录。
 
-HC250581 Volvo XC60 也被标成 `truck-cab`（Reserved）。同一类双品牌误标，未纳入本次范围。
+## 部署后现网应看到
+
+- `/engines/?q=250613` 有这台发动机
+- `/trucks/` 和首页卡车货架没有 250613、没有 XC60
+- `/half-cuts/?q=250581` 能搜到 XC60（预留状态不变）
+- 帅铃、跨越、现代 D6CF 轻卡仍在卡车
+
+未部署前现网位置仍是错的。
