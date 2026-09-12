@@ -56,6 +56,7 @@
 2. **禁止**常态用 `--allow-dirty` 直 rsync 生产（未入库、未上 GitHub 的脏树不得上线）
 3. 紧急例外仅限显式 env（`DEPLOY_ALLOW_DIRTY=1` / `DEPLOY_ALLOW_UNPUSHED=1`）且必须打日志；**默认拒绝 dirty + 未 push**
 4. **不要**在 CEO 未说可以时擅自补 push / 再部署生产来「补救」
+5. **上线必须本机 Cursor（This Computer）**：Cloud Agent / 云 VM 没有生产 SSH 钥。`Task environment=local` 仍落在云端，绑不到 `longMacBook Pro` worker。看到 worker 在线 ≠ 已在 Mac 上跑。无钥就停。本机指令见 `docs/ops/ops-hc250613-mac-local-deploy.md`
 
 ## 部署与安全（2026-06-29）
 

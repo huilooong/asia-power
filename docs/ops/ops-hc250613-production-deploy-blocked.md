@@ -49,9 +49,21 @@ root@159.65.86.24: Permission denied (publickey).
 - `GET /api/half-cuts/public?q=250613`：599 条里命中 HC250613，但仍是卡车驾驶室，不是发动机逻辑。
 - 首页 snapshot `assets/home-v4-inventory-snapshot.json` 生成于 2026-07-09，货架上当前没有 613/581；实时目录仍把两者标成卡车驾驶室，`/trucks/` 会继续按卡车展示。
 
+## 第二次尝试（2026-09-12 续）
+
+CEO 要求「用本机 Cursor 开上线任务」。本 Cloud Agent 已看到 Mac 执行器在线：
+
+- `eae70334-70ec-5ebb-8361-7c949d8b2167`
+- `~/Desktop/AsiaPower @ longMacBook Pro`
+- 空闲、`eligibleForSubagent=true`
+
+但 `Task environment=local` 仍落在这台云 VM（hostname=`cursor`，`privateWorkerId=null`），绑不上去。现网 613/581 仍是 `truck` / `Driver Cab`。
+
+**本机一键指令：** `docs/ops/ops-hc250613-mac-local-deploy.md`
+
 ## 下一步
 
-在 **CEO 本机 Mac**（`~/Desktop/AsiaPower`，已有生产 SSH 钥）执行：
+在 **本机 Cursor** 打开 `~/Desktop/AsiaPower`，对话选 **本机 / This Computer**（不要选 Cloud），发「上线」，或在终端执行：
 
 ```bash
 cd ~/Desktop/AsiaPower
