@@ -41,7 +41,11 @@ const BASE_URL = process.env.SITE_URL || 'https://asia-power.com';
 
 function run(cmd, argv, opts = {}) {
   const r = spawnSync(cmd, argv, { stdio: 'inherit', ...opts });
-  if (r.status !== 0) process.exit(r.status ?? 1);
+  if (r.status !== 0) {
+    if (r.error) console.error(`[deploy] ${cmd} spawn error: ${r.error.message}`);
+    if (r.signal) console.error(`[deploy] ${cmd} killed by ${r.signal}`);
+    process.exit(r.status ?? 1);
+  }
 }
 
 function rsync(local, remote, extra = []) {
@@ -49,7 +53,11 @@ function rsync(local, remote, extra = []) {
 }
 
 function ssh(script) {
-  run('ssh', [REMOTE, script]);
+  // BatchMode + closed stdin: agent/CI often backgrounds the deploy after 30s.
+  // Without this, the trailing remote grep block exits 1 with no output.
+  run('ssh', ['-o', 'BatchMode=yes', '-o', 'RequestTTY=no', REMOTE, script], {
+    stdio: ['ignore', 'inherit', 'inherit'],
+  });
 }
 
 function deployNginx() {
