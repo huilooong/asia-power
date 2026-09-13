@@ -22,7 +22,7 @@ function findApprovedItem(catalog, slug) {
   return { item: viaAlias, requestedSlug: slug, redirectSlug: viaAlias.slug || null };
 }
 
-function injectHalfCutPrerender(html, item, siteUrl, detailPath = '/half-cuts/detail.html') {
+function injectHalfCutPrerender(html, item, siteUrl, detailPath = '/half-cuts/detail.html', publicDir = '') {
   const title = seoTitle(item);
   const description = seoDescription(item);
   const canonical = canonicalUrl(siteUrl, item.slug, detailPath);
@@ -78,7 +78,7 @@ function injectHalfCutPrerender(html, item, siteUrl, detailPath = '/half-cuts/de
   out = out.replace('</head>', `${headBlock}\n</head>`);
   out = out.replace(
     '<div id="half-cut-detail-root"></div>',
-    `${bodyBlock}\n      <div id="half-cut-detail-root" data-prerender-slug="${escapeAttr(item.slug)}">${buildDetailRootHtml(item, siteUrl)}</div>`
+    `${bodyBlock}\n      <div id="half-cut-detail-root" data-prerender-slug="${escapeAttr(item.slug)}">${buildDetailRootHtml(item, siteUrl, { publicDir })}</div>`
   );
   return out;
 }
@@ -91,7 +91,7 @@ function renderHalfCutDetailPage({ publicDir, slug, catalog, siteUrl, detailPath
   if (!fs.existsSync(templatePath)) return null;
   const html = fs.readFileSync(templatePath, 'utf8');
   return {
-    html: injectHalfCutPrerender(html, resolved.item, siteUrl, detailPath),
+    html: injectHalfCutPrerender(html, resolved.item, siteUrl, detailPath, publicDir),
     redirectSlug: resolved.redirectSlug,
     detailPath,
   };

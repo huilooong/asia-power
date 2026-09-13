@@ -1,5 +1,8 @@
 'use strict';
 
+const fs = require('fs');
+const path = require('path');
+
 const halfCutTitle = require('./half-cut-title');
 
 const SITE_DEFAULT = 'https://asia-power.com';
@@ -225,7 +228,28 @@ function renderCifShell(exwUsd) {
     </section>`;
 }
 
-function buildDetailRootHtml(item, siteUrl) {
+function resolveBrandBrowseUrls(item, base, publicDir, catalogHref) {
+  const slug = String(item?.brandSlug || '').trim();
+  const encodedSlug = encodeURIComponent(slug);
+  const brandPage = /^[a-z0-9-]+$/.test(slug) && publicDir
+    ? path.join(publicDir, 'brands', `${slug}.html`)
+    : '';
+  if (brandPage && fs.existsSync(brandPage)) {
+    const root = `${base}brands/${encodedSlug}.html`;
+    return {
+      inventory: `${root}#halfcuts-inventory`,
+      engines: `${root}#engines`,
+      gearboxes: `${root}#gearboxes`,
+    };
+  }
+  return {
+    inventory: `${catalogHref}?brand=${encodedSlug}`,
+    engines: `${base}engines/?brand=${encodedSlug}`,
+    gearboxes: `${base}gearboxes/?brand=${encodedSlug}`,
+  };
+}
+
+function buildDetailRootHtml(item, siteUrl, { publicDir = '' } = {}) {
   const base = '../';
   const titleText = displayTitle(item);
   const ctx = catalogContext(item, base);
@@ -257,7 +281,8 @@ function buildDetailRootHtml(item, siteUrl) {
   const parts = sanitizeIncludedParts(Array.isArray(item.includedParts) ? item.includedParts : []);
   const intro = escapeHtml(`${titleText}. EXW export from China — availability, photos and CIF shipping confirmed on enquiry.`);
   const specRow = (label, value) => (value ? `<div class="hc-item-detail__spec"><dt>${label}</dt><dd>${value}</dd></div>` : '');
-  const brandUrl = `${base}brands/${escapeAttr(item.brandSlug)}.html#halfcuts-inventory`;
+  const brandUrls = resolveBrandBrowseUrls(item, base, publicDir, ctx.catalogHref);
+  const brandUrl = escapeAttr(brandUrls.inventory);
   const vehicleInfoHtml = [
     specRow('Brand', `<a href="${brandUrl}">${escapeHtml(item.brand || '')}</a>`),
     specRow('Model', escapeHtml(item.model || '')),
@@ -319,8 +344,8 @@ function buildDetailRootHtml(item, siteUrl) {
         <h3>Browse ${escapeHtml(item.brand)}</h3>
         <ul class="engine-detail__links">
           <li><a href="${brandUrl}">${escapeHtml(item.brand)} Half-Cut Listings</a></li>
-          <li><a href="${base}brands/${escapeAttr(item.brandSlug)}.html#engines">${escapeHtml(item.brand)} Engines</a></li>
-          <li><a href="${base}brands/${escapeAttr(item.brandSlug)}.html#gearboxes">${escapeHtml(item.brand)} Gearboxes</a></li>
+          <li><a href="${escapeAttr(brandUrls.engines)}">${escapeHtml(item.brand)} Engines</a></li>
+          <li><a href="${escapeAttr(brandUrls.gearboxes)}">${escapeHtml(item.brand)} Gearboxes</a></li>
         </ul>
         <h3>Catalog</h3>
         <ul class="engine-detail__links">
@@ -367,6 +392,7 @@ module.exports = {
   canonicalUrl,
   productJsonLd,
   buildDetailRootHtml,
+  resolveBrandBrowseUrls,
   noscriptSummary,
   displayTitle,
   listingTypeLabel,
