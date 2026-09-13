@@ -9,7 +9,7 @@
  * Default rejects dirty tree and unpushed HEAD.
  * Emergency only: DEPLOY_ALLOW_DIRTY=1 + --allow-dirty; DEPLOY_ALLOW_UNPUSHED=1 (both logged).
  *
- * Targets: nginx | api | engines | apsales | finalize
+ * Targets: nginx | api | api-apbd | engines | apsales | finalize
  */
 import { spawnSync } from 'child_process';
 import fs from 'fs';
@@ -75,6 +75,20 @@ ln -sfn /etc/nginx/sites-available/asia-power.com /etc/nginx/sites-enabled/asia-
 nginx -t
 systemctl reload nginx
 echo "[deploy:nginx] nginx reloaded OK"
+`);
+}
+
+function deployApbdApi() {
+  console.log('[deploy:api-apbd] restoring APBD routes; two-file scope');
+  rsync(`${ROOT}/server/lib/apbd-admin.js`, `${SITE}/lib/apbd-admin.js`);
+  rsync(`${ROOT}/deploy/inventory-site-server.js`, `${SITE}/server.js`);
+  ssh(`
+set -e
+cd /root/.openclaw/workspace/inventory-site
+node --check server.js
+node --check lib/apbd-admin.js
+systemctl restart inventory-site.service
+systemctl is-active inventory-site.service
 `);
 }
 
@@ -534,7 +548,7 @@ function printHelp() {
   console.log(`AsiaPower deploy (Release Manager enabled):
   node scripts/deploy-production.mjs <target> [--yes] [--allow-dirty] [user@host]
 
-  nginx | api | engines | apsales | finalize | home | portal | chrome | admin
+  nginx | api | api-apbd | engines | apsales | finalize | home | portal | chrome | admin
 
   REQUIRED: commit → push GitHub → then deploy (CEO red line 2026-07-10)
   Pre-deploy:  git clean, HEAD on origin, backup, target confirmation
@@ -549,6 +563,7 @@ function printHelp() {
 const targets = {
   nginx: deployNginx,
   api: deployApi,
+  'api-apbd': deployApbdApi,
   engines: deployEngines,
   apsales: deployApsales,
   finalize: deployFinalize,

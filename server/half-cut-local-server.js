@@ -20,6 +20,8 @@ const { createVinDecodeHandler } = require('./lib/vin/decode-route');
 const { loadEnv } = require('./lib/load-env');
 const { createWhatsAppCloudWebhook } = require('./lib/whatsapp-cloud-webhook');
 
+const { buildPromotionSnapshot, createNativeEnrichmentController } = require('./lib/apbd-admin');
+
 const ROOT = path.join(__dirname, '..');
 loadEnv(ROOT);
 const PUBLIC_DIR = ROOT;
@@ -29,6 +31,8 @@ const BIND_HOST = process.env.BIND_HOST || '127.0.0.1';
 const limitLogin = createRateLimiter({ windowMs: 15 * 60 * 1000, max: 20 });
 const limitContactLead = createRateLimiter({ windowMs: 60 * 60 * 1000, max: 12 });
 const limitRememberModel = createRateLimiter({ windowMs: 60 * 60 * 1000, max: 60 });
+const limitNativeEnrichment = createRateLimiter({ windowMs: 60 * 60 * 1000, max: 4 });
+const nativeEnrichment = createNativeEnrichmentController(ROOT);
 const contactLeads = createContactLeadStore(path.join(ROOT, 'data', 'contact-leads.json'));
 const handleVinDecode = createVinDecodeHandler(ROOT);
 const handleWhatsAppCloudWebhook = createWhatsAppCloudWebhook(ROOT);
@@ -289,6 +293,29 @@ const server = http.createServer(async (req, res) => {
       if (await phoneOtp.handleOtpRoutes(req, res, p, readBody)) return;
       if (await phonePassword.handlePasswordRoutes(req, res, p, readBody)) return;
       if (await oauthAuth.handleOAuthRoutes(req, res, p, url, readBody)) return;
+
+      if (req.method === 'GET' && p === '/api/admin/apbd/solo-trade') {
+        if (!auth.requireAdmin(req, res)) return;
+        return json(res, 200, buildPromotionSnapshot(ROOT));
+      }
+
+      if (req.method === 'GET' && p === '/api/admin/apbd/native-enrichment/status') {
+        if (!auth.requireAdmin(req, res)) return;
+        return json(res, 200, nativeEnrichment.status());
+      }
+
+      if (req.method === 'POST' && p === '/api/admin/apbd/native-enrichment/run') {
+        if (!auth.requireAdmin(req, res)) return;
+        if (!limitNativeEnrichment(req)) return json(res, 429, { error: 'Too many enrichment runs' });
+        try {
+          const body = await readBody(req);
+          return json(res, 202, nativeEnrichment.start(body));
+        } catch (err) {
+          return json(res, err.statusCode || 400, { error: err.message || 'Unable to start enrichment' });
+        }
+      }
+
+
 
       if (req.method === 'GET' && p === '/api/admin/buyers') {
         if (!auth.requireAdmin(req, res)) return;

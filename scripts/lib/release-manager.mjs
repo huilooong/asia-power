@@ -6,10 +6,11 @@ import { spawnSync } from 'child_process';
 import fs from 'fs';
 import path from 'path';
 
-export const VALID_TARGETS = ['nginx', 'api', 'engines', 'apsales', 'finalize', 'home', 'portal', 'chrome', 'admin'];
+export const VALID_TARGETS = ['nginx', 'api', 'api-apbd', 'engines', 'apsales', 'finalize', 'home', 'portal', 'chrome', 'admin'];
 
 /** @type {Record<string, string[]>} */
 export const TARGET_SOURCE_FILES = {
+  'api-apbd': ['deploy/inventory-site-server.js', 'server/lib/apbd-admin.js'],
   home: [
     'index.html',
     'css/home-v4-hybrid.css',
@@ -110,6 +111,10 @@ export const TARGET_SOURCE_FILES = {
 
 /** @type {Record<string, string[]>} */
 export const TARGET_REMOTE_PATHS = {
+  'api-apbd': [
+    '/root/.openclaw/workspace/inventory-site/server.js',
+    '/root/.openclaw/workspace/inventory-site/lib/apbd-admin.js',
+  ],
   home: [
     '/root/.openclaw/workspace/inventory-site/public/index.html',
     '/root/.openclaw/workspace/inventory-site/public/css/home-v4-hybrid.css',
@@ -405,7 +410,7 @@ export async function runPostDeployValidation({ root, target, remote, baseUrl })
   /** @type {{name: string, status: 'pass'|'fail'|'skip', detail: string}[]} */
   const checks = [];
 
-  if (target === 'nginx' || target === 'api') {
+  if (target === 'nginx' || target === 'api' || target === 'api-apbd') {
     const ngx = spawnSync('ssh', ['-o', 'BatchMode=yes', remote, 'nginx -t 2>&1'], { encoding: 'utf8' });
     const out = `${ngx.stdout || ''}${ngx.stderr || ''}`.trim();
     checks.push({
@@ -417,7 +422,7 @@ export async function runPostDeployValidation({ root, target, remote, baseUrl })
     checks.push({ name: 'nginx_verification', status: 'skip', detail: 'not required' });
   }
 
-  if (['nginx', 'api', 'engines', 'home'].includes(target)) {
+  if (['nginx', 'api', 'api-apbd', 'engines', 'home'].includes(target)) {
     const verifyScript = path.join(root, 'scripts', 'verify-production.mjs');
     if (fs.existsSync(verifyScript)) {
       const verify = spawnSync('node', [verifyScript, baseUrl], { encoding: 'utf8', cwd: root });
