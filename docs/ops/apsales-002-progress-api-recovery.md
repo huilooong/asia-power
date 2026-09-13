@@ -1,6 +1,6 @@
 # APSales promotion page API recovery — 2026-09-13
 
-Status: Local repair validated; production deployment pending CEO approval.
+Status: Completed. CEO approved; production deployed and browser verified.
 
 ## Purpose and verified cause
 
@@ -38,3 +38,24 @@ Restore the three APBD routes while preserving current inventory fixes. No data 
 Rollback should restore only files changed by this approved repair from its own pre-deploy backup. Do not roll back customer/runtime data.
 
 Next action: after approval, prepare the isolated release, verify scope, deploy with Release Manager, then confirm the browser loads the existing records and unauthenticated APBD access returns 401. Do not trigger enrichment merely to validate rendering.
+
+
+## Approved release and completion
+
+- Release: `REL-20260913181806-api-apbd-a912b70c6`
+- Production commit: `a912b70c6a88781864c467b144d8e07bdb9fccdf`
+- Clean release checkout: `/Users/longhui/Desktop/AsiaPower-apsales-progress-recovery`
+- Branch: `codex/apsales-progress-recovery-20260913` (pushed to origin).
+- Added scoped `api-apbd` target in `scripts/deploy-production.mjs` and `scripts/lib/release-manager.mjs`; exactly server.js and lib/apbd-admin.js are published/snapshotted. Three differing production prerender/SEO modules and package-lock.json were excluded by this scope.
+- `scripts/release-restore.mjs` now restarts the service for this target after restoring its two snapshots. This tooling-only follow-up does not change deployed server code.
+- Backup: `/root/.openclaw/workspace/inventory-site/backups/scheduled/asia-power-backup-20260913-181808.tar.gz`.
+- Release record: `releases/REL-20260913181806-api-apbd-a912b70c6/release.json` in the release checkout and production inventory-site directory.
+- Preflight: clean, pushed, valid target, two source files, approval, backup; all passed.
+- Postflight: nginx configuration, critical public URLs, and both service states; all passed.
+- Seven local tests passed (six module/handler tests and one release scope test).
+- Live unauthenticated GET solo-trade, GET enrichment status, and POST enrichment run all returned HTTP 401. The unauthorized POST performed no enrichment.
+- Existing authenticated Chrome admin tab displayed the populated APBD workbench, 745 / 745 customer rows, and selected customer evidence. This is a later live snapshot than the earlier 706-record diagnosis; no customer records were modified by this repair.
+- In-app browser without a login correctly displayed the Admin login prompt instead of `api not found`.
+- Production UI/frontend was not redeployed. No authenticated enrichment start or external send was performed.
+
+Next action: none required for this incident. Retain this fix when merging future API releases; broad releases still require comparison against the actual deployed files.
