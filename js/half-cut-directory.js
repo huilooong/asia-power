@@ -177,6 +177,8 @@
     const meta = window.HalfCutUploadLayer?.resolveListingMeta?.(item);
     if (meta?.vehicleCategory === 'machinery') return 'machinery';
     if (isMachineryLike(item)) return 'machinery';
+    if (isHyundaiCommercialTruck(item?.brand, item?.model, item?.title, item?.engineCode)) return 'truck';
+    if (isChanganCommercialTruck(item?.brand, item?.model, item?.title)) return 'truck';
     if (looksLikePassengerMisTag(item)) return item?.vehicleCategory === 'machinery' ? 'machinery' : 'passenger';
     if (meta?.vehicleCategory === 'truck') return 'truck';
     if (item?.vehicleCategory === 'truck') return 'truck';
@@ -186,9 +188,37 @@
     return item?.vehicleCategory || 'passenger';
   }
 
+  function isJacPassengerModel(brand, model, title) {
+    if (!/jac|江淮/i.test(String(brand || ''))) return false;
+    return /\b(s2|s3|s4|s5|s7|refine|瑞风|heyue|和悦|sehol|sihao|思皓)\b/i.test(`${model || ''} ${title || ''}`);
+  }
+
+  function isVolvoPassengerModel(brand, model, title) {
+    if (!/volvo|沃尔沃/i.test(String(brand || ''))) return false;
+    return /\b(xc[0-9]{2}|s[468]0|v[467]0|c[37]0)\b/i.test(`${model || ''} ${title || ''}`);
+  }
+
+  function isHyundaiCommercialTruck(brand, model, title, engineCode) {
+    const brandText = String(brand || '');
+    const blob = `${brandText} ${model || ''} ${title || ''} ${engineCode || ''}`;
+    if (/hyundai\s*trucks/i.test(brandText) || /hyundai\s*trucks/i.test(blob)) return true;
+    if (/hyundai/i.test(brandText) && (/\b(xcient|mighty|p440|trago)\b/i.test(blob) || /d6cf/i.test(blob))) {
+      return true;
+    }
+    return false;
+  }
+
+  function isChanganCommercialTruck(brand, model, title) {
+    return /kuayue|跨越|xinbao|新豹|神骐/i.test(`${brand || ''} ${model || ''} ${title || ''}`);
+  }
+
   function looksLikePassengerMisTag(item) {
     const brand = String(item?.brand || '');
     const model = String(item?.model || '');
+    if (isHyundaiCommercialTruck(brand, model, item?.title, item?.engineCode)) return false;
+    if (isChanganCommercialTruck(brand, model, item?.title)) return false;
+    if (isJacPassengerModel(brand, model, item?.title)) return true;
+    if (isVolvoPassengerModel(brand, model, item?.title)) return true;
     const blob = `${brand} ${model}`.toLowerCase();
     const passengerOem = ['吉利', '雪佛兰', '别克', '福特', '大众', '马自达', '哈弗', '长安', '猎豹', '宝马', '奥迪', '丰田', '本田', '日产', '现代', '起亚', '荣威', '名爵', '比亚迪', '奇瑞', '长城', '传祺', '五菱', '宝骏', '路虎', '捷豹', 'toyota', 'honda', 'ford', 'chevrolet', 'buick', 'geely', 'haval', 'mazda', 'volkswagen', 'bmw', 'audi', 'lexus', 'jeep', 'porsche', 'jaguar', 'land rover', 'landrover', 'liebao', 'byd', 'mg', 'roewe'];
     if (!passengerOem.some((b) => brand.includes(b) || blob.includes(b.toLowerCase()))) return false;
@@ -742,6 +772,90 @@
         </video>
         ${fallback}
       </div>`;
+  }
+
+  function videoCoverThumbUrl(item) {
+    const id = youtubeVideoId(videoSource(item));
+    return id ? `https://i.ytimg.com/vi/${id}/hqdefault.jpg` : '';
+  }
+
+  function videoCoverLabel(item) {
+    const title = listingVehiclePrimaryTitle(item) || listingTitle(item) || item?.title || item?.stockId || '';
+    return `${title} — ${t('hc.video', 'Video')}`.trim();
+  }
+
+  function renderListingVideoCover(item, className) {
+    if (!hasVideo(item)) return '';
+    const src = videoSource(item);
+    const youtubeThumb = videoCoverThumbUrl(item);
+    const poster = firstPhotoThumbUrl(item) || firstPhotoUrl(item);
+    const stockBadge = renderPhotoStockBadge(item);
+    const label = escapeHtml(videoCoverLabel(item));
+    const videoLabel = escapeHtml(t('hc.video', 'Video'));
+    const safeClass = className || 'ap-listing-media';
+    const play = `<span class="ap-media-cover__play" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M9 7.5v9l7-4.5z" fill="currentColor"/></svg></span>`;
+    const badge = `<span class="ap-media-cover__label"><span aria-hidden="true">▶</span> ${videoLabel}</span>`;
+
+    if (youtubeThumb) {
+      const fallback = poster
+        ? `<img class="ap-media-cover__visual ap-media-cover__fallback" src="${escapeHtml(poster)}" alt="${label}" loading="lazy" decoding="async">`
+        : `<span class="ap-media-cover__empty" aria-hidden="true">▶</span>`;
+      return `<div class="ap-media-canvas ap-media-canvas--video ${safeClass}" data-ap-video-cover="youtube" role="img" aria-label="${label}">
+        ${stockBadge}${fallback}<img class="ap-media-cover__visual ap-media-cover__video-thumb" data-ap-youtube-thumb src="${escapeHtml(youtubeThumb)}" alt="" aria-hidden="true" loading="lazy" decoding="async">${play}${badge}
+      </div>`;
+    }
+
+    const mime = videoMimeType(item);
+    const playable = mime === 'video/mp4' || mime === 'video/webm';
+    if (playable) {
+      const posterAttr = poster ? ` poster="${escapeHtml(poster)}"` : '';
+      return `<div class="ap-media-canvas ap-media-canvas--video ${safeClass}" data-ap-video-cover="hosted">
+        ${stockBadge}<video class="ap-media-cover__visual ap-media-cover__video" muted loop playsinline preload="metadata" data-ap-cover-video aria-label="${label}"${posterAttr}><source src="${escapeHtml(src)}" type="${escapeHtml(mime)}"></video>${play}${badge}
+      </div>`;
+    }
+
+    const fallbackImage = poster
+      ? `<img class="ap-media-cover__visual ap-media-cover__visual--contain" src="${escapeHtml(poster)}" alt="${label}" loading="lazy" decoding="async">`
+      : `<span class="ap-media-cover__empty" aria-label="${label}">▶</span>`;
+    return `<div class="ap-media-canvas ap-media-canvas--video ${safeClass}" data-ap-video-cover="fallback">
+      ${stockBadge}${fallbackImage}${play}${badge}
+    </div>`;
+  }
+
+  let coverVideoObserver = null;
+
+  function bindListingCoverVideos(root) {
+    const scope = root?.querySelectorAll ? root : document;
+    const thumbs = [...scope.querySelectorAll('img[data-ap-youtube-thumb]:not([data-ap-youtube-thumb-bound])')];
+    thumbs.forEach((thumb) => {
+      thumb.dataset.apYoutubeThumbBound = 'true';
+      const sync = () => thumb.classList.toggle('is-ready', thumb.complete && thumb.naturalWidth > 0);
+      thumb.addEventListener('load', sync, { once: true });
+      thumb.addEventListener('error', sync, { once: true });
+      sync();
+    });
+
+    const videos = [...scope.querySelectorAll('video[data-ap-cover-video]:not([data-ap-cover-video-bound])')];
+    if (!videos.length) return;
+
+    const reducedMotion = window.matchMedia?.('(prefers-reduced-motion: reduce)')?.matches;
+    const saveData = navigator.connection?.saveData === true;
+    videos.forEach((video) => { video.dataset.apCoverVideoBound = 'true'; });
+    if (reducedMotion || saveData || !('IntersectionObserver' in window)) return;
+
+    if (!coverVideoObserver) {
+      coverVideoObserver = new IntersectionObserver((entries) => {
+        entries.forEach((entry) => {
+          const video = entry.target;
+          if (entry.isIntersecting && entry.intersectionRatio >= 0.35) {
+            video.play().catch(() => {});
+          } else {
+            video.pause();
+          }
+        });
+      }, { threshold: [0, 0.35, 0.75] });
+    }
+    videos.forEach((video) => coverVideoObserver.observe(video));
   }
 
   const TRUST_COPY = 'Whole-vehicle startup video available before dismantling. Parts can be dismantled according to buyer requirements after confirmation.';
@@ -1425,10 +1539,29 @@
     const source = image?.source;
     if (!source?.pageUrl || !source?.license) return '';
     const credit = [source.creator, source.publisher].filter(Boolean).join(' / ');
+    // Inline base styles keep the legal attribution visible even when an older
+    // immutable catalog stylesheet is still held by a returning visitor.
+    const creditStyle = [
+      'position:absolute',
+      'z-index:4',
+      'right:6px',
+      'bottom:6px',
+      'left:6px',
+      'display:block',
+      'padding:5px 7px',
+      'border-radius:5px',
+      'color:#fff',
+      'background:rgba(10,22,40,.84)',
+      'font-size:9px',
+      'font-weight:600',
+      'line-height:1.3',
+      'text-align:left',
+    ].join(';');
+    const linkStyle = 'color:#fff;text-decoration:underline;text-underline-offset:2px';
     const license = source.licenseUrl
-      ? `<a href="${escapeHtml(source.licenseUrl)}" target="_blank" rel="noopener noreferrer external">${escapeHtml(source.license)}</a>`
+      ? `<a style="${linkStyle}" href="${escapeHtml(source.licenseUrl)}" target="_blank" rel="noopener noreferrer external">${escapeHtml(source.license)}</a>`
       : escapeHtml(source.license);
-    return `<span class="ap-model-image-credit">Source / 来源: <a href="${escapeHtml(source.pageUrl)}" target="_blank" rel="noopener noreferrer external">${escapeHtml(credit || source.publisher || 'Source')}</a> · ${license}</span>`;
+    return `<span class="ap-model-image-credit" data-credit-style="inline-v1" style="${creditStyle}">Source / 来源: <a style="${linkStyle}" href="${escapeHtml(source.pageUrl)}" target="_blank" rel="noopener noreferrer external">${escapeHtml(credit || source.publisher || 'Source')}</a> · ${license}</span>`;
   }
 
   function renderPartListingPhoto(display, partType) {
@@ -1439,6 +1572,11 @@
         <img class="ap-listing-photo__img" src="${escapeHtml(thumbUrl)}" alt="${escapeHtml(modelImage.alt || '')}" loading="lazy" decoding="async">
         ${renderPowertrainImageSource(modelImage)}
       </div>`;
+    }
+
+    if (partType !== 'engine' && partType !== 'transmission') {
+      const videoCover = renderListingVideoCover(display, 'ebay-listing-row__photo ebay-listing-row__photo--part');
+      if (videoCover) return videoCover;
     }
 
     const photo = pickPartListingPhoto(display, partType);
@@ -1485,9 +1623,6 @@
     if (trans) tags.push(`<span class="ebay-listing-row__tag">${escapeHtml(trans)}</span>`);
     const drive = listingDrivetrainLabel(display);
     if (drive) tags.push(`<span class="ebay-listing-row__tag">${escapeHtml(drive)}</span>`);
-    if (hasVideo(display)) {
-      tags.push(`<span class="ebay-listing-row__tag ebay-listing-row__tag--video">${escapeHtml(t('hc.video', 'Video'))}</span>`);
-    }
     if (!tags.length) return '';
     return `<div class="ebay-listing-row__tags">${tags.join('')}</div>`;
   }
@@ -1514,7 +1649,7 @@
     const quote = isAvailable(item)
       ? leadLink(item, 'price', 'ebay-listing-row__quote', t('nav.requestQuote', 'Get Quote'))
       : leadLink(item, 'similar', 'ebay-listing-row__quote', t('nav.requestQuote', 'Get Quote'));
-    return `<div class="ebay-listing-row__ctas">${quote}${wa}</div>`;
+    return `<div class="ebay-listing-row__ctas">${wa}${quote}</div>`;
   }
 
   function resolveOfferPrice(item) {
@@ -1797,12 +1932,7 @@
   }
 
   function listingPhotoUseContain(display) {
-    if (!display) return false;
-    if (display.truckPartType === 'cab') return true;
-    if (display.vehicleCategory === 'truck') return true;
-    if (display.vehicleCategory === 'machinery') return true;
-    if (window.HalfCutUploadLayer?.isTruckCab?.(display)) return true;
-    return false;
+    return !!display;
   }
 
   function listingVinMasked(display) {
@@ -1840,6 +1970,8 @@
   }
 
   function renderListingPhoto(display, detail) {
+    const videoCover = renderListingVideoCover(display, 'ebay-listing-row__photo');
+    if (videoCover) return videoCover;
     const thumbs = listingThumbUrls(display);
     if (thumbs.length && hasPhotos(display)) {
       return renderInlineListingPhoto(display, 'ebay-listing-row__photo');
@@ -1852,6 +1984,8 @@
   }
 
   function listingCardPhoto(display, basePath) {
+    const videoCover = renderListingVideoCover(display, 'ebay-card__photo');
+    if (videoCover) return videoCover;
     const thumbs = listingThumbUrls(display);
     if (thumbs.length && hasPhotos(display)) {
       return renderInlineListingPhoto(display, 'ebay-card__photo');
@@ -1880,7 +2014,7 @@
     const priceHtml = priceWithExwLabel(priceLabel, 'Quote');
     const noteHtml = customDismantleNoteHtml(item, 'card');
     const photo = listingCardPhoto(display, basePath);
-    const photoHtml = photo.includes('data-ap-listing-photo')
+    const photoHtml = photo.includes('ebay-card__photo')
       ? photo
       : `<div class="ebay-card__photo">${photo}</div>`;
     const engineHtml = engineLine ? `<div class="ebay-card__engine">${engineLine}</div>` : '';
@@ -2010,6 +2144,7 @@
       }
 
       window.HalfCutGalleryLightbox?.bindListingPhotoCarousels?.(feed);
+      bindListingCoverVideos(feed);
     });
   }
 
@@ -2053,7 +2188,9 @@
     const detail = detailUrl(base, item.slug);
     if (isAvailable(item)) {
       return `
-        ${leadLink(item, 'price', 'btn btn-accent btn-sm', t('nav.requestQuote', 'Get Quote'))}
+        <a href="${detail}" class="btn btn-navy btn-sm">${t('hc.viewDetails', 'View Details')}</a>
+        ${leadLink(item, 'price', 'btn btn-outline-navy btn-sm', t('hc.requestPrice', 'Request Price'))}
+        ${leadLink(item, 'photos', 'btn btn-outline-navy btn-sm', t('hc.requestPhotos', 'Request Photos'))}
         ${whatsappLink(item, 'btn btn-whatsapp btn-sm', 'WhatsApp')}`;
     }
     if (isReserved(item)) {
@@ -2076,7 +2213,8 @@
   function renderDetailActions(item, base) {
     if (isAvailable(item)) {
       return `
-        ${leadLink(item, 'price', 'btn btn-accent', t('nav.requestQuote', 'Get Quote'))}
+        ${leadLink(item, 'price', 'btn btn-accent', t('hc.requestPrice', 'Request Price'))}
+        ${leadLink(item, 'photos', 'btn btn-outline-navy', t('hc.requestPhotos', 'Request Photos'))}
         ${whatsappLink(item, 'btn btn-whatsapp', 'WhatsApp')}`;
     }
     if (isReserved(item)) {
@@ -2168,6 +2306,8 @@
     isYouTubeVideoUrl,
     videoMimeType,
     renderVideoPlayer,
+    renderListingVideoCover,
+    bindListingCoverVideos,
     maskVin: (vin) => window.HalfCutVin?.maskVin(vin) || '',
     toPublicItem: (item) => {
       if (item?.vin && window.HalfCutInventoryLayer?.toPublicItem) {
@@ -2222,6 +2362,7 @@
     listingPhotoBadge,
     renderPhotoStockBadge,
     renderInlineListingPhoto,
+    listingPhotoUseContain,
     listingDrivetrainLabel,
     listingDrivetrainCode,
     listingVinMasked,

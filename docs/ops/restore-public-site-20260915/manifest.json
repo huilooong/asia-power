@@ -1,0 +1,2151 @@
+[
+  {
+    "local": "about.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/about.html",
+    "before": "dbd5a847fd9ba7a8763c9b5e1655e779660607f47c5bc8721ac2cf16db9b31ac",
+    "sha256": "25610b4eaee56bb088695e8312806fa504338abd2be36b126983a52b9550deee",
+    "change": "restore-and-merge"
+  },
+  {
+    "local": "acura.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/acura.html",
+    "before": "a96198e385dad4a467981b4120dbeb6b2db90da39548e1aa28bc216d737e0320",
+    "sha256": "3f15d51cd711929fb6f6a56df7a9e003e48b7c9c9addeceb4f1c9fcd47a7d980",
+    "change": "cache-reference-only"
+  },
+  {
+    "local": "admin/analytics.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/admin/analytics.html",
+    "before": "d4e5b1069d40a1d4d3cccbb822e103426e90cf59ecb3d285ef932ee402217c3a",
+    "sha256": "0d8687339773b9d5e91ad04ddf4386c607b8935a3f790f0f5a48b1c1058a6c99",
+    "change": "cache-reference-only"
+  },
+  {
+    "local": "admin/apsales-progress.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/admin/apsales-progress.html",
+    "before": "4d0f4227a7dc47e5fcf65695232e140aa3ed308d70f601403d7d7e91108992a7",
+    "sha256": "f58a3f9b487b645a4cd015fee9c84c6322ee9f72411fc47ae6826b8485125cfe",
+    "change": "cache-reference-only"
+  },
+  {
+    "local": "admin/emails.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/admin/emails.html",
+    "before": "b7da3c885411d2fa3011e34095b2d211e1a7e50effac14792c7b5b5b0653d43d",
+    "sha256": "2632de3e080c5828a55033e93dc13005fca91998bc41cde63d39c0be2fccb038",
+    "change": "cache-reference-only"
+  },
+  {
+    "local": "admin/inventory.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/admin/inventory.html",
+    "before": "4d6a462582652b0a61f81bb2c12b049e372064684e880357f82b797b49685fe4",
+    "sha256": "2485a332b86dfd80c646c12eee8316a6467f0f0c6229819d76e0f274b7b80fc1",
+    "change": "cache-reference-only"
+  },
+  {
+    "local": "admin/leads.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/admin/leads.html",
+    "before": "de3a128b0cb15ddf3cad037058e6c3a7d61d7692c33a3e83413bfbeefa5f2417",
+    "sha256": "bbc1de0ec4dfc52fa2ce52cfc80fea87f5b5f5411cb978574354eacef4532a32",
+    "change": "cache-reference-only"
+  },
+  {
+    "local": "app.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/app.html",
+    "before": "e1e25636ec755df03e31548d439a6b112a669883c689864fccc0d3bdfff4ba87",
+    "sha256": "3dc18f2853fe49b0d0224143b18d97b60c44445e99ddd33fd284d66b13caae78",
+    "change": "restore-and-merge"
+  },
+  {
+    "local": "audi.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/audi.html",
+    "before": "0c8e6f6ec999b81dda53e39033afac790e5496e3d952c09c920d01573de31fd8",
+    "sha256": "58c822e6388ab9a9acaea154d2c1bb51d4ae81e9766cda4045c4d0e60f3b7e9a",
+    "change": "cache-reference-only"
+  },
+  {
+    "local": "bmw.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/bmw.html",
+    "before": "8b42a9e567cf831ec957c8fe8cf8d5fb538e32a8fe8083897567f93ef5a33e77",
+    "sha256": "3c761ade0f347d5760b78ee7fd71724812875f979d624889fbe5516f0512a866",
+    "change": "cache-reference-only"
+  },
+  {
+    "local": "brands.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/brands.html",
+    "before": "6dc6608e27d7c175755bd29ac539ff309a23d839dfdad01253e3ae9ce56f3a8a",
+    "sha256": "a0f6db73a7be08fe5e4e948e47b84f1ea2cdfc29564c89b9f776dc753f2fc1c9",
+    "change": "restore-and-merge"
+  },
+  {
+    "local": "brands/acura.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/brands/acura.html",
+    "before": "48fea477ae4a5d3d8c902cef73553a5d6d14b02ab07b044ecb07de8ab9c48fd7",
+    "sha256": "5d1d8c63f364c5d61e580ed79ccca3568ae2ba76184177915670d8f5e47b31b4",
+    "change": "restore-and-merge"
+  },
+  {
+    "local": "brands/audi.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/brands/audi.html",
+    "before": "2b86511d5fefa8d8abc03d5a616f11693c7e991f1957bb2e6c11d2caa72335d0",
+    "sha256": "1cbadbd92103b354216f470df82f5f686bd7893f86a4a1c53f706934550e01cb",
+    "change": "restore-and-merge"
+  },
+  {
+    "local": "brands/bmw.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/brands/bmw.html",
+    "before": "cc3b9c70a45e481332f8f13e0a8dc6829fb05c1047b33ae2abfa109ddcc6f03a",
+    "sha256": "3634475f84e665c36ac0aaa355ac1466087bb00341beff27877d59817d4f1a46",
+    "change": "restore-and-merge"
+  },
+  {
+    "local": "brands/buick.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/brands/buick.html",
+    "before": "5dff4dc3d5fb0946fbcf0fe77c2be9f47c50c858b45b22ff649c3864d4479add",
+    "sha256": "87a6ec93d5e40fc939a6c17a8756a0fbb2bfc679593ddbd1fb7f61b1fc8b2e92",
+    "change": "restore-and-merge"
+  },
+  {
+    "local": "brands/byd.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/brands/byd.html",
+    "before": "14d54e88ec34218ccad14f9439d09eab48b4ed6972f1941b427b69eb6182bf56",
+    "sha256": "cc98cf7ec2529fe137a8d2cd975c2f30d01808593240bcc5c499d385d960d0f5",
+    "change": "restore-and-merge"
+  },
+  {
+    "local": "brands/cadillac.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/brands/cadillac.html",
+    "before": "7c5dbbbe25f6a09dfc4af7d90bb5505d85009f0d5f80119ff0d9c9789b8295f9",
+    "sha256": "d027e1ca8da1e91f038157de7662c1c41f8563efc26c1d2db20c733b6142457a",
+    "change": "restore-and-merge"
+  },
+  {
+    "local": "brands/changan-kuayue.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/brands/changan-kuayue.html",
+    "before": "1e4efedf17553ac2e70b1a8e5071e06bbb4b812023b4e615cd0189a28e162c24",
+    "sha256": "01bc09c88afbb90ac5d3f40ee94289400f9538240f4e6659e0a7504807cce474",
+    "change": "cache-reference-only"
+  },
+  {
+    "local": "brands/changan.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/brands/changan.html",
+    "before": "86daa3296fe02b6162f1fa013339758c321736984fa18b7e1afcfb83e5c74597",
+    "sha256": "a9fe50ba57d65fe0ec826f3fbde10cbc20e56e440d18761bffa8c77790b42df6",
+    "change": "restore-and-merge"
+  },
+  {
+    "local": "brands/chery.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/brands/chery.html",
+    "before": "b7429259b1100e283829b49a00f927b2bb92430907b4ee15baee0596c4187038",
+    "sha256": "433074f06b734831c11d655e39df44a7c930e92e399f38cd68068f19c9d12300",
+    "change": "restore-and-merge"
+  },
+  {
+    "local": "brands/chevrolet.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/brands/chevrolet.html",
+    "before": "2fa2ede69260ab7213f52cf1b8d98196169d7aa79629e2e85922f176b2f48669",
+    "sha256": "50df2eb62be4b952b0bea9841b71019651bf6ca6b4b76b0cdd58af4fedf1bd4c",
+    "change": "restore-and-merge"
+  },
+  {
+    "local": "brands/citroen.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/brands/citroen.html",
+    "before": "a10a7fb585078c583f8680da467a86f398aa1851a4743577a8f7da5586a5037f",
+    "sha256": "102a04e5d292f0385acf82a7a72f03ba1bab44ee3568c562698661c93b1f7705",
+    "change": "cache-reference-only"
+  },
+  {
+    "local": "brands/daihatsu.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/brands/daihatsu.html",
+    "before": "56823965af187c889503a2946537759fddf73347488ab7285018990557a70838",
+    "sha256": "c6018fcd38a618a2f3059f69c3038d8aa64c44e670a88af7b618f1a79f4d482b",
+    "change": "restore-and-merge"
+  },
+  {
+    "local": "brands/dodge.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/brands/dodge.html",
+    "before": "c7f15b270aba067cc2bb72f1105f82a7bdc797a47e5d780df896ed53b560fc7f",
+    "sha256": "1c256a361eaa2c2da4bb1b9c9f3901b9ed8d60b4191e86eedd74565e03ea33c8",
+    "change": "cache-reference-only"
+  },
+  {
+    "local": "brands/dongfeng.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/brands/dongfeng.html",
+    "before": "be4fecafbe5b5c2324dfb514bac3b6c2e7c0549030ae36895b89a9cb124b51bf",
+    "sha256": "a9e35374fac39a035edf2fa72a3a32ad167a83bc3c867f69b1963207fcfbe0a7",
+    "change": "restore-and-merge"
+  },
+  {
+    "local": "brands/exeed.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/brands/exeed.html",
+    "before": "9565077a3f67853f93432e4002b5fbe0090695952183821d5af70ef1f6fa4f96",
+    "sha256": "1c2fe47bfc124ebc01a729e93eeb851777a97d669ef187a35153397fd83a33b7",
+    "change": "restore-and-merge"
+  },
+  {
+    "local": "brands/faw.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/brands/faw.html",
+    "before": "1a95c14a0aaeeac40bea419033e2a5b9cf2ecbaf4d7760408821d626df6f7c4a",
+    "sha256": "b424602ccf7ea0164d5c2b72691715453c0c24dabf96a39d4e7eff2ff22fcf7e",
+    "change": "restore-and-merge"
+  },
+  {
+    "local": "brands/ford.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/brands/ford.html",
+    "before": "fdb8d76280081f7142f79e5bc37f3d983eb5b30b3ced323218b81083d39e7409",
+    "sha256": "f6c10d289e2cb9e3cdf937f44179c2d64598449c2322ea1c20290ee2a71445bb",
+    "change": "restore-and-merge"
+  },
+  {
+    "local": "brands/foton.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/brands/foton.html",
+    "before": "14478564a2594e78e89d9c9e7b9d86aa0d748c338b97a72d972bcef72d41e481",
+    "sha256": "e4b7c8920f4b07eb8c5c881c765c10c9d24cb9482e65f3b429ffacf4617e10d1",
+    "change": "restore-and-merge"
+  },
+  {
+    "local": "brands/gac.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/brands/gac.html",
+    "before": "ad30d65a1c7603ad646c610e9e671c14c657776b8aca8e96b2fe3b0b9612af72",
+    "sha256": "28df640c8f661d560cef3dbadf7fb5a92f5c2a91979e2dabf4c874ebab828850",
+    "change": "restore-and-merge"
+  },
+  {
+    "local": "brands/geely.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/brands/geely.html",
+    "before": "d4ee182a792bb0a1d4572c1aa0c5b7b298b0b8e891fb4c7ed55e6985d7d4123a",
+    "sha256": "78f6a196a0c8fd1632aaa753df99296a3347547e819a2f24917c050360fbad26",
+    "change": "restore-and-merge"
+  },
+  {
+    "local": "brands/genesis.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/brands/genesis.html",
+    "before": "243af7214bbdf70e164c4395c0bf0759dce00b842dea718f9c4865132e7c8b36",
+    "sha256": "50e5efb0383fd90e83e95aded586d85f912f8ff18a4b3ae189bc0f6d0bc7db0d",
+    "change": "restore-and-merge"
+  },
+  {
+    "local": "brands/geometry.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/brands/geometry.html",
+    "before": "b2b424ea0447f01ddab8f12d83ff86e389a961553c60cb1f28aab5a1ffa2f93f",
+    "sha256": "552c3ac4f4716451706a8ce5822ecb8a4f5f1ca492c724c533dd965c48ed5d2a",
+    "change": "restore-and-merge"
+  },
+  {
+    "local": "brands/gmc.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/brands/gmc.html",
+    "before": "5ae07544c6bcd9cafc250db4f8f96e1134230a65979d5623a7c3a3e337d93d13",
+    "sha256": "a75b1eaa25a4a83698cd72c9811e630257c19fbed3c3a34d0eb84f12ac6f443a",
+    "change": "restore-and-merge"
+  },
+  {
+    "local": "brands/great-wall.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/brands/great-wall.html",
+    "before": "b4466ce29ba82b46bb7f8c51c36c74a05f128868fef418beb250a61502c7be09",
+    "sha256": "41f9a4809ef0f12ba894c4d1d544771a0822d3df4299f6c0e84314d1338da30d",
+    "change": "restore-and-merge"
+  },
+  {
+    "local": "brands/haval.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/brands/haval.html",
+    "before": "8e3d1cabcb3ccddaf7f3e7c7dbe14743cd65768c41052dfd6355607a8e81f768",
+    "sha256": "3a722ab471f828c0b2466e81e8d8ee9958c06058e6f448372c398be40f00b57c",
+    "change": "restore-and-merge"
+  },
+  {
+    "local": "brands/hawtai.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/brands/hawtai.html",
+    "before": "0c064217cd8a2aaebc6eac46389f1d8be5e0e3de97c34748bed2bec8afa5c829",
+    "sha256": "465277ad9a3640122cfb7b90c924d74101e24783c43a7c74131d0d3ebf757cb6",
+    "change": "cache-reference-only"
+  },
+  {
+    "local": "brands/honda.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/brands/honda.html",
+    "before": "d9ff356c24d280a14ae4ef465c0f326f9661bbf5c73b70c94d065cae16c0503c",
+    "sha256": "32fba6dc2237c808d0815d99e63d9f627e8dffd2329b12132e6eeb9a8dd878d8",
+    "change": "restore-and-merge"
+  },
+  {
+    "local": "brands/hyundai.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/brands/hyundai.html",
+    "before": "075868a4cf4567a81ce9f5b862a6719075917ecc55d62aefa88925ec1ab8169b",
+    "sha256": "23eec5b7ef0a4ed5cd2c764c0cd1781ccf33a6f5d0f59cbe2815b63b59d48506",
+    "change": "restore-and-merge"
+  },
+  {
+    "local": "brands/infiniti.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/brands/infiniti.html",
+    "before": "8782faefef66422883a6bbc4e0eab1dfc1a1b6187a0140dfc33e8d1b46acdfa9",
+    "sha256": "f4d78c39c772227777c9c5e38b38412a97c6f4da9ee4a5ed386430ab40b4bc93",
+    "change": "restore-and-merge"
+  },
+  {
+    "local": "brands/isuzu.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/brands/isuzu.html",
+    "before": "a2f79c61d0541b8b360e2656f268d771b2e2664e9ef7f6f6b16289de04d9908b",
+    "sha256": "06158464b33c2011335ec50a900998e4ccf8c62c41e1da446c22f264924990ae",
+    "change": "restore-and-merge"
+  },
+  {
+    "local": "brands/jac.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/brands/jac.html",
+    "before": "281fe83270d8c700b7dcbf9b37b2afcaec7c2294d03bc9e4f3d233aeaa5088c2",
+    "sha256": "d9e1b8ce050220f526a95fd9de23a43259b39dfc394b195a6cff78ea31223a62",
+    "change": "restore-and-merge"
+  },
+  {
+    "local": "brands/jaecoo.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/brands/jaecoo.html",
+    "before": "3331eb82f2f9208c1c4da553336de4302a9e86b3315977880f417be7ed9d28e6",
+    "sha256": "33b57d3a7c24f4f6f8f0da3b952aff7cd293b26327969faa15870c38bfe407a5",
+    "change": "restore-and-merge"
+  },
+  {
+    "local": "brands/jetour.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/brands/jetour.html",
+    "before": "cb69e8748094ff0e8d0666819a4d1dcee388fed7017eeda26a49c5252c39d304",
+    "sha256": "c358b94286abf739dc8c77a9330f4ee3a4a21d37eb7d01478cd3d85e93236cde",
+    "change": "restore-and-merge"
+  },
+  {
+    "local": "brands/jmc.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/brands/jmc.html",
+    "before": "c5c1ad40e0d1f26f0563bd646b8585df61ca881a7f1e3e8df98548602b4ff1a6",
+    "sha256": "625a6e1d2781c114d107a75a963c267c03ce8a1d0c7e2f18447217863b4aa0a9",
+    "change": "restore-and-merge"
+  },
+  {
+    "local": "brands/kia.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/brands/kia.html",
+    "before": "71d3e80202054681fd81b46e2eed6b90de3c4660aeaf7921bb4b236aac6c2ba0",
+    "sha256": "2a6416995c5fa0611af4685a830e057ed6f8111a411c20e1f8196b0b6a825a9f",
+    "change": "restore-and-merge"
+  },
+  {
+    "local": "brands/lexus.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/brands/lexus.html",
+    "before": "8c5677172db3cfd88b6d13354374d2494382943ce0163a340dba7c1527c3e494",
+    "sha256": "e5b49f6ef0e160df3b26ebf808ec447d6ad7b1a0244339566ecec5f76c02694c",
+    "change": "restore-and-merge"
+  },
+  {
+    "local": "brands/lincoln.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/brands/lincoln.html",
+    "before": "92981e4781d9edd8183a03eaea29ac68f7feb8b05ab9511cb33ea4cda4137052",
+    "sha256": "2b6d12e14f5ff67b017bdf08d733c6ac7e2f31ba376bd0544804faa5b3f0c10c",
+    "change": "restore-and-merge"
+  },
+  {
+    "local": "brands/lynk-co.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/brands/lynk-co.html",
+    "before": "6d1257d1b0bada7c10ded4a79ba7548762edbfb121f5fdde2b719b1e5ded6f4b",
+    "sha256": "213648ca8e10a880921ecbbc63606d3bea250ddd63dde99f44f0137f5db55da1",
+    "change": "restore-and-merge"
+  },
+  {
+    "local": "brands/maxus.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/brands/maxus.html",
+    "before": "64c5ad15f198c32ba848502473cfb94aba209ef36352c96cf958d42ff4655184",
+    "sha256": "2bfd2fd6886feada49761f4b1d819e674753c2516c53335ac3d5686757c43dae",
+    "change": "restore-and-merge"
+  },
+  {
+    "local": "brands/mazda.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/brands/mazda.html",
+    "before": "99e58cea504fe48ac7038a0e3cd2b2c3e4ec12dd02bbd5dd1a9f3322850cd5e2",
+    "sha256": "72bcb33a22c9b3a7eda02c14ef7909c5145b59d2fc247d28e5eae9b4288a95ba",
+    "change": "restore-and-merge"
+  },
+  {
+    "local": "brands/mercedes-benz.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/brands/mercedes-benz.html",
+    "before": "6da34988cbdd89af494f5ea5eccb9ba3aabd8fcf4aab5e431be69f3124e34baf",
+    "sha256": "8c20122ffa9e55a42279e7eadb5986c8a38e0fbf8983c4f9fa0c96f7eacebdf4",
+    "change": "restore-and-merge"
+  },
+  {
+    "local": "brands/mg.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/brands/mg.html",
+    "before": "caab44c7841de5570c6f2e531836ad8f8ac82c5f4dd2f97eb7b876163d0f02b1",
+    "sha256": "cc5f912f70fa5b2128ec0369d3f3c8194b0956c33a7cde255fa2487c5060bb55",
+    "change": "restore-and-merge"
+  },
+  {
+    "local": "brands/mini.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/brands/mini.html",
+    "before": "60851af87ba406fc3f312f3dbf733e9d0c5d676eb5d2b3bfd02d96d3ab026f75",
+    "sha256": "d965689bce4a9b17300a5e8036578fcc5262fd3999bee8f91ad1b5c075034758",
+    "change": "restore-and-merge"
+  },
+  {
+    "local": "brands/mitsubishi.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/brands/mitsubishi.html",
+    "before": "de17299350853c9efdf5b0d33773064db575faea0a2cf2704b3207fa78281048",
+    "sha256": "a2c7be670ef205600b357ed255b3c71fbfb6fb1360acb17f08ce68a27004bf1e",
+    "change": "restore-and-merge"
+  },
+  {
+    "local": "brands/nissan.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/brands/nissan.html",
+    "before": "e29ee68a14215c98861be40d7b89aefcced4e452a7a007f592fdbb99ab48e854",
+    "sha256": "021098327ee9cecac858dd43ae301ea031a36de261bbc6cc8fb6111d35cf5399",
+    "change": "restore-and-merge"
+  },
+  {
+    "local": "brands/omoda.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/brands/omoda.html",
+    "before": "1fe246cf9e978653b2d9ac0a054f6f1a7d5c5fee8bea548b16be2fe73275a3f6",
+    "sha256": "a221df161c71ddbcdbadf25b3d4e3e7a59295697cc8d65be5683f8d2049ddf44",
+    "change": "restore-and-merge"
+  },
+  {
+    "local": "brands/ora.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/brands/ora.html",
+    "before": "f9f19294709cb7affd1a6e1892f9b7d324180020c032dd126b2e0d3b3fd6b4d6",
+    "sha256": "9b720d8d593f3cec05101878f6ce83bf88e49c1d11a50ee44040da22323556de",
+    "change": "restore-and-merge"
+  },
+  {
+    "local": "brands/peugeot.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/brands/peugeot.html",
+    "before": "0f6292c940e42071805b08c5e030e03d1b3f09c8dae76fd43c1facb46c79b834",
+    "sha256": "baa48a87cfea627045f3a9eb49f99b1f81d30aee02b14f0b95cf00d3fbdf1f37",
+    "change": "cache-reference-only"
+  },
+  {
+    "local": "brands/roewe.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/brands/roewe.html",
+    "before": "6e7dbfebe7d60c7cec7230c16589b985a5abb6840523135d57e3817482372467",
+    "sha256": "30de12a894278abae00f216b221101e3c0b90d30e2b1b1d4224d7b8703504010",
+    "change": "restore-and-merge"
+  },
+  {
+    "local": "brands/seat.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/brands/seat.html",
+    "before": "82ef63a8904e47363ba0f553faef29e505fda719e5504da145dc07f3102c9279",
+    "sha256": "6004d2f33229ca5436631edbd75238fa0fcbe83ec6f1144c560477b3f984e0e2",
+    "change": "restore-and-merge"
+  },
+  {
+    "local": "brands/skoda.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/brands/skoda.html",
+    "before": "81633e5019d1631a184496eb56b66b2acc4ccf3ffff8d22e8b20c90b83957e19",
+    "sha256": "57774b5a111ba00e21ec498d9097349c0f218623620d84933336c62229880a56",
+    "change": "restore-and-merge"
+  },
+  {
+    "local": "brands/ssangyong.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/brands/ssangyong.html",
+    "before": "861c9ce66abcbd3d77769b22384b88609c10a78197f1fb8ca568aff0f6d27f1a",
+    "sha256": "22bfb9ef8e06aa35e126651294404e7e1875502a4466273bbc17a4c622e54eb8",
+    "change": "restore-and-merge"
+  },
+  {
+    "local": "brands/subaru.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/brands/subaru.html",
+    "before": "72f00e80151d87aa312e6f35added38d481664998cfb172b1bbcbdbb9481a4f7",
+    "sha256": "31fe3e104668fc4204d5f041e2fb2575e827b0cdd55a226e2b53644d70b55605",
+    "change": "restore-and-merge"
+  },
+  {
+    "local": "brands/suzuki.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/brands/suzuki.html",
+    "before": "f4db500e7839be8324af0aeb6574e790e8f54dce4f76645abea07444ee6c4cc4",
+    "sha256": "0bd3da7ee4a91a6b70af72ee2992212a923fe46a88adf4966edabaaff8af892c",
+    "change": "restore-and-merge"
+  },
+  {
+    "local": "brands/tank.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/brands/tank.html",
+    "before": "66991e9cf198ca7c8cfdc32c8d271cbaf505e1449b6583978a2b8e5265c0a373",
+    "sha256": "468296180ec03c7623727f00483a446a097011bd12c1cafc41dbb8d015907067",
+    "change": "restore-and-merge"
+  },
+  {
+    "local": "brands/toyota.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/brands/toyota.html",
+    "before": "d5df19b822c9a74a35cf315312460c8655b9291ece629a1fbd005f40278d519a",
+    "sha256": "0c6bda2fc05976ee0eaeb7890a9b18c333eae5f5b760f680038e94382e23f5ce",
+    "change": "restore-and-merge"
+  },
+  {
+    "local": "brands/volkswagen.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/brands/volkswagen.html",
+    "before": "841b4feafd925e0f688045c68c3197b923924d2f9d4c8f700b9168f5f4491b3e",
+    "sha256": "52dbde421db3bdb8d841234ed07cdb7ad724cbfd8287207fae4d443f875ffc75",
+    "change": "restore-and-merge"
+  },
+  {
+    "local": "brands/volvo.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/brands/volvo.html",
+    "before": "a822bfd3032c7c4646c19922c329a7e8eee7a2ea607a2a46df1dd32f5334e438",
+    "sha256": "8c68ced049fd30218196c60c62d133f187f0c23a9cd249ee86e8aaf99e8f1bc5",
+    "change": "cache-reference-only"
+  },
+  {
+    "local": "brands/wuling.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/brands/wuling.html",
+    "before": "b02d4aebb24bb0ec8b02816415bcdc8fa7317a27599d5ebbea3bbaf6c96a2290",
+    "sha256": "a13dfa438f6cca56b667e9793c0efbad8142587648919b83e8d7e38b89fc3198",
+    "change": "cache-reference-only"
+  },
+  {
+    "local": "brands/zeekr.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/brands/zeekr.html",
+    "before": "a89e61e9f352ea675bfe811f333887e9f3547afee8c9e0335c47ba048335b08a",
+    "sha256": "71655362e375f55ea5b73c1e9892786b8c9d4610dd04ee5d7f15b89ac7b63cd0",
+    "change": "restore-and-merge"
+  },
+  {
+    "local": "buick.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/buick.html",
+    "before": "2b9b77861522a61b6a72305ed0b06bec187c61cdce6385c109f62ff8784a00ee",
+    "sha256": "e70777e87014e4111604928e50c122374b9e06c58817ecf37da3abb2e73c25cf",
+    "change": "cache-reference-only"
+  },
+  {
+    "local": "byd.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/byd.html",
+    "before": "55f12c70598d1096045bfc6b31b0450e22a12cf3cd34c88ad653b103193aeb14",
+    "sha256": "069b479959e8a3a2970c144fde4ce65de245da6ba2aa0c747229d82cc0637284",
+    "change": "cache-reference-only"
+  },
+  {
+    "local": "cadillac.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/cadillac.html",
+    "before": "ae2021718dd36a017f960d7768ad7d0afd244bd6c50ecf4b040ce7719f24e4cf",
+    "sha256": "6e9e44ac0908cb7bf63a76ce2e13b1d5d52dce5511eb2a95af6b056787fa9822",
+    "change": "cache-reference-only"
+  },
+  {
+    "local": "campaigns/ghana-tiktok/index.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/campaigns/ghana-tiktok/index.html",
+    "before": "416d5c38eea11f66893ce018b8492c7543edc71c5c810388fc3568f9ca866c59",
+    "sha256": "63aa45991d61f60c4949f93f7326113d316fc2cdcbeafc703d946f8212cc8de0",
+    "change": "cache-reference-only"
+  },
+  {
+    "local": "campaigns/truck-export/index.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/campaigns/truck-export/index.html",
+    "before": "1cacb2a6dd88bf6427baceaf6ec8814a4d8f92b92c05a8d4098297eb0062b26c",
+    "sha256": "7b37202d559fd8980aa232aa7f379eafe335358b73add2c8e277644f76358016",
+    "change": "cache-reference-only"
+  },
+  {
+    "local": "changan.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/changan.html",
+    "before": "684ff8cdc6d026ef306569bec6481e352c8842e82084f2d00f8af640b33f8dea",
+    "sha256": "326421d9745d5c66f404ac11b1a604dc1fa740f510a779673c5edb246ae6fbdb",
+    "change": "cache-reference-only"
+  },
+  {
+    "local": "chassis-parts/index.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/chassis-parts/index.html",
+    "before": "dd9767b1c0eae0c23db943645c1013954ea0c54d0e6ab55afcc2a799dddf1734",
+    "sha256": "c0316fe1462c056ab47cc45211ff5f28325dad9bb5933f13fe7f2b724b29a201",
+    "change": "restore-and-merge"
+  },
+  {
+    "local": "chery.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/chery.html",
+    "before": "36898ef3a891ba20322d79596e4d09eca1312d48e7f850c7c575257af126e69f",
+    "sha256": "2df0bafe9408e59bafd989ea267b7e7766f8c68387638497f08466ee128f9753",
+    "change": "cache-reference-only"
+  },
+  {
+    "local": "chevrolet.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/chevrolet.html",
+    "before": "cb2c959050518e507bebd17e277fe92fef2de2fb09ac99a547e8b2a5f87a3c40",
+    "sha256": "0b7f19c5293e8df69920eb9d34617ea30c8c73e51ff6b6d9352b8c6c794cbc0a",
+    "change": "cache-reference-only"
+  },
+  {
+    "local": "contact.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/contact.html",
+    "before": "33d713df98412bdcdc33d8b13366fa2138994055ca7c1b39944437714119ba43",
+    "sha256": "4518f5ffad2f1252ce70bce7db6865c625ba2d748f517322ea58bb5e93dac76e",
+    "change": "restore-and-merge"
+  },
+  {
+    "local": "css/ebay-layout.css",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/css/ebay-layout.css",
+    "before": "364ffb0a519657934f1e6b6e9a01d96f1d17d0b9f43e0bfdbad9ea93b436310b",
+    "sha256": "54109ac492ccea59c0dfedc95049947e77e71d7ae7159a50f8f5b0fe735a4f87",
+    "change": "restore-and-merge"
+  },
+  {
+    "local": "css/home-v4-hybrid.css",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/css/home-v4-hybrid.css",
+    "before": "b8febbfb6837d1a151cb31f5ca252b9576c2c5deaa6d5847877e88a24b3692da",
+    "sha256": "0a69c72d429deb2d164876620d699035f5268c7887149f8c60110dba2ebd557c",
+    "change": "restore-and-merge"
+  },
+  {
+    "local": "css/index.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/css/index.html",
+    "before": "40febd966a9031ecb89c762d49717986dd1deaad81093d83eac8749a5418c4aa",
+    "sha256": "beb37965e763b7b325ef934256d3acbd1f0629269d7014229a4d209dce2bdbaf",
+    "change": "cache-reference-only"
+  },
+  {
+    "local": "css/login.css",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/css/login.css",
+    "before": "300dcee31d6969a7f085d85488333fbce38335f4b886cb26d2f57cc70a7fc7ea",
+    "sha256": "eef883dabf018e80a5659aac232e8dbb90b70623673310916b18ecd73157c4b7",
+    "change": "restore-and-merge"
+  },
+  {
+    "local": "css/styles.css",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/css/styles.css",
+    "before": "9b1299091343ea5f2eb7a814ca61847389fabd449f32978a7e26ebb710e43e22",
+    "sha256": "d462f13805547bb8667a8dc12ab9a57336e1d4e773aa1bfa5ce6a684298d4557",
+    "change": "restore-and-merge"
+  },
+  {
+    "local": "daihatsu.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/daihatsu.html",
+    "before": "f5e25a4657739dba02d19e399d5f3f9a090235294d7376ba046626a26a891903",
+    "sha256": "edf3ac01b142c977828d8258c98976b382e9309a239d9d57a8186e1a55affb93",
+    "change": "cache-reference-only"
+  },
+  {
+    "local": "dongfeng.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/dongfeng.html",
+    "before": "134758e3e7d03a8cf04f987490088218422aa73a55bc91eaee879b578207ad66",
+    "sha256": "aa68d3130da3b154721f34918e0b3b8d732e7cc5663cdc94218db64bf9d1bb71",
+    "change": "cache-reference-only"
+  },
+  {
+    "local": "engines/1az-fe.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/engines/1az-fe.html",
+    "before": "d9814739a454296c3e327127f58080e1e37f01035b54b772c51303e1784c5ec8",
+    "sha256": "6dbe8447239a5dc3c4405684babc607e6ed14033d506000b6f5e829ffe97662a",
+    "change": "cache-reference-only"
+  },
+  {
+    "local": "engines/1gr-fe.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/engines/1gr-fe.html",
+    "before": "19531925fecd00f615ec83ac1628bd4908a50d7219354c71f696e9166c86b7c1",
+    "sha256": "dfae7679116aa4ec94582c6909de4571edd9db9ee08077356d3341eec92880fa",
+    "change": "cache-reference-only"
+  },
+  {
+    "local": "engines/1jz-ge.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/engines/1jz-ge.html",
+    "before": "2923a9ab76be1eb3a938b669c8ade5e7d12201650f6cdda7b318e8f30d7d86dc",
+    "sha256": "45343c1fc05eaaf1f980ed9c8e67c589f7f9fd761559af25dd1932fba041083f",
+    "change": "cache-reference-only"
+  },
+  {
+    "local": "engines/1kd-ftv.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/engines/1kd-ftv.html",
+    "before": "012d51a82dfd7211d76bfed872a3c1486c2294a22fee1ce336ea21d7304b7280",
+    "sha256": "0f6dca82fa3bdb9a3d9036734c804023245d0bc068f1d23bcfc0adf300c67e9b",
+    "change": "cache-reference-only"
+  },
+  {
+    "local": "engines/1nz-fe.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/engines/1nz-fe.html",
+    "before": "506cc168f2753a2646edd20391454b59b9708dbc17fc305831a388b39a7dea2a",
+    "sha256": "cd1edf0000210fdd2b36ebb2a19ad59f510ff1f4a56bdc55401c9cf705dbb1ff",
+    "change": "cache-reference-only"
+  },
+  {
+    "local": "engines/1zr-fe.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/engines/1zr-fe.html",
+    "before": "d0d44ba68c8e4538f869149b6fcef136be8a1a9fe221e140421e6af4ee9d741d",
+    "sha256": "7dc4a7dc73e381008fd840a21db368681a7e056b3c936aa21f142b133c697a2e",
+    "change": "cache-reference-only"
+  },
+  {
+    "local": "engines/1zz-fe.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/engines/1zz-fe.html",
+    "before": "bc6555f66bb3917cf31afbc74215fe4809708e38723c5b58c9ad8abb4d80e2b5",
+    "sha256": "cb6841df1c7ad1ab636ad259e361b8217624363b96082c48ea872f228cadf511",
+    "change": "cache-reference-only"
+  },
+  {
+    "local": "engines/2az-fe.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/engines/2az-fe.html",
+    "before": "98025f7c4bb8f36eb129f6c3204ba03cfdde836abf566dc22b111ceed924951a",
+    "sha256": "60649804fea599926e98327b03f2d261c8422c725ce309105d51b91fa721319b",
+    "change": "cache-reference-only"
+  },
+  {
+    "local": "engines/2gr-fe.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/engines/2gr-fe.html",
+    "before": "f59e06f7dac44a3c020c967c5a25b2d895c983d1fc55ba5c23c0b70d94663476",
+    "sha256": "2f09508082c4e7aead49f46d593b8e1dab22dbc0714d38c4bc368f24dc475390",
+    "change": "cache-reference-only"
+  },
+  {
+    "local": "engines/2kd-ftv.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/engines/2kd-ftv.html",
+    "before": "3d2a53bdcb161c0b6e3906c676e7de6526292af3448064cc9e276785c77c0f78",
+    "sha256": "05c6e5dcc44d0e9fc21b55f8caacc1676b142215734e54986561127f31b10750",
+    "change": "cache-reference-only"
+  },
+  {
+    "local": "engines/2nz-fe.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/engines/2nz-fe.html",
+    "before": "2f12c12a76a31284151bc724ebe1b0206a2925535195d4710f42abc698c65868",
+    "sha256": "8a49f25778e5b52d8097c50b9f2b47a9bec9c1b57427a45b8cdb1bffbdd69d8f",
+    "change": "cache-reference-only"
+  },
+  {
+    "local": "engines/2tr-fe.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/engines/2tr-fe.html",
+    "before": "130466c3d2283b4e3a2c779e9dd0e19b2e31ff503b52e3684c50b36f2657a73c",
+    "sha256": "99e841d699a446e541e5d8372b94d82a376026167cdbc4d5e4f9296f5638b51e",
+    "change": "cache-reference-only"
+  },
+  {
+    "local": "engines/2zr-fe.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/engines/2zr-fe.html",
+    "before": "e38f3ccbcf5b17991dd8c993f1b6b512175373be1a0059bb7062f34654d3f415",
+    "sha256": "e28f996c5888d758ae98e6d7f2cd13afbeac66f5a77c38facabe38421576b20c",
+    "change": "cache-reference-only"
+  },
+  {
+    "local": "engines/3zr-fe.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/engines/3zr-fe.html",
+    "before": "3a14980e3c09fbe2bbaa82aafe24c94a092a568ff1235d6d37bb3188357a79aa",
+    "sha256": "5c5ed8c618e67e050d6dcf6205dbe1c293e6fbde4a4778bd4d88f6a3b0c8da25",
+    "change": "cache-reference-only"
+  },
+  {
+    "local": "engines/3zz-fe.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/engines/3zz-fe.html",
+    "before": "846304eb6cf4c964b223ec9433bac0f0b764b9aabceb0ca4f59ad5150d161a82",
+    "sha256": "904b711bc3b46002a648b53aa4e68d017ff1cbc216ab676fc5d0cbbeaccba8db",
+    "change": "cache-reference-only"
+  },
+  {
+    "local": "engines/4b11.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/engines/4b11.html",
+    "before": "5565ccd62a414c7001c4f69bedadc80b18c2a25e54281ba6da71d865a7ef1200",
+    "sha256": "066e091e4bc7968add4a69397e6f15b55d7fad6b6f428d8d063baeaf08cc1ccf",
+    "change": "cache-reference-only"
+  },
+  {
+    "local": "engines/4b12.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/engines/4b12.html",
+    "before": "12a7151be1ec010a9a8a47df1f0aaede69aad42a3e72b91b2e0767db6b7e13b9",
+    "sha256": "f38a23b736fa7cfa4a9b3ddba9c24373eb1a08ad46e295745eeca1fb7d302d75",
+    "change": "cache-reference-only"
+  },
+  {
+    "local": "engines/4jb1.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/engines/4jb1.html",
+    "before": "25c7d5ad4c3443486c6253619de2b960e12c5db3518e82b8d5873f8437704a33",
+    "sha256": "7f0dd6d0ac6c15a06f789a49536f133dcc07bbd682a9db96e52f60621134f4b6",
+    "change": "cache-reference-only"
+  },
+  {
+    "local": "engines/651-955.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/engines/651-955.html",
+    "before": "e17e085270aa900147d2a3353ed216275a9c8f4420ad03a573e7236ee2259101",
+    "sha256": "6e57930c3b852e179b440cce978bc608c3a417997bcc5867d508ed8faa0d70fb",
+    "change": "cache-reference-only"
+  },
+  {
+    "local": "engines/africa-half-cut-engines.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/engines/africa-half-cut-engines.html",
+    "before": "06750b570198263bdbf73b575841a9dfcacbc5a6fa06acb5577f01d22b037b3f",
+    "sha256": "e1fb37e49c524a60ee4b8f92f2ea523d7d63f57b6aa4c3acd53eee44a3e64290",
+    "change": "cache-reference-only"
+  },
+  {
+    "local": "engines/benin-half-cut-engines.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/engines/benin-half-cut-engines.html",
+    "before": "348d3a92ab973966356438a3e0141be4d8d01daac86deeb0affad5474e487cae",
+    "sha256": "8dacfd43feab3b485f13b1909139df983b54f79eb0cff93d2aae27434dfe6569",
+    "change": "cache-reference-only"
+  },
+  {
+    "local": "engines/cameroon-half-cut-engines.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/engines/cameroon-half-cut-engines.html",
+    "before": "57e2316d717a1812b530803a869ba04c196ee0d4b98a69add5a152b6671c4353",
+    "sha256": "377353408d71e8e1265221e9507888fe66ba245d80c92b5b0c7d910ebae173d1",
+    "change": "cache-reference-only"
+  },
+  {
+    "local": "engines/cote-d-ivoire-half-cut-engines.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/engines/cote-d-ivoire-half-cut-engines.html",
+    "before": "3e860d42adb2ed903681b88ae543e24e5360f66bb2bb99b174c33cdd61231799",
+    "sha256": "bd44ec3040829bd74a4a7850e913253b361f7edac4a43157d7f2244ff9a7217a",
+    "change": "cache-reference-only"
+  },
+  {
+    "local": "engines/dubai-half-cut-engines.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/engines/dubai-half-cut-engines.html",
+    "before": "ed684789fdf3e0ffe3b6d6041a5d5b57bcdfbb5a5b29d871cd2e9251310a9cb9",
+    "sha256": "63ec5d9bced35a69d20795eaa7973a400e8398a380bed7e6c09c390731e72b32",
+    "change": "cache-reference-only"
+  },
+  {
+    "local": "engines/g4ed.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/engines/g4ed.html",
+    "before": "e21b01195ac323c383f8c467083419af2f23c95f928a48f7bbe4ed1262102cf2",
+    "sha256": "4e064625505cc30d2ea7d327bdbb8ecbb45a002c84e1a62253d6683401db9851",
+    "change": "cache-reference-only"
+  },
+  {
+    "local": "engines/g4fc.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/engines/g4fc.html",
+    "before": "b35f7959950df42bf27467c0db0f04d938ef5d3ecd195c7c5ed6a4f9db7b222e",
+    "sha256": "5d05e7049b428a0c6db9af3d77b5208aaf63b3dda3195a7babdbe0c56da01554",
+    "change": "cache-reference-only"
+  },
+  {
+    "local": "engines/g4fg.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/engines/g4fg.html",
+    "before": "e53f60bca714bd78fe577a8c955ec986b04a4d871bce0405c7ed894ec4a063da",
+    "sha256": "1285798bb53a198bb9224cc724101ec979f81a463024b712422d9f3295656103",
+    "change": "cache-reference-only"
+  },
+  {
+    "local": "engines/g4gc.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/engines/g4gc.html",
+    "before": "3ff9a568690b30a3d466b1a4807afc9762620b4a454eb425f0c4923aecbd3001",
+    "sha256": "04690201ab8a204010c1ac93c96a5e6a555ed7db618de89c220579023e7c9fa7",
+    "change": "cache-reference-only"
+  },
+  {
+    "local": "engines/g4ka.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/engines/g4ka.html",
+    "before": "9ef5ab2e1d8f9c238b5c2916d8c42c4ddf0d37dfe44850429d9e7789158f0f20",
+    "sha256": "a56a415b866e8f1ec0cc2d4f68c9eaf017f18ded8d8aadba7aff0fd7b084b589",
+    "change": "cache-reference-only"
+  },
+  {
+    "local": "engines/g4kc.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/engines/g4kc.html",
+    "before": "e01685195b199322759d79f9a90dac041f274df51221fc692f04ec52bb9305f7",
+    "sha256": "3abc660c2901b519c75d172daeeaec29d5762f8faf678f97854ce8af5ba082b1",
+    "change": "cache-reference-only"
+  },
+  {
+    "local": "engines/g4kd.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/engines/g4kd.html",
+    "before": "a8b48452ede1d878563274aaa2a4c42f024aaf0252ef9045bce8b777520b066e",
+    "sha256": "62491e0f8cdaae981f794112b852aecf867e8b5406220b846289a7a558286739",
+    "change": "cache-reference-only"
+  },
+  {
+    "local": "engines/g4ke.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/engines/g4ke.html",
+    "before": "968e92f26cb97716e3f08c26cb0e984892b32ed1039fc5a5b02fd02ade01d3de",
+    "sha256": "fca29bc1d299c757f7f1bcfd5a71c88056f6873122da11c5c38bc4e2cca01825",
+    "change": "cache-reference-only"
+  },
+  {
+    "local": "engines/g4kj.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/engines/g4kj.html",
+    "before": "e43a9d0c4da6909cf2251853430850b681caf64ff14170a4820b6c290646165a",
+    "sha256": "2df61129b67cfe98f95795574ed930c1003f06272749f9de9bd371b738b4b239",
+    "change": "cache-reference-only"
+  },
+  {
+    "local": "engines/g4na.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/engines/g4na.html",
+    "before": "63819f89ba45a97ee4074bafe2d22dea6dd94186e0adef0c051c8acce60855b4",
+    "sha256": "a717add845e429f6eaa5e4353aed508cb69832ad301156baad705955ccbe51e0",
+    "change": "cache-reference-only"
+  },
+  {
+    "local": "engines/g6ba.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/engines/g6ba.html",
+    "before": "73c63cd81b1169797835be9a8e1727fe902309650c31f41138a8c3be36376a94",
+    "sha256": "1d8ae919c686a4090987f2de391c44de9dc96a2f0fd136ff7c9ceb047e2e6cfa",
+    "change": "cache-reference-only"
+  },
+  {
+    "local": "engines/ghana-half-cut-engines.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/engines/ghana-half-cut-engines.html",
+    "before": "74eed3c620c12e38db65b9708489831a607fca5b36ab2b05821a6e0b3c14d0b4",
+    "sha256": "cd446ac37f9c908a28976ecdb9b7285b6e9a75d1353751bf02c240be1fc35ee3",
+    "change": "cache-reference-only"
+  },
+  {
+    "local": "engines/ghana-used-engines-from-china.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/engines/ghana-used-engines-from-china.html",
+    "before": "2d0d8330a2a3051508b00156ff783fd00b315896f429d06026df694cb9767a9e",
+    "sha256": "232bded0d99e27e3095bf056f74f2b90a7ebc57d078eccbb86c909b3a7f269ca",
+    "change": "cache-reference-only"
+  },
+  {
+    "local": "engines/honda-accord-2008-half-cut-qxb0133-guide.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/engines/honda-accord-2008-half-cut-qxb0133-guide.html",
+    "before": "d6078ad819bd9639484eda36d3b5e7a7c41ccf534fce46c0a7a7576c43da066e",
+    "sha256": "d15571e5e343e478beb4d6600016d82ae8e0184fc3538b3cac2abfb97c9a9dcd",
+    "change": "cache-reference-only"
+  },
+  {
+    "local": "engines/honda-accord-2008-half-cut-qxb0135-guide.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/engines/honda-accord-2008-half-cut-qxb0135-guide.html",
+    "before": "56415f0d8d9649e7a2afc2ffc5aafb2d16195a5dd00a813bca851e513195971c",
+    "sha256": "feefec4119fb9593b240d66271c84a85da57dc97fe349c280e0fb6b533c27541",
+    "change": "cache-reference-only"
+  },
+  {
+    "local": "engines/honda-accord-2010-half-cut-qxb0083-guide.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/engines/honda-accord-2010-half-cut-qxb0083-guide.html",
+    "before": "1f2ff454eb16d557de268505d0ca4a95909f613da7033bf31089cf7db5734089",
+    "sha256": "12a7fc4bf3f0c51d3bca8d29816258047fda73f8b4eb6d5d12bd3d554905eaf6",
+    "change": "cache-reference-only"
+  },
+  {
+    "local": "engines/honda-accord-2010-half-cut-qxb0209-guide.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/engines/honda-accord-2010-half-cut-qxb0209-guide.html",
+    "before": "550f207b79db0c1ec44768cf80c5e1a613c13d417d95793d80f9bb59cba8133c",
+    "sha256": "0d75a89b4765b55811e6aff5b22530de6ab32233a75dd780210d53c5dfc2d6bc",
+    "change": "cache-reference-only"
+  },
+  {
+    "local": "engines/honda-accord-2011-half-cut-qxb0115-guide.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/engines/honda-accord-2011-half-cut-qxb0115-guide.html",
+    "before": "6b3757786fc6fbadc28d833a4ac8a8a390b30aeba3b328237485f94f5c6e4c0a",
+    "sha256": "e4cf28a80ea95c700970692dd87cbef2528dc798c96bef03fcea08d9057ad1ec",
+    "change": "cache-reference-only"
+  },
+  {
+    "local": "engines/honda-accord-2011-half-cut-qxb0119-guide.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/engines/honda-accord-2011-half-cut-qxb0119-guide.html",
+    "before": "a12c709c5b84dfb36145e5a02fe10261e97e77929479fc051d172b1e604ba63a",
+    "sha256": "aa6114bc29b2187a53caa1a1f04ea35e08fee21d7a6c5627465498e30dd9bf03",
+    "change": "cache-reference-only"
+  },
+  {
+    "local": "engines/honda-accord-r20a3-half-cut-donor-inventory.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/engines/honda-accord-r20a3-half-cut-donor-inventory.html",
+    "before": "d6ddb01f5b093a966a9165c540e5ac84696dac617806b9d744cb3ccaf99f3394",
+    "sha256": "b30fe1bc53ee1d25ee7c2fb0b1bb20831b4bdc39021c8cbab68fc9dd9974161d",
+    "change": "cache-reference-only"
+  },
+  {
+    "local": "engines/honda-accord-r20a3-half-cut-guide.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/engines/honda-accord-r20a3-half-cut-guide.html",
+    "before": "41c946cc9a9591cc5afcdc158e52dc7c43b52add2d7b2886c65e4065a8243391",
+    "sha256": "4eef857d6943c4d8394b87d297a632b1da4adfb0f0393485a11f5f3f5cf984f3",
+    "change": "cache-reference-only"
+  },
+  {
+    "local": "engines/honda-fit-l13z-half-cut-guide.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/engines/honda-fit-l13z-half-cut-guide.html",
+    "before": "186f4390b6f859ee2e29a14f4848811eff0be937057040a5798b9be74c61a87b",
+    "sha256": "3a58334def512cedd745a7798d0b89e0881a73fcdf22fae7a9782d77dbca032c",
+    "change": "cache-reference-only"
+  },
+  {
+    "local": "engines/honda-half-cut-engines.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/engines/honda-half-cut-engines.html",
+    "before": "8e93136dccf0bafaa54c6a8d0f5004b5381b51fe98a722ff223d624d3649dc9c",
+    "sha256": "0bb6bd3f98ad7b729e669391b9821285e9463f42fa6fc8fcb0b523665304ec48",
+    "change": "cache-reference-only"
+  },
+  {
+    "local": "engines/honda-k24a.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/engines/honda-k24a.html",
+    "before": "af53e20c91e7a34698c0411f531eeedac12e981e1739fc1ffc4cf2b47936e7f3",
+    "sha256": "4bc65b01ac527811b027badaae15a02c44039602f104d495752e48fcabd7489c",
+    "change": "cache-reference-only"
+  },
+  {
+    "local": "engines/hr15de.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/engines/hr15de.html",
+    "before": "9cd6a101ceb1051f9f7f01bb89a3d0f7687a0c2db948a8cc34f1c0feeebb5a61",
+    "sha256": "10d3033d3378f394bc167117e3f04689920bc6a9e606537b9a641ada2dce9805",
+    "change": "cache-reference-only"
+  },
+  {
+    "local": "engines/hr16de.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/engines/hr16de.html",
+    "before": "7233012ae816b0000a94246040b25f9231e00e3317f09102b376724bd4861032",
+    "sha256": "db648067af3f00b4af8c240c704df53e04d5da2d9865f6d640f539ebefad3e9f",
+    "change": "cache-reference-only"
+  },
+  {
+    "local": "engines/hyundai-g4kd.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/engines/hyundai-g4kd.html",
+    "before": "419683fb7ecfa70b2a1c2a5badd96073f64364357c90abc78b7b9ce60028e3b4",
+    "sha256": "2ceca4dbdc0dd564794f2574f2e6c026a92ae981b3a071437df9bee13dd4e35e",
+    "change": "cache-reference-only"
+  },
+  {
+    "local": "engines/hyundai-g4na.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/engines/hyundai-g4na.html",
+    "before": "738cd6f4404d5d27ce072a3f129b1439bbb3b983827a3fc3f8585aa558a69f8e",
+    "sha256": "5ab21f93367513ccf26eaa895d684b07ff3200ccbc3ad05ae489e874335d4517",
+    "change": "cache-reference-only"
+  },
+  {
+    "local": "engines/hyundai-kia-engines-for-nigeria-importers.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/engines/hyundai-kia-engines-for-nigeria-importers.html",
+    "before": "9800b5cef6614172194588a6bde5221c86f5f47ad860535b97b37a8174ce9d5e",
+    "sha256": "2d37b9164b17ff8b1d23f96799dad5ad2e0d0dd1bec8338f6fc9816b19f47038",
+    "change": "cache-reference-only"
+  },
+  {
+    "local": "engines/index.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/engines/index.html",
+    "before": "0e85452395438a187e9cd1b19af2d5c29d86dafc733a16455dc9c51857e19bb6",
+    "sha256": "52608c4435f2af359a903295a4809a0715be39df39b2411bbf5b69ebb4764c86",
+    "change": "restore-and-merge"
+  },
+  {
+    "local": "engines/k10b.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/engines/k10b.html",
+    "before": "eea39053360c29f43681c18fe8c5b93d7c7bdfe6fb56b57e2a4f988ee817ce15",
+    "sha256": "6392142fe21a5015a336c8a4749beebc574500eb42df4a5ef1608241aaada304",
+    "change": "cache-reference-only"
+  },
+  {
+    "local": "engines/k20a.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/engines/k20a.html",
+    "before": "4579dac4c7b2416ad2e14568fb0ac56cd12dd892067ae874c6ca9e0cb8d35b08",
+    "sha256": "5094a2b44a58ad08738bd3e6ee79712e6572bc9809ecc1b0426158e3e19fe1ff",
+    "change": "cache-reference-only"
+  },
+  {
+    "local": "engines/k24a.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/engines/k24a.html",
+    "before": "677f92960a4ff3e21810b8162505e144bf081e56ea48d76b82db831c1aecb7c6",
+    "sha256": "8ee192fcd0e1e5c1e9b9c0a6682638f879ef18b8d5f2c5e9a51e1783d587666e",
+    "change": "cache-reference-only"
+  },
+  {
+    "local": "engines/k24a8.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/engines/k24a8.html",
+    "before": "bec83519d0dbb6684a9fe1d0ec4c594c6cbded9c9b32a30b2dd14bfc17bdcb94",
+    "sha256": "76c6ddb53d55c0119119fab743da1faf8998f7e4c58cdc89bdf41edeba701d19",
+    "change": "cache-reference-only"
+  },
+  {
+    "local": "engines/k24z4.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/engines/k24z4.html",
+    "before": "03d32f005a1ef8ee4a4acd0b14a0a81f2829416eb78fe1bdc7f02a081d898c2b",
+    "sha256": "96c23e0b8cde833d0180a454fabe5ade2f817108ed2eef3dcc4f57c55efff83f",
+    "change": "cache-reference-only"
+  },
+  {
+    "local": "engines/kenya-half-cut-engines.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/engines/kenya-half-cut-engines.html",
+    "before": "0394082f085e367d68099e70e3d53013b0fe7c8245224a27de3e67ed87aa5867",
+    "sha256": "0cd642804a6eceb4a1b0b64abafe8fc7abfe57dd251a091828881f5898a60197",
+    "change": "cache-reference-only"
+  },
+  {
+    "local": "engines/kia-half-cut-engines.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/engines/kia-half-cut-engines.html",
+    "before": "b730952c36d3cdb0c0ec5e9c4f811ce7003917198458c309e6cb33369068f344",
+    "sha256": "a4d36b7e303e5b5615194141c1c057b7b99aba20c029c3d39d960360a0c46d25",
+    "change": "cache-reference-only"
+  },
+  {
+    "local": "engines/kia-k2-2012-half-cut-qxb0101-guide.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/engines/kia-k2-2012-half-cut-qxb0101-guide.html",
+    "before": "8dfc15ed0043d64332b1854ab57effbaf242ee612b3938b54c45a1b387d16635",
+    "sha256": "fc36e6a4a0d25eea9715a4f4f63ffaf3f03e7b5acaed2c44da08932a3106d184",
+    "change": "cache-reference-only"
+  },
+  {
+    "local": "engines/kia-k2-g4fc-half-cut-guide.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/engines/kia-k2-g4fc-half-cut-guide.html",
+    "before": "4068e9da1d206971d24eea36b0a4cd45a993848745d343a3b4073ffb67d0d8a0",
+    "sha256": "5b0a04fadf8bd839f4fb8a2e00bc60380b5d3288a873e8c84f4c1a78f9187393",
+    "change": "cache-reference-only"
+  },
+  {
+    "local": "engines/kia-k5-2011-half-cut-qxb0071-guide.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/engines/kia-k5-2011-half-cut-qxb0071-guide.html",
+    "before": "802eaf5a3169cd1d740eeb48109a94d8c9253dce5c1b63fa5ff4c9b9cbc463b9",
+    "sha256": "7f786c1057e5ee125728d4eef787475af62ea491b827ca135592519b8e98ad41",
+    "change": "cache-reference-only"
+  },
+  {
+    "local": "engines/kia-k5-2012-half-cut-qxb0047-guide.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/engines/kia-k5-2012-half-cut-qxb0047-guide.html",
+    "before": "0c5ce64e0d929b0337ba9829d00f23264a79051516f2c7a8dbbb0918c877a15f",
+    "sha256": "03fbaa5503140b74df0f49dc3fea67d45e397e618c5b87b81a11e7fddcfa2e44",
+    "change": "cache-reference-only"
+  },
+  {
+    "local": "engines/kia-k5-2012-half-cut-qxb0085-guide.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/engines/kia-k5-2012-half-cut-qxb0085-guide.html",
+    "before": "2c505fd4b45a0d2cdb717a2003f998f8d6bfdaf4a6b1fce76132fd4df2542d01",
+    "sha256": "142563d48d391deb9eb784ebb21f7dd37fdedb2c6d9cebfca4e287877e35a352",
+    "change": "cache-reference-only"
+  },
+  {
+    "local": "engines/kia-k5-g4na-half-cut-donor-inventory.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/engines/kia-k5-g4na-half-cut-donor-inventory.html",
+    "before": "b16e77c6d73aadddce1bb84d771b7714b149861f42a3ba0653ae927a47a43267",
+    "sha256": "283d5e5adb295176db163ddd57f7ae8820237bfe4d09806400392c473875c949",
+    "change": "cache-reference-only"
+  },
+  {
+    "local": "engines/l13z.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/engines/l13z.html",
+    "before": "407c60723b214473b5357a53ef03845ca462dbf401c36233d46651d56ae7578a",
+    "sha256": "70fa2bd8a2d6e0ffe1290b5c05d4e60df43a8563bc9ac77c3ee36ff9afdc203b",
+    "change": "cache-reference-only"
+  },
+  {
+    "local": "engines/l15a.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/engines/l15a.html",
+    "before": "60770adb5ad469243e246e3d39876be938131f376e23aa4aef357a2eafc47b3b",
+    "sha256": "8e5e0f2383b770d0f66fc96a3125897e1c258b7c15434e4750345da05410fd71",
+    "change": "cache-reference-only"
+  },
+  {
+    "local": "engines/l15a1.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/engines/l15a1.html",
+    "before": "d077a76c3c77a0607ce6610840d3d2e60e1b3a03fbc726294ea643926d4dd56e",
+    "sha256": "5ea6e2e680c0ac257c8d9644eb65c42c32b43b04f05eb7399a73acde50195dbf",
+    "change": "cache-reference-only"
+  },
+  {
+    "local": "engines/l15a7.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/engines/l15a7.html",
+    "before": "be7a310aa5e1701de6381cc2d529bf89d81f060ecb262b2136f11d8ad2af6040",
+    "sha256": "2f7a419168772e3a9ab842b66463a8c2e62468da00cc276d45696ca04a17cdb6",
+    "change": "cache-reference-only"
+  },
+  {
+    "local": "engines/m16a.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/engines/m16a.html",
+    "before": "30c6b7e507e0d7398d2aa408e8c653df6e6d0bff96c59d19b7f224b458c0a82e",
+    "sha256": "6a3fecebcac9b4fe2afaba511765ab12073b216a5b649cfd4b0361c8db7d85a0",
+    "change": "cache-reference-only"
+  },
+  {
+    "local": "engines/m271-951.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/engines/m271-951.html",
+    "before": "a0b54fdb974dfbd4ba87125307e020da843c2b0a9a3cfa78577e918c5f074718",
+    "sha256": "ed2c6ececb8befc39af5bbf5cf2ff4892395d66f5a1047ceaa8a583d17b85b41",
+    "change": "cache-reference-only"
+  },
+  {
+    "local": "engines/m272-967.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/engines/m272-967.html",
+    "before": "175dec974faf50c2c111fade97ef5a78569b19f4e9ca5b9e0a611ef2cc2092f0",
+    "sha256": "0611d50e7c6e78dfdb10b0e71f87a7874a34b591d000979c0715441607d74072",
+    "change": "cache-reference-only"
+  },
+  {
+    "local": "engines/mitsubishi-half-cut-engines.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/engines/mitsubishi-half-cut-engines.html",
+    "before": "14fad7b2d20cd22a3aa19e865ccddb237f39afd1188435d054ef337159e5c21c",
+    "sha256": "84e48609e4f5fd07a4ffe15489e900bbb027053633a7b0c09d72406c4c55c727",
+    "change": "cache-reference-only"
+  },
+  {
+    "local": "engines/mitsubishi-pajero-2011-half-cut-qxb0033-guide.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/engines/mitsubishi-pajero-2011-half-cut-qxb0033-guide.html",
+    "before": "92c5a7a86382a8bb6b13bf1507e96f7da1107f47bbffe12ba7001fd0c9bcd908",
+    "sha256": "7d714c1d9be83e8c953bafe27417a98182e009266113da24f2e817c5c206414c",
+    "change": "cache-reference-only"
+  },
+  {
+    "local": "engines/mitsubishi-pajero-2011-half-cut-qxb0057-guide.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/engines/mitsubishi-pajero-2011-half-cut-qxb0057-guide.html",
+    "before": "4c8166c2356d462fc06f10cfb93e1dddeb2cf8d9b85c930e87bd27634271e661",
+    "sha256": "0d140ffc196398065cf53c0053caccd070f08217fd0773873c3a7aaca0184385",
+    "change": "cache-reference-only"
+  },
+  {
+    "local": "engines/mitsubishi-pajero-6g72-half-cut-donor-inventory.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/engines/mitsubishi-pajero-6g72-half-cut-donor-inventory.html",
+    "before": "27f22784c373e8b6af13921ad9cb9f3116d0c6fa42f5cb5bb0a0500952a942f7",
+    "sha256": "ea7431dc2861c7213ce7839774db98ca12aa6c0a50eb95806d58ffb5d0576cbe",
+    "change": "cache-reference-only"
+  },
+  {
+    "local": "engines/mr20de.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/engines/mr20de.html",
+    "before": "18d59b89019f560c9e4111b2f3d1d6876b6c27e75361cd8f0386212be5fb1451",
+    "sha256": "adb1bbacf0a0f8e0c6093567cb32d8cb62b194ec6189dbd169c3f3b71018c1bd",
+    "change": "cache-reference-only"
+  },
+  {
+    "local": "engines/nigeria-half-cut-engines.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/engines/nigeria-half-cut-engines.html",
+    "before": "613dfe3b1d8eb9f90b659928c8cee907704347fac74cb5f1e574a9c6ee892082",
+    "sha256": "3d690ef8f7c9c4d83c6770431faebac8dcb900311ab9e76cf0a1301216a2c983",
+    "change": "cache-reference-only"
+  },
+  {
+    "local": "engines/nigeria-used-engines-from-china.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/engines/nigeria-used-engines-from-china.html",
+    "before": "1cc1c7522af9ff2d8ab4816ce34726f1e674d9b0ebe2bb0e895378a658f40152",
+    "sha256": "25b0e9609af10c7142825de5fdbd9427295956e87162e857d1617f03e4601f17",
+    "change": "cache-reference-only"
+  },
+  {
+    "local": "engines/nissan-half-cut-engines.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/engines/nissan-half-cut-engines.html",
+    "before": "ced1201608191dbf1ceef70f0826d7588888ad2dfe9664a2c1dbd999d9393f4e",
+    "sha256": "0913550f551870296564477f01b23aa995fffbd97b1a8aa10458ddaf48f2af1b",
+    "change": "cache-reference-only"
+  },
+  {
+    "local": "engines/nissan-hr15de.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/engines/nissan-hr15de.html",
+    "before": "58f42cb754881d3acfa682647d75af671dad242d00fda2e11dba4fbd53947c69",
+    "sha256": "18a5164256f91ec086d760699374a82931c623233de0e677652425918ced22d8",
+    "change": "cache-reference-only"
+  },
+  {
+    "local": "engines/nissan-hr16de.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/engines/nissan-hr16de.html",
+    "before": "e77e9f16c1a94cafb688a7bacda17e31cbfe6bafb25b7c0d657ce7f6fb61f6c2",
+    "sha256": "c58bbcf34c5f35c30937bf82156e132c6c6966213fca7d9e801d21a247169506",
+    "change": "cache-reference-only"
+  },
+  {
+    "local": "engines/nissan-qashqai-2011-half-cut-qxb0022-guide.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/engines/nissan-qashqai-2011-half-cut-qxb0022-guide.html",
+    "before": "28432561452087276a4641028b9f9714383bc782696b259f01091e0408c7e925",
+    "sha256": "98aab49b924bf92b210792fb29a7f4730690995e24378a47989252870b2d3191",
+    "change": "cache-reference-only"
+  },
+  {
+    "local": "engines/nissan-qashqai-2012-half-cut-qxb0113-guide.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/engines/nissan-qashqai-2012-half-cut-qxb0113-guide.html",
+    "before": "759b29a189d5c42dafcc22d7cc3445d388fea6cae7f962543061fa4c9eb49717",
+    "sha256": "bdb03c48c9a4033086afea2c852cd4bef1798062121ea752a24685b1d016bcf6",
+    "change": "cache-reference-only"
+  },
+  {
+    "local": "engines/nissan-qashqai-2012-half-cut-qxb0125-guide.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/engines/nissan-qashqai-2012-half-cut-qxb0125-guide.html",
+    "before": "e193bac0502c2943cb2b9546b69fd37f3d3c573f61d7a206f0c2108fedd19300",
+    "sha256": "e33b8df5f2b70416b63e5c32341bb3454656b46abee4cef14016c71aee2b6800",
+    "change": "cache-reference-only"
+  },
+  {
+    "local": "engines/nissan-qashqai-mr20de-half-cut-donor-inventory.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/engines/nissan-qashqai-mr20de-half-cut-donor-inventory.html",
+    "before": "6204df8ec63946b6caae512553e0d34d7d20dd4c807aaf3e6e040609f5d9eada",
+    "sha256": "8cf83d44f646722ac5f134550168e32558817761351cf75a0546a6309ead0583",
+    "change": "cache-reference-only"
+  },
+  {
+    "local": "engines/nissan-qashqai-mr20de-half-cut-guide.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/engines/nissan-qashqai-mr20de-half-cut-guide.html",
+    "before": "39b706567c2f01152deb539838d33c81f16ded3bdc447f7b969728410580f83f",
+    "sha256": "6f1f02a719b223e8b680f60db55444c3b26a67b4980ce6445573f690ccf8ae35",
+    "change": "cache-reference-only"
+  },
+  {
+    "local": "engines/nissan-qr25de.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/engines/nissan-qr25de.html",
+    "before": "5d97469cd99a94edeb3fc0bb3ef5c922c4db43c06cf9e72048140b19a99f025a",
+    "sha256": "f2dbd7a23e51ab6fd039c9cf5e00d17258a44f27e0c075673dec682f53297f81",
+    "change": "cache-reference-only"
+  },
+  {
+    "local": "engines/qr25de.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/engines/qr25de.html",
+    "before": "3f63b86fb4d316ce1391ff01fad8c3c5b0527ec2ccab48c535d811991785a7fe",
+    "sha256": "550f684010954db8bc320cc1d5f02b36c920cb1fb41f56a175b0ef0e001e80e7",
+    "change": "cache-reference-only"
+  },
+  {
+    "local": "engines/r18a.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/engines/r18a.html",
+    "before": "2bc2764faea950a31bf8c66fd8464aae55864ad3483271c19ec5d8a75c73818e",
+    "sha256": "dd2e48f025fbbec7c882f01bff321ef0bb71de0a7c897297c4a3b6a58c126fad",
+    "change": "cache-reference-only"
+  },
+  {
+    "local": "engines/r18a1.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/engines/r18a1.html",
+    "before": "2c51b3c07fa51f34525c9d654ab4bd2c64eb20a4fbe9b626c0ef968a14ea644e",
+    "sha256": "42d5680c2446e0322754604134d6731d738145e156dc8d1810066192b0e5cc31",
+    "change": "cache-reference-only"
+  },
+  {
+    "local": "engines/r18a2.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/engines/r18a2.html",
+    "before": "a9d1d2a6c904fa8119dbdd063402cfe781f10d1573f1073ffc6e4eadae831476",
+    "sha256": "8baa99c6caabd952af55efbc5e6da2a1e103ed33c732735bc8cf74a2415408f8",
+    "change": "cache-reference-only"
+  },
+  {
+    "local": "engines/r20a3.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/engines/r20a3.html",
+    "before": "f16e4884caed36dc8209f6ea6fc4a047cacb884dc0cae4326b2814868c9fed45",
+    "sha256": "667676c75d9576c479392fc7c3ab8e9b1bddb524676d6edef43121e46524c190",
+    "change": "cache-reference-only"
+  },
+  {
+    "local": "engines/senegal-half-cut-engines.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/engines/senegal-half-cut-engines.html",
+    "before": "638b5c5f366889be8f4b15e1ad28c3f09ee7dc1a9ad60d514eeb1d0c1aa7702c",
+    "sha256": "c96f0671f24d97e896ea7e747a9855456cfb0bcae8030aadc944f2a86a50f3c2",
+    "change": "cache-reference-only"
+  },
+  {
+    "local": "engines/south-africa-half-cut-engines.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/engines/south-africa-half-cut-engines.html",
+    "before": "53a58105d015298a467a0b9e08495b12c3635dd7a81ffe653690226ec6255ecb",
+    "sha256": "8a51b47c57dab8282e1c501e3f3549282d6b09ac311c6530d6ef6333ffea2c87",
+    "change": "cache-reference-only"
+  },
+  {
+    "local": "engines/tanzania-half-cut-engines.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/engines/tanzania-half-cut-engines.html",
+    "before": "efe4d3c16d132496e582fd4cfc05f5ae4ff52db412275b6a489fafe0b809c6aa",
+    "sha256": "47875ab51406c416e8e9ada1347b73328a7c858ec4f40e3da872800c650642fc",
+    "change": "cache-reference-only"
+  },
+  {
+    "local": "engines/togo-half-cut-engines.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/engines/togo-half-cut-engines.html",
+    "before": "268a8a4bc7798c89a7e26ba1f7499ccdb1959c064a13ea66ce88af5444e99518",
+    "sha256": "9ed58ae3c4c6afae41a00225da6641768a8099ae823a46d5bcbed0796ed3a75f",
+    "change": "cache-reference-only"
+  },
+  {
+    "local": "engines/toyota-1kd-ftv.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/engines/toyota-1kd-ftv.html",
+    "before": "1ef5a051c920f99b660867e6412694da16a29e8a02254005924b93ea27b4d6f0",
+    "sha256": "3f9fcf7e5ae20e1370e89022d97842e6c47de828ae6c64254caf8fb8c67513ff",
+    "change": "cache-reference-only"
+  },
+  {
+    "local": "engines/toyota-1nz-fe.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/engines/toyota-1nz-fe.html",
+    "before": "3c7cfd27631348d2b3b31e652d14501b6e2bf425a357f381d0cbc271c6f96242",
+    "sha256": "f2167cb730ccf995a43acf816c691cdbe7e35522062fcf983452c3d1d33fe02d",
+    "change": "cache-reference-only"
+  },
+  {
+    "local": "engines/toyota-1zz-fe.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/engines/toyota-1zz-fe.html",
+    "before": "4c39d3ececb823beeceb5018c597c19d141db1f06705d44036caf97ee3f49a74",
+    "sha256": "29143e17a4c12f53ac915eff0f9b5a00b12febb1de97849a138721bf84631f30",
+    "change": "cache-reference-only"
+  },
+  {
+    "local": "engines/toyota-2009-half-cut-qxb0005-guide.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/engines/toyota-2009-half-cut-qxb0005-guide.html",
+    "before": "bf27d2f735226cc337032709d6194e821ec2fe16ed691fcedcf4e870b788e319",
+    "sha256": "da5be0d2c3613f2adb86226898ee4bd8ad9ee34843387d0b01b3ddf54d826f34",
+    "change": "cache-reference-only"
+  },
+  {
+    "local": "engines/toyota-2012-half-cut-qxb0055-guide.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/engines/toyota-2012-half-cut-qxb0055-guide.html",
+    "before": "ac93be5011ea2fb43a73b5aca175941b363fb5971c4dc0d8e76804f31615440e",
+    "sha256": "e30f008ccbd48fa2ed0e19411f7123b3a86c013380278ecc5ac90befe8a21efb",
+    "change": "cache-reference-only"
+  },
+  {
+    "local": "engines/toyota-2kd-ftv.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/engines/toyota-2kd-ftv.html",
+    "before": "6dcc26c31fa11667f92d65f0165775eb6dfd02c458f51d892b7dbbe455488287",
+    "sha256": "2329c1ed93433cf1053f28ac7cfc77db727cbae3fcacc3a85432a3809e0c12ea",
+    "change": "cache-reference-only"
+  },
+  {
+    "local": "engines/toyota-2nz-fe.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/engines/toyota-2nz-fe.html",
+    "before": "2842fdecaa61fe06f0b5b34e97de803e4e8a935d308f521e07fc01c2ca87f6ba",
+    "sha256": "ecc9ea4b4f4a8051f53d73017810b9bf0723e5e691e1bc246613df982ac894c7",
+    "change": "cache-reference-only"
+  },
+  {
+    "local": "engines/toyota-2tr-fe.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/engines/toyota-2tr-fe.html",
+    "before": "3a18112c9cbe33de673193d4abf4c57dcbcca8b3d18f97e850bed95f0ca27989",
+    "sha256": "63fdf1b0324067fa2a7d475c340514ba1b09d1fbb6b408e07b9c2b962d62e182",
+    "change": "cache-reference-only"
+  },
+  {
+    "local": "engines/toyota-camry-2az-fe-half-cut-guide.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/engines/toyota-camry-2az-fe-half-cut-guide.html",
+    "before": "dcf23b27a4140088be270237ad6a5ab1da547bd08bb03f8275aa42f5e22a9b6c",
+    "sha256": "a241caad2c1e458cde4857de3c2e5aef98ffb934ca85527916bd1046e38ac325",
+    "change": "cache-reference-only"
+  },
+  {
+    "local": "engines/toyota-corolla-1az-fe-half-cut-donor-inventory.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/engines/toyota-corolla-1az-fe-half-cut-donor-inventory.html",
+    "before": "bda2bea99629efc1b407409f648a970c8574c01f5a1e73982b4ccfc2daf18a58",
+    "sha256": "6e798e8a6395b898355ed382a294e18fc67b47849108cc9555e31b03cb46816f",
+    "change": "cache-reference-only"
+  },
+  {
+    "local": "engines/toyota-corolla-2008-half-cut-qxb0079-guide.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/engines/toyota-corolla-2008-half-cut-qxb0079-guide.html",
+    "before": "12e6277dd0abbb5efd13f706bf1a6d7cb7589dc1665e626ce8f79380d1470b76",
+    "sha256": "9384738de8ab89b31340b27b2008d7570169723f3b4079a546c38465c4073894",
+    "change": "cache-reference-only"
+  },
+  {
+    "local": "engines/toyota-corolla-2008-half-cut-qxb0141-guide.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/engines/toyota-corolla-2008-half-cut-qxb0141-guide.html",
+    "before": "133010fbea7011c432f65eb5f9f32dc793aaf9e6575d4a5bf689965492f3c42a",
+    "sha256": "192b14749ccde8fb896fdf7414e38ec6c5ff9dffd43ac5a2dcc915cc41486d51",
+    "change": "cache-reference-only"
+  },
+  {
+    "local": "engines/toyota-corolla-2011-half-cut-qxb0139-guide.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/engines/toyota-corolla-2011-half-cut-qxb0139-guide.html",
+    "before": "c1c0553ec3cf5689111ad8bad408c5948a237d61548239da129f4c4bc39ce427",
+    "sha256": "f03d7078ee5f5eb5e69df75ed6e9474334af570ad430cd79e9c670ea6283ced7",
+    "change": "cache-reference-only"
+  },
+  {
+    "local": "engines/toyota-engines-for-ghana-importers.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/engines/toyota-engines-for-ghana-importers.html",
+    "before": "934da88ba0ee71451c55a2d31c779dd6310af8afbf3ad9dd756eadb7c42d86f6",
+    "sha256": "c23f769cbbaa903abb0162df15411568d90a87c5ff53a85bf6142c41cd8ca1c4",
+    "change": "cache-reference-only"
+  },
+  {
+    "local": "engines/toyota-half-cut-engines.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/engines/toyota-half-cut-engines.html",
+    "before": "22a0ab953c7f29c6d13828a7f2a180672869e39b67b4bdcca284e3a976940a7d",
+    "sha256": "cc7d978f3ad7f6214139e36cc1f9afea255614212248584241d339b754a9032c",
+    "change": "cache-reference-only"
+  },
+  {
+    "local": "engines/uganda-half-cut-engines.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/engines/uganda-half-cut-engines.html",
+    "before": "1287f454c013c6b559bd80b0ef2045a042346dcfcb43baaa0013c72f52fb0f20",
+    "sha256": "c6fe2f6efb6b2dcaebcbbe6665a3eb791d174a23b831377186e8aa288da5cca6",
+    "change": "cache-reference-only"
+  },
+  {
+    "local": "exeed.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/exeed.html",
+    "before": "38a636f707e0169f38febb79f0562a7a5223b7132a27ef34dba1951d84aa544c",
+    "sha256": "cd7fee095a55f4a5af70c1d60defbc32578649523e6822f10ac0de9af01ae28f",
+    "change": "cache-reference-only"
+  },
+  {
+    "local": "faw.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/faw.html",
+    "before": "51766afeba75db2b8e36a671db37a10e732a6631394bf1dc942caf8a846696ce",
+    "sha256": "8e1215066f13e042f4ea5901ff7a62cae2fad520673c8023da03ac54b587e77f",
+    "change": "cache-reference-only"
+  },
+  {
+    "local": "ford.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/ford.html",
+    "before": "df74c6ef5b38972f5ca2cd07e6eb4c72036625e53d217c3ef618beabaab59d0e",
+    "sha256": "980ef23f77250994f49ccfbf50fe057aaa825dc64e8c266388d3cd5eed1aa88e",
+    "change": "cache-reference-only"
+  },
+  {
+    "local": "foton.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/foton.html",
+    "before": "57d390c1a410158fc8951d4da766fd5b6df44591cea201f80f8ddb5fbeac4fcf",
+    "sha256": "70ecc82c09eee13ea50ddf40a92916a564ea951da50b9cd3303ce11af731b36e",
+    "change": "cache-reference-only"
+  },
+  {
+    "local": "front-cuts/index.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/front-cuts/index.html",
+    "before": "2de2ec370f48b3c4978d6008789371b2de3ad2f7dd3c1473409945156b947da8",
+    "sha256": "1c7517059b0cd2fb62723a7a49ec7f0ded0e9bf9d88704b899cfaaef4bbf0440",
+    "change": "restore-and-merge"
+  },
+  {
+    "local": "gac.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/gac.html",
+    "before": "556b8068d553ca45f67c78883d256a951c20731b4c13f7397edaeb1c879bdcb6",
+    "sha256": "0a91882e8888752274dba93fc64c38787d869acfe6b3526360efac8436852f14",
+    "change": "cache-reference-only"
+  },
+  {
+    "local": "gearboxes/index.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/gearboxes/index.html",
+    "before": "773c6d53f31ad58f8cfab57a36dd39909f96f87ba2b9cfa2328379e66e6fc8a3",
+    "sha256": "f896cc9863b59196ae6c3e5f90d163cdc077a91bb01789aaca5ae04e88b24e55",
+    "change": "restore-and-merge"
+  },
+  {
+    "local": "geely.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/geely.html",
+    "before": "19360c43c2ae2243c2b5975f4d006cf051d7e59e17418b67ba191d517e89cf23",
+    "sha256": "4e4bfcc5eabcdacea20748e6cf20579f0291c421e018a386da8f98451c0d8215",
+    "change": "cache-reference-only"
+  },
+  {
+    "local": "genesis.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/genesis.html",
+    "before": "171b8f9d3e5293706a2a9097ab9af9dd7d93c75aa4379488d198046e8d4ee351",
+    "sha256": "ba4e38796dd02a4bae1e2b9d12ecc744f25795443ab939680004ae12e968ef67",
+    "change": "cache-reference-only"
+  },
+  {
+    "local": "geometry.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/geometry.html",
+    "before": "f2c1d21e99944265eecd023421e5bde1c0fac1e76ea767f89cf758090b82ca96",
+    "sha256": "ae08f225862dec1e976cabd3e0c0cae70302fa25a649729a7b8c4176d48199d7",
+    "change": "cache-reference-only"
+  },
+  {
+    "local": "ghana.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/ghana.html",
+    "before": "19db21d7e434b49c5346176f6bd7870be9cb1aa4be4220001b3a7619f78b39e6",
+    "sha256": "c6779e0cffbfddb3e13834d68c70b7c2228d8283d50c9a39d2cfe8ec0bc286ec",
+    "change": "restore-and-merge"
+  },
+  {
+    "local": "gmc.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/gmc.html",
+    "before": "4020e8ed64f461cfb8c6bdea2a9e4bbba5f6b63d88bcc909e6390e0127cfa840",
+    "sha256": "0f6ce20f2be9be4a136abd364e460a8bec4ce7a42ec25723c90f5af43884238a",
+    "change": "cache-reference-only"
+  },
+  {
+    "local": "great-wall.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/great-wall.html",
+    "before": "f0aaac148f8b4b2870b02daa3069cecda5d710cbabe53d57a252e7cd3e9e0553",
+    "sha256": "a82af370f5380e8605858882cffbe3497250dbea6fd1171b67ba0346e7afbdcc",
+    "change": "cache-reference-only"
+  },
+  {
+    "local": "guides/1kd-ftv-engine-east-africa-sourcing.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/guides/1kd-ftv-engine-east-africa-sourcing.html",
+    "before": "8a54dfd5cef25ba202c578d0652194cbf730c658eba3c2185ce0a22edd6d3858",
+    "sha256": "b00f43cc1a9ddbf633bc682cda36dc41a9d0d6ec106614bd502edbe425281d01",
+    "change": "cache-reference-only"
+  },
+  {
+    "local": "guides/angola-auto-parts-sourcing-guide.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/guides/angola-auto-parts-sourcing-guide.html",
+    "before": "6dff391e70dfed02d491b8b09444ca74605e18a4bbaa811ed30f1f13bd6ae259",
+    "sha256": "877fd2cb5c5f38fb1584fc8bd1fd83360a3fa0dbabab8323ffb7a00efe293aaa",
+    "change": "cache-reference-only"
+  },
+  {
+    "local": "guides/botswana-used-engine-import-guide.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/guides/botswana-used-engine-import-guide.html",
+    "before": "11aaebf92fa01fbf7dece8fd2b9915ef64010c73253f4eed1c103a1fc6e02db8",
+    "sha256": "ed84ee8c3eaf68cfdd624205bcec047573c05d25993036006dc34951a12cb7a4",
+    "change": "cache-reference-only"
+  },
+  {
+    "local": "guides/buying-used-engines-from-china.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/guides/buying-used-engines-from-china.html",
+    "before": "bbd1af10473bc17ef64416c0c801978c26b1a21e8a161ec7b4880cd485805e2d",
+    "sha256": "afdbcb93de2ee122d30e4c28716eda00ec1dbc02295db87b23d2fba7f7c6316f",
+    "change": "cache-reference-only"
+  },
+  {
+    "local": "guides/chinese-auto-parts-kenya-guide.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/guides/chinese-auto-parts-kenya-guide.html",
+    "before": "e435451e99dd6b748bcf44480d7d7b7c24f7073469d16dab01aa5cbfd9bb0722",
+    "sha256": "f118d6a52dc1d65073a46a1a5cc66265bf2ecf513645f2f3e575896e7de700af",
+    "change": "cache-reference-only"
+  },
+  {
+    "local": "guides/fob-vs-cif-shipping-guide.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/guides/fob-vs-cif-shipping-guide.html",
+    "before": "28bc893487bea9b08402b87b02df13f3c2646fb268019e70f80094c6a442f924",
+    "sha256": "3af78fa4d8bc872ab3f87c51b1e79030dde9c237db4236e64ddabc8f8a6ce3da",
+    "change": "cache-reference-only"
+  },
+  {
+    "local": "guides/g4fc-engine-ghana-sourcing-guide.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/guides/g4fc-engine-ghana-sourcing-guide.html",
+    "before": "6ac6ddb67534aff82866c0bc204941715003e29728562394bf9fd9fe381ca1b7",
+    "sha256": "648357e9f8060f08d7f2f8192d499658a616e1351996404ca44b123ee595d2b5",
+    "change": "cache-reference-only"
+  },
+  {
+    "local": "guides/g4kd-g4ke-hyundai-tucson-africa.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/guides/g4kd-g4ke-hyundai-tucson-africa.html",
+    "before": "a15d2312587758b1b85d48abd2f3bb1137fb6bd53504be523bcfe1ced5a770e8",
+    "sha256": "1139deef5816e091bedb08004c2fa0671ea640c8db331c499803de3909607338",
+    "change": "cache-reference-only"
+  },
+  {
+    "local": "guides/ghana-auto-spare-parts-import-guide.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/guides/ghana-auto-spare-parts-import-guide.html",
+    "before": "41e1c54e3ad7a9a1c2e07209cfb4e3f229e105219038f82d64c15b72fe4c121b",
+    "sha256": "3df244c58f08693d88df1f9a8a0bf0b72fabb2cf774f5e03e86a6ecaf65a4320",
+    "change": "cache-reference-only"
+  },
+  {
+    "local": "guides/guide-import-moteur-cote-ivoire.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/guides/guide-import-moteur-cote-ivoire.html",
+    "before": "9558f1567256b5114c02ff09eef5f40f2e5220557e4e70844c43ac37487c03dc",
+    "sha256": "75c386fcbc99b7c0a8acc23bc2dd5d6297d4d1a0dbc4bc49922146d73de83354",
+    "change": "cache-reference-only"
+  },
+  {
+    "local": "guides/half-cut-vehicles-africa-guide.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/guides/half-cut-vehicles-africa-guide.html",
+    "before": "761f5f9d699b8ba4f49661149d7db88f655b2e27edff380ff1e9a50e956a2991",
+    "sha256": "c5e5fe7e88ecf2250a4e06dd5afe604243e18d70f23a8b9dd7848270e3f015ba",
+    "change": "cache-reference-only"
+  },
+  {
+    "local": "guides/importation-pieces-auto-senegal.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/guides/importation-pieces-auto-senegal.html",
+    "before": "b892ed8b5e2faae157019c19276b61fe0984c3382106f54f32601effea1ea268",
+    "sha256": "bd1d3bd0706f9b6a8ac68553b9ffd53a6cbc6f473b752f00c7535700ab9f9d45",
+    "change": "cache-reference-only"
+  },
+  {
+    "local": "guides/importer-moteur-occasion-cameroun.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/guides/importer-moteur-occasion-cameroun.html",
+    "before": "4aaafb0087377c2354e8841436c7838c5626462c8385f8eb987da589c1ea9d32",
+    "sha256": "43d512c2cc58670942aa64a143d89dadb94c9f531b5f04e12dbddfcac9088fae",
+    "change": "cache-reference-only"
+  },
+  {
+    "local": "guides/index.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/guides/index.html",
+    "before": "2bc3ac63b0eb04d50383d512266827706f04252db7191528bec1ddd0b0e7b465",
+    "sha256": "b092692e69ceef5a124ac505c166cd0b76b852506dc4366dccef3870275f068e",
+    "change": "cache-reference-only"
+  },
+  {
+    "local": "guides/nigeria-customs-used-auto-parts.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/guides/nigeria-customs-used-auto-parts.html",
+    "before": "41ef6d7f7394bedb62edcca71ae9d9397a93e945933da018c61e7c82f6957f66",
+    "sha256": "0f48599addd5546d6d9d8dc77b9fb6d670208b2785ee9094b8ba628d449ddd38",
+    "change": "cache-reference-only"
+  },
+  {
+    "local": "guides/pieces-auto-chine-afrique-francophone.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/guides/pieces-auto-chine-afrique-francophone.html",
+    "before": "e553689951c0a32fc04a7a62c8a414c3c96217806e898eb15139d2b2e8ccaf01",
+    "sha256": "75ef48f3bd15c205331a7371643a43d04f367fa523961078b8a4b384e468f892",
+    "change": "cache-reference-only"
+  },
+  {
+    "local": "guides/used-gearbox-sourcing-africa.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/guides/used-gearbox-sourcing-africa.html",
+    "before": "5fdaa847e2596015bbb8c0836603f3b20c00ca7d2c5d9442ccb4e0b4f15ef3cb",
+    "sha256": "96fccfb5144aeb5afd979892d84272fc6d1a7a6da0b3eb307d4a2a0fc88519b3",
+    "change": "cache-reference-only"
+  },
+  {
+    "local": "guides/used-toyota-engine-nigeria-guide.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/guides/used-toyota-engine-nigeria-guide.html",
+    "before": "a0ba2958ea7b88e441e7e16bf47c3561cf2860de7d32253de223e83c723271da",
+    "sha256": "ded47cd3d16dbc46228255661b6dd6c5cc0ae94f8b4ad4e4af4b77099a75d691",
+    "change": "cache-reference-only"
+  },
+  {
+    "local": "half-cut-upload.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/half-cut-upload.html",
+    "before": "062869fbfdb04d7e73fa790135acf11da9e0fe1fa091469099cd65cb8499a371",
+    "sha256": "03f888e898cc1d4af31731cdbb9c46eaf29cc95bb40c41f7bb03a095002634a2",
+    "change": "cache-reference-only"
+  },
+  {
+    "local": "half-cuts/detail.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/half-cuts/detail.html",
+    "before": "10450b5aad1fd6f41b5e7a49d1b86f109a63d8247b432a62c5bc3fb5815988cc",
+    "sha256": "2c9c6fface7038623bd08024b743f137a4a91b8a5d2166bf9838284c97b6cf41",
+    "change": "restore-and-merge"
+  },
+  {
+    "local": "half-cuts/index.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/half-cuts/index.html",
+    "before": "a9662c20dd640845cde4c4210d506249211a0059f2278eb079d8972868711f33",
+    "sha256": "e4399cb2021532b83b9a5917fb21b28ab1f713daaa46b2cc244a75c4321f82eb",
+    "change": "restore-and-merge"
+  },
+  {
+    "local": "haval.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/haval.html",
+    "before": "91a93a63caaffe761b8e4f913bf543be099c44a6c7cb4636bf8c0a61ab3bb57b",
+    "sha256": "e6c03f467176c78f7bc50a1f14d2befb0cb67046804ad859a622110ed256689f",
+    "change": "cache-reference-only"
+  },
+  {
+    "local": "honda.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/honda.html",
+    "before": "9919205e508bf0c38910b8e89f9bd64b564c36ce55a6f119c3c76de764d2455c",
+    "sha256": "a6208ca55e6215f4b02c7040852a5148d3c1e392f026e158b36ac66eb642480f",
+    "change": "cache-reference-only"
+  },
+  {
+    "local": "hyundai.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/hyundai.html",
+    "before": "331b0a23f8f4c58b4c9568221eff3fa03054299c8cf278a7b484f42d0a119012",
+    "sha256": "10a9f853dbf7a1854ef85862eef2c3a171fbecd297b35c9cb3699efb577ad870",
+    "change": "cache-reference-only"
+  },
+  {
+    "local": "index.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/index.html",
+    "before": "5be434ab1a46bb063eb3a81e5af3f3159bd001bf504349ae4c696b8da6e7d8e7",
+    "sha256": "9bf51b0208ed950c5e7a5b29838149a4332363ec5bd544fa1cd3c56876a2af4e",
+    "change": "restore-and-merge"
+  },
+  {
+    "local": "infiniti.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/infiniti.html",
+    "before": "83d15a259c2c73bdab623d950cc460a46fbc4f5c14839b07ffa82ed41a9ca05f",
+    "sha256": "8476579a503598ba9d85027848c88a6d7f64da61fd8f73a0987e7920b9fda40d",
+    "change": "cache-reference-only"
+  },
+  {
+    "local": "isuzu.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/isuzu.html",
+    "before": "0239d85b9f8443b425822445a5cd01ec5dd197ad685db1ad4bdc3175a8dd8127",
+    "sha256": "0ec0d339aa7516d3005ef50a3f3d18f52878cc1b5562e8593826b776f08c9dda",
+    "change": "cache-reference-only"
+  },
+  {
+    "local": "jac.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/jac.html",
+    "before": "603e4c26aec25a671a0767e884b4edbdd48f87e54adb7c3cd3fb30ed52caafb0",
+    "sha256": "247941861d9ae616a94027495d9eadb65e5539e725bf00c02dcdfa2a9825465c",
+    "change": "cache-reference-only"
+  },
+  {
+    "local": "jaecoo.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/jaecoo.html",
+    "before": "d748f51b18f0fa2eefed3869db1b2926736ba0357c793f227f3dc8004ad69ee0",
+    "sha256": "f06acc589315ea37d0351f0dc5e37fc98cdd52abc07c5f304f779a0736c40efb",
+    "change": "cache-reference-only"
+  },
+  {
+    "local": "jetour.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/jetour.html",
+    "before": "87e3b2a5ef0a1d1d75b24d34365ab21eaba37a7084a5942c7a383fca401b7f1a",
+    "sha256": "7c2c4a07c6efd852397c8f6afd273781959534dddb2b5b284acf6fd2e1adf0b1",
+    "change": "cache-reference-only"
+  },
+  {
+    "local": "jmc.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/jmc.html",
+    "before": "e296bc28f60f5c4a7950a1f777631d96f568627af6e4349225023d468e301146",
+    "sha256": "48073a04f941a5cf0683013a986c31b8afb549d8c127693b7f34a2b8ee7a80ce",
+    "change": "cache-reference-only"
+  },
+  {
+    "local": "js/catalog-search-aliases.js",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/js/catalog-search-aliases.js",
+    "before": "2ec6949f77903bb498d374742259720295b5e5f2566d2f931149bcb715a08170",
+    "sha256": "345fa301d942f71458185d340588713e657a3ed8d176632f43cd82728d9f9be7",
+    "change": "restore-and-merge"
+  },
+  {
+    "local": "js/components.js",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/js/components.js",
+    "before": "ba034b9468a0767dbb46275eb0921d8078064df01c71de16c36eb817cd131ab2",
+    "sha256": "1e4ff9ddbfc6f1fa2d15d842726130dd11278993c65f0ad92bb10523be5dfbe2",
+    "change": "restore-and-merge"
+  },
+  {
+    "local": "js/ebay-catalog-hub.js",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/js/ebay-catalog-hub.js",
+    "before": "395d2f80248e612882e5896ead45a98236f282248cc6ff2181e98a3a6cfc9097",
+    "sha256": "38edf185d085b46ba27107a4a04c2c2d942bebc0848c1efc20417fef9d3f39ea",
+    "change": "restore-and-merge"
+  },
+  {
+    "local": "js/ebay-layout.js",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/js/ebay-layout.js",
+    "before": "930cbad0ad635fae02558e97eee2c2e4792b3d5085c00aa08721a0cb8868b195",
+    "sha256": "627df13f5ebcc1f45fbb3be76bd3f318995d18d89265103bb023bc86ee59dcf9",
+    "change": "restore-and-merge"
+  },
+  {
+    "local": "js/half-cut-catalog.js",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/js/half-cut-catalog.js",
+    "before": "d1816c0f06b2d688d6f579f6f866c580110fdb5801d2518adc8ed09f54e286b6",
+    "sha256": "3aa083947ea56be59e6a274d8d133ccf4e3a07526e46d166e64b0a46f2a856c3",
+    "change": "restore-and-merge"
+  },
+  {
+    "local": "js/half-cut-detail.js",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/js/half-cut-detail.js",
+    "before": "23082c2ca4a691ab9f07ec485ce18b0503f66e96960f2be67b602204ff2a1e30",
+    "sha256": "8c6158d022c2eff48821a4ece8a67079e887c7a4e77a80e150f1b0ba49b03c37",
+    "change": "restore-and-merge"
+  },
+  {
+    "local": "js/half-cut-directory.js",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/js/half-cut-directory.js",
+    "before": "03136da696adec6d83cc750b922d507f326e9fc2c857660842d1a4eb05715aa5",
+    "sha256": "f97ca06f1ffc18f64669376a8f41a3c20c93d75cbf679d1c371b13d2b92bbe2d",
+    "change": "restore-and-merge"
+  },
+  {
+    "local": "js/half-cut-upload-layer.js",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/js/half-cut-upload-layer.js",
+    "before": "9327d0ff9a5b76c834d927f5c587ec4a755309eb97bd9fe13c89cc2ac850e27e",
+    "sha256": "7a3fbe13caf328b1fc0a30b96bfa0272142e826d51af1e9cfca082594bd2af44",
+    "change": "restore-and-merge"
+  },
+  {
+    "local": "js/half-cut-upload.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/js/half-cut-upload.html",
+    "before": "a7a8dbeb8c162ee6349c057d8e92419c41c984f1db456cc74f483b415e434b3a",
+    "sha256": "5be2a487ab1c15431b834b535e4e85702ad5a8d528cddba45b0785fb1c03803a",
+    "change": "cache-reference-only"
+  },
+  {
+    "local": "js/home-hub.js",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/js/home-hub.js",
+    "before": "cd80bda58c7d3f2e24658511ecf13e0cd88641b7d2384b659cf967949e298f7c",
+    "sha256": "286b545194eab2571e2540c7485f6d57385602e35d961e392f784a0b02e2560c",
+    "change": "restore-and-merge"
+  },
+  {
+    "local": "js/home-v4-hybrid.js",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/js/home-v4-hybrid.js",
+    "before": "838af9e135913bd1170ceb32e9d696658afae440ebac52dffdd85a357e9de2fe",
+    "sha256": "beff00deec80119857e3e6d2f9515be91a7fe836441cd7e82d66ea04b7f3bcd9",
+    "change": "restore-and-merge"
+  },
+  {
+    "local": "js/path-utils.js",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/js/path-utils.js",
+    "before": "7d86869b876857a351ea57ec1fa84a71ed082f9862f30dbd62995004f977e1b0",
+    "sha256": "b682469c968ad0162719c91331e070483aa095d7b453e88d217cd4a4b9271aa3",
+    "change": "restore-and-merge"
+  },
+  {
+    "local": "js/public-i18n.js",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/js/public-i18n.js",
+    "before": "4cd4a02997526e079a3bcfc864104fa25aa51f7b27c014dc0e3f0f9ba0383bad",
+    "sha256": "ab3ab1f0f4d2ffb3cdc3a9b82a244bd082194d505c2d4fe968b8187eaed2ab53",
+    "change": "restore-and-merge"
+  },
+  {
+    "local": "js/truck-upload.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/js/truck-upload.html",
+    "before": "2325fcd6603cfbbaa3ab9a3b4a3c50f73f2fde722152bbe9828c1aafb9bfde06",
+    "sha256": "90468336662e5b34eec2f33173323bb42b64245f1904b2dc7f6218d2f7398044",
+    "change": "cache-reference-only"
+  },
+  {
+    "local": "kenya.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/kenya.html",
+    "before": "97c36956292fc5d32be4a682e40e0cc137dd7973df23e457290e21911902e1b4",
+    "sha256": "c133bcbbc3e005d3f1e6b9132f2d2fdd0ecd618facb8fc840264d3aa87d29b6a",
+    "change": "restore-and-merge"
+  },
+  {
+    "local": "kia.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/kia.html",
+    "before": "3ce03189dbcc4807d36fc5e41a0b2aa2935ce0b93cb9b3519a0adab68e3c9b9f",
+    "sha256": "aa01c6d4778fe4a27cdade44c80c22609350b5d771ddb7fefe1e0d84b8db7639",
+    "change": "cache-reference-only"
+  },
+  {
+    "local": "lexus.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/lexus.html",
+    "before": "509086ce975c401dfe53c234d366fbbcd6c0a154141bb90cdae50eb9fd2537e4",
+    "sha256": "b99b47dad02a8d11019eed1fb60ca726182c4c003ec35f75d21e3df1800abd55",
+    "change": "cache-reference-only"
+  },
+  {
+    "local": "lincoln.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/lincoln.html",
+    "before": "9416c6ea002cba1a70221cc426cddd89352f840d224b21b0e3505d2d8e6baccd",
+    "sha256": "fb5038b209655f30b8b239ec0828f83f3f5b727c4319e32775e04f908f81df46",
+    "change": "cache-reference-only"
+  },
+  {
+    "local": "login/index.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/login/index.html",
+    "before": "75c40901580574a6cd905dff6e7b95d68686f111e2216536110fa6ca56de7a37",
+    "sha256": "a7a2d8a03bb483e2b86240caabe6237da272850c800b092322f670a1714a15ff",
+    "change": "cache-reference-only"
+  },
+  {
+    "local": "lynk-co.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/lynk-co.html",
+    "before": "9cd6b4956fb405d210ed0a90a0bf56f38e6250cd355844b3c51e89df9eb9f0fc",
+    "sha256": "54bdc8b2c1cf4902025fd50b53bc1dd1b5e3d52c9e5ef1507133a490744920d7",
+    "change": "cache-reference-only"
+  },
+  {
+    "local": "machinery/detail.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/machinery/detail.html",
+    "before": "d155ddba9a7f046dc1d93fbe82d1e3f40bd19180ec8ec77217437f37a66ed329",
+    "sha256": "1582d72dc28eea5872c1128c2a9e2305e0ed193180a1254492a79182bbd74dc2",
+    "change": "restore-and-merge"
+  },
+  {
+    "local": "machinery/index.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/machinery/index.html",
+    "before": "f2a58ee91ded11722795493cc7d06bfc1b528234a5a7367dd50a676619662d37",
+    "sha256": "7380f28119ad9f0441607e42ce770347ed2de03d5747f56c7d4473b88b849bca",
+    "change": "restore-and-merge"
+  },
+  {
+    "local": "maxus.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/maxus.html",
+    "before": "06269297487ee7711ba2b88b559991c43e435d7182056b627bdf2ade5af2fffa",
+    "sha256": "b97ca42cd84fbe9e8a67c05edc50b000e9c56c0c5ff04e2c659dc15d1dc7236a",
+    "change": "cache-reference-only"
+  },
+  {
+    "local": "mazda.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/mazda.html",
+    "before": "f39c2ac60e57aba7cd6aae20b4c1325fb7324711004e15db3ae0dcd60f6e6950",
+    "sha256": "5e351bfdf106c697b6021dca6f99b4562da040887cf06ea973a374e373f56224",
+    "change": "cache-reference-only"
+  },
+  {
+    "local": "mercedes-benz.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/mercedes-benz.html",
+    "before": "a2fce8ff40223f95e8df5579b7600928742d973db4c43facafc469814bb2ccee",
+    "sha256": "247f001fe5e1d52ae4871bc6975ef2877c50bbcf71fb7d855357d1213271dfde",
+    "change": "cache-reference-only"
+  },
+  {
+    "local": "mg.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/mg.html",
+    "before": "ee9a096481c72f7fdd802203562f409275162b92fc8b273ae8f5816530b5b453",
+    "sha256": "a8fbbec785fabf12215b7f939ad2e7beaa593fe6b118d3b11f3b130bf861a559",
+    "change": "cache-reference-only"
+  },
+  {
+    "local": "mini.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/mini.html",
+    "before": "f6a6bacc192fe37a573927ccfa7982a32b9681d3719d61102867b2fce1715651",
+    "sha256": "009784e4d7b12ea8d69c6f18e1832bb83fa5e6439986f046e94dbfa9af8e94b1",
+    "change": "cache-reference-only"
+  },
+  {
+    "local": "mitsubishi.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/mitsubishi.html",
+    "before": "8fcb20f8546f1f779a8c185a571376e31f12d56ac233aea1768c102e31400f66",
+    "sha256": "ee7b50e535b0d5ea83b52c2e37217a005aae7e100f720392ab57e06f3056a378",
+    "change": "cache-reference-only"
+  },
+  {
+    "local": "motorcycles/index.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/motorcycles/index.html",
+    "before": "e9924315a171a6e51953d271c934c09b0c8099dc5499da7fe725cfb311380b2a",
+    "sha256": "50a0fed9d1e74c99b3c4f05b9e06ab23c1274ddfacb2741dc1dbc429e04a72b7",
+    "change": "cache-reference-only"
+  },
+  {
+    "local": "nigeria.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/nigeria.html",
+    "before": "cda5ebc893e1b2b3a866c6305e26e00f436dac1e45b3381e55e47bb162c73a15",
+    "sha256": "017847293abf2196fc621ddca008ca268d906d97ceb748e2d044934387a7caed",
+    "change": "restore-and-merge"
+  },
+  {
+    "local": "nissan.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/nissan.html",
+    "before": "0d1e0d7ff35268baf994475fc5bf36e98943223138323d6aee74b7ec23f61e7d",
+    "sha256": "d853b0f8a2572b76629d4527483e44462e7c4b3149f5116c21e785ff1276b987",
+    "change": "cache-reference-only"
+  },
+  {
+    "local": "omoda.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/omoda.html",
+    "before": "3e902b2e57ed4bc30a0e0ad9b064590d06869ea356b11e2b615eb2018b7acbed",
+    "sha256": "19488142e657734533f2b8a0a4c51f30b2b42f73c702520cccc4bb6cd5cdf371",
+    "change": "cache-reference-only"
+  },
+  {
+    "local": "ora.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/ora.html",
+    "before": "4dec91180b160265ad320eee0cd37698c12105365353faceb2d7fdf48cc5e4ec",
+    "sha256": "140a44d393981a8a3c0f480f891cc83ed209cd3d7ad87973e8b5cbb5b960bb92",
+    "change": "cache-reference-only"
+  },
+  {
+    "local": "passenger-parts-upload.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/passenger-parts-upload.html",
+    "before": "556792dc138afb2319c24f9abce46add47f658d299de274401e9e9f6df5e9436",
+    "sha256": "e76e88fe2f6c957f3e763217fb3f9b336e14d0a944610cac4b813c0cc70cc5f3",
+    "change": "cache-reference-only"
+  },
+  {
+    "local": "privacy.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/privacy.html",
+    "before": "b5aa4445789368f068ceeeb05edbfa7927959a22336debd38050a1ccaded0d9f",
+    "sha256": "58be5d33ca076eb788d1cbfebf1788e231b09a0e4bade9edeb600d98f47d9ce6",
+    "change": "cache-reference-only"
+  },
+  {
+    "local": "quote-list.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/quote-list.html",
+    "before": "e6bc28f50144a586526b8a7cf444162b3d04110ba0db778b251730a2f58a5fd7",
+    "sha256": "8e628199fc2745fada3a839d6699a32f00daf670cf76ebbe4aaa99410297972b",
+    "change": "cache-reference-only"
+  },
+  {
+    "local": "roewe.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/roewe.html",
+    "before": "5ddb328260fb7fd05efff9c9b7f2a9f2c3120bf3d6aa85b90b586d6161cce247",
+    "sha256": "ada5db73353428ac12d8ac301ee8e71cc49fdb1547e010302ceca66ef6dde843",
+    "change": "cache-reference-only"
+  },
+  {
+    "local": "seat.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/seat.html",
+    "before": "399451f4f58c929c024d4185f7636f90483c2b78a69de2877c5caefff111d7d0",
+    "sha256": "ac808e29450d3149cc6a6f851df464c9ff01954249217b4c66cc7d02c6237a47",
+    "change": "cache-reference-only"
+  },
+  {
+    "local": "skoda.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/skoda.html",
+    "before": "042e3b7e1d401dadb471ee8d7fe947cc6dd6dc740d77f541fb852bb7b1bc374c",
+    "sha256": "6ce5ea8a6053b62fc292955dc22ed23591e7505b7bc3e76a035d4b067e70a727",
+    "change": "cache-reference-only"
+  },
+  {
+    "local": "ssangyong.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/ssangyong.html",
+    "before": "c39c983b8bc9cfb9b3492f86ca86203ffb3109542f9c31dac452d6de13cf1fe3",
+    "sha256": "a9e45e4747adba1cf2a58e40676ec39efc5bf9a0ee12480267c366b952c06ef8",
+    "change": "cache-reference-only"
+  },
+  {
+    "local": "subaru.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/subaru.html",
+    "before": "b6595cfdb7e6c7d5639f40f9fe83dd42ea7bc8f8d6039d1cc52efd27bd6105b4",
+    "sha256": "eb0d78c97394ed1751a999ca72f72091eda7feb3f3a82100d8efce68eca12569",
+    "change": "cache-reference-only"
+  },
+  {
+    "local": "supplier-portal.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/supplier-portal.html",
+    "before": "1b09f4ed05c1f89acd05e5ef081abab1c11d7acb02e87817dce78b86e706968b",
+    "sha256": "fdbf9bbdfb35f32fabf1fba02d0197412d28a34cad6447a7034942f52c80efa3",
+    "change": "cache-reference-only"
+  },
+  {
+    "local": "supplier-portal/export-used-car-upload.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/supplier-portal/export-used-car-upload.html",
+    "before": "b12f28ce2a866439245dc836f5adb95eda64a465d447d2a939f28b24b92a7e2a",
+    "sha256": "dcdd645810a7442c5d002a7861f2ca3f1759de8aa2b8229bf8424cd2775aefcc",
+    "change": "cache-reference-only"
+  },
+  {
+    "local": "supplier-portal/half-cut-upload.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/supplier-portal/half-cut-upload.html",
+    "before": "13373695083f3ba22597aeebb77594492ec3caeff5747c51a0196859c4a5da3a",
+    "sha256": "bef4a0da2944907b0f730b495405d6b6d5e2455730cfa4ab46315acf7a03856f",
+    "change": "cache-reference-only"
+  },
+  {
+    "local": "supplier-portal/passenger-parts-upload.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/supplier-portal/passenger-parts-upload.html",
+    "before": "5e1865a0ee5b9475881950ce9659271fb5b7e0fa043ce64afb09b675dd21eb63",
+    "sha256": "c5815f70696b5442901e2d6b68e2ecde050b7ee17faeeb17c68c61e7c78ae905",
+    "change": "cache-reference-only"
+  },
+  {
+    "local": "supplier-portal/truck-upload.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/supplier-portal/truck-upload.html",
+    "before": "a663f61d0f3582826ee70cfee67dc0778f7c911ee3471e6ca45ed0c7959042f3",
+    "sha256": "cf33ae619c33f6331186a2dda425a59e9d64dcfd9f42ec8af390f18b69da797d",
+    "change": "cache-reference-only"
+  },
+  {
+    "local": "supplier-portal/truck-vehicle-upload.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/supplier-portal/truck-vehicle-upload.html",
+    "before": "12660fd1a5896662fe48000b42f26e58f698df2d64225d543cf638341b01d265",
+    "sha256": "f1094e3707731883531b8b9efad41a687df74e9935b7c87ca0e3c04a947c7cff",
+    "change": "cache-reference-only"
+  },
+  {
+    "local": "suzuki.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/suzuki.html",
+    "before": "b0c4872823be5b614eccc06e6e5bc3d7df5b5316259ddd4b0926241432f90a64",
+    "sha256": "f695d02ff6eea80afd0dfac466afb8c0da5ef0b49869761f823f572ee4909fc9",
+    "change": "cache-reference-only"
+  },
+  {
+    "local": "sw.js",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/sw.js",
+    "before": "2128c933ab16ac99a56994748ea5970ad3bb94bd4ad447c5fe04e1c3a23c9146",
+    "sha256": "b3b2abac007173f0030892ef1871c6aeeda4f688c7029adac2496e83048c03f3",
+    "change": "restore-and-merge"
+  },
+  {
+    "local": "tank.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/tank.html",
+    "before": "e182ee3b041325f745924aee0c13f4e9f695c6eefaa9986751e7f0c1c56c3409",
+    "sha256": "7a1f490ec3aa1c2f9187e5de20669e186d91207d346ee916b8d9e2e0c108dd10",
+    "change": "cache-reference-only"
+  },
+  {
+    "local": "tires/index.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/tires/index.html",
+    "before": "0e7b532bb63b24a3f326fce9f959a49563a46b2433c50cf82732ac18013ee74b",
+    "sha256": "8d2c6ae053f9077c520abee9ac0d009836edcd33e57ef0108f6cc48edbf64ed5",
+    "change": "cache-reference-only"
+  },
+  {
+    "local": "toyota.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/toyota.html",
+    "before": "b231fda44aaf6e3f6cc8e7f6712cc3de18cb9f561c4d0c05e97c694e79b9230b",
+    "sha256": "18382e037e56d3ff042b78f68964337d912134fa952b238ff4ae2665957c79e5",
+    "change": "cache-reference-only"
+  },
+  {
+    "local": "truck-heads/index.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/truck-heads/index.html",
+    "before": "73103cab45dfe7d3ba98bbe3c86223968899cade47d89123cdf6e19c8bf29f5b",
+    "sha256": "6d3820cc39563c4c587c0366654221da9d4c227ffba3c79ae7ab64242dd7d7d7",
+    "change": "cache-reference-only"
+  },
+  {
+    "local": "truck-upload.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/truck-upload.html",
+    "before": "633c919b3014ed747ef95d65f0dc91d02a7d3a052d5b7f369564b4313cb7357a",
+    "sha256": "454a3d143b1e334925a5d2aad373dcda7bd1e9b260e40436ce13d3100f7d1ad3",
+    "change": "cache-reference-only"
+  },
+  {
+    "local": "truck-vehicle-upload.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/truck-vehicle-upload.html",
+    "before": "de99d28f9e7a584b58c27230fa8830017cfc8ee5f8b87a61283078ad6d6d7803",
+    "sha256": "2818ed78d18c79a95985138cb453842fd572cf377b6dd808057fab9736d5739e",
+    "change": "cache-reference-only"
+  },
+  {
+    "local": "trucks/detail.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/trucks/detail.html",
+    "before": "63bf73b655ab6e2af5fd305d2d71fa2dcc795e420d15230b55f84dc336dafa91",
+    "sha256": "bc54fc11bfae42a2ba40346d69ec668c976ddad74820178cb0f185fed5fdb509",
+    "change": "restore-and-merge"
+  },
+  {
+    "local": "trucks/index.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/trucks/index.html",
+    "before": "10eda36aa3ef12a125986906eab12865f2062307090d60f730055fa47f924502",
+    "sha256": "b6c7342ea16b6fd418a293480a05363b830cbc755d87f754cb3e7e10ea2c359f",
+    "change": "restore-and-merge"
+  },
+  {
+    "local": "used-cars/detail.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/used-cars/detail.html",
+    "before": "d93c6e45721a424e2aa54e54ffe9efaa5020dcc84500bc457eead51de4f308b7",
+    "sha256": "8e8d9991c5aab12df8eeaa4fa6bf10c515be854e5332c5b55909067cc114eba0",
+    "change": "cache-reference-only"
+  },
+  {
+    "local": "volkswagen.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/volkswagen.html",
+    "before": "b1ae4fc467f1acf5b73ae460765bcf15b7256f720e1a2a897e7e48262ba94ebf",
+    "sha256": "f1be23d1f60ba70cc8e3caffa22c3f998a3c39bb6eedd5b9985f69a51916fc3f",
+    "change": "cache-reference-only"
+  },
+  {
+    "local": "zeekr.html",
+    "remote": "/root/.openclaw/workspace/inventory-site/public/zeekr.html",
+    "before": "44bd566f931d88dbdad5aae7e4bda7e814dbfce2d45ad7fde5bc1a7162152c98",
+    "sha256": "f11b3f0dbc6f4e0746958afd130e937a6655fb9f2d44faafb64b28c229b76e2f",
+    "change": "cache-reference-only"
+  }
+]

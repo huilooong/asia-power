@@ -1,0 +1,542 @@
+[
+  {
+    "file": "about.html",
+    "source": "production-pre-overwrite-snapshot",
+    "before": "dbd5a847fd9ba7a8763c9b5e1655e779660607f47c5bc8721ac2cf16db9b31ac",
+    "changed": true
+  },
+  {
+    "file": "app.html",
+    "source": "git:3339ffff3",
+    "before": "e1e25636ec755df03e31548d439a6b112a669883c689864fccc0d3bdfff4ba87",
+    "changed": true
+  },
+  {
+    "file": "assets/home-v4-inventory-snapshot.json",
+    "source": "production-pre-overwrite-snapshot",
+    "before": "adc58d2e2b2411e53bb9130c44c3e762fc3e0dd9262e807cda6611c705588475",
+    "changed": false
+  },
+  {
+    "file": "assets/images/parts-placeholder.svg",
+    "source": "git:3339ffff3",
+    "before": "7876e5025e33ba34538dcda418675e0dd4dfc6128b2abccefb08f73fe38caef3",
+    "changed": false
+  },
+  {
+    "file": "brands.html",
+    "source": "production-pre-overwrite-snapshot",
+    "before": "6dc6608e27d7c175755bd29ac539ff309a23d839dfdad01253e3ae9ce56f3a8a",
+    "changed": true
+  },
+  {
+    "file": "brands/acura.html",
+    "source": "git:3339ffff3",
+    "before": "48fea477ae4a5d3d8c902cef73553a5d6d14b02ab07b044ecb07de8ab9c48fd7",
+    "changed": true
+  },
+  {
+    "file": "brands/audi.html",
+    "source": "git:3339ffff3",
+    "before": "2b86511d5fefa8d8abc03d5a616f11693c7e991f1957bb2e6c11d2caa72335d0",
+    "changed": true
+  },
+  {
+    "file": "brands/bmw.html",
+    "source": "git:3339ffff3",
+    "before": "cc3b9c70a45e481332f8f13e0a8dc6829fb05c1047b33ae2abfa109ddcc6f03a",
+    "changed": true
+  },
+  {
+    "file": "brands/buick.html",
+    "source": "git:3339ffff3",
+    "before": "5dff4dc3d5fb0946fbcf0fe77c2be9f47c50c858b45b22ff649c3864d4479add",
+    "changed": true
+  },
+  {
+    "file": "brands/byd.html",
+    "source": "git:3339ffff3",
+    "before": "14d54e88ec34218ccad14f9439d09eab48b4ed6972f1941b427b69eb6182bf56",
+    "changed": true
+  },
+  {
+    "file": "brands/cadillac.html",
+    "source": "git:3339ffff3",
+    "before": "7c5dbbbe25f6a09dfc4af7d90bb5505d85009f0d5f80119ff0d9c9789b8295f9",
+    "changed": true
+  },
+  {
+    "file": "brands/changan.html",
+    "source": "git:3339ffff3",
+    "before": "86daa3296fe02b6162f1fa013339758c321736984fa18b7e1afcfb83e5c74597",
+    "changed": true
+  },
+  {
+    "file": "brands/chery.html",
+    "source": "git:3339ffff3",
+    "before": "b7429259b1100e283829b49a00f927b2bb92430907b4ee15baee0596c4187038",
+    "changed": true
+  },
+  {
+    "file": "brands/chevrolet.html",
+    "source": "git:3339ffff3",
+    "before": "2fa2ede69260ab7213f52cf1b8d98196169d7aa79629e2e85922f176b2f48669",
+    "changed": true
+  },
+  {
+    "file": "brands/daihatsu.html",
+    "source": "git:3339ffff3",
+    "before": "56823965af187c889503a2946537759fddf73347488ab7285018990557a70838",
+    "changed": true
+  },
+  {
+    "file": "brands/dongfeng.html",
+    "source": "git:3339ffff3",
+    "before": "be4fecafbe5b5c2324dfb514bac3b6c2e7c0549030ae36895b89a9cb124b51bf",
+    "changed": true
+  },
+  {
+    "file": "brands/exeed.html",
+    "source": "git:3339ffff3",
+    "before": "9565077a3f67853f93432e4002b5fbe0090695952183821d5af70ef1f6fa4f96",
+    "changed": true
+  },
+  {
+    "file": "brands/faw.html",
+    "source": "git:3339ffff3",
+    "before": "1a95c14a0aaeeac40bea419033e2a5b9cf2ecbaf4d7760408821d626df6f7c4a",
+    "changed": true
+  },
+  {
+    "file": "brands/ford.html",
+    "source": "git:3339ffff3",
+    "before": "fdb8d76280081f7142f79e5bc37f3d983eb5b30b3ced323218b81083d39e7409",
+    "changed": true
+  },
+  {
+    "file": "brands/foton.html",
+    "source": "git:3339ffff3",
+    "before": "14478564a2594e78e89d9c9e7b9d86aa0d748c338b97a72d972bcef72d41e481",
+    "changed": true
+  },
+  {
+    "file": "brands/gac.html",
+    "source": "git:3339ffff3",
+    "before": "ad30d65a1c7603ad646c610e9e671c14c657776b8aca8e96b2fe3b0b9612af72",
+    "changed": true
+  },
+  {
+    "file": "brands/geely.html",
+    "source": "git:3339ffff3",
+    "before": "d4ee182a792bb0a1d4572c1aa0c5b7b298b0b8e891fb4c7ed55e6985d7d4123a",
+    "changed": true
+  },
+  {
+    "file": "brands/genesis.html",
+    "source": "git:3339ffff3",
+    "before": "243af7214bbdf70e164c4395c0bf0759dce00b842dea718f9c4865132e7c8b36",
+    "changed": true
+  },
+  {
+    "file": "brands/geometry.html",
+    "source": "git:3339ffff3",
+    "before": "b2b424ea0447f01ddab8f12d83ff86e389a961553c60cb1f28aab5a1ffa2f93f",
+    "changed": true
+  },
+  {
+    "file": "brands/gmc.html",
+    "source": "git:3339ffff3",
+    "before": "5ae07544c6bcd9cafc250db4f8f96e1134230a65979d5623a7c3a3e337d93d13",
+    "changed": true
+  },
+  {
+    "file": "brands/great-wall.html",
+    "source": "git:3339ffff3",
+    "before": "b4466ce29ba82b46bb7f8c51c36c74a05f128868fef418beb250a61502c7be09",
+    "changed": true
+  },
+  {
+    "file": "brands/haval.html",
+    "source": "git:3339ffff3",
+    "before": "8e3d1cabcb3ccddaf7f3e7c7dbe14743cd65768c41052dfd6355607a8e81f768",
+    "changed": true
+  },
+  {
+    "file": "brands/honda.html",
+    "source": "git:3339ffff3",
+    "before": "d9ff356c24d280a14ae4ef465c0f326f9661bbf5c73b70c94d065cae16c0503c",
+    "changed": true
+  },
+  {
+    "file": "brands/hyundai.html",
+    "source": "git:3339ffff3",
+    "before": "075868a4cf4567a81ce9f5b862a6719075917ecc55d62aefa88925ec1ab8169b",
+    "changed": true
+  },
+  {
+    "file": "brands/infiniti.html",
+    "source": "git:3339ffff3",
+    "before": "8782faefef66422883a6bbc4e0eab1dfc1a1b6187a0140dfc33e8d1b46acdfa9",
+    "changed": true
+  },
+  {
+    "file": "brands/isuzu.html",
+    "source": "git:3339ffff3",
+    "before": "a2f79c61d0541b8b360e2656f268d771b2e2664e9ef7f6f6b16289de04d9908b",
+    "changed": true
+  },
+  {
+    "file": "brands/jac.html",
+    "source": "git:3339ffff3",
+    "before": "281fe83270d8c700b7dcbf9b37b2afcaec7c2294d03bc9e4f3d233aeaa5088c2",
+    "changed": true
+  },
+  {
+    "file": "brands/jaecoo.html",
+    "source": "git:3339ffff3",
+    "before": "3331eb82f2f9208c1c4da553336de4302a9e86b3315977880f417be7ed9d28e6",
+    "changed": true
+  },
+  {
+    "file": "brands/jetour.html",
+    "source": "git:3339ffff3",
+    "before": "cb69e8748094ff0e8d0666819a4d1dcee388fed7017eeda26a49c5252c39d304",
+    "changed": true
+  },
+  {
+    "file": "brands/jmc.html",
+    "source": "git:3339ffff3",
+    "before": "c5c1ad40e0d1f26f0563bd646b8585df61ca881a7f1e3e8df98548602b4ff1a6",
+    "changed": true
+  },
+  {
+    "file": "brands/kia.html",
+    "source": "git:3339ffff3",
+    "before": "71d3e80202054681fd81b46e2eed6b90de3c4660aeaf7921bb4b236aac6c2ba0",
+    "changed": true
+  },
+  {
+    "file": "brands/lexus.html",
+    "source": "git:3339ffff3",
+    "before": "8c5677172db3cfd88b6d13354374d2494382943ce0163a340dba7c1527c3e494",
+    "changed": true
+  },
+  {
+    "file": "brands/lincoln.html",
+    "source": "git:3339ffff3",
+    "before": "92981e4781d9edd8183a03eaea29ac68f7feb8b05ab9511cb33ea4cda4137052",
+    "changed": true
+  },
+  {
+    "file": "brands/lynk-co.html",
+    "source": "git:3339ffff3",
+    "before": "6d1257d1b0bada7c10ded4a79ba7548762edbfb121f5fdde2b719b1e5ded6f4b",
+    "changed": true
+  },
+  {
+    "file": "brands/maxus.html",
+    "source": "git:3339ffff3",
+    "before": "64c5ad15f198c32ba848502473cfb94aba209ef36352c96cf958d42ff4655184",
+    "changed": true
+  },
+  {
+    "file": "brands/mazda.html",
+    "source": "git:3339ffff3",
+    "before": "99e58cea504fe48ac7038a0e3cd2b2c3e4ec12dd02bbd5dd1a9f3322850cd5e2",
+    "changed": true
+  },
+  {
+    "file": "brands/mercedes-benz.html",
+    "source": "git:3339ffff3",
+    "before": "6da34988cbdd89af494f5ea5eccb9ba3aabd8fcf4aab5e431be69f3124e34baf",
+    "changed": true
+  },
+  {
+    "file": "brands/mg.html",
+    "source": "git:3339ffff3",
+    "before": "caab44c7841de5570c6f2e531836ad8f8ac82c5f4dd2f97eb7b876163d0f02b1",
+    "changed": true
+  },
+  {
+    "file": "brands/mini.html",
+    "source": "git:3339ffff3",
+    "before": "60851af87ba406fc3f312f3dbf733e9d0c5d676eb5d2b3bfd02d96d3ab026f75",
+    "changed": true
+  },
+  {
+    "file": "brands/mitsubishi.html",
+    "source": "git:3339ffff3",
+    "before": "de17299350853c9efdf5b0d33773064db575faea0a2cf2704b3207fa78281048",
+    "changed": true
+  },
+  {
+    "file": "brands/nissan.html",
+    "source": "git:3339ffff3",
+    "before": "e29ee68a14215c98861be40d7b89aefcced4e452a7a007f592fdbb99ab48e854",
+    "changed": true
+  },
+  {
+    "file": "brands/omoda.html",
+    "source": "git:3339ffff3",
+    "before": "1fe246cf9e978653b2d9ac0a054f6f1a7d5c5fee8bea548b16be2fe73275a3f6",
+    "changed": true
+  },
+  {
+    "file": "brands/ora.html",
+    "source": "git:3339ffff3",
+    "before": "f9f19294709cb7affd1a6e1892f9b7d324180020c032dd126b2e0d3b3fd6b4d6",
+    "changed": true
+  },
+  {
+    "file": "brands/roewe.html",
+    "source": "git:3339ffff3",
+    "before": "6e7dbfebe7d60c7cec7230c16589b985a5abb6840523135d57e3817482372467",
+    "changed": true
+  },
+  {
+    "file": "brands/seat.html",
+    "source": "git:3339ffff3",
+    "before": "82ef63a8904e47363ba0f553faef29e505fda719e5504da145dc07f3102c9279",
+    "changed": true
+  },
+  {
+    "file": "brands/skoda.html",
+    "source": "git:3339ffff3",
+    "before": "81633e5019d1631a184496eb56b66b2acc4ccf3ffff8d22e8b20c90b83957e19",
+    "changed": true
+  },
+  {
+    "file": "brands/ssangyong.html",
+    "source": "git:3339ffff3",
+    "before": "861c9ce66abcbd3d77769b22384b88609c10a78197f1fb8ca568aff0f6d27f1a",
+    "changed": true
+  },
+  {
+    "file": "brands/subaru.html",
+    "source": "git:3339ffff3",
+    "before": "72f00e80151d87aa312e6f35added38d481664998cfb172b1bbcbdbb9481a4f7",
+    "changed": true
+  },
+  {
+    "file": "brands/suzuki.html",
+    "source": "git:3339ffff3",
+    "before": "f4db500e7839be8324af0aeb6574e790e8f54dce4f76645abea07444ee6c4cc4",
+    "changed": true
+  },
+  {
+    "file": "brands/tank.html",
+    "source": "git:3339ffff3",
+    "before": "66991e9cf198ca7c8cfdc32c8d271cbaf505e1449b6583978a2b8e5265c0a373",
+    "changed": true
+  },
+  {
+    "file": "brands/toyota.html",
+    "source": "git:3339ffff3",
+    "before": "d5df19b822c9a74a35cf315312460c8655b9291ece629a1fbd005f40278d519a",
+    "changed": true
+  },
+  {
+    "file": "brands/volkswagen.html",
+    "source": "git:3339ffff3",
+    "before": "841b4feafd925e0f688045c68c3197b923924d2f9d4c8f700b9168f5f4491b3e",
+    "changed": true
+  },
+  {
+    "file": "brands/zeekr.html",
+    "source": "git:3339ffff3",
+    "before": "a89e61e9f352ea675bfe811f333887e9f3547afee8c9e0335c47ba048335b08a",
+    "changed": true
+  },
+  {
+    "file": "chassis-parts/index.html",
+    "source": "production-pre-overwrite-snapshot",
+    "before": "dd9767b1c0eae0c23db943645c1013954ea0c54d0e6ab55afcc2a799dddf1734",
+    "changed": true
+  },
+  {
+    "file": "contact.html",
+    "source": "production-pre-overwrite-snapshot",
+    "before": "33d713df98412bdcdc33d8b13366fa2138994055ca7c1b39944437714119ba43",
+    "changed": true
+  },
+  {
+    "file": "css/ebay-layout.css",
+    "source": "production-pre-overwrite-snapshot",
+    "before": "364ffb0a519657934f1e6b6e9a01d96f1d17d0b9f43e0bfdbad9ea93b436310b",
+    "changed": true
+  },
+  {
+    "file": "css/home-v4-hybrid.css",
+    "source": "production-pre-overwrite-snapshot",
+    "before": "b8febbfb6837d1a151cb31f5ca252b9576c2c5deaa6d5847877e88a24b3692da",
+    "changed": true
+  },
+  {
+    "file": "css/login.css",
+    "source": "git:3339ffff3",
+    "before": "300dcee31d6969a7f085d85488333fbce38335f4b886cb26d2f57cc70a7fc7ea",
+    "changed": true
+  },
+  {
+    "file": "css/styles.css",
+    "source": "production-pre-overwrite-snapshot",
+    "before": "9b1299091343ea5f2eb7a814ca61847389fabd449f32978a7e26ebb710e43e22",
+    "changed": true
+  },
+  {
+    "file": "engines/index.html",
+    "source": "production-pre-overwrite-snapshot",
+    "before": "0e85452395438a187e9cd1b19af2d5c29d86dafc733a16455dc9c51857e19bb6",
+    "changed": true
+  },
+  {
+    "file": "front-cuts/index.html",
+    "source": "production-pre-overwrite-snapshot",
+    "before": "2de2ec370f48b3c4978d6008789371b2de3ad2f7dd3c1473409945156b947da8",
+    "changed": true
+  },
+  {
+    "file": "gearboxes/index.html",
+    "source": "production-pre-overwrite-snapshot",
+    "before": "773c6d53f31ad58f8cfab57a36dd39909f96f87ba2b9cfa2328379e66e6fc8a3",
+    "changed": true
+  },
+  {
+    "file": "ghana.html",
+    "source": "git:3339ffff3",
+    "before": "19db21d7e434b49c5346176f6bd7870be9cb1aa4be4220001b3a7619f78b39e6",
+    "changed": true
+  },
+  {
+    "file": "half-cuts/detail.html",
+    "source": "production-pre-overwrite-snapshot",
+    "before": "10450b5aad1fd6f41b5e7a49d1b86f109a63d8247b432a62c5bc3fb5815988cc",
+    "changed": true
+  },
+  {
+    "file": "half-cuts/index.html",
+    "source": "production-pre-overwrite-snapshot",
+    "before": "a9662c20dd640845cde4c4210d506249211a0059f2278eb079d8972868711f33",
+    "changed": true
+  },
+  {
+    "file": "index.html",
+    "source": "production-pre-overwrite-snapshot",
+    "before": "5be434ab1a46bb063eb3a81e5af3f3159bd001bf504349ae4c696b8da6e7d8e7",
+    "changed": true
+  },
+  {
+    "file": "js/catalog-search-aliases.js",
+    "source": "git:3339ffff3",
+    "before": "2ec6949f77903bb498d374742259720295b5e5f2566d2f931149bcb715a08170",
+    "changed": true
+  },
+  {
+    "file": "js/components.js",
+    "source": "production-pre-overwrite-snapshot",
+    "before": "ba034b9468a0767dbb46275eb0921d8078064df01c71de16c36eb817cd131ab2",
+    "changed": true
+  },
+  {
+    "file": "js/ebay-catalog-hub.js",
+    "source": "production-pre-overwrite-snapshot",
+    "before": "395d2f80248e612882e5896ead45a98236f282248cc6ff2181e98a3a6cfc9097",
+    "changed": true
+  },
+  {
+    "file": "js/ebay-layout.js",
+    "source": "production-pre-overwrite-snapshot",
+    "before": "930cbad0ad635fae02558e97eee2c2e4792b3d5085c00aa08721a0cb8868b195",
+    "changed": true
+  },
+  {
+    "file": "js/half-cut-catalog.js",
+    "source": "git:3339ffff3",
+    "before": "d1816c0f06b2d688d6f579f6f866c580110fdb5801d2518adc8ed09f54e286b6",
+    "changed": true
+  },
+  {
+    "file": "js/half-cut-detail.js",
+    "source": "git:3339ffff3",
+    "before": "23082c2ca4a691ab9f07ec485ce18b0503f66e96960f2be67b602204ff2a1e30",
+    "changed": true
+  },
+  {
+    "file": "js/half-cut-directory.js",
+    "source": "production-pre-overwrite-snapshot",
+    "before": "03136da696adec6d83cc750b922d507f326e9fc2c857660842d1a4eb05715aa5",
+    "changed": true
+  },
+  {
+    "file": "js/half-cut-upload-layer.js",
+    "source": "git:3339ffff3",
+    "before": "9327d0ff9a5b76c834d927f5c587ec4a755309eb97bd9fe13c89cc2ac850e27e",
+    "changed": true
+  },
+  {
+    "file": "js/home-hub.js",
+    "source": "git:3339ffff3",
+    "before": "cd80bda58c7d3f2e24658511ecf13e0cd88641b7d2384b659cf967949e298f7c",
+    "changed": true
+  },
+  {
+    "file": "js/home-v4-hybrid.js",
+    "source": "production-pre-overwrite-snapshot",
+    "before": "838af9e135913bd1170ceb32e9d696658afae440ebac52dffdd85a357e9de2fe",
+    "changed": true
+  },
+  {
+    "file": "js/path-utils.js",
+    "source": "git:3339ffff3",
+    "before": "7d86869b876857a351ea57ec1fa84a71ed082f9862f30dbd62995004f977e1b0",
+    "changed": true
+  },
+  {
+    "file": "js/public-i18n.js",
+    "source": "production-pre-overwrite-snapshot",
+    "before": "4cd4a02997526e079a3bcfc864104fa25aa51f7b27c014dc0e3f0f9ba0383bad",
+    "changed": true
+  },
+  {
+    "file": "kenya.html",
+    "source": "git:3339ffff3",
+    "before": "97c36956292fc5d32be4a682e40e0cc137dd7973df23e457290e21911902e1b4",
+    "changed": true
+  },
+  {
+    "file": "machinery/detail.html",
+    "source": "production-pre-overwrite-snapshot",
+    "before": "d155ddba9a7f046dc1d93fbe82d1e3f40bd19180ec8ec77217437f37a66ed329",
+    "changed": true
+  },
+  {
+    "file": "machinery/index.html",
+    "source": "production-pre-overwrite-snapshot",
+    "before": "f2a58ee91ded11722795493cc7d06bfc1b528234a5a7367dd50a676619662d37",
+    "changed": true
+  },
+  {
+    "file": "nigeria.html",
+    "source": "git:3339ffff3",
+    "before": "cda5ebc893e1b2b3a866c6305e26e00f436dac1e45b3381e55e47bb162c73a15",
+    "changed": true
+  },
+  {
+    "file": "sw.js",
+    "source": "production-pre-overwrite-snapshot",
+    "before": "2128c933ab16ac99a56994748ea5970ad3bb94bd4ad447c5fe04e1c3a23c9146",
+    "changed": true
+  },
+  {
+    "file": "trucks/detail.html",
+    "source": "production-pre-overwrite-snapshot",
+    "before": "63bf73b655ab6e2af5fd305d2d71fa2dcc795e420d15230b55f84dc336dafa91",
+    "changed": true
+  },
+  {
+    "file": "trucks/index.html",
+    "source": "production-pre-overwrite-snapshot",
+    "before": "10eda36aa3ef12a125986906eab12865f2062307090d60f730055fa47f924502",
+    "changed": true
+  }
+]

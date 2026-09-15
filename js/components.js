@@ -190,7 +190,7 @@
 
   function injectEbayStylesheet() {
     const ver = SITE_EBAY_LAYOUT_VER;
-    const cssHref = href(`css/ebay-layout.css?v=${ver}`);
+    const cssHref = href(`css/ebay-layout.css?v=restore-20260915-v1`);
     const existing = document.querySelector('link[data-ebay-layout], link[href*="ebay-layout.css"]');
     if (existing) {
       if (!existing.href.includes(`v=${ver}`)) {
@@ -258,7 +258,7 @@
     if (document.querySelector('script[data-ebay-layout-js]')) return;
     injectEbayCategoriesScript(() => {
       const script = document.createElement('script');
-      script.src = href(`js/ebay-layout.js?v=${SITE_EBAY_LAYOUT_VER}`);
+      script.src = href(`js/ebay-layout.js?v=restore-20260915-v1`);
       script.defer = true;
       script.setAttribute('data-ebay-layout-js', '1');
       script.onload = () => {
@@ -997,7 +997,7 @@
     if (!document.querySelector('link[data-login-css]')) {
       const link = document.createElement('link');
       link.rel = 'stylesheet';
-  link.href = href('css/login.css?v=auth-nav-once-v2');
+  link.href = href('css/login.css?v=restore-20260915-v1');
       link.setAttribute('data-login-css', '1');
       document.head.appendChild(link);
     }

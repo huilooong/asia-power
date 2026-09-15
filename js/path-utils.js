@@ -96,7 +96,7 @@
   const SITE_I18N_VER = 'site-content-i18n-20260910';
 
   if (!window.PublicI18n || !Array.isArray(window.PublicI18n.SUPPORTED_LANGS) || window.PublicI18n.SUPPORTED_LANGS.length < 4) {
-    const src = `${base()}js/public-i18n.js?v=${SITE_I18N_VER}`;
+    const src = `${base()}js/public-i18n.js?v=restore-20260915-v1`;
     try {
       const xhr = new XMLHttpRequest();
       xhr.open('GET', src, false);

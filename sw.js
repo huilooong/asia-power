@@ -1,4 +1,4 @@
-const CACHE_VERSION = 'pwa-app-v6c';
+const CACHE_VERSION = 'pwa-app-v6c-restore-20260915-v1';
 const STATIC_CACHE = `${CACHE_VERSION}-static`;
 const OFFLINE_URL = '/offline.html';
 
@@ -26,15 +26,15 @@ const STATIC_ASSETS = [
   OFFLINE_URL,
   '/manifest.json',
   '/app.html',
-  '/css/styles.css',
-  '/css/home-v4-hybrid.css?v=home-scroll-v5',
+  '/css/styles.css?v=restore-20260915-v1',
+  '/css/home-v4-hybrid.css?v=restore-20260915-v1',
   '/css/pwa-install.css?v=pwa-app-v6c',
   '/css/pwa-app-shell.css?v=pwa-app-v6c',
-  '/js/path-utils.js',
+  '/js/path-utils.js?v=restore-20260915-v1',
   // Never precache bare /js/config.js — CF may hold immutable +233 poison for months
   '/js/config.js?v=apcontact-002',
-  '/js/components.js?v=auth-nav-once-v2',
-  '/js/home-v4-hybrid.js?v=vehicle-engine-001c',
+  '/js/components.js?v=restore-20260915-v1',
+  '/js/home-v4-hybrid.js?v=restore-20260915-v1',
   '/js/pwa-install.js?v=pwa-app-v6c',
   '/js/pwa-app-shell.js?v=pwa-app-v6c',
   '/assets/favicon.png',
