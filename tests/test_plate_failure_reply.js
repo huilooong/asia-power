@@ -13,13 +13,13 @@ async function loadHelpers() {
 const failImg = { message_type: 'image', vin_decode: { status: 'failed', error: 'no_vin' } };
 const t0 = Date.parse('2026-07-18T05:00:00.000Z');
 
-test('plateFailureReply: no dealState asks for nameplate/VIN sticker (not blur wording)', async () => {
+test('plateFailureReply: no dealState asks for photo context, not a VIN/nameplate', async () => {
   const { plateFailureReply } = await loadHelpers();
   const reply = plateFailureReply(failImg, null);
-  assert.match(reply, /nameplate\/VIN sticker/i);
-  assert.match(reply, /not a general shot/i);
+  assert.match(reply, /Which part do you need/i);
+  assert.match(reply, /make, model and year/i);
+  assert.ok(!/nameplate|chassis|VIN/i.test(reply));
   assert.ok(!/couldn't read the plate clearly/i.test(reply));
-  assert.ok(!/clearer photo/i.test(reply));
 });
 
 test('plateFailureReply: dealState.vin uses already-confirmed copy', async () => {
@@ -104,26 +104,27 @@ test('plateFailureReply: part_intent wins over junk/confirmed vin on OCR fail', 
   assert.ok(!/already have your vehicle confirmed/i.test(reply));
 });
 
-test('plateFailureReply: empty dealState (no part_intent, no vin) asks for nameplate', async () => {
+test('plateFailureReply: empty dealState (no part_intent, no vin) asks for part and vehicle context', async () => {
   const { plateFailureReply } = await loadHelpers();
   const reply = plateFailureReply(failImg, {});
-  assert.match(reply, /nameplate\/VIN sticker/i);
+  assert.match(reply, /Which part do you need/i);
+  assert.ok(!/nameplate|chassis|VIN/i.test(reply));
 });
 
 test('decidePlateFailureReply: 2nd failure in window is silence; OCR path still returns decision', async () => {
-  const { decidePlateFailureReply, plateFailureAskCopy } = await loadHelpers();
+  const { decidePlateFailureReply, contextlessPhotoAskCopy } = await loadHelpers();
   const first = decidePlateFailureReply(failImg, {}, t0);
   assert.equal(first.silence, false);
-  assert.equal(first.reply, plateFailureAskCopy('primary'));
+  assert.equal(first.reply, contextlessPhotoAskCopy('primary'));
   assert.equal(first.dealPatch.plate_failure_streak, 1);
-  assert.equal(first.dealPatch.last_plate_failure_reply_kind, 'primary');
+  assert.equal(first.dealPatch.last_plate_failure_reply_kind, 'unclassified_photo');
 
   const second = decidePlateFailureReply(
     failImg,
     {
       last_plate_failure_reply_at: first.dealPatch.last_plate_failure_reply_at,
       plate_failure_streak: 1,
-      last_plate_failure_reply_kind: 'primary',
+      last_plate_failure_reply_kind: 'unclassified_photo',
     },
     t0 + 60_000,
   );
@@ -136,14 +137,15 @@ test('decidePlateFailureReply: 2nd failure in window is silence; OCR path still 
     {
       last_plate_failure_reply_at: first.dealPatch.last_plate_failure_reply_at,
       plate_failure_streak: 2,
-      last_plate_failure_reply_kind: 'primary',
+      last_plate_failure_reply_kind: 'unclassified_photo',
     },
     t0 + 120_000,
   );
   assert.equal(third.silence, false);
-  assert.equal(third.reply, plateFailureAskCopy('escalate'));
-  assert.equal(third.dealPatch.last_plate_failure_reply_kind, 'escalate');
-  assert.match(third.reply, /type the chassis\/VIN/i);
+  assert.equal(third.reply, contextlessPhotoAskCopy('escalate'));
+  assert.equal(third.dealPatch.last_plate_failure_reply_kind, 'unclassified_photo_escalate');
+  assert.match(third.reply, /part you need/i);
+  assert.ok(!/nameplate|chassis|VIN/i.test(third.reply));
 });
 
 test('decidePlateFailureReply: after window expires, primary ask again', async () => {
@@ -158,9 +160,10 @@ test('decidePlateFailureReply: after window expires, primary ask again', async (
     t0 + PLATE_FAILURE_DEDUP_MS + 1,
   );
   assert.equal(again.silence, false);
-  assert.match(again.reply, /nameplate\/VIN sticker/i);
+  assert.match(again.reply, /Which part do you need/i);
+  assert.ok(!/nameplate|chassis|VIN/i.test(again.reply));
   assert.equal(again.dealPatch.plate_failure_streak, 1);
-  assert.equal(again.dealPatch.last_plate_failure_reply_kind, 'primary');
+  assert.equal(again.dealPatch.last_plate_failure_reply_kind, 'unclassified_photo');
 });
 
 test('plateFailureResetPatch clears streak fields', async () => {

@@ -147,6 +147,24 @@ export function plateFailureAskCopy(kind = "primary") {
 }
 
 /**
+ * OCR failure on a photo with no saved deal context must not be treated as a
+ * failed VIN/nameplate submission. The image may be a lamp, body part, or a
+ * photo sent inside a conversation that the bridge did not observe.
+ */
+export function contextlessPhotoAskCopy(kind = "primary") {
+  if (kind === "escalate") {
+    return (
+      "I have the photos. Please type the part you need and the vehicle make, model and year " +
+      "so I can continue accurately."
+    );
+  }
+  return (
+    "Got your photo. Which part do you need, and what is the vehicle make, model and year? " +
+    "If the photo is meant to show a number or label, please send a close-up of that label."
+  );
+}
+
+/**
  * Shared short-window dedup for ANY OCR-fail customer reply.
  * 1st in window → send; 3rd → escalate once (caller supplies escalate copy);
  * other in-window → silence. Prevents stacked photos from spamming.
@@ -221,7 +239,7 @@ function partIntentPhotoEscalateCopy(dealState, label) {
  * Image OCR failed: pick copy from deal context.
  * - part_intent set → treat as accessory/part photo (not a plate ask)
  * - vin/engine already confirmed (Bug A) → don't ask to resend plate
- * - else → ask for nameplate/VIN photo (not "clearer" blur wording)
+ * - no saved context → ask what part and vehicle the photo belongs to
  *
  * Dedup applies to ALL branches (incl. part_intent) — CEO 2026-07-22 +233243520405
  * stacked three identical "noted for your engine" lines because part_intent skipped dedup.
@@ -270,10 +288,10 @@ export function decidePlateFailureReply(mediaContext, dealState, nowMs = Date.no
   }
 
   return applyPlateFailureDedup({
-    primaryReply: plateFailureAskCopy("primary"),
-    escalateReply: plateFailureAskCopy("escalate"),
-    kindPrimary: "primary",
-    kindEscalate: "escalate",
+    primaryReply: contextlessPhotoAskCopy("primary"),
+    escalateReply: contextlessPhotoAskCopy("escalate"),
+    kindPrimary: "unclassified_photo",
+    kindEscalate: "unclassified_photo_escalate",
     dealState,
     nowMs,
   });
