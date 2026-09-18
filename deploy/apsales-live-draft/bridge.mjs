@@ -6,7 +6,12 @@ import { fileURLToPath } from "node:url";
 import { spawn, spawnSync } from "node:child_process";
 import { AsyncLocalStorage } from "node:async_hooks";
 import { assertReplyAllowed, readReplyControl } from "./apsales-reply-control.mjs";
-import { conversationScopePatch, turnPolicy, routedReply } from "./apsales-turn-policy.mjs";
+import {
+  afterSalesReviewDecision,
+  conversationScopePatch,
+  turnPolicy,
+  routedReply,
+} from "./apsales-turn-policy.mjs";
 import { createHumanTakeover } from "./apsales-human-takeover.mjs";
 import { startApsalesWhatsAppSession } from "./apsales-whatsapp-session.mjs";
 import { recordInboundForEvidence, recordReplyForEvidence } from "./evidence-hook.mjs";
@@ -1481,7 +1486,26 @@ async function handleMessageInner(message, state, session) {
           const request = { customer: senderId, message_id: message.messageId, topic: policy.topic, text, at: new Date().toISOString(), status: "pending" };
           await fs.mkdir(`${WORKSPACE}/memory/customer_gateway`, { recursive: true });
           await fs.appendFile(`${WORKSPACE}/memory/customer_gateway/human_review_requests.ndjson`, JSON.stringify(request) + "\n");
-          if (policy.topic === "after_sales") await saveDealState(senderId, { support_review_pending: true });
+          if (policy.topic === "after_sales") {
+            const reviewDecision = afterSalesReviewDecision(dealState);
+            await saveDealState(senderId, {
+              support_review_pending: true,
+              ...reviewDecision.dealPatch,
+            });
+            if (reviewDecision.silence) {
+              log("after-sales review reply silenced (dedup window)", {
+                senderId,
+                messageId: message.messageId,
+                repeatCount: reviewDecision.dealPatch.after_sales_review_repeat_count,
+              });
+              await appendActivity(
+                "apsales_after_sales_review_silenced",
+                `客户 ${senderId}: after-sales review follow-up retained without repeated reply`,
+                "silenced",
+              );
+              return;
+            }
+          }
           await sendTelegram(`🟡 客户需人工处理（${policy.topic}）\n客户: ${senderId}\n${text.slice(0, 1000)}\n暂停该客户 AI：暂停AI ${senderId}`).then(() => { notified = true; }).catch(() => {});
         }
         const reply = routedReply(policy, notified, text);

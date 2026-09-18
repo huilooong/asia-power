@@ -6,7 +6,13 @@ import path from "node:path";
 import { spawnSync } from "node:child_process";
 import { readReplyControl, assertReplyAllowed } from "../deploy/apsales-live-draft/apsales-reply-control.mjs";
 import { createHumanTakeover, trackedTransport } from "../deploy/apsales-live-draft/apsales-human-takeover.mjs";
-import { conversationScopePatch, turnPolicy, routedReply } from "../deploy/apsales-live-draft/apsales-turn-policy.mjs";
+import {
+  AFTER_SALES_REVIEW_DEDUP_MS,
+  afterSalesReviewDecision,
+  conversationScopePatch,
+  turnPolicy,
+  routedReply,
+} from "../deploy/apsales-live-draft/apsales-turn-policy.mjs";
 
 const customer = "+233555000111";
 function sandbox(t) { const root = fs.mkdtempSync(path.join(os.tmpdir(), "ai-control-")); t.after(() => fs.rmSync(root, { recursive: true, force: true })); return root; }
@@ -158,4 +164,27 @@ test("pure greeting in an active business conversation does not repeat the sales
 
   assert.equal(turnPolicy("greeting", {}).route, "model");
   assert.equal(turnPolicy("quotation", activeGearboxEnquiry).route, "model");
+});
+
+test("after-sales media stack gets one acknowledgement and one alert per short review window", () => {
+  const t0 = Date.parse("2026-09-17T19:44:50.000Z");
+  const first = afterSalesReviewDecision({}, t0);
+  assert.equal(first.silence, false);
+  assert.equal(first.notify, true);
+  assert.equal(first.dealPatch.after_sales_review_repeat_count, 0);
+
+  const secondState = { ...first.dealPatch };
+  const second = afterSalesReviewDecision(secondState, t0 + 30_000);
+  assert.equal(second.silence, true);
+  assert.equal(second.notify, false);
+  assert.equal(second.dealPatch.after_sales_review_repeat_count, 1);
+
+  const fifth = afterSalesReviewDecision({ ...secondState, after_sales_review_repeat_count: 3 }, t0 + 95_000);
+  assert.equal(fifth.silence, true);
+  assert.equal(fifth.dealPatch.after_sales_review_repeat_count, 4);
+
+  const later = afterSalesReviewDecision(secondState, t0 + AFTER_SALES_REVIEW_DEDUP_MS + 1);
+  assert.equal(later.silence, false);
+  assert.equal(later.notify, true);
+  assert.equal(later.dealPatch.after_sales_review_repeat_count, 0);
 });

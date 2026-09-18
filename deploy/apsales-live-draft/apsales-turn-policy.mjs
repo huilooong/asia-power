@@ -19,6 +19,45 @@ const WEAK_SCOPE_INTENTS = new Set([
   "unknown",
 ]);
 
+/** One acknowledgement is enough while an after-sales incident is being reviewed. */
+export const AFTER_SALES_REVIEW_DEDUP_MS = 10 * 60 * 1000;
+
+/**
+ * Keep every after-sales inbound as evidence, while suppressing repeated
+ * customer acknowledgements and operator alerts for a rapid stack of text or
+ * media messages about the same incident.
+ */
+export function afterSalesReviewDecision(dealState = {}, nowMs = Date.now()) {
+  const lastAt = Date.parse(String(dealState.last_after_sales_review_reply_at || ""));
+  const withinWindow = Number.isFinite(lastAt)
+    && nowMs - lastAt >= 0
+    && nowMs - lastAt < AFTER_SALES_REVIEW_DEDUP_MS;
+  const repeatCount = withinWindow
+    ? Number(dealState.after_sales_review_repeat_count || 0) + 1
+    : 0;
+
+  if (withinWindow) {
+    return {
+      silence: true,
+      notify: false,
+      dealPatch: {
+        after_sales_review_repeat_count: repeatCount,
+        last_after_sales_review_inbound_at: new Date(nowMs).toISOString(),
+      },
+    };
+  }
+
+  return {
+    silence: false,
+    notify: true,
+    dealPatch: {
+      last_after_sales_review_reply_at: new Date(nowMs).toISOString(),
+      last_after_sales_review_inbound_at: new Date(nowMs).toISOString(),
+      after_sales_review_repeat_count: 0,
+    },
+  };
+}
+
 /**
  * Persist what this WhatsApp conversation is being used for. A later generic
  * greeting must not reopen a private/school thread as a sales lead, while an
