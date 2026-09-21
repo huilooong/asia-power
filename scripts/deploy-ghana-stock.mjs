@@ -24,7 +24,7 @@ const installer=`import pathlib,hashlib,os,json\npub=pathlib.Path(${JSON.stringi
 run('ssh',[remote,"python3 - <<'PY'\n"+installer+"\nPY"]);
 const post=await rm.runPostDeployValidation({root,target:'engines',remote,baseUrl:'https://asia-power.com'});
 const record=rm.buildReleaseRecord({releaseId,git:pre.git,target:'engines',remote,timestamp:new Date().toISOString(),changedFiles:files,pre,post,backupPath:pre.backup_path,backupMode:pre.backup_mode,localReleaseJson:path.join(out,'release.json')});
-record.manifest=manifest;record.authorization='User requested removal of the enquiry column from the Ghana stock catalogue; preserve displayed prices and stock.'; preserve reviewed inventory and GHS prices.';
+record.manifest=manifest;record.authorization='User requested removal of the enquiry column from the Ghana stock catalogue; preserve displayed prices and stock.';
 record.recovery.scope='Restore only engines/ghana-stock.html from the exact-file snapshot after verifying installed hash.';
 rm.writeReleaseJson({remote,release:record,localDir:out});rm.printDeploymentSummary(record);
 if(post.status!=='pass')process.exitCode=1;
