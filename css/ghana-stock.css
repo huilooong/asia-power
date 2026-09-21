@@ -2,4 +2,5 @@
 body[data-page=engines] #engine-catalog-root .ebay-listing-row__photo,body[data-page=engines] #engine-catalog-root .ap-listing-photo,body[data-page=engines] #engine-catalog-root .engine-model__image{display:none!important}body[data-page=engines] #engine-catalog-root .ebay-listing-row{grid-template-columns:minmax(0,1fr)!important}
 @media(max-width:700px){.gh-search{display:block}.gh-search input{display:block;width:100%;margin-top:8px}.gh-table-wrap{border:0;background:transparent;overflow:visible}#ghana-stock table,#ghana-stock tbody,#ghana-stock tr,#ghana-stock td{display:block;width:100%;min-width:0;box-sizing:border-box}#ghana-stock thead{display:none}#ghana-stock tr{background:white;border:1px solid #dde3e7;border-radius:12px;margin-bottom:14px;padding:8px 12px}#ghana-stock td{padding:9px 0;overflow-wrap:anywhere}#ghana-stock td:first-child{border:0;font-size:20px}#ghana-stock td::before{content:attr(data-label);display:block;font-size:11px;color:#697985;margin-bottom:4px}}
 
-.gh-inquire{white-space:nowrap}
+.gh-inquire{white-space:nowrap}/* Preserve the reviewed manufacturer/model capitalization against shared catalogue styles. */
+#ghana-stock,#ghana-stock *{text-transform:none!important}

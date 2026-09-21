@@ -6,7 +6,7 @@ import {spawnSync} from 'node:child_process';
 import * as rm from './lib/release-manager.mjs';
 const root=process.cwd(), remote='root@159.65.86.24', pub='/root/.openclaw/workspace/inventory-site/public';
 const files=['css/ghana-stock.css','js/ghana-stock.js','engines/index.html'];
-const expected={'engines/index.html':'52608c4435f2af359a903295a4809a0715be39df39b2411bbf5b69ebb4764c86','css/ghana-stock.css':null,'js/ghana-stock.js':null};
+const expected={'engines/index.html':'89167d5079a4582f60822c5753911c4c855e26d709eecbc4e32e654ef464377c','css/ghana-stock.css':'68ba827218a60c6c2c9e9ece058e3be0a7712565f20e79e499292801be36f1cc','js/ghana-stock.js':'f19ecdaa744b726c56def9ee01423a8ef2bc6b95134d72ae782d717323312f39'};
 const run=(cmd,args)=>{const r=spawnSync(cmd,args,{encoding:'utf8'});if(r.status!==0)throw Error(`${cmd}: ${r.stderr}\n${r.stdout}`);return r.stdout.trim()};
 const sha=s=>crypto.createHash('sha256').update(s).digest('hex');
 const manifest=files.map(file=>({file,before:expected[file],after:sha(fs.readFileSync(path.join(root,file)))}));
