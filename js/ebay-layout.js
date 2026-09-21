@@ -27,7 +27,7 @@
     { href: 'half-cuts/', labelKey: 'ebay.catHalfCuts', label: 'Half-Cuts', id: 'halfcuts', icon: 'halfcuts' },
     { href: 'trucks/', labelKey: 'ebay.catTrucks', label: 'Trucks', id: 'trucks', icon: 'trucks' },
     { href: 'engines/', labelKey: 'ebay.catParts', label: 'Engines & Parts', id: 'parts', icon: 'parts' },
-    { href: 'half-cuts/?cat=machinery', labelKey: 'ebay.catMachinery', label: 'Construction Machinery', id: 'machinery', icon: 'machinery' },
+    { href: 'machinery/', labelKey: 'ebay.catMachinery', label: 'Construction Machinery', id: 'machinery', icon: 'machinery' },
     { href: 'half-cuts/?cat=used-cars', labelKey: 'ebay.catUsedCars', label: 'Export Used Cars', id: 'used-cars', icon: 'cars' },
   ];
 
@@ -66,7 +66,7 @@
   }
 
   const CATALOG_PAGE_IDS = new Set(['halfcuts', 'trucks', 'machinery']);
-  const PARTS_CATALOG_PAGE_IDS = new Set(['engines', 'gearboxes', 'chassis', 'frontcuts']);
+  const PARTS_CATALOG_PAGE_IDS = new Set(['ghana-engines', 'engines', 'gearboxes', 'chassis', 'frontcuts', 'tires']);
 
   function isCatalogHubPage() {
     return CATALOG_PAGE_IDS.has(pageId());
@@ -87,6 +87,7 @@
     gearboxes: { layout: 'category', title: 'Gearboxes', hub: 'Export Parts & Vehicles' },
     chassis: { layout: 'category', title: 'Chassis Parts', hub: 'Export Parts & Vehicles' },
     frontcuts: { layout: 'category', title: 'Front Cut', hub: 'Export Parts & Vehicles' },
+    tires: { layout: 'category', title: 'Used Tires', hub: 'Export Parts & Vehicles' },
     'halfcut-detail': { layout: 'detail', title: 'Half-Cut Detail', hub: 'Half-Cuts' },
     'engine-detail': { layout: 'detail', title: 'Engine Detail', hub: 'Engines' },
     brands: { layout: 'static', title: 'Brand Directory', hub: 'Export Parts & Vehicles' },
@@ -101,7 +102,7 @@
 
   function activeCategoryId() {
     const id = pageId();
-    if (id === 'engines' || id === 'gearboxes' || id === 'chassis' || id === 'frontcuts') return 'parts';
+    if (id === 'ghana-engines' || id === 'engines' || id === 'gearboxes' || id === 'chassis' || id === 'frontcuts' || id === 'tires') return 'parts';
     if (id.startsWith('brand-')) return 'used-cars';
     if (id === 'halfcut-detail') return 'halfcuts';
     if (id === 'halfcuts') return catalogCategoryFromUrl();
@@ -114,9 +115,10 @@
     const id = pageId();
     if (id === 'halfcuts') {
       const cat = catalogCategoryFromUrl();
+      const fallbackTitle = cat === 'used-cars' ? 'Export Used Cars' : 'Half-Cuts';
       return {
         layout: 'category',
-        title: t(CATALOG_CATEGORY_TITLES[cat], 'Half-Cuts'),
+        title: t(CATALOG_CATEGORY_TITLES[cat], fallbackTitle),
         hub: 'Export Parts & Vehicles',
         catalogCategory: cat,
       };
@@ -137,6 +139,7 @@
         catalogCategory: 'machinery',
       };
     }
+    if (id === 'ghana-engines') return { layout: 'category', title: ghanaStockLabel(), hub: 'Export Parts & Vehicles' };
     if (id === 'engines') {
       return {
         layout: 'category',
@@ -209,19 +212,28 @@
     window.AsiaPowerEbayCatalogHub?.syncTruckSidebarSubmodules?.(route);
   }
 
+  function ghanaStockLabel() {
+    const lang = document.documentElement.lang.split('-')[0];
+    return ({zh: '加纳现货发动机', en: 'Ghana In-Stock Engines', fr: 'Moteurs en stock au Ghana', ar: 'محركات متوفرة في غانا'})[lang] || 'Ghana In-Stock Engines';
+  }
+
   const PARTS_SUBMODULES = [
+    { id: 'ghana-engines', labelKey: '', label: 'Ghana In-Stock Engines', href: 'engines/ghana-stock.html' },
     { id: 'engines', labelKey: 'parts.submoduleEngines', label: 'Engines', href: 'engines/' },
     { id: 'gearboxes', labelKey: 'parts.submoduleGearboxes', label: 'Gearboxes', href: 'gearboxes/' },
     { id: 'chassis', labelKey: 'parts.submoduleChassis', label: 'Chassis', href: 'chassis-parts/' },
     { id: 'frontcut', labelKey: 'parts.submoduleFrontCut', label: 'Front cut', href: 'front-cuts/' },
+    { id: 'tires', labelKey: 'parts.submoduleTires', label: 'Used tires', href: 'tires/' },
   ];
 
   function activePartsSubmoduleId() {
     const id = pageId();
+    if (id === 'ghana-engines') return 'ghana-engines';
     if (id === 'engines') return 'engines';
     if (id === 'gearboxes') return 'gearboxes';
     if (id === 'chassis') return 'chassis';
     if (id === 'frontcuts') return 'frontcut';
+    if (id === 'tires') return 'tires';
     return '';
   }
 
@@ -239,7 +251,7 @@
       const activeSubmodule = activePartsSubmoduleId();
       const items = PARTS_SUBMODULES.map((sub) => {
         const active = sub.id === activeSubmodule ? ' class="is-active"' : '';
-        return `<li><a href="${href(sub.href)}"${active} data-i18n="${sub.labelKey}">${t(sub.labelKey, sub.label)}</a></li>`;
+        return `<li><a href="${href(sub.href)}"${active} data-i18n="${sub.labelKey}">${sub.id === 'ghana-engines' ? ghanaStockLabel() : t(sub.labelKey, sub.label)}</a></li>`;
       }).join('');
       const list = wrap.querySelector('.ebay-sidebar__submodules-list');
       if (list) list.innerHTML = items;
@@ -259,7 +271,7 @@
     const activeSubmodule = activePartsSubmoduleId();
     const items = PARTS_SUBMODULES.map((sub) => {
       const active = sub.id === activeSubmodule ? ' class="is-active"' : '';
-      return `<li><a href="${href(sub.href)}"${active} data-i18n="${sub.labelKey}">${t(sub.labelKey, sub.label)}</a></li>`;
+      return `<li><a href="${href(sub.href)}"${active} data-i18n="${sub.labelKey}">${sub.id === 'ghana-engines' ? ghanaStockLabel() : t(sub.labelKey, sub.label)}</a></li>`;
     }).join('');
     return `
         <div class="ebay-sidebar__submodules" data-ebay-parts-submodules aria-label="${t('parts.submoduleNav', 'Parts categories')}">
@@ -302,7 +314,7 @@
     ];
     const items = subs.map((sub) => {
       const active = sub.id === part ? ' class="is-active"' : '';
-      return `<li><a href="${href(sub.href)}"${active} data-i18n="${sub.labelKey}">${t(sub.labelKey, sub.label)}</a></li>`;
+      return `<li><a href="${href(sub.href)}"${active} data-i18n="${sub.labelKey}">${sub.id === 'ghana-engines' ? ghanaStockLabel() : t(sub.labelKey, sub.label)}</a></li>`;
     }).join('');
     return `
         <div class="ebay-sidebar__submodules" data-ebay-truck-submodules aria-label="${t('trucks.submoduleNav', 'Truck part categories')}">
@@ -398,6 +410,63 @@
       </nav>`;
   }
 
+  function detailHrefForItem(item) {
+    const slug = String(item?.slug || '').trim();
+    if (!slug) return '';
+    const u = window.HalfCutUtils;
+    if (u?.isTruckItem?.(item)) return href(`trucks/detail.html?slug=${encodeURIComponent(slug)}`);
+    if (u?.isMachineryItem?.(item)) return href(`machinery/detail.html?slug=${encodeURIComponent(slug)}`);
+    if (u?.isExportableUsedCarItem?.(item)) return href(`used-cars/detail.html?slug=${encodeURIComponent(slug)}`);
+    return href(`half-cuts/detail.html?slug=${encodeURIComponent(slug)}`);
+  }
+
+  function routeStockIdSearch(q) {
+    const u = window.HalfCutUtils;
+    const hits = (u?.findInventoryByStockIdQuery?.(q) || []).filter((item) => !u?.isSold?.(item));
+    const norm = u?.normalizeStockIdQuery?.(q) || String(q).trim().toUpperCase();
+    const exact = hits.filter((item) => {
+      const sid = String(item?.stockId || '').trim().toUpperCase();
+      const digits = u?.stockIdDigits?.(sid) || '';
+      return sid === norm || digits === norm.replace(/^(HC|UV)/i, '');
+    });
+    const target = exact.length === 1 ? exact[0] : (hits.length === 1 ? hits[0] : null);
+    if (target) {
+      const detail = detailHrefForItem(target);
+      if (detail) {
+        window.location.href = detail;
+        return true;
+      }
+    }
+    // Async fallback when HALF_CUT_LIST is not ready yet (homepage cold load).
+    // Try bare digits and HC/UV prefixes — API historically only matched full HC IDs.
+    const candidates = [q];
+    if (/^\d{4,}$/.test(norm)) {
+      candidates.push(`HC${norm}`, `UV${norm}`);
+    } else if (/^(HC|UV)\d+$/i.test(norm)) {
+      candidates.push(norm.replace(/^(HC|UV)/i, ''));
+    }
+    const tryNext = (i) => {
+      if (i >= candidates.length) {
+        window.location.href = href(`half-cuts/?q=${encodeURIComponent(q)}`);
+        return;
+      }
+      fetch(`${window.location.origin}/api/half-cuts/public/item?slug=${encodeURIComponent(candidates[i])}`)
+        .then((res) => (res.ok ? res.json() : {}))
+        .then((data) => {
+          const item = data?.item;
+          const detail = item ? detailHrefForItem(item) : '';
+          if (detail) {
+            window.location.href = detail;
+            return;
+          }
+          tryNext(i + 1);
+        })
+        .catch(() => tryNext(i + 1));
+    };
+    tryNext(0);
+    return true;
+  }
+
   function routeSearch(raw) {
     const q = String(raw || '').trim();
     if (!q) return;
@@ -406,16 +475,22 @@
       return;
     }
     window.AsiaPowerSearchTrends?.recordSearch?.(q);
-    const upper = q.toUpperCase();
-    if (/^(HC|UV)\d/i.test(upper)) {
-      window.location.href = href(`half-cuts/?q=${encodeURIComponent(q)}`);
+    const u = window.HalfCutUtils;
+    // Digits / HC / UV stock IDs → full-site lookup (not half-cuts-only).
+    if (u?.isStockIdQuery?.(q) || /^(HC|UV)\d/i.test(q) || /^\d{4,}$/.test(q)) {
+      routeStockIdSearch(q);
       return;
     }
+    const upper = q.toUpperCase();
     if (/^(ENG|GB|CH)-/i.test(upper) || /\b[0-9][A-Z]{1,3}-[A-Z0-9]{2,}/i.test(q)) {
       window.location.href = href(`engines/?q=${encodeURIComponent(q)}`);
       return;
     }
-    window.location.href = href(`half-cuts/?q=${encodeURIComponent(q)}`);
+    const scope = document.querySelector('[data-ebay-search] input[type="search"]')?.dataset?.searchScope;
+    const target = scope === 'used-cars'
+      ? `half-cuts/?cat=used-cars&q=${encodeURIComponent(q)}`
+      : `half-cuts/?q=${encodeURIComponent(q)}`;
+    window.location.href = href(target);
   }
 
   function bindSearch() {
@@ -502,6 +577,8 @@
     const shell = document.createElement('div');
     shell.className = 'ebay-page ebay-page--product-detail';
     shell.innerHTML = '<div class="ebay-main ebay-main--product-detail"></div>';
+    const originalHero = main.querySelector('.page-hero');
+    if (originalHero?.querySelector('h1') && !nodes.some(node => node.querySelector?.('h1'))) nodes.unshift(originalHero);
     const contentHost = shell.querySelector('.ebay-main');
     nodes.forEach((node) => contentHost.appendChild(node));
 
@@ -518,6 +595,10 @@
     if (!main) return;
 
     const meta = metaForPage();
+    if (meta.catalogCategory === 'used-cars') {
+      document.body.classList.add('page-export-used-cars');
+      document.title = `${t('ebay.usedCarsHeroTitle', 'Export Used Cars from China')} | AsiaPower`;
+    }
     const activeId = activeCategoryId();
     syncSidebar(activeId);
     document.querySelectorAll('.ebay-sidebar').forEach((sidebar) => {
@@ -547,6 +628,7 @@
 
     if (main.dataset.ebayShell === '1') {
       migrateInnerHero(main);
+      if (main.querySelector('.ebay-main h1')) main.querySelector('.ebay-page__intro .ebay-page-title')?.remove();
       if (isEbayCatalogPage()) {
         const titleEl = main.querySelector('.ebay-page-title');
         const bcNav = main.querySelector('.ebay-breadcrumb');
@@ -568,13 +650,14 @@
       : parseBreadcrumb(hero);
 
     const contentNodes = collectMainContentNodes(main);
+    const retainedHeading = contentNodes.some(node => node.matches?.('h1') || node.querySelector?.('h1'));
 
     const shell = document.createElement('div');
     shell.className = 'ebay-page';
     shell.innerHTML = `
       <div class="ebay-page__intro">
         ${renderBreadcrumb(breadcrumbParts, meta)}
-        <h1 class="ebay-page-title">${title}</h1>
+        ${retainedHeading ? '' : `<h1 class="ebay-page-title">${title}</h1>`}
       </div>
       <div class="ebay-page__body">
         ${renderSidebar(activeId)}
@@ -599,6 +682,18 @@
     window.setTimeout(applyShell, 600);
     window.setTimeout(applyShell, 1500);
   }
+
+  function keepOnePageHeading() {
+    const main = document.getElementById('main-content');
+    if (!main) return;
+    const reconcile = () => {
+      if (main.querySelector('.ebay-main h1')) main.querySelector('.ebay-page__intro .ebay-page-title')?.remove();
+    };
+    reconcile();
+    new MutationObserver(reconcile).observe(main, {childList: true, subtree: true});
+  }
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', keepOnePageHeading);
+  else keepOnePageHeading();
 
   window.addEventListener('asiapower:layoutrefresh', scheduleApply);
   if (document.readyState === 'loading') {

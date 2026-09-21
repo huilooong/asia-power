@@ -1,5 +1,10 @@
 (() => {
   'use strict';
+  const existing = document.getElementById('engine-catalog-root');
+  function removePhotos() {
+    existing.querySelectorAll('.ebay-listing-row__photo,.ap-listing-photo,.engine-model__image').forEach(el => el.remove());
+  }
+  if (existing) { removePhotos(); new MutationObserver(removePhotos).observe(existing, { childList: true, subtree: true }); }
   const root = document.getElementById('ghana-stock');
   if (!root) return;
   const rows = Array.from(root.querySelectorAll('tbody tr'));
@@ -18,9 +23,5 @@
     document.getElementById('ghana-count').textContent = `${count} / ${rows.length}`;
     document.getElementById('ghana-empty').hidden = count !== 0;
   });
-  const existing = document.getElementById('engine-catalog-root');
-  function removePhotos() {
-    existing.querySelectorAll('.ebay-listing-row__photo,.ap-listing-photo,.engine-model__image').forEach(el => el.remove());
-  }
-  if (existing) { removePhotos(); new MutationObserver(removePhotos).observe(existing, { childList: true, subtree: true }); }
+
 })();

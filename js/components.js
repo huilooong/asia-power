@@ -6,9 +6,14 @@
 
   // Must bump when ebay-layout.css changes — injectEbayStylesheet rewrites all pages to this query.
   // Stale CDN entries for old ?v= keys (e.g. v4-listing-card-v1) can keep serving 66px parts thumbs.
-  const SITE_EBAY_LAYOUT_VER = 'about-type-v2';
-  const SITE_COMPONENTS_VER = 'about-type-v2';
-  // Deploy markers (keep strings discoverable): auth-nav-v1 · auth-nav-once-v2 · auth-nav-sitewide-v1 · lang-sync-v2 · contact-center-v1 · about-type-v2 · parts-photo-v2 · integrity-audit-v1 · parts-placeholder-v1 · parts-parallel-v1 · stock-id-search-v1 · dedicated-price-v1 · catalog-search-v1
+  const SITE_EBAY_LAYOUT_VER = 'site-content-titles-20260910';
+  const SITE_COMPONENTS_VER = 'sitewide-secondary-v1';
+  const SITE_SECONDARY_STYLE_VER = 'site-content-readable-20260910';
+  // Deploy markers (keep strings discoverable): auth-nav-v1 · auth-nav-once-v2 · auth-nav-sitewide-v1 · login-entry-v1 · lang-sync-v2 · contact-center-v1 · about-type-v2 · list-photo-uniform-v1 · list-photo-uniform-v2 · list-photo-uniform-v2b · parts-photo-v2 · integrity-audit-v1 · parts-placeholder-v1 · parts-parallel-v1 · stock-id-search-v1 · dedicated-price-v1 · catalog-search-v1
+  // login-entry-v1 = catalog footer Sign in + clearer toolbar login pill; buyer dial codes expanded (local WIP, not deployed)
+  // list-photo-uniform-v1 = half-cut list photo frames fixed 4:3 + cover
+  // list-photo-uniform-v2 / v2b = parts catalogs same uniform frames (v2b: align-self start so height ignores text row)
+
   // dedicated-price-v1 = dedicated part listings use full priceUsd (not half-cut PART_PRICE_RATIOS)
   // auth-nav-sitewide-v1 = full public topbar audit (about/contact/countries/brands/engines SEO), not only home+catalog
   // lang-sync-v2 = sitewide lang switcher matches homepage (text + separators; CF cache-bust)
@@ -63,6 +68,14 @@
       'contact.html': 'contact',
     };
     return map[file] || '';
+  }
+
+  function isUsedCarsRoute() {
+    if (document.body?.dataset?.page !== 'halfcuts') return false;
+    const params = new URLSearchParams(window.location.search);
+    if (params.get('cat') === 'used-cars') return true;
+    const q = decodeURIComponent((params.get('q') || '').replace(/\+/g, ' ')).toLowerCase().trim();
+    return ['used car', 'usedcar', 'used-car', 'used-cars', '二手车', '出口二手车'].includes(q);
   }
 
   function iconSvg(name) {
@@ -127,6 +140,7 @@
           <span class="ap-topbar__tagline">Where Used Becomes Useful Again · 110+ Countries · EXW Zhengzhou</span>
           <div class="ap-topbar__right">
             ${switcher}
+            ${typeof window.QuoteList !== 'undefined' ? window.QuoteList.badgeHtml('ap-quote-badge--topbar') : `<a class="ap-quote-badge ap-quote-badge--topbar" href="${href('quote-list.html')}" data-quote-list-badge aria-label="Quote list"><span class="ap-quote-badge__label">List</span><span class="ap-quote-badge__count" data-quote-count hidden>0</span></a>`}
             <a href="contact.html" class="ap-topbar__link">Contact</a>
             ${renderLoginEntry({ variant: 'topbar' })}
             <a href="supplier-portal.html" class="ap-topbar__link">Supplier Portal</a>
@@ -176,19 +190,38 @@
 
   function injectEbayStylesheet() {
     const ver = SITE_EBAY_LAYOUT_VER;
-    const cssHref = href(`css/ebay-layout.css?v=${ver}`);
+    const cssHref = href(`css/ebay-layout.css?v=restore-20260915-v1`);
     const existing = document.querySelector('link[data-ebay-layout], link[href*="ebay-layout.css"]');
     if (existing) {
       if (!existing.href.includes(`v=${ver}`)) {
         existing.href = cssHref;
       }
       existing.setAttribute('data-ebay-layout', '1');
+      injectSecondaryStylesheet();
       return;
     }
     const link = document.createElement('link');
     link.rel = 'stylesheet';
     link.href = cssHref;
     link.setAttribute('data-ebay-layout', '1');
+    document.head.appendChild(link);
+
+    injectSecondaryStylesheet();
+  }
+
+  function injectSecondaryStylesheet() {
+    const cssHref = href(`css/sitewide-secondary-v1.css?v=${SITE_SECONDARY_STYLE_VER}`);
+    const existing = document.querySelector('link[data-sitewide-secondary], link[href*="sitewide-secondary-v1.css"]');
+    if (existing) {
+      if (!existing.href.includes(`v=${SITE_SECONDARY_STYLE_VER}`)) existing.href = cssHref;
+      existing.setAttribute('data-sitewide-secondary', '1');
+      if (existing.parentNode === document.head) document.head.appendChild(existing);
+      return;
+    }
+    const link = document.createElement('link');
+    link.rel = 'stylesheet';
+    link.href = cssHref;
+    link.setAttribute('data-sitewide-secondary', '1');
     document.head.appendChild(link);
   }
 
@@ -206,7 +239,7 @@
       return;
     }
     const script = document.createElement('script');
-    script.src = href('js/ebay-categories.js?v=truck-submodules-v1');
+    script.src = href('js/ebay-categories.js?v=site-consistency-v2');
     script.setAttribute('data-ebay-categories-js', '1');
     script.onload = () => onReady?.();
     script.onerror = () => onReady?.();
@@ -225,7 +258,7 @@
     if (document.querySelector('script[data-ebay-layout-js]')) return;
     injectEbayCategoriesScript(() => {
       const script = document.createElement('script');
-      script.src = href(`js/ebay-layout.js?v=${SITE_EBAY_LAYOUT_VER}`);
+      script.src = href(`js/ebay-layout.js?v=ghana-separate-20260921`);
       script.defer = true;
       script.setAttribute('data-ebay-layout-js', '1');
       script.onload = () => {
@@ -422,10 +455,11 @@
     const pub = i18n();
     const switcher = pub ? pub.renderLangSwitcher() : '';
     return `
-      <div class="ebay-toolbar">
+      <div class="ebay-toolbar" id="ebay-nav-drawer" data-mnav-drawer>
         <div class="ebay-toolbar__inner">
           <p class="ebay-toolbar__promo" data-i18n="ebay.promoBar">Every Used Asset Has Value</p>
           <div class="ebay-toolbar__right">
+            ${typeof window.QuoteList !== 'undefined' ? window.QuoteList.badgeHtml('ap-quote-badge--ebay') : `<a class="ap-quote-badge ap-quote-badge--ebay" href="${href('quote-list.html')}" data-quote-list-badge aria-label="Quote list"><span class="ap-quote-badge__label">List</span><span class="ap-quote-badge__count" data-quote-count hidden>0</span></a>`}
             ${switcher ? `<div class="ebay-toolbar__lang">${switcher}</div>` : ''}
             ${renderLoginEntry({ compact: true })}
           </div>
@@ -438,26 +472,51 @@
   }
 
   function renderEbayHeader() {
+    const c = getConfig();
+    const pub = i18n();
+    const switcher = pub ? pub.renderLangSwitcher() : '';
+    const nav = [
+      { href: 'half-cuts/', key: 'home.circular.nav.inventory', label: 'All inventory' },
+      { href: 'half-cuts/?cat=used-cars', key: 'home.circular.nav.vehicles', label: 'Complete vehicles' },
+      { href: 'engines/', key: 'home.circular.nav.powertrain', label: 'Powertrains' },
+      { href: 'trucks/', key: 'home.circular.nav.commercial', label: 'Commercial vehicles' },
+      { href: 'machinery/', key: 'home.circular.nav.machinery', label: 'Construction machinery' },
+      { href: 'chassis-parts/', key: 'home.circular.nav.parts', label: 'Body & chassis' },
+      { href: 'guides/', key: 'home.circular.guides', label: 'Guides' },
+    ].map((item) => `<a href="${href(item.href)}" data-i18n="${item.key}">${t(item.key, item.label)}</a>`).join('');
+    const quoteBadge = typeof window.QuoteList !== 'undefined'
+      ? window.QuoteList.badgeHtml('ap-quote-badge--secondary')
+      : `<a class="ap-quote-badge ap-quote-badge--secondary" href="${href('quote-list.html')}" data-quote-list-badge aria-label="${t('quoteList.title', 'Quote list')}"><span class="ap-quote-badge__label" data-i18n="quoteList.title">Quote list</span><span class="ap-quote-badge__count" data-quote-count hidden>0</span></a>`;
+    const whatsapp = c?.whatsapp
+      ? `<a class="ap-secondary-nav__whatsapp" href="https://wa.me/${c.whatsapp}" target="_blank" rel="noopener noreferrer">WhatsApp</a>`
+      : '';
     return `
-      <header class="ebay-header">
-        ${renderEbayToolbar()}
-        <div class="ebay-header__inner">
-          <div class="ebay-header__row">
-            ${textLogo('ebay-header__logo ap-logo')}
-            <div class="ebay-header__main">
-              <form class="ebay-search" data-ebay-search role="search">
-                <input type="search" placeholder="Search half-cuts, engines, HC250160, 2AZ-FE…" aria-label="Search" data-i18n-placeholder="ebay.searchPlaceholder">
-                <button type="submit" class="ebay-search__btn" data-i18n-aria="ebay.searchBtn" aria-label="Search">
-                  <span class="ebay-search__btn-text" data-i18n="ebay.searchBtn">Search</span>
-                  <svg class="ebay-search__btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-                </button>
-              </form>
-              <div class="ebay-trending ebay-trending--header" data-trending-root aria-label="Popular searches" hidden>
-                <span class="ebay-trending__label" data-i18n="ebay.popular">Popular:</span>
-                <span class="ebay-trending__tags" data-trending-tags></span>
+      <header class="ebay-header ap-secondary-header">
+        <div class="ap-secondary-nav">
+          <div class="ap-secondary-nav__inner">
+            <button type="button" class="mnav-toggle ebay-header__toggle" data-mnav-toggle aria-label="${t('nav.openMenu', 'Open menu')}" aria-expanded="false" aria-controls="ebay-nav-drawer"><span></span><span></span><span></span></button>
+            <a class="ebay-header__logo" href="${href('index.html')}" aria-label="AsiaPower Home">${logoImg('ebay-header__logo-img', ' fetchpriority="high"')}</a>
+            <div class="ap-secondary-nav__drawer" id="ebay-nav-drawer" data-mnav-drawer>
+              <nav class="ap-secondary-nav__links" aria-label="Primary navigation">${nav}</nav>
+              <div class="ap-secondary-nav__account">
+                ${switcher ? `<div class="ap-secondary-nav__languages">${switcher}</div>` : ''}
+                ${renderLoginEntry({ compact: true })}
               </div>
             </div>
+            <a class="ap-secondary-nav__supplier" href="${href('supplier-portal.html')}" data-i18n="home.circular.supplierShort">${t('home.circular.supplierShort', 'Supplier entry')}</a>
+            ${whatsapp}
           </div>
+        </div>
+        <div class="ap-secondary-search-band">
+          <form class="ebay-search" data-ebay-search role="search">
+            <label class="ap-secondary-search__label">
+              <span class="ap-secondary-search__glyph" aria-hidden="true"></span>
+              <span><small data-i18n="home.circular.searchKicker">${t('home.circular.searchKicker', 'Global sourcing search')}</small><b data-i18n="home.circular.searchLabel">${t('home.circular.searchLabel', 'I am looking for')}</b></span>
+            </label>
+            <input type="search" placeholder="Search make, model, engine code, stock ID or OEM number" aria-label="Search inventory" data-i18n-placeholder="home.circular.searchPlaceholder">
+            <button type="submit" class="ebay-search__btn"><span class="ap-secondary-search__button-full" data-i18n="home.circular.searchButton">${t('home.circular.searchButton', 'Search inventory')}</span><span class="ap-secondary-search__button-short" data-i18n="home.circular.searchShort">${t('home.circular.searchShort', 'Search')}</span></button>
+            <div class="ap-secondary-search__utility">${quoteBadge}</div>
+          </form>
         </div>
       </header>`;
   }
@@ -467,6 +526,7 @@
     const links = [
       { href: 'admin/inventory.html', label: '库存', id: 'admin-inventory' },
       { href: 'admin/leads.html', label: '询价', id: 'admin-leads' },
+      { href: 'admin/emails.html', label: '邮件', id: 'admin-emails' },
       { href: 'admin/analytics.html', label: '访问统计', id: 'admin-analytics' },
       { href: 'admin/apsales-progress.html', label: '推广', id: 'admin-apsales-progress' },
     ];
@@ -488,6 +548,8 @@
   }
 
   function renderEbayTrustFooter() {
+    const usedCars = isUsedCarsRoute();
+    const c = getConfig();
     const icons = {
       shipping: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3a15 15 0 0 1 0 18M12 3a15 15 0 0 0 0 18"/></svg>',
       quality: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" aria-hidden="true"><path d="M12 3l7 4v5c0 4.5-3 8.5-7 9-4-.5-7-4.5-7-9V7l7-4z"/><path d="M9 12l2 2 4-4"/></svg>',
@@ -504,10 +566,12 @@
       },
       {
         icon: icons.quality,
-        labelKey: 'ebay.trust.quality.label',
-        label: 'Verified condition',
-        subKey: 'ebay.trust.quality.sub',
-        sub: 'Pre-dismantle startup video on request',
+        labelKey: usedCars ? '' : 'ebay.trust.quality.label',
+        label: usedCars ? 'Export document review' : 'Verified condition',
+        subKey: usedCars ? '' : 'ebay.trust.quality.sub',
+        sub: usedCars
+          ? 'VIN, mileage and export requirements confirmed before contract and shipment'
+          : 'Pre-dismantle startup video on request',
       },
       {
         icon: icons.pricing,
@@ -528,23 +592,49 @@
           <article class="ebay-trust__item">
             <span class="ebay-trust__mark" aria-hidden="true">${item.icon}</span>
             <div class="ebay-trust__copy">
-              <p class="ebay-trust__label" data-i18n="${item.labelKey}">${item.label}</p>
-              <p class="ebay-trust__sub" data-i18n="${item.subKey}">${item.sub}</p>
+              <p class="ebay-trust__label"${item.labelKey ? ` data-i18n="${item.labelKey}"` : ''}>${item.label}</p>
+              <p class="ebay-trust__sub"${item.subKey ? ` data-i18n="${item.subKey}"` : ''}>${item.sub}</p>
             </div>
           </article>`).join('');
 
     return `
-      <footer class="ebay-trust" aria-label="${t('ebay.trust.aria', 'AsiaPower export assurance')}">
-        <div class="ebay-trust__inner">
-          ${cards}
+      <footer class="ebay-trust ap-secondary-footer" aria-label="${t('ebay.trust.aria', 'AsiaPower export assurance')}">
+        <div class="ebay-trust__inner">${cards}</div>
+        <div class="ap-secondary-footer__main">
+          <div class="ap-secondary-footer__brand">
+            <a href="${href('index.html')}" aria-label="AsiaPower Home">${logoImg('ap-secondary-footer__logo', '', 'header')}</a>
+            <p data-i18n="footer.circularSummary">Real inventory, traceable evidence and export coordination for reusable vehicles, powertrains, commercial assets and parts.</p>
+            <div class="ap-secondary-footer__actions">
+              <a class="ap-secondary-footer__quote" href="${href('contact.html')}" data-i18n="nav.requestQuote">${t('nav.requestQuote', 'Get quote')}</a>
+              ${c?.whatsapp ? `<a class="ap-secondary-footer__wa" href="https://wa.me/${c.whatsapp}" target="_blank" rel="noopener noreferrer">WhatsApp</a>` : ''}
+            </div>
+          </div>
+          <nav class="ap-secondary-footer__column" aria-label="Products">
+            <strong data-i18n="footer.products">${t('footer.products', 'Products')}</strong>
+            <a href="${href('half-cuts/')}" data-i18n="home.circular.nav.inventory">${t('home.circular.nav.inventory', 'All inventory')}</a>
+            <a href="${href('half-cuts/?cat=used-cars')}" data-i18n="home.circular.nav.vehicles">${t('home.circular.nav.vehicles', 'Complete vehicles')}</a>
+            <a href="${href('engines/')}" data-i18n="home.circular.nav.powertrain">${t('home.circular.nav.powertrain', 'Powertrains')}</a>
+            <a href="${href('trucks/')}" data-i18n="home.circular.nav.commercial">${t('home.circular.nav.commercial', 'Commercial vehicles')}</a>
+            <a href="${href('machinery/')}" data-i18n="home.circular.nav.machinery">${t('home.circular.nav.machinery', 'Construction machinery')}</a>
+          </nav>
+          <nav class="ap-secondary-footer__column" aria-label="Company">
+            <strong data-i18n="footer.company">${t('footer.company', 'Company')}</strong>
+            <a href="${href('about.html')}" data-i18n="footer.aboutLink">${t('footer.aboutLink', 'About us')}</a>
+            <a href="${href('brands.html')}" data-i18n="footer.brandDirectory">${t('footer.brandDirectory', 'Brand directory')}</a>
+            <a href="${href('guides/')}" data-i18n="home.circular.guides">${t('home.circular.guides', 'Guides')}</a>
+            <a href="${href('contact.html')}" data-i18n="footer.contactUs">${t('footer.contactUs', 'Contact')}</a>
+            <a href="${href('supplier-portal.html')}" data-i18n="footer.supplierPortal">${t('footer.supplierPortal', 'Supplier portal')}</a>
+          </nav>
+          <div class="ap-secondary-footer__column ap-secondary-footer__offices">
+            <strong data-i18n="footer.offices">${t('footer.offices', 'Offices')}</strong>
+            <p><b>${c?.offices?.china?.label || 'Zhengzhou, China'}</b><span>${c?.offices?.china?.address || ''}</span></p>
+            <p><b>${c?.offices?.ghana?.label || 'Accra, Ghana'}</b><span>${c?.offices?.ghana?.address || ''}</span></p>
+            ${c?.email ? `<a href="mailto:${c.email}">${c.email}</a>` : ''}
+          </div>
         </div>
         <div class="ebay-trust__legal">
-          <span>&copy; ${new Date().getFullYear()} AsiaPower</span>
-          <span class="ebay-trust__links">
-            <a href="${href('contact.html')}" data-i18n="footer.contactUs">Contact Us</a>
-            <a href="${href('about.html')}" data-i18n="footer.aboutLink">About Us</a>
-            <a href="${href('supplier-portal.html')}" data-i18n="footer.supplierPortal">Supplier Portal</a>
-          </span>
+          <span>&copy; ${new Date().getFullYear()} AsiaPower. <span data-i18n="footer.rights">All rights reserved.</span></span>
+          <span class="ebay-trust__links"><a href="${href('privacy.html')}">Privacy</a><a href="${href('login/')}" data-i18n="nav.signIn">${t('nav.signIn', 'Sign in')}</a></span>
         </div>
       </footer>`;
   }
@@ -655,6 +745,7 @@
     const links = [
       { href: 'admin/inventory.html', label: '库存' },
       { href: 'admin/leads.html', label: '询价' },
+      { href: 'admin/emails.html', label: '邮件' },
       { href: 'admin/analytics.html', label: '访问统计' },
       { href: 'admin/apsales-progress.html', label: '推广' },
       { href: 'index.html', label: '返回官网' },
@@ -703,6 +794,7 @@
               <li><a href="${href('gearboxes/')}" data-i18n="home.catGearboxes">Gearboxes</a></li>
               <li><a href="${href('trucks/')}" data-i18n="nav.trucks">Trucks &amp; Cabs</a></li>
               <li><a href="${href('chassis-parts/')}" data-i18n="home.catChassis">Chassis Parts</a></li>
+              <li><a href="${href('tires/')}" data-i18n="catalog.tires">Used Tires</a></li>
             </ul>
           </div>
           <div class="ap-footer__col">
@@ -711,6 +803,8 @@
               <li><a href="${href('about.html')}" data-i18n="footer.aboutLink">About Us</a></li>
               <li><a href="${href('brands.html')}" data-i18n="footer.brandDirectory">Brand Directory</a></li>
               <li><a href="${href('contact.html')}" data-i18n="footer.contactUs">Contact</a></li>
+              <li><a href="${href('guides/')}">Guides</a></li>
+              <li><a href="${href('login/')}" data-i18n="nav.signIn">Sign in</a></li>
               <li><a href="${href('supplier-portal.html')}" data-i18n="footer.supplierPortal">Supplier Portal</a></li>
             </ul>
           </div>
@@ -744,10 +838,13 @@
     if (!c) return '';
     if (document.body.dataset.page === 'home') return '';
     if (isInternalToolPage()) return '';
+    const message = isUsedCarsRoute()
+      ? 'Hello AsiaPower, I am interested in an export used car. Brand/Model: __ Year: __ Destination country: __'
+      : (c.whatsappTruckMessage || c.whatsappMessage);
     return `
       <div class="whatsapp-float">
         <span class="whatsapp-float__label">${t('whatsapp.label', 'Chat on WhatsApp')}</span>
-        <a href="https://wa.me/${c.whatsapp}?text=${encodeURIComponent(c.whatsappTruckMessage || c.whatsappMessage)}" target="_blank" rel="noopener noreferrer" class="whatsapp-float__btn" aria-label="${t('whatsapp.label', 'Chat on WhatsApp')}">
+        <a href="https://wa.me/${c.whatsapp}?text=${encodeURIComponent(message)}" target="_blank" rel="noopener noreferrer" class="whatsapp-float__btn" aria-label="${t('whatsapp.label', 'Chat on WhatsApp')}">
           ${iconSvg('whatsapp')}
         </a>
       </div>`;
@@ -793,6 +890,57 @@
     }
   }
 
+  /** Shared hamburger→drawer toggle for the compact mobile header (home-v4-hybrid + ebay-layout). */
+  function bindMobileNavDrawer() {
+    if (window.__mnavBound) return;
+    window.__mnavBound = true;
+
+    function activeDrawer() {
+      return document.querySelector('[data-mnav-drawer].open');
+    }
+    function activeToggle() {
+      return document.querySelector('[data-mnav-toggle][aria-expanded="true"]');
+    }
+    function setOpen(toggle, drawer, open) {
+      drawer.classList.toggle('open', open);
+      toggle.setAttribute('aria-expanded', String(open));
+      document.body.classList.toggle('mnav-open', open);
+    }
+    function updateHeaderHeightVar() {
+      const header = document.querySelector('.ebay-header') || document.querySelector('.ap-nav');
+      const topBar = document.getElementById('site-topbar');
+      const hasTopBar = topBar && topBar.offsetHeight > 0 && !topBar.classList.contains('site-topbar--hidden');
+      const height = (hasTopBar ? topBar.offsetHeight : 0) + (header?.offsetHeight || 0);
+      document.documentElement.style.setProperty('--site-header-height', `${height}px`);
+    }
+
+    updateHeaderHeightVar();
+    window.addEventListener('resize', updateHeaderHeightVar, { passive: true });
+    window.addEventListener('orientationchange', updateHeaderHeightVar);
+    window.addEventListener('asiapower:layoutrefresh', updateHeaderHeightVar);
+
+    document.addEventListener('click', (event) => {
+      const toggle = event.target.closest('[data-mnav-toggle]');
+      if (toggle) {
+        const drawer = document.getElementById(toggle.getAttribute('aria-controls') || '');
+        if (drawer) setOpen(toggle, drawer, !drawer.classList.contains('open'));
+        return;
+      }
+      const drawer = activeDrawer();
+      if (!drawer) return;
+      if (drawer.contains(event.target) && !event.target.closest('a, .lang-switcher__btn')) return;
+      const toggleEl = activeToggle();
+      if (toggleEl) setOpen(toggleEl, drawer, false);
+    });
+
+    document.addEventListener('keydown', (event) => {
+      if (event.key !== 'Escape') return;
+      const drawer = activeDrawer();
+      const toggle = activeToggle();
+      if (drawer && toggle) setOpen(toggle, drawer, false);
+    });
+  }
+
   function injectLayout() {
     const activeId = currentPageId();
     const topBar = document.getElementById('site-topbar');
@@ -806,6 +954,7 @@
       injectCatalogGalleryScript();
       injectEbayScript();
       injectSearchTrendsScript();
+      [0, 250, 900, 1800].forEach((delay) => window.setTimeout(injectSecondaryStylesheet, delay));
       let promoEl = document.getElementById('site-promo');
       if (!promoEl && header) {
         promoEl = document.createElement('div');
@@ -848,14 +997,20 @@
     if (!document.querySelector('link[data-login-css]')) {
       const link = document.createElement('link');
       link.rel = 'stylesheet';
-  link.href = href('css/login.css?v=auth-nav-once-v2');
+  link.href = href('css/login.css?v=restore-20260915-v1');
       link.setAttribute('data-login-css', '1');
       document.head.appendChild(link);
     }
     document.querySelectorAll('.app-bottom-nav').forEach((nav) => nav.remove());
-    if (!isHybridHome && !isInternalToolPage() && !useEbayLayout()) {
+    const standaloneApp = document.documentElement.classList.contains('ap-app')
+      || document.body.classList.contains('ap-app-shell')
+      || (window.matchMedia && window.matchMedia('(display-mode: standalone)').matches)
+      || window.navigator.standalone === true;
+    if (!standaloneApp && !isHybridHome && !isInternalToolPage() && !useEbayLayout()) {
       document.body.insertAdjacentHTML('beforeend', renderAppBottomNav(activeId));
     }
+    ensurePwaAppShellAssets();
+    ensureQuoteListAssets();
 
     const pub = i18n();
     if (pub) {
@@ -865,7 +1020,49 @@
     if (useEbayLayout()) syncEbaySearchPlaceholder();
 
     hydrateAuthSlots(document);
+    bindMobileNavDrawer();
     window.dispatchEvent(new CustomEvent('asiapower:layoutrefresh'));
+  }
+
+  function ensureQuoteListAssets() {
+    if (!document.querySelector('link[data-quote-list-css]')) {
+      const link = document.createElement('link');
+      link.rel = 'stylesheet';
+      link.href = href('css/quote-list.css?v=sitewide-secondary-v1');
+      link.setAttribute('data-quote-list-css', '1');
+      document.head.appendChild(link);
+    }
+    if (!document.querySelector('script[data-quote-list-js]')) {
+      const script = document.createElement('script');
+      script.src = href('js/quote-list.js?v=sitewide-secondary-v1');
+      script.setAttribute('data-quote-list-js', '1');
+      script.onload = () => {
+        if (window.QuoteList) {
+          window.QuoteList.refreshBadges();
+          window.QuoteList.wireAddButtons();
+        }
+      };
+      document.head.appendChild(script);
+    } else if (window.QuoteList) {
+      window.QuoteList.refreshBadges();
+    }
+  }
+
+  function ensurePwaAppShellAssets() {
+    if (!document.querySelector('link[data-ap-app-shell-css]')) {
+      const link = document.createElement('link');
+      link.rel = 'stylesheet';
+      link.href = href(`css/pwa-app-shell.css?v=pwa-app-v6c`);
+      link.setAttribute('data-ap-app-shell-css', '1');
+      document.head.appendChild(link);
+    }
+    if (!document.querySelector('script[data-ap-app-shell-js]') && !window.AsiaPowerAppShell) {
+      const script = document.createElement('script');
+      script.src = href(`js/pwa-app-shell.js?v=pwa-app-v6c`);
+      script.defer = true;
+      script.setAttribute('data-ap-app-shell-js', '1');
+      document.head.appendChild(script);
+    }
   }
 
   if (document.readyState === 'loading') {
@@ -875,4 +1072,49 @@
   }
 
   window.addEventListener('asiapower:langchange', injectLayout);
+  // Correct only the reviewed source photograph, including its thumbnail.
+  function repairReviewedPhotoOrientation() {
+    const source = /photo-1785197978785-0a6aed67_(full|thumb)\.webp(?:[?#]|$)/;
+    const fit = frame => {
+      const parent = frame.parentElement;
+      if (!parent) return;
+      const box = parent.getBoundingClientRect();
+      const width = Math.min(box.width, (box.height || box.width * .75) * 4 / 3);
+      frame.style.width = `${width}px`;
+      frame.style.height = `${width * .75}px`;
+    };
+    const resize = new ResizeObserver(entries => entries.forEach(entry => {
+      entry.target.querySelectorAll(':scope > .ap-orientation-frame').forEach(fit);
+    }));
+    function scan(root) {
+      const images = root.matches?.('img') ? [root] : [...(root.querySelectorAll?.('img') || [])];
+      images.forEach(img => {
+        const matches = source.test(img.currentSrc || img.src);
+        if (img.parentElement?.classList.contains('ap-orientation-frame')) {
+          if (!matches) { const frame=img.parentElement; frame.replaceWith(img); img.style.cssText=img.dataset.orientationOriginalStyle || ''; }
+          return;
+        }
+        if (!matches || img.dataset.orientationFix === 'clockwise') return;
+        const parent=img.parentElement;
+        if (!parent) return;
+        const height = parent.getBoundingClientRect().height;
+        if (getComputedStyle(parent).position === 'static') parent.style.position='relative';
+        if (height < 1) parent.style.aspectRatio='4 / 3';
+        parent.style.overflow='hidden';
+        const frame=document.createElement('span');frame.className='ap-orientation-frame';
+        frame.style.cssText='display:block;position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);overflow:hidden;pointer-events:none';
+        img.dataset.orientationOriginalStyle=img.style.cssText;
+        img.replaceWith(frame);frame.appendChild(img);
+        img.style.cssText='position:absolute!important;left:50%!important;top:50%!important;width:75%!important;height:133.3333%!important;max-width:none!important;max-height:none!important;object-fit:fill!important;transform:translate(-66.6667%,-50%) rotate(90deg)!important;margin:0!important';
+        fit(frame);resize.observe(parent);
+      });
+    }
+    const observer = new MutationObserver(records => records.forEach(record => {
+      if (record.type === 'attributes') scan(record.target);
+      else record.addedNodes.forEach(node => { if (node.nodeType===1) scan(node); });
+    }));
+    scan(document);
+    observer.observe(document.body,{subtree:true,childList:true,attributes:true,attributeFilter:['src','srcset']});
+  }
+  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',repairReviewedPhotoOrientation);else repairReviewedPhotoOrientation();
 })();

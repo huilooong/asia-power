@@ -4,3 +4,5 @@ body[data-page=engines] #engine-catalog-root .ebay-listing-row__photo,body[data-
 
 .gh-inquire{white-space:nowrap}/* Preserve the reviewed manufacturer/model capitalization against shared catalogue styles. */
 #ghana-stock,#ghana-stock *{text-transform:none!important}
+
+.gh-page-nav{display:none}@media(max-width:700px){.gh-page-nav{display:flex;flex-wrap:wrap;gap:12px;margin:0 15px 22px}.gh-page-nav a{display:block;padding:9px 12px;border:1px solid #cbd5dc;border-radius:6px;background:white;color:#155b44;font-size:13px}}
