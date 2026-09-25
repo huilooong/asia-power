@@ -320,19 +320,29 @@ export function nextTeamReplies(prevTeamReplies, entry, max = 10) {
 
 export function recentTeamRepliesForPrompt(dealState, max = 5) {
   const list = Array.isArray(dealState?.team_replies) ? dealState.team_replies : [];
-  return list.slice(-max).map((r) => ({
+  return list.filter((r) => !isProviderHostedAiMessageId(r?.message_id)).slice(-max).map((r) => ({
     text: String(r?.text || "").slice(0, 500),
     at: r?.at || null,
   }));
 }
 
 /**
+ * Meta-hosted WhatsApp Business Agent messages observed on the company account
+ * use the CE-prefixed message-id namespace. They are external provider output,
+ * not a human team reply and not an APSales bridge echo.
+ */
+export function isProviderHostedAiMessageId(messageId) {
+  return /^CE[0-9A-F]+$/i.test(String(messageId || "").trim());
+}
+
+/**
  * Classify a fromMe upsert for bridge routing.
- * @returns {'bot_echo'|'team_reply'|'not_from_me'}
+ * @returns {'bot_echo'|'provider_ai'|'team_reply'|'not_from_me'}
  */
 export function classifyFromMeMessage(message) {
   if (!message?.fromMe) return "not_from_me";
   if (isBotOutboundEcho(message)) return "bot_echo";
+  if (isProviderHostedAiMessageId(message.messageId)) return "provider_ai";
   return "team_reply";
 }
 

@@ -7,6 +7,10 @@ import { spawnSync } from "node:child_process";
 import { readReplyControl, assertReplyAllowed } from "../deploy/apsales-live-draft/apsales-reply-control.mjs";
 import { createHumanTakeover, trackedTransport } from "../deploy/apsales-live-draft/apsales-human-takeover.mjs";
 import {
+  classifyFromMeMessage,
+  recentTeamRepliesForPrompt,
+} from "../deploy/apsales-live-draft/apsales-human-visibility.mjs";
+import {
   AFTER_SALES_REVIEW_DEDUP_MS,
   afterSalesReviewDecision,
   conversationScopePatch,
@@ -63,6 +67,20 @@ test("exact bot ids ignore echoes; same-text human and media pause immediately, 
   assert.equal(pauses, 2);
   assert.equal(takeover.observe({ ...message, fromMe: false, messageId: "customer-command" }), false);
   assert.equal(takeover.observe({ ...message, sentAtMs: Date.now() - 3600000, messageId: "old" }), false);
+});
+
+test("Meta-hosted CE replies are quarantined from human-team context and learning", () => {
+  assert.equal(classifyFromMeMessage({ fromMe: true, messageId: "CE16260FE3A98CA9622B" }), "provider_ai");
+  assert.equal(classifyFromMeMessage({ fromMe: true, messageId: "A5C85F55E640109D7FA1D18693960213" }), "team_reply");
+  assert.equal(classifyFromMeMessage({ fromMe: false, messageId: "CE16260FE3A98CA9622B" }), "not_from_me");
+
+  const visible = recentTeamRepliesForPrompt({
+    team_replies: [
+      { message_id: "CE16260FE3A98CA9622B", text: "provider AI claim", at: "2026-09-25T14:15:21Z" },
+      { message_id: "A5C85F55E640109D7FA1D18693960213", text: "verified human reply", at: "2026-09-25T15:52:51Z" },
+    ],
+  });
+  assert.deepEqual(visible, [{ text: "verified human reply", at: "2026-09-25T15:52:51Z" }]);
 });
 
 test("final transport check blocks send even after async preparation", async (t) => {

@@ -1345,6 +1345,37 @@ async function handleMessageInner(message, state, session) {
       });
       return;
     }
+    if (kind === "provider_ai") {
+      const providerText = String(message.text || "").trim();
+      const providerEvent = {
+        schema_version: 1,
+        at: new Date().toISOString(),
+        observed_at: message.observedAt || null,
+        recipient_e164: message.fromPhoneE164 || null,
+        message_id: message.messageId || null,
+        text: providerText.slice(0, 2000),
+        origin: "meta_hosted_whatsapp_ai",
+        bridge_generated: false,
+        excluded_from_team_context: true,
+        excluded_from_reusable_evidence: true,
+      };
+      await fs.mkdir(path.join(WORKSPACE, "memory/customer_gateway"), { recursive: true });
+      await fs.appendFile(
+        path.join(WORKSPACE, "memory/customer_gateway/provider_ai_outbound.ndjson"),
+        `${JSON.stringify(providerEvent)}\n`,
+      );
+      log("quarantined provider AI outbound", {
+        senderId: message.fromPhoneE164 || null,
+        messageId: message.messageId,
+        text: providerText.slice(0, 180),
+      });
+      await appendActivity(
+        "apsales_provider_ai_outbound_quarantined",
+        `Meta-hosted AI outbound ${message.fromPhoneE164 || "unknown"}: ${providerText.slice(0, 180)}`,
+        "quarantined",
+      );
+      return;
+    }
     if (!message.fromPhoneE164 || !String(message.fromPhoneE164).startsWith("+")) {
       log("ignored fromMe without customer chat e164", {
         fromJid: message.fromJid,
