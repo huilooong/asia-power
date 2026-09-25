@@ -16,11 +16,14 @@ export function classifyHumanAnswerForReuse(teamText) {
   return { reusable: true, reason: "general_technical_fact" };
 }
 
-export async function storeReusableFact({ workspace, teamText, dealState, at = new Date().toISOString() }) {
+export async function storeReusableFact({ workspace, teamText, dealState, sourceMessageId = null, at = new Date().toISOString() }) {
+  if (/^CE[0-9A-F]+$/i.test(String(sourceMessageId || "").trim())) {
+    return { stored: false, reusable: false, reason: "provider_ai_origin" };
+  }
   const verdict = classifyHumanAnswerForReuse(teamText);
   if (!verdict.reusable) return { stored: false, ...verdict };
   const file = path.join(workspace, "memory", "sales_evidence", "reusable_facts.ndjson");
-  const fact = { schema_version: 1, type: "reusable_technical_fact", at, text: String(teamText).slice(0, 1000), part_intent: dealState?.part_intent || null, brand: dealState?.brand || null, model: dealState?.model || null, engine_code: dealState?.engine_code || null, year: dealState?.year || null };
+  const fact = { schema_version: 1, type: "reusable_technical_fact", at, text: String(teamText).slice(0, 1000), part_intent: dealState?.part_intent || null, brand: dealState?.brand || null, model: dealState?.model || null, engine_code: dealState?.engine_code || null, year: dealState?.year || null, source: "human_team", source_message_id: sourceMessageId || null };
   await fs.mkdir(path.dirname(file), { recursive: true });
   await fs.appendFile(file, `${JSON.stringify(fact)}\n`);
   return { stored: true, fact };
@@ -30,5 +33,5 @@ export async function retrieveReusableFacts({ workspace, dealState, max = 3 }) {
   const file = path.join(workspace, "memory", "sales_evidence", "reusable_facts.ndjson");
   let raw = ""; try { raw = await fs.readFile(file, "utf8"); } catch { return []; }
   const part = String(dealState?.part_intent || ""); const engine = String(dealState?.engine_code || "");
-  return raw.split("\n").filter(Boolean).map((line) => JSON.parse(line)).filter((f) => (!part || f.part_intent === part) && (!engine || f.engine_code === engine)).slice(-max).map((f) => ({ text: f.text, part_intent: f.part_intent, engine_code: f.engine_code }));
+  return raw.split("\n").filter(Boolean).map((line) => JSON.parse(line)).filter((f) => !f.blocked_from_reuse && (!part || f.part_intent === part) && (!engine || f.engine_code === engine)).slice(-max).map((f) => ({ text: f.text, part_intent: f.part_intent, engine_code: f.engine_code }));
 }

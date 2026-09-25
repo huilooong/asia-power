@@ -11,6 +11,10 @@ import {
   recentTeamRepliesForPrompt,
 } from "../deploy/apsales-live-draft/apsales-human-visibility.mjs";
 import {
+  retrieveReusableFacts,
+  storeReusableFact,
+} from "../deploy/apsales-live-draft/apsales-reusable-evidence.mjs";
+import {
   AFTER_SALES_REVIEW_DEDUP_MS,
   afterSalesReviewDecision,
   conversationScopePatch,
@@ -81,6 +85,26 @@ test("Meta-hosted CE replies are quarantined from human-team context and learnin
     ],
   });
   assert.deepEqual(visible, [{ text: "verified human reply", at: "2026-09-25T15:52:51Z" }]);
+});
+
+test("provider AI cannot enter reusable evidence and quarantined legacy facts are not retrieved", async (t) => {
+  const root = sandbox(t);
+  const rejected = await storeReusableFact({
+    workspace: root,
+    teamText: "We can supply this engine.",
+    dealState: {},
+    sourceMessageId: "CE16260FE3A98CA9622B",
+  });
+  assert.deepEqual(rejected, { stored: false, reusable: false, reason: "provider_ai_origin" });
+
+  const dir = path.join(root, "memory", "sales_evidence");
+  fs.mkdirSync(dir, { recursive: true });
+  fs.writeFileSync(path.join(dir, "reusable_facts.ndjson"), [
+    JSON.stringify({ text: "provider AI claim", blocked_from_reuse: true }),
+    JSON.stringify({ text: "human verified fact", source: "human_team" }),
+  ].join("\n") + "\n");
+  const facts = await retrieveReusableFacts({ workspace: root, dealState: {} });
+  assert.deepEqual(facts, [{ text: "human verified fact", part_intent: undefined, engine_code: undefined }]);
 });
 
 test("final transport check blocks send even after async preparation", async (t) => {

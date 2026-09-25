@@ -12,6 +12,9 @@ The WhatsApp bridge treated every non-bridge `fromMe` message as a human team re
 - `deploy/apsales-live-draft/bridge.mjs`
   - Quarantine provider-AI outbound messages to `memory/customer_gateway/provider_ai_outbound.ndjson`.
   - Do not append them to human `team_replies` or reusable evidence.
+- `deploy/apsales-live-draft/apsales-reusable-evidence.mjs`
+  - Reject `CE...` sources again at the evidence-store boundary.
+  - Exclude facts marked `blocked_from_reuse` from retrieval.
 - `tests/test_apsales_reply_control.mjs`
   - Regression coverage for provider-AI classification, human-reply preservation, inbound preservation and prompt-context filtering.
 
@@ -23,7 +26,10 @@ This repair does not send customer messages and does not change the owner pause.
 
 - Baseline hashes of the three production bridge files matched commit `421bdab190cc1759423e2e01b26a97a6441b5d01` before editing.
 - `node --test tests/test_apsales_reply_control.mjs`: 11 passed, 0 failed.
+- Full APSales Node suite: 68 passed, 0 failed after the evidence-store guard was added.
 - `node --check` passed for the bridge and visibility modules.
+
+Three provider-AI facts already written on 2026-09-25 are retained in the evidence file but marked `blocked_from_reuse` with their original `CE...` message IDs. The file is backed up before that metadata update.
 
 ## Deployment and rollback
 

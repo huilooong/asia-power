@@ -1390,7 +1390,12 @@ async function handleMessageInner(message, state, session) {
     }
     const senderId = message.fromPhoneE164;
     const updatedDeal = await appendTeamReply(senderId, teamText, message.messageId);
-    const reusable = await storeReusableFact({ workspace: WORKSPACE, teamText, dealState: updatedDeal });
+    const reusable = await storeReusableFact({
+      workspace: WORKSPACE,
+      teamText,
+      dealState: updatedDeal,
+      sourceMessageId: message.messageId,
+    });
     log("recorded team reply", {
       senderId,
       messageId: message.messageId,
