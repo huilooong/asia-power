@@ -8,6 +8,7 @@ import { readReplyControl, assertReplyAllowed } from "../deploy/apsales-live-dra
 import { createHumanTakeover, trackedTransport } from "../deploy/apsales-live-draft/apsales-human-takeover.mjs";
 import {
   classifyFromMeMessage,
+  providerRecipientReference,
   recentTeamRepliesForPrompt,
 } from "../deploy/apsales-live-draft/apsales-human-visibility.mjs";
 import {
@@ -85,6 +86,17 @@ test("Meta-hosted CE replies are quarantined from human-team context and learnin
     ],
   });
   assert.deepEqual(visible, [{ text: "verified human reply", at: "2026-09-25T15:52:51Z" }]);
+});
+
+test("provider AI recipient correlation falls back to the private chat JID", () => {
+  assert.deepEqual(
+    providerRecipientReference({ fromPhoneE164: "+233555000111", fromJid: "12345@lid" }),
+    { e164: "+233555000111", chatJid: "12345@lid", identity: "+233555000111" },
+  );
+  assert.deepEqual(
+    providerRecipientReference({ fromPhoneE164: null, fromJid: "12345@lid" }),
+    { e164: null, chatJid: "12345@lid", identity: "12345@lid" },
+  );
 });
 
 test("provider AI cannot enter reusable evidence and quarantined legacy facts are not retrieved", async (t) => {

@@ -21,6 +21,7 @@ import {
   plateFailureResetPatch,
   partIntentFromText,
   nextTeamReplies,
+  providerRecipientReference,
   recentTeamRepliesForPrompt,
   classifyFromMeMessage,
   withPartFirstRequestedAt,
@@ -1347,11 +1348,17 @@ async function handleMessageInner(message, state, session) {
     }
     if (kind === "provider_ai") {
       const providerText = String(message.text || "").trim();
+      // jidToE164 can legitimately return null for newer LID-backed chats. Keep
+      // the stable chat JID as a private correlation key so separate provider
+      // conversations do not collapse into one unknown recipient bucket.
+      const providerRecipient = providerRecipientReference(message);
       const providerEvent = {
         schema_version: 1,
         at: new Date().toISOString(),
         observed_at: message.observedAt || null,
-        recipient_e164: message.fromPhoneE164 || null,
+        recipient_e164: providerRecipient.e164,
+        recipient_chat_jid: providerRecipient.chatJid,
+        recipient_identity: providerRecipient.identity,
         message_id: message.messageId || null,
         text: providerText.slice(0, 2000),
         origin: "meta_hosted_whatsapp_ai",
@@ -1365,13 +1372,14 @@ async function handleMessageInner(message, state, session) {
         `${JSON.stringify(providerEvent)}\n`,
       );
       log("quarantined provider AI outbound", {
-        senderId: message.fromPhoneE164 || null,
+        senderId: providerRecipient.e164,
+        chatJid: providerRecipient.chatJid,
         messageId: message.messageId,
         text: providerText.slice(0, 180),
       });
       await appendActivity(
         "apsales_provider_ai_outbound_quarantined",
-        `Meta-hosted AI outbound ${message.fromPhoneE164 || "unknown"}: ${providerText.slice(0, 180)}`,
+        `Meta-hosted AI outbound ${providerRecipient.identity || "unknown"}: ${providerText.slice(0, 180)}`,
         "quarantined",
       );
       return;

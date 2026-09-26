@@ -18,6 +18,17 @@ export function clearBotOutboundTracking() {
   recentBotByChat.clear();
 }
 
+/**
+ * Preserve a stable private identity for provider-hosted outbound messages.
+ * Newer LID-backed chats may not resolve to E.164, but the chat JID remains a
+ * usable correlation key for quarantine, deduplication and monitoring.
+ */
+export function providerRecipientReference(message) {
+  const e164 = String(message?.fromPhoneE164 || "").trim() || null;
+  const chatJid = String(message?.fromJid || "").trim() || null;
+  return { e164, chatJid, identity: e164 || chatJid };
+}
+
 export function rememberBotOutbound(messageId) {
   const id = String(messageId || "").trim();
   if (!id) return;
