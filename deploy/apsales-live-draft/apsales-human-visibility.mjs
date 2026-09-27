@@ -29,6 +29,18 @@ export function providerRecipientReference(message) {
   return { e164, chatJid, identity: e164 || chatJid };
 }
 
+/**
+ * Preserve unresolved direct LID chats for review instead of labelling them
+ * non-customer. A private LID can be a real customer even when Baileys has not
+ * yet resolved it to E.164. Groups and broadcasts remain outside this path.
+ */
+export function unresolvedPrivateInboundReference(message) {
+  const e164 = String(message?.fromPhoneE164 || "").trim();
+  const chatJid = String(message?.fromJid || "").trim();
+  if (e164.startsWith("+") || !chatJid.endsWith("@lid")) return null;
+  return { chatJid, identity: chatJid };
+}
+
 export function rememberBotOutbound(messageId) {
   const id = String(messageId || "").trim();
   if (!id) return;

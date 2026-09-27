@@ -22,6 +22,7 @@ import {
   partIntentFromText,
   nextTeamReplies,
   providerRecipientReference,
+  unresolvedPrivateInboundReference,
   recentTeamRepliesForPrompt,
   classifyFromMeMessage,
   withPartFirstRequestedAt,
@@ -1420,6 +1421,38 @@ async function handleMessageInner(message, state, session) {
   }
 
   if (!message.fromPhoneE164 || !String(message.fromPhoneE164).startsWith("+")) {
+    const unresolvedPrivate = unresolvedPrivateInboundReference(message);
+    if (unresolvedPrivate) {
+      const retained = {
+        schema_version: 1,
+        at: new Date().toISOString(),
+        observed_at: message.observedAt || null,
+        chat_jid: unresolvedPrivate.chatJid,
+        identity: unresolvedPrivate.identity,
+        message_id: message.messageId || null,
+        kind: message.kind || null,
+        text: String(message.text || "").slice(0, 2000),
+        status: "awaiting_identity_resolution",
+        auto_reply_allowed: false,
+        excluded_from_reusable_evidence: true,
+      };
+      await fs.mkdir(path.join(WORKSPACE, "memory/customer_gateway"), { recursive: true });
+      await fs.appendFile(
+        path.join(WORKSPACE, "memory/customer_gateway/unresolved_private_inbound.ndjson"),
+        `${JSON.stringify(retained)}\n`,
+      );
+      log("quarantined unresolved private inbound", {
+        chatJid: unresolvedPrivate.chatJid,
+        messageId: message.messageId,
+        kind: message.kind,
+      });
+      await appendActivity(
+        "apsales_unresolved_private_inbound_quarantined",
+        `未解析号码的私聊已保留 ${unresolvedPrivate.chatJid}`,
+        "quarantined",
+      );
+      return;
+    }
     log("ignored non-customer message", {
       fromJid: message.fromJid,
       messageId: message.messageId,

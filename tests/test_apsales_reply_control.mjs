@@ -9,6 +9,7 @@ import { createHumanTakeover, trackedTransport } from "../deploy/apsales-live-dr
 import {
   classifyFromMeMessage,
   providerRecipientReference,
+  unresolvedPrivateInboundReference,
   recentTeamRepliesForPrompt,
 } from "../deploy/apsales-live-draft/apsales-human-visibility.mjs";
 import {
@@ -96,6 +97,25 @@ test("provider AI recipient correlation falls back to the private chat JID", () 
   assert.deepEqual(
     providerRecipientReference({ fromPhoneE164: null, fromJid: "12345@lid" }),
     { e164: null, chatJid: "12345@lid", identity: "12345@lid" },
+  );
+});
+
+test("unresolved private LID inbound is retained for review without auto-reply", () => {
+  assert.deepEqual(
+    unresolvedPrivateInboundReference({ fromPhoneE164: null, fromJid: "12345@lid" }),
+    { chatJid: "12345@lid", identity: "12345@lid" },
+  );
+  assert.equal(
+    unresolvedPrivateInboundReference({ fromPhoneE164: "+233555000111", fromJid: "12345@lid" }),
+    null,
+  );
+  assert.equal(
+    unresolvedPrivateInboundReference({ fromPhoneE164: null, fromJid: "120363000000@g.us" }),
+    null,
+  );
+  assert.equal(
+    unresolvedPrivateInboundReference({ fromPhoneE164: null, fromJid: "status@broadcast" }),
+    null,
   );
 });
 
