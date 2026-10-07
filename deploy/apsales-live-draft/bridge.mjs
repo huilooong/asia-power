@@ -5,7 +5,11 @@ import { createRequire } from "node:module";
 import { fileURLToPath } from "node:url";
 import { spawn, spawnSync } from "node:child_process";
 import { AsyncLocalStorage } from "node:async_hooks";
-import { assertReplyAllowed, readReplyControl } from "./apsales-reply-control.mjs";
+import {
+  assertReplyAllowed,
+  readReplyControl,
+  scheduledOutboundHold,
+} from "./apsales-reply-control.mjs";
 import {
   afterSalesReviewDecision,
   conversationScopePatch,
@@ -2071,6 +2075,14 @@ async function listDealStateFiles() {
 
 /** Ops safety net: team quoted + buying intent + quiet too long → Telegram + Ghana WA. */
 async function runHotDealStallAlerts(session, now) {
+  const outboundHold = scheduledOutboundHold(WORKSPACE);
+  if (outboundHold.held) {
+    log("hot deal stall scan held", {
+      reason: outboundHold.reason,
+      controlRevision: outboundHold.revision,
+    });
+    return;
+  }
   const names = await listDealStateFiles();
   for (const name of names) {
     if (!name.endsWith(".json")) continue;

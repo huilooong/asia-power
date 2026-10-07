@@ -33,6 +33,29 @@ export function readReplyControl(workspace, senderId) {
   };
 }
 
+/**
+ * Scheduled outbound jobs run outside an inbound customer turn, so they do not
+ * naturally pass through assertReplyAllowed(). Hold them while the global
+ * learning-only pause is active, and fail closed when the control file is
+ * unreadable or invalid.
+ */
+export function scheduledOutboundHold(workspace) {
+  try {
+    const current = readReplyControl(workspace, "");
+    return {
+      held: current.paused,
+      reason: current.paused ? "global_reply_paused" : null,
+      revision: current.revision,
+    };
+  } catch (error) {
+    return {
+      held: true,
+      reason: error instanceof Error ? error.message : "control_state_unreadable",
+      revision: "",
+    };
+  }
+}
+
 export function assertReplyAllowed(workspace, senderId, ticket, createdAt) {
   const current = readReplyControl(workspace, senderId);
   if (current.paused || (ticket && ticket.revision !== current.revision)) throw new ReplyPausedError("manual_pause_or_changed_control");

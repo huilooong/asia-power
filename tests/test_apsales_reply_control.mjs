@@ -4,7 +4,11 @@ import fs from "node:fs";
 import os from "node:os";
 import path from "node:path";
 import { spawnSync } from "node:child_process";
-import { readReplyControl, assertReplyAllowed } from "../deploy/apsales-live-draft/apsales-reply-control.mjs";
+import {
+  assertReplyAllowed,
+  readReplyControl,
+  scheduledOutboundHold,
+} from "../deploy/apsales-live-draft/apsales-reply-control.mjs";
 import { createHumanTakeover, trackedTransport } from "../deploy/apsales-live-draft/apsales-human-takeover.mjs";
 import {
   classifyFromMeMessage,
@@ -53,6 +57,28 @@ test("corrupt control fails closed", (t) => {
   const root = sandbox(t); change(root, "pause");
   fs.writeFileSync(path.join(root, "memory/customer_gateway/ai_reply_control.json"), "broken");
   assert.throws(() => assertReplyAllowed(root, customer, null, new Date().toISOString()), { code: "AI_REPLY_PAUSED" });
+});
+
+test("global learning-only pause holds scheduled outbound alerts", (t) => {
+  const root = sandbox(t);
+  assert.deepEqual(scheduledOutboundHold(root), {
+    held: false,
+    reason: null,
+    revision: "|",
+  });
+
+  change(root, "pause", "all");
+  const paused = scheduledOutboundHold(root);
+  assert.equal(paused.held, true);
+  assert.equal(paused.reason, "global_reply_paused");
+  assert.match(paused.revision, /\|/);
+
+  fs.writeFileSync(path.join(root, "memory/customer_gateway/ai_reply_control.json"), "broken");
+  assert.deepEqual(scheduledOutboundHold(root), {
+    held: true,
+    reason: "control_state_unreadable",
+    revision: "",
+  });
 });
 
 test("exact bot ids ignore echoes; same-text human and media pause immediately, including after restart", async (t) => {
