@@ -1158,8 +1158,31 @@ async function serveStatic(req, res, pathname, search = '') {
   fs.createReadStream(finalPath).pipe(res);
 }
 
+function parseRequestUrl(req) {
+  const rawUrl = typeof req.url === 'string' ? req.url : '';
+  // Public traffic reaches this server through nginx, so only origin-form
+  // request targets are valid here. A leading "//" is a network-path
+  // reference and makes WHATWG URL parsing throw (for example //?phpinfo=1).
+  if (!rawUrl.startsWith('/') || rawUrl.startsWith('//')) return null;
+  try {
+    // Routing never depends on the untrusted Host header. A fixed base keeps
+    // malformed scanner traffic from terminating the Node process.
+    return new URL(rawUrl, 'http://localhost');
+  } catch {
+    return null;
+  }
+}
+
 const server = http.createServer(async (req, res) => {
-  const url = new URL(req.url, `http://${req.headers.host}`);
+  const url = parseRequestUrl(req);
+  if (!url) {
+    applySecurityHeaders(res);
+    res.writeHead(400, {
+      'Content-Type': 'application/json; charset=utf-8',
+      'Cache-Control': 'no-store',
+    });
+    return res.end(JSON.stringify({ error: 'Bad request' }));
+  }
   const p = url.pathname;
 
   if (p === '/manifest.json') {
@@ -1590,7 +1613,6 @@ const server = http.createServer(async (req, res) => {
       }
 
       if (req.method === 'GET' && p === '/api/shipping/ports') {
-        const url = new URL(req.url, `http://${req.headers.host || 'localhost'}`);
         const cargo = url.searchParams.get('cargo') || 'halfcut';
         return json(res, 200, { ok: true, ports: cifShipping.listPorts(cargo) });
       }
@@ -1601,7 +1623,6 @@ const server = http.createServer(async (req, res) => {
       }
 
       if (req.method === 'GET' && p === '/api/shipping/cif-estimate') {
-        const url = new URL(req.url, `http://${req.headers.host || 'localhost'}`);
         try {
           const estimate = cifShipping.estimateCif({
             portId: url.searchParams.get('portId'),
