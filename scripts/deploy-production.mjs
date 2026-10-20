@@ -9,7 +9,7 @@
  * Default rejects dirty tree and unpushed HEAD.
  * Emergency only: DEPLOY_ALLOW_DIRTY=1 + --allow-dirty; DEPLOY_ALLOW_UNPUSHED=1 (both logged).
  *
- * Targets: nginx | api | engines | apbd | apbd-global | apsales | apsales-openclaw | finalize
+ * Targets: nginx | api | engines | apbd | apbd-global | apsales | apsales-openclaw | whatsapp | finalize
  */
 import { spawnSync } from 'child_process';
 import fs from 'fs';
@@ -932,6 +932,60 @@ test -f /etc/systemd/system/apbd-ca-leads-trickle.service
 `);
 }
 
+/** WhatsApp identity resolver only — bridge logic and reply control are preserved. */
+function deployWhatsapp() {
+  console.log('[deploy:whatsapp] syncing LID resolver + session adapter only');
+  const sourceDir = `${ROOT}/deploy/apsales-live-draft`;
+  const workspaceDir = `${AP}/deploy/apsales-live-draft`;
+  const runtimeDir = `${REMOTE}:/root/.openclaw/extensions/apsales-live-draft`;
+  const helper = 'apsales-jid-resolution.mjs';
+  const session = 'apsales-whatsapp-session.mjs';
+  const helperHash = spawnSync('shasum', ['-a', '256', `${sourceDir}/${helper}`], { encoding: 'utf8' }).stdout.split(/\s+/)[0];
+  const sessionHash = spawnSync('shasum', ['-a', '256', `${sourceDir}/${session}`], { encoding: 'utf8' }).stdout.split(/\s+/)[0];
+
+  ssh('mkdir -p /root/.openclaw/workspace/AsiaPower/deploy/apsales-live-draft /root/.openclaw/extensions/apsales-live-draft');
+  rsync(`${sourceDir}/${helper}`, `${workspaceDir}/${helper}`);
+  rsync(`${sourceDir}/${session}`, `${workspaceDir}/${session}`);
+  rsync(`${sourceDir}/${helper}`, `${runtimeDir}/${helper}`);
+  rsync(`${sourceDir}/${session}`, `${runtimeDir}/${session}`);
+
+  ssh(`
+set -euo pipefail
+WORKSPACE=/root/.openclaw/workspace/AsiaPower/deploy/apsales-live-draft
+RUNTIME=/root/.openclaw/extensions/apsales-live-draft
+CONTROL=/root/.openclaw/workspace/AsiaPower/memory/customer_gateway/ai_reply_control.json
+BRIDGE="$RUNTIME/bridge.mjs"
+CONTROL_HASH_BEFORE="$(sha256sum "$CONTROL" | awk '{print $1}')"
+BRIDGE_HASH_BEFORE="$(sha256sum "$BRIDGE" | awk '{print $1}')"
+node --check "$WORKSPACE/${helper}"
+node --check "$WORKSPACE/${session}"
+node --check "$RUNTIME/${helper}"
+node --check "$RUNTIME/${session}"
+node --input-type=module -e 'await import("file:///root/.openclaw/extensions/apsales-live-draft/apsales-whatsapp-session.mjs")'
+test "$(sha256sum "$WORKSPACE/${helper}" | awk '{print $1}')" = '${helperHash}'
+test "$(sha256sum "$RUNTIME/${helper}" | awk '{print $1}')" = '${helperHash}'
+test "$(sha256sum "$WORKSPACE/${session}" | awk '{print $1}')" = '${sessionHash}'
+test "$(sha256sum "$RUNTIME/${session}" | awk '{print $1}')" = '${sessionHash}'
+systemctl restart apsales-whatsapp-bridge.service
+for attempt in 1 2 3 4 5 6; do
+  if systemctl is-active --quiet apsales-whatsapp-bridge.service; then break; fi
+  sleep 2
+done
+systemctl is-active apsales-whatsapp-bridge.service
+MAIN_PID_BEFORE="$(systemctl show apsales-whatsapp-bridge.service -p MainPID --value)"
+test -n "$MAIN_PID_BEFORE"
+test "$MAIN_PID_BEFORE" != 0
+sleep 5
+systemctl is-active apsales-whatsapp-bridge.service
+test "$(systemctl show apsales-whatsapp-bridge.service -p MainPID --value)" = "$MAIN_PID_BEFORE"
+journalctl -u apsales-whatsapp-bridge.service --since '-2 minutes' --no-pager | grep -q 'WhatsApp listener connected'
+test "$(sha256sum "$CONTROL" | awk '{print $1}')" = "$CONTROL_HASH_BEFORE"
+test "$(sha256sum "$BRIDGE" | awk '{print $1}')" = "$BRIDGE_HASH_BEFORE"
+node -e 'const fs=require("fs");const v=JSON.parse(fs.readFileSync(process.argv[1],"utf8"));if(v.global?.paused!==true)process.exit(1)' "$CONTROL"
+echo '[deploy:whatsapp] resolver active; global pause and bridge preserved'
+`);
+}
+
 function deployApsalesOpenClaw() {
   console.log('[deploy:apsales-openclaw] syncing Gateway sales bridge + media/VIN adapters');
   rsync(
@@ -1331,7 +1385,7 @@ function printHelp() {
   console.log(`AsiaPower deploy (Release Manager enabled):
   node scripts/deploy-production.mjs <target> [--yes] [--allow-dirty] [user@host]
 
-  nginx | api | engines | apbd | apbd-global | apsales | apsales-openclaw | finalize | home | portal | chrome | categories | admin
+  nginx | api | engines | apbd | apbd-global | apsales | apsales-openclaw | whatsapp | finalize | home | portal | chrome | categories | admin
 
   REQUIRED: commit → push GitHub → then deploy (CEO red line 2026-07-10)
   Pre-deploy:  git clean, HEAD on origin, backup, target confirmation
@@ -1351,6 +1405,7 @@ const targets = {
   'apbd-global': deployApbdGlobal,
   apsales: deployApsales,
   'apsales-openclaw': deployApsalesOpenClaw,
+  whatsapp: deployWhatsapp,
   finalize: deployFinalize,
   home: deployHome,
   portal: deployPortal,

@@ -13,7 +13,7 @@ import {
 } from './post-release-validation.mjs';
 import { checkCacheBustConsistency } from './cache-bust-check.mjs';
 
-export const VALID_TARGETS = ['nginx', 'api', 'engines', 'apbd', 'apbd-global', 'apsales', 'apsales-openclaw', 'finalize', 'home', 'portal', 'chrome', 'categories', 'admin'];
+export const VALID_TARGETS = ['nginx', 'api', 'engines', 'apbd', 'apbd-global', 'apsales', 'apsales-openclaw', 'whatsapp', 'finalize', 'home', 'portal', 'chrome', 'categories', 'admin'];
 
 /** @type {Record<string, string[]>} */
 export const TARGET_SOURCE_FILES = {
@@ -240,6 +240,11 @@ export const TARGET_SOURCE_FILES = {
     'tests/test_apsales_reply_control.mjs',
     'docs/ops/apsales-whatsapp-conversation-scope-20260910.md',
   ],
+  whatsapp: [
+    'deploy/apsales-live-draft/apsales-jid-resolution.mjs',
+    'deploy/apsales-live-draft/apsales-whatsapp-session.mjs',
+    'tests/apsales-jid-resolution.test.mjs',
+  ],
   finalize: [
     'deploy/inventory-site-scripts/backup-inventory-site.sh',
     'scripts/telegram-lead-reminder.js',
@@ -448,6 +453,12 @@ export const TARGET_REMOTE_PATHS = {
     '/root/.openclaw/workspace/AsiaPower/scripts/apsales-media-vin-intelligence.py',
     '/root/.openclaw/workspace/AsiaPower/scripts/apsales-media-stt.py',
     '/root/.openclaw/workspace/AsiaPower/server/lib/asiapower-evidence.js',
+  ],
+  whatsapp: [
+    '/root/.openclaw/workspace/AsiaPower/deploy/apsales-live-draft/apsales-jid-resolution.mjs',
+    '/root/.openclaw/workspace/AsiaPower/deploy/apsales-live-draft/apsales-whatsapp-session.mjs',
+    '/root/.openclaw/extensions/apsales-live-draft/apsales-jid-resolution.mjs',
+    '/root/.openclaw/extensions/apsales-live-draft/apsales-whatsapp-session.mjs',
   ],
   finalize: [
     '/root/.openclaw/workspace/inventory-site/scripts',
@@ -658,7 +669,7 @@ export function runPreDeployValidation({ root, target, remote, allowDirty, yes, 
     });
   }
 
-  const backupMode = ['engines', 'apbd', 'apbd-global', 'apsales', 'finalize'].includes(target) ? 'data-only' : 'full';
+  const backupMode = ['engines', 'apbd', 'apbd-global', 'apsales', 'whatsapp', 'finalize'].includes(target) ? 'data-only' : 'full';
   const backupCmd = backupMode === 'data-only'
     ? 'bash /root/.openclaw/workspace/inventory-site/scripts/backup-inventory-site.sh --data-only'
     : 'bash /root/.openclaw/workspace/inventory-site/scripts/backup-inventory-site.sh';
@@ -749,8 +760,11 @@ export async function runPostDeployValidation({ root, target, remote, baseUrl, r
     checks.push({ name: 'critical_url_check', status: 'skip', detail: 'not required' });
   }
 
+  const serviceNames = target === 'whatsapp'
+    ? 'nginx inventory-site.service apsales-whatsapp-bridge.service'
+    : 'nginx inventory-site.service';
   const svc = spawnSync('ssh', ['-o', 'BatchMode=yes', remote,
-    'systemctl is-active nginx inventory-site.service 2>/dev/null | tr "\\n" " "'],
+    `systemctl is-active ${serviceNames} 2>/dev/null | tr "\\n" " "`],
     { encoding: 'utf8' });
   const svcOut = (svc.stdout || '').trim();
   checks.push({
@@ -759,7 +773,7 @@ export async function runPostDeployValidation({ root, target, remote, baseUrl, r
     detail: svcOut || 'service check failed',
   });
 
-  if (target === 'apsales-openclaw') {
+  if (target === 'apsales-openclaw' || target === 'whatsapp') {
     const bridge = spawnSync('ssh', ['-o', 'BatchMode=yes', remote, `
 set -e
 DIR=/root/.openclaw/extensions/apsales-live-draft
@@ -769,6 +783,7 @@ test -n "$MAIN"
 test "$MAIN" != 0
 ps -p "$MAIN" -o args= | grep -q 'bridge\\.mjs'
 node --check "$DIR/bridge.mjs"
+node --check "$DIR/apsales-jid-resolution.mjs"
 node --check "$DIR/apsales-whatsapp-session.mjs"
 node --check "$DIR/apsales-reply-control.mjs"
 node --check "$DIR/apsales-human-takeover.mjs"

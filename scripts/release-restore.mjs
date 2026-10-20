@@ -93,4 +93,13 @@ systemctl is-active inventory-site.service
 `], { stdio: 'inherit' });
 }
 
+if (target === 'whatsapp') {
+  spawnSync('ssh', ['-o', 'BatchMode=yes', REMOTE, `
+set -e
+node --check /root/.openclaw/extensions/apsales-live-draft/apsales-whatsapp-session.mjs
+systemctl restart apsales-whatsapp-bridge.service
+systemctl is-active apsales-whatsapp-bridge.service
+`], { stdio: 'inherit' });
+}
+
 console.log(`[restore] complete for ${releaseId}`);

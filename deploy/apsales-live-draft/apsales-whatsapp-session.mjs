@@ -9,9 +9,10 @@ import { createWriteStream } from "node:fs";
 import { Readable } from "node:stream";
 import { pipeline } from "node:stream/promises";
 import { trackedTransport } from "./apsales-human-takeover.mjs";
+import { resolveObservedPhoneE164 } from "./apsales-jid-resolution.mjs";
 
 import { n as getStatusCode, t as formatError } from "/root/.openclaw/extensions/whatsapp/dist/session-errors-CbsoQqoy.js";
-import { u as jidToE164 } from "/root/.openclaw/extensions/whatsapp/dist/text-runtime-Dk37KYHj.js";
+import { f as resolveJidToE164, u as jidToE164 } from "/root/.openclaw/extensions/whatsapp/dist/text-runtime-Dk37KYHj.js";
 import {
   d as normalizeMessageContent,
   f as resolveInboundMediaMimetype,
@@ -154,7 +155,7 @@ function readQuotedMessage(message) {
   };
 }
 
-function normalizeObservedMessage(message, authDir) {
+async function normalizeObservedMessage(message, authDir, lidLookup) {
   // Do NOT drop fromMe here — bot echoes vs human sends are distinguished in bridge.mjs
   // (see apsales-human-visibility.mjs). Baileys delivers both as fromMe under multi-device.
   const fromMe = Boolean(message.key?.fromMe);
@@ -180,9 +181,16 @@ function normalizeObservedMessage(message, authDir) {
             : "unknown";
   if (!text && kind === "unknown") return null;
   const fromJid = message.key.remoteJid ?? undefined;
+  const fromPhoneE164 = await resolveObservedPhoneE164({
+    fromJid,
+    authDir,
+    lidLookup,
+    jidToE164,
+    resolveJidToE164,
+  });
   return {
     fromJid,
-    fromPhoneE164: fromJid ? jidToE164(fromJid, { authDir }) : null,
+    fromPhoneE164,
     fromMe,
     hasMedia: media ? true : undefined,
     kind,
@@ -274,11 +282,15 @@ export async function startApsalesWhatsAppSession(params) {
       waiter.resolve(message);
     }
   };
-  const onMessagesUpsert = (event) => {
+  const onMessagesUpsert = async (event) => {
     for (const rawMessage of event.messages ?? []) {
-      const observed = normalizeObservedMessage(rawMessage, params.authDir);
+      const observed = await normalizeObservedMessage(
+        rawMessage,
+        params.authDir,
+        sock.signalRepository?.lidMapping,
+      );
       if (!observed) continue;
-      // Owner takeover must run synchronously even while the main loop awaits an LLM.
+      // Resolve identity before routing so takeover and dedup receive the verified phone.
       params.onObservedMessage?.(observed);
       if (observed.messageId) {
         rawByMessageId.set(observed.messageId, rawMessage);
