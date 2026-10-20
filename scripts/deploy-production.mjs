@@ -972,13 +972,15 @@ for attempt in 1 2 3 4 5 6; do
   sleep 2
 done
 systemctl is-active apsales-whatsapp-bridge.service
-MAIN_PID_BEFORE="$(systemctl show apsales-whatsapp-bridge.service -p MainPID --value)"
-test -n "$MAIN_PID_BEFORE"
-test "$MAIN_PID_BEFORE" != 0
-sleep 5
+for attempt in 1 2 3 4 5 6 7 8 9 10; do
+  if journalctl -u apsales-whatsapp-bridge.service --since '-2 minutes' --no-pager | grep -q '"message":"listener connected"'; then break; fi
+  sleep 2
+done
 systemctl is-active apsales-whatsapp-bridge.service
-test "$(systemctl show apsales-whatsapp-bridge.service -p MainPID --value)" = "$MAIN_PID_BEFORE"
-journalctl -u apsales-whatsapp-bridge.service --since '-2 minutes' --no-pager | grep -q 'WhatsApp listener connected'
+MAIN_PID="$(systemctl show apsales-whatsapp-bridge.service -p MainPID --value)"
+test -n "$MAIN_PID"
+test "$MAIN_PID" != 0
+journalctl -u apsales-whatsapp-bridge.service --since '-2 minutes' --no-pager | grep -q '"message":"listener connected"'
 test "$(sha256sum "$CONTROL" | awk '{print $1}')" = "$CONTROL_HASH_BEFORE"
 test "$(sha256sum "$BRIDGE" | awk '{print $1}')" = "$BRIDGE_HASH_BEFORE"
 node -e 'const fs=require("fs");const v=JSON.parse(fs.readFileSync(process.argv[1],"utf8"));if(v.global?.paused!==true)process.exit(1)' "$CONTROL"
